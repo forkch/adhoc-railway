@@ -6,7 +6,7 @@
  * copyright : (C)  by Benjamin Mueller 
  * email     : akula@akula.ch
  * language  : java
- * version   : $Id:$
+ * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
 
@@ -56,7 +56,7 @@ public class TrackSwitchTab extends JPanel {
             case 0:
                 w.setGreen(true);
                 break;
-            case 1:
+            default:
                 w.setGreen(false);
                 break;
         }
