@@ -1,0 +1,9 @@
+src/RailControlGUI.class : src/RailControlGUI.java
+src/RailControlGUI.class : src/LocomotiveControl.java
+src/RailControlGUI.class : src/LocomotiveControl.class
+src/RailControlGUI.class : src/TrackSwitchTab.java
+src/RailControlGUI.class : src/TrackSwitchTab.class
+src/RailControlGUI.class : src/TrackSwitchWidget.java
+src/RailControlGUI.class : src/TrackSwitchWidget.class
+src/RailControlGUI.class : src/TrackSwitchColorBox.java
+src/RailControlGUI.class : src/TrackSwitchColorBox.class
