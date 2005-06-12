@@ -6,7 +6,7 @@
  * copyright : (C)  by Benjamin Mueller 
  * email     : akula@akula.ch
  * language  : java
- * version   : $Id:$
+ * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
 

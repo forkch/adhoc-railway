@@ -6,7 +6,7 @@
  * copyright : (C)  by Benjamin Mueller 
  * email     : akula@akula.ch
  * language  : java
- * version   : $Id:$
+ * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
 
@@ -20,6 +20,7 @@
  *----------------------------------------------------------------------*/
 
 import javax.swing.*;
+import java.util.*;
 import java.awt.*;
 
 public class RailControlGUI extends JFrame {
@@ -78,8 +79,8 @@ public class RailControlGUI extends JFrame {
                 new TrackSwitchWidget("Mountain Line " + i, i));
         }
         trackSwitchPane = new JTabbedPane(JTabbedPane.BOTTOM);
-        trackSwitchPane.addTab("Main Line", mainLine);
-        trackSwitchPane.addTab("Mountain Line", mountainLine);
+        trackSwitchPane.addTab("Main Line", new JScrollPane(mainLine));
+        trackSwitchPane.addTab("Mountain Line", new JScrollPane(mountainLine));
     }
 
     private void initControlPanel() {

@@ -6,7 +6,7 @@
  * copyright : (C)  by Benjamin Mueller 
  * email     : akula@akula.ch
  * language  : java
- * version   : $Id:$
+ * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
 
@@ -27,8 +27,10 @@ public class TrackSwitchWidget extends JPanel {
 
     private String desc;
     private int number;
-    private TrackSwitchColorBox greenPanel;
-    private TrackSwitchColorBox redPanel;
+    private TrackSwitchColorBox greenBox;
+    private TrackSwitchColorBox redBox;
+    private JPanel greenPanel;
+    private JPanel redPanel;
 
     private JLabel numberLabel;
     private JLabel descLabel;
@@ -40,6 +42,7 @@ public class TrackSwitchWidget extends JPanel {
     }
 
     private void initGUI() {
+        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         setLayout(layout);
@@ -52,12 +55,16 @@ public class TrackSwitchWidget extends JPanel {
         add(numberLabel);
 
         gbc.gridx = 1;
-        greenPanel = new TrackSwitchColorBox(Color.GREEN);
+        greenBox = new TrackSwitchColorBox(Color.GREEN);
+        greenPanel = new JPanel();
+        greenPanel.setPreferredSize(new Dimension(50,20));
         layout.setConstraints(greenPanel, gbc);
         add(greenPanel);
 
         gbc.gridx = 2;
-        redPanel = new TrackSwitchColorBox(Color.RED);
+        redBox = new TrackSwitchColorBox(Color.RED);
+        redPanel = new JPanel();
+        redPanel.setPreferredSize(new Dimension(50,20));
         layout.setConstraints(redPanel, gbc);
         add(redPanel);
 
@@ -67,13 +74,13 @@ public class TrackSwitchWidget extends JPanel {
         add(descLabel);
     }
 
-    public void setGreen(boolean value) {
-        if(value) {
-            greenPanel.activate();
-            redPanel.deactivate();
-        } else {
-            redPanel.activate();
-            greenPanel.deactivate();
-        }
+    public void setGreen() {
+        greenPanel.setBackground(Color.GREEN);
+        redBox.setBackground(new Color(238,238,238));
+    }
+
+    public void setRed() {
+        redPanel.setBackground(Color.RED);
+        greenPanel.setBackground(new Color(238,238,238));
     }
 }

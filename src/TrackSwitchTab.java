@@ -54,10 +54,10 @@ public class TrackSwitchTab extends JPanel {
         int value = rnd.nextInt(2);
         switch (value) {
             case 0:
-                w.setGreen(true);
+                w.setGreen();
                 break;
             default:
-                w.setGreen(false);
+                w.setRed();
                 break;
         }
         if(currenty == maxy) {
