@@ -60,11 +60,10 @@ public class RailControlGUI extends JFrame {
         add(center, BorderLayout.CENTER);
         statusBar = new JLabel("Statusbar...");
         add(statusBar, BorderLayout.SOUTH);
-        
-        pack();
-        setSize(1200,1024);
+        setSize(800,600);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
     }
 
     private void initTrackSwitchPanel() {

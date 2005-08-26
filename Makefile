@@ -21,8 +21,8 @@
 
 JIKES=/usr/bin/jikes
 EXTRALIBS=
-CP=/usr/lib/sun-j2sdk1.5.0/jre/lib/rt.jar:/usr/share/java/junit.jar:/usr/share/java/emma.jar:/usr/share/java/emma_ant.jar:$(EXTRALIBS):./src:./classes
-JIKES_FLAGS=-classpath $(CP) -Xstdout +E -d ./classes
+CP=$(CLASSPATH):$(EXTRALIBS):./src
+JIKES_FLAGS=-classpath $(CP) -Xstdout +E 
 JAVAC=/usr/bin/javac
 JAVA_FLAGS=-classpath $(CP)
 JAVA=/usr/bin/java
