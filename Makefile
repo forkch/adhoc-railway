@@ -20,7 +20,7 @@
 #-------------------------------------------------------------------------
 
 JAVAMAKE=java -jar ./lib/javamake.jar
-EXTRALIBS=
+EXTRALIBS=./lib/jsrcpc.jar
 CP=$(CLASSPATH):$(EXTRALIBS):./classes
 COMPILER_FLAGS=-classpath $(CP)
 JAVA=/usr/bin/java
