@@ -1,3 +1,4 @@
+package ch.fork.RailControl.Test;
 /*------------------------------------------------------------------------
  * 
  * <src/TrackSwitchColorBox.java>  -  <desc>
@@ -19,12 +20,12 @@
  *
  *----------------------------------------------------------------------*/
 
-import javax.swing.*;
 import java.awt.*;
 
 public class TrackSwitchColorBox extends Canvas {
 
-    private Color color;
+	private static final long serialVersionUID = 1L;
+	private Color color;
     private boolean activated;
 
     public TrackSwitchColorBox(Color color) {

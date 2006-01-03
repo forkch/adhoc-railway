@@ -1,3 +1,4 @@
+package ch.fork.RailControl.Test;
 /*------------------------------------------------------------------------
  * 
  * <src/TrackSwitchTab.java>  -  <desc>
@@ -25,8 +26,8 @@ import java.util.*;
 
 public class TrackSwitchTab extends JPanel {
 
-    private String title;
-    private ArrayList trackSwitchWidgets;
+	private static final long serialVersionUID = 1L;
+	private ArrayList trackSwitchWidgets;
 
     private int maxy;
     private int currentx;
@@ -35,7 +36,6 @@ public class TrackSwitchTab extends JPanel {
     private GridBagConstraints gbc;
 
     public TrackSwitchTab(String title) {
-        this.title = title;
         this.trackSwitchWidgets = new ArrayList();
         layout = new GridBagLayout();
         setLayout(layout);
@@ -48,7 +48,8 @@ public class TrackSwitchTab extends JPanel {
         gbc.gridy = currenty;
     }
 
-    public void addTrackSwitchWidget(TrackSwitchWidget w) {
+    @SuppressWarnings("unchecked")
+	public void addTrackSwitchWidget(TrackSwitchWidget w) {
         trackSwitchWidgets.add(w);
         java.util.Random rnd = new Random();
         int value = rnd.nextInt(2);

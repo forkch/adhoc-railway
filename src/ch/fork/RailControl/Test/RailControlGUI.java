@@ -1,3 +1,4 @@
+package ch.fork.RailControl.Test;
 /*------------------------------------------------------------------------
  * 
  * <src/RailControlGUI.java>  -  <desc>
@@ -20,12 +21,13 @@
  *----------------------------------------------------------------------*/
 
 import javax.swing.*;
-import java.util.*;
 import java.awt.*;
 
 public class RailControlGUI extends JFrame {
 
-    private static final String NAME = "RailControl";
+	private static final long serialVersionUID = 1L;
+
+	private static final String NAME = "RailControl";
 
     //GUI-Components
     private JTabbedPane trackSwitchPane;

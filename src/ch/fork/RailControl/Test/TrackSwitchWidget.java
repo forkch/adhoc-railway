@@ -1,3 +1,4 @@
+package ch.fork.RailControl.Test;
 /*------------------------------------------------------------------------
  * 
  * <src/TrackSwitchWidget.java>  -  <desc>
@@ -25,7 +26,8 @@ import java.awt.*;
 
 public class TrackSwitchWidget extends JPanel {
 
-    private String desc;
+	private static final long serialVersionUID = 1L;
+	private String desc;
     private int number;
     private TrackSwitchColorBox greenBox;
     private TrackSwitchColorBox redBox;
