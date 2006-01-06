@@ -1,9 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <SwitchChangedListener.java>  -  <Informs when a switch changed its
- * state>
+ * <SwitchControl.java>  -  <Provides control over a switch>
  * 
- * begin     : j Tue Jan  3 21:32:14 CET 2006
+ * begin     : j Tue Jan  3 21:25:16 CET 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : bm@fork.ch
  * language  : java
@@ -20,9 +19,10 @@
  *
  *----------------------------------------------------------------------*/
 
+package ch.fork.RailControl.domain.switches;
 
-package ch.fork.RailControl.domain;
+public class SwitchControl {
 
-public interface SwitchChangedListener {
+
 
 }

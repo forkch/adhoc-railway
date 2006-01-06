@@ -1,9 +1,9 @@
 /*------------------------------------------------------------------------
  * 
- * <DefaultSwitch.java>  -  <A standard
- * switch>
+ * <SwitchChangedListener.java>  -  <Informs when a switch changed its
+ * state>
  * 
- * begin     : j Tue Jan  3 21:26:08 CET 2006
+ * begin     : j Tue Jan  3 21:32:14 CET 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : bm@fork.ch
  * language  : java
@@ -20,13 +20,9 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.RailControl.domain;
 
-public class DefaultSwitch extends Switch {
+package ch.fork.RailControl.domain.switches;
 
-	protected void toggle() {
-		// TODO Auto-generated method stub
-		
-	}
+public interface SwitchChangedListener {
 
 }

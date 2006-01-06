@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <Switch.java>  -  <Represents a switch>
+ * <InfoChannelHandler.java>  -  <Handles all info events from the srcp-server>
  * 
- * begin     : Tue Jan  3 21:24:40 CET 2006
+ * begin     : Tue Jan  3 21:49:15 CET 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : bm@fork.ch
  * language  : java
@@ -19,14 +19,13 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.RailControl.domain;
+package ch.fork.RailControl.domain.switches;
 
-public abstract class Switch {
+import de.dermoba.srcp.client.InfoDataListener;
 
-    private String name;
-    private String description;
-    private int address;
+public class InfoChannelHandler implements InfoDataListener {
 
-    protected abstract void toggle();
+    public void infoDataReceived(String infoData) {
 
+    }
 }
