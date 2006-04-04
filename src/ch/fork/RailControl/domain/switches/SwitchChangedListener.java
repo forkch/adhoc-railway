@@ -24,5 +24,5 @@
 package ch.fork.RailControl.domain.switches;
 
 public interface SwitchChangedListener {
-
+    public void switchChanged(String changedSwitch);
 }

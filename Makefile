@@ -19,45 +19,14 @@
 #
 #-------------------------------------------------------------------------
 
-JAVAMAKE=java -jar ./lib/javamake.jar
-EXTRALIBS=./lib/jsrcpc.jar
-CP=$(CLASSPATH):$(EXTRALIBS):./classes
-COMPILER_FLAGS=-classpath $(CP)
-JAVA=/usr/bin/java
-JAVA_FLAGS=-classpath $(CP)
+include ~/.make/common.mk
 
-JAVA_CLASSES_DIR=classes
+EXTRALIBS=../jsrcpc/classes
 
-JAVA_FILES=$(shell find ./src -name "*.java")
-
-OBJS=$(addsuffix .class, $(basename $(JAVA_FILES)))
-
-CLEAN_LIST+=./classes javamake.pdb
-
-build:: $(JAVA_CLASSES_DIR) javamake.pdb
-
-%.pdb: $(JAVA_FILES) javamake.recompile 
-	@echo "starting java compilation."
-	@mkdir -p $(JAVA_CLASSES_DIR)
-	$(JAVAMAKE) -pdb $@ \
-	    -classpath $(subst $(space),$(colon), $(CP)) \
-	    -d $(JAVA_CLASSES_DIR) $(subst ./,,$(JAVA_FILES)) -C-Xlint:unchecked \
-	    || (touch javamake.recompile && exit 1)
-	@echo "java compilation done."
-
-javamake.recompile:
-	touch $@
-
-java-build: $(JAVA_CLASSES_DIR) $(JAVAMAKE_PDB)
-
-$(JAVA_CLASSES_DIR):
-	mkdir -p classes
-
-clean ::
-	$(if $(CLEAN_LIST),rm -rf $(CLEAN_LIST))
+build:: java-build
 
 test: build
-	$(JAVA) $(JAVA_FLAGS) RailControlGUI
+	$(JAVA) $(JAVA_FLAGS) ch.fork.RailControl.Test.RailControlGUI
 
 .PRECIOUS: javamake.pdb
 

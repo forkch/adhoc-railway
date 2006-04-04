@@ -26,6 +26,5 @@ import de.dermoba.srcp.client.InfoDataListener;
 public class InfoChannelHandler implements InfoDataListener {
 
     public void infoDataReceived(String infoData) {
-
     }
 }

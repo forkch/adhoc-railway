@@ -21,15 +21,15 @@
 
 package ch.fork.RailControl.domain.switches;
 
-import de.dermoba.srcp.client.Session;
-import de.dermoba.srcp.client.GA;
-import de.dermoba.srcp.common.exception.SRCPException;
+import de.dermoba.srcp.client.SRCPSession;
+import de.dermoba.srcp.devices.GA;
+import de.dermoba.srcp.common.exception.*;
 
 public class DefaultSwitch extends Switch {
 
     private int address;
     private GA ga;
-    private Session session;
+    private SRCPSession session;
 
     private int STRAIGHT_PORT = 0;
     private int CURVED_PORT = 1;
@@ -37,23 +37,67 @@ public class DefaultSwitch extends Switch {
     private enum SwitchState { STRAIGHT, CURVED, UNDEF };
     private SwitchState switchState = SwitchState.UNDEF;
 
-    public DefaultSwitch(Session pSession, String pName, String pDesc, 
-        int pAddress ) {
+    public DefaultSwitch(SRCPSession pSession, String pName, String pDesc, 
+        int pAddress, int pBus ) {
         session = pSession;
         name = pName;
         desc = pDesc;
         address = pAddress;
+        bus = pBus;
         ga = new GA(session);
+        //TODO: immediately a get to determine state !!!!
     }
 
-	protected void toggle() throws SRCPException {
-	    switch(switchState) {
-            case STRAIGHT:
-                ga.set(CURVED_PORT, SWITCH_ACTION, SWITCH_DELAY);
-            case CURVED:
-                ga.set(STRAIGHT_PORT, SWITCH_ACTION, SWITCH_DELAY);
-            case UNDEF:
-                ga.set(STRAIGHT_PORT, SWITCH_ACTION, SWITCH_DELAY);
-        }
+	protected void toggle() throws SwitchException {
+	    try {
+    	    switch(switchState) {
+                case STRAIGHT:
+                    ga.set(CURVED_PORT, SWITCH_ACTION, SWITCH_DELAY);
+                case CURVED:
+                    ga.set(STRAIGHT_PORT, SWITCH_ACTION, SWITCH_DELAY);
+                case UNDEF:
+                    return;
+            }
+	    } catch (SRCPException x ) {
+            if(x instanceof SRCPDeviceLockedException) {
+                throw new SwitchLockedException(ERR_SWITCH_LOCKED);
+            } else {
+                throw new SwitchException(ERR_TOGGLE_FAILED, x);
+            }
+	    }
 	}
+
+    protected boolean switchChanged(int pAddress, int pActivatedPort) {
+        if(address == pAddress) {
+            if(pActivatedPort == STRAIGHT_PORT) {
+                switchState = SwitchState.STRAIGHT;
+            } else if(pActivatedPort == CURVED_PORT) {
+                switchState = SwitchState.CURVED;
+            } else {
+                return false;
+            }
+        } else {
+            //should not happen
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Get address.
+     *
+     * @return address as int.
+     */
+    public int getAddress() {
+        return address;
+    }
+    
+    /**
+     * Set address.
+     *
+     * @param address the value to set.
+     */
+    public void setAddress(int address) {
+        this.address = address;
+    }
 }

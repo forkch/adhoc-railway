@@ -26,15 +26,16 @@ import de.dermoba.srcp.common.exception.SRCPException;
 public abstract class Switch {
 
     protected String name;
+    protected int bus;
     protected String desc;
 
     protected int SWITCH_ACTION = 1;
-    protected int SWITCH_DELAY  = 1;
+    protected int SWITCH_DELAY  = 100;
+    protected String ERR_SWITCH_LOCKED  = "Switch locked";
+    protected String ERR_TOGGLE_FAILED  = "Toggle of switch failed";
 
-
-    protected abstract void toggle() throws SRCPException;
-    protected abstract void switchToggeled();
-
+    protected abstract void toggle() throws SwitchException;
+    protected abstract boolean switchChanged(int pAddress, int pActivatedPort);
     
     /**
      * Get name.
