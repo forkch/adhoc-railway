@@ -21,8 +21,8 @@
 
 package ch.fork.RailControl.domain.switches;
 
-import de.dermoba.srcp.client.Session;
-import de.dermoba.srcp.client.GA;
+import de.dermoba.srcp.client.SRCPSession;
+import de.dermoba.srcp.devices.GA;
 import de.dermoba.srcp.common.exception.*;
 
 public class ThreeWaySwitch extends Switch {
@@ -31,8 +31,6 @@ public class ThreeWaySwitch extends Switch {
     private int address2;
     private GA ga1;
     private GA ga2;
-    private Session session;
-
     private int[] LEFT_PORTS     = {1,0};
     private int[] STRAIGHT_PORTS = {0,0};
     private int[] RIGHT_PORTS    = {0,1};
@@ -41,7 +39,7 @@ public class ThreeWaySwitch extends Switch {
     private enum SwitchState { LEFT, STRAIGHT, RIGHT, UNDEF };
     private SwitchState switchState = SwitchState.UNDEF;
 
-    public ThreeWaySwitch(Session pSession, String pName, String pDesc, 
+    public ThreeWaySwitch(SRCPSession pSession, String pName, String pDesc, 
         int pAddress1, int pAddress2, int pBus) {
         session = pSession;
         name = pName;

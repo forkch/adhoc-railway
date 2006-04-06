@@ -1,4 +1,4 @@
-package ch.fork.RailControl.Test;
+package ch.fork.RailControl.ui.switches;
 /*------------------------------------------------------------------------
  * 
  * <src/TrackSwitchTab.java>  -  <desc>
@@ -21,13 +21,17 @@ package ch.fork.RailControl.Test;
  *----------------------------------------------------------------------*/
 
 import javax.swing.*;
+
+import ch.fork.RailControl.domain.switches.Switch;
+
+
 import java.awt.*;
 import java.util.*;
 
-public class TrackSwitchTab extends JPanel {
+public class SwitchTab extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private ArrayList trackSwitchWidgets;
+	private ArrayList switchWidgets;
 
     private int maxy;
     private int currentx;
@@ -35,8 +39,8 @@ public class TrackSwitchTab extends JPanel {
     private GridBagLayout layout;
     private GridBagConstraints gbc;
 
-    public TrackSwitchTab(String title) {
-        this.trackSwitchWidgets = new ArrayList();
+    public SwitchTab(String title) {
+        this.switchWidgets = new ArrayList();
         layout = new GridBagLayout();
         setLayout(layout);
         maxy = 10;
@@ -49,16 +53,16 @@ public class TrackSwitchTab extends JPanel {
     }
 
     @SuppressWarnings("unchecked")
-	public void addTrackSwitchWidget(TrackSwitchWidget w) {
-        trackSwitchWidgets.add(w);
+	public void addSwitchWidget(SwitchWidget aSwitchWidget) {
+        switchWidgets.add(aSwitchWidget);
         java.util.Random rnd = new Random();
         int value = rnd.nextInt(2);
         switch (value) {
             case 0:
-                w.setGreen();
+                aSwitchWidget.setGreen();
                 break;
             default:
-                w.setRed();
+                aSwitchWidget.setRed();
                 break;
         }
         if(currenty == maxy) {
@@ -67,8 +71,8 @@ public class TrackSwitchTab extends JPanel {
         }
         gbc.gridx = currentx;
         gbc.gridy = currenty;
-        layout.setConstraints(w, gbc);
-        add(w);
+        layout.setConstraints(aSwitchWidget, gbc);
+        add(aSwitchWidget);
         currenty ++;
     }
 }

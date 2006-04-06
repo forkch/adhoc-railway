@@ -3,6 +3,6 @@
 	<classpathentry excluding="domain/|Test/|ui/" kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/javamake.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/jsrcpc.jar"/>
+	<classpathentry kind="lib" path="/JSRCPC/lib/jsrcpc.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

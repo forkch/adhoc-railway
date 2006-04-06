@@ -1,0 +1,1950 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmlns:UML="http://schema.omg.org/spec/UML/1.3" verified="false" timestamp="2006-04-04T20:41:59" xmi.version="1.2" >
+ <XMI.header>
+  <XMI.documentation>
+   <XMI.exporter>umbrello uml modeller http://uml.sf.net</XMI.exporter>
+   <XMI.exporterVersion>1.5.2</XMI.exporterVersion>
+   <XMI.exporterEncoding>UnicodeUTF8</XMI.exporterEncoding>
+  </XMI.documentation>
+  <XMI.metamodel xmi.name="UML" href="UML.xml" xmi.version="1.3" />
+ </XMI.header>
+ <XMI.content>
+  <UML:Model isSpecification="false" isLeaf="false" isRoot="false" xmi.id="m1" isAbstract="false" name="UML Model" >
+   <UML:Namespace.ownedElement>
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="3" isRoot="false" isAbstract="false" name="datatype" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="106" isRoot="false" isAbstract="false" name="interface" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="2" isRoot="false" isAbstract="false" name="int" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="4" isRoot="false" isAbstract="false" name="char" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="5" isRoot="false" isAbstract="false" name="boolean" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="6" isRoot="false" isAbstract="false" name="float" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="7" isRoot="false" isAbstract="false" name="double" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="8" isRoot="false" isAbstract="false" name="byte" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="9" isRoot="false" isAbstract="false" name="short" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="10" isRoot="false" isAbstract="false" name="long" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="11" isRoot="false" isAbstract="false" name="String" />
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="91" isRoot="false" isAbstract="false" name="ch" >
+     <UML:Namespace.ownedElement>
+      <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="91" xmi.id="92" isRoot="false" isAbstract="false" name="fork" >
+       <UML:Namespace.ownedElement>
+        <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="92" xmi.id="94" isRoot="false" isAbstract="false" name="RailControl" >
+         <UML:Namespace.ownedElement>
+          <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="94" xmi.id="95" isRoot="false" isAbstract="false" name="ui" >
+           <UML:Namespace.ownedElement>
+            <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="95" xmi.id="685" isRoot="false" isAbstract="false" name="lcoomotives" >
+             <UML:Namespace.ownedElement>
+              <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="685" xmi.id="684" isRoot="false" isAbstract="false" name="LocomotiveWidget" />
+             </UML:Namespace.ownedElement>
+            </UML:Package>
+            <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="95" xmi.id="686" isRoot="false" isAbstract="false" name="switches" >
+             <UML:Namespace.ownedElement>
+              <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="686" xmi.id="635" isRoot="false" isAbstract="false" name="SwitchWidget" />
+             </UML:Namespace.ownedElement>
+            </UML:Package>
+           </UML:Namespace.ownedElement>
+          </UML:Package>
+          <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="94" xmi.id="96" isRoot="false" isAbstract="false" name="domain" >
+           <UML:Namespace.ownedElement>
+            <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="96" xmi.id="22" isRoot="false" isAbstract="false" name="switches" >
+             <UML:Namespace.ownedElement>
+              <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="22" xmi.id="23" isRoot="false" isAbstract="false" name="Switch" >
+               <UML:Classifier.feature>
+                <UML:Attribute isSpecification="false" visibility="protected" xmi.id="28" type="11" name="name" />
+                <UML:Attribute isSpecification="false" visibility="protected" xmi.id="29" type="2" name="bus" />
+                <UML:Attribute isSpecification="false" visibility="protected" xmi.id="30" type="11" name="description" />
+                <UML:Attribute isSpecification="false" visibility="protected" xmi.id="104" type="36" name="session" />
+                <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="24" isRoot="false" isAbstract="true" isQuery="false" name="toggle" />
+                <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="25" isRoot="false" isAbstract="true" isQuery="false" name="switchChanged" >
+                 <UML:BehavioralFeature.parameter>
+                  <UML:Parameter isSpecification="false" visibility="private" xmi.id="26" value="" type="2" name="pAddress" />
+                  <UML:Parameter isSpecification="false" visibility="private" xmi.id="27" value="" type="2" name="pActivatedPort" />
+                 </UML:BehavioralFeature.parameter>
+                </UML:Operation>
+               </UML:Classifier.feature>
+              </UML:Class>
+              <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="22" xmi.id="47" isRoot="false" isAbstract="false" name="ThreeWaySwitch" >
+               <UML:GeneralizableElement.generalization>
+                <UML:Generalization xmi.idref="56" />
+               </UML:GeneralizableElement.generalization>
+               <UML:Classifier.feature>
+                <UML:Attribute isSpecification="false" visibility="private" xmi.id="54" type="2" name="address1" />
+                <UML:Attribute isSpecification="false" visibility="private" xmi.id="55" type="2" name="address2" />
+                <UML:Attribute isSpecification="false" visibility="private" xmi.id="50" type="49" name="ga1" />
+                <UML:Attribute isSpecification="false" visibility="private" xmi.id="51" type="49" name="ga2" />
+               </UML:Classifier.feature>
+              </UML:Class>
+              <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="22" xmi.id="31" isRoot="false" isAbstract="false" name="DefaultSwitch" >
+               <UML:GeneralizableElement.generalization>
+                <UML:Generalization xmi.idref="32" />
+               </UML:GeneralizableElement.generalization>
+               <UML:Classifier.feature>
+                <UML:Attribute isSpecification="false" visibility="private" xmi.id="53" type="2" name="address" />
+                <UML:Attribute isSpecification="false" visibility="private" xmi.id="52" type="49" name="ga" />
+               </UML:Classifier.feature>
+              </UML:Class>
+              <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="22" xmi.id="62" isRoot="false" isAbstract="false" name="SwitchControl" >
+               <UML:Classifier.feature>
+                <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="67" isRoot="false" isAbstract="false" isQuery="false" name="toggle" >
+                 <UML:BehavioralFeature.parameter>
+                  <UML:Parameter isSpecification="false" visibility="private" xmi.id="68" value="" type="23" name="aSwitch" />
+                 </UML:BehavioralFeature.parameter>
+                </UML:Operation>
+               </UML:Classifier.feature>
+              </UML:Class>
+              <UML:Interface stereotype="106" isSpecification="false" isLeaf="false" visibility="public" namespace="22" xmi.id="105" isRoot="false" isAbstract="true" name="SwitchChangeListener" >
+               <UML:Classifier.feature>
+                <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="107" isRoot="false" isAbstract="false" isQuery="false" name="switchChanged" >
+                 <UML:BehavioralFeature.parameter>
+                  <UML:Parameter isSpecification="false" visibility="private" xmi.id="108" value="" type="23" name="changedSwitch" />
+                 </UML:BehavioralFeature.parameter>
+                </UML:Operation>
+               </UML:Classifier.feature>
+              </UML:Interface>
+             </UML:Namespace.ownedElement>
+            </UML:Package>
+            <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="96" xmi.id="124" isRoot="false" isAbstract="false" name="InfoDataHandler" />
+            <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="96" xmi.id="650" isRoot="false" isAbstract="false" name="locomotives" >
+             <UML:Namespace.ownedElement>
+              <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="650" xmi.id="651" isRoot="false" isAbstract="false" name="Locomotive" />
+              <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="650" xmi.id="652" isRoot="false" isAbstract="false" name="LocomotiveControl" />
+              <UML:Interface stereotype="106" isSpecification="false" isLeaf="false" visibility="public" namespace="650" xmi.id="667" isRoot="false" isAbstract="true" name="LocomotiveChangeListener" />
+             </UML:Namespace.ownedElement>
+            </UML:Package>
+           </UML:Namespace.ownedElement>
+          </UML:Package>
+         </UML:Namespace.ownedElement>
+        </UML:Package>
+       </UML:Namespace.ownedElement>
+      </UML:Package>
+     </UML:Namespace.ownedElement>
+    </UML:Package>
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="97" isRoot="false" isAbstract="false" name="de" >
+     <UML:Namespace.ownedElement>
+      <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="97" xmi.id="98" isRoot="false" isAbstract="false" name="dermoba" >
+       <UML:Namespace.ownedElement>
+        <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="98" xmi.id="99" isRoot="false" isAbstract="false" name="srcp" >
+         <UML:Namespace.ownedElement>
+          <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="99" xmi.id="60" isRoot="false" isAbstract="false" name="client" >
+           <UML:Namespace.ownedElement>
+            <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="60" xmi.id="36" isRoot="false" isAbstract="false" name="SRCPSession" />
+            <UML:Interface stereotype="106" isSpecification="false" isLeaf="false" visibility="public" namespace="60" xmi.id="677" isRoot="false" isAbstract="true" name="InfoDataListener" />
+           </UML:Namespace.ownedElement>
+          </UML:Package>
+          <UML:Package isSpecification="false" isLeaf="false" visibility="public" namespace="99" xmi.id="59" isRoot="false" isAbstract="false" name="devices" >
+           <UML:Namespace.ownedElement>
+            <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="59" xmi.id="49" isRoot="false" isAbstract="false" name="GA" />
+           </UML:Namespace.ownedElement>
+          </UML:Package>
+         </UML:Namespace.ownedElement>
+        </UML:Package>
+       </UML:Namespace.ownedElement>
+      </UML:Package>
+     </UML:Namespace.ownedElement>
+    </UML:Package>
+    <UML:Generalization isSpecification="false" child="31" visibility="public" namespace="m1" xmi.id="32" parent="23" discriminator="" name="" />
+    <UML:Generalization isSpecification="false" child="47" visibility="public" namespace="m1" xmi.id="56" parent="23" discriminator="" name="" />
+    <UML:Association isSpecification="false" visibility="public" namespace="m1" xmi.id="79" name="controls" >
+     <UML:Association.connection>
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="false" xmi.id="80" aggregation="none" type="62" name="" multiplicity="1" />
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="81" aggregation="none" type="23" name="" multiplicity="*" />
+     </UML:Association.connection>
+    </UML:Association>
+    <UML:Association isSpecification="false" visibility="public" namespace="m1" xmi.id="109" name="calls" >
+     <UML:Association.connection>
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="false" xmi.id="110" aggregation="none" type="62" name="" multiplicity="1" />
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="111" aggregation="none" type="105" name="" multiplicity="*" />
+     </UML:Association.connection>
+    </UML:Association>
+    <UML:Association isSpecification="false" visibility="public" namespace="m1" xmi.id="130" name="" >
+     <UML:Association.connection>
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="false" xmi.id="131" aggregation="none" type="124" name="" />
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="132" aggregation="none" type="62" name="" />
+     </UML:Association.connection>
+    </UML:Association>
+    <UML:Association isSpecification="false" visibility="public" namespace="m1" xmi.id="414" name="calls" >
+     <UML:Association.connection>
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="false" xmi.id="415" aggregation="none" type="124" name="" multiplicity="1" />
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="416" aggregation="none" type="62" name="" multiplicity="1" />
+     </UML:Association.connection>
+    </UML:Association>
+    <UML:Association isSpecification="false" visibility="public" namespace="m1" xmi.id="626" name="calls" >
+     <UML:Association.connection>
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="false" xmi.id="627" aggregation="none" type="62" name="" multiplicity="1" />
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="628" aggregation="none" type="105" name="" multiplicity="*" />
+     </UML:Association.connection>
+    </UML:Association>
+    <UML:Dependency isSpecification="false" visibility="public" namespace="m1" xmi.id="636" client="635" name="" supplier="105" />
+    <UML:Association isSpecification="false" visibility="public" namespace="m1" xmi.id="653" name="calls" >
+     <UML:Association.connection>
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="false" xmi.id="654" aggregation="none" type="124" name="" />
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="655" aggregation="none" type="652" name="" />
+     </UML:Association.connection>
+    </UML:Association>
+    <UML:Association isSpecification="false" visibility="public" namespace="m1" xmi.id="658" name="controls" >
+     <UML:Association.connection>
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="false" xmi.id="659" aggregation="none" type="652" name="" multiplicity="1" />
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="660" aggregation="none" type="651" name="" multiplicity="*" />
+     </UML:Association.connection>
+    </UML:Association>
+    <UML:Association isSpecification="false" visibility="public" namespace="m1" xmi.id="668" name="calls" >
+     <UML:Association.connection>
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="false" xmi.id="669" aggregation="none" type="652" name="" multiplicity="1" />
+      <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="670" aggregation="none" type="667" name="" multiplicity="*" />
+     </UML:Association.connection>
+    </UML:Association>
+    <UML:Dependency isSpecification="false" visibility="public" namespace="m1" xmi.id="678" client="124" name="" supplier="677" />
+    <UML:Dependency isSpecification="false" visibility="public" namespace="m1" xmi.id="681" client="124" name="" supplier="677" />
+    <UML:Dependency isSpecification="false" visibility="public" namespace="m1" xmi.id="687" client="684" name="" supplier="667" />
+   </UML:Namespace.ownedElement>
+  </UML:Model>
+ </XMI.content>
+ <XMI.extensions xmi.extender="umbrello" >
+  <docsettings viewid="639" documentation="" uniqueid="689" />
+  <diagrams>
+   <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="1182" snapy="10" showatts="1" xmi.id="1" documentation="" type="402" showops="1" showpackage="0" name="Switches" localid="900000" showstereotype="0" showscope="1" snapcsgrid="0" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="#000000" canvasheight="785" >
+    <widgets>
+     <classwidget usesdiagramfillcolour="0" width="334" showattsigs="601" usesdiagramusefillcolour="0" x="223" y="407" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="119" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="23" showoperations="1" showpackage="0" showscope="1" font="Verdana,12,-1,5,50,1,0,0,0,0" linecolor="#000000" />
+     <classwidget usesdiagramfillcolour="0" width="228" showattsigs="601" usesdiagramusefillcolour="0" x="130" y="603" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="59" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="31" showoperations="1" showpackage="0" showscope="1" font="Verdana,12,-1,5,75,0,0,0,0,0" linecolor="#000000" />
+     <classwidget usesdiagramfillcolour="0" width="236" showattsigs="601" usesdiagramusefillcolour="0" x="419" y="618" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="93" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="47" showoperations="1" showpackage="0" showscope="1" font="Verdana,12,-1,5,75,0,0,0,0,0" linecolor="#000000" />
+     <classwidget usesdiagramfillcolour="0" width="265" showattsigs="601" usesdiagramusefillcolour="0" x="193" y="241" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="51" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="62" showoperations="1" showpackage="0" showscope="1" font="Verdana,12,-1,5,75,0,0,0,0,0" linecolor="#000000" />
+     <interfacewidget usesdiagramfillcolour="0" width="281" usesdiagramusefillcolour="0" x="677" y="234" drawascircle="0" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="61" usefillcolor="1" showpubliconly="0" isinstance="0" xmi.id="105" showoperations="1" showpackage="0" showscope="1" showstereotype="1" font="Verdana,12,-1,5,75,1,0,0,0,0" linecolor="#000000" />
+     <classwidget usesdiagramfillcolour="0" width="120" showattsigs="601" usesdiagramusefillcolour="0" x="271" y="58" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="40" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="124" showoperations="1" showpackage="0" showscope="1" font="Verdana,12,-1,5,75,0,0,0,0,0" linecolor="#000000" />
+     <classwidget usesdiagramfillcolour="1" width="102" showattsigs="601" usesdiagramusefillcolour="1" x="766" y="433" showopsigs="601" linewidth="none" fillcolour="none" height="33" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="635" showoperations="1" showpackage="0" showscope="1" font="Verdana,12,-1,5,75,0,0,0,0,0" linecolor="none" />
+     <interfacewidget usesdiagramfillcolour="0" width="126" usesdiagramusefillcolour="0" x="49" y="53" drawascircle="1" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="50" usefillcolor="1" showpubliconly="0" isinstance="0" xmi.id="677" showoperations="1" showpackage="0" showscope="1" showstereotype="1" font="Verdana,12,-1,5,50,1,1,0,0,0" linecolor="#000000" />
+    </widgets>
+    <messages/>
+    <associations>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="3" indexb="1" linewidth="none" widgetbid="23" widgetaid="31" xmi.id="32" linecolor="none" >
+      <linepath>
+       <startpoint startx="266" starty="603" />
+       <endpoint endx="266" endy="526" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="3" indexb="2" linewidth="none" widgetbid="23" widgetaid="47" xmi.id="56" linecolor="none" >
+      <linepath>
+       <startpoint startx="494" starty="618" />
+       <endpoint endx="494" endy="526" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="23" widgetaid="62" xmi.id="79" linecolor="none" >
+      <linepath>
+       <startpoint startx="368" starty="292" />
+       <endpoint endx="368" endy="407" />
+      </linepath>
+      <floatingtext usesdiagramfillcolour="1" width="58" usesdiagramusefillcolour="1" x="367" y="349" linewidth="none" posttext="" role="703" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="640" text="controls" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+      <floatingtext usesdiagramfillcolour="1" width="32" usesdiagramusefillcolour="1" x="370" y="294" linewidth="none" posttext="" role="701" fillcolour="none" height="32" usefillcolor="1" pretext="" isinstance="0" xmi.id="641" text="1" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+      <floatingtext usesdiagramfillcolour="1" width="32" usesdiagramusefillcolour="1" x="369" y="373" linewidth="none" posttext="" role="702" fillcolour="none" height="32" usefillcolor="1" pretext="" isinstance="0" xmi.id="642" showstereotype="1" text="*" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="62" widgetaid="124" xmi.id="414" linecolor="none" >
+      <linepath>
+       <startpoint startx="330" starty="98" />
+       <endpoint endx="330" endy="241" />
+      </linepath>
+      <floatingtext usesdiagramfillcolour="1" width="35" usesdiagramusefillcolour="1" x="330" y="169" linewidth="none" posttext="" role="703" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="643" text="calls" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+      <floatingtext usesdiagramfillcolour="1" width="32" usesdiagramusefillcolour="1" x="298" y="96" linewidth="none" posttext="" role="701" fillcolour="none" height="32" usefillcolor="1" pretext="" isinstance="0" xmi.id="644" text="1" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+      <floatingtext usesdiagramfillcolour="1" width="32" usesdiagramusefillcolour="1" x="292" y="204" linewidth="none" posttext="" role="702" fillcolour="none" height="32" usefillcolor="1" pretext="" isinstance="0" xmi.id="645" text="1" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="105" widgetaid="62" xmi.id="626" linecolor="none" >
+      <linepath>
+       <startpoint startx="458" starty="264" />
+       <endpoint endx="677" endy="264" />
+      </linepath>
+      <floatingtext usesdiagramfillcolour="1" width="35" usesdiagramusefillcolour="1" x="567" y="264" linewidth="none" posttext="" role="703" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="646" text="calls" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+      <floatingtext usesdiagramfillcolour="1" width="32" usesdiagramusefillcolour="1" x="460" y="230" linewidth="none" posttext="" role="701" fillcolour="none" height="32" usefillcolor="1" pretext="" isinstance="0" xmi.id="647" text="1" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+      <floatingtext usesdiagramfillcolour="1" width="32" usesdiagramusefillcolour="1" x="643" y="230" linewidth="none" posttext="" role="702" fillcolour="none" height="32" usefillcolor="1" pretext="" isinstance="0" xmi.id="648" text="*" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="105" widgetaid="635" xmi.id="636" linecolor="none" >
+      <linepath>
+       <startpoint startx="868" starty="433" />
+       <endpoint endx="868" endy="295" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="677" widgetaid="124" xmi.id="678" linecolor="none" >
+      <linepath>
+       <startpoint startx="271" starty="76" />
+       <endpoint endx="175" endy="76" />
+      </linepath>
+     </assocwidget>
+    </associations>
+   </diagram>
+   <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="1182" snapy="10" showatts="1" xmi.id="639" documentation="" type="402" showops="1" showpackage="0" name="Locomotives" localid="900000" showstereotype="0" showscope="1" snapcsgrid="0" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="#000000" canvasheight="785" >
+    <widgets>
+     <classwidget usesdiagramfillcolour="1" width="120" showattsigs="601" usesdiagramusefillcolour="1" x="229" y="123" showopsigs="601" linewidth="none" fillcolour="none" height="33" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="124" showoperations="1" showpackage="0" showscope="1" font="Verdana,12,-1,5,75,0,0,0,0,0" linecolor="none" />
+     <classwidget usesdiagramfillcolour="1" width="86" showattsigs="601" usesdiagramusefillcolour="1" x="228" y="499" showopsigs="601" linewidth="none" fillcolour="none" height="33" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="651" showoperations="1" showpackage="0" showscope="1" font="Verdana,12,-1,5,75,0,0,0,0,0" linecolor="none" />
+     <classwidget usesdiagramfillcolour="1" width="134" showattsigs="601" usesdiagramusefillcolour="1" x="224" y="286" showopsigs="601" linewidth="none" fillcolour="none" height="33" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="652" showoperations="1" showpackage="0" showscope="1" font="Verdana,12,-1,5,75,0,0,0,0,0" linecolor="none" />
+     <interfacewidget usesdiagramfillcolour="1" width="197" usesdiagramusefillcolour="1" x="604" y="290" drawascircle="0" showopsigs="601" linewidth="none" fillcolour="none" height="50" usefillcolor="1" showpubliconly="0" isinstance="0" xmi.id="667" showoperations="1" showpackage="0" showscope="1" showstereotype="1" font="Verdana,12,-1,5,75,1,0,0,0,0" linecolor="none" />
+     <interfacewidget usesdiagramfillcolour="0" width="126" usesdiagramusefillcolour="0" x="14" y="113" drawascircle="1" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="50" usefillcolor="1" showpubliconly="0" isinstance="0" xmi.id="677" showoperations="1" showpackage="0" showscope="1" showstereotype="1" font="Verdana,12,-1,5,50,1,1,0,0,0" linecolor="#000000" />
+     <classwidget usesdiagramfillcolour="1" width="133" showattsigs="601" usesdiagramusefillcolour="1" x="629" y="513" showopsigs="601" linewidth="none" fillcolour="none" height="33" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="684" showoperations="1" showpackage="0" showscope="1" font="Verdana,12,-1,5,75,0,0,0,0,0" linecolor="none" />
+    </widgets>
+    <messages/>
+    <associations>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="652" widgetaid="124" xmi.id="653" linecolor="none" >
+      <linepath>
+       <startpoint startx="288" starty="156" />
+       <endpoint endx="288" endy="286" />
+      </linepath>
+      <floatingtext usesdiagramfillcolour="1" width="35" usesdiagramusefillcolour="1" x="288" y="221" linewidth="none" posttext="" role="703" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="657" text="calls" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="651" widgetaid="652" xmi.id="658" linecolor="none" >
+      <linepath>
+       <startpoint startx="274" starty="319" />
+       <endpoint endx="274" endy="499" />
+      </linepath>
+      <floatingtext usesdiagramfillcolour="1" width="58" usesdiagramusefillcolour="1" x="274" y="409" linewidth="none" posttext="" role="703" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="662" text="controls" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+      <floatingtext usesdiagramfillcolour="1" width="32" usesdiagramusefillcolour="1" x="276" y="321" linewidth="none" posttext="" role="701" fillcolour="none" height="32" usefillcolor="1" pretext="" isinstance="0" xmi.id="666" text="1" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+      <floatingtext usesdiagramfillcolour="1" width="32" usesdiagramusefillcolour="1" x="276" y="465" linewidth="none" posttext="" role="702" fillcolour="none" height="32" usefillcolor="1" pretext="" isinstance="0" xmi.id="664" text="*" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="667" widgetaid="652" xmi.id="668" linecolor="none" >
+      <linepath>
+       <startpoint startx="358" starty="308" />
+       <endpoint endx="604" endy="308" />
+      </linepath>
+      <floatingtext usesdiagramfillcolour="1" width="35" usesdiagramusefillcolour="1" x="481" y="308" linewidth="none" posttext="" role="703" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="672" text="calls" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+      <floatingtext usesdiagramfillcolour="1" width="32" usesdiagramusefillcolour="1" x="360" y="274" linewidth="none" posttext="" role="701" fillcolour="none" height="32" usefillcolor="1" pretext="" isinstance="0" xmi.id="676" text="1" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+      <floatingtext usesdiagramfillcolour="1" width="32" usesdiagramusefillcolour="1" x="570" y="274" linewidth="none" posttext="" role="702" fillcolour="none" height="32" usefillcolor="1" pretext="" isinstance="0" xmi.id="674" showstereotype="1" text="*" font="Verdana,12,-1,5,50,0,0,0,0,0" linecolor="none" />
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="1" totalcountb="3" indexb="1" linewidth="none" widgetbid="677" widgetaid="124" xmi.id="678" linecolor="none" >
+      <linepath>
+       <startpoint startx="229" starty="142" />
+       <endpoint endx="140" endy="142" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="2" totalcountb="3" indexb="2" linewidth="none" widgetbid="677" widgetaid="124" xmi.id="681" linecolor="none" >
+      <linepath>
+       <startpoint startx="229" starty="142" />
+       <endpoint endx="140" endy="142" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="667" widgetaid="684" xmi.id="687" linecolor="none" >
+      <linepath>
+       <startpoint startx="682" starty="513" />
+       <endpoint endx="682" endy="340" />
+      </linepath>
+     </assocwidget>
+    </associations>
+   </diagram>
+  </diagrams>
+  <listview>
+   <listitem open="1" type="800" label="Views" >
+    <listitem open="1" type="801" label="Logical View" >
+     <listitem open="1" type="818" id="91" >
+      <listitem open="1" type="818" id="92" >
+       <listitem open="1" type="818" id="94" >
+        <listitem open="1" type="818" id="96" >
+         <listitem open="0" type="813" id="124" />
+         <listitem open="1" type="818" id="650" >
+          <listitem open="0" type="813" id="651" />
+          <listitem open="0" type="813" id="652" />
+          <listitem open="1" type="817" id="667" />
+         </listitem>
+         <listitem open="1" type="818" id="22" >
+          <listitem open="0" type="813" id="31" >
+           <listitem open="0" type="814" id="53" />
+           <listitem open="0" type="814" id="52" />
+          </listitem>
+          <listitem open="0" type="813" id="23" >
+           <listitem open="0" type="814" id="28" />
+           <listitem open="0" type="814" id="29" />
+           <listitem open="0" type="814" id="30" />
+           <listitem open="0" type="814" id="104" />
+           <listitem open="0" type="815" id="24" />
+           <listitem open="0" type="815" id="25" />
+          </listitem>
+          <listitem open="1" type="813" id="62" >
+           <listitem open="0" type="815" id="67" />
+          </listitem>
+          <listitem open="0" type="813" id="47" >
+           <listitem open="0" type="814" id="54" />
+           <listitem open="0" type="814" id="55" />
+           <listitem open="0" type="814" id="50" />
+           <listitem open="0" type="814" id="51" />
+          </listitem>
+          <listitem open="0" type="817" id="105" >
+           <listitem open="0" type="815" id="107" />
+          </listitem>
+         </listitem>
+        </listitem>
+        <listitem open="1" type="818" id="95" >
+         <listitem open="1" type="818" id="685" >
+          <listitem open="0" type="813" id="684" />
+         </listitem>
+         <listitem open="1" type="818" id="686" >
+          <listitem open="0" type="813" id="635" />
+         </listitem>
+        </listitem>
+       </listitem>
+      </listitem>
+     </listitem>
+     <listitem open="1" type="818" id="97" >
+      <listitem open="1" type="818" id="98" >
+       <listitem open="1" type="818" id="99" >
+        <listitem open="1" type="818" id="60" >
+         <listitem open="0" type="813" id="36" />
+         <listitem open="1" type="817" id="677" />
+        </listitem>
+        <listitem open="0" type="818" id="59" >
+         <listitem open="0" type="813" id="49" />
+        </listitem>
+       </listitem>
+      </listitem>
+     </listitem>
+     <listitem open="0" type="830" label="Datatypes" >
+      <listitem open="1" type="829" id="11" />
+      <listitem open="1" type="829" id="5" />
+      <listitem open="1" type="829" id="8" />
+      <listitem open="1" type="829" id="4" />
+      <listitem open="1" type="829" id="7" />
+      <listitem open="1" type="829" id="6" />
+      <listitem open="1" type="829" id="2" />
+      <listitem open="1" type="829" id="10" />
+      <listitem open="1" type="829" id="9" />
+     </listitem>
+    </listitem>
+    <listitem open="1" type="802" label="Use Case View" />
+    <listitem open="1" type="821" label="Component View" />
+    <listitem open="1" type="827" label="Deployment View" />
+    <listitem open="1" type="836" label="Entity Relationship Model" />
+   </listitem>
+  </listview>
+  <codegeneration>
+   <codegenerator language="Java" >
+    <classifiercodedocument writeOutCode="true" package="ch.fork.RailControl.ui.switches" id="635" parent_class="635" fileExt=".java" fileName="SwitchWidget" >
+     <textblocks>
+      <codeblockwithcomments tag="packages" text="package ch.fork.RailControl.ui.switches;&amp;#010;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <codeblockwithcomments tag="imports" writeOutText="false" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <javaclassdeclarationblock parent_id="635" tag="ClassDeclBlock" canDelete="false" >
+       <header>
+        <javacodedocumentation tag="" text="Class SwitchWidget&amp;#010;" />
+       </header>
+       <textblocks>
+        <hierarchicalcodeblock tag="fieldsDecl" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Fields" />
+         </header>
+         <textblocks/>
+        </hierarchicalcodeblock>
+        <hierarchicalcodeblock tag="methodsBlock" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Methods" />
+         </header>
+         <textblocks>
+          <hierarchicalcodeblock tag="constructorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Constructors" />
+           </header>
+           <textblocks>
+            <codeblockwithcomments tag="emptyconstructor" indentLevel="1" text="public SwitchWidget ( ) { }" >
+             <header>
+              <codecomment tag="" indentLevel="1" text="Empty Constructor" />
+             </header>
+            </codeblockwithcomments>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="accessorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Accessor Methods" />
+           </header>
+           <textblocks>
+            <hierarchicalcodeblock tag="staticAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+            <hierarchicalcodeblock tag="regularAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="operationMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Operations" />
+           </header>
+           <textblocks/>
+          </hierarchicalcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+       </textblocks>
+      </javaclassdeclarationblock>
+     </textblocks>
+     <header>
+      <codecomment tag="" />
+     </header>
+     <classfields/>
+    </classifiercodedocument>
+    <classifiercodedocument writeOutCode="true" package="ch.fork.RailControl.domain.switches" id="23" parent_class="23" fileExt=".java" fileName="Switch" >
+     <textblocks>
+      <codeblockwithcomments tag="packages" text="package ch.fork.RailControl.domain.switches;&amp;#010;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <codeblockwithcomments tag="imports" text="&amp;#010;import de.dermoba.srcp.client.SRCPSession;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <javaclassdeclarationblock parent_id="23" tag="ClassDeclBlock" canDelete="false" >
+       <header>
+        <javacodedocumentation tag="" text="Class Switch&amp;#010;" />
+       </header>
+       <textblocks>
+        <hierarchicalcodeblock tag="fieldsDecl" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Fields" />
+         </header>
+         <textblocks>
+          <ccfdeclarationcodeblock parent_id="28" tag="tblock_0" canDelete="false" indentLevel="1" text="protected String name;" >
+           <header>
+            <codecomment tag="" indentLevel="1" />
+           </header>
+          </ccfdeclarationcodeblock>
+          <ccfdeclarationcodeblock parent_id="29" tag="tblock_1" canDelete="false" indentLevel="1" text="protected int bus;" >
+           <header>
+            <codecomment tag="" indentLevel="1" />
+           </header>
+          </ccfdeclarationcodeblock>
+          <ccfdeclarationcodeblock parent_id="30" tag="tblock_2" canDelete="false" indentLevel="1" text="protected String description;" >
+           <header>
+            <codecomment tag="" indentLevel="1" />
+           </header>
+          </ccfdeclarationcodeblock>
+          <ccfdeclarationcodeblock parent_id="104" tag="tblock_11" canDelete="false" indentLevel="1" text="protected de.dermoba.srcp.client.SRCPSession session;" >
+           <header>
+            <codecomment tag="" indentLevel="1" />
+           </header>
+          </ccfdeclarationcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+        <hierarchicalcodeblock tag="methodsBlock" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Methods" />
+         </header>
+         <textblocks>
+          <hierarchicalcodeblock tag="constructorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Constructors" />
+           </header>
+           <textblocks>
+            <codeblockwithcomments tag="emptyconstructor" indentLevel="1" text="public Switch ( ) { }" >
+             <header>
+              <codecomment tag="" indentLevel="1" text="Empty Constructor" />
+             </header>
+            </codeblockwithcomments>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="accessorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Accessor Methods" />
+           </header>
+           <textblocks>
+            <hierarchicalcodeblock tag="staticAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks>
+              <codeaccessormethod accessType="0" parent_id="28" tag="hblock_tag_0" canDelete="false" indentLevel="1" classfield_id="28" text="return name;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the value of name&amp;#010;&amp;#010;@return the value of name" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="1" parent_id="28" tag="hblock_tag_4" canDelete="false" indentLevel="1" classfield_id="28" text="name = value;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Set the value of name&amp;#010;&amp;#010;" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="0" parent_id="29" tag="hblock_tag_5" canDelete="false" indentLevel="1" classfield_id="29" text="return bus;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the value of bus&amp;#010;&amp;#010;@return the value of bus" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="1" parent_id="29" tag="hblock_tag_6" canDelete="false" indentLevel="1" classfield_id="29" text="bus = value;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Set the value of bus&amp;#010;&amp;#010;" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="0" parent_id="30" tag="hblock_tag_7" canDelete="false" indentLevel="1" classfield_id="30" text="return description;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the value of description&amp;#010;&amp;#010;@return the value of description" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="1" parent_id="30" tag="hblock_tag_8" canDelete="false" indentLevel="1" classfield_id="30" text="description = value;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Set the value of description&amp;#010;&amp;#010;" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="0" parent_id="104" tag="hblock_tag_12" canDelete="false" indentLevel="1" classfield_id="104" text="return session;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the value of session&amp;#010;&amp;#010;@return the value of session" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="1" parent_id="104" tag="hblock_tag_13" canDelete="false" indentLevel="1" classfield_id="104" text="session = value;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Set the value of session&amp;#010;&amp;#010;" />
+               </header>
+              </codeaccessormethod>
+             </textblocks>
+            </hierarchicalcodeblock>
+            <hierarchicalcodeblock tag="regularAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="operationMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Operations" />
+           </header>
+           <textblocks>
+            <codeoperation parent_id="24" tag="operation_24" canDelete="false" indentLevel="1" >
+             <header>
+              <javacodedocumentation tag="" indentLevel="1" text="&amp;#010;@return   " />
+             </header>
+            </codeoperation>
+            <codeoperation parent_id="25" tag="operation_25" canDelete="false" indentLevel="1" >
+             <header>
+              <javacodedocumentation tag="" indentLevel="1" text="&amp;#010;@param pAddress &amp;#010;@param pActivatedPort &amp;#010;@return   " />
+             </header>
+            </codeoperation>
+           </textblocks>
+          </hierarchicalcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+       </textblocks>
+      </javaclassdeclarationblock>
+     </textblocks>
+     <header>
+      <codecomment tag="" />
+     </header>
+     <classfields>
+      <codeclassfield parent_id="28" field_type="0" initialValue="" role_id="-1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="28" tag="tblock_0" canDelete="false" indentLevel="1" text="protected String name;" >
+        <header>
+         <codecomment tag="" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="28" tag="hblock_tag_0" canDelete="false" indentLevel="1" classfield_id="28" text="return name;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of name&amp;#010;&amp;#010;@return the value of name" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="28" tag="hblock_tag_4" canDelete="false" indentLevel="1" classfield_id="28" text="name = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of name&amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+      <codeclassfield parent_id="29" field_type="0" initialValue="" role_id="-1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="29" tag="tblock_1" canDelete="false" indentLevel="1" text="protected int bus;" >
+        <header>
+         <codecomment tag="" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="29" tag="hblock_tag_5" canDelete="false" indentLevel="1" classfield_id="29" text="return bus;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of bus&amp;#010;&amp;#010;@return the value of bus" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="29" tag="hblock_tag_6" canDelete="false" indentLevel="1" classfield_id="29" text="bus = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of bus&amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+      <codeclassfield parent_id="30" field_type="0" initialValue="" role_id="-1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="30" tag="tblock_2" canDelete="false" indentLevel="1" text="protected String description;" >
+        <header>
+         <codecomment tag="" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="30" tag="hblock_tag_7" canDelete="false" indentLevel="1" classfield_id="30" text="return description;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of description&amp;#010;&amp;#010;@return the value of description" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="30" tag="hblock_tag_8" canDelete="false" indentLevel="1" classfield_id="30" text="description = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of description&amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+      <codeclassfield parent_id="104" field_type="0" initialValue="" role_id="-1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="104" tag="tblock_11" canDelete="false" indentLevel="1" text="protected de.dermoba.srcp.client.SRCPSession session;" >
+        <header>
+         <codecomment tag="" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="104" tag="hblock_tag_12" canDelete="false" indentLevel="1" classfield_id="104" text="return session;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of session&amp;#010;&amp;#010;@return the value of session" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="104" tag="hblock_tag_13" canDelete="false" indentLevel="1" classfield_id="104" text="session = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of session&amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+     </classfields>
+    </classifiercodedocument>
+    <classifiercodedocument writeOutCode="true" package="ch.fork.RailControl.domain.switches" id="47" parent_class="47" fileExt=".java" fileName="ThreeWaySwitch" >
+     <textblocks>
+      <codeblockwithcomments tag="packages" text="package ch.fork.RailControl.domain.switches;&amp;#010;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <codeblockwithcomments tag="imports" text="&amp;#010;import de.dermoba.srcp.devices.GA;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <javaclassdeclarationblock parent_id="47" tag="ClassDeclBlock" canDelete="false" >
+       <header>
+        <javacodedocumentation tag="" text="Class ThreeWaySwitch&amp;#010;" />
+       </header>
+       <textblocks>
+        <hierarchicalcodeblock tag="fieldsDecl" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Fields" />
+         </header>
+         <textblocks>
+          <ccfdeclarationcodeblock parent_id="54" tag="tblock_0" canDelete="false" indentLevel="1" text="private int address1;" >
+           <header>
+            <codecomment tag="" indentLevel="1" />
+           </header>
+          </ccfdeclarationcodeblock>
+          <ccfdeclarationcodeblock parent_id="55" tag="tblock_1" canDelete="false" indentLevel="1" text="private int address2;" >
+           <header>
+            <codecomment tag="" indentLevel="1" />
+           </header>
+          </ccfdeclarationcodeblock>
+          <ccfdeclarationcodeblock parent_id="50" tag="tblock_2" canDelete="false" indentLevel="1" text="private de.dermoba.srcp.devices.GA ga1;" >
+           <header>
+            <codecomment tag="" indentLevel="1" />
+           </header>
+          </ccfdeclarationcodeblock>
+          <ccfdeclarationcodeblock parent_id="51" tag="tblock_3" canDelete="false" indentLevel="1" text="private de.dermoba.srcp.devices.GA ga2;" >
+           <header>
+            <codecomment tag="" indentLevel="1" />
+           </header>
+          </ccfdeclarationcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+        <hierarchicalcodeblock tag="methodsBlock" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Methods" />
+         </header>
+         <textblocks>
+          <hierarchicalcodeblock tag="constructorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Constructors" />
+           </header>
+           <textblocks>
+            <codeblockwithcomments tag="emptyconstructor" indentLevel="1" text="public ThreeWaySwitch ( ) { }" >
+             <header>
+              <codecomment tag="" indentLevel="1" text="Empty Constructor" />
+             </header>
+            </codeblockwithcomments>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="accessorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Accessor Methods" />
+           </header>
+           <textblocks>
+            <hierarchicalcodeblock tag="staticAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks>
+              <codeaccessormethod accessType="0" parent_id="54" tag="hblock_tag_0" canDelete="false" indentLevel="1" classfield_id="54" text="return address1;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the value of address1&amp;#010;&amp;#010;@return the value of address1" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="1" parent_id="54" tag="hblock_tag_4" canDelete="false" indentLevel="1" classfield_id="54" text="address1 = value;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Set the value of address1&amp;#010;&amp;#010;" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="0" parent_id="55" tag="hblock_tag_5" canDelete="false" indentLevel="1" classfield_id="55" text="return address2;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the value of address2&amp;#010;&amp;#010;@return the value of address2" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="1" parent_id="55" tag="hblock_tag_6" canDelete="false" indentLevel="1" classfield_id="55" text="address2 = value;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Set the value of address2&amp;#010;&amp;#010;" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="0" parent_id="50" tag="hblock_tag_7" canDelete="false" indentLevel="1" classfield_id="50" text="return ga1;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the value of ga1&amp;#010;&amp;#010;@return the value of ga1" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="1" parent_id="50" tag="hblock_tag_8" canDelete="false" indentLevel="1" classfield_id="50" text="ga1 = value;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Set the value of ga1&amp;#010;&amp;#010;" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="0" parent_id="51" tag="hblock_tag_9" canDelete="false" indentLevel="1" classfield_id="51" text="return ga2;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the value of ga2&amp;#010;&amp;#010;@return the value of ga2" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="1" parent_id="51" tag="hblock_tag_10" canDelete="false" indentLevel="1" classfield_id="51" text="ga2 = value;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Set the value of ga2&amp;#010;&amp;#010;" />
+               </header>
+              </codeaccessormethod>
+             </textblocks>
+            </hierarchicalcodeblock>
+            <hierarchicalcodeblock tag="regularAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="operationMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Operations" />
+           </header>
+           <textblocks/>
+          </hierarchicalcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+       </textblocks>
+      </javaclassdeclarationblock>
+     </textblocks>
+     <header>
+      <codecomment tag="" />
+     </header>
+     <classfields>
+      <codeclassfield parent_id="54" field_type="0" initialValue="" role_id="-1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="54" tag="tblock_0" canDelete="false" indentLevel="1" text="private int address1;" >
+        <header>
+         <codecomment tag="" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="54" tag="hblock_tag_0" canDelete="false" indentLevel="1" classfield_id="54" text="return address1;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of address1&amp;#010;&amp;#010;@return the value of address1" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="54" tag="hblock_tag_4" canDelete="false" indentLevel="1" classfield_id="54" text="address1 = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of address1&amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+      <codeclassfield parent_id="55" field_type="0" initialValue="" role_id="-1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="55" tag="tblock_1" canDelete="false" indentLevel="1" text="private int address2;" >
+        <header>
+         <codecomment tag="" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="55" tag="hblock_tag_5" canDelete="false" indentLevel="1" classfield_id="55" text="return address2;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of address2&amp;#010;&amp;#010;@return the value of address2" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="55" tag="hblock_tag_6" canDelete="false" indentLevel="1" classfield_id="55" text="address2 = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of address2&amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+      <codeclassfield parent_id="50" field_type="0" initialValue="" role_id="-1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="50" tag="tblock_2" canDelete="false" indentLevel="1" text="private de.dermoba.srcp.devices.GA ga1;" >
+        <header>
+         <codecomment tag="" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="50" tag="hblock_tag_7" canDelete="false" indentLevel="1" classfield_id="50" text="return ga1;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of ga1&amp;#010;&amp;#010;@return the value of ga1" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="50" tag="hblock_tag_8" canDelete="false" indentLevel="1" classfield_id="50" text="ga1 = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of ga1&amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+      <codeclassfield parent_id="51" field_type="0" initialValue="" role_id="-1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="51" tag="tblock_3" canDelete="false" indentLevel="1" text="private de.dermoba.srcp.devices.GA ga2;" >
+        <header>
+         <codecomment tag="" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="51" tag="hblock_tag_9" canDelete="false" indentLevel="1" classfield_id="51" text="return ga2;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of ga2&amp;#010;&amp;#010;@return the value of ga2" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="51" tag="hblock_tag_10" canDelete="false" indentLevel="1" classfield_id="51" text="ga2 = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of ga2&amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+     </classfields>
+    </classifiercodedocument>
+    <classifiercodedocument writeOutCode="true" package="ch.fork.RailControl.domain.switches" id="31" parent_class="31" fileExt=".java" fileName="DefaultSwitch" >
+     <textblocks>
+      <codeblockwithcomments tag="packages" text="package ch.fork.RailControl.domain.switches;&amp;#010;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <codeblockwithcomments tag="imports" text="&amp;#010;import de.dermoba.srcp.devices.GA;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <javaclassdeclarationblock parent_id="31" tag="ClassDeclBlock" canDelete="false" >
+       <header>
+        <javacodedocumentation tag="" text="Class DefaultSwitch&amp;#010;" />
+       </header>
+       <textblocks>
+        <hierarchicalcodeblock tag="fieldsDecl" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Fields" />
+         </header>
+         <textblocks>
+          <ccfdeclarationcodeblock parent_id="53" tag="tblock_0" canDelete="false" indentLevel="1" text="private int address;" >
+           <header>
+            <codecomment tag="" indentLevel="1" />
+           </header>
+          </ccfdeclarationcodeblock>
+          <ccfdeclarationcodeblock parent_id="52" tag="tblock_1" canDelete="false" indentLevel="1" text="private de.dermoba.srcp.devices.GA ga;" >
+           <header>
+            <codecomment tag="" indentLevel="1" />
+           </header>
+          </ccfdeclarationcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+        <hierarchicalcodeblock tag="methodsBlock" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Methods" />
+         </header>
+         <textblocks>
+          <hierarchicalcodeblock tag="constructorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Constructors" />
+           </header>
+           <textblocks>
+            <codeblockwithcomments tag="emptyconstructor" indentLevel="1" text="public DefaultSwitch ( ) { }" >
+             <header>
+              <codecomment tag="" indentLevel="1" text="Empty Constructor" />
+             </header>
+            </codeblockwithcomments>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="accessorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Accessor Methods" />
+           </header>
+           <textblocks>
+            <hierarchicalcodeblock tag="staticAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks>
+              <codeaccessormethod accessType="0" parent_id="53" tag="hblock_tag_0" canDelete="false" indentLevel="1" classfield_id="53" text="return address;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the value of address&amp;#010;&amp;#010;@return the value of address" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="1" parent_id="53" tag="hblock_tag_2" canDelete="false" indentLevel="1" classfield_id="53" text="address = value;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Set the value of address&amp;#010;&amp;#010;" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="0" parent_id="52" tag="hblock_tag_3" canDelete="false" indentLevel="1" classfield_id="52" text="return ga;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the value of ga&amp;#010;&amp;#010;@return the value of ga" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="1" parent_id="52" tag="hblock_tag_4" canDelete="false" indentLevel="1" classfield_id="52" text="ga = value;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Set the value of ga&amp;#010;&amp;#010;" />
+               </header>
+              </codeaccessormethod>
+             </textblocks>
+            </hierarchicalcodeblock>
+            <hierarchicalcodeblock tag="regularAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="operationMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Operations" />
+           </header>
+           <textblocks/>
+          </hierarchicalcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+       </textblocks>
+      </javaclassdeclarationblock>
+     </textblocks>
+     <header>
+      <codecomment tag="" />
+     </header>
+     <classfields>
+      <codeclassfield parent_id="53" field_type="0" initialValue="" role_id="-1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="53" tag="tblock_0" canDelete="false" indentLevel="1" text="private int address;" >
+        <header>
+         <codecomment tag="" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="53" tag="hblock_tag_0" canDelete="false" indentLevel="1" classfield_id="53" text="return address;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of address&amp;#010;&amp;#010;@return the value of address" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="53" tag="hblock_tag_2" canDelete="false" indentLevel="1" classfield_id="53" text="address = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of address&amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+      <codeclassfield parent_id="52" field_type="0" initialValue="" role_id="-1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="52" tag="tblock_1" canDelete="false" indentLevel="1" text="private de.dermoba.srcp.devices.GA ga;" >
+        <header>
+         <codecomment tag="" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="52" tag="hblock_tag_3" canDelete="false" indentLevel="1" classfield_id="52" text="return ga;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of ga&amp;#010;&amp;#010;@return the value of ga" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="52" tag="hblock_tag_4" canDelete="false" indentLevel="1" classfield_id="52" text="ga = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of ga&amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+     </classfields>
+    </classifiercodedocument>
+    <classifiercodedocument writeOutCode="true" package="ch.fork.RailControl.domain.switches" id="62" parent_class="62" fileExt=".java" fileName="SwitchControl" >
+     <textblocks>
+      <codeblockwithcomments tag="packages" text="package ch.fork.RailControl.domain.switches;&amp;#010;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <codeblockwithcomments tag="imports" writeOutText="false" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <javaclassdeclarationblock parent_id="62" tag="ClassDeclBlock" canDelete="false" >
+       <header>
+        <javacodedocumentation tag="" text="Class SwitchControl&amp;#010;" />
+       </header>
+       <textblocks>
+        <hierarchicalcodeblock tag="fieldsDecl" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Fields" />
+         </header>
+         <textblocks/>
+        </hierarchicalcodeblock>
+        <hierarchicalcodeblock tag="methodsBlock" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Methods" />
+         </header>
+         <textblocks>
+          <hierarchicalcodeblock tag="constructorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Constructors" />
+           </header>
+           <textblocks>
+            <codeblockwithcomments tag="emptyconstructor" indentLevel="1" text="public SwitchControl ( ) { }" >
+             <header>
+              <codecomment tag="" indentLevel="1" text="Empty Constructor" />
+             </header>
+            </codeblockwithcomments>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="accessorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Accessor Methods" />
+           </header>
+           <textblocks>
+            <hierarchicalcodeblock tag="staticAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+            <hierarchicalcodeblock tag="regularAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="operationMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Operations" />
+           </header>
+           <textblocks>
+            <codeoperation parent_id="67" tag="operation_67" canDelete="false" indentLevel="1" >
+             <header>
+              <javacodedocumentation tag="" indentLevel="1" text="&amp;#010;@param aSwitch &amp;#010;@return   " />
+             </header>
+            </codeoperation>
+           </textblocks>
+          </hierarchicalcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+       </textblocks>
+      </javaclassdeclarationblock>
+     </textblocks>
+     <header>
+      <codecomment tag="" />
+     </header>
+     <classfields/>
+    </classifiercodedocument>
+    <classifiercodedocument writeOutCode="true" package="ch.fork.RailControl.domain.switches" id="105" parent_class="105" fileExt=".java" fileName="SwitchChangeListener" >
+     <textblocks>
+      <codeblockwithcomments tag="packages" text="package ch.fork.RailControl.domain.switches;&amp;#010;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <codeblockwithcomments tag="imports" writeOutText="false" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <javaclassdeclarationblock parent_id="105" tag="ClassDeclBlock" canDelete="false" >
+       <header>
+        <javacodedocumentation tag="" text="Interface SwitchChangeListener&amp;#010;" />
+       </header>
+       <textblocks>
+        <hierarchicalcodeblock tag="fieldsDecl" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" writeOutText="false" indentLevel="1" text="Fields" />
+         </header>
+         <textblocks/>
+        </hierarchicalcodeblock>
+        <hierarchicalcodeblock tag="methodsBlock" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Methods" />
+         </header>
+         <textblocks>
+          <hierarchicalcodeblock tag="constructorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Constructors" />
+           </header>
+           <textblocks>
+            <codeblockwithcomments tag="emptyconstructor" writeOutText="false" indentLevel="1" text="public SwitchChangeListener ( ) { }" >
+             <header>
+              <codecomment tag="" indentLevel="1" text="Empty Constructor" />
+             </header>
+            </codeblockwithcomments>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="accessorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Accessor Methods" />
+           </header>
+           <textblocks>
+            <hierarchicalcodeblock tag="staticAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+            <hierarchicalcodeblock tag="regularAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="operationMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Operations" />
+           </header>
+           <textblocks>
+            <codeoperation parent_id="107" tag="operation_107" canDelete="false" indentLevel="1" >
+             <header>
+              <javacodedocumentation tag="" indentLevel="1" text="&amp;#010;@param changedSwitch &amp;#010;@return   " />
+             </header>
+            </codeoperation>
+           </textblocks>
+          </hierarchicalcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+       </textblocks>
+      </javaclassdeclarationblock>
+     </textblocks>
+     <header>
+      <codecomment tag="" />
+     </header>
+     <classfields/>
+    </classifiercodedocument>
+    <classifiercodedocument writeOutCode="true" package="ch.fork.RailControl.domain" id="124" parent_class="124" fileExt=".java" fileName="InfoDataHandler" >
+     <textblocks>
+      <codeblockwithcomments tag="packages" text="package ch.fork.RailControl.domain;&amp;#010;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <codeblockwithcomments tag="imports" text="&amp;#010;import ch.fork.RailControl.domain.locomotives.LocomotiveControl;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <javaclassdeclarationblock parent_id="124" tag="ClassDeclBlock" canDelete="false" >
+       <header>
+        <javacodedocumentation tag="" text="Class InfoDataHandler&amp;#010;" />
+       </header>
+       <textblocks>
+        <hierarchicalcodeblock tag="fieldsDecl" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Fields" />
+         </header>
+         <textblocks>
+          <ccfdeclarationcodeblock parent_id="678" tag="tblock_0" canDelete="false" writeOutText="false" indentLevel="1" role_id="0" text="public InfoDataListener ;" >
+           <header>
+            <codecomment tag="" writeOutText="false" indentLevel="1" />
+           </header>
+          </ccfdeclarationcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+        <hierarchicalcodeblock tag="methodsBlock" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Methods" />
+         </header>
+         <textblocks>
+          <hierarchicalcodeblock tag="constructorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Constructors" />
+           </header>
+           <textblocks>
+            <codeblockwithcomments tag="emptyconstructor" indentLevel="1" text="public InfoDataHandler ( ) { }" >
+             <header>
+              <codecomment tag="" indentLevel="1" text="Empty Constructor" />
+             </header>
+            </codeblockwithcomments>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="accessorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Accessor Methods" />
+           </header>
+           <textblocks>
+            <hierarchicalcodeblock tag="staticAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks>
+              <codeaccessormethod accessType="0" parent_id="678" tag="hblock_tag_0" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="678" role_id="0" text="return ;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the value of &amp;#010;&amp;#010;@return the value of " />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="1" parent_id="678" tag="hblock_tag_1" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="678" role_id="0" text=" = value;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Set the value of &amp;#010;&amp;#010;" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="2" parent_id="678" tag="hblock_tag_2" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="678" role_id="0" text=".add(value);" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Add an object of type InfoDataListener to the List &amp;#010;&amp;#010;@return void" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="3" parent_id="678" tag="hblock_tag_3" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="678" role_id="0" text=".remove(value);" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Remove an object of type InfoDataListener from the List &amp;#010;" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="4" parent_id="678" tag="hblock_tag_4" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="678" role_id="0" text="return (List) ;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the list of &amp;#010;&amp;#010;@return List of " />
+               </header>
+              </codeaccessormethod>
+             </textblocks>
+            </hierarchicalcodeblock>
+            <hierarchicalcodeblock tag="regularAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="operationMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Operations" />
+           </header>
+           <textblocks/>
+          </hierarchicalcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+       </textblocks>
+      </javaclassdeclarationblock>
+     </textblocks>
+     <header>
+      <codecomment tag="" />
+     </header>
+     <classfields>
+      <codeclassfield parent_id="653" field_type="142784632" initialValue="" role_id="1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="653" tag="" canDelete="false" writeOutText="false" indentLevel="1" role_id="0" text="public LocomotiveControl  = new LocomotiveControl ( );" >
+        <header>
+         <codecomment tag="" writeOutText="false" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="653" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="653" role_id="0" text="return ;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of &amp;#010;&amp;#010;@return the value of " />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="653" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="653" role_id="0" text=" = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of &amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="2" parent_id="653" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="653" role_id="0" text=".add(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Add an object of type LocomotiveControl to the List &amp;#010;&amp;#010;@return void" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="3" parent_id="653" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="653" role_id="0" text=".remove(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Remove an object of type LocomotiveControl from the List &amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="4" parent_id="653" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="653" role_id="0" text="return (List) ;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the list of &amp;#010;&amp;#010;@return List of " />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+      <codeclassfield parent_id="678" field_type="0" initialValue="" role_id="1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="678" tag="tblock_0" canDelete="false" writeOutText="false" indentLevel="1" role_id="0" text="public InfoDataListener ;" >
+        <header>
+         <codecomment tag="" writeOutText="false" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="678" tag="hblock_tag_0" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="678" role_id="0" text="return ;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of &amp;#010;&amp;#010;@return the value of " />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="678" tag="hblock_tag_1" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="678" role_id="0" text=" = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of &amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="2" parent_id="678" tag="hblock_tag_2" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="678" role_id="0" text=".add(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Add an object of type InfoDataListener to the List &amp;#010;&amp;#010;@return void" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="3" parent_id="678" tag="hblock_tag_3" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="678" role_id="0" text=".remove(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Remove an object of type InfoDataListener from the List &amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="4" parent_id="678" tag="hblock_tag_4" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="678" role_id="0" text="return (List) ;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the list of &amp;#010;&amp;#010;@return List of " />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+      <codeclassfield parent_id="681" field_type="7274528" initialValue="" role_id="1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="681" tag="" canDelete="false" writeOutText="false" indentLevel="1" role_id="0" text="public InfoDataListener ;" >
+        <header>
+         <codecomment tag="" writeOutText="false" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="681" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="681" role_id="0" text="return ;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of &amp;#010;&amp;#010;@return the value of " />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="681" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="681" role_id="0" text=" = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of &amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="2" parent_id="681" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="681" role_id="0" text=".add(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Add an object of type InfoDataListener to the List &amp;#010;&amp;#010;@return void" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="3" parent_id="681" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="681" role_id="0" text=".remove(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Remove an object of type InfoDataListener from the List &amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="4" parent_id="681" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="681" role_id="0" text="return (List) ;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the list of &amp;#010;&amp;#010;@return List of " />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+     </classfields>
+    </classifiercodedocument>
+    <classifiercodedocument writeOutCode="true" package="de.dermoba.srcp.client" id="36" parent_class="36" fileExt=".java" fileName="SRCPSession" >
+     <textblocks>
+      <codeblockwithcomments tag="packages" text="package de.dermoba.srcp.client;&amp;#010;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <codeblockwithcomments tag="imports" writeOutText="false" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <javaclassdeclarationblock parent_id="36" tag="ClassDeclBlock" canDelete="false" >
+       <header>
+        <javacodedocumentation tag="" text="Class SRCPSession&amp;#010;" />
+       </header>
+       <textblocks>
+        <hierarchicalcodeblock tag="fieldsDecl" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Fields" />
+         </header>
+         <textblocks/>
+        </hierarchicalcodeblock>
+        <hierarchicalcodeblock tag="methodsBlock" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Methods" />
+         </header>
+         <textblocks>
+          <hierarchicalcodeblock tag="constructorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Constructors" />
+           </header>
+           <textblocks>
+            <codeblockwithcomments tag="emptyconstructor" indentLevel="1" text="public SRCPSession ( ) { }" >
+             <header>
+              <codecomment tag="" indentLevel="1" text="Empty Constructor" />
+             </header>
+            </codeblockwithcomments>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="accessorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Accessor Methods" />
+           </header>
+           <textblocks>
+            <hierarchicalcodeblock tag="staticAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+            <hierarchicalcodeblock tag="regularAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="operationMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Operations" />
+           </header>
+           <textblocks/>
+          </hierarchicalcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+       </textblocks>
+      </javaclassdeclarationblock>
+     </textblocks>
+     <header>
+      <codecomment tag="" />
+     </header>
+     <classfields/>
+    </classifiercodedocument>
+    <classifiercodedocument writeOutCode="true" package="de.dermoba.srcp.devices" id="49" parent_class="49" fileExt=".java" fileName="GA" >
+     <textblocks>
+      <codeblockwithcomments tag="packages" text="package de.dermoba.srcp.devices;&amp;#010;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <codeblockwithcomments tag="imports" writeOutText="false" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <javaclassdeclarationblock parent_id="49" tag="ClassDeclBlock" canDelete="false" >
+       <header>
+        <javacodedocumentation tag="" text="Class GA&amp;#010;" />
+       </header>
+       <textblocks>
+        <hierarchicalcodeblock tag="fieldsDecl" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Fields" />
+         </header>
+         <textblocks/>
+        </hierarchicalcodeblock>
+        <hierarchicalcodeblock tag="methodsBlock" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Methods" />
+         </header>
+         <textblocks>
+          <hierarchicalcodeblock tag="constructorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Constructors" />
+           </header>
+           <textblocks>
+            <codeblockwithcomments tag="emptyconstructor" indentLevel="1" text="public GA ( ) { }" >
+             <header>
+              <codecomment tag="" indentLevel="1" text="Empty Constructor" />
+             </header>
+            </codeblockwithcomments>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="accessorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Accessor Methods" />
+           </header>
+           <textblocks>
+            <hierarchicalcodeblock tag="staticAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+            <hierarchicalcodeblock tag="regularAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="operationMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Operations" />
+           </header>
+           <textblocks/>
+          </hierarchicalcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+       </textblocks>
+      </javaclassdeclarationblock>
+     </textblocks>
+     <header>
+      <codecomment tag="" />
+     </header>
+     <classfields/>
+    </classifiercodedocument>
+    <codedocument writeOutCode="false" package="" id="ANTDOC" fileExt=".xml" fileName="build" >
+     <textblocks>
+      <codeblockwithcomments tag="xmlDecl" text="&lt;?xml version=&quot;1.0&quot;?>" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <xmlelementblock nodeName="project" tag="projectDecl" canDelete="false" >
+       <header>
+        <codecomment tag="" text="Java ANT build document" />
+       </header>
+       <textblocks/>
+      </xmlelementblock>
+     </textblocks>
+     <header>
+      <codecomment tag="" />
+     </header>
+    </codedocument>
+    <classifiercodedocument writeOutCode="true" package="ch.fork.RailControl.domain.locomotives" id="651" parent_class="651" fileExt=".java" fileName="Locomotive" >
+     <textblocks>
+      <codeblockwithcomments tag="packages" text="package ch.fork.RailControl.domain.locomotives;&amp;#010;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <codeblockwithcomments tag="imports" writeOutText="false" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <javaclassdeclarationblock parent_id="651" tag="ClassDeclBlock" canDelete="false" >
+       <header>
+        <javacodedocumentation tag="" text="Class Locomotive&amp;#010;" />
+       </header>
+       <textblocks>
+        <hierarchicalcodeblock tag="fieldsDecl" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Fields" />
+         </header>
+         <textblocks>
+          <ccfdeclarationcodeblock parent_id="658" tag="tblock_0" canDelete="false" writeOutText="false" indentLevel="1" role_id="1" text="public LocomotiveControl  = new LocomotiveControl ( );" >
+           <header>
+            <codecomment tag="" writeOutText="false" indentLevel="1" />
+           </header>
+          </ccfdeclarationcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+        <hierarchicalcodeblock tag="methodsBlock" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Methods" />
+         </header>
+         <textblocks>
+          <hierarchicalcodeblock tag="constructorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Constructors" />
+           </header>
+           <textblocks>
+            <codeblockwithcomments tag="emptyconstructor" indentLevel="1" text="public Locomotive ( ) { }" >
+             <header>
+              <codecomment tag="" indentLevel="1" text="Empty Constructor" />
+             </header>
+            </codeblockwithcomments>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="accessorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Accessor Methods" />
+           </header>
+           <textblocks>
+            <hierarchicalcodeblock tag="staticAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks>
+              <codeaccessormethod accessType="0" parent_id="658" tag="hblock_tag_0" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="1" text="return ;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the value of &amp;#010;&amp;#010;@return the value of " />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="1" parent_id="658" tag="hblock_tag_1" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="1" text=" = value;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Set the value of &amp;#010;&amp;#010;" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="2" parent_id="658" tag="hblock_tag_2" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="1" text=".add(value);" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Add an object of type LocomotiveControl to the List &amp;#010;&amp;#010;@return void" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="3" parent_id="658" tag="hblock_tag_3" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="1" text="if (.size() >= 1) {&amp;#010;    .remove(value);&amp;#010;} else {&amp;#010;    System.err.println(&quot;ERROR: Cant removeLocomotiveControl from , minimum number of items reached.&quot;);&amp;#010;}&amp;#010;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Remove an object of type LocomotiveControl from the List &amp;#010;" />
+               </header>
+              </codeaccessormethod>
+              <codeaccessormethod accessType="4" parent_id="658" tag="hblock_tag_4" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="1" text="return (List) ;" >
+               <header>
+                <javacodedocumentation tag="" indentLevel="1" text="Get the list of &amp;#010;&amp;#010;@return List of " />
+               </header>
+              </codeaccessormethod>
+             </textblocks>
+            </hierarchicalcodeblock>
+            <hierarchicalcodeblock tag="regularAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="operationMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Operations" />
+           </header>
+           <textblocks/>
+          </hierarchicalcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+       </textblocks>
+      </javaclassdeclarationblock>
+     </textblocks>
+     <header>
+      <codecomment tag="" />
+     </header>
+     <classfields>
+      <codeclassfield parent_id="658" field_type="0" initialValue="" role_id="0" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="658" tag="tblock_0" canDelete="false" writeOutText="false" indentLevel="1" role_id="1" text="public LocomotiveControl  = new LocomotiveControl ( );" >
+        <header>
+         <codecomment tag="" writeOutText="false" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="658" tag="hblock_tag_0" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="1" text="return ;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of &amp;#010;&amp;#010;@return the value of " />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="658" tag="hblock_tag_1" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="1" text=" = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of &amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="2" parent_id="658" tag="hblock_tag_2" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="1" text=".add(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Add an object of type LocomotiveControl to the List &amp;#010;&amp;#010;@return void" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="3" parent_id="658" tag="hblock_tag_3" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="1" text="if (.size() >= 1) {&amp;#010;    .remove(value);&amp;#010;} else {&amp;#010;    System.err.println(&quot;ERROR: Cant removeLocomotiveControl from , minimum number of items reached.&quot;);&amp;#010;}&amp;#010;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Remove an object of type LocomotiveControl from the List &amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="4" parent_id="658" tag="hblock_tag_4" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="1" text="return (List) ;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the list of &amp;#010;&amp;#010;@return List of " />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+     </classfields>
+    </classifiercodedocument>
+    <classifiercodedocument writeOutCode="true" package="ch.fork.RailControl.domain.locomotives" id="652" parent_class="652" fileExt=".java" fileName="LocomotiveControl" >
+     <textblocks>
+      <codeblockwithcomments tag="packages" text="package ch.fork.RailControl.domain.locomotives;&amp;#010;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <codeblockwithcomments tag="imports" text="import java.util.*;" >
+       <header>
+        <codecomment tag="" writeOutText="false" />
+       </header>
+      </codeblockwithcomments>
+      <javaclassdeclarationblock parent_id="652" tag="ClassDeclBlock" canDelete="false" >
+       <header>
+        <javacodedocumentation tag="" text="Class LocomotiveControl&amp;#010;" />
+       </header>
+       <textblocks>
+        <hierarchicalcodeblock tag="fieldsDecl" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Fields" />
+         </header>
+         <textblocks/>
+        </hierarchicalcodeblock>
+        <hierarchicalcodeblock tag="methodsBlock" canDelete="false" indentLevel="1" >
+         <header>
+          <codecomment tag="" indentLevel="1" text="Methods" />
+         </header>
+         <textblocks>
+          <hierarchicalcodeblock tag="constructorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Constructors" />
+           </header>
+           <textblocks>
+            <codeblockwithcomments tag="emptyconstructor" indentLevel="1" text="public LocomotiveControl ( ) { }" >
+             <header>
+              <codecomment tag="" indentLevel="1" text="Empty Constructor" />
+             </header>
+            </codeblockwithcomments>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="accessorMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Accessor Methods" />
+           </header>
+           <textblocks>
+            <hierarchicalcodeblock tag="staticAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+            <hierarchicalcodeblock tag="regularAccessorMethods" canDelete="false" indentLevel="1" >
+             <header>
+              <codecomment tag="" writeOutText="false" indentLevel="1" />
+             </header>
+             <textblocks/>
+            </hierarchicalcodeblock>
+           </textblocks>
+          </hierarchicalcodeblock>
+          <hierarchicalcodeblock tag="operationMethods" canDelete="false" indentLevel="1" >
+           <header>
+            <codecomment tag="" indentLevel="1" text="Operations" />
+           </header>
+           <textblocks/>
+          </hierarchicalcodeblock>
+         </textblocks>
+        </hierarchicalcodeblock>
+       </textblocks>
+      </javaclassdeclarationblock>
+     </textblocks>
+     <header>
+      <codecomment tag="" />
+     </header>
+     <classfields>
+      <codeclassfield parent_id="653" field_type="5" initialValue="" role_id="0" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="653" tag="" canDelete="false" writeOutText="false" indentLevel="1" role_id="1" text="public InfoDataHandler  = new InfoDataHandler ( );" >
+        <header>
+         <codecomment tag="" writeOutText="false" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="653" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="653" role_id="1" text="return ;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of &amp;#010;&amp;#010;@return the value of " />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="653" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="653" role_id="1" text=" = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of &amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="2" parent_id="653" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="653" role_id="1" text=".add(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Add an object of type InfoDataHandler to the List &amp;#010;&amp;#010;@return void" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="3" parent_id="653" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="653" role_id="1" text=".remove(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Remove an object of type InfoDataHandler from the List &amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="4" parent_id="653" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="653" role_id="1" text="return (List) ;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the list of &amp;#010;&amp;#010;@return List of " />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+      <codeclassfield parent_id="658" field_type="6881356" initialValue=" new Vector( )" role_id="1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="658" tag="" canDelete="false" writeOutText="false" indentLevel="1" role_id="0" text="public List Vector =  new Vector( );" >
+        <header>
+         <codecomment tag="" writeOutText="false" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="658" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="0" text="return Vector;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of Vector&amp;#010;&amp;#010;@return the value of Vector" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="658" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="0" text="Vector = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of Vector&amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="2" parent_id="658" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="0" text="Vector.add(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Add an object of type Locomotive to the List Vector&amp;#010;&amp;#010;@return void" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="3" parent_id="658" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="0" text="Vector.remove(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Remove an object of type Locomotive from the List Vector&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="4" parent_id="658" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="658" role_id="0" text="return (List) Vector;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the list of Vector&amp;#010;&amp;#010;@return List of Vector" />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+      <codeclassfield parent_id="668" field_type="2147483647" initialValue=" new Vector( )" role_id="1" writeOutMethods="true" listClassName="" >
+       <header>
+        <codecomment tag="" />
+       </header>
+       <ccfdeclarationcodeblock parent_id="668" tag="" canDelete="false" writeOutText="false" indentLevel="1" role_id="0" text="public List Vector =  new Vector( );" >
+        <header>
+         <codecomment tag="" writeOutText="false" indentLevel="1" />
+        </header>
+       </ccfdeclarationcodeblock>
+       <codeaccessormethod accessType="0" parent_id="668" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="668" role_id="0" text="return Vector;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the value of Vector&amp;#010;&amp;#010;@return the value of Vector" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="1" parent_id="668" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="668" role_id="0" text="Vector = value;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Set the value of Vector&amp;#010;&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="2" parent_id="668" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="668" role_id="0" text="Vector.add(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Add an object of type LocomotiveChangeListener to the List Vector&amp;#010;&amp;#010;@return void" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="3" parent_id="668" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="668" role_id="0" text="Vector.remove(value);" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Remove an object of type LocomotiveChangeListener from the List Vector&amp;#010;" />
+        </header>
+       </codeaccessormethod>
+       <codeaccessormethod accessType="4" parent_id="668" tag="" canDelete="false" writeOutText="false" indentLevel="1" classfield_id="668" role_id="0" text="return (List) Vector;" >
+        <header>
+         <javacodedocumentation tag="" indentLevel="1" text="Get the list of Vector&amp;#010;&amp;#010;@return List of Vector" />
+        </header>
+       </codeaccessormethod>
+      </codeclassfield>
+     </classfields>
+    </classifiercodedocument>
+   </codegenerator>
+  </codegeneration>
+ </XMI.extensions>
+</XMI>

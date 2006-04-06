@@ -26,10 +26,7 @@ EXTRALIBS=../jsrcpc/classes
 build:: java-build
 
 test: build
-	$(JAVA) $(JAVA_FLAGS) ch.fork.RailControl.Test.RailControlGUI
+	$(JAVA) $(JAVA_FLAGS) ch.fork.RailControl.ui.RailControlGUI
 
-.PRECIOUS: javamake.pdb
-
-.PHONY: build clean test
 
 # " vim:ts=4

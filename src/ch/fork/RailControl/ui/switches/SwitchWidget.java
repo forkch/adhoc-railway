@@ -1,4 +1,4 @@
-package ch.fork.RailControl.Test;
+package ch.fork.RailControl.ui.switches;
 /*------------------------------------------------------------------------
  * 
  * <src/TrackSwitchWidget.java>  -  <desc>
@@ -22,24 +22,29 @@ package ch.fork.RailControl.Test;
 
 import javax.swing.*;
 import javax.swing.border.*;
-import java.awt.*;
 
-public class TrackSwitchWidget extends JPanel {
+import ch.fork.RailControl.domain.switches.Switch;
+import ch.fork.RailControl.domain.switches.SwitchControl;
+import ch.fork.RailControl.domain.switches.SwitchException;
+
+
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+public class SwitchWidget extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private String desc;
-    private int number;
-    private TrackSwitchColorBox greenBox;
-    private TrackSwitchColorBox redBox;
+	private Switch mySwitch;
+    private SwitchColorBox greenBox;
+    private SwitchColorBox redBox;
     private JPanel greenPanel;
     private JPanel redPanel;
 
-    private JLabel numberLabel;
     private JLabel descLabel;
 
-    public TrackSwitchWidget(String desc, int number) {
-        this.desc = desc;
-        this.number = number;
+    public SwitchWidget(Switch aSwitch) {
+    	mySwitch = aSwitch;
         initGUI();
     }
 
@@ -50,30 +55,56 @@ public class TrackSwitchWidget extends JPanel {
         setLayout(layout);
 
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(10,10,10,10);
-        numberLabel = new JLabel(Integer.valueOf(number).toString());
-        layout.setConstraints(numberLabel, gbc);
-        add(numberLabel);
-
-        gbc.gridx = 1;
-        greenBox = new TrackSwitchColorBox(Color.GREEN);
+        greenBox = new SwitchColorBox(Color.GREEN);
         greenPanel = new JPanel();
         greenPanel.setPreferredSize(new Dimension(50,20));
         layout.setConstraints(greenPanel, gbc);
         add(greenPanel);
 
-        gbc.gridx = 2;
-        redBox = new TrackSwitchColorBox(Color.RED);
+        gbc.gridx = 1;
+        redBox = new SwitchColorBox(Color.RED);
         redPanel = new JPanel();
         redPanel.setPreferredSize(new Dimension(50,20));
         layout.setConstraints(redPanel, gbc);
         add(redPanel);
 
-        gbc.gridx = 3;
-        descLabel = new JLabel(desc);
+        gbc.gridx = 2;
+        descLabel = new JLabel(mySwitch.getDesc());
         layout.setConstraints(descLabel, gbc);
         add(descLabel);
+        
+        addMouseListener(new MouseListener() {
+
+			public void mouseClicked(MouseEvent e) {
+				try {
+					SwitchControl.getInstance().toggle(mySwitch);
+				} catch (SwitchException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+        });
     }
 
     public void setGreen() {

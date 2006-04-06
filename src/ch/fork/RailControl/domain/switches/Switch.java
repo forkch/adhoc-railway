@@ -21,6 +21,7 @@
 
 package ch.fork.RailControl.domain.switches;
 
+import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 
 public abstract class Switch {
@@ -33,6 +34,7 @@ public abstract class Switch {
     protected int SWITCH_DELAY  = 100;
     protected String ERR_SWITCH_LOCKED  = "Switch locked";
     protected String ERR_TOGGLE_FAILED  = "Toggle of switch failed";
+	protected SRCPSession session;
 
     protected abstract void toggle() throws SwitchException;
     protected abstract boolean switchChanged(int pAddress, int pActivatedPort);

@@ -19,9 +19,10 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.RailControl.domain.switches;
+package ch.fork.RailControl.domain;
 
 import de.dermoba.srcp.client.InfoDataListener;
+
 
 public class InfoChannelHandler implements InfoDataListener {
 

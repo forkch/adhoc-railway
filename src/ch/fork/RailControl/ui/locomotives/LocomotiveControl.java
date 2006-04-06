@@ -1,4 +1,4 @@
-package ch.fork.RailControl.Test;
+package ch.fork.RailControl.ui.locomotives;
 /*------------------------------------------------------------------------
  * 
  * <src/LocomotiveControl.java>  -  <desc>
@@ -27,9 +27,6 @@ import java.awt.*;
 
 public class LocomotiveControl extends JPanel {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private String locName;
     private BorderLayout baseLayout;

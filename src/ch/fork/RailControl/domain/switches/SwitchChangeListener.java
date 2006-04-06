@@ -23,6 +23,6 @@
 
 package ch.fork.RailControl.domain.switches;
 
-public interface SwitchChangedListener {
-    public void switchChanged(String changedSwitch);
+public interface SwitchChangeListener {
+    public void switchChanged(Switch changedSwitch);
 }

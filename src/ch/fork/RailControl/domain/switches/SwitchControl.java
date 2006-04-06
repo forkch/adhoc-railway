@@ -26,14 +26,10 @@ import java.util.*;
 public class SwitchControl {
 
     private static SwitchControl instance;
-    private Map<String, Switch> nameToSwitches;
-    private List<Map> busses;
-    private Map<Integer, Switch> addressToSwitches;
-    private List<SwitchChangedListener> listeners;
+    private List<SwitchChangeListener> listeners;
 
     private SwitchControl() {
-        addressToSwitches = new HashMap<Integer, Switch>();
-        listeners = new ArrayList<SwitchChangedListener>();
+        listeners = new ArrayList<SwitchChangeListener>();
     }
 
     public static SwitchControl getInstance() {
@@ -44,12 +40,20 @@ public class SwitchControl {
         }
     }
 
-    public void toggle(String name) throws SwitchException {
-    }
-
-    public void registerSwitch(Switch newSwitch) {
+    public void toggle(Switch aSwitch) throws SwitchException {
+    	aSwitch.toggle();
+    	
+    	for(SwitchChangeListener l : listeners) {
+    		l.switchChanged(aSwitch);
+    	}
     }
 
     public Switch getSwitch(String name) {
+        return null;
     }
+    
+    public void addSwitchChangeListener(SwitchChangeListener listener) {
+    	listeners.add(listener);
+    }
+    
 }

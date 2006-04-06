@@ -29,22 +29,21 @@ public class DefaultSwitch extends Switch {
 
     private int address;
     private GA ga;
-    private SRCPSession session;
-
     private int STRAIGHT_PORT = 0;
     private int CURVED_PORT = 1;
 
     private enum SwitchState { STRAIGHT, CURVED, UNDEF };
-    private SwitchState switchState = SwitchState.UNDEF;
+    private SwitchState switchState = SwitchState.CURVED;
 
     public DefaultSwitch(SRCPSession pSession, String pName, String pDesc, 
-        int pAddress, int pBus ) {
+        int pAddress, int pBus ) throws SRCPException {
         session = pSession;
         name = pName;
         desc = pDesc;
         address = pAddress;
         bus = pBus;
         ga = new GA(session);
+        ga.init(pBus, pAddress, "M");
         //TODO: immediately a get to determine state !!!!
     }
 
@@ -53,8 +52,14 @@ public class DefaultSwitch extends Switch {
     	    switch(switchState) {
                 case STRAIGHT:
                     ga.set(CURVED_PORT, SWITCH_ACTION, SWITCH_DELAY);
+                    //FIXME
+                    switchState = SwitchState.CURVED;
+                    break;
                 case CURVED:
                     ga.set(STRAIGHT_PORT, SWITCH_ACTION, SWITCH_DELAY);
+                    //FIXME
+                    switchState = SwitchState.STRAIGHT;
+                    break;
                 case UNDEF:
                     return;
             }
