@@ -23,9 +23,14 @@ package ch.fork.RailControl.ui.locomotives;
 
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.ChangeListener;
+
+import ch.fork.RailControl.domain.locomotives.Locomotive;
+import de.dermoba.srcp.common.exception.SRCPException;
+
 import java.awt.*;
 
-public class LocomotiveControl extends JPanel {
+public class LocomotiveWidget extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private String locName;
@@ -38,10 +43,12 @@ public class LocomotiveControl extends JPanel {
     private JButton increaseSpeed;
     private JButton decreaseSpeed;
     private JButton stopButton;
+    
+    private Locomotive myLocomotive;
 
-    public LocomotiveControl(String name) {
+    public LocomotiveWidget(Locomotive myLocomotive) {
         super();
-        this.locName = name;
+        this.myLocomotive = myLocomotive;
         initGUI();
     }
 
@@ -60,10 +67,25 @@ public class LocomotiveControl extends JPanel {
     public void initSpeedComponents() {
         BorderLayout speedLayout = new BorderLayout();
         JPanel speed = new JPanel();
-        speedSlider = new JSlider(JSlider.VERTICAL, 0, 25, 0);
+        speedSlider = new JSlider(JSlider.VERTICAL, 0, 10, 0);
         speedSlider.setPaintTicks(true);
-        speedSlider.setMajorTickSpacing(5);
-        speedSlider.setMinorTickSpacing(1);
+        speedSlider.setMajorTickSpacing(25);
+        speedSlider.setMinorTickSpacing(5);
+        speedSlider.addChangeListener(new ChangeListener() {
+        	public void stateChanged(javax.swing.event.ChangeEvent e) {
+        		System.out.println(((double)speedSlider.getValue())/10.);
+				try {
+					myLocomotive.setSpeed(((double)speedSlider.getValue())/10.);
+					Thread.sleep(500);
+				} catch (SRCPException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (InterruptedException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+        	};
+        });
         stopButton = new JButton("Stop");
         speed.setLayout(speedLayout);
         speed.add(image, BorderLayout.NORTH);

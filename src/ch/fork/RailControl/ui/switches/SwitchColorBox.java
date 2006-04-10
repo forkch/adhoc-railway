@@ -37,6 +37,9 @@ public class SwitchColorBox extends Canvas {
         if(activated) {
             g.setColor(color);
             g.fillRect(0,0,50,20);
+        } else {
+            g.setColor(Color.GRAY);
+        	g.fillRect(0,0,50,20);
         }
     }
 

@@ -21,72 +21,84 @@ package ch.fork.RailControl.ui;
  *
  *----------------------------------------------------------------------*/
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
 
-import ch.fork.RailControl.domain.switches.DefaultSwitch;
-import ch.fork.RailControl.domain.switches.Switch;
-import ch.fork.RailControl.domain.switches.SwitchControl;
-import ch.fork.RailControl.domain.switches.SwitchException;
-import ch.fork.RailControl.ui.locomotives.LocomotiveControl;
-import ch.fork.RailControl.ui.switches.SwitchTab;
-import ch.fork.RailControl.ui.switches.SwitchWidget;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+
+import ch.fork.RailControl.domain.Preferences;
+import ch.fork.RailControl.domain.switches.SwitchGroup;
+import ch.fork.RailControl.ui.switches.SwitchConfigurationDialog;
+import de.dermoba.srcp.client.CommandDataListener;
 import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
-import de.dermoba.srcp.common.exception.SRCPServerException;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-public class RailControlGUI extends JFrame implements InfoDataListener {
+public class RailControlGUI extends JFrame
+		implements
+			CommandDataListener,
+			InfoDataListener {
 
 	private static final long serialVersionUID = 1L;
-
 	private static final String NAME = "RailControl";
 
 	private SRCPSession session;
-
 	private String typedChars = "";
 
 	// GUI-Components
 	private JTabbedPane trackSwitchPane;
-
 	private JPanel controlPanel;
 
-	private SwitchTab mainLine;
+	private JPanel statusBarPanel;
+	private JComboBox commandHistory;
+	private DefaultComboBoxModel commandHistoryModel;
+	private PreferencesDialog preferencesDialog;
+	private Preferences preferences;
 
-	private SwitchTab mountainLine;
-
-	private JLabel statusBar;
-
-	// Menu
-	private JMenuBar menuBar;
-
-	private JMenu fileMenu;
-
-	private JMenu helpMenu;
-
-	private JMenuItem quitItem;
+	// Datastructures
+	private List<SwitchGroup> switchGroups;
+	private JMenuItem daemonConnectItem;
+	private JMenuItem daemonDisconnectItem;
+	private JMenuItem daemonResetItem;
 
 	public RailControlGUI() {
 		super(NAME);
-		try {
-			session = new SRCPSession("titan", 12345);
-		} catch (SRCPException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
 		initGUI();
+		preferencesDialog = new PreferencesDialog(this);
+		initDatastructures();
+	}
+
+	private void initDatastructures() {
+		switchGroups = new ArrayList<SwitchGroup>();
+		switchGroups.add(new SwitchGroup("Main Line"));
+		switchGroups.add(new SwitchGroup("Mountain"));
+		preferences = new Preferences();
 	}
 
 	private void initGUI() {
 		setFont(new Font("Verdana", Font.PLAIN, 19));
-		initTrackSwitchPanel();
-		initControlPanel();
+		initSwitchPanel();
+		initLocomotiveControl();
 		initMenu();
+		initStatusBar();
+		preferencesDialog = new PreferencesDialog(RailControlGUI.this);
 
 		BorderLayout centerLayout = new BorderLayout();
 		JPanel center = new JPanel();
@@ -94,98 +106,142 @@ public class RailControlGUI extends JFrame implements InfoDataListener {
 		center.add(trackSwitchPane, BorderLayout.CENTER);
 		center.add(controlPanel, BorderLayout.SOUTH);
 		add(center, BorderLayout.CENTER);
-		statusBar = new JLabel("Statusbar...");
-		add(statusBar, BorderLayout.SOUTH);
+		add(statusBarPanel, BorderLayout.SOUTH);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(800, 600);
 		setVisible(true);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-
+		updateCommandHistory("RailControl started");
 	}
 
-	private void initTrackSwitchPanel() {
-		mainLine = new SwitchTab("Main Line");
-		Switch switch1 = null;
-		try {
-			switch1 = new DefaultSwitch(session, "Switch1", "Some desc", 1, 1);
-		} catch (SRCPException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		SwitchWidget switchWidget1 = new SwitchWidget(switch1);
-		mainLine.addSwitchWidget(switchWidget1);
-		mountainLine = new SwitchTab("Mountain Line");
+	private void initSwitchPanel() {
 		trackSwitchPane = new JTabbedPane(JTabbedPane.BOTTOM);
-		trackSwitchPane.addTab("Main Line", new JScrollPane(mainLine));
-		trackSwitchPane.addTab("Mountain Line", new JScrollPane(mountainLine));
-		this.addKeyListener(new KeyListener() {
-
-			public void keyTyped(KeyEvent e) {
-				char typed = e.getKeyChar();
-				typedChars += typed;
-			}
-
-			public void keyPressed(KeyEvent e) {
-
-			}
-
-			public void keyReleased(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
-					System.out.println(typedChars);
-					try {
-						SwitchControl.getInstance().toggle(
-								new DefaultSwitch(session, "", "", Integer
-										.parseInt(typedChars), 1));
-					} catch (SwitchException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (SRCPException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					typedChars = "";
-
-				}
-			}
-
-		});
 	}
 
-	private void initControlPanel() {
+	private void initLocomotiveControl() {
 		controlPanel = new JPanel();
 		FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.LEFT, 10, 0);
 		controlPanel.setLayout(controlPanelLayout);
-		LocomotiveControl loc1 = new LocomotiveControl("Big Boy");
-		LocomotiveControl loc2 = new LocomotiveControl("Ascom");
-		LocomotiveControl loc3 = new LocomotiveControl("Santa Fe");
-		LocomotiveControl loc4 = new LocomotiveControl("Doppelschnauz");
-		controlPanel.add(loc1);
-		controlPanel.add(loc2);
-		controlPanel.add(loc3);
-		controlPanel.add(loc4);
 	}
 
 	private void initMenu() {
-		menuBar = new JMenuBar();
-		fileMenu = new JMenu("File");
-		quitItem = new JMenuItem("Quit");
+		JMenuBar menuBar = new JMenuBar();
+
+		/* FILE */
+		JMenu fileMenu = new JMenu("File");
+		JMenuItem openItem = new JMenuItem("Open");
+		JMenuItem saveItem = new JMenuItem("Save");
+		JMenuItem quitItem = new JMenuItem("Quit");
 		quitItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
 		});
+		fileMenu.add(openItem);
+		fileMenu.add(saveItem);
+		fileMenu.add(new JSeparator());
 		fileMenu.add(quitItem);
-		helpMenu = new JMenu("Help");
+
+		/* EDIT */
+		JMenu edit = new JMenu("Edit");
+		JMenuItem switchesItem = new JMenuItem("Switches");
+		JMenuItem locomotivesItem = new JMenuItem("Locomotives");
+		JMenuItem preferencesItem = new JMenuItem("Preferences");
+
+		switchesItem.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				SwitchConfigurationDialog switchConfig = new SwitchConfigurationDialog(
+						RailControlGUI.this, preferences, switchGroups);
+			}
+		});
+
+		preferencesItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				preferences = preferencesDialog.editPreferences(preferences);
+				updateCommandHistory("Preferences updated");
+			}
+		});
+
+		edit.add(switchesItem);
+		edit.add(locomotivesItem);
+		edit.add(new JSeparator());
+		edit.add(preferencesItem);
+
+		/* DAEMON */
+		JMenu daemonMenu = new JMenu("Daemon");
+		daemonConnectItem = new JMenuItem("Connect");
+		daemonDisconnectItem = new JMenuItem("Disconnect");
+		daemonResetItem = new JMenuItem("Reset");
+		daemonDisconnectItem.setEnabled(false);
+		daemonResetItem.setEnabled(false);
+		daemonConnectItem.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				try {
+					session = new SRCPSession(preferences.getHostname(),
+							preferences.getPortnumber());
+					session.getCommandChannel().addCommandDataListener(
+							RailControlGUI.this);
+					session.getInfoChannel().addInfoDataListener(
+							RailControlGUI.this);
+					session.connect();
+					daemonConnectItem.setEnabled(false);
+					daemonDisconnectItem.setEnabled(true);
+					daemonResetItem.setEnabled(true);
+				} catch (SRCPException e1) {
+					processException(e1);
+				}
+			}
+
+		});
+		daemonMenu.add(daemonConnectItem);
+		daemonMenu.add(daemonDisconnectItem);
+		daemonMenu.add(new JSeparator());
+		daemonMenu.add(daemonResetItem);
+
+		/* HELP */
+		JMenu helpMenu = new JMenu("Help");
+
 		menuBar.add(fileMenu);
+		menuBar.add(edit);
+		menuBar.add(daemonMenu);
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
+	}
+
+	private void initStatusBar() {
+		statusBarPanel = new JPanel();
+		commandHistoryModel = new DefaultComboBoxModel();
+		commandHistory = new JComboBox(commandHistoryModel);
+		commandHistory.setEditable(false);
+		statusBarPanel.setLayout(new BorderLayout());
+		statusBarPanel.add(commandHistory, BorderLayout.SOUTH);
+
+	}
+
+	public void updateCommandHistory(String text) {
+		DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
+		String date = df.format(GregorianCalendar.getInstance().getTime());
+		commandHistoryModel.insertElementAt("[" + date + "]: " + text, 0);
+		commandHistory.setSelectedIndex(0);
+	}
+
+	private void processException(Exception e) {
+		JOptionPane.showMessageDialog(this, e.getMessage(), "Error occured",
+				JOptionPane.ERROR_MESSAGE);
 	}
 
 	public static void main(String[] args) {
 		new RailControlGUI();
 	}
 
-	public void infoDataReceived(String arg0) {
-		System.out.println(arg0);
+	public void commandDataSent(String commandData) {
+		updateCommandHistory("To Server: " + commandData);
+	}
+
+	public void infoDataReceived(String infoData) {
+		updateCommandHistory("From Server: " + infoData);
 
 	}
+
 }

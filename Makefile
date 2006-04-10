@@ -22,8 +22,10 @@
 include ~/.make/common.mk
 
 EXTRALIBS=../jsrcpc/classes
+JAR_RESOURCES=./res
+CLEAN_LIST+=./lib/RailControl.jar
 
-build:: java-build
+build:: java-build lib/RailControl.jar
 
 test: build
 	$(JAVA) $(JAVA_FLAGS) ch.fork.RailControl.ui.RailControlGUI

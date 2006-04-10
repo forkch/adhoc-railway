@@ -78,6 +78,13 @@ public class SwitchWidget extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				try {
 					SwitchControl.getInstance().toggle(mySwitch);
+					if(redBox.isActivated()) {
+						redBox.deactivate();
+						greenBox.activate();
+					} else {
+						greenBox.deactivate();
+						redBox.activate();
+					}
 				} catch (SwitchException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

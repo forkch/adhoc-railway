@@ -36,12 +36,9 @@ public class DefaultSwitch extends Switch {
     private SwitchState switchState = SwitchState.CURVED;
 
     public DefaultSwitch(SRCPSession pSession, String pName, String pDesc, 
-        int pAddress, int pBus ) throws SRCPException {
-        session = pSession;
-        name = pName;
-        desc = pDesc;
+        int pAddress, int pBus) throws SRCPException {
+    	super(pSession, pName, pDesc, pBus);
         address = pAddress;
-        bus = pBus;
         ga = new GA(session);
         ga.init(pBus, pAddress, "M");
         //TODO: immediately a get to determine state !!!!

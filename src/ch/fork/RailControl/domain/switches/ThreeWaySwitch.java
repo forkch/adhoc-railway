@@ -40,13 +40,10 @@ public class ThreeWaySwitch extends Switch {
     private SwitchState switchState = SwitchState.UNDEF;
 
     public ThreeWaySwitch(SRCPSession pSession, String pName, String pDesc, 
-        int pAddress1, int pAddress2, int pBus) {
-        session = pSession;
-        name = pName;
-        desc = pDesc;
+        int pAddress1, int pAddress2, int pBus) throws SRCPException {
+    	super(pSession, pName, pDesc, pBus);
         address1 = pAddress1;
         address2 = pAddress2;
-        bus = pBus;
         ga1 = new GA(session);
         ga2 = new GA(session);
     }

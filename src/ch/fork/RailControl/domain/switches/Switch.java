@@ -36,6 +36,13 @@ public abstract class Switch {
     protected String ERR_TOGGLE_FAILED  = "Toggle of switch failed";
 	protected SRCPSession session;
 
+	public Switch(SRCPSession session, String name, String desc, int bus) throws SRCPException {
+		this.session = session;
+		this.name = name;
+		this.bus = bus;
+		this.desc = desc;
+	}
+	
     protected abstract void toggle() throws SwitchException;
     protected abstract boolean switchChanged(int pAddress, int pActivatedPort);
     
