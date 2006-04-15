@@ -26,7 +26,6 @@
 package ch.fork.RailControl.domain.locomotives;
 
 import de.dermoba.srcp.client.SRCPSession;
-import de.dermoba.srcp.common.exception.SRCPCommandException;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GL;
 
@@ -56,8 +55,8 @@ public abstract class Locomotive {
 		params[1] = Integer.toString(drivingSteps);
 		params[2] = Integer.toString(0);
 		
-		gl.init(bus, address, PROTOCOL, params);
-		gl.get();
+		//gl.init(bus, address, PROTOCOL, params);
+		//gl.get();
         //TODO: immediately a get to determine state (direction)!!!!
 	}
 

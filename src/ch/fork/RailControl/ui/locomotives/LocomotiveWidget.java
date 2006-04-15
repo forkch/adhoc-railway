@@ -21,14 +21,23 @@ package ch.fork.RailControl.ui.locomotives;
  *----------------------------------------------------------------------*/
 
 
-import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeListener;
 
 import ch.fork.RailControl.domain.locomotives.Locomotive;
 import de.dermoba.srcp.common.exception.SRCPException;
-
-import java.awt.*;
 
 public class LocomotiveWidget extends JPanel {
 

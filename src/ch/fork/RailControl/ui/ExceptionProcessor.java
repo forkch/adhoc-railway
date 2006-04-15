@@ -4,9 +4,9 @@
  *             :          Department Computer Sciences
  *             :......o   
  *
- * <SwitchSection.java>  -  <>
+ * <ExceptionProcessor.java>  -  <>
  * 
- * begin     : Apr 10, 2006
+ * begin     : Apr 15, 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : mullb@bfh.ch
  * language  : java
@@ -23,40 +23,35 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.RailControl.domain.switches;
+package ch.fork.RailControl.ui;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
-public class SwitchGroup {
-	private List<Switch> switches;
-	private String name;
-	public SwitchGroup(String name) {
-		this.name = name;
-		switches = new ArrayList<Switch>();
+public class ExceptionProcessor {
+
+	private JFrame parent;
+	private static ExceptionProcessor instance;
+
+	private ExceptionProcessor(JFrame parent) {
+		this.parent = parent;
+	}
+
+	public static ExceptionProcessor getInstance(JFrame parent) {
+		if (instance == null) {
+			instance = new ExceptionProcessor(parent);
+		}
+		return instance;
+
 	}
 	
-	public void addSwitch(Switch aSwitch) {
-		switches.add(aSwitch);
-	}
-	
-	public void removeSwitch(Switch aSwitch) {
-		switches.remove(aSwitch);
+	public static ExceptionProcessor getInstance() {
+		return instance;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String toString() {
-		return name;
-	}
-
-	public List<Switch> getSwitches() {
-		return switches;
+	public void processException(Exception e) {
+		JOptionPane.showMessageDialog(parent, e.getMessage(), "Error occured",
+				JOptionPane.ERROR_MESSAGE);
+		e.printStackTrace();
 	}
 }

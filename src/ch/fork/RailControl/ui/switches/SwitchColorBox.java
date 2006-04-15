@@ -20,7 +20,10 @@ package ch.fork.RailControl.ui.switches;
  *
  *----------------------------------------------------------------------*/
 
-import java.awt.*;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 
 public class SwitchColorBox extends Canvas {
 

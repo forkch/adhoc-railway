@@ -21,85 +21,148 @@
 
 package ch.fork.RailControl.domain.switches;
 
+import static ch.fork.RailControl.ui.ImageTools.createImageIcon;
+
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+
 import de.dermoba.srcp.client.SRCPSession;
+import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
+import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GA;
-import de.dermoba.srcp.common.exception.*;
 
 public class DefaultSwitch extends Switch {
+	private GA ga;
+	private int STRAIGHT_PORT = 0;
+	private int CURVED_PORT = 1;
 
-    private int address;
-    private GA ga;
-    private int STRAIGHT_PORT = 0;
-    private int CURVED_PORT = 1;
+	protected enum SwitchState {
+		STRAIGHT, CURVED, UNDEF
+	};
+	protected SwitchState switchState = SwitchState.STRAIGHT;
 
-    private enum SwitchState { STRAIGHT, CURVED, UNDEF };
-    private SwitchState switchState = SwitchState.CURVED;
+	public DefaultSwitch(int pNumber, String pDesc) {
+		this(pNumber, pDesc, 0, new Address(0, 0));
+	}
+	public DefaultSwitch(int pNumber, String pDesc, int pBus, Address pAddress) {
+		super(pNumber, pDesc, pBus, pAddress);
 
-    public DefaultSwitch(SRCPSession pSession, String pName, String pDesc, 
-        int pAddress, int pBus) throws SRCPException {
-    	super(pSession, pName, pDesc, pBus);
-        address = pAddress;
-        ga = new GA(session);
-        ga.init(pBus, pAddress, "M");
-        //TODO: immediately a get to determine state !!!!
-    }
-
-	protected void toggle() throws SwitchException {
-	    try {
-    	    switch(switchState) {
-                case STRAIGHT:
-                    ga.set(CURVED_PORT, SWITCH_ACTION, SWITCH_DELAY);
-                    //FIXME
-                    switchState = SwitchState.CURVED;
-                    break;
-                case CURVED:
-                    ga.set(STRAIGHT_PORT, SWITCH_ACTION, SWITCH_DELAY);
-                    //FIXME
-                    switchState = SwitchState.STRAIGHT;
-                    break;
-                case UNDEF:
-                    return;
-            }
-	    } catch (SRCPException x ) {
-            if(x instanceof SRCPDeviceLockedException) {
-                throw new SwitchLockedException(ERR_SWITCH_LOCKED);
-            } else {
-                throw new SwitchException(ERR_TOGGLE_FAILED, x);
-            }
-	    }
 	}
 
-    protected boolean switchChanged(int pAddress, int pActivatedPort) {
-        if(address == pAddress) {
-            if(pActivatedPort == STRAIGHT_PORT) {
-                switchState = SwitchState.STRAIGHT;
-            } else if(pActivatedPort == CURVED_PORT) {
-                switchState = SwitchState.CURVED;
-            } else {
-                return false;
-            }
-        } else {
-            //should not happen
-            return false;
-        }
-        return true;
-    }
-    
-    /**
-     * Get address.
-     *
-     * @return address as int.
-     */
-    public int getAddress() {
-        return address;
-    }
-    
-    /**
-     * Set address.
-     *
-     * @param address the value to set.
-     */
-    public void setAddress(int address) {
-        this.address = address;
-    }
+	public void init(SRCPSession pSession) throws SwitchException {
+		try {
+			session = pSession;
+			ga = new GA(session);
+			ga.init(bus, address.getAddress1(), "M");
+			// TODO: immediately a get to determine state !!!!
+		} catch (SRCPException x) {
+			if (x instanceof SRCPDeviceLockedException) {
+				throw new SwitchLockedException(ERR_SWITCH_LOCKED);
+			} else {
+				throw new SwitchException(ERR_INIT_FAILED, x);
+			}
+		}
+	}
+
+	protected void toggle() throws SwitchException {
+		if (session == null) {
+			throw new SwitchException(ERR_NO_SESSION);
+		}
+		try {
+			switch (switchState) {
+				case STRAIGHT :
+					ga.set(CURVED_PORT, SWITCH_ACTION, SWITCH_DELAY);
+					// FIXME
+					switchState = SwitchState.CURVED;
+					break;
+				case CURVED :
+					ga.set(STRAIGHT_PORT, SWITCH_ACTION, SWITCH_DELAY);
+					// FIXME
+					switchState = SwitchState.STRAIGHT;
+					break;
+				case UNDEF :
+					return;
+			}
+		} catch (SRCPException x) {
+			if (x instanceof SRCPDeviceLockedException) {
+				throw new SwitchLockedException(ERR_SWITCH_LOCKED);
+			} else {
+				throw new SwitchException(ERR_TOGGLE_FAILED, x);
+			}
+		}
+	}
+
+	protected boolean switchChanged(Address pAddress, int pActivatedPort) {
+		if (address == pAddress) {
+			if (pActivatedPort == STRAIGHT_PORT) {
+				switchState = SwitchState.STRAIGHT;
+			} else if (pActivatedPort == CURVED_PORT) {
+				switchState = SwitchState.CURVED;
+			} else {
+				return false;
+			}
+		} else {
+			// should not happen
+			return false;
+		}
+		return true;
+	}
+	@Override
+	public Image getImage(ImageObserver obs) {
+		BufferedImage img = new BufferedImage(56, 35,
+				BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D g = img.createGraphics();
+		g.drawImage(createImageIcon("icons/default_switch.png", "", this)
+				.getImage(), 0, 0, obs);
+		switch (switchState) {
+			case STRAIGHT :
+				g.drawImage(
+						createImageIcon("icons/LED_up_yellow.png", "", this)
+								.getImage(), 28, 0, obs);
+				g.drawImage(createImageIcon("icons/LED_middle_white.png", "",
+						this).getImage(), 28, 0, obs);
+				break;
+			case CURVED :
+				g.drawImage(createImageIcon("icons/LED_middle_yellow.png", "",
+						this).getImage(), 28, 0, obs);
+				g.drawImage(createImageIcon("icons/LED_up_white.png", "", this)
+						.getImage(), 28, 0, obs);
+				break;
+			case UNDEF :
+				g.drawImage(createImageIcon("icons/LED_up_white.png", "", this)
+						.getImage(), 28, 0, obs);
+				g.drawImage(createImageIcon("icons/LED_middle_white.png", "",
+						this).getImage(), 28, 0, obs);
+				break;
+		}
+		g.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
+				.getImage(), 0, 0, obs);
+		return img;
+	}
+	@Override
+	protected void setStraight() throws SwitchException {
+		try {
+			ga.set(STRAIGHT_PORT, SWITCH_ACTION, SWITCH_DELAY);
+			// TODO: resolve get
+			switchState = SwitchState.STRAIGHT;
+		} catch (SRCPException e) {
+			throw new SwitchException(ERR_TOGGLE_FAILED, e);
+		}
+	}
+	@Override
+	protected void setCurvedLeft() throws SwitchException {
+		try {
+			ga.set(CURVED_PORT, SWITCH_ACTION, SWITCH_DELAY);
+			// TODO: resolve get
+			switchState = SwitchState.CURVED;
+		} catch (SRCPException e) {
+			throw new SwitchException(ERR_TOGGLE_FAILED, e);
+		}
+	}
+	@Override
+	protected void setCurvedRight() throws SwitchException {
+		setCurvedLeft();
+	}
 }

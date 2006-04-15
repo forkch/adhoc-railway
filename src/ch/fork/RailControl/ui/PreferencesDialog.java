@@ -149,4 +149,12 @@ public class PreferencesDialog extends JDialog {
                 6, 6);       //xPad, yPad
 		return serverTab;
 	}
+
+	public boolean isCancelPressed() {
+		return cancelPressed;
+	}
+
+	public boolean isOkPressed() {
+		return okPressed;
+	}
 }

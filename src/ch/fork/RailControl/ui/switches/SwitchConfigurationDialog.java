@@ -26,28 +26,34 @@
 package ch.fork.RailControl.ui.switches;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableModel;
 
 import ch.fork.RailControl.domain.Preferences;
+import ch.fork.RailControl.domain.switches.DefaultSwitch;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 public class SwitchConfigurationDialog extends JDialog {
 
@@ -61,6 +67,9 @@ public class SwitchConfigurationDialog extends JDialog {
 	private boolean cancelPressed = false;
 	private boolean okPressed = false;
 	private Frame owner;
+	private JPanel switchesPanel;
+	private TableModel switchGroupTableModel;
+	private JTable switchGroupTable;
 	public SwitchConfigurationDialog(Frame owner, Preferences preferences,
 			List<SwitchGroup> switchGroups) {
 		super(owner, "Switch Configuration", true);
@@ -74,6 +83,10 @@ public class SwitchConfigurationDialog extends JDialog {
 	private void initGUI() {
 		JPanel switchGroupPanel = createSwitchGroupPanel();
 		add(switchGroupPanel, BorderLayout.WEST);
+
+		JPanel switchesPanel = createSwitchesPanel();
+		add(switchesPanel, BorderLayout.CENTER);
+		updateSwitchesPanel();
 
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
@@ -94,16 +107,16 @@ public class SwitchConfigurationDialog extends JDialog {
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
 		add(buttonPanel, BorderLayout.SOUTH);
-		setPreferredSize(new Dimension(600, 500));
 		pack();
 		setVisible(true);
 	}
 
 	private JPanel createSwitchGroupPanel() {
 		JPanel switchGroupPanel = new JPanel(new BorderLayout());
+		TitledBorder title = BorderFactory.createTitledBorder("Switch Groups");
+		switchGroupPanel.setBorder(title);
+		switchGroupPanel.getInsets(new Insets(5, 5, 5, 5));
 
-		JLabel switchGroupPanelLabel = new JLabel("Switch Groups");
-		
 		switchGroupListModel = new DefaultListModel();
 		switchGroupList = new JList(switchGroupListModel);
 		for (SwitchGroup switchGroup : switchGroups) {
@@ -122,15 +135,20 @@ public class SwitchConfigurationDialog extends JDialog {
 		JButton addSwitchGroupButton = new JButton("Add");
 		JButton removeSwitchGroupButton = new JButton("Remove");
 
+		JPanel buttonPanel = new JPanel(new FlowLayout());
+		buttonPanel.add(addSwitchGroupButton);
+		buttonPanel.add(removeSwitchGroupButton);
+
+		switchGroupPanel.add(switchGroupList, BorderLayout.CENTER);
+		switchGroupPanel.add(buttonPanel, BorderLayout.SOUTH);
+
 		/* Install ActionListeners */
 		switchGroupList.addListSelectionListener(new ListSelectionListener() {
-
 			public void valueChanged(ListSelectionEvent e) {
-				//updateSectionConfiguration();
+				updateSwitchesPanel();
 			}
-			
 		});
-		
+
 		switchGroupList.addMouseListener(new MouseAdapter() {
 
 			public void mousePressed(MouseEvent e) {
@@ -143,7 +161,8 @@ public class SwitchConfigurationDialog extends JDialog {
 
 			private void maybeShowPopup(MouseEvent e) {
 				if (e.isPopupTrigger()) {
-					switchGroupPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+					switchGroupPopupMenu.show(e.getComponent(), e.getX(), e
+							.getY());
 				}
 			}
 		});
@@ -181,13 +200,6 @@ public class SwitchConfigurationDialog extends JDialog {
 			}
 		});
 
-		JPanel buttonPanel = new JPanel(new FlowLayout());
-		buttonPanel.add(addSwitchGroupButton);
-		buttonPanel.add(removeSwitchGroupButton);
-
-		switchGroupPanel.add(switchGroupPanelLabel, BorderLayout.NORTH);
-		switchGroupPanel.add(switchGroupList, BorderLayout.CENTER);
-		switchGroupPanel.add(buttonPanel, BorderLayout.SOUTH);
 		return switchGroupPanel;
 	}
 
@@ -206,8 +218,8 @@ public class SwitchConfigurationDialog extends JDialog {
 				.getSelectedValue());
 		int response = JOptionPane.showConfirmDialog(
 				SwitchConfigurationDialog.this, "Really remove Switch-Group '"
-						+ groupToDelete.getName() + "' ?", "Remove Switch-Group",
-				JOptionPane.YES_NO_OPTION);
+						+ groupToDelete.getName() + "' ?",
+				"Remove Switch-Group", JOptionPane.YES_NO_OPTION);
 
 		if (response == JOptionPane.YES_OPTION) {
 			switchGroups.remove(groupToDelete);
@@ -226,5 +238,72 @@ public class SwitchConfigurationDialog extends JDialog {
 			switchGroupList.revalidate();
 			switchGroupList.repaint();
 		}
+	}
+
+	private JPanel createSwitchesPanel() {
+		switchesPanel = new JPanel(new BorderLayout());
+		switchesPanel.getInsets(new Insets(5, 5, 5, 5));
+
+		TitledBorder title = BorderFactory.createTitledBorder("Switch-Group");
+		switchesPanel.setBorder(title);
+
+		switchGroupTableModel = new SwitchGroupTableModel();
+		switchGroupTable = new JTable(switchGroupTableModel);
+
+		switchGroupTable.getColumnModel().getColumn(1).setCellEditor(
+				new SwitchTypeCellEditor());
+
+		JScrollPane switchGroupTablePane = new JScrollPane(switchGroupTable);
+		switchesPanel.add(switchGroupTablePane, BorderLayout.CENTER);
+
+		JButton addSwitchButton = new JButton("Add");
+		JButton removeSwitchButton = new JButton("Remove");
+
+		addSwitchButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
+						.getSelectedValue());
+				int nextNumber = switchGroupList.getModel().getSize() + 1;
+				selectedSwitchGroup.addSwitch(new DefaultSwitch(nextNumber,
+						selectedSwitchGroup.getName() + nextNumber));
+				updateSwitchesPanel();
+			}
+		});
+
+		removeSwitchButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
+						.getSelectedValue());
+				selectedSwitchGroup.getSwitches().remove(
+						switchGroupTable.getSelectedRow());
+				updateSwitchesPanel();
+			}
+		});
+
+		JPanel buttonPanel = new JPanel(new FlowLayout());
+		buttonPanel.add(addSwitchButton);
+		buttonPanel.add(removeSwitchButton);
+
+		switchesPanel.add(buttonPanel, BorderLayout.SOUTH);
+		return switchesPanel;
+	}
+
+	private void updateSwitchesPanel() {
+		SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
+				.getSelectedValue());
+		if (selectedSwitchGroup == null) {
+			((TitledBorder) switchesPanel.getBorder()).setTitle("Switch-Group");
+		} else {
+			((TitledBorder) switchesPanel.getBorder())
+					.setTitle("Switch-Group '" + selectedSwitchGroup.getName()
+							+ "'");
+		}
+
+		((SwitchGroupTableModel) switchGroupTableModel)
+				.setSwitchGroup(selectedSwitchGroup);
+		switchGroupTable.revalidate();
+		switchGroupTable.repaint();
+		switchesPanel.revalidate();
+		switchesPanel.repaint();
 	}
 }

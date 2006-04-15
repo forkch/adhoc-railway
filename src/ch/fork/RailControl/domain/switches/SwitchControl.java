@@ -21,39 +21,52 @@
 
 package ch.fork.RailControl.domain.switches;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SwitchControl {
 
-    private static SwitchControl instance;
-    private List<SwitchChangeListener> listeners;
+	private static SwitchControl instance;
+	private List<SwitchChangeListener> listeners;
 
-    private SwitchControl() {
-        listeners = new ArrayList<SwitchChangeListener>();
-    }
+	private SwitchControl() {
+		listeners = new ArrayList<SwitchChangeListener>();
+	}
 
-    public static SwitchControl getInstance() {
-        if(instance == null) {
-            return new SwitchControl();
-        } else {
-            return instance;
-        }
-    }
+	public static SwitchControl getInstance() {
+		if (instance == null) {
+			return new SwitchControl();
+		} else {
+			return instance;
+		}
+	}
 
-    public void toggle(Switch aSwitch) throws SwitchException {
-    	aSwitch.toggle();
-    	
-    	for(SwitchChangeListener l : listeners) {
-    		l.switchChanged(aSwitch);
-    	}
-    }
+	public void toggle(Switch aSwitch) throws SwitchException {
+		aSwitch.toggle();
 
-    public Switch getSwitch(String name) {
-        return null;
-    }
-    
-    public void addSwitchChangeListener(SwitchChangeListener listener) {
-    	listeners.add(listener);
-    }
-    
+		for (SwitchChangeListener l : listeners) {
+			l.switchChanged(aSwitch);
+		}
+	}
+	
+	public void setStraight(Switch aSwitch) throws SwitchException {
+		aSwitch.setStraight();
+	}
+	
+	public void setCurvedRight(Switch aSwitch) throws SwitchException {
+		aSwitch.setCurvedRight();
+	}
+	
+	public void setCurvedLeft(Switch aSwitch) throws SwitchException {
+		aSwitch.setCurvedLeft();
+	}
+
+	public Switch getSwitch(String name) {
+		return null;
+	}
+
+	public void addSwitchChangeListener(SwitchChangeListener listener) {
+		listeners.add(listener);
+	}
+
 }

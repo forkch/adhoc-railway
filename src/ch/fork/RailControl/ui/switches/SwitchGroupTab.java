@@ -20,15 +20,14 @@ package ch.fork.RailControl.ui.switches;
  *
  *----------------------------------------------------------------------*/
 
-import javax.swing.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.ArrayList;
 
-import ch.fork.RailControl.domain.switches.Switch;
+import javax.swing.JPanel;
 
-
-import java.awt.*;
-import java.util.*;
-
-public class SwitchTab extends JPanel {
+public class SwitchGroupTab extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private ArrayList switchWidgets;
@@ -39,7 +38,7 @@ public class SwitchTab extends JPanel {
     private GridBagLayout layout;
     private GridBagConstraints gbc;
 
-    public SwitchTab(String title) {
+    public SwitchGroupTab() {
         this.switchWidgets = new ArrayList();
         layout = new GridBagLayout();
         setLayout(layout);
@@ -55,16 +54,6 @@ public class SwitchTab extends JPanel {
     @SuppressWarnings("unchecked")
 	public void addSwitchWidget(SwitchWidget aSwitchWidget) {
         switchWidgets.add(aSwitchWidget);
-        java.util.Random rnd = new Random();
-        int value = rnd.nextInt(2);
-        switch (value) {
-            case 0:
-                aSwitchWidget.setGreen();
-                break;
-            default:
-                aSwitchWidget.setRed();
-                break;
-        }
         if(currenty == maxy) {
             currentx ++;
             currenty = 0;
@@ -75,4 +64,5 @@ public class SwitchTab extends JPanel {
         add(aSwitchWidget);
         currenty ++;
     }
+    
 }

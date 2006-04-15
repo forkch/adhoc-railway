@@ -20,107 +20,90 @@ package ch.fork.RailControl.ui.switches;
  *
  *----------------------------------------------------------------------*/
 
-import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 
 import ch.fork.RailControl.domain.switches.Switch;
 import ch.fork.RailControl.domain.switches.SwitchControl;
 import ch.fork.RailControl.domain.switches.SwitchException;
-
-
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import ch.fork.RailControl.ui.ExceptionProcessor;
+import ch.fork.RailControl.ui.RailControlGUI;
 
 public class SwitchWidget extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private Switch mySwitch;
-    private SwitchColorBox greenBox;
-    private SwitchColorBox redBox;
-    private JPanel greenPanel;
-    private JPanel redPanel;
+	private JLabel iconLabel;
 
-    private JLabel descLabel;
+	public SwitchWidget(Switch aSwitch) {
+		mySwitch = aSwitch;
+		initGUI();
+	}
 
-    public SwitchWidget(Switch aSwitch) {
-    	mySwitch = aSwitch;
-        initGUI();
-    }
+	private void initGUI() {
+		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+		GridBagLayout layout = new GridBagLayout();
+		GridBagConstraints gbc = new GridBagConstraints();
+		setLayout(layout);
 
-    private void initGUI() {
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        GridBagLayout layout = new GridBagLayout();
-        GridBagConstraints gbc = new GridBagConstraints();
-        setLayout(layout);
+		gbc.insets = new Insets(5, 5, 5, 5);
 
-        gbc.gridx = 0;
-        greenBox = new SwitchColorBox(Color.GREEN);
-        greenPanel = new JPanel();
-        greenPanel.setPreferredSize(new Dimension(50,20));
-        layout.setConstraints(greenPanel, gbc);
-        add(greenPanel);
+		gbc.gridx = 0;
+		JLabel numberLabel = new JLabel(Integer.toString(mySwitch.getNumber()));
+		numberLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+		layout.setConstraints(numberLabel, gbc);
+		add(numberLabel);
 
-        gbc.gridx = 1;
-        redBox = new SwitchColorBox(Color.RED);
-        redPanel = new JPanel();
-        redPanel.setPreferredSize(new Dimension(50,20));
-        layout.setConstraints(redPanel, gbc);
-        add(redPanel);
+		gbc.gridx = 1;
+		JLabel descLabel = new JLabel(mySwitch.getDesc());
+		layout.setConstraints(descLabel, gbc);
+		add(descLabel);
 
-        gbc.gridx = 2;
-        descLabel = new JLabel(mySwitch.getDesc());
-        layout.setConstraints(descLabel, gbc);
-        add(descLabel);
-        
-        addMouseListener(new MouseListener() {
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		iconLabel = new JLabel();
+		iconLabel.setIcon(new ImageIcon(mySwitch.getImage(this)));
+		layout.setConstraints(iconLabel, gbc);
+		add(iconLabel);
+
+		addMouseListener(new MouseListener() {
 
 			public void mouseClicked(MouseEvent e) {
 				try {
-					SwitchControl.getInstance().toggle(mySwitch);
-					if(redBox.isActivated()) {
-						redBox.deactivate();
-						greenBox.activate();
-					} else {
-						greenBox.deactivate();
-						redBox.activate();
+					if (e.getClickCount() == 2) {
+						SwitchControl.getInstance().toggle(mySwitch);
+						SwitchWidget.this.revalidate();
+						SwitchWidget.this.repaint();
+						iconLabel.setIcon(new ImageIcon(mySwitch.getImage(SwitchWidget.this)));
+						iconLabel.repaint();
+						iconLabel.revalidate();
 					}
 				} catch (SwitchException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					ExceptionProcessor.getInstance().processException(e1);
 				}
 			}
-
 			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
-
-        });
-    }
-
-    public void setGreen() {
-        greenPanel.setBackground(Color.GREEN);
-        redBox.setBackground(new Color(238,238,238));
-    }
-
-    public void setRed() {
-        redPanel.setBackground(Color.RED);
-        greenPanel.setBackground(new Color(238,238,238));
-    }
+		});
+	}
 }

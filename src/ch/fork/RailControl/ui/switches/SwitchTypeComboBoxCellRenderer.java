@@ -4,9 +4,9 @@
  *             :          Department Computer Sciences
  *             :......o   
  *
- * <SwitchSection.java>  -  <>
+ * <SwitchTypeComboBoxCellRenderer.java>  -  <>
  * 
- * begin     : Apr 10, 2006
+ * begin     : Apr 15, 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : mullb@bfh.ch
  * language  : java
@@ -23,40 +23,27 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.RailControl.domain.switches;
+package ch.fork.RailControl.ui.switches;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Component;
 
-public class SwitchGroup {
-	private List<Switch> switches;
-	private String name;
-	public SwitchGroup(String name) {
-		this.name = name;
-		switches = new ArrayList<Switch>();
-	}
-	
-	public void addSwitch(Switch aSwitch) {
-		switches.add(aSwitch);
-	}
-	
-	public void removeSwitch(Switch aSwitch) {
-		switches.remove(aSwitch);
-	}
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
-	public String getName() {
-		return name;
-	}
+import ch.fork.RailControl.domain.switches.DefaultSwitch;
+import ch.fork.RailControl.ui.ImageTools;
+public class SwitchTypeComboBoxCellRenderer implements ListCellRenderer {
 
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String toString() {
-		return name;
-	}
+	public Component getListCellRendererComponent(JList list, Object value,
+			int index, boolean isSelected, boolean cellHasFocus) {
 
-	public List<Switch> getSwitches() {
-		return switches;
+		JLabel iconLabel = new JLabel();
+		if (value.equals("DefaultSwitch")) {
+			iconLabel.setIcon(ImageTools.createDefaultSwitch(
+					iconLabel, DefaultSwitch.class));
+		}
+		return iconLabel;
+
 	}
 }

@@ -21,39 +21,48 @@
 
 package ch.fork.RailControl.domain.switches;
 
+import java.awt.Image;
+import java.awt.image.ImageObserver;
+
 import de.dermoba.srcp.client.SRCPSession;
-import de.dermoba.srcp.common.exception.SRCPException;
 
 public abstract class Switch {
 
-    protected String name;
+    protected int number;
     protected int bus;
+    protected Address address;
     protected String desc;
 
     protected int SWITCH_ACTION = 1;
     protected int SWITCH_DELAY  = 100;
     protected String ERR_SWITCH_LOCKED  = "Switch locked";
     protected String ERR_TOGGLE_FAILED  = "Toggle of switch failed";
+    protected String ERR_INIT_FAILED  = "Init failed";
+    protected String ERR_NO_SESSION  = "Not connected";
 	protected SRCPSession session;
 
-	public Switch(SRCPSession session, String name, String desc, int bus) throws SRCPException {
-		this.session = session;
-		this.name = name;
+	public Switch(int number, String desc, int bus, Address address) {
+		this.number = number;
 		this.bus = bus;
+		this.address = address;
 		this.desc = desc;
 	}
 	
+	public abstract void init(SRCPSession session) throws SwitchException;
     protected abstract void toggle() throws SwitchException;
-    protected abstract boolean switchChanged(int pAddress, int pActivatedPort);
-    
+    protected abstract void setStraight() throws SwitchException;
+    protected abstract void setCurvedLeft() throws SwitchException;
+    protected abstract void setCurvedRight() throws SwitchException;
+    protected abstract boolean switchChanged(Address pAddress, int pActivatedPort);
+    public abstract Image getImage(ImageObserver obs);
     /**
      * Get name.
      *
      * @return name as String.
      */
-    public String getName()
+    public int getNumber()
     {
-        return name;
+        return number;
     }
     
     /**
@@ -61,9 +70,9 @@ public abstract class Switch {
      *
      * @param name the value to set.
      */
-    public void setName(String name)
+    public void setNumber(int number)
     {
-        this.name = name;
+        this.number = number;
     }
     
     /**
@@ -85,4 +94,26 @@ public abstract class Switch {
     {
         this.desc = desc;
     }
+    
+    public String getType() {
+        return this.getClass().getSimpleName();
+    }
+
+	public int getBus() {
+		return bus;
+	}
+
+	public void setBus(int bus) {
+		this.bus = bus;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+	
+	
 }
