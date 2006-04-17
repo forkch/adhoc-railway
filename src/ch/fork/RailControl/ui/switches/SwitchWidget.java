@@ -1,4 +1,3 @@
-package ch.fork.RailControl.ui.switches;
 /*------------------------------------------------------------------------
  * 
  * <src/TrackSwitchWidget.java>  -  <desc>
@@ -19,13 +18,13 @@ package ch.fork.RailControl.ui.switches;
  * (at your option) any later version.
  *
  *----------------------------------------------------------------------*/
-
+package ch.fork.RailControl.ui.switches;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -35,9 +34,8 @@ import javax.swing.border.EtchedBorder;
 
 import ch.fork.RailControl.domain.switches.Switch;
 import ch.fork.RailControl.domain.switches.SwitchControl;
-import ch.fork.RailControl.domain.switches.SwitchException;
+import ch.fork.RailControl.domain.switches.exception.SwitchException;
 import ch.fork.RailControl.ui.ExceptionProcessor;
-import ch.fork.RailControl.ui.RailControlGUI;
 
 public class SwitchWidget extends JPanel {
 
@@ -77,11 +75,13 @@ public class SwitchWidget extends JPanel {
 		layout.setConstraints(iconLabel, gbc);
 		add(iconLabel);
 
-		addMouseListener(new MouseListener() {
-
+		addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				try {
-					if (e.getClickCount() == 2) {
+					if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+						if(!mySwitch.isInitialized()) {
+							mySwitch.init();
+						}
 						SwitchControl.getInstance().toggle(mySwitch);
 						SwitchWidget.this.revalidate();
 						SwitchWidget.this.repaint();
@@ -92,17 +92,6 @@ public class SwitchWidget extends JPanel {
 				} catch (SwitchException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
 				}
-			}
-			public void mousePressed(MouseEvent e) {
-			}
-
-			public void mouseReleased(MouseEvent e) {
-			}
-
-			public void mouseEntered(MouseEvent e) {
-			}
-
-			public void mouseExited(MouseEvent e) {
 			}
 		});
 	}

@@ -61,7 +61,8 @@ public class DoubleCrossSwitch extends DefaultSwitch {
 				g.drawImage(createImageIcon("icons/LED_middle_white.png", "",
 						this).getImage(), 28, 0, obs);
 				break;
-			case CURVED :
+			case RIGHT :
+			case LEFT:
 				g.drawImage(createImageIcon("icons/LED_middle_yellow.png", "",
 						this).getImage(), 0, 0, obs);
 				g.drawImage(createImageIcon("icons/LED_up_white.png", "", this)

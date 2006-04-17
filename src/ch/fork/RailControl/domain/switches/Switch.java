@@ -24,6 +24,8 @@ package ch.fork.RailControl.domain.switches;
 import java.awt.Image;
 import java.awt.image.ImageObserver;
 
+import ch.fork.RailControl.domain.switches.exception.SwitchException;
+
 import de.dermoba.srcp.client.SRCPSession;
 
 public abstract class Switch {
@@ -32,8 +34,14 @@ public abstract class Switch {
     protected int bus;
     protected Address address;
     protected String desc;
+    protected enum SwitchState {
+		LEFT, STRAIGHT, RIGHT, UNDEF
+	};
+	protected SwitchState switchState = SwitchState.STRAIGHT;
+	protected boolean initialized = false;
 
-    protected int SWITCH_ACTION = 1;
+    protected int SWITCH_PORT_ACTIVATE = 1;
+    protected int SWITCH_PORT_DEACTIVATE = 0;
     protected int SWITCH_DELAY  = 100;
     protected String ERR_SWITCH_LOCKED  = "Switch locked";
     protected String ERR_TOGGLE_FAILED  = "Toggle of switch failed";
@@ -48,7 +56,11 @@ public abstract class Switch {
 		this.desc = desc;
 	}
 	
-	public abstract void init(SRCPSession session) throws SwitchException;
+	public void init() throws SwitchException {
+		if(session == null) {
+			throw new SwitchException(ERR_NO_SESSION);
+		}
+	}
     protected abstract void toggle() throws SwitchException;
     protected abstract void setStraight() throws SwitchException;
     protected abstract void setCurvedLeft() throws SwitchException;
@@ -113,6 +125,18 @@ public abstract class Switch {
 
 	public void setAddress(Address address) {
 		this.address = address;
+	}
+
+	public SRCPSession getSession() {
+		return session;
+	}
+
+	public void setSession(SRCPSession session) {
+		this.session = session;
+	}
+
+	public boolean isInitialized() {
+		return initialized;
 	}
 	
 	

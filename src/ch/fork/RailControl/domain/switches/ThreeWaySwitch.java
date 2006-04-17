@@ -28,6 +28,9 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 
+import ch.fork.RailControl.domain.switches.exception.SwitchException;
+import ch.fork.RailControl.domain.switches.exception.SwitchLockedException;
+
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
 import de.dermoba.srcp.common.exception.SRCPException;
@@ -41,18 +44,14 @@ public class ThreeWaySwitch extends Switch {
 	private int[] RIGHT_PORTS = {0, 1};
 	private int[] UNDEF_PORTS = {1, 1};
 
-	private enum SwitchState {
-		LEFT, STRAIGHT, RIGHT, UNDEF
-	};
-	private SwitchState switchState = SwitchState.STRAIGHT;
 
 	public ThreeWaySwitch(int pNumber, String pDesc, int pBus, Address address) {
 		super(pNumber, pDesc, pBus, address);
 	}
 
-	public void init(SRCPSession pSession) throws SwitchException {
+	public void init() throws SwitchException {
+		super.init();
 		try {
-			session = pSession;
 			ga1 = new GA(session);
 			ga2 = new GA(session);
 			ga1.init(bus, address.getAddress1(), "M");
@@ -65,6 +64,7 @@ public class ThreeWaySwitch extends Switch {
 				throw new SwitchException(ERR_TOGGLE_FAILED, x);
 			}
 		}
+		initialized = true;
 	}
 	protected void toggle() throws SwitchException {
 		if(session == null) {
@@ -73,18 +73,25 @@ public class ThreeWaySwitch extends Switch {
 		try {
 			switch (switchState) {
 				case LEFT :
-					ga1.set(STRAIGHT_PORTS[0], SWITCH_ACTION, SWITCH_DELAY);
-					ga2.set(STRAIGHT_PORTS[1], SWITCH_ACTION, SWITCH_DELAY);
+					ga1.set(STRAIGHT_PORTS[0], SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+					ga2.set(STRAIGHT_PORTS[1], SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+
+					ga1.set(UNDEF_PORTS[0], SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
+					ga2.set(UNDEF_PORTS[1], SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
 					switchState = SwitchState.STRAIGHT;
 					break;
 				case STRAIGHT :
-					ga1.set(RIGHT_PORTS[0], SWITCH_ACTION, SWITCH_DELAY);
-					ga2.set(RIGHT_PORTS[1], SWITCH_ACTION, SWITCH_DELAY);
+					ga1.set(RIGHT_PORTS[0], SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+					ga2.set(RIGHT_PORTS[1], SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+					ga1.set(LEFT_PORTS[0], SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
+					ga2.set(LEFT_PORTS[1], SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
 					switchState = SwitchState.RIGHT;
 					break;
 				case RIGHT :
-					ga1.set(LEFT_PORTS[0], SWITCH_ACTION, SWITCH_DELAY);
-					ga2.set(LEFT_PORTS[1], SWITCH_ACTION, SWITCH_DELAY);
+					ga1.set(LEFT_PORTS[0], SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+					ga2.set(LEFT_PORTS[1], SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+					ga1.set(RIGHT_PORTS[0], SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
+					ga2.set(RIGHT_PORTS[1], SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
 					switchState = SwitchState.LEFT;
 					break;
 				case UNDEF :
@@ -186,8 +193,8 @@ public class ThreeWaySwitch extends Switch {
 	@Override
 	protected void setStraight() throws SwitchException {
 		try {
-			ga1.set(STRAIGHT_PORTS[0], SWITCH_ACTION, SWITCH_DELAY);
-			ga2.set(STRAIGHT_PORTS[1], SWITCH_ACTION, SWITCH_DELAY);
+			ga1.set(STRAIGHT_PORTS[0], SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+			ga2.set(STRAIGHT_PORTS[1], SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
 			// TODO: resolve get
 			switchState = SwitchState.STRAIGHT;
 		} catch (SRCPException e) {
@@ -198,8 +205,8 @@ public class ThreeWaySwitch extends Switch {
 	@Override
 	protected void setCurvedLeft() throws SwitchException {
 		try {
-			ga1.set(LEFT_PORTS[0], SWITCH_ACTION, SWITCH_DELAY);
-			ga2.set(LEFT_PORTS[1], SWITCH_ACTION, SWITCH_DELAY);
+			ga1.set(LEFT_PORTS[0], SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+			ga2.set(LEFT_PORTS[1], SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
 			// TODO: resolve get
 			switchState = SwitchState.LEFT;
 		} catch (SRCPException e) {
@@ -210,8 +217,8 @@ public class ThreeWaySwitch extends Switch {
 	@Override
 	protected void setCurvedRight() throws SwitchException {
 		try {
-			ga1.set(RIGHT_PORTS[0], SWITCH_ACTION, SWITCH_DELAY);
-			ga2.set(RIGHT_PORTS[1], SWITCH_ACTION, SWITCH_DELAY);
+			ga1.set(RIGHT_PORTS[0], SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+			ga2.set(RIGHT_PORTS[1], SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
 			// TODO: resolve get
 			switchState = SwitchState.RIGHT;
 		} catch (SRCPException e) {

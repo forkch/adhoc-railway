@@ -36,8 +36,10 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -49,7 +51,7 @@ import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import ch.fork.RailControl.domain.Preferences;
@@ -249,9 +251,19 @@ public class SwitchConfigurationDialog extends JDialog {
 
 		switchGroupTableModel = new SwitchGroupTableModel();
 		switchGroupTable = new JTable(switchGroupTableModel);
-
-		switchGroupTable.getColumnModel().getColumn(1).setCellEditor(
-				new SwitchTypeCellEditor());
+		switchGroupTable.setRowHeight(38);
+		
+		Object[] values = {"DefaultSwitch", "DoubleCrossSwitch",
+				"ThreeWaySwitch"};
+		JComboBox switchTypeComboBox = new JComboBox();
+		switchTypeComboBox.addItem("DefaultSwitch");
+		switchTypeComboBox.addItem("DoubleCrossSwitch");
+		switchTypeComboBox.addItem("ThreeWaySwitch");
+		switchTypeComboBox.setRenderer(new SwitchTypeComboBoxCellRenderer());
+		
+		TableColumn typeColumn = switchGroupTable.getColumnModel().getColumn(1);
+		typeColumn.setCellEditor(new DefaultCellEditor(switchTypeComboBox));
+		typeColumn.setCellRenderer(new SwitchTypeCellRenderer());
 
 		JScrollPane switchGroupTablePane = new JScrollPane(switchGroupTable);
 		switchesPanel.add(switchGroupTablePane, BorderLayout.CENTER);

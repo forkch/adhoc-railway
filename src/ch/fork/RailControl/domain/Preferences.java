@@ -26,7 +26,7 @@
 package ch.fork.RailControl.domain;
 public class Preferences {
 
-	private String hostname = "localhost";
+	private String hostname = "titan";
 	private int portnumber = 12345;
 	
 	private int defaultActivationTime = 50;

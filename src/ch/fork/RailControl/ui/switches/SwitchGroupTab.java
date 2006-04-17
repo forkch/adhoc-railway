@@ -32,9 +32,9 @@ public class SwitchGroupTab extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private ArrayList switchWidgets;
 
-    private int maxy;
-    private int currentx;
-    private int currenty;
+    private int maxCols;
+    private int currentRow;
+    private int currentCol;
     private GridBagLayout layout;
     private GridBagConstraints gbc;
 
@@ -42,27 +42,27 @@ public class SwitchGroupTab extends JPanel {
         this.switchWidgets = new ArrayList();
         layout = new GridBagLayout();
         setLayout(layout);
-        maxy = 10;
-        currentx = 0;
-        currenty = 0;
+        maxCols = 7;
+        currentRow = 0;
+        currentCol = 0;
         gbc = new GridBagConstraints();
         gbc.insets = new Insets(10,10,10,10);
-        gbc.gridx = currentx;
-        gbc.gridy = currenty;
+        gbc.gridx = currentRow;
+        gbc.gridy = currentCol;
     }
 
     @SuppressWarnings("unchecked")
 	public void addSwitchWidget(SwitchWidget aSwitchWidget) {
         switchWidgets.add(aSwitchWidget);
-        if(currenty == maxy) {
-            currentx ++;
-            currenty = 0;
+        if(currentCol == maxCols) {
+            currentRow ++;
+            currentCol = 0;
         }
-        gbc.gridx = currentx;
-        gbc.gridy = currenty;
+        gbc.gridx = currentCol;
+        gbc.gridy = currentRow;
         layout.setConstraints(aSwitchWidget, gbc);
         add(aSwitchWidget);
-        currenty ++;
+        currentCol ++;
     }
     
 }

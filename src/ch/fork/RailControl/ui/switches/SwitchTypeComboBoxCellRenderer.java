@@ -26,12 +26,14 @@
 package ch.fork.RailControl.ui.switches;
 
 import java.awt.Component;
+import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import ch.fork.RailControl.domain.switches.DefaultSwitch;
+import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
 import ch.fork.RailControl.ui.ImageTools;
 public class SwitchTypeComboBoxCellRenderer implements ListCellRenderer {
 
@@ -39,9 +41,16 @@ public class SwitchTypeComboBoxCellRenderer implements ListCellRenderer {
 			int index, boolean isSelected, boolean cellHasFocus) {
 
 		JLabel iconLabel = new JLabel();
+		iconLabel.setPreferredSize(new Dimension(56,38));
 		if (value.equals("DefaultSwitch")) {
-			iconLabel.setIcon(ImageTools.createDefaultSwitch(
-					iconLabel, DefaultSwitch.class));
+			iconLabel.setIcon(ImageTools.createDefaultSwitch(iconLabel,
+					DefaultSwitch.class));
+		} else if (value.equals("DoubleCrossSwitch")) {
+			iconLabel.setIcon(ImageTools.createDoubleCrossSwitch(iconLabel,
+					DoubleCrossSwitch.class));
+		} else if (value.equals("ThreeWaySwitch")) {
+			iconLabel.setIcon(ImageTools.createThreeWaySwitch(iconLabel,
+					DoubleCrossSwitch.class));
 		}
 		return iconLabel;
 

@@ -28,12 +28,15 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -45,15 +48,17 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.UIManager;
 
 import ch.fork.RailControl.domain.Preferences;
 import ch.fork.RailControl.domain.switches.Address;
 import ch.fork.RailControl.domain.switches.DefaultSwitch;
 import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
 import ch.fork.RailControl.domain.switches.Switch;
-import ch.fork.RailControl.domain.switches.SwitchException;
+import ch.fork.RailControl.domain.switches.SwitchControl;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 import ch.fork.RailControl.domain.switches.ThreeWaySwitch;
+import ch.fork.RailControl.domain.switches.exception.SwitchException;
 import ch.fork.RailControl.ui.switches.SwitchConfigurationDialog;
 import ch.fork.RailControl.ui.switches.SwitchGroupPane;
 import de.dermoba.srcp.client.CommandDataListener;
@@ -91,6 +96,7 @@ public class RailControlGUI extends JFrame
 	public RailControlGUI() {
 		super(NAME);
 		initGUI();
+		initKeyboardActions();
 		preferencesDialog = new PreferencesDialog(this);
 		initDatastructures();
 	}
@@ -101,22 +107,66 @@ public class RailControlGUI extends JFrame
 		SwitchGroup mountain = new SwitchGroup("Mountain Line");
 		switchGroups.add(main);
 		switchGroups.add(mountain);
+		/*
+		int i = 1;
+		Random rnd = new Random();
+		for (; i <= 30; i++) {
+			Switch s = null;
+			switch (rnd.nextInt(3)) {
+				case 0 :
+					s = new DefaultSwitch(i, "HB " + i, 1, new Address(i));
+					break;
+				case 1 :
+					s = new DoubleCrossSwitch(i, "HB " + i, 1, new Address(i));
+					break;
+				case 2 :
+					s = new ThreeWaySwitch(i, "HB " + i, 1, new Address(i,
+							i + 1));
+					i++;
+					break;
+			}
+			main.addSwitch(s);
+
+		}
+		for (; i <= 60; i++) {
+			Switch s = null;
+			switch (rnd.nextInt(3)) {
+				case 0 :
+					s = new DefaultSwitch(i, "HB " + i, 1, new Address(i));
+					break;
+				case 1 :
+					s = new DoubleCrossSwitch(i, "HB " + i, 1, new Address(i));
+					break;
+				case 2 :
+					s = new ThreeWaySwitch(i, "HB " + i, 1, new Address(i,
+							i + 1));
+					i++;
+					break;
+			}
+			mountain.addSwitch(s);
+		}
+		*/
+		
+		/*
 		Switch switch1 = new DefaultSwitch(1, "HB 1", 1, new Address(1));
 		Switch switch2 = new DefaultSwitch(2, "SW 1", 1, new Address(2));
-		Switch switch3 = new ThreeWaySwitch(3, "HB 2", 1,
-				new Address(3,4));
+		Switch switch3 = new ThreeWaySwitch(3, "HB 2", 1, new Address(3, 4));
 		Switch switch4 = new DefaultSwitch(4, "HB 3", 1, new Address(5));
-		Switch switch5 = new DoubleCrossSwitch(5, "Berg1",
-				1, new Address(6));
-		Switch switch6 = new DefaultSwitch(6, "Berg2",
-				1, new Address(7));
+		Switch switch5 = new DoubleCrossSwitch(5, "Berg1", 1, new Address(6));
+		Switch switch6 = new DefaultSwitch(6, "Berg2", 1, new Address(7));
 		main.addSwitch(switch1);
 		main.addSwitch(switch2);
 		main.addSwitch(switch3);
 		main.addSwitch(switch4);
 		mountain.addSwitch(switch5);
 		mountain.addSwitch(switch6);
-		
+		*/
+		Switch switch1 = new DefaultSwitch(1, "HB 1", 1, new Address(1));
+		Switch switch3 = new DoubleCrossSwitch(5, "Berg1", 1, new Address(2));
+		Switch switch2 = new ThreeWaySwitch(3, "HB 2", 1, new Address(3, 4));
+		main.addSwitch(switch1);
+		main.addSwitch(switch2);
+		main.addSwitch(switch3);
 		switchGroupPane.update(switchGroups);
 		preferences = new Preferences();
 	}
@@ -159,14 +209,15 @@ public class RailControlGUI extends JFrame
 	private void initToolbar() {
 
 	}
-	
+
 	private void initMenu() {
 		JMenuBar menuBar = new JMenuBar();
 
 		/* FILE */
 		JMenu fileMenu = new JMenu("File");
 		JMenuItem openItem = new JMenuItem("Open");
-		openItem.setIcon(createImageIcon("icons/fileopen.png","File open...",this));
+		openItem.setIcon(createImageIcon("icons/fileopen.png", "File open...",
+				this));
 		openItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
@@ -195,7 +246,8 @@ public class RailControlGUI extends JFrame
 				}
 			}
 		});
-		saveItem.setIcon(createImageIcon("icons/filesave.png", "Save file...", this));
+		saveItem.setIcon(createImageIcon("icons/filesave.png", "Save file...",
+				this));
 		JMenuItem exitItem = new JMenuItem("Exit");
 		exitItem.setIcon(createImageIcon("icons/exit.png", "Exit", this));
 		exitItem.addActionListener(new ActionListener() {
@@ -211,7 +263,8 @@ public class RailControlGUI extends JFrame
 		/* EDIT */
 		JMenu edit = new JMenu("Edit");
 		JMenuItem switchesItem = new JMenuItem("Switches");
-		switchesItem.setIcon(createImageIcon("icons/switch.png", "Connect", this));
+		switchesItem.setIcon(createImageIcon("icons/switch.png", "Connect",
+				this));
 		JMenuItem locomotivesItem = new JMenuItem("Locomotives");
 		JMenuItem preferencesItem = new JMenuItem("Preferences");
 		preferencesItem.setIcon(createImageIcon("icons/package_settings.png",
@@ -243,9 +296,9 @@ public class RailControlGUI extends JFrame
 		/* DAEMON */
 		JMenu daemonMenu = new JMenu("Daemon");
 		daemonConnectItem = new JMenuItem("Connect");
-		
-		daemonConnectItem.setIcon(createImageIcon(
-				"icons/daemonconnect.png", "Connect", this));
+
+		daemonConnectItem.setIcon(createImageIcon("icons/daemonconnect.png",
+				"Connect", this));
 		daemonDisconnectItem = new JMenuItem("Disconnect");
 		daemonDisconnectItem.setIcon(createImageIcon(
 				"icons/daemondisconnect.png", "Disconnect", this));
@@ -255,7 +308,6 @@ public class RailControlGUI extends JFrame
 		daemonDisconnectItem.setEnabled(false);
 		daemonResetItem.setEnabled(false);
 		daemonConnectItem.addActionListener(new ActionListener() {
-
 			public void actionPerformed(ActionEvent e) {
 				try {
 					session = new SRCPSession(preferences.getHostname(),
@@ -265,21 +317,34 @@ public class RailControlGUI extends JFrame
 					session.getInfoChannel().addInfoDataListener(
 							RailControlGUI.this);
 					session.connect();
-					for(SwitchGroup sg : switchGroups) {
-						for(Switch aSwitch : sg.getSwitches()) {
-							aSwitch.init(session);
+					for (SwitchGroup sg : switchGroups) {
+						for (Switch s : sg.getSwitches()) {
+							s.setSession(session);
 						}
 					}
+					
+					
 					daemonConnectItem.setEnabled(false);
 					daemonDisconnectItem.setEnabled(true);
 					daemonResetItem.setEnabled(true);
 				} catch (SRCPException e1) {
 					processException(e1);
-				} catch (SwitchException e2) {
-					processException(e2);
 				}
 			}
-
+		});
+		
+		daemonDisconnectItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					session.disconnect();
+					
+					daemonConnectItem.setEnabled(true);
+					daemonDisconnectItem.setEnabled(false);
+					daemonResetItem.setEnabled(false);
+				} catch (SRCPException e1) {
+					processException(e1);
+				}
+			}
 		});
 		daemonMenu.add(daemonConnectItem);
 		daemonMenu.add(daemonDisconnectItem);
@@ -312,6 +377,24 @@ public class RailControlGUI extends JFrame
 		commandHistory.setSelectedIndex(0);
 	}
 
+	private void initKeyboardActions() {
+		this.addKeyListener(new KeyListener() {
+			public void keyTyped(KeyEvent e) {
+				System.out.println("typed");
+			}
+
+			public void keyPressed(KeyEvent e) {
+				System.out.println("pressed");
+			}
+
+			public void keyReleased(KeyEvent e) {
+				System.out.println("released");
+			}
+
+		});
+		this.requestFocus();
+	}
+
 	public void processException(Exception e) {
 		JOptionPane.showMessageDialog(this, e.getMessage(), "Error occured",
 				JOptionPane.ERROR_MESSAGE);
@@ -335,9 +418,6 @@ public class RailControlGUI extends JFrame
 
 	public void infoDataReceived(String infoData) {
 		updateCommandHistory("From Server: " + infoData);
-
 	}
-
-	
 
 }

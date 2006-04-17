@@ -47,7 +47,7 @@ public class SwitchGroupPane extends JTabbedPane {
 			add(switchGroupTab, switchGroup.getName());
 			for(Switch aSwitch : switchGroup.getSwitches()) {
 				SwitchWidget switchWidget = new SwitchWidget(aSwitch);
-				switchGroupTab.add(switchWidget);
+				switchGroupTab.addSwitchWidget(switchWidget);
 			}
 		}
 	}

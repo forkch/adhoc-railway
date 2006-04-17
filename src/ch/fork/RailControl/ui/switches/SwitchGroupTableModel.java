@@ -28,8 +28,11 @@ package ch.fork.RailControl.ui.switches;
 import javax.swing.table.AbstractTableModel;
 
 import ch.fork.RailControl.domain.switches.Address;
+import ch.fork.RailControl.domain.switches.DefaultSwitch;
+import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
 import ch.fork.RailControl.domain.switches.Switch;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
+import ch.fork.RailControl.domain.switches.ThreeWaySwitch;
 public class SwitchGroupTableModel extends AbstractTableModel {
 
 	private final String[] columnNames = {"Switch #", "Type", "Address", "Bus",
@@ -91,18 +94,32 @@ public class SwitchGroupTableModel extends AbstractTableModel {
 		Switch switchOfThisRow = switchGroup.getSwitches().get(row);
 		switch (col) {
 			case 0 :
-				switchOfThisRow.setNumber(Integer.parseInt((String)value));
+				switchOfThisRow.setNumber(Integer.parseInt((String) value));
 				break;
 			case 1 :
+				Switch tmp = switchOfThisRow;
+				if (value.equals("DefaultSwitch")) {
+					switchOfThisRow = new DefaultSwitch(tmp.getNumber(), tmp
+							.getDesc(), tmp.getBus(), tmp.getAddress());
+				} else if (value.equals("DoubleCrossSwitch")) {
+					switchOfThisRow = new DoubleCrossSwitch(tmp.getNumber(),
+							tmp.getDesc(), tmp.getBus(), tmp.getAddress());
+				} else if (value.equals("ThreeWaySwitch")) {
+					switchOfThisRow = new ThreeWaySwitch(tmp.getNumber(), tmp
+							.getDesc(), tmp.getBus(), tmp.getAddress());
+				}
+				switchOfThisRow.setSession(tmp.getSession());
+				switchGroup.replaceSwitch(tmp, switchOfThisRow);
+				tmp = null;
 				break;
 			case 2 :
-				switchOfThisRow.setAddress(new Address((String)value));
+				switchOfThisRow.setAddress(new Address((String) value));
 				break;
 			case 3 :
-				switchOfThisRow.setBus(Integer.parseInt((String)value));
+				switchOfThisRow.setBus(Integer.parseInt((String) value));
 				break;
 			case 4 :
-				switchOfThisRow.setDesc((String)value);
+				switchOfThisRow.setDesc((String) value);
 				break;
 			default :
 		}

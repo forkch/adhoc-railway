@@ -24,6 +24,8 @@ package ch.fork.RailControl.domain.switches;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.fork.RailControl.domain.switches.exception.SwitchException;
+
 public class SwitchControl {
 
 	private static SwitchControl instance;

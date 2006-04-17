@@ -44,6 +44,10 @@ public class SwitchGroup {
 		switches.remove(aSwitch);
 	}
 
+	public void replaceSwitch(Switch oldSwitch, Switch newSwitch) {
+		switches.set(switches.indexOf(oldSwitch), newSwitch);
+	}
+	
 	public String getName() {
 		return name;
 	}
