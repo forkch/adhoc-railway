@@ -1,9 +1,9 @@
 /*------------------------------------------------------------------------
  * 
- * <src/domain/switches/SwitchLockedException.java>  -  <Exception when
- * a switch is locked>
+ * <src/domain/switches/SwitchException.java>  -  <Generic exception with
+ * switches>
  * 
- * begin     : Sat Jan 28 16:56:22 CET 2006
+ * begin     : Sat Jan 28 16:51:17 CET 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : bm@fork.ch
  * language  : java
@@ -20,10 +20,15 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.RailControl.domain.switches;
+package ch.fork.RailControl.domain.switches.exception;
 
-public class SwitchLockedException extends SwitchException {
-    public SwitchLockedException(String msg) {
+public class SwitchException extends Exception {
+
+    public SwitchException(String msg) {
         super(msg);
+    }
+
+    public SwitchException(String msg, Exception parent) {
+        super(msg, parent);
     }
 }

@@ -26,32 +26,29 @@
 package ch.fork.RailControl.ui.switches;
 
 import java.awt.Component;
-import java.awt.Dimension;
 
-import javax.swing.AbstractCellEditor;
-import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
-public class SwitchTypeCellEditor extends AbstractCellEditor implements TableCellEditor {
+import ch.fork.RailControl.domain.switches.DefaultSwitch;
+import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
+import ch.fork.RailControl.ui.ImageTools;
 
-	private static Object[] values = {"DefaultSwitch", "DoubleCrossSwitch",
-			"ThreeWaySwitch"};
-	private JComboBox typeComboBox;
-	public SwitchTypeCellEditor() {
-		super();
-		typeComboBox = new JComboBox(values);
-		typeComboBox.setRenderer(new SwitchTypeComboBoxCellRenderer());
-		typeComboBox.setPreferredSize(new Dimension(56,35));
-	}
+public class SwitchTypeCellRenderer implements TableCellRenderer {
 
-	public Component getTableCellEditorComponent(JTable table, Object value,
-			boolean isSelected, int row, int column) {
-		return typeComboBox;
-	}
-
-	public Object getCellEditorValue() {
-		System.out.println("here");
-		return typeComboBox.getSelectedItem();
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		JLabel iconLabel = new JLabel();
+		if (value.equals("DefaultSwitch")) {
+			iconLabel.setIcon(ImageTools.createDefaultSwitch(iconLabel,
+					DefaultSwitch.class));
+		} else if (value.equals("DoubleCrossSwitch")) {
+			iconLabel.setIcon(ImageTools.createDoubleCrossSwitch(iconLabel,
+					DoubleCrossSwitch.class));
+		} else if (value.equals("ThreeWaySwitch")) {
+			iconLabel.setIcon(ImageTools.createThreeWaySwitch(iconLabel,
+					DoubleCrossSwitch.class));
+		}
+		return iconLabel;
 	}
 }
