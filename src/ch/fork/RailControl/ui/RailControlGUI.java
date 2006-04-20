@@ -36,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -48,7 +47,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.UIManager;
 
 import ch.fork.RailControl.domain.Preferences;
 import ch.fork.RailControl.domain.switches.Address;
@@ -58,7 +56,6 @@ import ch.fork.RailControl.domain.switches.Switch;
 import ch.fork.RailControl.domain.switches.SwitchControl;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 import ch.fork.RailControl.domain.switches.ThreeWaySwitch;
-import ch.fork.RailControl.domain.switches.exception.SwitchException;
 import ch.fork.RailControl.ui.switches.SwitchConfigurationDialog;
 import ch.fork.RailControl.ui.switches.SwitchGroupPane;
 import de.dermoba.srcp.client.CommandDataListener;
@@ -66,31 +63,39 @@ import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 
-public class RailControlGUI extends JFrame
-		implements
-			CommandDataListener,
-			InfoDataListener {
+public class RailControlGUI extends JFrame implements CommandDataListener,
+		InfoDataListener {
 
 	private static final long serialVersionUID = 1L;
+
 	private static final String NAME = "RailControl";
 
 	private SRCPSession session;
+
 	private String typedChars = "";
 
 	// GUI-Components
 	private SwitchGroupPane switchGroupPane;
+
 	private JPanel locomotiveControlPanel;
 
 	private JPanel statusBarPanel;
+
 	private JComboBox commandHistory;
+
 	private DefaultComboBoxModel commandHistoryModel;
+
 	private PreferencesDialog preferencesDialog;
+
 	private Preferences preferences;
 
 	// Datastructures
 	private List<SwitchGroup> switchGroups;
+
 	private JMenuItem daemonConnectItem;
+
 	private JMenuItem daemonDisconnectItem;
+
 	private JMenuItem daemonResetItem;
 
 	public RailControlGUI() {
@@ -108,59 +113,30 @@ public class RailControlGUI extends JFrame
 		switchGroups.add(main);
 		switchGroups.add(mountain);
 		/*
-		int i = 1;
-		Random rnd = new Random();
-		for (; i <= 30; i++) {
-			Switch s = null;
-			switch (rnd.nextInt(3)) {
-				case 0 :
-					s = new DefaultSwitch(i, "HB " + i, 1, new Address(i));
-					break;
-				case 1 :
-					s = new DoubleCrossSwitch(i, "HB " + i, 1, new Address(i));
-					break;
-				case 2 :
-					s = new ThreeWaySwitch(i, "HB " + i, 1, new Address(i,
-							i + 1));
-					i++;
-					break;
-			}
-			main.addSwitch(s);
+		 * int i = 1; Random rnd = new Random(); for (; i <= 30; i++) { Switch s =
+		 * null; switch (rnd.nextInt(3)) { case 0 : s = new DefaultSwitch(i, "HB " +
+		 * i, 1, new Address(i)); break; case 1 : s = new DoubleCrossSwitch(i,
+		 * "HB " + i, 1, new Address(i)); break; case 2 : s = new
+		 * ThreeWaySwitch(i, "HB " + i, 1, new Address(i, i + 1)); i++; break; }
+		 * main.addSwitch(s);
+		 *  } for (; i <= 60; i++) { Switch s = null; switch (rnd.nextInt(3)) {
+		 * case 0 : s = new DefaultSwitch(i, "HB " + i, 1, new Address(i));
+		 * break; case 1 : s = new DoubleCrossSwitch(i, "HB " + i, 1, new
+		 * Address(i)); break; case 2 : s = new ThreeWaySwitch(i, "HB " + i, 1,
+		 * new Address(i, i + 1)); i++; break; } mountain.addSwitch(s); }
+		 */
 
-		}
-		for (; i <= 60; i++) {
-			Switch s = null;
-			switch (rnd.nextInt(3)) {
-				case 0 :
-					s = new DefaultSwitch(i, "HB " + i, 1, new Address(i));
-					break;
-				case 1 :
-					s = new DoubleCrossSwitch(i, "HB " + i, 1, new Address(i));
-					break;
-				case 2 :
-					s = new ThreeWaySwitch(i, "HB " + i, 1, new Address(i,
-							i + 1));
-					i++;
-					break;
-			}
-			mountain.addSwitch(s);
-		}
-		*/
-		
 		/*
-		Switch switch1 = new DefaultSwitch(1, "HB 1", 1, new Address(1));
-		Switch switch2 = new DefaultSwitch(2, "SW 1", 1, new Address(2));
-		Switch switch3 = new ThreeWaySwitch(3, "HB 2", 1, new Address(3, 4));
-		Switch switch4 = new DefaultSwitch(4, "HB 3", 1, new Address(5));
-		Switch switch5 = new DoubleCrossSwitch(5, "Berg1", 1, new Address(6));
-		Switch switch6 = new DefaultSwitch(6, "Berg2", 1, new Address(7));
-		main.addSwitch(switch1);
-		main.addSwitch(switch2);
-		main.addSwitch(switch3);
-		main.addSwitch(switch4);
-		mountain.addSwitch(switch5);
-		mountain.addSwitch(switch6);
-		*/
+		 * Switch switch1 = new DefaultSwitch(1, "HB 1", 1, new Address(1));
+		 * Switch switch2 = new DefaultSwitch(2, "SW 1", 1, new Address(2));
+		 * Switch switch3 = new ThreeWaySwitch(3, "HB 2", 1, new Address(3, 4));
+		 * Switch switch4 = new DefaultSwitch(4, "HB 3", 1, new Address(5));
+		 * Switch switch5 = new DoubleCrossSwitch(5, "Berg1", 1, new
+		 * Address(6)); Switch switch6 = new DefaultSwitch(6, "Berg2", 1, new
+		 * Address(7)); main.addSwitch(switch1); main.addSwitch(switch2);
+		 * main.addSwitch(switch3); main.addSwitch(switch4);
+		 * mountain.addSwitch(switch5); mountain.addSwitch(switch6);
+		 */
 		Switch switch1 = new DefaultSwitch(1, "HB 1", 1, new Address(1));
 		Switch switch3 = new DoubleCrossSwitch(5, "Berg1", 1, new Address(2));
 		Switch switch2 = new ThreeWaySwitch(3, "HB 2", 1, new Address(3, 4));
@@ -312,6 +288,7 @@ public class RailControlGUI extends JFrame
 				try {
 					session = new SRCPSession(preferences.getHostname(),
 							preferences.getPortnumber(), false);
+					SwitchControl.getInstance().setSession(session);
 					session.getCommandChannel().addCommandDataListener(
 							RailControlGUI.this);
 					session.getInfoChannel().addInfoDataListener(
@@ -322,8 +299,7 @@ public class RailControlGUI extends JFrame
 							s.setSession(session);
 						}
 					}
-					
-					
+
 					daemonConnectItem.setEnabled(false);
 					daemonDisconnectItem.setEnabled(true);
 					daemonResetItem.setEnabled(true);
@@ -332,12 +308,12 @@ public class RailControlGUI extends JFrame
 				}
 			}
 		});
-		
+
 		daemonDisconnectItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					session.disconnect();
-					
+
 					daemonConnectItem.setEnabled(true);
 					daemonDisconnectItem.setEnabled(false);
 					daemonResetItem.setEnabled(false);
@@ -360,6 +336,7 @@ public class RailControlGUI extends JFrame
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
 	}
+
 	private void initStatusBar() {
 		statusBarPanel = new JPanel();
 		commandHistoryModel = new DefaultComboBoxModel();
@@ -419,5 +396,4 @@ public class RailControlGUI extends JFrame
 	public void infoDataReceived(String infoData) {
 		updateCommandHistory("From Server: " + infoData);
 	}
-
 }

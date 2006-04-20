@@ -27,6 +27,8 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import ch.fork.RailControl.domain.switches.SwitchControl;
+
 public class SwitchGroupTab extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -53,6 +55,7 @@ public class SwitchGroupTab extends JPanel {
 
     @SuppressWarnings("unchecked")
 	public void addSwitchWidget(SwitchWidget aSwitchWidget) {
+        add(aSwitchWidget);
         switchWidgets.add(aSwitchWidget);
         if(currentCol == maxCols) {
             currentRow ++;
@@ -61,7 +64,6 @@ public class SwitchGroupTab extends JPanel {
         gbc.gridx = currentCol;
         gbc.gridy = currentRow;
         layout.setConstraints(aSwitchWidget, gbc);
-        add(aSwitchWidget);
         currentCol ++;
     }
     

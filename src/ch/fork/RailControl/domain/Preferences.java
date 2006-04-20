@@ -24,17 +24,28 @@
  *----------------------------------------------------------------------*/
 
 package ch.fork.RailControl.domain;
+
+import java.util.List;
+import java.util.ArrayList;
+
 public class Preferences {
 
-	private String hostname = "titan";
+	private List<String> hostnames;
+	private String hostname;
 	private int portnumber = 12345;
 	
 	private int defaultActivationTime = 50;
 	private int defaultRoutingDelay = 250;
 	
+	public Preferences() {
+		hostnames = new ArrayList<String>();
+		hostnames.add("localhost");
+		hostnames.add("titan");
+		hostnames.add("kloosweg.homelinux.org");
+	}
 	public String toString() {
 		StringBuffer b = new StringBuffer();
-		b.append("hostname: " +  hostname + " ; ");
+		b.append("hostname: " +  hostnames + " ; ");
 		b.append("portnumber: " + portnumber + " ; ");
 		b.append("defaultActivationTime: " + defaultActivationTime + " ; ");
 		b.append("defaultRoutingDelay: " + defaultRoutingDelay + " ; ");
@@ -52,16 +63,24 @@ public class Preferences {
 	public void setDefaultRoutingDelay(int defaultRoutingDelay) {
 		this.defaultRoutingDelay = defaultRoutingDelay;
 	}
+	
+	public List<String> getHostnames() {
+		return hostnames;
+	}
+	public void setHostnames(List<String> hostnames) {
+		this.hostnames = hostnames;
+	}
+	public int getPortnumber() {
+		return portnumber;
+	}
+	public void setPortnumber(int portnumber) {
+		this.portnumber = portnumber;
+	}
 	public String getHostname() {
 		return hostname;
 	}
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
 	}
-	public int getPortnumber() {
-		return portnumber;
-	}
-	public void setPortnumber(int portumber) {
-		this.portnumber = portnumber;
-	}
+	
 }

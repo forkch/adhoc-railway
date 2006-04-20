@@ -30,15 +30,15 @@ import java.awt.image.ImageObserver;
 
 import ch.fork.RailControl.domain.switches.exception.SwitchException;
 import ch.fork.RailControl.domain.switches.exception.SwitchLockedException;
-
-import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GA;
 
 public class DefaultSwitch extends Switch {
 	private GA ga;
+
 	private int STRAIGHT_PORT = 0;
+
 	private int CURVED_PORT = 1;
 
 	protected SwitchState defaultState = SwitchState.STRAIGHT;
@@ -46,6 +46,7 @@ public class DefaultSwitch extends Switch {
 	public DefaultSwitch(int pNumber, String pDesc) {
 		this(pNumber, pDesc, 0, new Address(0, 0));
 	}
+
 	public DefaultSwitch(int pNumber, String pDesc, int pBus, Address pAddress) {
 		super(pNumber, pDesc, pBus, pAddress);
 
@@ -73,21 +74,21 @@ public class DefaultSwitch extends Switch {
 		}
 		try {
 			switch (switchState) {
-				case STRAIGHT :
-					ga.set(CURVED_PORT, SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
-					ga.set(STRAIGHT_PORT, SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
-					// FIXME
-					switchState = SwitchState.LEFT;
-					break;
-				case RIGHT :
-				case LEFT :
-					ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
-					ga.set(CURVED_PORT, SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
-					// FIXME
-					switchState = SwitchState.STRAIGHT;
-					break;
-				case UNDEF :
-					return;
+			case STRAIGHT:
+				ga.set(CURVED_PORT, SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+				ga.set(STRAIGHT_PORT, SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
+				// FIXME
+				switchState = SwitchState.LEFT;
+				break;
+			case RIGHT:
+			case LEFT:
+				ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+				ga.set(CURVED_PORT, SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
+				// FIXME
+				switchState = SwitchState.STRAIGHT;
+				break;
+			case UNDEF:
+				return;
 			}
 		} catch (SRCPException x) {
 			if (x instanceof SRCPDeviceLockedException) {
@@ -98,54 +99,32 @@ public class DefaultSwitch extends Switch {
 		}
 	}
 
-	protected boolean switchChanged(Address pAddress, int pActivatedPort) {
-		if (address == pAddress) {
+	protected void switchPortChanged(int pAddress, int pActivatedPort, int value) {
+		if(value == 0) {
+			//a port has been DEACTIVATED
+		} else {
+			//a port has been ACTIVATED
 			if (pActivatedPort == STRAIGHT_PORT) {
 				switchState = SwitchState.STRAIGHT;
 			} else if (pActivatedPort == CURVED_PORT) {
 				switchState = SwitchState.LEFT;
-			} else {
-				return false;
 			}
-		} else {
-			// should not happen
-			return false;
 		}
-		return true;
+		
+
+		System.out.println(switchState);
 	}
+
 	@Override
-	public Image getImage(ImageObserver obs) {
-		BufferedImage img = new BufferedImage(56, 35,
-				BufferedImage.TYPE_4BYTE_ABGR);
-		Graphics2D g = img.createGraphics();
-		g.drawImage(createImageIcon("icons/default_switch.png", "", this)
-				.getImage(), 0, 0, obs);
-		switch (switchState) {
-			case STRAIGHT :
-				g.drawImage(
-						createImageIcon("icons/LED_up_yellow.png", "", this)
-								.getImage(), 28, 0, obs);
-				g.drawImage(createImageIcon("icons/LED_middle_white.png", "",
-						this).getImage(), 28, 0, obs);
-				break;
-			case LEFT :
-			case RIGHT :
-				g.drawImage(createImageIcon("icons/LED_middle_yellow.png", "",
-						this).getImage(), 28, 0, obs);
-				g.drawImage(createImageIcon("icons/LED_up_white.png", "", this)
-						.getImage(), 28, 0, obs);
-				break;
-			case UNDEF :
-				g.drawImage(createImageIcon("icons/LED_up_white.png", "", this)
-						.getImage(), 28, 0, obs);
-				g.drawImage(createImageIcon("icons/LED_middle_white.png", "",
-						this).getImage(), 28, 0, obs);
-				break;
-		}
-		g.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
-				.getImage(), 0, 0, obs);
-		return img;
+	protected void switchInitialized(int pAddress) {
+		initialized = true;
 	}
+
+	@Override
+	protected void switchTerminated(int pAddress) {
+		initialized = false;
+	}
+
 	@Override
 	protected void setStraight() throws SwitchException {
 		try {
@@ -165,6 +144,7 @@ public class DefaultSwitch extends Switch {
 			throw new SwitchException(ERR_TOGGLE_FAILED, e);
 		}
 	}
+
 	@Override
 	protected void setCurvedLeft() throws SwitchException {
 		try {
@@ -184,8 +164,43 @@ public class DefaultSwitch extends Switch {
 			throw new SwitchException(ERR_TOGGLE_FAILED, e);
 		}
 	}
+
 	@Override
 	protected void setCurvedRight() throws SwitchException {
 		setCurvedLeft();
+	}
+
+	@Override
+	public Image getImage(ImageObserver obs) {
+		BufferedImage img = new BufferedImage(56, 35,
+				BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D g = img.createGraphics();
+		g.drawImage(createImageIcon("icons/default_switch.png", "", this)
+				.getImage(), 0, 0, obs);
+		switch (switchState) {
+		case STRAIGHT:
+			g.drawImage(createImageIcon("icons/LED_up_yellow.png", "", this)
+					.getImage(), 28, 0, obs);
+			g.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
+					.getImage(), 28, 0, obs);
+			break;
+		case LEFT:
+		case RIGHT:
+			g.drawImage(
+					createImageIcon("icons/LED_middle_yellow.png", "", this)
+							.getImage(), 28, 0, obs);
+			g.drawImage(createImageIcon("icons/LED_up_white.png", "", this)
+					.getImage(), 28, 0, obs);
+			break;
+		case UNDEF:
+			g.drawImage(createImageIcon("icons/LED_up_white.png", "", this)
+					.getImage(), 28, 0, obs);
+			g.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
+					.getImage(), 28, 0, obs);
+			break;
+		}
+		g.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
+				.getImage(), 0, 0, obs);
+		return img;
 	}
 }

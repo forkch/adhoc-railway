@@ -25,7 +25,6 @@ import java.awt.Image;
 import java.awt.image.ImageObserver;
 
 import ch.fork.RailControl.domain.switches.exception.SwitchException;
-
 import de.dermoba.srcp.client.SRCPSession;
 
 public abstract class Switch {
@@ -65,7 +64,9 @@ public abstract class Switch {
     protected abstract void setStraight() throws SwitchException;
     protected abstract void setCurvedLeft() throws SwitchException;
     protected abstract void setCurvedRight() throws SwitchException;
-    protected abstract boolean switchChanged(Address pAddress, int pActivatedPort);
+    protected abstract void switchPortChanged(int pAddress, int pActivatedPort, int value);
+    protected abstract void switchInitialized(int pAddress);
+    protected abstract void switchTerminated(int pAddress);
     public abstract Image getImage(ImageObserver obs);
     /**
      * Get name.

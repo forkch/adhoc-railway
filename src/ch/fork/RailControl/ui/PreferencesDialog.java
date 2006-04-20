@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -49,7 +50,7 @@ public class PreferencesDialog extends JDialog {
 	private SpinnerNumberModel defaultActivationTimeModel;
 	private SpinnerNumberModel defaultRoutingDelayModel;
 	
-	private JTextField hostnameTextField;
+	private JComboBox hostnamesComboBox;
 	private JTextField portnumberTextField;
 
 	private JTabbedPane preferencesPane;
@@ -66,7 +67,9 @@ public class PreferencesDialog extends JDialog {
 		defaultActivationTime.setValue(p.getDefaultActivationTime());
 		defaultRoutingDelay.setValue(p.getDefaultRoutingDelay());
 		
-		hostnameTextField.setText(p.getHostname());
+		for(String host : p.getHostnames()) {
+			hostnamesComboBox.addItem(host);
+		}
 		portnumberTextField.setText(Integer.toString(p.getPortnumber()));
 		pack();
 		setVisible(true);
@@ -76,7 +79,7 @@ public class PreferencesDialog extends JDialog {
 			p.setDefaultActivationTime(defaultActivationTimeModel.getNumber().intValue());
 			p.setDefaultRoutingDelay(defaultRoutingDelayModel.getNumber().intValue());
 			
-			p.setHostname(hostnameTextField.getText());
+			p.setHostname((String)hostnamesComboBox.getSelectedItem());
 			p.setPortnumber(Integer.parseInt(portnumberTextField.getText()));
 			return p;
 		}
@@ -135,9 +138,9 @@ public class PreferencesDialog extends JDialog {
 	private JPanel createServerTab() {
 		JPanel serverTab = new JPanel(new SpringLayout());
 		JLabel hostnameLabel = new JLabel("Hostname (Name or IP):");
-		hostnameTextField = new JTextField(15);
+		hostnamesComboBox= new JComboBox();
 		serverTab.add(hostnameLabel);
-		serverTab.add(hostnameTextField);
+		serverTab.add(hostnamesComboBox);
 		
 		JLabel portnumberLabel = new JLabel("Portnumber (e.g. 12345):");
 		portnumberTextField = new JTextField("12345", 15);
