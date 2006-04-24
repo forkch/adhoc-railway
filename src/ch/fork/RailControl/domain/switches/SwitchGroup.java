@@ -25,28 +25,28 @@
 
 package ch.fork.RailControl.domain.switches;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SwitchGroup {
-	private List<Switch> switches;
+	private Map<Integer, Switch> switches;
 	private String name;
 	public SwitchGroup(String name) {
 		this.name = name;
-		switches = new ArrayList<Switch>();
+		switches = new TreeMap<Integer, Switch>();
 	}
 	
 	public void addSwitch(Switch aSwitch) {
-		switches.add(aSwitch);
+		switches.put(aSwitch.getNumber(), aSwitch);
         SwitchControl.getInstance().addSwitch(aSwitch);
 	}
 	
 	public void removeSwitch(Switch aSwitch) {
-		switches.remove(aSwitch);
+		switches.remove(aSwitch.getNumber());
 	}
 
 	public void replaceSwitch(Switch oldSwitch, Switch newSwitch) {
-		switches.set(switches.indexOf(oldSwitch), newSwitch);
+		switches.put(oldSwitch.getNumber(), newSwitch);
 	}
 	
 	public String getName() {
@@ -61,7 +61,8 @@ public class SwitchGroup {
 		return name;
 	}
 
-	public List<Switch> getSwitches() {
+	public Map<Integer, Switch> getSwitches() {
 		return switches;
 	}
+
 }

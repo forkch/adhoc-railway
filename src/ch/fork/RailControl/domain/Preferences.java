@@ -31,7 +31,7 @@ import java.util.ArrayList;
 public class Preferences {
 
 	private List<String> hostnames;
-	private String hostname;
+	private String hostname = "titan";
 	private int portnumber = 12345;
 	
 	private int defaultActivationTime = 50;

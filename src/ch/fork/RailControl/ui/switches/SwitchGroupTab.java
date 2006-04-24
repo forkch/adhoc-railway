@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import ch.fork.RailControl.domain.switches.SwitchControl;
+import ch.fork.RailControl.domain.switches.SwitchGroup;
 
 public class SwitchGroupTab extends JPanel {
 
@@ -39,9 +40,11 @@ public class SwitchGroupTab extends JPanel {
     private int currentCol;
     private GridBagLayout layout;
     private GridBagConstraints gbc;
+	private SwitchGroup switchGroup;
 
-    public SwitchGroupTab() {
+    public SwitchGroupTab(SwitchGroup sg) {
         this.switchWidgets = new ArrayList();
+        switchGroup = sg;
         layout = new GridBagLayout();
         setLayout(layout);
         maxCols = 7;
@@ -65,6 +68,11 @@ public class SwitchGroupTab extends JPanel {
         gbc.gridy = currentRow;
         layout.setConstraints(aSwitchWidget, gbc);
         currentCol ++;
+        SwitchControl.getInstance().addSwitchChangeListener(aSwitchWidget);
     }
+
+	public SwitchGroup getSwitchGroup() {
+		return switchGroup;
+	}
     
 }

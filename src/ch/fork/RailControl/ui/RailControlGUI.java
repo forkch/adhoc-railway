@@ -37,8 +37,10 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -47,6 +49,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
 
 import ch.fork.RailControl.domain.Preferences;
 import ch.fork.RailControl.domain.switches.Address;
@@ -56,8 +59,10 @@ import ch.fork.RailControl.domain.switches.Switch;
 import ch.fork.RailControl.domain.switches.SwitchControl;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 import ch.fork.RailControl.domain.switches.ThreeWaySwitch;
+import ch.fork.RailControl.domain.switches.exception.SwitchException;
 import ch.fork.RailControl.ui.switches.SwitchConfigurationDialog;
 import ch.fork.RailControl.ui.switches.SwitchGroupPane;
+import ch.fork.RailControl.ui.switches.SwitchGroupTab;
 import de.dermoba.srcp.client.CommandDataListener;
 import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
@@ -98,6 +103,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
 	private JMenuItem daemonResetItem;
 
+	private StringBuffer enteredNumberKeys;
+
 	public RailControlGUI() {
 		super(NAME);
 		initGUI();
@@ -107,6 +114,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 	}
 
 	private void initDatastructures() {
+		enteredNumberKeys = new StringBuffer();
 		switchGroups = new ArrayList<SwitchGroup>();
 		SwitchGroup main = new SwitchGroup("Main Line");
 		SwitchGroup mountain = new SwitchGroup("Mountain Line");
@@ -118,12 +126,11 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		 * i, 1, new Address(i)); break; case 1 : s = new DoubleCrossSwitch(i,
 		 * "HB " + i, 1, new Address(i)); break; case 2 : s = new
 		 * ThreeWaySwitch(i, "HB " + i, 1, new Address(i, i + 1)); i++; break; }
-		 * main.addSwitch(s);
-		 *  } for (; i <= 60; i++) { Switch s = null; switch (rnd.nextInt(3)) {
-		 * case 0 : s = new DefaultSwitch(i, "HB " + i, 1, new Address(i));
-		 * break; case 1 : s = new DoubleCrossSwitch(i, "HB " + i, 1, new
-		 * Address(i)); break; case 2 : s = new ThreeWaySwitch(i, "HB " + i, 1,
-		 * new Address(i, i + 1)); i++; break; } mountain.addSwitch(s); }
+		 * main.addSwitch(s); } for (; i <= 60; i++) { Switch s = null; switch
+		 * (rnd.nextInt(3)) { case 0 : s = new DefaultSwitch(i, "HB " + i, 1,
+		 * new Address(i)); break; case 1 : s = new DoubleCrossSwitch(i, "HB " +
+		 * i, 1, new Address(i)); break; case 2 : s = new ThreeWaySwitch(i, "HB " +
+		 * i, 1, new Address(i, i + 1)); i++; break; } mountain.addSwitch(s); }
 		 */
 
 		/*
@@ -138,11 +145,12 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		 * mountain.addSwitch(switch5); mountain.addSwitch(switch6);
 		 */
 		Switch switch1 = new DefaultSwitch(1, "HB 1", 1, new Address(1));
-		Switch switch3 = new DoubleCrossSwitch(5, "Berg1", 1, new Address(2));
-		Switch switch2 = new ThreeWaySwitch(3, "HB 2", 1, new Address(3, 4));
+		Switch switch2 = new DoubleCrossSwitch(2, "Berg1", 1, new Address(2));
+		Switch switch3 = new ThreeWaySwitch(3, "HB 2", 1, new Address(3, 4));
 		main.addSwitch(switch1);
 		main.addSwitch(switch2);
 		main.addSwitch(switch3);
+
 		switchGroupPane.update(switchGroups);
 		preferences = new Preferences();
 	}
@@ -275,6 +283,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
 		daemonConnectItem.setIcon(createImageIcon("icons/daemonconnect.png",
 				"Connect", this));
+
 		daemonDisconnectItem = new JMenuItem("Disconnect");
 		daemonDisconnectItem.setIcon(createImageIcon(
 				"icons/daemondisconnect.png", "Disconnect", this));
@@ -295,7 +304,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 							RailControlGUI.this);
 					session.connect();
 					for (SwitchGroup sg : switchGroups) {
-						for (Switch s : sg.getSwitches()) {
+						for (Switch s : sg.getSwitches().values()) {
 							s.setSession(session);
 						}
 					}
@@ -355,21 +364,80 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 	}
 
 	private void initKeyboardActions() {
-		this.addKeyListener(new KeyListener() {
-			public void keyTyped(KeyEvent e) {
-				System.out.println("typed");
-			}
 
-			public void keyPressed(KeyEvent e) {
-				System.out.println("pressed");
-			}
+		for (int i = 0; i <= 10; i++) {
+			switchGroupPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+					KeyStroke.getKeyStroke(Integer.toString(i)), "numberKey");
 
-			public void keyReleased(KeyEvent e) {
-				System.out.println("released");
+			switchGroupPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+					KeyStroke.getKeyStroke("NUMPAD" + Integer.toString(i)),
+					"numberKey");
+		}
+		switchGroupPane.getActionMap().put("numberKey", new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				enteredNumberKeys.append(e.getActionCommand());
 			}
-
 		});
-		this.requestFocus();
+		switchGroupPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+				KeyStroke.getKeyStroke("ENTER"), "enter");
+		switchGroupPane.getActionMap().put("enter", new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				if (enteredNumberKeys.toString().equals("")) {
+					return;
+				}
+				String switchNumberAsString = enteredNumberKeys.toString();
+				int switchNumber = Integer.parseInt(switchNumberAsString);
+				SwitchGroupTab selectedTab = (SwitchGroupTab) (switchGroupPane
+						.getSelectedComponent());
+				int switchGroupIndex = switchGroups.indexOf(selectedTab
+						.getSwitchGroup());
+				Switch aSwitch = switchGroups.get(switchGroupIndex)
+						.getSwitches().get(switchNumber);
+				if (aSwitch == null) {
+					return;
+				}
+				try {
+					if (!aSwitch.isInitialized()) {
+						aSwitch.init();
+					}
+					SwitchControl.getInstance().setStraight(aSwitch);
+					enteredNumberKeys = new StringBuffer();
+				} catch (SwitchException e1) {
+					processException(e1);
+				}
+			}
+		});
+		switchGroupPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_ADD, 0), "plus");
+		switchGroupPane.getActionMap().put("plus", new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				if (enteredNumberKeys.toString().equals("")) {
+					return;
+				}
+				String switchNumberAsString = enteredNumberKeys.toString();
+				int switchNumber = Integer.parseInt(switchNumberAsString);
+				System.out.println(switchNumber);
+				enteredNumberKeys = new StringBuffer();
+				SwitchGroupTab selectedTab = (SwitchGroupTab) (switchGroupPane
+						.getSelectedComponent());
+				int switchGroupIndex = switchGroups.indexOf(selectedTab
+						.getSwitchGroup());
+				Switch aSwitch = switchGroups.get(switchGroupIndex)
+						.getSwitches().get(switchNumber);
+				if (aSwitch == null) {
+					return;
+				}
+				try {
+					if (!aSwitch.isInitialized()) {
+						aSwitch.init();
+					}
+					SwitchControl.getInstance().setCurvedLeft(aSwitch);
+					enteredNumberKeys = new StringBuffer();
+				} catch (SwitchException e1) {
+					processException(e1);
+				}
+			}
+		});
 	}
 
 	public void processException(Exception e) {

@@ -33,11 +33,16 @@ public abstract class Switch {
     protected int bus;
     protected Address address;
     protected String desc;
-    protected enum SwitchState {
+    public enum SwitchState {
 		LEFT, STRAIGHT, RIGHT, UNDEF
 	};
-	protected SwitchState switchState = SwitchState.STRAIGHT;
+	protected SwitchState switchState = SwitchState.UNDEF;
+	protected SwitchState defaultState = SwitchState.STRAIGHT;
 	protected boolean initialized = false;
+	public enum SwitchOrientation {
+		NORTH, SOUTH, WEST, EAST
+	};
+	protected SwitchOrientation switchOrientation = SwitchOrientation.EAST;
 
     protected int SWITCH_PORT_ACTIVATE = 1;
     protected int SWITCH_PORT_DEACTIVATE = 0;
@@ -45,6 +50,7 @@ public abstract class Switch {
     protected String ERR_SWITCH_LOCKED  = "Switch locked";
     protected String ERR_TOGGLE_FAILED  = "Toggle of switch failed";
     protected String ERR_INIT_FAILED  = "Init failed";
+    protected String ERR_REINIT_FAILED  = "ReInit failed";
     protected String ERR_NO_SESSION  = "Not connected";
 	protected SRCPSession session;
 
@@ -60,14 +66,14 @@ public abstract class Switch {
 			throw new SwitchException(ERR_NO_SESSION);
 		}
 	}
+	protected abstract void reinit() throws SwitchException;
     protected abstract void toggle() throws SwitchException;
     protected abstract void setStraight() throws SwitchException;
     protected abstract void setCurvedLeft() throws SwitchException;
     protected abstract void setCurvedRight() throws SwitchException;
-    protected abstract void switchPortChanged(int pAddress, int pActivatedPort, int value);
-    protected abstract void switchInitialized(int pAddress);
+    protected abstract void switchPortChanged(int pAddress, int pChangedPort, int value);
+    protected abstract void switchInitialized(int pBus, int pAddress);
     protected abstract void switchTerminated(int pAddress);
-    public abstract Image getImage(ImageObserver obs);
     /**
      * Get name.
      *
@@ -124,8 +130,9 @@ public abstract class Switch {
 		return address;
 	}
 
-	public void setAddress(Address address) {
+	public void setAddress(Address address) throws SwitchException {
 		this.address = address;
+		reinit();
 	}
 
 	public SRCPSession getSession() {
@@ -140,5 +147,31 @@ public abstract class Switch {
 		return initialized;
 	}
 	
-	
+	public boolean equals(Switch aSwitch) {
+		if(address == aSwitch.getAddress() && bus == aSwitch.getBus()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public SwitchState getDefaultState() {
+		return defaultState;
+	}
+
+	public void setDefaultState(SwitchState defaultState) {
+		this.defaultState = defaultState;
+	}
+
+	public SwitchOrientation getSwitchOrientation() {
+		return switchOrientation;
+	}
+
+	public void setSwitchOrientation(SwitchOrientation switchOrientation) {
+		this.switchOrientation = switchOrientation;
+	}
+
+	public SwitchState getSwitchState() {
+		return switchState;
+	}
 }

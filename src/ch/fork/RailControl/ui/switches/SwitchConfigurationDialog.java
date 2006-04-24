@@ -26,6 +26,7 @@
 package ch.fork.RailControl.ui.switches;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Insets;
@@ -51,27 +52,46 @@ import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import ch.fork.RailControl.domain.Preferences;
 import ch.fork.RailControl.domain.switches.DefaultSwitch;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
+import ch.fork.RailControl.domain.switches.Switch.SwitchOrientation;
+import ch.fork.RailControl.domain.switches.Switch.SwitchState;
+import ch.fork.RailControl.ui.switches.configurationtable.SwitchAddressCellEditor;
+import ch.fork.RailControl.ui.switches.configurationtable.SwitchDefaultStateCellRenderer;
+import ch.fork.RailControl.ui.switches.configurationtable.SwitchDefaultStateComboBoxCellRenderer;
+import ch.fork.RailControl.ui.switches.configurationtable.SwitchGroupTableModel;
+import ch.fork.RailControl.ui.switches.configurationtable.SwitchTypeCellRenderer;
+import ch.fork.RailControl.ui.switches.configurationtable.SwitchTypeComboBoxCellRenderer;
+
 public class SwitchConfigurationDialog extends JDialog {
 
 	private List<SwitchGroup> switchGroups;
+
 	private Preferences preferences;
 
 	private DefaultListModel switchGroupListModel;
+
 	private JPopupMenu switchGroupPopupMenu;
+
 	private JList switchGroupList;
 
 	private boolean cancelPressed = false;
+
 	private boolean okPressed = false;
+
 	private Frame owner;
+
 	private JPanel switchesPanel;
+
 	private TableModel switchGroupTableModel;
+
 	private JTable switchGroupTable;
+
 	public SwitchConfigurationDialog(Frame owner, Preferences preferences,
 			List<SwitchGroup> switchGroups) {
 		super(owner, "Switch Configuration", true);
@@ -251,21 +271,59 @@ public class SwitchConfigurationDialog extends JDialog {
 
 		switchGroupTableModel = new SwitchGroupTableModel();
 		switchGroupTable = new JTable(switchGroupTableModel);
-		switchGroupTable.setRowHeight(38);
-		
-		Object[] values = {"DefaultSwitch", "DoubleCrossSwitch",
-				"ThreeWaySwitch"};
+		switchGroupTable.setRowHeight(40);
+
+		// SwitchType
 		JComboBox switchTypeComboBox = new JComboBox();
 		switchTypeComboBox.addItem("DefaultSwitch");
 		switchTypeComboBox.addItem("DoubleCrossSwitch");
 		switchTypeComboBox.addItem("ThreeWaySwitch");
 		switchTypeComboBox.setRenderer(new SwitchTypeComboBoxCellRenderer());
-		
+
 		TableColumn typeColumn = switchGroupTable.getColumnModel().getColumn(1);
 		typeColumn.setCellEditor(new DefaultCellEditor(switchTypeComboBox));
 		typeColumn.setCellRenderer(new SwitchTypeCellRenderer());
+		typeColumn.setPreferredWidth(115);
 
+		// SwitchAddress
+		TableColumn addressColumn = switchGroupTable.getColumnModel().getColumn(2);
+		addressColumn.setCellEditor((TableCellEditor)new SwitchAddressCellEditor());
+		addressColumn.setPreferredWidth(140);
+
+		// DefaultState
+		JComboBox switchDefaultStateComboBox = new JComboBox();
+		switchDefaultStateComboBox.addItem(SwitchState.STRAIGHT);
+		switchDefaultStateComboBox.addItem(SwitchState.LEFT);
+		switchDefaultStateComboBox
+				.setRenderer(new SwitchDefaultStateComboBoxCellRenderer());
+
+		TableColumn defaultStateColumn = switchGroupTable.getColumnModel()
+				.getColumn(4);
+		defaultStateColumn.setCellEditor(new DefaultCellEditor(
+				switchDefaultStateComboBox));
+		defaultStateColumn
+				.setCellRenderer(new SwitchDefaultStateCellRenderer());
+		defaultStateColumn.setPreferredWidth(215);
+
+
+		// SwitchOrientation
+		JComboBox switchOrientationComboBox = new JComboBox();
+		switchOrientationComboBox.addItem(SwitchOrientation.NORTH);
+		switchOrientationComboBox.addItem(SwitchOrientation.EAST);
+		switchOrientationComboBox.addItem(SwitchOrientation.SOUTH);
+		switchOrientationComboBox.addItem(SwitchOrientation.WEST);
+
+		TableColumn switchOrientationColumn = switchGroupTable.getColumnModel()
+				.getColumn(5);
+		switchOrientationColumn.setCellEditor(new DefaultCellEditor(
+				switchOrientationComboBox));
+		switchOrientationColumn.setPreferredWidth(100);
+
+		switchGroupTable.getColumnModel().getColumn(6).setPreferredWidth(200);
+		
+		
 		JScrollPane switchGroupTablePane = new JScrollPane(switchGroupTable);
+		switchGroupTablePane.setPreferredSize(new Dimension(600, 400));
 		switchesPanel.add(switchGroupTablePane, BorderLayout.CENTER);
 
 		JButton addSwitchButton = new JButton("Add");
@@ -317,5 +375,6 @@ public class SwitchConfigurationDialog extends JDialog {
 		switchGroupTable.repaint();
 		switchesPanel.revalidate();
 		switchesPanel.repaint();
+		pack();
 	}
 }

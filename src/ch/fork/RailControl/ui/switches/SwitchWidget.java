@@ -19,6 +19,7 @@
  *
  *----------------------------------------------------------------------*/
 package ch.fork.RailControl.ui.switches;
+
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -27,21 +28,26 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import ch.fork.RailControl.domain.switches.DefaultSwitch;
+import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
 import ch.fork.RailControl.domain.switches.Switch;
+import ch.fork.RailControl.domain.switches.SwitchChangeListener;
 import ch.fork.RailControl.domain.switches.SwitchControl;
+import ch.fork.RailControl.domain.switches.ThreeWaySwitch;
 import ch.fork.RailControl.domain.switches.exception.SwitchException;
 import ch.fork.RailControl.ui.ExceptionProcessor;
 
-public class SwitchWidget extends JPanel {
+public class SwitchWidget extends JPanel implements SwitchChangeListener {
 
 	private static final long serialVersionUID = 1L;
+
 	private Switch mySwitch;
-	private JLabel iconLabel;
+
+	private SwitchCanvas switchState;
 
 	public SwitchWidget(Switch aSwitch) {
 		mySwitch = aSwitch;
@@ -70,29 +76,61 @@ public class SwitchWidget extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.gridwidth = 2;
-		iconLabel = new JLabel();
-		iconLabel.setIcon(new ImageIcon(mySwitch.getImage(this)));
-		layout.setConstraints(iconLabel, gbc);
-		add(iconLabel);
+		if (mySwitch instanceof DoubleCrossSwitch) {
+			switchState = new DoubleCrossSwitchCanvas(mySwitch);
+		} else if (mySwitch instanceof DefaultSwitch) {
+			switchState = new DefaultSwitchCanvas(mySwitch);
+		} else if (mySwitch instanceof ThreeWaySwitch) {
+			switchState = new ThreeWaySwitchCanvas(mySwitch);
+		}
+		layout.setConstraints(switchState, gbc);
+		add(switchState);
+		switchState.repaint();
 
-		addMouseListener(new MouseAdapter() {
+		switchState.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				try {
-					if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-						if(!mySwitch.isInitialized()) {
+					if (e.getClickCount() == 2
+							&& e.getButton() == MouseEvent.BUTTON1) {
+						if (!mySwitch.isInitialized()) {
 							mySwitch.init();
 						}
 						SwitchControl.getInstance().toggle(mySwitch);
 						SwitchWidget.this.revalidate();
 						SwitchWidget.this.repaint();
-						iconLabel.setIcon(new ImageIcon(mySwitch.getImage(SwitchWidget.this)));
-						iconLabel.repaint();
-						iconLabel.revalidate();
+						switchState.repaint();
 					}
 				} catch (SwitchException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
 				}
 			}
 		});
+
+		addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				try {
+					if (e.getClickCount() == 2
+							&& e.getButton() == MouseEvent.BUTTON1) {
+						if (!mySwitch.isInitialized()) {
+							mySwitch.init();
+						}
+						SwitchControl.getInstance().toggle(mySwitch);
+						SwitchWidget.this.revalidate();
+						SwitchWidget.this.repaint();
+						switchState.repaint();
+					}
+				} catch (SwitchException e1) {
+					ExceptionProcessor.getInstance().processException(e1);
+				}
+			}
+		});
+	}
+
+	public void switchChanged(Switch changedSwitch) {
+		if (mySwitch.equals(changedSwitch)) {
+			SwitchWidget.this.repaint();
+			SwitchWidget.this.revalidate();
+			switchState.repaint();
+		}
 	}
 }

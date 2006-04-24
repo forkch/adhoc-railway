@@ -96,7 +96,9 @@ public class SwitchControl implements GAInfoListener {
 				+ " , " + value + " )");
 		Switch s = switches.get(address);
 		s.switchPortChanged(address, port, value);
-		informListeners(s);
+		if (value != 0) {
+			informListeners(s);
+		}
 	}
 
 	public void GAinit(double timestamp, int bus, int address, String protocol,
@@ -104,12 +106,12 @@ public class SwitchControl implements GAInfoListener {
 		System.out.println("GAinit( " + bus + " , " + address + " , "
 				+ protocol + " , " + params + " )");
 		Switch s = switches.get(Integer.valueOf(address));
-		s.switchInitialized(address);
+		s.switchInitialized(bus, address);
 		informListeners(s);
 	}
 
 	public void GAterm(double timestamp, int bus, int address) {
-		System.out.println("GAinit( " + bus + " , " + address + " )");
+		System.out.println("GAterm( " + bus + " , " + address + " )");
 		Switch s = switches.get(address);
 		s.switchTerminated(address);
 		informListeners(s);

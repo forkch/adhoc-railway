@@ -23,7 +23,7 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.RailControl.ui.switches;
+package ch.fork.RailControl.ui.switches.configurationtable;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -32,9 +32,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import ch.fork.RailControl.domain.switches.DefaultSwitch;
-import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
 import ch.fork.RailControl.ui.ImageTools;
+import ch.fork.RailControl.ui.switches.SwitchConfigurationDialog;
 public class SwitchTypeComboBoxCellRenderer implements ListCellRenderer {
 
 	public Component getListCellRendererComponent(JList list, Object value,
@@ -44,13 +43,13 @@ public class SwitchTypeComboBoxCellRenderer implements ListCellRenderer {
 		iconLabel.setPreferredSize(new Dimension(56,38));
 		if (value.equals("DefaultSwitch")) {
 			iconLabel.setIcon(ImageTools.createDefaultSwitch(iconLabel,
-					DefaultSwitch.class));
+					SwitchConfigurationDialog.class));
 		} else if (value.equals("DoubleCrossSwitch")) {
 			iconLabel.setIcon(ImageTools.createDoubleCrossSwitch(iconLabel,
-					DoubleCrossSwitch.class));
+					SwitchConfigurationDialog.class));
 		} else if (value.equals("ThreeWaySwitch")) {
 			iconLabel.setIcon(ImageTools.createThreeWaySwitch(iconLabel,
-					DoubleCrossSwitch.class));
+					SwitchConfigurationDialog.class));
 		}
 		return iconLabel;
 

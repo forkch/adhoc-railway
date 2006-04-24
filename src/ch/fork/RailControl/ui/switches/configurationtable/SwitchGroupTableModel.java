@@ -23,7 +23,10 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.RailControl.ui.switches;
+package ch.fork.RailControl.ui.switches.configurationtable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -33,10 +36,13 @@ import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
 import ch.fork.RailControl.domain.switches.Switch;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 import ch.fork.RailControl.domain.switches.ThreeWaySwitch;
+import ch.fork.RailControl.domain.switches.Switch.SwitchOrientation;
+import ch.fork.RailControl.domain.switches.Switch.SwitchState;
+import ch.fork.RailControl.domain.switches.exception.SwitchException;
 public class SwitchGroupTableModel extends AbstractTableModel {
 
 	private final String[] columnNames = {"Switch #", "Type", "Address", "Bus",
-			"Desc"};
+			"Default State", "Orientation", "Desc"};
 	private SwitchGroup switchGroup;
 
 	public SwitchGroupTableModel() {
@@ -67,7 +73,9 @@ public class SwitchGroupTableModel extends AbstractTableModel {
 		if (switchGroup == null) {
 			return null;
 		}
-		Switch switchOfThisRow = switchGroup.getSwitches().get(rowIndex);
+		
+		List<Switch> switches = new ArrayList(switchGroup.getSwitches().values());
+		Switch switchOfThisRow = switches.get(rowIndex);
 		switch (columnIndex) {
 			case 0 :
 				return switchOfThisRow.getNumber();
@@ -78,6 +86,10 @@ public class SwitchGroupTableModel extends AbstractTableModel {
 			case 3 :
 				return switchOfThisRow.getBus();
 			case 4 :
+				return switchOfThisRow.getDefaultState();
+			case 5 :
+				return switchOfThisRow.getSwitchOrientation();
+			case 6 :
 				return switchOfThisRow.getDesc();
 			default :
 				return null;
@@ -87,11 +99,14 @@ public class SwitchGroupTableModel extends AbstractTableModel {
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void setValueAt(Object value, int row, int col) {
 		if (switchGroup == null) {
 			return;
 		}
-		Switch switchOfThisRow = switchGroup.getSwitches().get(row);
+		ArrayList arrayList = new ArrayList(switchGroup.getSwitches().values());
+		List<Switch> switches = arrayList;
+		Switch switchOfThisRow = switches.get(row);
 		switch (col) {
 			case 0 :
 				switchOfThisRow.setNumber(Integer.parseInt((String) value));
@@ -113,12 +128,23 @@ public class SwitchGroupTableModel extends AbstractTableModel {
 				tmp = null;
 				break;
 			case 2 :
-				switchOfThisRow.setAddress(new Address((String) value));
+				try {
+					switchOfThisRow.setAddress((Address)value);
+				} catch (SwitchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				break;
 			case 3 :
 				switchOfThisRow.setBus(Integer.parseInt((String) value));
 				break;
 			case 4 :
+					switchOfThisRow.setDefaultState((SwitchState)value);
+				break;
+			case 5 :
+				switchOfThisRow.setSwitchOrientation((SwitchOrientation) value);
+				break;
+			case 6 :
 				switchOfThisRow.setDesc((String) value);
 				break;
 			default :

@@ -23,7 +23,7 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.RailControl.ui.switches;
+package ch.fork.RailControl.ui.switches.configurationtable;
 
 import java.awt.Component;
 
@@ -31,9 +31,8 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
-import ch.fork.RailControl.domain.switches.DefaultSwitch;
-import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
 import ch.fork.RailControl.ui.ImageTools;
+import ch.fork.RailControl.ui.switches.SwitchConfigurationDialog;
 
 public class SwitchTypeCellRenderer implements TableCellRenderer {
 
@@ -41,13 +40,13 @@ public class SwitchTypeCellRenderer implements TableCellRenderer {
 		JLabel iconLabel = new JLabel();
 		if (value.equals("DefaultSwitch")) {
 			iconLabel.setIcon(ImageTools.createDefaultSwitch(iconLabel,
-					DefaultSwitch.class));
+					SwitchConfigurationDialog.class));
 		} else if (value.equals("DoubleCrossSwitch")) {
 			iconLabel.setIcon(ImageTools.createDoubleCrossSwitch(iconLabel,
-					DoubleCrossSwitch.class));
+					SwitchConfigurationDialog.class));
 		} else if (value.equals("ThreeWaySwitch")) {
 			iconLabel.setIcon(ImageTools.createThreeWaySwitch(iconLabel,
-					DoubleCrossSwitch.class));
+					SwitchConfigurationDialog.class));
 		}
 		return iconLabel;
 	}

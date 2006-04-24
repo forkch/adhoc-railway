@@ -37,10 +37,15 @@ import de.dermoba.srcp.devices.GA;
 public class ThreeWaySwitch extends Switch {
 
 	private GA ga1;
+
 	private GA ga2;
+
 	private int[] LEFT_PORTS = { 1, 0 };
+
 	private int[] STRAIGHT_PORTS = { 0, 0 };
+
 	private int[] RIGHT_PORTS = { 0, 1 };
+
 	private int[] UNDEF_PORTS = { 1, 1 };
 
 	public ThreeWaySwitch(int pNumber, String pDesc, int pBus, Address address) {
@@ -63,6 +68,23 @@ public class ThreeWaySwitch extends Switch {
 			}
 		}
 		initialized = true;
+	}
+
+	@Override
+	protected void reinit() throws SwitchException {
+		try {
+			if (ga1 != null) {
+				ga1.term();
+			}
+			if (ga2 != null) {
+				ga2.term();
+			}
+		} catch (SRCPException e) {
+			throw new SwitchException(ERR_REINIT_FAILED, e);
+		}
+		if(session != null) {
+			init();
+		}
 	}
 
 	protected void toggle() throws SwitchException {
@@ -104,7 +126,7 @@ public class ThreeWaySwitch extends Switch {
 		}
 	}
 
-	protected void switchPortChanged(int pAddress, int pActivatedPort, int value) {
+	protected void switchPortChanged(int pAddress, int pChangedPort, int value) {
 		int[] actualPorts = UNDEF_PORTS;
 		switch (switchState) {
 		case LEFT:
@@ -117,9 +139,9 @@ public class ThreeWaySwitch extends Switch {
 			actualPorts = UNDEF_PORTS;
 		}
 		if (address.getAddress1() == pAddress) {
-			actualPorts[0] = pActivatedPort;
+			actualPorts[0] = pChangedPort;
 		} else if (address.getAddress2() == pAddress) {
-			actualPorts[1] = pActivatedPort;
+			actualPorts[1] = pChangedPort;
 		}
 		if (actualPorts == LEFT_PORTS) {
 			switchState = SwitchState.LEFT;
@@ -133,13 +155,19 @@ public class ThreeWaySwitch extends Switch {
 	}
 
 	@Override
-	protected void switchInitialized(int pAddress) {
-		
+	protected void switchInitialized(int pBus, int pAddress) {
+		ga1 = new GA(session);
+		ga2 = new GA(session);
+		address.setAddress1(pAddress);
+		this.bus = pBus;
+		ga1.setBus(bus);
+		ga1.setAddress(address.getAddress1());
+		initialized = true;
 	}
 
 	@Override
 	protected void switchTerminated(int pAddress) {
-		
+
 	}
 
 	@Override
@@ -177,58 +205,4 @@ public class ThreeWaySwitch extends Switch {
 			throw new SwitchException(ERR_TOGGLE_FAILED, e);
 		}
 	}
-
-	@Override
-	public Image getImage(ImageObserver obs) {
-		BufferedImage img = new BufferedImage(56, 35,
-				BufferedImage.TYPE_4BYTE_ABGR);
-		Graphics2D g = img.createGraphics();
-		g.drawImage(createImageIcon("icons/three_way_switch.png", "", this)
-				.getImage(), 0, 0, obs);
-		switch (switchState) {
-		case LEFT:
-			g.drawImage(createImageIcon("icons/LED_up_yellow.png", "", this)
-					.getImage(), 28, 0, obs);
-			g.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
-					.getImage(), 28, 0, obs);
-			g.drawImage(createImageIcon("icons/LED_down_white.png", "", this)
-					.getImage(), 28, 0, obs);
-			g.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
-					.getImage(), 0, 0, obs);
-			break;
-		case STRAIGHT:
-			g.drawImage(createImageIcon("icons/LED_up_white.png", "", this)
-					.getImage(), 28, 0, obs);
-			g.drawImage(
-					createImageIcon("icons/LED_middle_yellow.png", "", this)
-							.getImage(), 28, 0, obs);
-			g.drawImage(createImageIcon("icons/LED_down_white.png", "", this)
-					.getImage(), 28, 0, obs);
-			g.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
-					.getImage(), 0, 0, obs);
-			break;
-		case RIGHT:
-
-			g.drawImage(createImageIcon("icons/LED_up_white.png", "", this)
-					.getImage(), 28, 0, obs);
-			g.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
-					.getImage(), 28, 0, obs);
-			g.drawImage(createImageIcon("icons/LED_down_yellow.png", "", this)
-					.getImage(), 28, 0, obs);
-			g.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
-					.getImage(), 0, 0, obs);
-			break;
-		case UNDEF:
-			g.drawImage(createImageIcon("icons/LED_up_white.png", "", this)
-					.getImage(), 28, 0, obs);
-			g.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
-					.getImage(), 28, 0, obs);
-			g.drawImage(createImageIcon("icons/LED_down_white.png", "", this)
-					.getImage(), 28, 0, obs);
-			g.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
-					.getImage(), 0, 0, obs);
-		}
-		return img;
-	}
-
 }
