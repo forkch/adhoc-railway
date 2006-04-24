@@ -99,6 +99,7 @@ public class ImageTools {
 
 	public static ImageIcon createImageIcon(String path, String description,
 			Class o) {
+		System.out.println(o);
 		java.net.URL imgURL = o.getResource(path);
 		if (imgURL != null) {
 			return new ImageIcon(imgURL, description);
