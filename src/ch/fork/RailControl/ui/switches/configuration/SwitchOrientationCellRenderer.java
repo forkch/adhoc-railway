@@ -1,4 +1,4 @@
-package ch.fork.RailControl.ui.switches.configurationtable;
+package ch.fork.RailControl.ui.switches.configuration;
 
 import java.awt.Component;
 
@@ -8,7 +8,7 @@ import javax.swing.table.TableCellRenderer;
 
 import ch.fork.RailControl.domain.switches.Switch.SwitchState;
 import ch.fork.RailControl.ui.ImageTools;
-import ch.fork.RailControl.ui.switches.SwitchConfigurationDialog;
+import ch.fork.RailControl.ui.switches.SwitchWidget;
 
 public class SwitchOrientationCellRenderer implements TableCellRenderer {
 
@@ -17,10 +17,10 @@ public class SwitchOrientationCellRenderer implements TableCellRenderer {
 		JLabel iconLabel = new JLabel();
 		if (value.equals(SwitchState.STRAIGHT)) {
 			iconLabel.setIcon(ImageTools.createStraightState(iconLabel,
-					SwitchConfigurationDialog.class));
+					SwitchWidget.class));
 		} else {
 			iconLabel.setIcon(ImageTools.createCurvedState(iconLabel,
-					SwitchConfigurationDialog.class));
+					SwitchWidget.class));
 		}
 		return iconLabel;
 	}

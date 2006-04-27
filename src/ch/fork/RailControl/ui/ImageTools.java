@@ -25,8 +25,6 @@
 
 package ch.fork.RailControl.ui;
 
-import static ch.fork.RailControl.ui.ImageTools.createImageIcon;
-
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;

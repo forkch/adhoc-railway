@@ -25,51 +25,283 @@
 
 package ch.fork.RailControl.domain.locomotives;
 
+import ch.fork.RailControl.domain.Constants;
+import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
+import ch.fork.RailControl.domain.locomotives.exception.LocomotiveLockedException;
 import de.dermoba.srcp.client.SRCPSession;
+import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GL;
 
-public abstract class Locomotive {
+public abstract class Locomotive implements Constants {
 	private String name;
+	private String desc;
+
 	private int address;
 	private int bus;
-	private int direction;
+
+	public enum Direction {
+		FORWARD, REVERSE, UNDEF
+	};
+
+	private Direction direction = Direction.UNDEF;
+
 	private final int PROTOCOL_VERSION = 2;
+
 	private final String PROTOCOL = "M";
+
+	private final String FORWARD_DIRECTION = "1";
+
+	private final String REVERSE_DIRECTION = "0";
+
 	private int drivingSteps;
+
 	private int currentSpeed;
 
 	private SRCPSession session;
+
 	private GL gl;
 
-	public Locomotive(SRCPSession session, String name, int bus, int address, int drivingSteps)
-			throws SRCPException {
+	private String[] params;
+
+	private boolean initialized = false;
+
+	public Locomotive(SRCPSession session, String name, int bus, int address,
+			int drivingSteps, String desc) {
 		this.session = session;
 		this.name = name;
 		this.bus = bus;
 		this.address = address;
 		this.drivingSteps = drivingSteps;
-		gl = new GL(session);
-		String[] params = new String[3];
+		this.desc = desc;
+		params = new String[3];
 		params[0] = Integer.toString(PROTOCOL_VERSION);
 		params[1] = Integer.toString(drivingSteps);
 		params[2] = Integer.toString(0);
-		
-		//gl.init(bus, address, PROTOCOL, params);
-		//gl.get();
-        //TODO: immediately a get to determine state (direction)!!!!
+
 	}
 
-	public void setSpeed(double speedInPercent) throws SRCPException {
-		int newSpeed = (int)(drivingSteps * speedInPercent);
-		gl.set(Integer.toString(direction),newSpeed, drivingSteps, null);
-		currentSpeed = newSpeed;
-		gl.get();
+	public void init() throws LocomotiveException {
+		try {
+			if (session == null) {
+				throw new LocomotiveException(ERR_NO_SESSION);
+			}
+			gl = new GL(session);
+			gl.init(bus, address, PROTOCOL, params);
+			initialized = true;
+		} catch (SRCPException x) {
+			if (x instanceof SRCPDeviceLockedException) {
+				throw new LocomotiveLockedException(ERR_LOCKED);
+			} else {
+				throw new LocomotiveException(ERR_INIT_FAILED, x);
+			}
+		}
 	}
 	
-	public void increaseSpeed() throws SRCPException {
-		int newSpeed = currentSpeed +1;
-		gl.set(Integer.toString(direction),newSpeed, drivingSteps, null);
-		currentSpeed ++;
+	protected void reinit() throws LocomotiveException {
+		try {
+			if(gl != null) {
+				gl.term();
+			}
+		} catch (SRCPException e) {
+			throw new LocomotiveException(ERR_REINIT_FAILED, e);
+		}
+		if(session != null) {
+			init();
+		}
 	}
+
+	protected void setSpeed(int speed) throws LocomotiveException {
+		try {
+			switch (direction) {
+			case FORWARD:
+				gl.set(FORWARD_DIRECTION, speed, drivingSteps, null);
+				break;
+			case REVERSE:
+				gl.set(REVERSE_DIRECTION, speed, drivingSteps, null);
+				break;
+			case UNDEF:
+				gl.set(FORWARD_DIRECTION, speed, drivingSteps, null);
+				direction = Direction.FORWARD;
+				break;
+			}
+			currentSpeed = speed;
+			// gl.get();
+		} catch (SRCPException x) {
+			if (x instanceof SRCPDeviceLockedException) {
+				throw new LocomotiveLockedException(ERR_LOCKED);
+			} else {
+				throw new LocomotiveException(ERR_FAILED, x);
+			}
+		}
+	}
+
+	protected void increaseSpeed() throws LocomotiveException {
+		try {
+			int newSpeed = currentSpeed + 1;
+			if (newSpeed <= drivingSteps) {
+				switch (direction) {
+				case FORWARD:
+					gl.set(FORWARD_DIRECTION, newSpeed, drivingSteps, null);
+					break;
+				case REVERSE:
+					gl.set(REVERSE_DIRECTION, newSpeed, drivingSteps, null);
+					break;
+				case UNDEF:
+					gl.set(FORWARD_DIRECTION, newSpeed, drivingSteps, null);
+					direction = Direction.FORWARD;
+					break;
+				}
+
+				currentSpeed++;
+			}
+		} catch (SRCPException x) {
+			if (x instanceof SRCPDeviceLockedException) {
+				throw new LocomotiveLockedException(ERR_LOCKED);
+			} else {
+				throw new LocomotiveException(ERR_FAILED, x);
+			}
+		}
+	}
+
+	protected void decreaseSpeed() throws LocomotiveException {
+		try {
+			int newSpeed = currentSpeed - 1;
+			if (newSpeed >= 0) {
+				switch (direction) {
+				case FORWARD:
+					gl.set(FORWARD_DIRECTION, newSpeed, drivingSteps, null);
+					break;
+				case REVERSE:
+					gl.set(REVERSE_DIRECTION, newSpeed, drivingSteps, null);
+					break;
+				case UNDEF:
+					gl.set(FORWARD_DIRECTION, newSpeed, drivingSteps, null);
+					direction = Direction.FORWARD;
+					break;
+				}
+				currentSpeed--;
+			}
+		} catch (SRCPException x) {
+			if (x instanceof SRCPDeviceLockedException) {
+				throw new LocomotiveLockedException(ERR_LOCKED);
+			} else {
+				throw new LocomotiveException(ERR_FAILED, x);
+			}
+		}
+	}
+
+	protected void toggleDirection() {
+		switch (this.direction) {
+		case FORWARD:
+			direction = Direction.REVERSE;
+			break;
+		case REVERSE:
+			direction = Direction.FORWARD;
+			break;
+		}
+	}
+
+	protected void locomotiveChanged(String pDrivemode, int v, int vMax,
+			boolean[] functions) {
+		if (pDrivemode.equals(FORWARD_DIRECTION)) {
+			direction = Direction.FORWARD;
+		} else if (pDrivemode.equals(REVERSE_DIRECTION)) {
+			direction = Direction.REVERSE;
+		}
+		currentSpeed = v;
+	}
+
+	protected void locomotiveInitialized(int pBus, int pAddress,
+			String protocol, String[] params) {
+		gl = new GL(session);
+		this.address = pAddress;
+		this.bus = pBus;
+		gl.setBus(bus);
+		gl.setAddress(address);
+		initialized = true;
+	}
+
+	protected void locomotiveTerminated() {
+		gl = null;
+		initialized = false;
+	}
+
+	public boolean isInitialized() {
+		return initialized;
+	}
+
+	protected void setInitialized(boolean initialized) {
+		this.initialized = initialized;
+	}
+
+	public SRCPSession getSession() {
+		return session;
+	}
+
+	public void setSession(SRCPSession session) {
+		this.session = session;
+	}
+
+	public int getDrivingSteps() {
+		return drivingSteps;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public int getCurrentSpeed() {
+		return currentSpeed;
+	}
+
+	public String toString() {
+		return name;
+	}
+
+	public int getAddress() {
+		return address;
+	}
+
+	public boolean equals(Locomotive l) {
+		if (address == l.getAddress() && bus == l.getBus()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public int getBus() {
+		return bus;
+	}
+
+	public Direction getDirection() {
+		return direction;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getType() {
+		return this.getClass().getSimpleName();
+	}
+
+	public void setAddress(int address) throws LocomotiveException {
+		this.address = address;
+		reinit();
+	}
+
+	public void setBus(int bus) {
+		this.bus = bus;
+	}
+
 }

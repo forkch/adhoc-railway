@@ -21,13 +21,7 @@
 
 package ch.fork.RailControl.domain.switches;
 
-import static ch.fork.RailControl.ui.ImageTools.createImageIcon;
-
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-
+import ch.fork.RailControl.domain.Preferences;
 import ch.fork.RailControl.domain.switches.exception.SwitchException;
 import ch.fork.RailControl.domain.switches.exception.SwitchLockedException;
 import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
@@ -56,7 +50,7 @@ public class DefaultSwitch extends Switch {
 			ga.init(bus, address.getAddress1(), "M");
 		} catch (SRCPException x) {
 			if (x instanceof SRCPDeviceLockedException) {
-				throw new SwitchLockedException(ERR_SWITCH_LOCKED);
+				throw new SwitchLockedException(ERR_LOCKED);
 			} else {
 				throw new SwitchException(ERR_INIT_FAILED, x);
 			}
@@ -85,27 +79,27 @@ public class DefaultSwitch extends Switch {
 		try {
 			switch (switchState) {
 			case STRAIGHT:
-				ga.set(CURVED_PORT, SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+				ga.set(CURVED_PORT, SWITCH_PORT_ACTIVATE, Preferences.getInstance().getDefaultActivationTime());
 				switchState = SwitchState.LEFT;
 				break;
 			case RIGHT:
 			case LEFT:
-				ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+				ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE, Preferences.getInstance().getDefaultActivationTime());
 				switchState = SwitchState.STRAIGHT;
 				break;
 			case UNDEF:
 				if (defaultState == SwitchState.STRAIGHT) {
-					ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+					ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE, Preferences.getInstance().getDefaultActivationTime());
 					switchState = SwitchState.STRAIGHT;
 				} else if (defaultState == SwitchState.RIGHT
 						|| defaultState == SwitchState.LEFT) {
-					ga.set(CURVED_PORT, SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
+					ga.set(CURVED_PORT, SWITCH_PORT_ACTIVATE, Preferences.getInstance().getDefaultActivationTime());
 					switchState = SwitchState.LEFT;
 				}
 			}
 		} catch (SRCPException x) {
 			if (x instanceof SRCPDeviceLockedException) {
-				throw new SwitchLockedException(ERR_SWITCH_LOCKED);
+				throw new SwitchLockedException(ERR_LOCKED);
 			} else {
 				throw new SwitchException(ERR_TOGGLE_FAILED, x);
 			}
@@ -149,14 +143,14 @@ public class DefaultSwitch extends Switch {
 		}
 		try {
 			if (defaultState == SwitchState.STRAIGHT) {
-				ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
-				ga.set(CURVED_PORT, SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
+				ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE, Preferences.getInstance().getDefaultActivationTime());
+				ga.set(CURVED_PORT, SWITCH_PORT_DEACTIVATE, Preferences.getInstance().getDefaultActivationTime());
 				// TODO: resolve get
 				switchState = SwitchState.STRAIGHT;
 			} else if (defaultState == SwitchState.LEFT
 					|| defaultState == SwitchState.RIGHT) {
-				ga.set(CURVED_PORT, SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
-				ga.set(STRAIGHT_PORT, SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
+				ga.set(CURVED_PORT, SWITCH_PORT_ACTIVATE, Preferences.getInstance().getDefaultActivationTime());
+				ga.set(STRAIGHT_PORT, SWITCH_PORT_DEACTIVATE, Preferences.getInstance().getDefaultActivationTime());
 				// TODO: resolve get
 				switchState = SwitchState.LEFT;
 			}
@@ -173,13 +167,13 @@ public class DefaultSwitch extends Switch {
 		try {
 			if (defaultState == SwitchState.LEFT
 					|| defaultState == SwitchState.RIGHT) {
-				ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
-				ga.set(CURVED_PORT, SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
+				ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE, Preferences.getInstance().getDefaultActivationTime());
+				ga.set(CURVED_PORT, SWITCH_PORT_DEACTIVATE, Preferences.getInstance().getDefaultActivationTime());
 				// TODO: resolve get
 				switchState = SwitchState.STRAIGHT;
 			} else if (defaultState == SwitchState.STRAIGHT) {
-				ga.set(CURVED_PORT, SWITCH_PORT_ACTIVATE, SWITCH_DELAY);
-				ga.set(STRAIGHT_PORT, SWITCH_PORT_DEACTIVATE, SWITCH_DELAY);
+				ga.set(CURVED_PORT, SWITCH_PORT_ACTIVATE, Preferences.getInstance().getDefaultActivationTime());
+				ga.set(STRAIGHT_PORT, SWITCH_PORT_DEACTIVATE, Preferences.getInstance().getDefaultActivationTime());
 				// TODO: resolve get
 				switchState = SwitchState.LEFT;
 			}
@@ -192,4 +186,5 @@ public class DefaultSwitch extends Switch {
 	protected void setCurvedRight() throws SwitchException {
 		setCurvedLeft();
 	}
+
 }

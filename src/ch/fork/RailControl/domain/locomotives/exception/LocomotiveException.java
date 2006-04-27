@@ -1,9 +1,9 @@
 /*------------------------------------------------------------------------
  * 
- * <SwitchChangedListener.java>  -  <Informs when a switch changed its
- * state>
+ * <src/domain/switches/SwitchException.java>  -  <Generic exception with
+ * switches>
  * 
- * begin     : j Tue Jan  3 21:32:14 CET 2006
+ * begin     : Sat Jan 28 16:51:17 CET 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : bm@fork.ch
  * language  : java
@@ -20,9 +20,15 @@
  *
  *----------------------------------------------------------------------*/
 
+package ch.fork.RailControl.domain.locomotives.exception;
 
-package ch.fork.RailControl.domain.switches;
+public class LocomotiveException extends Exception {
 
-public interface SwitchChangeListener {
-    public void switchChanged(Switch changedLocomotive);
+    public LocomotiveException(String msg) {
+        super(msg);
+    }
+
+    public LocomotiveException(String msg, Exception parent) {
+        super(msg, parent);
+    }
 }

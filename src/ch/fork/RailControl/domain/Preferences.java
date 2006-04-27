@@ -25,8 +25,8 @@
 
 package ch.fork.RailControl.domain;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Preferences {
 
@@ -37,12 +37,26 @@ public class Preferences {
 	private int defaultActivationTime = 50;
 	private int defaultRoutingDelay = 250;
 	
-	public Preferences() {
+	private int locomotiveControlNumber = 5;
+	
+	private static Preferences instance = null;
+	
+	private Preferences() {
 		hostnames = new ArrayList<String>();
 		hostnames.add("localhost");
 		hostnames.add("titan");
 		hostnames.add("kloosweg.homelinux.org");
 	}
+	
+	public static Preferences getInstance() {
+		if(instance == null) {
+			instance = new Preferences();
+			return instance;
+		} else {
+			return instance;
+		}
+	}
+	
 	public String toString() {
 		StringBuffer b = new StringBuffer();
 		b.append("hostname: " +  hostnames + " ; ");
@@ -81,6 +95,14 @@ public class Preferences {
 	}
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
+	}
+
+	public int getLocomotiveControlNumber() {
+		return locomotiveControlNumber;
+	}
+
+	public void setLocomotiveControlNumber(int locomotiveControlNumber) {
+		this.locomotiveControlNumber = locomotiveControlNumber;
 	}
 	
 }

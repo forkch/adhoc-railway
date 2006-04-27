@@ -30,6 +30,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
 import ch.fork.RailControl.domain.switches.DefaultSwitch;
@@ -87,50 +88,43 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener {
 		add(switchState);
 		switchState.repaint();
 
-		switchState.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				try {
-					if (e.getClickCount() == 2
-							&& e.getButton() == MouseEvent.BUTTON1) {
-						if (!mySwitch.isInitialized()) {
-							mySwitch.init();
-						}
-						SwitchControl.getInstance().toggle(mySwitch);
-						SwitchWidget.this.revalidate();
-						SwitchWidget.this.repaint();
-						switchState.repaint();
-					}
-				} catch (SwitchException e1) {
-					ExceptionProcessor.getInstance().processException(e1);
-				}
-			}
-		});
+		addMouseListener(new ToggleAction());
 
-		addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				try {
-					if (e.getClickCount() == 2
-							&& e.getButton() == MouseEvent.BUTTON1) {
-						if (!mySwitch.isInitialized()) {
-							mySwitch.init();
-						}
-						SwitchControl.getInstance().toggle(mySwitch);
-						SwitchWidget.this.revalidate();
-						SwitchWidget.this.repaint();
-						switchState.repaint();
-					}
-				} catch (SwitchException e1) {
-					ExceptionProcessor.getInstance().processException(e1);
-				}
-			}
-		});
+		switchState.addMouseListener(new ToggleAction());
 	}
 
 	public void switchChanged(Switch changedSwitch) {
 		if (mySwitch.equals(changedSwitch)) {
+			SwingUtilities.invokeLater(new SwitchWidgetUpdater());
+		}
+	}
+	
+	private class SwitchWidgetUpdater implements Runnable {
+
+		public void run() {
 			SwitchWidget.this.repaint();
 			SwitchWidget.this.revalidate();
 			switchState.repaint();
+		}
+		
+	}
+	
+	private class ToggleAction extends MouseAdapter {
+		public void mouseClicked(MouseEvent e) {
+			try {
+				if (e.getClickCount() == 1
+						&& e.getButton() == MouseEvent.BUTTON1) {
+					if (!mySwitch.isInitialized()) {
+						mySwitch.init();
+					}
+					SwitchControl.getInstance().toggle(mySwitch);
+					SwitchWidget.this.revalidate();
+					SwitchWidget.this.repaint();
+					switchState.repaint();
+				}
+			} catch (SwitchException e1) {
+				ExceptionProcessor.getInstance().processException(e1);
+			}
 		}
 	}
 }

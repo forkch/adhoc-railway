@@ -4,8 +4,6 @@ import static ch.fork.RailControl.ui.ImageTools.createImageIcon;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 import ch.fork.RailControl.domain.switches.Switch;

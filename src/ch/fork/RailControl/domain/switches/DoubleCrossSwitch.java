@@ -25,12 +25,6 @@
 
 package ch.fork.RailControl.domain.switches;
 
-import static ch.fork.RailControl.ui.ImageTools.createImageIcon;
-
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 
 public class DoubleCrossSwitch extends DefaultSwitch {
 

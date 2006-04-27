@@ -26,16 +26,15 @@
 package ch.fork.RailControl.domain.locomotives;
 
 import de.dermoba.srcp.client.SRCPSession;
-import de.dermoba.srcp.common.exception.SRCPException;
 
 public class DeltaLocomotive extends Locomotive {
 	
 	private static final int DRIVING_STEPS = 14;
 
 	public DeltaLocomotive(SRCPSession session, String name, int bus,
-			int address) throws SRCPException {
-		super(session, name, bus, address, DRIVING_STEPS);
-		// TODO Auto-generated constructor stub
+			int address, String desc) {
+		super(session, name, bus, address, DRIVING_STEPS, desc);
 	}
+	
 
 }

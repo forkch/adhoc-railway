@@ -1,4 +1,5 @@
 package ch.fork.RailControl.ui.locomotives;
+
 /*------------------------------------------------------------------------
  * 
  * <src/LocomotiveControl.java>  -  <desc>
@@ -20,122 +21,244 @@ package ch.fork.RailControl.ui.locomotives;
  *
  *----------------------------------------------------------------------*/
 
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.ChangeListener;
 
 import ch.fork.RailControl.domain.locomotives.Locomotive;
-import de.dermoba.srcp.common.exception.SRCPException;
+import ch.fork.RailControl.domain.locomotives.LocomotiveChangeListener;
+import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
+import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
+import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
+import ch.fork.RailControl.ui.ExceptionProcessor;
+import ch.fork.RailControl.ui.ImageTools;
 
-public class LocomotiveWidget extends JPanel {
+public class LocomotiveWidget extends JPanel implements
+		LocomotiveChangeListener {
 
 	private static final long serialVersionUID = 1L;
-	private String locName;
-    private BorderLayout baseLayout;
-    private JLabel name;
-    private JLabel image;
-    private JSlider speedSlider;
-    private JLabel speedLabel;
-    private JTextField currentSpeed;
-    private JButton increaseSpeed;
-    private JButton decreaseSpeed;
-    private JButton stopButton;
-    
-    private Locomotive myLocomotive;
 
-    public LocomotiveWidget(Locomotive myLocomotive) {
-        super();
-        this.myLocomotive = myLocomotive;
-        initGUI();
-    }
 
-    private void initGUI() {
-        baseLayout = new BorderLayout();
-        setLayout(baseLayout);
-        name = new JLabel(locName, SwingConstants.CENTER); 
-        image = new JLabel("Image", SwingConstants.CENTER);
-        add(name, BorderLayout.NORTH);
+	private JComboBox locomotiveComboBox;
 
-        initSpeedComponents();
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        setPreferredSize(new Dimension(150,200));
-    }
+	private JLabel image;
+	
+	private JLabel desc;
 
-    public void initSpeedComponents() {
-        BorderLayout speedLayout = new BorderLayout();
-        JPanel speed = new JPanel();
-        speedSlider = new JSlider(JSlider.VERTICAL, 0, 10, 0);
-        speedSlider.setPaintTicks(true);
-        speedSlider.setMajorTickSpacing(25);
-        speedSlider.setMinorTickSpacing(5);
-        speedSlider.addChangeListener(new ChangeListener() {
-        	public void stateChanged(javax.swing.event.ChangeEvent e) {
-        		System.out.println(((double)speedSlider.getValue())/10.);
+	private JProgressBar speedBar;
+
+	private JButton increaseSpeed = new JButton("+");
+
+	private JButton decreaseSpeed = new JButton("-");
+
+	private JTextField currentSpeed;
+
+	private JButton stopButton;
+
+	private JButton directionButton;
+
+	private Locomotive myLocomotive;
+
+	public LocomotiveWidget() {
+		super();
+		initGUI();
+	}
+
+	private void initGUI() {
+		setLayout(new BorderLayout());
+		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+		
+		locomotiveComboBox = new JComboBox();
+		Locomotive none = new NoneLocomotive();
+		locomotiveComboBox.addItem(none);
+		myLocomotive = none;
+		
+		locomotiveComboBox.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+
+				myLocomotive = (Locomotive) locomotiveComboBox
+						.getSelectedItem();
+				speedBar.setMinimum(0);
+				speedBar.setMaximum(myLocomotive.getDrivingSteps());
+				speedBar.setValue(myLocomotive.getCurrentSpeed());
+				currentSpeed.setText((int) ((double) (myLocomotive
+						.getCurrentSpeed())
+						/ (double) (myLocomotive.getDrivingSteps()) * 100.)
+						+ "%");
+				desc.setText(myLocomotive.getDesc());
+			}
+
+		});
+		add(locomotiveComboBox, BorderLayout.NORTH);
+		
+		JPanel centerPanel = new JPanel(new BorderLayout());
+		
+		desc = new JLabel(myLocomotive.getDesc());
+		
+		JPanel controlPanel = initControlPanel();
+
+		centerPanel.add(desc, BorderLayout.NORTH);
+		centerPanel.add(controlPanel, BorderLayout.CENTER);
+		add(centerPanel, BorderLayout.CENTER);
+	}
+	
+	private JPanel initControlPanel() {
+		JPanel controlPanel = new JPanel(new BorderLayout());
+		controlPanel.setPreferredSize(new Dimension(150, 200));
+		speedBar = new JProgressBar(JProgressBar.VERTICAL);
+		stopButton = new JButton("Stop");
+		directionButton = new JButton(ImageTools.createImageIcon(
+				"../icons/reload.png", "Toggle Direction", this));
+
+		// speed.add(image, BorderLayout.NORTH);
+		controlPanel.add(speedBar, BorderLayout.EAST);
+
+		GridBagLayout speedControlLayout = new GridBagLayout();
+
+		JPanel speedControlPanel = new JPanel();
+		speedControlPanel.setLayout(speedControlLayout);
+		currentSpeed = new JTextField("0%");
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(2, 2, 2, 2);
+		
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		speedControlLayout.setConstraints(currentSpeed, gbc);
+		speedControlPanel.add(currentSpeed);
+		
+		gbc.gridy = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		speedControlLayout.setConstraints(increaseSpeed, gbc);
+		speedControlPanel.add(increaseSpeed);
+		
+		gbc.gridy = 2;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		speedControlLayout.setConstraints(decreaseSpeed, gbc);
+		speedControlPanel.add(decreaseSpeed);
+
+		gbc.gridy = 3;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		speedControlLayout.setConstraints(stopButton, gbc);
+		speedControlPanel.add(stopButton);
+		controlPanel.add(speedControlPanel, BorderLayout.CENTER);
+
+		gbc.gridy = 4;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		speedControlLayout.setConstraints(directionButton, gbc);
+		speedControlPanel.add(directionButton);
+
+		stopButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				try {
-					myLocomotive.setSpeed(((double)speedSlider.getValue())/10.);
-					Thread.sleep(500);
-				} catch (SRCPException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (InterruptedException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
+					if (myLocomotive.isInitialized() != true) {
+						myLocomotive.init();
+					}
+					LocomotiveControl.getInstance().setSpeed(myLocomotive, 0);
+					speedBar.setValue(0);
+					currentSpeed.setText("0%");
+				} catch (LocomotiveException e3) {
+					ExceptionProcessor.getInstance().processException(e3);
 				}
-        	};
-        });
-        stopButton = new JButton("Stop");
-        speed.setLayout(speedLayout);
-        speed.add(image, BorderLayout.NORTH);
-        speed.add(speedSlider, BorderLayout.EAST);
+			}
 
-        GridBagLayout speedControlLayout = new GridBagLayout();
-        JPanel speedControlPanel = new JPanel();
-        speedControlPanel.setLayout(speedControlLayout);
-        speedLabel = new JLabel("Speed");
-        currentSpeed = new JTextField("250");
-        increaseSpeed = new JButton("+");
-        decreaseSpeed = new JButton("-");
+		});
+		directionButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					LocomotiveControl.getInstance().toggleDirection(
+							myLocomotive);
+				} catch (LocomotiveException e1) {
+					ExceptionProcessor.getInstance().processException(e1);
+				}
+			}
+		});
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        speedControlLayout.setConstraints(speedLabel, gbc);
-        speedControlPanel.add(speedLabel);
+		increaseSpeed.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (myLocomotive.isInitialized() != true) {
+						myLocomotive.init();
+					}
+					LocomotiveControl.getInstance().increaseSpeed(myLocomotive);
 
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        speedControlLayout.setConstraints(currentSpeed, gbc);
-        speedControlPanel.add(currentSpeed);
+					currentSpeed.setText((int) ((double) (myLocomotive
+							.getCurrentSpeed())
+							/ (double) (myLocomotive.getDrivingSteps()) * 100.)
+							+ "%");
+					speedBar.setValue(myLocomotive.getCurrentSpeed());
+				} catch (LocomotiveException e3) {
+					ExceptionProcessor.getInstance().processException(e3);
+				}
+			}
+		});
+		decreaseSpeed.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (myLocomotive.isInitialized() != true) {
+						myLocomotive.init();
+					}
+					LocomotiveControl.getInstance().decreaseSpeed(myLocomotive);
+					currentSpeed.setText((int) ((double) (myLocomotive
+							.getCurrentSpeed())
+							/ (double) (myLocomotive.getDrivingSteps()) * 100.)
+							+ "%");
+					speedBar.setValue(myLocomotive.getCurrentSpeed());
+				} catch (LocomotiveException e3) {
+					ExceptionProcessor.getInstance().processException(e3);
+				}
+			}
+		});
 
-        gbc.gridy = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        speedControlLayout.setConstraints(increaseSpeed, gbc);
-        speedControlPanel.add(increaseSpeed);
+		return controlPanel;
+	}
 
-        gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        speedControlLayout.setConstraints(decreaseSpeed, gbc);
-        speedControlPanel.add(decreaseSpeed);
+public void registerLocomotives(List<Locomotive> locomotives) {
+	for (Locomotive l : locomotives) {
+		locomotiveComboBox.addItem(l);
+	}
+}
 
-        gbc.gridy = 4;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        speedControlLayout.setConstraints(stopButton, gbc);
-        speedControlPanel.add(stopButton);
-        speed.add(speedControlPanel, BorderLayout.CENTER);
+	public void locomotiveChanged(Locomotive changedLocomotive) {
+		if (myLocomotive.equals(changedLocomotive)) {
+			SwingUtilities.invokeLater(new LocomotiveWidgetUpdater(
+					changedLocomotive));
+		}
+	}
 
-        add(speed, BorderLayout.CENTER);
-    }
+	private class LocomotiveWidgetUpdater implements Runnable {
+
+		private Locomotive locomotive;
+
+		public LocomotiveWidgetUpdater(Locomotive l) {
+			this.locomotive = l;
+		}
+
+		public void run() {
+			speedBar.setMinimum(0);
+			speedBar.setMaximum(myLocomotive.getDrivingSteps());
+			speedBar.setValue(myLocomotive.getCurrentSpeed());
+			currentSpeed.setText((int) ((double) (myLocomotive
+					.getCurrentSpeed())
+					/ (double) (myLocomotive.getDrivingSteps()) * 100.)
+					+ "%");
+		}
+
+	}
 }

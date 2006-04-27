@@ -4,7 +4,7 @@
  *             :          Department Computer Sciences
  *             :......o   
  *
- * <SwitchTypeComboBoxCellRenderer.java>  -  <>
+ * <SwitchTypeCellRenderer.java>  -  <>
  * 
  * begin     : Apr 15, 2006
  * copyright : (C) by Benjamin Mueller 
@@ -23,35 +23,31 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.RailControl.ui.switches.configurationtable;
+package ch.fork.RailControl.ui.switches.configuration;
 
 import java.awt.Component;
-import java.awt.Dimension;
 
 import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
 
 import ch.fork.RailControl.ui.ImageTools;
-import ch.fork.RailControl.ui.switches.SwitchConfigurationDialog;
-public class SwitchTypeComboBoxCellRenderer implements ListCellRenderer {
+import ch.fork.RailControl.ui.switches.SwitchWidget;
 
-	public Component getListCellRendererComponent(JList list, Object value,
-			int index, boolean isSelected, boolean cellHasFocus) {
+public class SwitchTypeCellRenderer implements TableCellRenderer {
 
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		JLabel iconLabel = new JLabel();
-		iconLabel.setPreferredSize(new Dimension(56,38));
 		if (value.equals("DefaultSwitch")) {
 			iconLabel.setIcon(ImageTools.createDefaultSwitch(iconLabel,
-					SwitchConfigurationDialog.class));
+					SwitchWidget.class));
 		} else if (value.equals("DoubleCrossSwitch")) {
 			iconLabel.setIcon(ImageTools.createDoubleCrossSwitch(iconLabel,
-					SwitchConfigurationDialog.class));
+					SwitchWidget.class));
 		} else if (value.equals("ThreeWaySwitch")) {
 			iconLabel.setIcon(ImageTools.createThreeWaySwitch(iconLabel,
-					SwitchConfigurationDialog.class));
+					SwitchWidget.class));
 		}
 		return iconLabel;
-
 	}
 }

@@ -23,7 +23,7 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.RailControl.ui.switches.configurationtable;
+package ch.fork.RailControl.ui.switches.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +39,10 @@ import ch.fork.RailControl.domain.switches.ThreeWaySwitch;
 import ch.fork.RailControl.domain.switches.Switch.SwitchOrientation;
 import ch.fork.RailControl.domain.switches.Switch.SwitchState;
 import ch.fork.RailControl.domain.switches.exception.SwitchException;
+import ch.fork.RailControl.ui.ExceptionProcessor;
 public class SwitchGroupTableModel extends AbstractTableModel {
 
-	private final String[] columnNames = {"Switch #", "Type", "Address", "Bus",
+	private final String[] columnNames = {"Switch #", "Type", "Bus", "Address",
 			"Default State", "Orientation", "Desc"};
 	private SwitchGroup switchGroup;
 
@@ -74,7 +75,7 @@ public class SwitchGroupTableModel extends AbstractTableModel {
 			return null;
 		}
 		
-		List<Switch> switches = new ArrayList(switchGroup.getSwitches().values());
+		List<Switch> switches = new ArrayList(switchGroup.getSwitches());
 		Switch switchOfThisRow = switches.get(rowIndex);
 		switch (columnIndex) {
 			case 0 :
@@ -82,9 +83,9 @@ public class SwitchGroupTableModel extends AbstractTableModel {
 			case 1 :
 				return switchOfThisRow.getType();
 			case 2 :
-				return switchOfThisRow.getAddress();
-			case 3 :
 				return switchOfThisRow.getBus();
+			case 3 :
+				return switchOfThisRow.getAddress();
 			case 4 :
 				return switchOfThisRow.getDefaultState();
 			case 5 :
@@ -96,6 +97,11 @@ public class SwitchGroupTableModel extends AbstractTableModel {
 		}
 	}
 	public boolean isCellEditable(int row, int col) {
+		List<Switch> switches = new ArrayList(switchGroup.getSwitches());
+		Switch switchOfThisRow = switches.get(row);
+		if(col == 4 && switchOfThisRow.getType().equals("ThreeWaySwitch")) {
+			return false;
+		}
 		return true;
 	}
 
@@ -104,7 +110,7 @@ public class SwitchGroupTableModel extends AbstractTableModel {
 		if (switchGroup == null) {
 			return;
 		}
-		ArrayList arrayList = new ArrayList(switchGroup.getSwitches().values());
+		ArrayList arrayList = new ArrayList(switchGroup.getSwitches());
 		List<Switch> switches = arrayList;
 		Switch switchOfThisRow = switches.get(row);
 		switch (col) {
@@ -128,15 +134,14 @@ public class SwitchGroupTableModel extends AbstractTableModel {
 				tmp = null;
 				break;
 			case 2 :
+				switchOfThisRow.setBus(Integer.parseInt((String) value));
+				break;
+			case 3 :
 				try {
 					switchOfThisRow.setAddress((Address)value);
 				} catch (SwitchException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					ExceptionProcessor.getInstance().processException(e);
 				}
-				break;
-			case 3 :
-				switchOfThisRow.setBus(Integer.parseInt((String) value));
 				break;
 			case 4 :
 					switchOfThisRow.setDefaultState((SwitchState)value);

@@ -25,28 +25,30 @@
 
 package ch.fork.RailControl.domain.switches;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class SwitchGroup {
-	private Map<Integer, Switch> switches;
+	private SortedSet<Switch> switches;
 	private String name;
 	public SwitchGroup(String name) {
 		this.name = name;
-		switches = new TreeMap<Integer, Switch>();
+		switches = new TreeSet<Switch>();
 	}
 	
 	public void addSwitch(Switch aSwitch) {
-		switches.put(aSwitch.getNumber(), aSwitch);
+		switches.add(aSwitch);
         SwitchControl.getInstance().addSwitch(aSwitch);
 	}
 	
 	public void removeSwitch(Switch aSwitch) {
-		switches.remove(aSwitch.getNumber());
+		switches.remove(aSwitch);
 	}
 
 	public void replaceSwitch(Switch oldSwitch, Switch newSwitch) {
-		switches.put(oldSwitch.getNumber(), newSwitch);
+		switches.remove(oldSwitch);
+		switches.add(newSwitch);
 	}
 	
 	public String getName() {
@@ -61,7 +63,7 @@ public class SwitchGroup {
 		return name;
 	}
 
-	public Map<Integer, Switch> getSwitches() {
+	public Set<Switch> getSwitches() {
 		return switches;
 	}
 

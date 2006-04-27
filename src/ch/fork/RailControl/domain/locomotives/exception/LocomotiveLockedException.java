@@ -1,9 +1,9 @@
 /*------------------------------------------------------------------------
  * 
- * <SwitchChangedListener.java>  -  <Informs when a switch changed its
- * state>
+ * <src/domain/switches/SwitchLockedException.java>  -  <Exception when
+ * a switch is locked>
  * 
- * begin     : j Tue Jan  3 21:32:14 CET 2006
+ * begin     : Sat Jan 28 16:56:22 CET 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : bm@fork.ch
  * language  : java
@@ -20,9 +20,11 @@
  *
  *----------------------------------------------------------------------*/
 
+package ch.fork.RailControl.domain.locomotives.exception;
 
-package ch.fork.RailControl.domain.switches;
 
-public interface SwitchChangeListener {
-    public void switchChanged(Switch changedLocomotive);
+public class LocomotiveLockedException extends LocomotiveException {
+    public LocomotiveLockedException(String msg) {
+        super(msg);
+    }
 }

@@ -1,4 +1,4 @@
-package ch.fork.RailControl.ui.switches.configurationtable;
+package ch.fork.RailControl.ui.switches.configuration;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
