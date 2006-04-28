@@ -124,7 +124,7 @@ public class LocomotiveWidget extends JPanel implements
 		speedBar = new JProgressBar(JProgressBar.VERTICAL);
 		stopButton = new JButton("Stop");
 		directionButton = new JButton(ImageTools.createImageIcon(
-				"../icons/reload.png", "Toggle Direction", this));
+				"icons/reload.png", "Toggle Direction", this));
 
 		// speed.add(image, BorderLayout.NORTH);
 		controlPanel.add(speedBar, BorderLayout.EAST);
