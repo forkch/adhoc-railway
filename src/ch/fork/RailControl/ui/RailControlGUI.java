@@ -180,6 +180,10 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		main.addSwitch(switch2);
 		main.addSwitch(switch3);
 
+		switches.put(switch1.getNumber(), switch1);
+		switches.put(switch2.getNumber(), switch2);
+		switches.put(switch3.getNumber(), switch3);
+
 		Locomotive ascom = new DeltaLocomotive(session, "Ascom", 1, 24,
 				"RE460 \"Ascom\"");
 		Locomotive bigBoy = new DigitalLocomotive(session, "Big Boy", 1, 25,
@@ -526,10 +530,11 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		public void actionPerformed(ActionEvent e) {
 			SwitchConfigurationDialog switchConfig = new SwitchConfigurationDialog(
 					RailControlGUI.this, Preferences.getInstance(),
-					switchGroups);
+					switches, switchGroups);
 			if (switchConfig.isOkPressed()) {
 
 			}
+			System.out.println(switches);
 			switchGroupPane.update(switchGroups);
 		}
 	}
@@ -631,16 +636,10 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 			switchNumber = switchNumber - seg3Value * 100;
 
 			Switch searchedSwitch = null;
-			for (SwitchGroup sg : switchGroups) {
-				for (Switch aSwitch : sg.getSwitches()) {
-					if (aSwitch.getNumber() == origNumber) {
-						searchedSwitch = aSwitch;
-						break;
-					}
-				}
-			}
+			
+			searchedSwitch = switches.get(origNumber);
 			if (searchedSwitch == null) {
-				resetSelectedSwitchDisplay();
+			//	resetSelectedSwitchDisplay();
 				return;
 			}
 			selectedSwitchDetails.removeAll();
@@ -691,14 +690,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 			String switchNumberAsString = enteredNumberKeys.toString();
 			int switchNumber = Integer.parseInt(switchNumberAsString);
 			Switch searchedSwitch = null;
-			for (SwitchGroup sg : switchGroups) {
-				for (Switch aSwitch : sg.getSwitches()) {
-					if (aSwitch.getNumber() == switchNumber) {
-						searchedSwitch = aSwitch;
-						break;
-					}
-				}
-			}
+			
+			searchedSwitch = switches.get(switchNumber);
 			if (searchedSwitch == null) {
 
 				resetSelectedSwitchDisplay();

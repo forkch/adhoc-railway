@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ch.fork.RailControl.domain.switches.exception.SwitchException;
+import de.dermoba.srcp.client.SRCPSession;
 
 public class ThreeWaySwitch extends Switch {
 
@@ -128,5 +129,10 @@ public class ThreeWaySwitch extends Switch {
 		switch1.setStraight();
 		switch2.setCurvedRight();
 		switchState = SwitchState.RIGHT;
+	}
+	
+	public void setSession(SRCPSession session) {
+		switch1.setSession(session);
+		switch2.setSession(session);
 	}
 }

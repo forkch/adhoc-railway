@@ -31,7 +31,7 @@ import java.util.List;
 public class Preferences {
 
 	private List<String> hostnames;
-	private String hostname = "localhost";
+	private String hostname = "192.168.1.38";
 	private int portnumber = 12345;
 	
 	private int defaultActivationTime = 50;
@@ -45,6 +45,7 @@ public class Preferences {
 		hostnames = new ArrayList<String>();
 		hostnames.add("localhost");
 		hostnames.add("titan");
+		hostnames.add("192.168.1.38");
 	}
 	
 	public static Preferences getInstance() {

@@ -19,7 +19,7 @@ public class DoubleCrossSwitchCanvas extends SwitchCanvas {
 		BufferedImage img = new BufferedImage(56, 35,
 				BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g3 = img.createGraphics();
-		g.drawImage(createImageIcon("icons/double_cross_switch.png", "", this)
+		g3.drawImage(createImageIcon("icons/double_cross_switch.png", "", this)
 				.getImage(), 0, 0, this);
 		switch (mySwitch.getSwitchState()) {
 			case STRAIGHT :
@@ -59,7 +59,6 @@ public class DoubleCrossSwitchCanvas extends SwitchCanvas {
 						this).getImage(), 28, 0, this);
 				break;
 		}
-		
 		rotate(g2, img);
 	}
 

@@ -35,6 +35,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
@@ -58,6 +59,7 @@ import javax.swing.table.TableModel;
 
 import ch.fork.RailControl.domain.Preferences;
 import ch.fork.RailControl.domain.switches.DefaultSwitch;
+import ch.fork.RailControl.domain.switches.Switch;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 import ch.fork.RailControl.domain.switches.Switch.SwitchOrientation;
 import ch.fork.RailControl.domain.switches.Switch.SwitchState;
@@ -65,6 +67,8 @@ import ch.fork.RailControl.domain.switches.Switch.SwitchState;
 public class SwitchConfigurationDialog extends JDialog {
 
 	private List<SwitchGroup> switchGroups;
+	
+	private Map<Integer, Switch> switches;
 
 	private Preferences preferences;
 
@@ -87,11 +91,12 @@ public class SwitchConfigurationDialog extends JDialog {
 	private JTable switchGroupTable;
 
 	public SwitchConfigurationDialog(Frame owner, Preferences preferences,
-			List<SwitchGroup> switchGroups) {
+			Map<Integer, Switch> switches, List<SwitchGroup> switchGroups) {
 		super(owner, "Switch Configuration", true);
 
 		this.owner = owner;
 		this.preferences = preferences;
+		this.switches = switches;
 		this.switchGroups = switchGroups;
 		initGUI();
 	}
@@ -329,8 +334,10 @@ public class SwitchConfigurationDialog extends JDialog {
 						.getSelectedValue());
 				int nextNumber = 99;
 				System.out.println(selectedSwitchGroup);
-				selectedSwitchGroup.addSwitch(new DefaultSwitch(nextNumber,
-						selectedSwitchGroup.getName() + nextNumber));
+				Switch newSwitch = new DefaultSwitch(nextNumber,
+						selectedSwitchGroup.getName() + nextNumber);
+				selectedSwitchGroup.addSwitch(newSwitch);
+				switches.put(newSwitch.getNumber(), newSwitch);
 				updateSwitchesPanel();
 			}
 		});
@@ -341,6 +348,7 @@ public class SwitchConfigurationDialog extends JDialog {
 						.getSelectedValue());
 				selectedSwitchGroup.getSwitches().remove(
 						switchGroupTable.getSelectedRow());
+				switches.remove(switchGroupTable.getValueAt(switchGroupTable.getSelectedRow(), 0));
 				updateSwitchesPanel();
 			}
 		});
