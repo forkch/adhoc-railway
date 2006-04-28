@@ -22,7 +22,6 @@
 include ~/.make/common.mk
 
 EXTRALIBS=../jsrcpc/classes
-JAR_RESOURCES=./res src/manifest.mf
 CLEAN_LIST+=./lib/RailControl.jar
 
 build:: java-build lib/RailControl.jar
