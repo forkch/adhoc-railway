@@ -73,20 +73,20 @@ public class Segment7 extends Canvas {
 	}
 
 	public void paint(Graphics g) {
-		Color darkred = new Color(127, 0, 0);
-		Color lightred = new Color(255, 0, 0);
+		Color background = new Color(0, 0, 0);
+		Color foreground = new Color(255, 255, 0);
 		Color yellow = new Color(255, 255, 0);
 		// dx und dy berechnen
 		int dx = getSize().width / 10;
 		int dy = getSize().height / 18;
 		// Hintergrund
-		g.setColor(darkred);
+		g.setColor(background);
 		g.fillRect(0, 0, getSize().width, getSize().height);
 		// Segmente
 		if (hasfocus) {
 			g.setColor(yellow);
 		} else {
-			g.setColor(lightred);
+			g.setColor(foreground);
 		}
 		for (int i = 0; i < 7; ++i) { // alle Segmente
 			if (digits[digit][i] == 1) {
@@ -98,7 +98,7 @@ public class Segment7 extends Canvas {
 			}
 		}
 		// Trennlinien
-		g.setColor(darkred);
+		g.setColor(background);
 		g.drawLine(0, 0, dx * 10, dy * 10);
 		g.drawLine(0, 8 * dy, 10 * dx, 18 * dy);
 		g.drawLine(0, 10 * dy, 10 * dx, 0);

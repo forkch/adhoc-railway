@@ -68,7 +68,7 @@ public class SwitchConfigurationDialog extends JDialog {
 
 	private List<SwitchGroup> switchGroups;
 	
-	private Map<Integer, Switch> switches;
+	private Map<Integer, Switch> switchNumberToSwitch;
 
 	private Preferences preferences;
 
@@ -91,12 +91,12 @@ public class SwitchConfigurationDialog extends JDialog {
 	private JTable switchGroupTable;
 
 	public SwitchConfigurationDialog(Frame owner, Preferences preferences,
-			Map<Integer, Switch> switches, List<SwitchGroup> switchGroups) {
+			Map<Integer, Switch> switchNumberToSwitche, List<SwitchGroup> switchGroups) {
 		super(owner, "Switch Configuration", true);
 
 		this.owner = owner;
 		this.preferences = preferences;
-		this.switches = switches;
+		this.switchNumberToSwitch = switchNumberToSwitche;
 		this.switchGroups = switchGroups;
 		initGUI();
 	}
@@ -337,7 +337,7 @@ public class SwitchConfigurationDialog extends JDialog {
 				Switch newSwitch = new DefaultSwitch(nextNumber,
 						selectedSwitchGroup.getName() + nextNumber);
 				selectedSwitchGroup.addSwitch(newSwitch);
-				switches.put(newSwitch.getNumber(), newSwitch);
+				switchNumberToSwitch.put(newSwitch.getNumber(), newSwitch);
 				updateSwitchesPanel();
 			}
 		});
@@ -348,7 +348,7 @@ public class SwitchConfigurationDialog extends JDialog {
 						.getSelectedValue());
 				selectedSwitchGroup.getSwitches().remove(
 						switchGroupTable.getSelectedRow());
-				switches.remove(switchGroupTable.getValueAt(switchGroupTable.getSelectedRow(), 0));
+				switchNumberToSwitch.remove(switchGroupTable.getValueAt(switchGroupTable.getSelectedRow(), 0));
 				updateSwitchesPanel();
 			}
 		});

@@ -72,6 +72,12 @@ public abstract class Switch implements Constants, Comparable {
 		}
 	}
 
+	public void term() throws SwitchException {
+		if (session == null) {
+			throw new SwitchException(ERR_NO_SESSION);
+		}
+	}
+
 	protected abstract void reinit() throws SwitchException;
 
 	protected abstract void toggle() throws SwitchException;
@@ -188,9 +194,8 @@ public abstract class Switch implements Constants, Comparable {
 		return switchState;
 	}
 
-
 	public int compareTo(Object o) {
-		Switch anotherSwitch = (Switch)o;
+		Switch anotherSwitch = (Switch) o;
 		if (number < anotherSwitch.getNumber()) {
 			return -1;
 		} else if (number > anotherSwitch.getNumber()) {
@@ -199,5 +204,5 @@ public abstract class Switch implements Constants, Comparable {
 			return 0;
 		}
 	}
-	
+
 }

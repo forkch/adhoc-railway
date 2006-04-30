@@ -51,8 +51,14 @@ public class ThreeWaySwitch extends Switch {
 		switch2.setSession(session);
 		switch1.init();
 		switch2.init();
-		// TODO: immediately a get to determine state !!!!
 		initialized = true;
+	}
+	
+	public void term() throws SwitchException{
+		super.term();
+		switch1.term();
+		switch2.term();
+		initialized = false;
 	}
 
 	@Override
@@ -132,6 +138,7 @@ public class ThreeWaySwitch extends Switch {
 	}
 	
 	public void setSession(SRCPSession session) {
+		this.session = session;
 		switch1.setSession(session);
 		switch2.setSession(session);
 	}

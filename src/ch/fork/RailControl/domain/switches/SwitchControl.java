@@ -22,6 +22,7 @@
 package ch.fork.RailControl.domain.switches;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,11 +39,11 @@ public class SwitchControl implements GAInfoListener {
 
 	private List<SwitchChangeListener> listeners;
 
-	private Map<Integer, Switch> switches;
+	private Map<Integer, Switch> addressToSwitch;
 
 	private SwitchControl() {
 		listeners = new ArrayList<SwitchChangeListener>();
-		switches = new HashMap<Integer, Switch>();
+		addressToSwitch = new HashMap<Integer, Switch>();
 	}
 
 	public static SwitchControl getInstance() {
@@ -54,16 +55,28 @@ public class SwitchControl implements GAInfoListener {
 		}
 	}
 
-	public void addSwitch(Switch aSwitch) {
-		Address address = aSwitch.getAddress();
-		switches.put(address.getAddress1(), aSwitch);
-		if (address.getAddress2() != 0) {
-			switches.put(address.getAddress2(), aSwitch);
+	public void registerSwitches(Collection<Switch> switches) {
+		for (Switch aSwitch : switches) {
+			Address address = aSwitch.getAddress();
+			addressToSwitch.put(address.getAddress1(), aSwitch);
+			if (address.getAddress2() != 0) {
+				addressToSwitch.put(address.getAddress2(), aSwitch);
+			}
 		}
 	}
 
-	public void removeSwitch(Switch aSwitch) {
-		switches.remove(aSwitch.getAddress());
+	public void unregisterSwitches(List<Switch> switches) throws SwitchException {
+		for (Switch aSwitch : switches) {
+			//aSwitch.term();
+			addressToSwitch.remove(aSwitch.getAddress());
+		}
+	}
+
+	public void unregisterAllSwitches() throws SwitchException {
+		for (Switch aSwitch : addressToSwitch.values()) {
+			//aSwitch.term();
+		}
+		addressToSwitch.clear();
 	}
 
 	public void toggle(Switch aSwitch) throws SwitchException {
@@ -93,10 +106,10 @@ public class SwitchControl implements GAInfoListener {
 	public void GAset(double timestamp, int bus, int address, int port,
 			int value) {
 		/*
-		System.out.println("GAset(" + bus + " , " + address + " , " + port
-				+ " , " + value + " )");
-		*/
-		Switch s = switches.get(address);
+		 * System.out.println("GAset(" + bus + " , " + address + " , " + port + " , " +
+		 * value + " )");
+		 */
+		Switch s = addressToSwitch.get(address);
 		s.switchPortChanged(address, port, value);
 		if (value != 0) {
 			informListeners(s);
@@ -106,19 +119,21 @@ public class SwitchControl implements GAInfoListener {
 	public void GAinit(double timestamp, int bus, int address, String protocol,
 			String[] params) {
 		/*
-		System.out.println("GAinit(" + bus + " , " + address + " , "
-				+ protocol + " , " + params + " )");
-		*/
-		Switch s = switches.get(Integer.valueOf(address));
-		s.switchInitialized(bus, address);
-		informListeners(s);
+		 * System.out.println("GAinit(" + bus + " , " + address + " , " +
+		 * protocol + " , " + params + " )");
+		 */
+		Switch s = addressToSwitch.get(Integer.valueOf(address));
+		if (s != null) {
+			s.switchInitialized(bus, address);
+			informListeners(s);
+		}
 	}
 
 	public void GAterm(double timestamp, int bus, int address) {
 		/*
-		System.out.println("GAterm( " + bus + " , " + address + " )");
-		*/
-		Switch s = switches.get(address);
+		 * System.out.println("GAterm( " + bus + " , " + address + " )");
+		 */
+		Switch s = addressToSwitch.get(address);
 		s.switchTerminated(address);
 		informListeners(s);
 	}

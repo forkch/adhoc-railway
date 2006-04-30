@@ -39,7 +39,6 @@ public class SwitchGroup {
 	
 	public void addSwitch(Switch aSwitch) {
 		switches.add(aSwitch);
-        SwitchControl.getInstance().addSwitch(aSwitch);
 	}
 	
 	public void removeSwitch(Switch aSwitch) {

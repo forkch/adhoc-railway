@@ -1,31 +1,9 @@
 package ch.fork.RailControl.ui;
 
-/*------------------------------------------------------------------------
- * 
- * <src/RailControlGUI.java>  -  <desc>
- * 
- * begin     : Sun May 15 13:16:56 CEST 2005
- * copyright : (C)  by Benjamin Mueller 
- * email     : akula@akula.ch
- * language  : java
- * version   : $Id$
- * 
- *----------------------------------------------------------------------*/
-
-/*------------------------------------------------------------------------
- * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- *----------------------------------------------------------------------*/
-
 import static ch.fork.RailControl.ui.ImageTools.createImageIcon;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -66,6 +44,7 @@ import ch.fork.RailControl.domain.locomotives.DeltaLocomotive;
 import ch.fork.RailControl.domain.locomotives.DigitalLocomotive;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
 import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
+import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
 import ch.fork.RailControl.domain.switches.Address;
 import ch.fork.RailControl.domain.switches.DefaultSwitch;
 import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
@@ -123,7 +102,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
 	private List<Locomotive> locomotives;
 
-	private Map<Integer, Switch> switches;
+	private Map<Integer, Switch> switchNumberToSwitch;
 
 	private Segment7 seg1;
 
@@ -132,6 +111,10 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 	private Segment7 seg3;
 
 	private JPanel selectedSwitchDetails;
+
+	private JButton connectToolBarButton;
+
+	private JButton disconnectToolBarButton;
 
 	public RailControlGUI() {
 		super(NAME);
@@ -142,7 +125,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
 	private void initDatastructures() {
 		locomotives = new ArrayList<Locomotive>();
-		switches = new HashMap<Integer, Switch>();
+		switchNumberToSwitch = new HashMap<Integer, Switch>();
 		enteredNumberKeys = new StringBuffer();
 		switchGroups = new ArrayList<SwitchGroup>();
 		SwitchGroup main = new SwitchGroup("Main Line");
@@ -176,13 +159,28 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		Switch switch1 = new DefaultSwitch(1, "HB 1", 1, new Address(1));
 		Switch switch2 = new DoubleCrossSwitch(2, "Berg1", 1, new Address(2));
 		Switch switch3 = new ThreeWaySwitch(3, "HB 2", 1, new Address(3, 4));
+
+		Switch switch10 = new DoubleCrossSwitch(10, "Berg1", 1, new Address(10));
+		Switch switch11 = new DoubleCrossSwitch(11, "Berg1", 1, new Address(11));
+
+		Switch switch12 = new DoubleCrossSwitch(12, "Berg1", 1, new Address(12));
 		main.addSwitch(switch1);
 		main.addSwitch(switch2);
 		main.addSwitch(switch3);
+		main.addSwitch(switch10);
+		main.addSwitch(switch11);
 
-		switches.put(switch1.getNumber(), switch1);
-		switches.put(switch2.getNumber(), switch2);
-		switches.put(switch3.getNumber(), switch3);
+		mountain.addSwitch(switch12);
+
+		switchNumberToSwitch.put(switch1.getNumber(), switch1);
+		switchNumberToSwitch.put(switch2.getNumber(), switch2);
+		switchNumberToSwitch.put(switch3.getNumber(), switch3);
+		switchNumberToSwitch.put(switch10.getNumber(), switch10);
+		switchNumberToSwitch.put(switch11.getNumber(), switch11);
+		switchNumberToSwitch.put(switch12.getNumber(), switch12);
+
+		SwitchControl.getInstance().registerSwitches(
+				switchNumberToSwitch.values());
 
 		Locomotive ascom = new DeltaLocomotive(session, "Ascom", 1, 24,
 				"RE460 \"Ascom\"");
@@ -190,6 +188,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 				"UP Klasse 4000 \"Big Boy\"");
 		locomotives.add(ascom);
 		locomotives.add(bigBoy);
+
 		LocomotiveControl.getInstance().registerLocomotives(locomotives);
 
 		switchGroupPane.update(switchGroups);
@@ -212,8 +211,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		centerSouth.add(locomotiveControlPanel, BorderLayout.WEST);
 
 		JPanel segmentPanelNorth = new JPanel(new FlowLayout(
-				FlowLayout.TRAILING, 2, 0));
-		segmentPanelNorth.setBackground(new Color(127, 0, 0));
+				FlowLayout.TRAILING, 5, 0));
+		segmentPanelNorth.setBackground(new Color(01, 0, 0));
 		seg1 = new Segment7();
 		seg2 = new Segment7();
 		seg3 = new Segment7();
@@ -251,15 +250,15 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 	private void initToolbar() {
 		JToolBar toolBar = new JToolBar();
 
-		JButton openButton = new JButton(createImageIcon("icons/fileopen.png",
-				"File open...", this));
-		JButton saveButton = new JButton(createImageIcon("icons/filesave.png",
-				"File open...", this));
-		JButton switchesButton = new JButton(createImageIcon(
+		JButton openToolBarButton = new JButton(createImageIcon(
+				"icons/fileopen.png", "File open...", this));
+		JButton saveToolBarButton = new JButton(createImageIcon(
+				"icons/filesave.png", "File open...", this));
+		JButton switchesToolBarButton = new JButton(createImageIcon(
 				"icons/switch.png", "Connect", this));
-		JButton locomotivesButton = new JButton(createImageIcon(
+		JButton locomotivesToolBarButton = new JButton(createImageIcon(
 				"icons/locomotive.png", "Exit", this));
-		JButton preferencesButton = new JButton(createImageIcon(
+		JButton preferencesToolBarButton = new JButton(createImageIcon(
 				"icons/package_settings.png", "Exit", this));
 
 		final JComboBox hostnamesComboBox = new JComboBox();
@@ -276,29 +275,29 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 			}
 
 		});
-		JButton connectButton = new JButton(createImageIcon(
+		connectToolBarButton = new JButton(createImageIcon(
 				"icons/daemonconnect.png", "Connect", this));
-		JButton disconnectButton = new JButton(createImageIcon(
+		disconnectToolBarButton = new JButton(createImageIcon(
 				"icons/daemondisconnect.png", "Disconnect", this));
+		disconnectToolBarButton.setEnabled(false);
+		openToolBarButton.addActionListener(new OpenAction());
+		saveToolBarButton.addActionListener(new SaveAction());
+		switchesToolBarButton.addActionListener(new SwitchesAction());
+		locomotivesToolBarButton.addActionListener(new LocomotivesAction());
+		preferencesToolBarButton.addActionListener(new PreferencesAction());
+		connectToolBarButton.addActionListener(new ConnectAction());
+		disconnectToolBarButton.addActionListener(new DisconnectAction());
 
-		openButton.addActionListener(new OpenAction());
-		saveButton.addActionListener(new SaveAction());
-		switchesButton.addActionListener(new SwitchesAction());
-		locomotivesButton.addActionListener(new LocomotivesAction());
-		preferencesButton.addActionListener(new PreferencesAction());
-		connectButton.addActionListener(new ConnectAction());
-		disconnectButton.addActionListener(new DisconnectAction());
-
-		toolBar.add(openButton);
-		toolBar.add(saveButton);
+		toolBar.add(openToolBarButton);
+		toolBar.add(saveToolBarButton);
 		toolBar.addSeparator();
-		toolBar.add(switchesButton);
-		toolBar.add(locomotivesButton);
-		toolBar.add(preferencesButton);
+		toolBar.add(switchesToolBarButton);
+		toolBar.add(locomotivesToolBarButton);
+		toolBar.add(preferencesToolBarButton);
 		toolBar.addSeparator();
 		toolBar.add(hostnamesComboBox);
-		toolBar.add(connectButton);
-		toolBar.add(disconnectButton);
+		toolBar.add(connectToolBarButton);
+		toolBar.add(disconnectToolBarButton);
 
 		JPanel toolbarPanel = new JPanel(new BorderLayout());
 		toolbarPanel.add(toolBar, BorderLayout.WEST);
@@ -530,12 +529,18 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		public void actionPerformed(ActionEvent e) {
 			SwitchConfigurationDialog switchConfig = new SwitchConfigurationDialog(
 					RailControlGUI.this, Preferences.getInstance(),
-					switches, switchGroups);
+					switchNumberToSwitch, switchGroups);
 			if (switchConfig.isOkPressed()) {
 
 			}
-			System.out.println(switches);
-			switchGroupPane.update(switchGroups);
+			try {
+				SwitchControl.getInstance().unregisterAllSwitches();
+				SwitchControl.getInstance().registerSwitches(
+						switchNumberToSwitch.values());
+				switchGroupPane.update(switchGroups);
+			} catch (SwitchException e1) {
+				ExceptionProcessor.getInstance().processException(e1);
+			}
 		}
 	}
 
@@ -574,10 +579,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 				session.getInfoChannel().addInfoDataListener(
 						RailControlGUI.this);
 				session.connect();
-				for (SwitchGroup sg : switchGroups) {
-					for (Switch s : sg.getSwitches()) {
-						s.setSession(session);
-					}
+				for (Switch s : switchNumberToSwitch.values()) {
+					s.setSession(session);
 				}
 				for (Locomotive l : locomotives) {
 					l.setSession(session);
@@ -586,6 +589,9 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 				daemonConnectItem.setEnabled(false);
 				daemonDisconnectItem.setEnabled(true);
 				daemonResetItem.setEnabled(true);
+
+				connectToolBarButton.setEnabled(false);
+				disconnectToolBarButton.setEnabled(true);
 			} catch (SRCPException e1) {
 				processException(e1);
 			}
@@ -602,11 +608,20 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 				daemonConnectItem.setEnabled(true);
 				daemonDisconnectItem.setEnabled(false);
 				daemonResetItem.setEnabled(false);
+
+				connectToolBarButton.setEnabled(true);
+				disconnectToolBarButton.setEnabled(false);
 			} catch (SRCPException e1) {
 				processException(e1);
 			}
 		}
 
+	}
+
+	private class ResetAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+
+		}
 	}
 
 	private class NumberEnteredAction extends AbstractAction {
@@ -636,10 +651,13 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 			switchNumber = switchNumber - seg3Value * 100;
 
 			Switch searchedSwitch = null;
-			
-			searchedSwitch = switches.get(origNumber);
+
+			searchedSwitch = switchNumberToSwitch.get(origNumber);
 			if (searchedSwitch == null) {
-			//	resetSelectedSwitchDisplay();
+				// resetSelectedSwitchDisplay();
+				selectedSwitchDetails.removeAll();
+				selectedSwitchDetails.revalidate();
+				selectedSwitchDetails.repaint();
 				return;
 			}
 			selectedSwitchDetails.removeAll();
@@ -690,8 +708,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 			String switchNumberAsString = enteredNumberKeys.toString();
 			int switchNumber = Integer.parseInt(switchNumberAsString);
 			Switch searchedSwitch = null;
-			
-			searchedSwitch = switches.get(switchNumber);
+
+			searchedSwitch = switchNumberToSwitch.get(switchNumber);
 			if (searchedSwitch == null) {
 
 				resetSelectedSwitchDisplay();
