@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RailControl xmlns="http://www.fork.ch/RailControl"
+ ExporterVersion="0.1">
+  <SwitchConfiguration>
+    <SwitchGroup>
+      <Switch desc="bla" number="1" type="DefaultSwitch" bus="1"
+        defaultstate="straight">
+        <Address address1="1" address2="0"/>
+      </Switch>
+      <Switch desc="bla" number="1" type="DefaultSwitch" bus="1"
+        defaultstate="straight">
+        <Address address1="1" address2="0"/>
+      </Switch>
+      <Switch desc="bla" number="1" type="DefaultSwitch" bus="1"
+        defaultstate="straight">
+        <Address address1="1" address2="0"/>
+      </Switch>
+      
+    </SwitchGroup>
+  </SwitchConfiguration>
+  <LocomotiveConfiguration>
+    <Locomotive name="Ascom" type="DeltaLocomotive" bus="1" address="24"
+      desc="RE460 Ascom"/>
+    <Locomotive name="Big Boy" type="DigitalLocomotive" bus="1" address="25"
+      desc="UP Klasse 4000 Big Boy"/>
+  </LocomotiveConfiguration>
+  <GuiConfiguration>
+    <GuiConfigParameter name="hostname" value="titan"/>
+  </GuiConfiguration>
+</RailControl>
