@@ -65,5 +65,10 @@ public class SwitchGroup {
 	public Set<Switch> getSwitches() {
 		return switches;
 	}
+	
+	public SwitchGroup clone() {
+		SwitchGroup newSwitchGroup = new SwitchGroup(name);
+		return newSwitchGroup;
+	}
 
 }

@@ -220,6 +220,24 @@ public class ImageTools {
 
 		return new ImageIcon(img);
 	}
+	
+	public static ImageIcon createStraightSwitch(ImageObserver obs, Class comp) {
+		BufferedImage img = new BufferedImage(56, 35,
+				BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D g = img.createGraphics();
+		
+		// DefaultSwitch
+		g.drawImage(createImageIcon("icons/default_switch.png", "", comp)
+				.getImage(), 0, 0, obs);
+		g.drawImage(createImageIcon("icons/LED_middle_yellow.png", "", comp)
+				.getImage(), 28, 0, obs);
+		g.drawImage(createImageIcon("icons/LED_up_white.png", "", comp)
+				.getImage(), 28, 0, obs);
+
+		g.drawImage(createImageIcon("icons/LED_middle_white.png", "", comp)
+				.getImage(), 0, 0, obs);
+		return new ImageIcon(img);
+	}
 
 	public static ImageIcon createImageIcon(String path, String description,
 			Object o) {

@@ -40,6 +40,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import ch.fork.RailControl.domain.Preferences;
+import ch.fork.RailControl.domain.configuration.XMLImporter;
 import ch.fork.RailControl.domain.locomotives.DeltaLocomotive;
 import ch.fork.RailControl.domain.locomotives.DigitalLocomotive;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
@@ -160,24 +161,13 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		Switch switch2 = new DoubleCrossSwitch(2, "Berg1", 1, new Address(2));
 		Switch switch3 = new ThreeWaySwitch(3, "HB 2", 1, new Address(3, 4));
 
-		Switch switch10 = new DoubleCrossSwitch(10, "Berg1", 1, new Address(10));
-		Switch switch11 = new DoubleCrossSwitch(11, "Berg1", 1, new Address(11));
-
-		Switch switch12 = new DoubleCrossSwitch(12, "Berg1", 1, new Address(12));
 		main.addSwitch(switch1);
 		main.addSwitch(switch2);
 		main.addSwitch(switch3);
-		main.addSwitch(switch10);
-		main.addSwitch(switch11);
-
-		mountain.addSwitch(switch12);
 
 		switchNumberToSwitch.put(switch1.getNumber(), switch1);
 		switchNumberToSwitch.put(switch2.getNumber(), switch2);
 		switchNumberToSwitch.put(switch3.getNumber(), switch3);
-		switchNumberToSwitch.put(switch10.getNumber(), switch10);
-		switchNumberToSwitch.put(switch11.getNumber(), switch11);
-		switchNumberToSwitch.put(switch12.getNumber(), switch12);
 
 		SwitchControl.getInstance().registerSwitches(
 				switchNumberToSwitch.values());
@@ -197,6 +187,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
 	private void initGUI() {
 		setFont(new Font("Verdana", Font.PLAIN, 19));
+
 		ExceptionProcessor.getInstance(this);
 		switchGroupPane = initSwitchGroupPane();
 		locomotiveControlPanel = initLocomotiveControl();
@@ -280,6 +271,28 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		disconnectToolBarButton = new JButton(createImageIcon(
 				"icons/daemondisconnect.png", "Disconnect", this));
 		disconnectToolBarButton.setEnabled(false);
+
+		JButton setAllSwitchesStraightButton = new JButton(createImageIcon(
+				"icons/switch.png", "Set all Switches Straight", this));
+		setAllSwitchesStraightButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				SwitchControl sc = SwitchControl.getInstance();
+				try {
+					for (Switch s : switchNumberToSwitch.values()) {
+
+						if (!s.isInitialized()) {
+							s.init();
+						}
+						sc.setStraight(s);
+					}
+				} catch (SwitchException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+
+		});
 		openToolBarButton.addActionListener(new OpenAction());
 		saveToolBarButton.addActionListener(new SaveAction());
 		switchesToolBarButton.addActionListener(new SwitchesAction());
@@ -298,6 +311,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		toolBar.add(hostnamesComboBox);
 		toolBar.add(connectToolBarButton);
 		toolBar.add(disconnectToolBarButton);
+		toolBar.addSeparator();
+		toolBar.add(setAllSwitchesStraightButton);
 
 		JPanel toolbarPanel = new JPanel(new BorderLayout());
 		toolbarPanel.add(toolBar, BorderLayout.WEST);
@@ -493,6 +508,9 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 				File file = fileChooser.getSelectedFile();
 				// This is where a real application would open the file.
 				updateCommandHistory("Opening: " + file.getName());
+				XMLImporter importer = new XMLImporter(Preferences
+						.getInstance(), switchNumberToSwitch, switchGroups,
+						locomotives, file.getAbsolutePath());
 			} else {
 				updateCommandHistory("Open command cancelled by user");
 			}
@@ -531,15 +549,18 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 					RailControlGUI.this, Preferences.getInstance(),
 					switchNumberToSwitch, switchGroups);
 			if (switchConfig.isOkPressed()) {
+				SwitchControl sc = SwitchControl.getInstance();
+				switchNumberToSwitch = switchConfig.getSwitchNumberToSwitch();
+				switchGroups = switchConfig.getSwitchGroups();
+				try {
+					sc.unregisterAllSwitches();
+					sc.registerSwitches(switchNumberToSwitch.values());
+					sc.setSessionOnSwitches(session);
 
-			}
-			try {
-				SwitchControl.getInstance().unregisterAllSwitches();
-				SwitchControl.getInstance().registerSwitches(
-						switchNumberToSwitch.values());
-				switchGroupPane.update(switchGroups);
-			} catch (SwitchException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+					switchGroupPane.update(switchGroups);
+				} catch (SwitchException e1) {
+					ExceptionProcessor.getInstance().processException(e1);
+				}
 			}
 		}
 	}

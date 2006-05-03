@@ -36,7 +36,7 @@ public class DefaultSwitch extends Switch {
 	private int CURVED_PORT = 1;
 
 	public DefaultSwitch(int pNumber, String pDesc) {
-		this(pNumber, pDesc, 0, new Address(0, 0));
+		this(pNumber, pDesc, 1, new Address(0, 0));
 	}
 
 	public DefaultSwitch(int pNumber, String pDesc, int pBus, Address pAddress) {
@@ -212,6 +212,15 @@ public class DefaultSwitch extends Switch {
 	@Override
 	protected void setCurvedRight() throws SwitchException {
 		setCurvedLeft();
+	}
+
+	@Override
+	public Switch clone() {
+		DefaultSwitch newSwitch = new DefaultSwitch(number, desc, bus, address);
+		newSwitch.setSession(session);
+		newSwitch.setSwitchOrientation(switchOrientation);
+		newSwitch.setDefaultState(defaultState);
+		return newSwitch;
 	}
 
 }

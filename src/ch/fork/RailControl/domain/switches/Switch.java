@@ -95,6 +95,8 @@ public abstract class Switch implements Constants, Comparable {
 
 	protected abstract void switchTerminated(int pAddress);
 
+	public abstract Switch clone();
+
 	/**
 	 * Get name.
 	 * 
@@ -195,14 +197,17 @@ public abstract class Switch implements Constants, Comparable {
 	}
 
 	public int compareTo(Object o) {
-		Switch anotherSwitch = (Switch) o;
-		if (number < anotherSwitch.getNumber()) {
-			return -1;
-		} else if (number > anotherSwitch.getNumber()) {
-			return 1;
-		} else {
-			return 0;
+		if (o instanceof Switch) {
+			Switch anotherSwitch = (Switch) o;
+			if (number < anotherSwitch.getNumber()) {
+				return -1;
+			} else if (number > anotherSwitch.getNumber()) {
+				return 1;
+			} else {
+				return 0;
+			}
 		}
+		return 0;
 	}
 
 }

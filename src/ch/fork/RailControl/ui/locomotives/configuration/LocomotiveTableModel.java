@@ -89,7 +89,6 @@ public class LocomotiveTableModel extends AbstractTableModel {
 
 	@SuppressWarnings("unchecked")
 	public void setValueAt(Object value, int row, int col) {
-
 		Locomotive locomotiveOfThisRow = locomotives.get(row);
 		switch (col) {
 		case 0:
@@ -116,12 +115,10 @@ public class LocomotiveTableModel extends AbstractTableModel {
 			try {
 					locomotiveOfThisRow.setAddress(Integer.parseInt(value.toString()));
 				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (LocomotiveException e) {
 					ExceptionProcessor.getInstance().processException(e);
 				}
-			System.out.println("here");
 			break;
 		case 4:
 			break;

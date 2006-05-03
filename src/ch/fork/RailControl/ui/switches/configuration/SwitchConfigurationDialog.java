@@ -34,6 +34,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +69,7 @@ import ch.fork.RailControl.domain.switches.Switch.SwitchState;
 public class SwitchConfigurationDialog extends JDialog {
 
 	private List<SwitchGroup> switchGroups;
-	
+
 	private Map<Integer, Switch> switchNumberToSwitch;
 
 	private Preferences preferences;
@@ -78,26 +80,39 @@ public class SwitchConfigurationDialog extends JDialog {
 
 	private JList switchGroupList;
 
+	private JPanel switchesPanel;
+
+	private TableModel switchesTableModel;
+
+	private JTable switchesTable;
+
+	private Frame owner;
+
 	private boolean cancelPressed = false;
 
 	private boolean okPressed = false;
 
-	private Frame owner;
-
-	private JPanel switchesPanel;
-
-	private TableModel switchGroupTableModel;
-
-	private JTable switchGroupTable;
-
 	public SwitchConfigurationDialog(Frame owner, Preferences preferences,
-			Map<Integer, Switch> switchNumberToSwitche, List<SwitchGroup> switchGroups) {
+			Map<Integer, Switch> switchNumberToSwitch,
+			List<SwitchGroup> switchGroups) {
 		super(owner, "Switch Configuration", true);
 
 		this.owner = owner;
 		this.preferences = preferences;
-		this.switchNumberToSwitch = switchNumberToSwitche;
-		this.switchGroups = switchGroups;
+
+		this.switchNumberToSwitch = new HashMap<Integer, Switch>();
+		for (Switch s : switchNumberToSwitch.values()) {
+			Switch clone = s.clone();
+			this.switchNumberToSwitch.put(clone.getNumber(), clone);
+		}
+		this.switchGroups = new ArrayList<SwitchGroup>();
+		for (SwitchGroup sg : switchGroups) {
+			SwitchGroup clone = sg.clone();
+			this.switchGroups.add(clone);
+			for (Switch s : sg.getSwitches()) {
+				clone.addSwitch(this.switchNumberToSwitch.get(s.getNumber()));
+			}
+		}
 		initGUI();
 	}
 
@@ -268,9 +283,9 @@ public class SwitchConfigurationDialog extends JDialog {
 		TitledBorder title = BorderFactory.createTitledBorder("Switch-Group");
 		switchesPanel.setBorder(title);
 
-		switchGroupTableModel = new SwitchGroupTableModel();
-		switchGroupTable = new JTable(switchGroupTableModel);
-		switchGroupTable.setRowHeight(40);
+		switchesTableModel = new SwitchesTableModel(switchNumberToSwitch);
+		switchesTable = new JTable(switchesTableModel);
+		switchesTable.setRowHeight(40);
 
 		// SwitchType
 		JComboBox switchTypeComboBox = new JComboBox();
@@ -279,14 +294,13 @@ public class SwitchConfigurationDialog extends JDialog {
 		switchTypeComboBox.addItem("ThreeWaySwitch");
 		switchTypeComboBox.setRenderer(new SwitchTypeComboBoxCellRenderer());
 
-		TableColumn typeColumn = switchGroupTable.getColumnModel().getColumn(1);
+		TableColumn typeColumn = switchesTable.getColumnModel().getColumn(1);
 		typeColumn.setCellEditor(new DefaultCellEditor(switchTypeComboBox));
 		typeColumn.setCellRenderer(new SwitchTypeCellRenderer());
 		typeColumn.setPreferredWidth(115);
 
 		// SwitchAddress
-		TableColumn addressColumn = switchGroupTable.getColumnModel()
-				.getColumn(3);
+		TableColumn addressColumn = switchesTable.getColumnModel().getColumn(3);
 		addressColumn
 				.setCellEditor((TableCellEditor) new SwitchAddressCellEditor());
 		addressColumn.setPreferredWidth(140);
@@ -298,7 +312,7 @@ public class SwitchConfigurationDialog extends JDialog {
 		switchDefaultStateComboBox
 				.setRenderer(new SwitchDefaultStateComboBoxCellRenderer());
 
-		TableColumn defaultStateColumn = switchGroupTable.getColumnModel()
+		TableColumn defaultStateColumn = switchesTable.getColumnModel()
 				.getColumn(4);
 		defaultStateColumn.setCellEditor(new DefaultCellEditor(
 				switchDefaultStateComboBox));
@@ -313,15 +327,15 @@ public class SwitchConfigurationDialog extends JDialog {
 		switchOrientationComboBox.addItem(SwitchOrientation.SOUTH);
 		switchOrientationComboBox.addItem(SwitchOrientation.WEST);
 
-		TableColumn switchOrientationColumn = switchGroupTable.getColumnModel()
+		TableColumn switchOrientationColumn = switchesTable.getColumnModel()
 				.getColumn(5);
 		switchOrientationColumn.setCellEditor(new DefaultCellEditor(
 				switchOrientationComboBox));
 		switchOrientationColumn.setPreferredWidth(100);
 
-		switchGroupTable.getColumnModel().getColumn(6).setPreferredWidth(200);
+		switchesTable.getColumnModel().getColumn(6).setPreferredWidth(200);
 
-		JScrollPane switchGroupTablePane = new JScrollPane(switchGroupTable);
+		JScrollPane switchGroupTablePane = new JScrollPane(switchesTable);
 		switchGroupTablePane.setPreferredSize(new Dimension(600, 400));
 		switchesPanel.add(switchGroupTablePane, BorderLayout.CENTER);
 
@@ -332,8 +346,8 @@ public class SwitchConfigurationDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
 						.getSelectedValue());
-				int nextNumber = 99;
-				System.out.println(selectedSwitchGroup);
+				int nextNumber = ((Integer) switchesTable.getValueAt(
+						switchesTable.getRowCount() - 1, 0)).intValue() + 1;
 				Switch newSwitch = new DefaultSwitch(nextNumber,
 						selectedSwitchGroup.getName() + nextNumber);
 				selectedSwitchGroup.addSwitch(newSwitch);
@@ -344,11 +358,17 @@ public class SwitchConfigurationDialog extends JDialog {
 
 		removeSwitchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
+				if (switchesTable.isEditing())
+					switchesTable.getCellEditor().stopCellEditing();
+
 				SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
 						.getSelectedValue());
-				selectedSwitchGroup.getSwitches().remove(
-						switchGroupTable.getSelectedRow());
-				switchNumberToSwitch.remove(switchGroupTable.getValueAt(switchGroupTable.getSelectedRow(), 0));
+				Integer number = (Integer) switchesTable.getValueAt(
+						switchesTable.getSelectedRow(), 0);
+				selectedSwitchGroup.removeSwitch(switchNumberToSwitch
+						.get(number));
+				switchNumberToSwitch.remove(number);
 				updateSwitchesPanel();
 			}
 		});
@@ -372,10 +392,10 @@ public class SwitchConfigurationDialog extends JDialog {
 							+ "'");
 		}
 
-		((SwitchGroupTableModel) switchGroupTableModel)
+		((SwitchesTableModel) switchesTableModel)
 				.setSwitchGroup(selectedSwitchGroup);
-		switchGroupTable.revalidate();
-		switchGroupTable.repaint();
+		switchesTable.revalidate();
+		switchesTable.repaint();
 		switchesPanel.revalidate();
 		switchesPanel.repaint();
 		pack();
@@ -391,6 +411,10 @@ public class SwitchConfigurationDialog extends JDialog {
 
 	public boolean isOkPressed() {
 		return okPressed;
+	}
+
+	public Map<Integer, Switch> getSwitchNumberToSwitch() {
+		return switchNumberToSwitch;
 	}
 
 }

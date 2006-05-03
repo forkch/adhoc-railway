@@ -80,6 +80,11 @@ public abstract class Locomotive implements Constants {
 		params[2] = Integer.toString(0);
 
 	}
+	
+
+	protected abstract void increaseSpeedStep() throws LocomotiveException;
+	
+	protected abstract void decreaseSpeedStep() throws LocomotiveException;
 
 	public void init() throws LocomotiveException {
 		try {
@@ -113,6 +118,9 @@ public abstract class Locomotive implements Constants {
 
 	protected void setSpeed(int speed) throws LocomotiveException {
 		try {
+			if(speed < 0 || speed > drivingSteps) {
+				return;
+			}
 			switch (direction) {
 			case FORWARD:
 				gl.set(FORWARD_DIRECTION, speed, drivingSteps, null);

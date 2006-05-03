@@ -22,14 +22,13 @@ package ch.fork.RailControl.ui.locomotives;
  *----------------------------------------------------------------------*/
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -138,13 +137,7 @@ public class LocomotiveWidget extends JPanel implements
 
 				myLocomotive = (Locomotive) locomotiveComboBox
 						.getSelectedItem();
-				speedBar.setMinimum(0);
-				speedBar.setMaximum(myLocomotive.getDrivingSteps());
-				speedBar.setValue(myLocomotive.getCurrentSpeed());
-				currentSpeed.setText((int) ((double) (myLocomotive
-						.getCurrentSpeed())
-						/ (double) (myLocomotive.getDrivingSteps()) * 100.)
-						+ "%");
+				updateWidget();
 				desc.setText(myLocomotive.getDesc());
 				speedBar.requestFocus();
 			}
@@ -164,12 +157,11 @@ public class LocomotiveWidget extends JPanel implements
 
 	private JPanel initControlPanel() {
 		JPanel controlPanel = new JPanel(new BorderLayout());
-		
-		
+
 		controlPanel.setPreferredSize(new Dimension(150, 200));
 		speedBar = new JProgressBar(JProgressBar.VERTICAL);
 		controlPanel.add(speedBar, BorderLayout.EAST);
-		
+
 		JPanel speedControlPanel = initSpeedControl();
 		controlPanel.add(speedControlPanel, BorderLayout.CENTER);
 
@@ -178,17 +170,17 @@ public class LocomotiveWidget extends JPanel implements
 
 		return controlPanel;
 	}
-	
+
 	private JPanel initFunctionsControl() {
 
 		JPanel functionsPanel = new JPanel();
-		
+
 		JButton functionButton = new JButton("F");
 		JButton f1Button = new JButton("F1");
 		JButton f2Button = new JButton("F2");
 		JButton f3Button = new JButton("F3");
 		JButton f4Button = new JButton("F4");
-		
+
 		GridBagLayout functionControlLayout = new GridBagLayout();
 
 		functionsPanel.setLayout(functionControlLayout);
@@ -220,10 +212,10 @@ public class LocomotiveWidget extends JPanel implements
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		functionControlLayout.setConstraints(f4Button, gbc);
 		functionsPanel.add(f4Button);
-		
+
 		return functionsPanel;
 	}
-	
+
 	private JPanel initSpeedControl() {
 
 		JPanel speedControlPanel = new JPanel();
@@ -273,8 +265,8 @@ public class LocomotiveWidget extends JPanel implements
 						myLocomotive.init();
 					}
 					LocomotiveControl.getInstance().setSpeed(myLocomotive, 0);
-					speedBar.setValue(0);
-					currentSpeed.setText("0%");
+
+					updateWidget();
 				} catch (LocomotiveException e3) {
 					ExceptionProcessor.getInstance().processException(e3);
 				}
@@ -300,11 +292,7 @@ public class LocomotiveWidget extends JPanel implements
 					}
 					LocomotiveControl.getInstance().increaseSpeed(myLocomotive);
 
-					currentSpeed.setText((int) ((double) (myLocomotive
-							.getCurrentSpeed())
-							/ (double) (myLocomotive.getDrivingSteps()) * 100.)
-							+ "%");
-					speedBar.setValue(myLocomotive.getCurrentSpeed());
+					updateWidget();
 				} catch (LocomotiveException e3) {
 					ExceptionProcessor.getInstance().processException(e3);
 				}
@@ -317,24 +305,44 @@ public class LocomotiveWidget extends JPanel implements
 						myLocomotive.init();
 					}
 					LocomotiveControl.getInstance().decreaseSpeed(myLocomotive);
-					currentSpeed.setText((int) ((double) (myLocomotive
-							.getCurrentSpeed())
-							/ (double) (myLocomotive.getDrivingSteps()) * 100.)
-							+ "%");
-					speedBar.setValue(myLocomotive.getCurrentSpeed());
+
+					updateWidget();
 				} catch (LocomotiveException e3) {
 					ExceptionProcessor.getInstance().processException(e3);
 				}
 			}
 		});
-		
+
 		return speedControlPanel;
+	}
+
+	private void updateWidget() {
+		double speedInPercent = ((double) myLocomotive.getCurrentSpeed())
+		/ ((double) myLocomotive.getDrivingSteps());
+		if ( speedInPercent > 0.9) {
+			speedBar.setForeground(new Color(255, 0, 0));
+		} else if (speedInPercent > 0.7) {
+			speedBar.setForeground(new Color(255, 255, 0));
+		} else {
+			speedBar.setForeground(new Color(0,255,0));
+		}
+		speedBar.setMinimum(0);
+		speedBar.setMaximum(myLocomotive.getDrivingSteps());
+		speedBar.setValue(myLocomotive.getCurrentSpeed());
+
+		currentSpeed.setText((int) ((double) (myLocomotive.getCurrentSpeed())
+				/ (double) (myLocomotive.getDrivingSteps()) * 100.)
+				+ "%");
 	}
 
 	public void registerLocomotives(List<Locomotive> locomotives) {
 		for (Locomotive l : locomotives) {
 			locomotiveComboBox.addItem(l);
 		}
+	}
+
+	public Locomotive getMyLocomotive() {
+		return myLocomotive;
 	}
 
 	public void locomotiveChanged(Locomotive changedLocomotive) {
@@ -353,13 +361,7 @@ public class LocomotiveWidget extends JPanel implements
 		}
 
 		public void run() {
-			speedBar.setMinimum(0);
-			speedBar.setMaximum(myLocomotive.getDrivingSteps());
-			speedBar.setValue(myLocomotive.getCurrentSpeed());
-			currentSpeed.setText((int) ((double) (myLocomotive
-					.getCurrentSpeed())
-					/ (double) (myLocomotive.getDrivingSteps()) * 100.)
-					+ "%");
+			updateWidget();
 		}
 
 	}
@@ -367,6 +369,8 @@ public class LocomotiveWidget extends JPanel implements
 	private class LocomotiveControlAction extends AbstractAction {
 
 		private LocomotiveActionType type;
+
+		private long time = 0;
 
 		private int locomotiveNumber;
 
@@ -378,30 +382,47 @@ public class LocomotiveWidget extends JPanel implements
 		}
 
 		public void actionPerformed(ActionEvent e) {
-
-			try {
-				if (myLocomotive.isInitialized() != true) {
-					myLocomotive.init();
+			if (time == 0 || e.getWhen() > time + 200) {
+				try {
+					if (myLocomotive.isInitialized() != true) {
+						myLocomotive.init();
+					}
+					if (type == LocomotiveActionType.ACCELERATE) {
+						LocomotiveControl.getInstance().increaseSpeed(
+								myLocomotive);
+					} else if (type == LocomotiveActionType.DECCELERATE) {
+						LocomotiveControl.getInstance().decreaseSpeed(
+								myLocomotive);
+					} else if (type == LocomotiveActionType.TOGGLE_DIRECTION) {
+						LocomotiveControl.getInstance().toggleDirection(
+								myLocomotive);
+					}
+					if (time == 0) {
+						time = System.currentTimeMillis();
+					} else {
+						time = 0;
+					}
+				} catch (LocomotiveException e3) {
+					ExceptionProcessor.getInstance().processException(e3);
 				}
-				if (type == LocomotiveActionType.ACCELERATE) {
-					LocomotiveControl.getInstance().increaseSpeed(myLocomotive);
-				} else if (type == LocomotiveActionType.DECCELERATE) {
-					LocomotiveControl.getInstance().decreaseSpeed(myLocomotive);
-				} else if (type == LocomotiveActionType.TOGGLE_DIRECTION) {
-					LocomotiveControl.getInstance().toggleDirection(
-							myLocomotive);
+			} else {
+				if (e.getWhen() > time + 100) {
+					try {
+						if (myLocomotive.isInitialized() != true) {
+							myLocomotive.init();
+						}
+						if (type == LocomotiveActionType.ACCELERATE) {
+							LocomotiveControl.getInstance().increaseSpeedStep(
+									myLocomotive);
+						} else if (type == LocomotiveActionType.DECCELERATE) {
+							LocomotiveControl.getInstance().decreaseSpeedStep(
+									myLocomotive);
+						}
+					} catch (LocomotiveException e3) {
+						ExceptionProcessor.getInstance().processException(e3);
+					}
+					time = 0;
 				}
-				currentSpeed.setText((int) ((double) (myLocomotive
-						.getCurrentSpeed())
-						/ (double) (myLocomotive.getDrivingSteps()) * 100.)
-						+ "%");
-				speedBar.setValue(myLocomotive.getCurrentSpeed());
-				Thread.sleep(10);
-			} catch (LocomotiveException e3) {
-				ExceptionProcessor.getInstance().processException(e3);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
 			}
 		}
 	}

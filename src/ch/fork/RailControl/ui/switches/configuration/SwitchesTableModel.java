@@ -27,6 +27,7 @@ package ch.fork.RailControl.ui.switches.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -40,17 +41,19 @@ import ch.fork.RailControl.domain.switches.Switch.SwitchOrientation;
 import ch.fork.RailControl.domain.switches.Switch.SwitchState;
 import ch.fork.RailControl.domain.switches.exception.SwitchException;
 import ch.fork.RailControl.ui.ExceptionProcessor;
-public class SwitchGroupTableModel extends AbstractTableModel {
+public class SwitchesTableModel extends AbstractTableModel {
 
 	private final String[] columnNames = {"Switch #", "Type", "Bus", "Address",
 			"Default State", "Orientation", "Desc"};
 	private SwitchGroup switchGroup;
+	private Map<Integer, Switch> switchNumberToSwitch;
 
-	public SwitchGroupTableModel() {
+	public SwitchesTableModel(Map<Integer, Switch> switchNumberToSwitch) {
 		super();
+		this.switchNumberToSwitch = switchNumberToSwitch;
 	}
 
-	public SwitchGroupTableModel(SwitchGroup switchGroup) {
+	public SwitchesTableModel(SwitchGroup switchGroup) {
 		super();
 		this.switchGroup = switchGroup;
 	}
@@ -131,6 +134,8 @@ public class SwitchGroupTableModel extends AbstractTableModel {
 				}
 				switchOfThisRow.setSession(tmp.getSession());
 				switchGroup.replaceSwitch(tmp, switchOfThisRow);
+				switchNumberToSwitch.remove(tmp.getNumber());
+				switchNumberToSwitch.put(switchOfThisRow.getNumber(), switchOfThisRow);
 				tmp = null;
 				break;
 			case 2 :

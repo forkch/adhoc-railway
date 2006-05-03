@@ -45,6 +45,7 @@ import javax.swing.table.TableModel;
 
 import ch.fork.RailControl.domain.Preferences;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
+import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
 
 public class LocomotiveConfigurationDialog extends JDialog {
 
@@ -121,8 +122,25 @@ public class LocomotiveConfigurationDialog extends JDialog {
 		locomotivesPanel.add(locomotiveTablePane, BorderLayout.CENTER);
 		
 		JButton addLocomotiveButton = new JButton("Add");
-		JButton removeLocomotiveButton = new JButton("Remove");
+		addLocomotiveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Locomotive newLocomotive = new NoneLocomotive();
+				locomotives.add(newLocomotive);
+				locomotiveTable.repaint();
+				locomotiveTable.revalidate();
+				
+			}
+		});
 		
+		JButton removeLocomotiveButton = new JButton("Remove");
+		removeLocomotiveButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		buttonPanel.add(addLocomotiveButton);
 		buttonPanel.add(removeLocomotiveButton);

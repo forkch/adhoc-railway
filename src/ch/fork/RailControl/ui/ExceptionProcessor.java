@@ -50,7 +50,11 @@ public class ExceptionProcessor {
 	}
 
 	public void processException(Exception e) {
-		JOptionPane.showMessageDialog(parent, e.getMessage(), "Error occured",
+		String msg = e.getMessage(); 
+		if(e.getCause() != null) {
+			msg += ":\n" + e.getCause().getMessage();
+		}
+		JOptionPane.showMessageDialog(parent, msg, "Error occured",
 				JOptionPane.ERROR_MESSAGE);
 		e.printStackTrace();
 	}

@@ -79,6 +79,11 @@ public class SwitchControl implements GAInfoListener {
 		addressToSwitch.clear();
 	}
 
+	public void setSessionOnSwitches(SRCPSession session) {
+		for (Switch aSwitch : addressToSwitch.values()) {
+			aSwitch.setSession(session);
+		}
+	}
 	public void toggle(Switch aSwitch) throws SwitchException {
 		aSwitch.toggle();
 

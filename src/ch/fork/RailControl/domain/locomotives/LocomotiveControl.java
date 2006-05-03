@@ -55,7 +55,14 @@ public class LocomotiveControl implements GLInfoListener {
 	public void decreaseSpeed(Locomotive locomotive) throws LocomotiveException {
 		locomotive.decreaseSpeed();
 	}
+
+	public void increaseSpeedStep(Locomotive locomotive) throws LocomotiveException {
+		locomotive.increaseSpeedStep();
+	}
 	
+	public void decreaseSpeedStep(Locomotive locomotive) throws LocomotiveException {
+		locomotive.decreaseSpeedStep();
+	}
 	public void GLset(double timestamp, int bus, int address, String drivemode,
 			int v, int vMax, boolean[] functions) {
 		/*

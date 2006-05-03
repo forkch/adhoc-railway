@@ -142,4 +142,13 @@ public class ThreeWaySwitch extends Switch {
 		switch1.setSession(session);
 		switch2.setSession(session);
 	}
+
+	@Override
+	public Switch clone() {
+		ThreeWaySwitch newSwitch = new ThreeWaySwitch(number, desc, bus, address);
+		newSwitch.setSession(session);
+		newSwitch.setSwitchOrientation(switchOrientation);
+		newSwitch.setDefaultState(defaultState);
+		return newSwitch;
+	}
 }
