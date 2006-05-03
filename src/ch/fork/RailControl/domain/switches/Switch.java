@@ -151,9 +151,9 @@ public abstract class Switch implements Constants, Comparable {
 		return address;
 	}
 
-	public void setAddress(Address address) throws SwitchException {
+	public void setAddress(Address address) {
 		this.address = address;
-		reinit();
+		initialized = false;
 	}
 
 	public SRCPSession getSession() {
@@ -210,4 +210,7 @@ public abstract class Switch implements Constants, Comparable {
 		return 0;
 	}
 
+	public String toString() {
+		return number + ": " + getType() + " @ bus " + bus + " @ address " + address;
+	}
 }

@@ -142,11 +142,7 @@ public class SwitchesTableModel extends AbstractTableModel {
 				switchOfThisRow.setBus(Integer.parseInt((String) value));
 				break;
 			case 3 :
-				try {
-					switchOfThisRow.setAddress((Address)value);
-				} catch (SwitchException e) {
-					ExceptionProcessor.getInstance().processException(e);
-				}
+				switchOfThisRow.setAddress((Address)value);
 				break;
 			case 4 :
 					switchOfThisRow.setDefaultState((SwitchState)value);

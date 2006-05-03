@@ -33,6 +33,10 @@ public class ThreeWaySwitch extends Switch {
 	private DefaultSwitch switch2;
 
 	private Map<Integer, Switch> addressToSwitch;
+
+	public ThreeWaySwitch(int pNumber, String pDesc) {
+		this(pNumber, pDesc, 1, new Address(0, 0));
+	}
 	
 	public ThreeWaySwitch(int pNumber, String pDesc, int pBus, Address address) {
 		super(pNumber, pDesc, pBus, address);
@@ -138,11 +142,29 @@ public class ThreeWaySwitch extends Switch {
 	}
 	
 	public void setSession(SRCPSession session) {
+		System.out.println("setting session in threewayswitch");
 		this.session = session;
+		System.out.println(session);
 		switch1.setSession(session);
 		switch2.setSession(session);
 	}
 
+	public void setBus(int bus) {
+		this.bus = bus;
+		switch1.setBus(bus);
+		switch2.setBus(bus);
+	}
+	
+	public void setAddress(Address address) {
+		this.address = address;
+		switch1.setAddress(new Address(address.getAddress1(), 0));
+		switch2.setAddress(new Address(address.getAddress2(), 0));
+		addressToSwitch.clear();
+
+		addressToSwitch.put(address.getAddress1(), switch1);
+		addressToSwitch.put(address.getAddress2(), switch2);
+		initialized = false;
+	}
 	@Override
 	public Switch clone() {
 		ThreeWaySwitch newSwitch = new ThreeWaySwitch(number, desc, bus, address);

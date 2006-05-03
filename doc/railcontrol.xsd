@@ -21,7 +21,9 @@
 
   <xs:complexType name="SwitchGroupType">
     <xs:sequence minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="Switch" type="SwitchType"/>
+      <xs:element name="Switch" type="SwitchType">
+        <xs:attribute name="name" type="xs:string"/>
+      </xs:element>
     </xs:sequence>
   </xs:complexType>
 

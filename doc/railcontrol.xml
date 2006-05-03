@@ -2,18 +2,33 @@
 <RailControl xmlns="http://www.fork.ch/RailControl"
  ExporterVersion="0.1">
   <SwitchConfiguration>
-    <SwitchGroup>
-      <Switch desc="bla" number="1" type="DefaultSwitch" bus="1"
+    <SwitchGroup name="Main">
+      <Switch desc="HB1" number="1" type="DefaultSwitch" bus="1"
         defaultstate="straight">
         <Address address1="1" address2="0"/>
       </Switch>
-      <Switch desc="bla" number="1" type="DefaultSwitch" bus="1"
+      <Switch desc="HB2" number="2" type="DoubleCrossSwitch" bus="1"
         defaultstate="straight">
-        <Address address1="1" address2="0"/>
+        <Address address1="2" address2="0"/>
       </Switch>
-      <Switch desc="bla" number="1" type="DefaultSwitch" bus="1"
+      <Switch desc="HB3" number="3" type="ThreeWaySwitch" bus="1"
         defaultstate="straight">
-        <Address address1="1" address2="0"/>
+        <Address address1="3" address2="4"/>
+      </Switch>
+      
+    </SwitchGroup>
+    <SwitchGroup name="Mountain">
+      <Switch desc="M1" number="4" type="DefaultSwitch" bus="1"
+        defaultstate="straight">
+        <Address address1="5" address2="0"/>
+      </Switch>
+      <Switch desc="M2" number="5" type="DoubleCrossSwitch" bus="1"
+        defaultstate="straight">
+        <Address address1="6" address2="0"/>
+      </Switch>
+      <Switch desc="M3" number="6" type="ThreeWaySwitch" bus="1"
+        defaultstate="straight">
+        <Address address1="7" address2="8"/>
       </Switch>
       
     </SwitchGroup>

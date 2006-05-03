@@ -4,6 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jsrcpc"/>
 	<classpathentry kind="lib" path="lib/javamake.jar"/>
-	<classpathentry kind="lib" path="lib/xerces-2_8_0/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

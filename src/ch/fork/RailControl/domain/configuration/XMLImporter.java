@@ -15,8 +15,12 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import ch.fork.RailControl.domain.Preferences;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
+import ch.fork.RailControl.domain.switches.Address;
+import ch.fork.RailControl.domain.switches.DefaultSwitch;
+import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
 import ch.fork.RailControl.domain.switches.Switch;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
+import ch.fork.RailControl.domain.switches.ThreeWaySwitch;
 
 public class XMLImporter extends DefaultHandler implements ContentHandler {
 
@@ -28,6 +32,12 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 
 	private List<Locomotive> locomotives;
 
+	private Switch actualSwitch;
+
+	private SwitchGroup actualSwitchGroup;
+
+	private Address actualAddress;
+
 	public XMLImporter(Preferences preferences,
 			Map<Integer, Switch> switchNumberToSwitch,
 			List<SwitchGroup> switchGroups, List<Locomotive> locomotives,
@@ -37,6 +47,9 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 		this.switchGroups = switchGroups;
 		this.switchNumberToSwitch = switchNumberToSwitch;
 		this.locomotives = locomotives;
+		switchGroups.clear();
+		switchNumberToSwitch.clear();
+		locomotives.clear();
 		parseDocument(filename);
 	}
 
@@ -64,17 +77,43 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 	// Event Handlers
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
-		
-	}
-
-	public void characters(char[] ch, int start, int length)
-			throws SAXException {
-		
+		qName = qName.toLowerCase();
+		if (qName.equals("switchgroup")) {
+			actualSwitchGroup = new SwitchGroup(attributes.getValue("name"));
+		} else if (qName.equals("switch")) {
+			if (attributes.getValue("type").equals("DefaultSwitch")) {
+				actualSwitch = new DefaultSwitch(Integer.parseInt(attributes
+						.getValue("number")), attributes.getValue("desc"));
+				actualSwitch.setBus(Integer
+						.parseInt(attributes.getValue("bus")));
+			} else if(attributes.getValue("type").equals("DoubleCrossSwitch")) {
+				actualSwitch = new DoubleCrossSwitch(Integer.parseInt(attributes
+						.getValue("number")), attributes.getValue("desc"));
+				actualSwitch.setBus(Integer
+						.parseInt(attributes.getValue("bus")));
+			} else if(attributes.getValue("type").equals("ThreeWaySwitch")) {
+				actualSwitch = new ThreeWaySwitch(Integer.parseInt(attributes
+						.getValue("number")), attributes.getValue("desc"));
+				actualSwitch.setBus(Integer
+						.parseInt(attributes.getValue("bus")));
+			}
+		} else if (qName.equals("address")) {
+			actualAddress = new Address(Integer.parseInt(attributes
+					.getValue("address1")), Integer.parseInt(attributes
+					.getValue("address2")));
+		}
 	}
 
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
-		
+		qName = qName.toLowerCase();
+		if (qName.equals("switchgroup")) {
+			switchGroups.add(actualSwitchGroup);
+		} else if (qName.equals("switch")) {
+			actualSwitch.setAddress(actualAddress);
+			actualSwitchGroup.addSwitch(actualSwitch);
+			switchNumberToSwitch.put(actualSwitch.getNumber(), actualSwitch);
+			actualSwitch = null;
+		}
 	}
-
 }

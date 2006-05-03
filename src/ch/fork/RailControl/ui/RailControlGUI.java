@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -45,7 +46,6 @@ import ch.fork.RailControl.domain.locomotives.DeltaLocomotive;
 import ch.fork.RailControl.domain.locomotives.DigitalLocomotive;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
 import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
-import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
 import ch.fork.RailControl.domain.switches.Address;
 import ch.fork.RailControl.domain.switches.DefaultSwitch;
 import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
@@ -391,6 +391,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		menuBar.add(fileMenu);
 		menuBar.add(edit);
 		menuBar.add(daemonMenu);
+		menuBar.add(Box.createGlue());
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
 	}
@@ -511,6 +512,14 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 				XMLImporter importer = new XMLImporter(Preferences
 						.getInstance(), switchNumberToSwitch, switchGroups,
 						locomotives, file.getAbsolutePath());
+				System.out.println(switchGroups);
+				switchGroupPane.update(switchGroups);
+				SwitchControl sc = SwitchControl.getInstance();
+				sc.unregisterAllSwitches();
+				sc.registerSwitches(
+						switchNumberToSwitch.values());
+				sc.setSessionOnSwitches(session);
+
 			} else {
 				updateCommandHistory("Open command cancelled by user");
 			}
@@ -552,15 +561,11 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 				SwitchControl sc = SwitchControl.getInstance();
 				switchNumberToSwitch = switchConfig.getSwitchNumberToSwitch();
 				switchGroups = switchConfig.getSwitchGroups();
-				try {
-					sc.unregisterAllSwitches();
-					sc.registerSwitches(switchNumberToSwitch.values());
-					sc.setSessionOnSwitches(session);
+				sc.unregisterAllSwitches();
+				sc.registerSwitches(switchNumberToSwitch.values());
+				sc.setSessionOnSwitches(session);
 
-					switchGroupPane.update(switchGroups);
-				} catch (SwitchException e1) {
-					ExceptionProcessor.getInstance().processException(e1);
-				}
+				switchGroupPane.update(switchGroups);
 			}
 		}
 	}
@@ -600,9 +605,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 				session.getInfoChannel().addInfoDataListener(
 						RailControlGUI.this);
 				session.connect();
-				for (Switch s : switchNumberToSwitch.values()) {
-					s.setSession(session);
-				}
+				SwitchControl.getInstance().setSessionOnSwitches(session);
 				for (Locomotive l : locomotives) {
 					l.setSession(session);
 				}

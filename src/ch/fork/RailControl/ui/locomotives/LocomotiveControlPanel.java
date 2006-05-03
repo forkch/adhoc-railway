@@ -14,7 +14,6 @@ import javax.swing.KeyStroke;
 import ch.fork.RailControl.domain.Preferences;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
 import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
-import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
 import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
 import ch.fork.RailControl.ui.ExceptionProcessor;
 

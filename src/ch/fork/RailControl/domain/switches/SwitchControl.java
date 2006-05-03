@@ -62,17 +62,18 @@ public class SwitchControl implements GAInfoListener {
 			if (address.getAddress2() != 0) {
 				addressToSwitch.put(address.getAddress2(), aSwitch);
 			}
+			System.out.println(aSwitch);
 		}
 	}
 
-	public void unregisterSwitches(List<Switch> switches) throws SwitchException {
+	public void unregisterSwitches(List<Switch> switches)  {
 		for (Switch aSwitch : switches) {
 			//aSwitch.term();
 			addressToSwitch.remove(aSwitch.getAddress());
 		}
 	}
 
-	public void unregisterAllSwitches() throws SwitchException {
+	public void unregisterAllSwitches()  {
 		for (Switch aSwitch : addressToSwitch.values()) {
 			//aSwitch.term();
 		}
@@ -82,6 +83,8 @@ public class SwitchControl implements GAInfoListener {
 	public void setSessionOnSwitches(SRCPSession session) {
 		for (Switch aSwitch : addressToSwitch.values()) {
 			aSwitch.setSession(session);
+
+			System.out.println("Setting session on : " + aSwitch);
 		}
 	}
 	public void toggle(Switch aSwitch) throws SwitchException {

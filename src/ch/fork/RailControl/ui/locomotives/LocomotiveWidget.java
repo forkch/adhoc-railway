@@ -33,6 +33,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -173,6 +174,7 @@ public class LocomotiveWidget extends JPanel implements
 
 	private JPanel initFunctionsControl() {
 
+		
 		JPanel functionsPanel = new JPanel();
 
 		JButton functionButton = new JButton("F");
@@ -180,6 +182,11 @@ public class LocomotiveWidget extends JPanel implements
 		JButton f2Button = new JButton("F2");
 		JButton f3Button = new JButton("F3");
 		JButton f4Button = new JButton("F4");
+		functionButton.setMargin(new Insets(0,0,0,0));
+		f1Button.setMargin(new Insets(0,0,0,0));
+		f2Button.setMargin(new Insets(0,0,0,0));
+		f3Button.setMargin(new Insets(0,0,0,0));
+		f4Button.setMargin(new Insets(0,0,0,0));
 
 		GridBagLayout functionControlLayout = new GridBagLayout();
 
