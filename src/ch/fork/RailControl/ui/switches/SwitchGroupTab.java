@@ -51,7 +51,7 @@ public class SwitchGroupTab extends JPanel {
         currentRow = 0;
         currentCol = 0;
         gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10,10,10,10);
+        gbc.insets = new Insets(5,5,5,5);
         gbc.gridx = currentRow;
         gbc.gridy = currentCol;
     }

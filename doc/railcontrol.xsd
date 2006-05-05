@@ -36,6 +36,7 @@
     <xs:attribute name="desc" type="xs:string"/>
     <xs:attribute name="bus" type="xs:string"/>
     <xs:attribute name="defaultstate" type="defaultstateType"/>
+    <xs:attribute name="orientation" type="orientationType"/>
   </xs:complexType>
 
   <xs:simpleType name="switchtypeType">
@@ -49,6 +50,15 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="straight"/>
       <xs:enumeration value="curved"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="orientationType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="north"/>
+      <xs:enumeration value="east"/>
+      <xs:enumeration value="south"/>
+      <xs:enumeration value="west"/>
     </xs:restriction>
   </xs:simpleType>
 

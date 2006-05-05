@@ -58,4 +58,16 @@ public class ExceptionProcessor {
 				JOptionPane.ERROR_MESSAGE);
 		e.printStackTrace();
 	}
+	
+
+	public void processException(String msg, Exception e) {
+		String exceptionMsg = e.getMessage();
+		msg = msg + "\n" + exceptionMsg;
+		if(e.getCause() != null) {
+			exceptionMsg += ":\n" + e.getCause().getMessage();
+		}
+		JOptionPane.showMessageDialog(parent, msg, "Error occured",
+				JOptionPane.ERROR_MESSAGE);
+		e.printStackTrace();
+	}
 }

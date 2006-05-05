@@ -14,13 +14,19 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import ch.fork.RailControl.domain.Preferences;
+import ch.fork.RailControl.domain.locomotives.DeltaLocomotive;
+import ch.fork.RailControl.domain.locomotives.DigitalLocomotive;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
+import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
 import ch.fork.RailControl.domain.switches.Address;
 import ch.fork.RailControl.domain.switches.DefaultSwitch;
 import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
 import ch.fork.RailControl.domain.switches.Switch;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 import ch.fork.RailControl.domain.switches.ThreeWaySwitch;
+import ch.fork.RailControl.domain.switches.Switch.SwitchOrientation;
+import ch.fork.RailControl.domain.switches.Switch.SwitchState;
+import ch.fork.RailControl.ui.ExceptionProcessor;
 
 public class XMLImporter extends DefaultHandler implements ContentHandler {
 
@@ -37,6 +43,8 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 	private SwitchGroup actualSwitchGroup;
 
 	private Address actualAddress;
+
+	private Locomotive actualLocomotive;
 
 	public XMLImporter(Preferences preferences,
 			Map<Integer, Switch> switchNumberToSwitch,
@@ -66,7 +74,8 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 			sp.parse(filename, this);
 
 		} catch (SAXException se) {
-			se.printStackTrace();
+			ExceptionProcessor.getInstance().processException(
+					"Error opening file", se);
 		} catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
 		} catch (IOException ie) {
@@ -78,29 +87,70 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 		qName = qName.toLowerCase();
+
 		if (qName.equals("switchgroup")) {
 			actualSwitchGroup = new SwitchGroup(attributes.getValue("name"));
 		} else if (qName.equals("switch")) {
-			if (attributes.getValue("type").equals("DefaultSwitch")) {
-				actualSwitch = new DefaultSwitch(Integer.parseInt(attributes
-						.getValue("number")), attributes.getValue("desc"));
-				actualSwitch.setBus(Integer
-						.parseInt(attributes.getValue("bus")));
-			} else if(attributes.getValue("type").equals("DoubleCrossSwitch")) {
-				actualSwitch = new DoubleCrossSwitch(Integer.parseInt(attributes
-						.getValue("number")), attributes.getValue("desc"));
-				actualSwitch.setBus(Integer
-						.parseInt(attributes.getValue("bus")));
-			} else if(attributes.getValue("type").equals("ThreeWaySwitch")) {
-				actualSwitch = new ThreeWaySwitch(Integer.parseInt(attributes
-						.getValue("number")), attributes.getValue("desc"));
-				actualSwitch.setBus(Integer
-						.parseInt(attributes.getValue("bus")));
-			}
+			parseSwitch(qName, attributes);
 		} else if (qName.equals("address")) {
 			actualAddress = new Address(Integer.parseInt(attributes
 					.getValue("address1")), Integer.parseInt(attributes
 					.getValue("address2")));
+		} else if (qName.equals("locomotive")) {
+			parseLocomotive(qName, attributes);
+		}
+	}
+
+	private void parseSwitch(String qName, Attributes attributes) {
+		String type = attributes.getValue("type");
+		String desc = attributes.getValue("desc");
+		String defaultstate = attributes.getValue("defaultstate");
+		String orientation = attributes.getValue("orientation");
+		int bus = Integer.parseInt(attributes.getValue("bus"));
+		int number = Integer.parseInt(attributes.getValue("number"));
+
+		if (type.equals("DefaultSwitch")) {
+			actualSwitch = new DefaultSwitch(number, desc);
+
+		} else if (type.equals("DoubleCrossSwitch")) {
+			actualSwitch = new DoubleCrossSwitch(number, desc);
+		} else if (type.equals("ThreeWaySwitch")) {
+			actualSwitch = new ThreeWaySwitch(number, desc);
+		}
+		actualSwitch.setBus(bus);
+		if (defaultstate.equals("straight")) {
+			actualSwitch.setDefaultState(SwitchState.STRAIGHT);
+
+		} else if (defaultstate.equals("curved")) {
+			actualSwitch.setDefaultState(SwitchState.LEFT);
+		} else {
+			actualSwitch.setDefaultState(SwitchState.STRAIGHT);
+		}
+		if (orientation.equals("north")) {
+			actualSwitch.setSwitchOrientation(SwitchOrientation.NORTH);
+		} else if (orientation.equals("east")) {
+			actualSwitch.setSwitchOrientation(SwitchOrientation.EAST);
+		} else if (orientation.equals("south")) {
+			actualSwitch.setSwitchOrientation(SwitchOrientation.SOUTH);
+		} else if (orientation.equals("west")) {
+			actualSwitch.setSwitchOrientation(SwitchOrientation.WEST);
+		} else {
+			actualSwitch.setSwitchOrientation(SwitchOrientation.EAST);
+		}
+	}
+
+	private void parseLocomotive(String qName, Attributes attributes) {
+		String name = attributes.getValue("name");
+		String desc = attributes.getValue("desc");
+		String type = attributes.getValue("type");
+		int bus = Integer.parseInt(attributes.getValue("bus"));
+		int address = Integer.parseInt(attributes.getValue("address"));
+		if (attributes.getValue("type").equals("NoneLocomotive")) {
+			actualLocomotive = new NoneLocomotive();
+		} else if (attributes.getValue("type").equals("DeltaLocomotive")) {
+			actualLocomotive = new DeltaLocomotive(name, bus, address, desc);
+		} else if (attributes.getValue("type").equals("DigitalLocomotive")) {
+			actualLocomotive = new DigitalLocomotive(name, bus, address, desc);
 		}
 	}
 
@@ -110,10 +160,16 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 		if (qName.equals("switchgroup")) {
 			switchGroups.add(actualSwitchGroup);
 		} else if (qName.equals("switch")) {
-			actualSwitch.setAddress(actualAddress);
-			actualSwitchGroup.addSwitch(actualSwitch);
-			switchNumberToSwitch.put(actualSwitch.getNumber(), actualSwitch);
+			if (switchNumberToSwitch.get(actualSwitch.getNumber()) == null) {
+				actualSwitch.setAddress(actualAddress);
+				actualSwitchGroup.addSwitch(actualSwitch);
+				switchNumberToSwitch
+						.put(actualSwitch.getNumber(), actualSwitch);
+			}
 			actualSwitch = null;
+		} else if (qName.equals("locomotive")) {
+			locomotives.add(actualLocomotive);
+			actualLocomotive = null;
 		}
 	}
 }

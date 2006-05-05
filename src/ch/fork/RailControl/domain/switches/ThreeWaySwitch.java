@@ -142,9 +142,7 @@ public class ThreeWaySwitch extends Switch {
 	}
 	
 	public void setSession(SRCPSession session) {
-		System.out.println("setting session in threewayswitch");
 		this.session = session;
-		System.out.println(session);
 		switch1.setSession(session);
 		switch2.setSession(session);
 	}

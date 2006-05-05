@@ -65,7 +65,7 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener {
 
 		gbc.gridx = 0;
 		JLabel numberLabel = new JLabel(Integer.toString(mySwitch.getNumber()));
-		numberLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+		numberLabel.setFont(new Font("Dialog", Font.BOLD, 40));
 		layout.setConstraints(numberLabel, gbc);
 		add(numberLabel);
 

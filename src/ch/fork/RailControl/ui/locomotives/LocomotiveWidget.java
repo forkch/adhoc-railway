@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
@@ -50,6 +51,7 @@ import ch.fork.RailControl.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
 import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
 import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
+import ch.fork.RailControl.domain.switches.SwitchControl;
 import ch.fork.RailControl.ui.ExceptionProcessor;
 import ch.fork.RailControl.ui.ImageTools;
 
@@ -70,11 +72,11 @@ public class LocomotiveWidget extends JPanel implements
 
 	private JProgressBar speedBar;
 
-	private JButton increaseSpeed = new JButton("+");
+	private JButton increaseSpeed;
 
-	private JButton decreaseSpeed = new JButton("-");
+	private JButton decreaseSpeed;
 
-	private JTextField currentSpeed;
+	private JLabel currentSpeed;
 
 	private JButton stopButton;
 
@@ -148,7 +150,7 @@ public class LocomotiveWidget extends JPanel implements
 
 		JPanel centerPanel = new JPanel(new BorderLayout());
 
-		desc = new JLabel(myLocomotive.getDesc());
+		desc = new JLabel(myLocomotive.getDesc(), SwingConstants.CENTER);
 
 		JPanel controlPanel = initControlPanel();
 		centerPanel.add(controlPanel, BorderLayout.CENTER);
@@ -160,7 +162,9 @@ public class LocomotiveWidget extends JPanel implements
 		JPanel controlPanel = new JPanel(new BorderLayout());
 
 		controlPanel.setPreferredSize(new Dimension(150, 200));
+
 		speedBar = new JProgressBar(JProgressBar.VERTICAL);
+		speedBar.setPreferredSize(new Dimension(20, 200));
 		controlPanel.add(speedBar, BorderLayout.EAST);
 
 		JPanel speedControlPanel = initSpeedControl();
@@ -174,7 +178,6 @@ public class LocomotiveWidget extends JPanel implements
 
 	private JPanel initFunctionsControl() {
 
-		
 		JPanel functionsPanel = new JPanel();
 
 		JButton functionButton = new JButton("F");
@@ -182,12 +185,45 @@ public class LocomotiveWidget extends JPanel implements
 		JButton f2Button = new JButton("F2");
 		JButton f3Button = new JButton("F3");
 		JButton f4Button = new JButton("F4");
-		functionButton.setMargin(new Insets(0,0,0,0));
-		f1Button.setMargin(new Insets(0,0,0,0));
-		f2Button.setMargin(new Insets(0,0,0,0));
-		f3Button.setMargin(new Insets(0,0,0,0));
-		f4Button.setMargin(new Insets(0,0,0,0));
+		Insets margin = new Insets(3, 3, 3, 3);
+		functionButton.setMargin(margin);
+		f1Button.setMargin(margin);
+		f2Button.setMargin(margin);
+		f3Button.setMargin(margin);
+		f4Button.setMargin(margin);
+		functionButton.addActionListener(new ActionListener() {
 
+			public void actionPerformed(ActionEvent e) {
+				try {
+					LocomotiveControl.getInstance().setFunctions(myLocomotive,
+							new boolean[] { true, false, false, false, false });
+				} catch (LocomotiveException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				speedBar.requestFocus();
+			}
+
+		});
+		f1Button.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				try {
+					LocomotiveControl.getInstance()
+							.setFunctions(
+									myLocomotive,
+									new boolean[] { false, false, false, false,
+											false });
+				} catch (LocomotiveException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				speedBar.requestFocus();
+			}
+
+		});
 		GridBagLayout functionControlLayout = new GridBagLayout();
 
 		functionsPanel.setLayout(functionControlLayout);
@@ -224,18 +260,23 @@ public class LocomotiveWidget extends JPanel implements
 	}
 
 	private JPanel initSpeedControl() {
-
+		Insets margin = new Insets(3, 3, 3, 3);
 		JPanel speedControlPanel = new JPanel();
+
+		currentSpeed = new JLabel("0%", SwingConstants.CENTER);
+		increaseSpeed = new JButton("+");
+		decreaseSpeed = new JButton("-");
 		stopButton = new JButton("Stop");
 		directionButton = new JButton(ImageTools.createImageIcon(
 				"icons/reload.png", "Toggle Direction", this));
-
-		// speed.add(image, BorderLayout.NORTH);
+		increaseSpeed.setMargin(margin);
+		decreaseSpeed.setMargin(margin);
+		stopButton.setMargin(margin);
+		directionButton.setMargin(margin);
 
 		GridBagLayout speedControlLayout = new GridBagLayout();
 
 		speedControlPanel.setLayout(speedControlLayout);
-		currentSpeed = new JTextField("0%");
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(2, 2, 2, 2);
@@ -277,6 +318,8 @@ public class LocomotiveWidget extends JPanel implements
 				} catch (LocomotiveException e3) {
 					ExceptionProcessor.getInstance().processException(e3);
 				}
+
+				speedBar.requestFocus();
 			}
 
 		});
@@ -288,6 +331,8 @@ public class LocomotiveWidget extends JPanel implements
 				} catch (LocomotiveException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
 				}
+
+				speedBar.requestFocus();
 			}
 		});
 
@@ -303,6 +348,8 @@ public class LocomotiveWidget extends JPanel implements
 				} catch (LocomotiveException e3) {
 					ExceptionProcessor.getInstance().processException(e3);
 				}
+
+				speedBar.requestFocus();
 			}
 		});
 		decreaseSpeed.addActionListener(new ActionListener() {
@@ -317,6 +364,8 @@ public class LocomotiveWidget extends JPanel implements
 				} catch (LocomotiveException e3) {
 					ExceptionProcessor.getInstance().processException(e3);
 				}
+
+				speedBar.requestFocus();
 			}
 		});
 
@@ -325,13 +374,13 @@ public class LocomotiveWidget extends JPanel implements
 
 	private void updateWidget() {
 		double speedInPercent = ((double) myLocomotive.getCurrentSpeed())
-		/ ((double) myLocomotive.getDrivingSteps());
-		if ( speedInPercent > 0.9) {
+				/ ((double) myLocomotive.getDrivingSteps());
+		if (speedInPercent > 0.9) {
 			speedBar.setForeground(new Color(255, 0, 0));
 		} else if (speedInPercent > 0.7) {
 			speedBar.setForeground(new Color(255, 255, 0));
 		} else {
-			speedBar.setForeground(new Color(0,255,0));
+			speedBar.setForeground(new Color(0, 255, 0));
 		}
 		speedBar.setMinimum(0);
 		speedBar.setMaximum(myLocomotive.getDrivingSteps());

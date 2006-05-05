@@ -5,8 +5,9 @@ import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
 public class NoneLocomotive extends Locomotive {
 
 	private static final int DRIVING_STEPS = 0;
+	private static final int FUNCTIONCOUNT = 0;
 	public NoneLocomotive() {
-		super(null, "NONE", 0, 0, DRIVING_STEPS, "Dummy");
+		super(null, "NONE", 0, 0, DRIVING_STEPS, "Dummy", FUNCTIONCOUNT);
 	}
 	@Override
 	public void decreaseSpeed() throws LocomotiveException{

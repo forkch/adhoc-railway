@@ -32,10 +32,16 @@ public class DeltaLocomotive extends Locomotive {
 	
 	private static final int DRIVING_STEPS = 14;
 	private static final int STEPPING = 2;
+	private static final int FUNCTIONCOUNT = 1;
+	
+	public DeltaLocomotive(String name, int bus,
+			int address, String desc) {
+		this(null, name, bus, address, desc);
+	}
 
 	public DeltaLocomotive(SRCPSession session, String name, int bus,
 			int address, String desc) {
-		super(session, name, bus, address, DRIVING_STEPS, desc);
+		super(session, name, bus, address, DRIVING_STEPS, desc, FUNCTIONCOUNT);
 	}
 
 	

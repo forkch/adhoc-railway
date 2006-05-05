@@ -62,20 +62,19 @@ public class SwitchControl implements GAInfoListener {
 			if (address.getAddress2() != 0) {
 				addressToSwitch.put(address.getAddress2(), aSwitch);
 			}
-			System.out.println(aSwitch);
 		}
 	}
 
-	public void unregisterSwitches(List<Switch> switches)  {
+	public void unregisterSwitches(List<Switch> switches) {
 		for (Switch aSwitch : switches) {
-			//aSwitch.term();
+			// aSwitch.term();
 			addressToSwitch.remove(aSwitch.getAddress());
 		}
 	}
 
-	public void unregisterAllSwitches()  {
+	public void unregisterAllSwitches() {
 		for (Switch aSwitch : addressToSwitch.values()) {
-			//aSwitch.term();
+			// aSwitch.term();
 		}
 		addressToSwitch.clear();
 	}
@@ -84,9 +83,10 @@ public class SwitchControl implements GAInfoListener {
 		for (Switch aSwitch : addressToSwitch.values()) {
 			aSwitch.setSession(session);
 
-			System.out.println("Setting session on : " + aSwitch);
+			// System.out.println("Setting session on : " + aSwitch);
 		}
 	}
+
 	public void toggle(Switch aSwitch) throws SwitchException {
 		aSwitch.toggle();
 
@@ -118,9 +118,11 @@ public class SwitchControl implements GAInfoListener {
 		 * value + " )");
 		 */
 		Switch s = addressToSwitch.get(address);
-		s.switchPortChanged(address, port, value);
-		if (value != 0) {
-			informListeners(s);
+		if (s != null) {
+			s.switchPortChanged(address, port, value);
+			if (value != 0) {
+				informListeners(s);
+			}
 		}
 	}
 

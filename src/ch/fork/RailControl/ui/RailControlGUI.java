@@ -4,6 +4,7 @@ import static ch.fork.RailControl.ui.ImageTools.createImageIcon;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -13,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.net.ConnectException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EtchedBorder;
 
 import ch.fork.RailControl.domain.Preferences;
 import ch.fork.RailControl.domain.configuration.XMLImporter;
@@ -46,6 +49,7 @@ import ch.fork.RailControl.domain.locomotives.DeltaLocomotive;
 import ch.fork.RailControl.domain.locomotives.DigitalLocomotive;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
 import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
+import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
 import ch.fork.RailControl.domain.switches.Address;
 import ch.fork.RailControl.domain.switches.DefaultSwitch;
 import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
@@ -117,6 +121,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
 	private JButton disconnectToolBarButton;
 
+	private JMenu recentFilesMenu;
+
 	public RailControlGUI() {
 		super(NAME);
 		initGUI();
@@ -133,30 +139,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		SwitchGroup mountain = new SwitchGroup("Mountain Line");
 		switchGroups.add(main);
 		switchGroups.add(mountain);
-		/*
-		 * int i = 1; Random rnd = new Random(); for (; i <= 30; i++) { Switch s =
-		 * null; switch (rnd.nextInt(3)) { case 0 : s = new DefaultSwitch(i, "HB " +
-		 * i, 1, new Address(i)); break; case 1 : s = new DoubleCrossSwitch(i,
-		 * "HB " + i, 1, new Address(i)); break; case 2 : s = new
-		 * ThreeWaySwitch(i, "HB " + i, 1, new Address(i, i + 1)); i++; break; }
-		 * main.addSwitch(s); } for (; i <= 60; i++) { Switch s = null; switch
-		 * (rnd.nextInt(3)) { case 0 : s = new DefaultSwitch(i, "HB " + i, 1,
-		 * new Address(i)); break; case 1 : s = new DoubleCrossSwitch(i, "HB " +
-		 * i, 1, new Address(i)); break; case 2 : s = new ThreeWaySwitch(i, "HB " +
-		 * i, 1, new Address(i, i + 1)); i++; break; } mountain.addSwitch(s); }
-		 */
-
-		/*
-		 * Switch switch1 = new DefaultSwitch(1, "HB 1", 1, new Address(1));
-		 * Switch switch2 = new DefaultSwitch(2, "SW 1", 1, new Address(2));
-		 * Switch switch3 = new ThreeWaySwitch(3, "HB 2", 1, new Address(3, 4));
-		 * Switch switch4 = new DefaultSwitch(4, "HB 3", 1, new Address(5));
-		 * Switch switch5 = new DoubleCrossSwitch(5, "Berg1", 1, new
-		 * Address(6)); Switch switch6 = new DefaultSwitch(6, "Berg2", 1, new
-		 * Address(7)); main.addSwitch(switch1); main.addSwitch(switch2);
-		 * main.addSwitch(switch3); main.addSwitch(switch4);
-		 * mountain.addSwitch(switch5); mountain.addSwitch(switch6);
-		 */
+		
 		Switch switch1 = new DefaultSwitch(1, "HB 1", 1, new Address(1));
 		Switch switch2 = new DoubleCrossSwitch(2, "Berg1", 1, new Address(2));
 		Switch switch3 = new ThreeWaySwitch(3, "HB 2", 1, new Address(3, 4));
@@ -187,23 +170,37 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
 	private void initGUI() {
 		setFont(new Font("Verdana", Font.PLAIN, 19));
-
+		setLayout(new BorderLayout());
 		ExceptionProcessor.getInstance(this);
-		switchGroupPane = initSwitchGroupPane();
+		JPanel switchPanel = initSwitchPanel();
 		locomotiveControlPanel = initLocomotiveControl();
 		initMenu();
 		initToolbar();
 		initStatusBar();
 
-		JPanel center = new JPanel(new BorderLayout());
-		center.add(switchGroupPane, BorderLayout.CENTER);
+		JPanel center = new JPanel(new BorderLayout(5, 5));
+		center.add(switchPanel, BorderLayout.CENTER);
 		JPanel centerSouth = new JPanel(new BorderLayout());
 
 		centerSouth.add(locomotiveControlPanel, BorderLayout.WEST);
 
+		center.add(centerSouth, BorderLayout.SOUTH);
+		add(center, BorderLayout.CENTER);
+		add(statusBarPanel, BorderLayout.SOUTH);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setSize(1000, 700);
+		setVisible(true);
+		updateCommandHistory("RailControl started");
+	}
+
+	private JPanel initSwitchPanel() {
+		JPanel switchPanel = new JPanel(new BorderLayout());
+		switchPanel.setBorder(new EtchedBorder());
+		switchGroupPane = new SwitchGroupPane(switchGroups);
+
 		JPanel segmentPanelNorth = new JPanel(new FlowLayout(
 				FlowLayout.TRAILING, 5, 0));
-		segmentPanelNorth.setBackground(new Color(01, 0, 0));
+		segmentPanelNorth.setBackground(new Color(0, 0, 0));
 		seg1 = new Segment7();
 		seg2 = new Segment7();
 		seg3 = new Segment7();
@@ -217,24 +214,15 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		segmentPanel.add(segmentPanelNorth, BorderLayout.NORTH);
 		segmentPanel.add(selectedSwitchDetails, BorderLayout.CENTER);
 
-		centerSouth.add(segmentPanel, BorderLayout.EAST);
+		switchPanel.add(segmentPanel, BorderLayout.EAST);
 
-		center.add(centerSouth, BorderLayout.SOUTH);
-		add(center, BorderLayout.CENTER);
-		add(statusBarPanel, BorderLayout.SOUTH);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(1000, 700);
-		setVisible(true);
-		updateCommandHistory("RailControl started");
-	}
-
-	private SwitchGroupPane initSwitchGroupPane() {
-		SwitchGroupPane pane = new SwitchGroupPane(switchGroups);
-		return pane;
+		switchPanel.add(switchGroupPane, BorderLayout.CENTER);
+		return switchPanel;
 	}
 
 	private LocomotiveControlPanel initLocomotiveControl() {
 		LocomotiveControlPanel locomotiveControlPanel = new LocomotiveControlPanel();
+		locomotiveControlPanel.setBorder(new EtchedBorder());
 		return locomotiveControlPanel;
 	}
 
@@ -333,11 +321,14 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		saveItem.addActionListener(new SaveAction());
 		saveItem.setIcon(createImageIcon("icons/filesave.png", "Save file...",
 				this));
+
+		recentFilesMenu = new JMenu("Recent files...");
 		JMenuItem exitItem = new JMenuItem("Exit");
 		exitItem.setIcon(createImageIcon("icons/exit.png", "Exit", this));
 		exitItem.addActionListener(new ExitAction());
 		fileMenu.add(openItem);
 		fileMenu.add(saveItem);
+		fileMenu.add(recentFilesMenu);
 		fileMenu.add(new JSeparator());
 		fileMenu.add(exitItem);
 
@@ -508,7 +499,6 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = fileChooser.getSelectedFile();
 				// This is where a real application would open the file.
-				updateCommandHistory("Opening: " + file.getName());
 				XMLImporter importer = new XMLImporter(Preferences
 						.getInstance(), switchNumberToSwitch, switchGroups,
 						locomotives, file.getAbsolutePath());
@@ -516,15 +506,29 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 				switchGroupPane.update(switchGroups);
 				SwitchControl sc = SwitchControl.getInstance();
 				sc.unregisterAllSwitches();
-				sc.registerSwitches(
-						switchNumberToSwitch.values());
+				sc.registerSwitches(switchNumberToSwitch.values());
 				sc.setSessionOnSwitches(session);
 
+				try {
+					LocomotiveControl lc = LocomotiveControl.getInstance();
+					lc.unregisterAllLocomotives();
+					lc.registerLocomotives(locomotives);
+					lc.setSessionOnLocomotives(session);
+					locomotiveControlPanel.update(locomotives);
+				} catch (LocomotiveException e1) {
+					ExceptionProcessor.getInstance().processException(e1);
+				}
+
+				if (recentFilesMenu.getComponentCount() > 1) {
+					recentFilesMenu.remove(10);
+				}
+				JMenuItem recentItem = new JMenuItem(file.getPath());
+				recentFilesMenu.add(recentItem, 0);
+				updateCommandHistory("Opened configuration: " + file.getName());
 			} else {
 				updateCommandHistory("Open command cancelled by user");
 			}
 		}
-
 	}
 
 	private class SaveAction extends AbstractAction {
@@ -535,7 +539,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = fileChooser.getSelectedFile();
 				// This is where a real application would open the file.
-				updateCommandHistory("Saving: " + file.getName());
+				updateCommandHistory("Saving configuration: " + file.getName());
 			} else {
 				updateCommandHistory("Save command cancelled by user");
 			}
@@ -595,9 +599,9 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 	private class ConnectAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
 			try {
-				session = new SRCPSession(Preferences.getInstance()
-						.getHostname(), Preferences.getInstance()
-						.getPortnumber(), false);
+				String host = Preferences.getInstance().getHostname();
+				int port = Preferences.getInstance().getPortnumber();
+				session = new SRCPSession(host, port, false);
 				SwitchControl.getInstance().setSession(session);
 				LocomotiveControl.getInstance().setSession(session);
 				session.getCommandChannel().addCommandDataListener(
@@ -606,9 +610,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 						RailControlGUI.this);
 				session.connect();
 				SwitchControl.getInstance().setSessionOnSwitches(session);
-				for (Locomotive l : locomotives) {
-					l.setSession(session);
-				}
+				LocomotiveControl.getInstance()
+						.setSessionOnLocomotives(session);
 
 				daemonConnectItem.setEnabled(false);
 				daemonDisconnectItem.setEnabled(true);
@@ -616,17 +619,23 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
 				connectToolBarButton.setEnabled(false);
 				disconnectToolBarButton.setEnabled(true);
+				updateCommandHistory("Connected to server " + host
+						+ " on port " + port);
 			} catch (SRCPException e1) {
-				processException(e1);
+				if (e1.getCause() instanceof ConnectException) {
+					ExceptionProcessor.getInstance().processException(
+							"Server not running", e1);
+				}
 			}
 		}
-
 	}
 
 	private class DisconnectAction extends AbstractAction {
 
 		public void actionPerformed(ActionEvent e) {
 			try {
+				String host = Preferences.getInstance().getHostname();
+				int port = Preferences.getInstance().getPortnumber();
 				session.disconnect();
 
 				daemonConnectItem.setEnabled(true);
@@ -635,6 +644,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
 				connectToolBarButton.setEnabled(true);
 				disconnectToolBarButton.setEnabled(false);
+				updateCommandHistory("Disconnected from server " + host
+						+ " on port " + port);
 			} catch (SRCPException e1) {
 				processException(e1);
 			}

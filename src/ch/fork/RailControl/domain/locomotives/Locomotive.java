@@ -61,13 +61,21 @@ public abstract class Locomotive implements Constants {
 	private SRCPSession session;
 
 	private GL gl;
+	
+	private boolean[] functions;
 
 	private String[] params;
 
 	private boolean initialized = false;
+	
+	public Locomotive(String name, int bus, int address,
+			int drivingSteps, String desc, int functionCount) {
+		this(null, name, bus, address, drivingSteps, desc, functionCount);
 
+	}
+	
 	public Locomotive(SRCPSession session, String name, int bus, int address,
-			int drivingSteps, String desc) {
+			int drivingSteps, String desc, int functionCount) {
 		this.session = session;
 		this.name = name;
 		this.bus = bus;
@@ -77,13 +85,11 @@ public abstract class Locomotive implements Constants {
 		params = new String[3];
 		params[0] = Integer.toString(PROTOCOL_VERSION);
 		params[1] = Integer.toString(drivingSteps);
-		params[2] = Integer.toString(0);
-
+		params[2] = Integer.toString(functionCount);
 	}
 	
 
 	protected abstract void increaseSpeedStep() throws LocomotiveException;
-	
 	protected abstract void decreaseSpeedStep() throws LocomotiveException;
 
 	public void init() throws LocomotiveException {
@@ -115,6 +121,16 @@ public abstract class Locomotive implements Constants {
 			init();
 		}
 	}
+	
+	protected void term() throws LocomotiveException {
+		try {
+			if(gl != null) {
+				gl.term();
+			}
+		} catch (SRCPException e) {
+			throw new LocomotiveException(ERR_TERM_FAILED, e);
+		}
+	}
 
 	protected void setSpeed(int speed) throws LocomotiveException {
 		try {
@@ -123,13 +139,13 @@ public abstract class Locomotive implements Constants {
 			}
 			switch (direction) {
 			case FORWARD:
-				gl.set(FORWARD_DIRECTION, speed, drivingSteps, null);
+				gl.set(FORWARD_DIRECTION, speed, drivingSteps, functions);
 				break;
 			case REVERSE:
-				gl.set(REVERSE_DIRECTION, speed, drivingSteps, null);
+				gl.set(REVERSE_DIRECTION, speed, drivingSteps, functions);
 				break;
 			case UNDEF:
-				gl.set(FORWARD_DIRECTION, speed, drivingSteps, null);
+				gl.set(FORWARD_DIRECTION, speed, drivingSteps, functions);
 				direction = Direction.FORWARD;
 				break;
 			}
@@ -145,57 +161,18 @@ public abstract class Locomotive implements Constants {
 	}
 
 	protected void increaseSpeed() throws LocomotiveException {
-		try {
-			int newSpeed = currentSpeed + 1;
-			if (newSpeed <= drivingSteps) {
-				switch (direction) {
-				case FORWARD:
-					gl.set(FORWARD_DIRECTION, newSpeed, drivingSteps, null);
-					break;
-				case REVERSE:
-					gl.set(REVERSE_DIRECTION, newSpeed, drivingSteps, null);
-					break;
-				case UNDEF:
-					gl.set(FORWARD_DIRECTION, newSpeed, drivingSteps, null);
-					direction = Direction.FORWARD;
-					break;
-				}
-
-				currentSpeed++;
-			}
-		} catch (SRCPException x) {
-			if (x instanceof SRCPDeviceLockedException) {
-				throw new LocomotiveLockedException(ERR_LOCKED);
-			} else {
-				throw new LocomotiveException(ERR_FAILED, x);
-			}
+		int newSpeed = currentSpeed + 1;
+		if (newSpeed <= drivingSteps) {
+			setSpeed(newSpeed);
+			currentSpeed++;
 		}
 	}
 
 	protected void decreaseSpeed() throws LocomotiveException {
-		try {
-			int newSpeed = currentSpeed - 1;
-			if (newSpeed >= 0) {
-				switch (direction) {
-				case FORWARD:
-					gl.set(FORWARD_DIRECTION, newSpeed, drivingSteps, null);
-					break;
-				case REVERSE:
-					gl.set(REVERSE_DIRECTION, newSpeed, drivingSteps, null);
-					break;
-				case UNDEF:
-					gl.set(FORWARD_DIRECTION, newSpeed, drivingSteps, null);
-					direction = Direction.FORWARD;
-					break;
-				}
-				currentSpeed--;
-			}
-		} catch (SRCPException x) {
-			if (x instanceof SRCPDeviceLockedException) {
-				throw new LocomotiveLockedException(ERR_LOCKED);
-			} else {
-				throw new LocomotiveException(ERR_FAILED, x);
-			}
+		int newSpeed = currentSpeed - 1;
+		if (newSpeed >= 0) {
+			setSpeed(newSpeed);
+			currentSpeed--;
 		}
 	}
 
@@ -209,6 +186,11 @@ public abstract class Locomotive implements Constants {
 			break;
 		}
 	}
+	
+	protected void setFunctions(boolean[] functions) throws LocomotiveException {
+		this.functions = functions;
+		setSpeed(currentSpeed);
+	}
 
 	protected void locomotiveChanged(String pDrivemode, int v, int vMax,
 			boolean[] functions) {
@@ -218,6 +200,7 @@ public abstract class Locomotive implements Constants {
 			direction = Direction.REVERSE;
 		}
 		currentSpeed = v;
+		this.functions = functions;
 	}
 
 	protected void locomotiveInitialized(int pBus, int pAddress,
