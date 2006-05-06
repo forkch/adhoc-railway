@@ -494,7 +494,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 	private class OpenAction extends AbstractAction {
 
 		public void actionPerformed(ActionEvent e) {
-			JFileChooser fileChooser = new JFileChooser();
+			JFileChooser fileChooser = new JFileChooser(new File(System.getProperty("user.home")));
 			int returnVal = fileChooser.showOpenDialog(RailControlGUI.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = fileChooser.getSelectedFile();
