@@ -97,40 +97,55 @@ public abstract class Switch implements Constants, Comparable {
 
 	public abstract Switch clone();
 
-	/**
-	 * Get name.
-	 * 
-	 * @return name as String.
-	 */
+	public boolean equals(Switch aSwitch) {
+		if (address == aSwitch.getAddress() && bus == aSwitch.getBus()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public int compareTo(Object o) {
+		if (o instanceof Switch) {
+			Switch anotherSwitch = (Switch) o;
+			if (number < anotherSwitch.getNumber()) {
+				return -1;
+			} else if (number > anotherSwitch.getNumber()) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		return 0;
+	}
+
+	public String toString() {
+		return number + ": " + getType() + " @ bus " + bus + " @ address "
+				+ address;
+	}
+
+	public String toXML() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<Switch desc=\"" + desc + "\" number=\"" + number
+				+ "\" type=\"" + getType() + "\" bus=\"" + bus
+				+ "\" defaultstate=\"" + defaultState + "\" >\n");
+		sb.append(address.toXML() + "\n");
+		sb.append("</Switch>\n");
+		return sb.toString();
+	}
+
 	public int getNumber() {
 		return number;
 	}
 
-	/**
-	 * Set name.
-	 * 
-	 * @param name
-	 *            the value to set.
-	 */
 	public void setNumber(int number) {
 		this.number = number;
 	}
 
-	/**
-	 * Get desc.
-	 * 
-	 * @return desc as String.
-	 */
 	public String getDesc() {
 		return desc;
 	}
 
-	/**
-	 * Set desc.
-	 * 
-	 * @param desc
-	 *            the value to set.
-	 */
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
@@ -168,14 +183,6 @@ public abstract class Switch implements Constants, Comparable {
 		return initialized;
 	}
 
-	public boolean equals(Switch aSwitch) {
-		if (address == aSwitch.getAddress() && bus == aSwitch.getBus()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	public SwitchState getDefaultState() {
 		return defaultState;
 	}
@@ -194,23 +201,5 @@ public abstract class Switch implements Constants, Comparable {
 
 	public SwitchState getSwitchState() {
 		return switchState;
-	}
-
-	public int compareTo(Object o) {
-		if (o instanceof Switch) {
-			Switch anotherSwitch = (Switch) o;
-			if (number < anotherSwitch.getNumber()) {
-				return -1;
-			} else if (number > anotherSwitch.getNumber()) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
-		return 0;
-	}
-
-	public String toString() {
-		return number + ": " + getType() + " @ bus " + bus + " @ address " + address;
 	}
 }

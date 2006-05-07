@@ -35,9 +35,11 @@ import de.dermoba.srcp.devices.GL;
 
 public abstract class Locomotive implements Constants {
 	private String name;
+
 	private String desc;
 
 	private int address;
+
 	private int bus;
 
 	public enum Direction {
@@ -87,7 +89,6 @@ public abstract class Locomotive implements Constants {
 		params[1] = Integer.toString(drivingSteps);
 		params[2] = Integer.toString(functionCount);
 	}
-	
 
 	protected abstract void increaseSpeedStep() throws LocomotiveException;
 	protected abstract void decreaseSpeedStep() throws LocomotiveException;
@@ -108,16 +109,16 @@ public abstract class Locomotive implements Constants {
 			}
 		}
 	}
-	
+
 	protected void reinit() throws LocomotiveException {
 		try {
-			if(gl != null) {
+			if (gl != null) {
 				gl.term();
 			}
 		} catch (SRCPException e) {
 			throw new LocomotiveException(ERR_REINIT_FAILED, e);
 		}
-		if(session != null) {
+		if (session != null) {
 			init();
 		}
 	}
@@ -134,7 +135,7 @@ public abstract class Locomotive implements Constants {
 
 	protected void setSpeed(int speed) throws LocomotiveException {
 		try {
-			if(speed < 0 || speed > drivingSteps) {
+			if (speed < 0 || speed > drivingSteps) {
 				return;
 			}
 			switch (direction) {
@@ -218,6 +219,22 @@ public abstract class Locomotive implements Constants {
 		initialized = false;
 	}
 
+	public boolean equals(Locomotive l) {
+		if (address == l.getAddress() && bus == l.getBus()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public String toXML() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<Locomotive name=\"" + name + "\" type=\"" + getType()
+				+ "\" bus=\"" + bus + "\" address=\"" + address + "\" desc=\""
+				+ desc + "\" />\n");
+		return sb.toString();
+	}
+
 	public boolean isInitialized() {
 		return initialized;
 	}
@@ -252,14 +269,6 @@ public abstract class Locomotive implements Constants {
 
 	public int getAddress() {
 		return address;
-	}
-
-	public boolean equals(Locomotive l) {
-		if (address == l.getAddress() && bus == l.getBus()) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	public int getBus() {

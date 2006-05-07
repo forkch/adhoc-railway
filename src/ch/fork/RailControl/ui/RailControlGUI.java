@@ -14,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.ConnectException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -139,7 +141,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		SwitchGroup mountain = new SwitchGroup("Mountain Line");
 		switchGroups.add(main);
 		switchGroups.add(mountain);
-		
+
 		Switch switch1 = new DefaultSwitch(1, "HB 1", 1, new Address(1));
 		Switch switch2 = new DoubleCrossSwitch(2, "Berg1", 1, new Address(2));
 		Switch switch3 = new ThreeWaySwitch(3, "HB 2", 1, new Address(3, 4));
@@ -156,7 +158,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 				switchNumberToSwitch.values());
 
 		Locomotive ascom = new DeltaLocomotive(session, "Ascom", 1, 24,
-				"RE460 \"Ascom\"");
+				"RE460 'Ascom'");
 		Locomotive bigBoy = new DigitalLocomotive(session, "Big Boy", 1, 25,
 				"UP Klasse 4000 \"Big Boy\"");
 		locomotives.add(ascom);
@@ -439,6 +441,24 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 		}
 	}
 
+	public String toXML() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<RailControl xmlns=\"http://www.fork.ch/RailControl\" "
+				+ "ExporterVersion=\"0.1\">\n");
+		sb.append("<SwitchConfiguration>\n");
+		for (SwitchGroup sg : switchGroups) {
+			sb.append(sg.toXML());
+		}
+		sb.append("</SwitchConfiguration>\n");
+		sb.append("<LocomotiveConfiguration>\n");
+		for (Locomotive l : locomotives) {
+			sb.append(l.toXML());
+		}
+		sb.append("</LocomotiveConfiguration>\n");
+		sb.append("</RailControl>");
+		return sb.toString();
+	}
+
 	public void processException(Exception e) {
 		JOptionPane.showMessageDialog(this, e.getMessage(), "Error occured",
 				JOptionPane.ERROR_MESSAGE);
@@ -529,6 +549,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 				updateCommandHistory("Open command cancelled by user");
 			}
 		}
+
 	}
 
 	private class SaveAction extends AbstractAction {
@@ -540,6 +561,23 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 				File file = fileChooser.getSelectedFile();
 				// This is where a real application would open the file.
 				updateCommandHistory("Saving configuration: " + file.getName());
+				String xmlConfig = RailControlGUI.this.toXML();
+				FileWriter fileWriter = null;
+				try {
+					fileWriter = new FileWriter(file);
+
+					fileWriter.write(xmlConfig);
+				} catch (IOException e1) {
+					ExceptionProcessor.getInstance().processException(
+							"Error writing file", e1);
+				} finally {
+					try {
+						fileWriter.close();
+					} catch (IOException e1) {
+						ExceptionProcessor.getInstance().processException(
+								"Error writing file", e1);
+					}
+				}
 			} else {
 				updateCommandHistory("Save command cancelled by user");
 			}

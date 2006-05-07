@@ -46,6 +46,12 @@ public class Address {
 		address1 = Integer.parseInt(token.nextToken().trim());
 		address2 = Integer.parseInt(token.nextToken().trim());
 	}
+	
+	public String toXML() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<Address address1=\"" + address1 + "\" address2=\"" + address2 + "\" />");
+		return sb.toString();
+	}
 	public int getAddress1() {
 		return address1;
 	}

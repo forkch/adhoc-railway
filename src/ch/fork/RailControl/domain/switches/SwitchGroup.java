@@ -70,5 +70,15 @@ public class SwitchGroup {
 		SwitchGroup newSwitchGroup = new SwitchGroup(name);
 		return newSwitchGroup;
 	}
+	
+	public String toXML() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<SwitchGroup name=\"" + name + "\">\n");
+		for(Switch s : switches) {
+			sb.append(s.toXML());
+		}
+		sb.append("</SwitchGroup>\n");
+		return sb.toString();
+	}
 
 }
