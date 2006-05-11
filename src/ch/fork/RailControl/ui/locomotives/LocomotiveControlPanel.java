@@ -19,7 +19,7 @@ import ch.fork.RailControl.ui.ExceptionProcessor;
 
 public class LocomotiveControlPanel extends JPanel {
 
-	private int[][] keyBindings = new int[][] {
+	private int[][] keyBindingsUS = new int[][] {
 			{ KeyEvent.VK_A, KeyEvent.VK_Z, KeyEvent.VK_Q },
 			{ KeyEvent.VK_S, KeyEvent.VK_X, KeyEvent.VK_W },
 			{ KeyEvent.VK_D, KeyEvent.VK_C, KeyEvent.VK_E },
@@ -31,6 +31,20 @@ public class LocomotiveControlPanel extends JPanel {
 			{ KeyEvent.VK_L, KeyEvent.VK_DECIMAL, KeyEvent.VK_O },	
 			{ KeyEvent.VK_COLON, KeyEvent.VK_MINUS, KeyEvent.VK_P }
 	};
+	
+	private int[][] keyBindingsDE = new int[][] {
+			{ KeyEvent.VK_A, KeyEvent.VK_Y, KeyEvent.VK_Q },
+			{ KeyEvent.VK_S, KeyEvent.VK_X, KeyEvent.VK_W },
+			{ KeyEvent.VK_D, KeyEvent.VK_C, KeyEvent.VK_E },
+			{ KeyEvent.VK_F, KeyEvent.VK_V, KeyEvent.VK_R },
+			{ KeyEvent.VK_G, KeyEvent.VK_B, KeyEvent.VK_T }, 
+			{ KeyEvent.VK_H, KeyEvent.VK_N, KeyEvent.VK_Z },
+			{ KeyEvent.VK_J, KeyEvent.VK_M, KeyEvent.VK_U },
+			{ KeyEvent.VK_K, KeyEvent.VK_COMMA, KeyEvent.VK_I },
+			{ KeyEvent.VK_L, KeyEvent.VK_DECIMAL, KeyEvent.VK_O },	
+			{ KeyEvent.VK_COLON, KeyEvent.VK_MINUS, KeyEvent.VK_P }
+	};
+	private int[][] keyBindings = keyBindingsDE;
 
 	private List<LocomotiveWidget> locomotiveWidgets;
 	
