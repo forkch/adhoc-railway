@@ -1,28 +1,3 @@
-/*------------------------------------------------------------------------
- * 
- * o   o   o   o          University of Applied Sciences Bern
- *             :          Department Computer Sciences
- *             :......o   
- *
- * <SwitchTypeCellRenderer.java>  -  <>
- * 
- * begin     : Apr 15, 2006
- * copyright : (C) by Benjamin Mueller 
- * email     : mullb@bfh.ch
- * language  : java
- * version   : $Id$
- * 
- *----------------------------------------------------------------------*/
-
-/*------------------------------------------------------------------------
- * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- *----------------------------------------------------------------------*/
-
 package ch.fork.RailControl.ui.switches.configuration;
 
 import java.awt.Component;
@@ -36,18 +11,20 @@ import ch.fork.RailControl.ui.switches.SwitchWidget;
 
 public class SwitchTypeCellRenderer implements TableCellRenderer {
 
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-		JLabel iconLabel = new JLabel();
-		if (value.equals("DefaultSwitch")) {
-			iconLabel.setIcon(ImageTools.createDefaultSwitch(iconLabel,
-					SwitchWidget.class));
-		} else if (value.equals("DoubleCrossSwitch")) {
-			iconLabel.setIcon(ImageTools.createDoubleCrossSwitch(iconLabel,
-					SwitchWidget.class));
-		} else if (value.equals("ThreeWaySwitch")) {
-			iconLabel.setIcon(ImageTools.createThreeWaySwitch(iconLabel,
-					SwitchWidget.class));
-		}
-		return iconLabel;
-	}
+    public Component getTableCellRendererComponent(JTable table,
+        Object value, boolean isSelected, boolean hasFocus, int row,
+        int column) {
+        JLabel iconLabel = new JLabel();
+        if (value.equals("DefaultSwitch")) {
+            iconLabel.setIcon(ImageTools.createDefaultSwitch(
+                iconLabel, SwitchWidget.class));
+        } else if (value.equals("DoubleCrossSwitch")) {
+            iconLabel.setIcon(ImageTools.createDoubleCrossSwitch(
+                iconLabel, SwitchWidget.class));
+        } else if (value.equals("ThreeWaySwitch")) {
+            iconLabel.setIcon(ImageTools.createThreeWaySwitch(
+                iconLabel, SwitchWidget.class));
+        }
+        return iconLabel;
+    }
 }

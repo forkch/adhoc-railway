@@ -11,43 +11,43 @@ import ch.fork.RailControl.domain.switches.Switch;
 
 public class SwitchCanvas extends Canvas {
 
-	protected Switch mySwitch;
+    protected Switch mySwitch;
 
-	public SwitchCanvas(Switch mySwitch) {
-		this.mySwitch = mySwitch;
-	}
+    public SwitchCanvas(Switch mySwitch) {
+        this.mySwitch = mySwitch;
+    }
 
-	protected void rotate(Graphics g, BufferedImage img) {
-		Graphics2D g2 = (Graphics2D) g;
+    protected void rotate(Graphics g, BufferedImage img) {
+        Graphics2D g2 = (Graphics2D) g;
 
-		AffineTransform at = null;
-		switch (mySwitch.getSwitchOrientation()) {
-		case NORTH:
-			at = AffineTransform.getRotateInstance(Math.PI / 2 * 3,
-					(56 + 1) / 2, (56 + 1) / 2);
-			break;
-		case EAST:
-			at = AffineTransform.getRotateInstance(0, 0, 0);
-			break;
-		case SOUTH:
-			at = AffineTransform.getRotateInstance(Math.PI / 2, (56 + 1) / 2,
-					(56 + 1) / 2);
-			break;
-		case WEST:
-			at = AffineTransform.getRotateInstance(Math.PI, (56 + 1) / 2,
-					(56 + 1) / 2);
+        AffineTransform at = null;
+        switch (mySwitch.getSwitchOrientation()) {
+        case NORTH:
+            at = AffineTransform.getRotateInstance(
+                Math.PI / 2 * 3, (56 + 1) / 2, (56 + 1) / 2);
+            break;
+        case EAST:
+            at = AffineTransform.getRotateInstance(0, 0, 0);
+            break;
+        case SOUTH:
+            at = AffineTransform.getRotateInstance(
+                Math.PI / 2, (56 + 1) / 2, (56 + 1) / 2);
+            break;
+        case WEST:
+            at = AffineTransform.getRotateInstance(
+                Math.PI, (56 + 1) / 2, (56 + 1) / 2);
 
-			break;
-		}
-		g2.drawImage(img, at, this);
-	}
+            break;
+        }
+        g2.drawImage(img, at, this);
+    }
 
-	public Dimension getPreferredSize() {
-		return new Dimension(56, 56);
-	}
+    public Dimension getPreferredSize() {
+        return new Dimension(56, 56);
+    }
 
-	public Dimension getMinimumSize() {
-		return getPreferredSize();
-	}
+    public Dimension getMinimumSize() {
+        return getPreferredSize();
+    }
 
 }

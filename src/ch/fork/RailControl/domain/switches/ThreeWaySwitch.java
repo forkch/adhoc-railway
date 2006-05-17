@@ -1,24 +1,3 @@
-/*------------------------------------------------------------------------
- * 
- * <DefaultSwitch.java>  -  <A standard switch>
- * 
- * begin     : j Tue Jan  3 21:26:08 CET 2006
- * copyright : (C) by Benjamin Mueller 
- * email     : bm@fork.ch
- * language  : java
- * version   : $Id$
- * 
- *----------------------------------------------------------------------*/
-
-/*------------------------------------------------------------------------
- * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- *----------------------------------------------------------------------*/
-
 package ch.fork.RailControl.domain.switches;
 
 import java.util.HashMap;
@@ -29,146 +8,151 @@ import de.dermoba.srcp.client.SRCPSession;
 
 public class ThreeWaySwitch extends Switch {
 
-	private DefaultSwitch switch1;
-	private DefaultSwitch switch2;
+    private DefaultSwitch switch1;
 
-	private Map<Integer, Switch> addressToSwitch;
+    private DefaultSwitch switch2;
 
-	public ThreeWaySwitch(int pNumber, String pDesc) {
-		this(pNumber, pDesc, 1, new Address(0, 0));
-	}
-	
-	public ThreeWaySwitch(int pNumber, String pDesc, int pBus, Address address) {
-		super(pNumber, pDesc, pBus, address);
-		switch1 = new DefaultSwitch(number, desc, bus, new Address(address
-				.getAddress1()));
-		switch2 = new DefaultSwitch(number, desc, bus, new Address(address
-				.getAddress2()));
-		addressToSwitch = new HashMap<Integer, Switch>();
-		addressToSwitch.put(address.getAddress1(), switch1);
-		addressToSwitch.put(address.getAddress2(), switch2);
-	}
+    private Map<Integer, Switch> addressToSwitch;
 
-	public void init() throws SwitchException {
-		super.init();
-		switch1.setSession(session);
-		switch2.setSession(session);
-		switch1.init();
-		switch2.init();
-		initialized = true;
-	}
-	
-	public void term() throws SwitchException{
-		super.term();
-		switch1.term();
-		switch2.term();
-		initialized = false;
-	}
+    public ThreeWaySwitch(int pNumber, String pDesc) {
+        this(pNumber, pDesc, 1, new Address(0, 0));
+    }
 
-	@Override
-	protected void reinit() throws SwitchException {
-		if (switch1 != null) {
-			switch1.reinit();
-		}
-		if (switch2 != null) {
-			switch2.reinit();
-		}
-		if (session != null) {
-			init();
-		}
-	}
+    public ThreeWaySwitch(int pNumber, String pDesc, int pBus,
+        Address address) {
+        super(pNumber, pDesc, pBus, address);
+        switch1 = new DefaultSwitch(number, desc, bus, new Address(address
+            .getAddress1()));
+        switch2 = new DefaultSwitch(number, desc, bus, new Address(address
+            .getAddress2()));
+        addressToSwitch = new HashMap<Integer, Switch>();
+        addressToSwitch.put(address.getAddress1(), switch1);
+        addressToSwitch.put(address.getAddress2(), switch2);
+    }
 
-	protected void toggle() throws SwitchException {
-		if (session == null) {
-			throw new SwitchException(ERR_NO_SESSION);
-		}
-		switch (switchState) {
-		case LEFT:
-			switch1.setStraight();
-			switch2.setStraight();
-			switchState = SwitchState.STRAIGHT;
-			break;
-		case STRAIGHT:
-			switch1.setStraight();
-			switch2.setCurvedRight();
-			switchState = SwitchState.RIGHT;
-			break;
-		case RIGHT:
-			switch1.setCurvedRight();
-			switch2.setStraight();
-			switchState = SwitchState.LEFT;
-			break;
-		case UNDEF:
-			switch1.setStraight();
-			switch2.setStraight();
-			switchState = SwitchState.STRAIGHT;
-			break;
-		}
-	}
+    public void init() throws SwitchException {
+        super.init();
+        switch1.setSession(session);
+        switch2.setSession(session);
+        switch1.init();
+        switch2.init();
+        initialized = true;
+    }
 
-	protected void switchPortChanged(int pAddress, int pChangedPort, int value) {
-		
-	}
+    public void term() throws SwitchException {
+        super.term();
+        switch1.term();
+        switch2.term();
+        initialized = false;
+    }
 
-	@Override
-	protected void switchInitialized(int pBus, int pAddress) {
-		addressToSwitch.get(pAddress).switchInitialized(pBus, pAddress);
-	}
+    @Override
+    protected void reinit() throws SwitchException {
+        if (switch1 != null) {
+            switch1.reinit();
+        }
+        if (switch2 != null) {
+            switch2.reinit();
+        }
+        if (session != null) {
+            init();
+        }
+    }
 
-	@Override
-	protected void switchTerminated(int pAddress) {
-		addressToSwitch.get(pAddress).switchTerminated(pAddress);
-	}
+    protected void toggle() throws SwitchException {
+        if (session == null) {
+            throw new SwitchException(ERR_NO_SESSION);
+        }
+        switch (switchState) {
+        case LEFT:
+            switch1.setStraight();
+            switch2.setStraight();
+            switchState = SwitchState.STRAIGHT;
+            break;
+        case STRAIGHT:
+            switch1.setStraight();
+            switch2.setCurvedRight();
+            switchState = SwitchState.RIGHT;
+            break;
+        case RIGHT:
+            switch1.setCurvedRight();
+            switch2.setStraight();
+            switchState = SwitchState.LEFT;
+            break;
+        case UNDEF:
+            switch1.setStraight();
+            switch2.setStraight();
+            switchState = SwitchState.STRAIGHT;
+            break;
+        }
+    }
 
-	@Override
-	protected void setStraight() throws SwitchException {
-		switch1.setStraight();
-		switch2.setStraight();
-		switchState = SwitchState.STRAIGHT;
-	}
+    protected void switchPortChanged(int pAddress, int pChangedPort,
+        int value) {
 
-	@Override
-	protected void setCurvedLeft() throws SwitchException {
-		switch1.setCurvedRight();
-		switch2.setStraight();
-		switchState = SwitchState.LEFT;
-	}
+    }
 
-	@Override
-	protected void setCurvedRight() throws SwitchException {
-		switch1.setStraight();
-		switch2.setCurvedRight();
-		switchState = SwitchState.RIGHT;
-	}
-	
-	public void setSession(SRCPSession session) {
-		this.session = session;
-		switch1.setSession(session);
-		switch2.setSession(session);
-	}
+    @Override
+    protected void switchInitialized(int pBus, int pAddress) {
+        addressToSwitch.get(pAddress).switchInitialized(pBus, pAddress);
+    }
 
-	public void setBus(int bus) {
-		this.bus = bus;
-		switch1.setBus(bus);
-		switch2.setBus(bus);
-	}
-	
-	public void setAddress(Address address) {
-		this.address = address;
-		switch1.setAddress(new Address(address.getAddress1(), 0));
-		switch2.setAddress(new Address(address.getAddress2(), 0));
-		addressToSwitch.clear();
+    @Override
+    protected void switchTerminated(int pAddress) {
+        addressToSwitch.get(pAddress).switchTerminated(pAddress);
+    }
 
-		addressToSwitch.put(address.getAddress1(), switch1);
-		addressToSwitch.put(address.getAddress2(), switch2);
-		initialized = false;
-	}
-	@Override
-	public Switch clone() {
-		ThreeWaySwitch newSwitch = new ThreeWaySwitch(number, desc, bus, address);
-		newSwitch.setSession(session);
-		newSwitch.setSwitchOrientation(switchOrientation);
-		newSwitch.setDefaultState(defaultState);
-		return newSwitch;
-	}
+    @Override
+    protected void setStraight() throws SwitchException {
+        switch1.setStraight();
+        switch2.setStraight();
+        switchState = SwitchState.STRAIGHT;
+    }
+
+    @Override
+    protected void setCurvedLeft() throws SwitchException {
+        switch1.setCurvedRight();
+        switch2.setStraight();
+        switchState = SwitchState.LEFT;
+    }
+
+    @Override
+    protected void setCurvedRight() throws SwitchException {
+        switch1.setStraight();
+        switch2.setCurvedRight();
+        switchState = SwitchState.RIGHT;
+    }
+
+    public void setSession(SRCPSession session) {
+        this.session = session;
+        switch1.setSession(session);
+        switch2.setSession(session);
+    }
+
+    public void setBus(int bus) {
+        this.bus = bus;
+        switch1.setBus(bus);
+        switch2.setBus(bus);
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+        switch1.setAddress(new Address(address.getAddress1(), 0));
+        switch2.setAddress(new Address(address.getAddress2(), 0));
+        addressToSwitch.clear();
+
+        addressToSwitch.put(address.getAddress1(), switch1);
+        addressToSwitch.put(address.getAddress2(), switch2);
+        initialized = false;
+    }
+
+    @Override
+    public Switch clone() {
+        ThreeWaySwitch newSwitch = new ThreeWaySwitch(number, desc, bus,
+            address);
+        newSwitch.setSession(session);
+        newSwitch.setSwitchOrientation(switchOrientation);
+        newSwitch.setDefaultState(defaultState);
+        return newSwitch;
+    }
 }
