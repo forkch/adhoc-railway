@@ -158,8 +158,6 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
     }
 
     private void parseGuiConfig(String gName, Attributes attributes) {
-        System.out.println(attributes.getValue("name")
-            + " : " + attributes.getValue("value"));
         preferences.setStringValue(attributes.getValue("name"), attributes
             .getValue("value"));
     }

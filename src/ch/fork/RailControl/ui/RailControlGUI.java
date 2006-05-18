@@ -125,6 +125,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
     private JMenu recentFilesMenu;
 
+    private File actualFile;
+
     public RailControlGUI() {
         super(NAME);
         initGUI();
@@ -237,6 +239,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
         JButton openToolBarButton = new JButton(new OpenAction());
         JButton saveToolBarButton = new JButton(new SaveAction());
+        JButton saveAsToolBarButton = new JButton(new SaveAsAction());
         JButton exitToolBarButton = new JButton(new ExitAction());
         JButton switchesToolBarButton = new JButton(new SwitchesAction());
         JButton locomotivesToolBarButton = new JButton(
@@ -268,6 +271,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
         openToolBarButton.setText("");
         saveToolBarButton.setText("");
+        saveAsToolBarButton.setText("");
         exitToolBarButton.setText("");
         switchesToolBarButton.setText("");
         locomotivesToolBarButton.setText("");
@@ -299,14 +303,26 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
         /* FILE */
         JMenu fileMenu = new JMenu("File");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
         JMenuItem openItem = new JMenuItem(new OpenAction());
+        openItem.setMnemonic(KeyEvent.VK_O);
+        openItem.setAccelerator(KeyStroke.getKeyStroke(
+            KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 
+        JMenuItem saveAsItem = new JMenuItem(new SaveAsAction());
+        
         JMenuItem saveItem = new JMenuItem(new SaveAction());
-
+        saveItem.setMnemonic(KeyEvent.VK_S);
+        saveItem.setAccelerator(KeyStroke.getKeyStroke(
+            KeyEvent.VK_S, ActionEvent.CTRL_MASK));
         recentFilesMenu = new JMenu("Recent files...");
         JMenuItem exitItem = new JMenuItem(new ExitAction());
+        exitItem.setMnemonic(KeyEvent.VK_X);
+        exitItem.setAccelerator(KeyStroke.getKeyStroke(
+            KeyEvent.VK_X, ActionEvent.CTRL_MASK));
         fileMenu.add(openItem);
         fileMenu.add(saveItem);
+        fileMenu.add(saveAsItem);
         fileMenu.add(recentFilesMenu);
         fileMenu.add(new JSeparator());
         fileMenu.add(exitItem);
@@ -316,6 +332,17 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         JMenuItem switchesItem = new JMenuItem(new SwitchesAction());
         JMenuItem locomotivesItem = new JMenuItem(new LocomotivesAction());
         JMenuItem preferencesItem = new JMenuItem(new PreferencesAction());
+
+        edit.setMnemonic(KeyEvent.VK_E);
+        switchesItem.setMnemonic(KeyEvent.VK_S);
+        switchesItem.setAccelerator(KeyStroke.getKeyStroke(
+            KeyEvent.VK_S, ActionEvent.ALT_MASK));
+        locomotivesItem.setMnemonic(KeyEvent.VK_L);
+        locomotivesItem.setAccelerator(KeyStroke.getKeyStroke(
+            KeyEvent.VK_L, ActionEvent.ALT_MASK));
+        preferencesItem.setMnemonic(KeyEvent.VK_P);
+        preferencesItem.setAccelerator(KeyStroke.getKeyStroke(
+            KeyEvent.VK_P, ActionEvent.ALT_MASK));
 
         edit.add(switchesItem);
         edit.add(locomotivesItem);
@@ -500,7 +527,6 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
                 XMLImporter importer = new XMLImporter(Preferences
                     .getInstance(), switchNumberToSwitch, switchGroups,
                     locomotives, file.getAbsolutePath());
-                System.out.println(switchGroups);
                 switchGroupPane.update(switchGroups);
                 SwitchControl sc = SwitchControl.getInstance();
                 sc.unregisterAllSwitches();
@@ -522,8 +548,10 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
                 }
                 JMenuItem recentItem = new JMenuItem(file.getPath());
                 recentFilesMenu.add(recentItem, 0);
+                actualFile = file;
                 updateCommandHistory("Opened configuration: "
                     + file.getName());
+                setTitle(RailControlGUI.NAME + " : [ " + actualFile.getAbsolutePath() + " ]");
             } else {
                 updateCommandHistory("Open command cancelled by user");
             }
@@ -531,10 +559,10 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
     }
 
-    private class SaveAction extends AbstractAction {
-        public SaveAction() {
-            super("Save file...", createImageIcon(
-                "icons/filesave.png", "Save file...", RailControlGUI.this));
+    private class SaveAsAction extends AbstractAction {
+        public SaveAsAction() {
+            super("Save as...", createImageIcon(
+                "icons/filesaveas.png", "Save as...", RailControlGUI.this));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -565,6 +593,42 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
                 }
             } else {
                 updateCommandHistory("Save command cancelled by user");
+            }
+        }
+
+    }
+
+    private class SaveAction extends AbstractAction {
+        public SaveAction() {
+            super("Save", createImageIcon(
+                "icons/filesave.png", "Save", RailControlGUI.this));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+
+            if (actualFile != null) {
+                updateCommandHistory("Saving configuration: "
+                    + actualFile.getName());
+                String xmlConfig = RailControlGUI.this.toXML();
+                FileWriter fileWriter = null;
+                try {
+                    fileWriter = new FileWriter(actualFile);
+
+                    fileWriter.write(xmlConfig);
+                } catch (IOException e1) {
+                    ExceptionProcessor.getInstance().processException(
+                        "Error writing file", e1);
+                } finally {
+                    try {
+                        fileWriter.close();
+                    } catch (IOException e1) {
+                        ExceptionProcessor.getInstance().processException(
+                            "Error writing file", e1);
+                    }
+                }
+            } else {
+                SaveAsAction sa = new SaveAsAction();
+                sa.actionPerformed(e);
             }
         }
 
