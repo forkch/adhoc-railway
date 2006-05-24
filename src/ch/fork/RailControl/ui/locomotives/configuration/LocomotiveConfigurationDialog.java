@@ -128,4 +128,8 @@ public class LocomotiveConfigurationDialog extends JDialog {
         locomotivesPanel.add(buttonPanel, BorderLayout.SOUTH);
         return locomotivesPanel;
     }
+
+    public boolean isOkPressed() {
+        return okPressed;
+    }
 }

@@ -21,7 +21,7 @@
 
 include ~/.make/common.mk
 
-EXTRALIBS=../jsrcpc/classes
+EXTRALIBS=../jsrcpc/classes:lib/javamake.jar
 CLEAN_LIST+=./lib/RailControl.jar
 
 build:: java-build lib/RailControl.jar

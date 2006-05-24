@@ -31,7 +31,8 @@ public class Preferences {
         hostnames.add("localhost");
         hostnames.add("titan");
         hostnames.add("192.168.1.38");
-        setStringValue("Hostname", "localhost");
+        hostnames.add("192.168.1.100");
+        setStringValue("Hostname", "192.168.1.100");
         setIntValue("Portnumber", 12345);
         setIntValue("DefaultActivationTime", 50);
         setIntValue("DefaultRoutingDelay", 250);

@@ -237,7 +237,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
     private void initToolbar() {
         JToolBar toolBar = new JToolBar();
 
-        JButton openToolBarButton = new JButton(new OpenAction());
+        JButton openToolBarButton = new JButton(new OpenAction(null));
         JButton saveToolBarButton = new JButton(new SaveAction());
         JButton saveAsToolBarButton = new JButton(new SaveAsAction());
         JButton exitToolBarButton = new JButton(new ExitAction());
@@ -304,13 +304,13 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         /* FILE */
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
-        JMenuItem openItem = new JMenuItem(new OpenAction());
+        JMenuItem openItem = new JMenuItem(new OpenAction(null));
         openItem.setMnemonic(KeyEvent.VK_O);
         openItem.setAccelerator(KeyStroke.getKeyStroke(
             KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 
         JMenuItem saveAsItem = new JMenuItem(new SaveAsAction());
-        
+
         JMenuItem saveItem = new JMenuItem(new SaveAction());
         saveItem.setMnemonic(KeyEvent.VK_S);
         saveItem.setAccelerator(KeyStroke.getKeyStroke(
@@ -320,6 +320,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         exitItem.setMnemonic(KeyEvent.VK_X);
         exitItem.setAccelerator(KeyStroke.getKeyStroke(
             KeyEvent.VK_X, ActionEvent.CTRL_MASK));
+
         fileMenu.add(openItem);
         fileMenu.add(saveItem);
         fileMenu.add(saveAsItem);
@@ -511,50 +512,64 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
     private class OpenAction extends AbstractAction {
 
-        public OpenAction() {
+        private File file;
+
+        public OpenAction(File file) {
             super("Open file...", createImageIcon(
                 "icons/fileopen.png", "File open...", RailControlGUI.this));
         }
 
         public void actionPerformed(ActionEvent e) {
-            JFileChooser fileChooser = new JFileChooser(new File(System
-                .getProperty("user.home")));
-            int returnVal = fileChooser
-                .showOpenDialog(RailControlGUI.this);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                // This is where a real application would open the file.
-                XMLImporter importer = new XMLImporter(Preferences
-                    .getInstance(), switchNumberToSwitch, switchGroups,
-                    locomotives, file.getAbsolutePath());
-                switchGroupPane.update(switchGroups);
-                SwitchControl sc = SwitchControl.getInstance();
-                sc.unregisterAllSwitches();
-                sc.registerSwitches(switchNumberToSwitch.values());
-                sc.setSessionOnSwitches(session);
-
-                try {
-                    LocomotiveControl lc = LocomotiveControl.getInstance();
-                    lc.unregisterAllLocomotives();
-                    lc.registerLocomotives(locomotives);
-                    lc.setSessionOnLocomotives(session);
-                    locomotiveControlPanel.update(locomotives);
-                } catch (LocomotiveException e1) {
-                    ExceptionProcessor.getInstance().processException(e1);
+            if (file == null) {
+                JFileChooser fileChooser = new JFileChooser(new File(
+                    System.getProperty("user.home")));
+                int returnVal = fileChooser
+                    .showOpenDialog(RailControlGUI.this);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    file = fileChooser.getSelectedFile();
+                    openFile(file);
+                } else {
+                    updateCommandHistory("Open command cancelled by user");
                 }
-
-                if (recentFilesMenu.getComponentCount() > 1) {
-                    recentFilesMenu.remove(10);
-                }
-                JMenuItem recentItem = new JMenuItem(file.getPath());
-                recentFilesMenu.add(recentItem, 0);
-                actualFile = file;
-                updateCommandHistory("Opened configuration: "
-                    + file.getName());
-                setTitle(RailControlGUI.NAME + " : [ " + actualFile.getAbsolutePath() + " ]");
             } else {
-                updateCommandHistory("Open command cancelled by user");
+                // openFile(file);
             }
+        }
+
+        private void openFile(File file) {
+            // This is where a real application would open the file.
+            XMLImporter importer = new XMLImporter(Preferences
+                .getInstance(), switchNumberToSwitch, switchGroups,
+                locomotives, file.getAbsolutePath());
+            switchGroupPane.update(switchGroups);
+            SwitchControl sc = SwitchControl.getInstance();
+            sc.unregisterAllSwitches();
+            sc.registerSwitches(switchNumberToSwitch.values());
+            sc.setSessionOnSwitches(session);
+
+            try {
+                LocomotiveControl lc = LocomotiveControl.getInstance();
+                lc.unregisterAllLocomotives();
+                lc.registerLocomotives(locomotives);
+                lc.setSessionOnLocomotives(session);
+                locomotiveControlPanel.update(locomotives);
+            } catch (LocomotiveException e1) {
+                ExceptionProcessor.getInstance().processException(e1);
+            }
+
+            if (recentFilesMenu.getComponentCount() > 1) {
+                recentFilesMenu.remove(10);
+            }
+            JMenuItem recentItem = new JMenuItem(file.getPath());
+            recentItem.addActionListener(new OpenAction(file));
+            recentFilesMenu.add(recentItem, 0);
+            recentFilesMenu.repaint();
+            recentFilesMenu.revalidate();
+            actualFile = file;
+            updateCommandHistory("Opened configuration: "
+                + file.getName());
+            setTitle(RailControlGUI.NAME
+                + " : [ " + actualFile.getAbsolutePath() + " ]");
         }
 
     }
@@ -572,14 +587,15 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 // This is where a real application would open the file.
-                updateCommandHistory("Saving configuration: "
-                    + file.getName());
+
                 String xmlConfig = RailControlGUI.this.toXML();
                 FileWriter fileWriter = null;
                 try {
                     fileWriter = new FileWriter(file);
 
                     fileWriter.write(xmlConfig);
+                    updateCommandHistory("Configuration saved: "
+                        + file.getName());
                 } catch (IOException e1) {
                     ExceptionProcessor.getInstance().processException(
                         "Error writing file", e1);
@@ -592,7 +608,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
                     }
                 }
             } else {
-                updateCommandHistory("Save command cancelled by user");
+                updateCommandHistory("Save cancelled by user");
             }
         }
 
@@ -607,14 +623,15 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         public void actionPerformed(ActionEvent e) {
 
             if (actualFile != null) {
-                updateCommandHistory("Saving configuration: "
-                    + actualFile.getName());
+
                 String xmlConfig = RailControlGUI.this.toXML();
                 FileWriter fileWriter = null;
                 try {
                     fileWriter = new FileWriter(actualFile);
 
                     fileWriter.write(xmlConfig);
+                    updateCommandHistory("Configuration saved: "
+                        + actualFile.getName());
                 } catch (IOException e1) {
                     ExceptionProcessor.getInstance().processException(
                         "Error writing file", e1);
@@ -671,6 +688,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
                 sc.setSessionOnSwitches(session);
 
                 switchGroupPane.update(switchGroups);
+                updateCommandHistory("Switch configuration changed");
             }
         }
     }
@@ -687,7 +705,10 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
             LocomotiveConfigurationDialog locomotiveConfig = new LocomotiveConfigurationDialog(
                 RailControlGUI.this, Preferences.getInstance(),
                 locomotives);
-            locomotiveControlPanel.update(locomotives);
+            if (locomotiveConfig.isOkPressed()) {
+                locomotiveControlPanel.update(locomotives);
+                updateCommandHistory("Locomotive configuration changed");
+            }
         }
     }
 
@@ -704,8 +725,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
                 RailControlGUI.this);
             p.editPreferences(Preferences.getInstance());
             if (p.isOkPressed()) {
-                updateCommandHistory("Preferences updated");
                 locomotiveControlPanel.update(locomotives);
+                updateCommandHistory("Preferences changed");
             }
         }
     }

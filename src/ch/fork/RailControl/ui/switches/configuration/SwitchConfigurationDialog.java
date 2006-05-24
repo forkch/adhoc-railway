@@ -7,6 +7,7 @@ import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -14,11 +15,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -27,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -90,6 +94,7 @@ public class SwitchConfigurationDialog extends JDialog {
             }
         }
         initGUI();
+        
     }
 
     private void initGUI() {
@@ -97,6 +102,7 @@ public class SwitchConfigurationDialog extends JDialog {
         add(switchGroupPanel, BorderLayout.WEST);
 
         JPanel switchesPanel = createSwitchesPanel();
+        
         add(switchesPanel, BorderLayout.CENTER);
         updateSwitchesPanel();
 
@@ -257,6 +263,18 @@ public class SwitchConfigurationDialog extends JDialog {
 
     private JPanel createSwitchesPanel() {
         switchesPanel = new JPanel(new BorderLayout());
+        switchesPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "escapeAction");
+        switchesPanel.getActionMap().put(
+            "escapeAction", new AbstractAction() {
+
+                public void actionPerformed(ActionEvent e) {
+                    cancelPressed = true;
+                    SwitchConfigurationDialog.this.setVisible(false);
+                }
+
+            });
+            
         switchesPanel.getInsets(new Insets(5, 5, 5, 5));
 
         TitledBorder title = BorderFactory
