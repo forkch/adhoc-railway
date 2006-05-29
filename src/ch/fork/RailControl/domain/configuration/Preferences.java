@@ -30,9 +30,9 @@ public class Preferences {
         hostnames = new ArrayList<String>();
         hostnames.add("localhost");
         hostnames.add("titan");
-        hostnames.add("192.168.1.38");
-        hostnames.add("192.168.1.100");
-        setStringValue("Hostname", "192.168.1.100");
+        hostnames.add("192.168.1.36");
+        hostnames.add("192.168.1.43");
+        setStringValue("Hostname", "192.168.1.36");
         setIntValue("Portnumber", 12345);
         setIntValue("DefaultActivationTime", 50);
         setIntValue("DefaultRoutingDelay", 250);

@@ -139,6 +139,17 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         switchNumberToSwitch = new HashMap<Integer, Switch>();
         enteredNumberKeys = new StringBuffer();
         switchGroups = new ArrayList<SwitchGroup>();
+        //createDefaultData();
+
+        LocomotiveControl.getInstance().registerLocomotives(locomotives);
+
+        switchGroupPane.update(switchGroups);
+        locomotiveControlPanel.update(locomotives);
+        locomotiveControlPanel.revalidate();
+        locomotiveControlPanel.repaint();
+    }
+
+    private void createDefaultData() {
         SwitchGroup main = new SwitchGroup("Main Line");
         SwitchGroup mountain = new SwitchGroup("Mountain Line");
         switchGroups.add(main);
@@ -167,11 +178,6 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
             25, "UP Klasse 4000 'Big Boy'");
         locomotives.add(ascom);
         locomotives.add(bigBoy);
-
-        LocomotiveControl.getInstance().registerLocomotives(locomotives);
-
-        switchGroupPane.update(switchGroups);
-        locomotiveControlPanel.update(locomotives);
     }
 
     private void initGUI() {
@@ -186,14 +192,11 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         initToolbar();
         initStatusBar();
 
-        JPanel center = new JPanel(new BorderLayout(5, 5));
-        center.add(switchPanel, BorderLayout.CENTER);
-        JPanel centerSouth = new JPanel(new BorderLayout());
+        JPanel switchesAndLocomotivesPanel = new JPanel(new BorderLayout(5, 5));
+        switchesAndLocomotivesPanel.add(switchPanel, BorderLayout.CENTER);
 
-        centerSouth.add(locomotiveControlPane, BorderLayout.CENTER);
-
-        center.add(centerSouth, BorderLayout.SOUTH);
-        add(center, BorderLayout.CENTER);
+        switchesAndLocomotivesPanel.add(locomotiveControlPane, BorderLayout.SOUTH);
+        add(switchesAndLocomotivesPanel, BorderLayout.CENTER);
         add(statusBarPanel, BorderLayout.SOUTH);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1000, 700);
@@ -521,8 +524,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
         public void actionPerformed(ActionEvent e) {
             if (file == null) {
-                JFileChooser fileChooser = new JFileChooser(new File(
-                    System.getProperty("user.home")));
+                JFileChooser fileChooser = new JFileChooser(new File("."));
                 int returnVal = fileChooser
                     .showOpenDialog(RailControlGUI.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -581,7 +583,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         }
 
         public void actionPerformed(ActionEvent e) {
-            JFileChooser fileChooser = new JFileChooser();
+            JFileChooser fileChooser = new JFileChooser(new File("."));
             int returnVal = fileChooser
                 .showSaveDialog(RailControlGUI.this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {

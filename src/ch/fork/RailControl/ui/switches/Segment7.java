@@ -136,13 +136,6 @@ public class Segment7 extends Canvas {
     protected void processMouseEvent(MouseEvent event) {
         if (event.getID() == MouseEvent.MOUSE_PRESSED) {
             requestFocus();
-            if (!event.isShiftDown()) {
-                if (event.isMetaDown()) {
-                    setValue(getValue() + 1); // increment by 1
-                } else {
-                    setValue(getValue() + 9); // decrement by 1
-                }
-            }
             repaint();
         }
         super.processMouseEvent(event);

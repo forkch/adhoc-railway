@@ -49,6 +49,7 @@ public class SwitchesTableModel extends AbstractTableModel {
         return columnNames[col];
     }
 
+    @SuppressWarnings("unchecked")
     public Object getValueAt(int rowIndex, int columnIndex) {
         if (switchGroup == null) {
             return null;
@@ -76,6 +77,7 @@ public class SwitchesTableModel extends AbstractTableModel {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public boolean isCellEditable(int row, int col) {
         List<Switch> switches = new ArrayList(switchGroup.getSwitches());
         Switch switchOfThisRow = switches.get(row);
