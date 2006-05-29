@@ -5,7 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import sun.awt.GlobalCursorManager;
+
+import ch.fork.RailControl.domain.Constants;
 import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
+import ch.fork.RailControl.domain.switches.Switch;
+import ch.fork.RailControl.domain.switches.exception.SwitchException;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GLInfoListener;
 
@@ -58,45 +63,56 @@ public class LocomotiveControl implements GLInfoListener {
 
     public void toggleDirection(Locomotive locomotive)
         throws LocomotiveException {
+    	checkLocomotiveSession(locomotive);
+    	initLocomotive(locomotive);
         locomotive.toggleDirection();
     }
 
     public void setSpeed(Locomotive locomotive, int speed)
         throws LocomotiveException {
+    	checkLocomotiveSession(locomotive);
+    	initLocomotive(locomotive);
         locomotive.setSpeed(speed);
     }
 
     public void increaseSpeed(Locomotive locomotive)
         throws LocomotiveException {
+    	checkLocomotiveSession(locomotive);
+    	initLocomotive(locomotive);
         locomotive.increaseSpeed();
     }
 
     public void decreaseSpeed(Locomotive locomotive)
         throws LocomotiveException {
+    	checkLocomotiveSession(locomotive);
+    	initLocomotive(locomotive);
         locomotive.decreaseSpeed();
     }
 
     public void increaseSpeedStep(Locomotive locomotive)
         throws LocomotiveException {
+    	checkLocomotiveSession(locomotive);
+    	initLocomotive(locomotive);
         locomotive.increaseSpeedStep();
     }
 
     public void decreaseSpeedStep(Locomotive locomotive)
         throws LocomotiveException {
+    	checkLocomotiveSession(locomotive);
+    	initLocomotive(locomotive);
         locomotive.decreaseSpeedStep();
     }
 
     public void setFunctions(Locomotive locomotive, boolean[] functions)
         throws LocomotiveException {
+    	checkLocomotiveSession(locomotive);
+    	initLocomotive(locomotive);
         locomotive.setFunctions(functions);
     }
 
     public void GLset(double timestamp, int bus, int address,
         String drivemode, int v, int vMax, boolean[] functions) {
-        /*
-         * System.out.println("GAset(" + bus + " , " + address + " , " +
-         * drivemode + " , " + v + " , " + vMax + " , " + functions + " )");
-         */
+
         Locomotive locomotive = locomotives.get(address);
         locomotive.locomotiveChanged(drivemode, v, vMax, functions);
         informListeners(locomotive);
@@ -104,10 +120,7 @@ public class LocomotiveControl implements GLInfoListener {
 
     public void GLinit(double timestamp, int bus, int address,
         String protocol, String[] params) {
-        /*
-         * System.out.println("GLinit(" + bus + " , " + address + " , " +
-         * protocol + " , " + params + " )");
-         */
+       
         Locomotive locomotive = locomotives.get(address);
         if (locomotive != null) {
             locomotive.locomotiveInitialized(
@@ -117,9 +130,7 @@ public class LocomotiveControl implements GLInfoListener {
     }
 
     public void GLterm(double timestamp, int bus, int address) {
-        /*
-         * System.out.println("GLterm( " + bus + " , " + address + " )");
-         */
+       
         Locomotive locomotive = locomotives.get(address);
         if (locomotive != null) {
             locomotive.locomotiveTerminated();
@@ -141,5 +152,18 @@ public class LocomotiveControl implements GLInfoListener {
         this.session = session;
         session.getInfoChannel().addGLInfoListener(this);
     }
+    
+
+    private void checkLocomotiveSession(Locomotive locomotive) throws LocomotiveException {
+		if(locomotive.getSession() == null && !(locomotive instanceof NoneLocomotive)) {
+        	throw new LocomotiveException(Constants.ERR_NO_SESSION);
+        }
+	}
+	private void initLocomotive(Locomotive locomotive) throws LocomotiveException {
+		if(!locomotive.isInitialized()) {
+			locomotive.init();
+        }
+	}
+
 
 }

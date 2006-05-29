@@ -32,12 +32,13 @@ public class Preferences {
         hostnames.add("titan");
         hostnames.add("192.168.1.36");
         hostnames.add("192.168.1.43");
-        setStringValue("Hostname", "192.168.1.36");
+        setStringValue("Hostname", "localhost");
         setIntValue("Portnumber", 12345);
         setIntValue("DefaultActivationTime", 50);
         setIntValue("DefaultRoutingDelay", 250);
         setIntValue("LocomotiveControlesAmount", 5);
         setStringValue("KeyBoardLayout", "Swiss German");
+        setStringValue("Interface6051", "Y");
     }
 
     public static Preferences getInstance() {
@@ -63,6 +64,13 @@ public class Preferences {
 
     public int getIntValue(String key) {
         return Integer.parseInt(preferences.get(key));
+    }
+    public void setBooleanValue(String key, boolean value) {
+        preferences.put(key, Boolean.toString(value));
+    }
+
+    public boolean getBooleanValue(String key) {
+        return Boolean.parseBoolean(preferences.get(key));
     }
 
     public List<String> getHostnames() {

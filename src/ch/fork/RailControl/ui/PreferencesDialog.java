@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -44,6 +45,8 @@ public class PreferencesDialog extends JDialog {
     private boolean okPressed = false;
 
     private JComboBox keyBoardLayoutComboBox;
+
+	private JCheckBox interface6051;
 
     public PreferencesDialog(JFrame owner) {
         super(owner, "Preferences", true);
@@ -130,7 +133,14 @@ public class PreferencesDialog extends JDialog {
 
         digitalDataTab.add(defaultRoutingDelayLabel);
         digitalDataTab.add(defaultRoutingDelay);
-        SpringUtilities.makeCompactGrid(digitalDataTab, 2, 2, // rows, cols
+        
+        interface6051 = new JCheckBox();
+		JLabel interface6051Label = new JLabel("Interface 6051 attached");
+
+        digitalDataTab.add(interface6051Label);
+        digitalDataTab.add(interface6051);
+        
+        SpringUtilities.makeCompactGrid(digitalDataTab, 3, 2, // rows, cols
             6, 6, // initX, initY
             6, 6); // xPad, yPad
         return digitalDataTab;
@@ -176,6 +186,10 @@ public class PreferencesDialog extends JDialog {
             .getIntValue("LocomotiveControlesAmount"));
         keyBoardLayoutComboBox.setSelectedItem(p
             .getStringValue("KeyBoardLayout"));
+        
+        	interface6051.setSelected(p.getBooleanValue("Interface6051"));
+        
+        
 
     }
 
@@ -193,6 +207,9 @@ public class PreferencesDialog extends JDialog {
                 .getNumber().intValue());
         p.setStringValue("KeyBoardLayout", keyBoardLayoutComboBox
             .getSelectedItem().toString());
+        
+        p.setBooleanValue("Interface6051", interface6051.isSelected());
+       
     }
 
 }

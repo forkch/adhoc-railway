@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.fork.RailControl.domain.Constants;
 import ch.fork.RailControl.domain.switches.exception.SwitchException;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GAInfoListener;
@@ -67,7 +68,9 @@ public class SwitchControl implements GAInfoListener {
     }
 
     public void toggle(Switch aSwitch) throws SwitchException {
-        aSwitch.toggle();
+        checkSwitchSession(aSwitch);
+        initSwitch(aSwitch);
+    	aSwitch.toggle();
 
         for (SwitchChangeListener l : listeners) {
             l.switchChanged(aSwitch);
@@ -75,16 +78,23 @@ public class SwitchControl implements GAInfoListener {
     }
 
     public void setStraight(Switch aSwitch) throws SwitchException {
+        checkSwitchSession(aSwitch);
+        initSwitch(aSwitch);
         aSwitch.setStraight();
     }
 
     public void setCurvedRight(Switch aSwitch) throws SwitchException {
+        checkSwitchSession(aSwitch);
+        initSwitch(aSwitch);
         aSwitch.setCurvedRight();
     }
 
     public void setCurvedLeft(Switch aSwitch) throws SwitchException {
+        checkSwitchSession(aSwitch);
+        initSwitch(aSwitch);
         aSwitch.setCurvedLeft();
     }
+
 
     public void addSwitchChangeListener(SwitchChangeListener listener) {
         listeners.add(listener);
@@ -141,4 +151,17 @@ public class SwitchControl implements GAInfoListener {
         this.session = session;
         session.getInfoChannel().addGAInfoListener(this);
     }
+    
+    private void checkSwitchSession(Switch aSwitch) throws SwitchException {
+		if(aSwitch.getSession() == null) {
+        	throw new SwitchException(Constants.ERR_NO_SESSION);
+        }
+	}
+	private void initSwitch(Switch aSwitch) throws SwitchException {
+		if(!aSwitch.isInitialized()) {
+        	aSwitch.init();
+        }
+	}
+
+	
 }

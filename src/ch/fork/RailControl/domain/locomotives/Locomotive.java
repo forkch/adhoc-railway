@@ -63,6 +63,7 @@ public abstract class Locomotive implements Constants {
         params[0] = Integer.toString(PROTOCOL_VERSION);
         params[1] = Integer.toString(drivingSteps);
         params[2] = Integer.toString(functionCount);
+        functions = new boolean[]{false, false, false, false, false};
     }
 
     protected abstract void increaseSpeedStep() throws LocomotiveException;
@@ -282,5 +283,9 @@ public abstract class Locomotive implements Constants {
     public void setBus(int bus) {
         this.bus = bus;
     }
+
+	public boolean[] getFunctions() {
+		return functions;
+	}
 
 }
