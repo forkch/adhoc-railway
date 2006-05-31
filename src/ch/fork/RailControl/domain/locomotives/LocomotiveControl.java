@@ -63,50 +63,50 @@ public class LocomotiveControl implements GLInfoListener {
 
     public void toggleDirection(Locomotive locomotive)
         throws LocomotiveException {
-    	checkLocomotiveSession(locomotive);
-    	initLocomotive(locomotive);
+        checkLocomotiveSession(locomotive);
+        initLocomotive(locomotive);
         locomotive.toggleDirection();
     }
 
     public void setSpeed(Locomotive locomotive, int speed)
         throws LocomotiveException {
-    	checkLocomotiveSession(locomotive);
-    	initLocomotive(locomotive);
+        checkLocomotiveSession(locomotive);
+        initLocomotive(locomotive);
         locomotive.setSpeed(speed);
     }
 
     public void increaseSpeed(Locomotive locomotive)
         throws LocomotiveException {
-    	checkLocomotiveSession(locomotive);
-    	initLocomotive(locomotive);
+        checkLocomotiveSession(locomotive);
+        initLocomotive(locomotive);
         locomotive.increaseSpeed();
     }
 
     public void decreaseSpeed(Locomotive locomotive)
         throws LocomotiveException {
-    	checkLocomotiveSession(locomotive);
-    	initLocomotive(locomotive);
+        checkLocomotiveSession(locomotive);
+        initLocomotive(locomotive);
         locomotive.decreaseSpeed();
     }
 
     public void increaseSpeedStep(Locomotive locomotive)
         throws LocomotiveException {
-    	checkLocomotiveSession(locomotive);
-    	initLocomotive(locomotive);
+        checkLocomotiveSession(locomotive);
+        initLocomotive(locomotive);
         locomotive.increaseSpeedStep();
     }
 
     public void decreaseSpeedStep(Locomotive locomotive)
         throws LocomotiveException {
-    	checkLocomotiveSession(locomotive);
-    	initLocomotive(locomotive);
+        checkLocomotiveSession(locomotive);
+        initLocomotive(locomotive);
         locomotive.decreaseSpeedStep();
     }
 
     public void setFunctions(Locomotive locomotive, boolean[] functions)
         throws LocomotiveException {
-    	checkLocomotiveSession(locomotive);
-    	initLocomotive(locomotive);
+        checkLocomotiveSession(locomotive);
+        initLocomotive(locomotive);
         locomotive.setFunctions(functions);
     }
 
@@ -120,7 +120,7 @@ public class LocomotiveControl implements GLInfoListener {
 
     public void GLinit(double timestamp, int bus, int address,
         String protocol, String[] params) {
-       
+
         Locomotive locomotive = locomotives.get(address);
         if (locomotive != null) {
             locomotive.locomotiveInitialized(
@@ -130,7 +130,7 @@ public class LocomotiveControl implements GLInfoListener {
     }
 
     public void GLterm(double timestamp, int bus, int address) {
-       
+
         Locomotive locomotive = locomotives.get(address);
         if (locomotive != null) {
             locomotive.locomotiveTerminated();
@@ -152,18 +152,22 @@ public class LocomotiveControl implements GLInfoListener {
         this.session = session;
         session.getInfoChannel().addGLInfoListener(this);
     }
-    
 
-    private void checkLocomotiveSession(Locomotive locomotive) throws LocomotiveException {
-		if(locomotive.getSession() == null && !(locomotive instanceof NoneLocomotive)) {
-        	throw new LocomotiveException(Constants.ERR_NO_SESSION);
+    private void checkLocomotiveSession(Locomotive locomotive)
+        throws LocomotiveException {
+        if (locomotive instanceof NoneLocomotive) {
+            return;
         }
-	}
-	private void initLocomotive(Locomotive locomotive) throws LocomotiveException {
-		if(!locomotive.isInitialized()) {
-			locomotive.init();
+        if (locomotive.getSession() == null) {
+            throw new LocomotiveException(Constants.ERR_NO_SESSION);
         }
-	}
+    }
 
+    private void initLocomotive(Locomotive locomotive)
+        throws LocomotiveException {
+        if (!locomotive.isInitialized()) {
+            locomotive.init();
+        }
+    }
 
 }
