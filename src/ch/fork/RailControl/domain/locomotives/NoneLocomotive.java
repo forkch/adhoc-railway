@@ -59,4 +59,9 @@ public class NoneLocomotive extends Locomotive {
 
     }
 
+    @Override
+    public Locomotive clone() {
+        return this;
+    }
+
 }

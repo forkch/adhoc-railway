@@ -9,41 +9,47 @@ import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GL;
 
 public abstract class Locomotive implements Constants {
-    private String name;
+    protected String name;
 
-    private String desc;
+    protected String desc;
 
-    private int address;
+    protected int address;
 
-    private int bus;
+    protected int bus;
 
     public enum Direction {
         FORWARD, REVERSE, UNDEF
     };
 
-    private Direction direction = Direction.UNDEF;
+    protected Direction direction = Direction.UNDEF;
 
-    private final int PROTOCOL_VERSION = 2;
+    protected final int PROTOCOL_VERSION = 2;
 
-    private final String PROTOCOL = "M";
+    protected final String PROTOCOL = "M";
 
-    private final String FORWARD_DIRECTION = "1";
+    protected final String FORWARD_DIRECTION = "1";
 
-    private final String REVERSE_DIRECTION = "0";
+    protected final String REVERSE_DIRECTION = "0";
 
-    private int drivingSteps;
+    protected int drivingSteps;
 
-    private int currentSpeed;
+    protected int currentSpeed;
 
-    private SRCPSession session;
+    protected SRCPSession session;
 
     private GL gl;
 
-    private boolean[] functions;
+    protected boolean[] functions;
 
-    private String[] params;
+    protected String[] params;
 
-    private boolean initialized = false;
+    protected boolean initialized = false;
+
+    protected abstract void increaseSpeedStep() throws LocomotiveException;
+
+    protected abstract void decreaseSpeedStep() throws LocomotiveException;
+
+    public abstract Locomotive clone();
 
     public Locomotive(String name, int bus, int address, int drivingSteps,
         String desc, int functionCount) {
@@ -63,12 +69,8 @@ public abstract class Locomotive implements Constants {
         params[0] = Integer.toString(PROTOCOL_VERSION);
         params[1] = Integer.toString(drivingSteps);
         params[2] = Integer.toString(functionCount);
-        functions = new boolean[]{false, false, false, false, false};
+        functions = new boolean[] { false, false, false, false, false };
     }
-
-    protected abstract void increaseSpeedStep() throws LocomotiveException;
-
-    protected abstract void decreaseSpeedStep() throws LocomotiveException;
 
     public void init() throws LocomotiveException {
         try {
@@ -284,8 +286,8 @@ public abstract class Locomotive implements Constants {
         this.bus = bus;
     }
 
-	public boolean[] getFunctions() {
-		return functions;
-	}
+    public boolean[] getFunctions() {
+        return functions;
+    }
 
 }

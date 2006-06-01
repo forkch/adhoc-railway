@@ -93,7 +93,7 @@ public class LocomotiveControlPanel extends JPanel {
             try {
                 for (LocomotiveWidget widget : locomotiveWidgets) {
                     Locomotive myLocomotive = widget.getMyLocomotive();
-                    
+
                     LocomotiveControl.getInstance().setSpeed(
                         myLocomotive, 0);
                 }

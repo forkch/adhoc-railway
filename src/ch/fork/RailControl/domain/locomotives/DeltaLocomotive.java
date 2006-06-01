@@ -31,4 +31,16 @@ public class DeltaLocomotive extends Locomotive {
             - STEPPING);
     }
 
+    @Override
+    public Locomotive clone() {
+        DeltaLocomotive clone = new DeltaLocomotive(session, name, bus,
+            address, desc);
+        clone.functions = functions;
+        clone.initialized = initialized;
+        clone.currentSpeed = currentSpeed;
+        clone.direction = direction;
+        clone.params = params;
+        return clone;
+    }
+
 }

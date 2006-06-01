@@ -30,4 +30,16 @@ public class DigitalLocomotive extends Locomotive {
         super.setSpeed(getCurrentSpeed()
             - STEPPING);
     }
+
+    @Override
+    public Locomotive clone() {
+        DigitalLocomotive clone = new DigitalLocomotive(session, name,
+            bus, address, desc);
+        clone.functions = functions;
+        clone.initialized = initialized;
+        clone.currentSpeed = currentSpeed;
+        clone.direction = direction;
+        clone.params = params;
+        return clone;
+    }
 }

@@ -70,7 +70,7 @@ public class SwitchControl implements GAInfoListener {
     public void toggle(Switch aSwitch) throws SwitchException {
         checkSwitchSession(aSwitch);
         initSwitch(aSwitch);
-    	aSwitch.toggle();
+        aSwitch.toggle();
 
         for (SwitchChangeListener l : listeners) {
             l.switchChanged(aSwitch);
@@ -94,7 +94,6 @@ public class SwitchControl implements GAInfoListener {
         initSwitch(aSwitch);
         aSwitch.setCurvedLeft();
     }
-
 
     public void addSwitchChangeListener(SwitchChangeListener listener) {
         listeners.add(listener);
@@ -151,17 +150,17 @@ public class SwitchControl implements GAInfoListener {
         this.session = session;
         session.getInfoChannel().addGAInfoListener(this);
     }
-    
-    private void checkSwitchSession(Switch aSwitch) throws SwitchException {
-		if(aSwitch.getSession() == null) {
-        	throw new SwitchException(Constants.ERR_NO_SESSION);
-        }
-	}
-	private void initSwitch(Switch aSwitch) throws SwitchException {
-		if(!aSwitch.isInitialized()) {
-        	aSwitch.init();
-        }
-	}
 
-	
+    private void checkSwitchSession(Switch aSwitch) throws SwitchException {
+        if (aSwitch.getSession() == null) {
+            throw new SwitchException(Constants.ERR_NO_SESSION);
+        }
+    }
+
+    private void initSwitch(Switch aSwitch) throws SwitchException {
+        if (!aSwitch.isInitialized()) {
+            aSwitch.init();
+        }
+    }
+
 }

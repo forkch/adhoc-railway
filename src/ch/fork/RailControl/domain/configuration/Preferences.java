@@ -65,6 +65,7 @@ public class Preferences {
     public int getIntValue(String key) {
         return Integer.parseInt(preferences.get(key));
     }
+
     public void setBooleanValue(String key, boolean value) {
         preferences.put(key, Boolean.toString(value));
     }

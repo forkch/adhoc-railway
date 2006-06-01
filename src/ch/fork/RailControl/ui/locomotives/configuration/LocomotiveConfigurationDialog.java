@@ -21,6 +21,8 @@ import javax.swing.table.TableModel;
 import ch.fork.RailControl.domain.configuration.Preferences;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
 import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
+import ch.fork.RailControl.domain.switches.SwitchGroup;
+import ch.fork.RailControl.ui.TableResizer;
 
 public class LocomotiveConfigurationDialog extends JDialog {
 
@@ -95,8 +97,10 @@ public class LocomotiveConfigurationDialog extends JDialog {
             .getColumn(1);
         typeColumn.setCellEditor(new DefaultCellEditor(
             locomotiveTypeComboBox));
-        typeColumn.setPreferredWidth(115);
-
+        TableResizer.adjustColumnWidths(locomotiveTable, 5);
+        if (locomotiveTable.getRowCount() > 0) {
+            TableResizer.adjustRowHeight(locomotiveTable);
+        }
         JScrollPane locomotiveTablePane = new JScrollPane(locomotiveTable);
         locomotiveTablePane.setPreferredSize(new Dimension(600, 400));
         locomotivesPanel.add(locomotiveTablePane, BorderLayout.CENTER);
@@ -106,6 +110,10 @@ public class LocomotiveConfigurationDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 Locomotive newLocomotive = new NoneLocomotive();
                 locomotives.add(newLocomotive);
+                TableResizer.adjustColumnWidths(locomotiveTable, 5);
+                if (locomotiveTable.getRowCount() > 0) {
+                    TableResizer.adjustRowHeight(locomotiveTable);
+                }
                 locomotiveTable.repaint();
                 locomotiveTable.revalidate();
 
@@ -116,7 +124,14 @@ public class LocomotiveConfigurationDialog extends JDialog {
         removeLocomotiveButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                if (locomotiveTable.isEditing())
+                    locomotiveTable.getCellEditor().stopCellEditing();
+
+                Integer number = (Integer) locomotiveTable.getValueAt(
+                    locomotiveTable.getSelectedRow(), 0);
+                locomotives.remove(number);
+                locomotiveTable.revalidate();
+                locomotiveTable.repaint();
 
             }
 
