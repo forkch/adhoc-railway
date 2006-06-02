@@ -50,4 +50,8 @@ public class SwitchCanvas extends Canvas {
         return getPreferredSize();
     }
 
+    public boolean isFocusTraversable() {
+        return true;
+    }
+
 }

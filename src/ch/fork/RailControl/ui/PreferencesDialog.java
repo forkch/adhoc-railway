@@ -99,13 +99,13 @@ public class PreferencesDialog extends JDialog {
         locomotiveControlNumber = new JSpinner(
             locomotiveControlNumberModel);
 
-        JLabel keyBoardLayoutLanel = new JLabel("Keyboard-Layout");
+        JLabel keyBoardLayoutLabel = new JLabel("Keyboard-Layout");
         keyBoardLayoutComboBox = new JComboBox();
         keyBoardLayoutComboBox.addItem("Swiss German");
         keyBoardLayoutComboBox.addItem("English");
         guiSettingsTab.add(locomotiveControlNumberLabel);
         guiSettingsTab.add(locomotiveControlNumber);
-        guiSettingsTab.add(keyBoardLayoutLanel);
+        guiSettingsTab.add(keyBoardLayoutLabel);
         guiSettingsTab.add(keyBoardLayoutComboBox);
         SpringUtilities.makeCompactGrid(guiSettingsTab, 2, 2, // rows, cols
             6, 6, // initX, initY

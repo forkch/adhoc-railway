@@ -32,6 +32,9 @@ public class DefaultSwitch extends Switch {
             if (!Preferences.getInstance()
                 .getBooleanValue("Interface6051")) {
                 ga.init(bus, address.getAddress1(), "M");
+            } else {
+                ga.setAddress(address.getAddress1());
+                ga.setBus(bus);
             }
             initialized = true;
         } catch (SRCPException x) {

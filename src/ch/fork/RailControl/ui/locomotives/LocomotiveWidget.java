@@ -13,13 +13,11 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -29,7 +27,6 @@ import ch.fork.RailControl.domain.locomotives.Locomotive;
 import ch.fork.RailControl.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
 import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
-import ch.fork.RailControl.domain.locomotives.Locomotive.Direction;
 import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
 import ch.fork.RailControl.ui.ExceptionProcessor;
 import ch.fork.RailControl.ui.ImageTools;
@@ -251,7 +248,7 @@ public class LocomotiveWidget extends JPanel implements
 
                     LocomotiveControl.getInstance().setSpeed(
                         myLocomotive, 0);
-                    updateWidget();
+                    //updateWidget();
                 } catch (LocomotiveException e3) {
                     ExceptionProcessor.getInstance().processException(e3);
                 }
@@ -277,7 +274,7 @@ public class LocomotiveWidget extends JPanel implements
                     LocomotiveControl.getInstance().increaseSpeed(
                         myLocomotive);
 
-                    updateWidget();
+                    //updateWidget();
                 } catch (LocomotiveException e3) {
                     ExceptionProcessor.getInstance().processException(e3);
                 }
@@ -291,7 +288,7 @@ public class LocomotiveWidget extends JPanel implements
                     LocomotiveControl.getInstance().decreaseSpeed(
                         myLocomotive);
 
-                    updateWidget();
+                    //updateWidget();
                 } catch (LocomotiveException e3) {
                     ExceptionProcessor.getInstance().processException(e3);
                 }

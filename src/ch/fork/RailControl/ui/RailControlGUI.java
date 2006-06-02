@@ -67,6 +67,7 @@ import ch.fork.RailControl.ui.switches.DoubleCrossSwitchCanvas;
 import ch.fork.RailControl.ui.switches.Segment7;
 import ch.fork.RailControl.ui.switches.SwitchCanvas;
 import ch.fork.RailControl.ui.switches.SwitchGroupPane;
+import ch.fork.RailControl.ui.switches.SwitchProgrammer;
 import ch.fork.RailControl.ui.switches.ThreeWaySwitchCanvas;
 import ch.fork.RailControl.ui.switches.configuration.SwitchConfigurationDialog;
 import de.dermoba.srcp.client.CommandDataListener;
@@ -127,17 +128,24 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
     private File actualFile;
 
+    private JComboBox hostnamesComboBox;
+
     public RailControlGUI() {
         super(NAME);
+        setIconImage(createImageIcon(
+            "icons/RailControl.png", "RailControl", RailControlGUI.this)
+            .getImage());
+        initDatastructures();
         initGUI();
         initKeyboardActions();
-        initDatastructures();
 
         File standardFile = new File("etc/standard.conf");
         if (standardFile.exists()) {
             OpenAction oa = new OpenAction(null);
             oa.openFile(standardFile);
         }
+        switchGroupPane.revalidate();
+        switchGroupPane.repaint();
     }
 
     private void initDatastructures() {
@@ -147,12 +155,14 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         switchGroups = new ArrayList<SwitchGroup>();
         // createDefaultData();
 
+        /*
         LocomotiveControl.getInstance().registerLocomotives(locomotives);
 
         switchGroupPane.update(switchGroups);
         locomotiveControlPanel.update(locomotives);
         locomotiveControlPanel.revalidate();
         locomotiveControlPanel.repaint();
+        */
     }
 
     private void createDefaultData() {
@@ -215,7 +225,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
     private JPanel initSwitchPanel() {
         JPanel switchPanel = new JPanel(new BorderLayout());
         switchPanel.setBorder(new EtchedBorder());
-        switchGroupPane = new SwitchGroupPane(switchGroups);
+        switchGroupPane = new SwitchGroupPane(switchNumberToSwitch);
 
         JPanel segmentPanelNorth = new JPanel(new FlowLayout(
             FlowLayout.TRAILING, 5, 0));
@@ -258,7 +268,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         JButton preferencesToolBarButton = new JButton(
             new PreferencesAction());
 
-        final JComboBox hostnamesComboBox = new JComboBox();
+        hostnamesComboBox = new JComboBox();
         for (String host : Preferences.getInstance().getHostnames()) {
             hostnamesComboBox.addItem(host);
         }
@@ -279,6 +289,13 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
         JButton setAllSwitchesStraightButton = new JButton(
             new SwitchesStraightAction());
+        
+        JButton refreshButton = new JButton(
+            new RefreshAction());
+        
+
+        JButton switchProgrammerButton = new JButton(
+            new SwitchProgrammerAction());
 
         openToolBarButton.setText("");
         saveToolBarButton.setText("");
@@ -289,6 +306,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         preferencesToolBarButton.setText("");
         connectToolBarButton.setText("");
         disconnectToolBarButton.setText("");
+        refreshButton.setText("");
+        switchProgrammerButton.setText("");
 
         toolBar.add(openToolBarButton);
         toolBar.add(saveToolBarButton);
@@ -303,6 +322,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         toolBar.add(disconnectToolBarButton);
         toolBar.addSeparator();
         toolBar.add(setAllSwitchesStraightButton);
+        toolBar.add(refreshButton);
+        toolBar.add(switchProgrammerButton);
 
         JPanel toolbarPanel = new JPanel(new BorderLayout());
         toolbarPanel.add(toolBar, BorderLayout.WEST);
@@ -448,6 +469,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
     public String toXML() {
         StringBuffer sb = new StringBuffer();
+        sb.append("<?xml version=\"1.0\"?>\n");
         sb.append("<RailControl xmlns=\"http://www.fork.ch/RailControl\" "
             + "ExporterVersion=\"0.1\">\n");
         sb.append("<SwitchConfiguration>\n");
@@ -567,6 +589,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
                 ExceptionProcessor.getInstance().processException(e1);
             }
 
+            hostnamesComboBox.setSelectedItem(Preferences.getInstance()
+                .getStringValue("Hostname"));
             if (recentFilesMenu.getComponentCount() > 1) {
                 recentFilesMenu.remove(10);
             }
@@ -819,6 +843,32 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         }
 
         public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+
+    private class RefreshAction extends AbstractAction {
+        public RefreshAction() {
+            super("Refresh", createImageIcon(
+                "icons/reload.png", "Refresh", RailControlGUI.this));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            SwitchControl.getInstance().unregisterAllSwitches();
+            SwitchControl.getInstance().registerSwitches(switchNumberToSwitch.values());
+            locomotiveControlPanel.update(locomotives);
+            switchGroupPane.update(switchGroups);
+        }
+    }
+
+    private class SwitchProgrammerAction extends AbstractAction {
+        public SwitchProgrammerAction() {
+            super("SwitchProgrammer", createImageIcon(
+                "icons/switch.png", "SwitchProgrammer", RailControlGUI.this));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            SwitchProgrammer sp = new SwitchProgrammer(RailControlGUI.this, session);
 
         }
     }

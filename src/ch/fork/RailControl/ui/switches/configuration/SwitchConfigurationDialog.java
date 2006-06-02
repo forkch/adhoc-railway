@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -268,12 +270,10 @@ public class SwitchConfigurationDialog extends JDialog {
             KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "escapeAction");
         switchesPanel.getActionMap().put(
             "escapeAction", new AbstractAction() {
-
                 public void actionPerformed(ActionEvent e) {
                     cancelPressed = true;
                     SwitchConfigurationDialog.this.setVisible(false);
                 }
-
             });
 
         switchesPanel.getInsets(new Insets(5, 5, 5, 5));
@@ -299,7 +299,7 @@ public class SwitchConfigurationDialog extends JDialog {
         typeColumn
             .setCellEditor(new DefaultCellEditor(switchTypeComboBox));
         typeColumn.setCellRenderer(new SwitchTypeCellRenderer());
-    
+
         // SwitchAddress
         TableColumn addressColumn = switchesTable.getColumnModel()
             .getColumn(3);
@@ -319,7 +319,7 @@ public class SwitchConfigurationDialog extends JDialog {
             switchDefaultStateComboBox));
         defaultStateColumn
             .setCellRenderer(new SwitchDefaultStateCellRenderer());
-        
+
         // SwitchOrientation
         JComboBox switchOrientationComboBox = new JComboBox();
         switchOrientationComboBox.addItem(SwitchOrientation.NORTH);
@@ -331,7 +331,6 @@ public class SwitchConfigurationDialog extends JDialog {
             .getColumnModel().getColumn(5);
         switchOrientationColumn.setCellEditor(new DefaultCellEditor(
             switchOrientationComboBox));
-      
 
         JScrollPane switchGroupTablePane = new JScrollPane(switchesTable);
         switchGroupTablePane.setPreferredSize(new Dimension(600, 400));
@@ -344,8 +343,9 @@ public class SwitchConfigurationDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
                     .getSelectedValue());
-                int nextNumber = ((Integer) switchesTable.getValueAt(
-                    switchesTable.getRowCount() - 1, 0)).intValue() + 1;
+                SortedSet<Integer> usedNumbers = new TreeSet<Integer>(
+                    switchNumberToSwitch.keySet());
+                int nextNumber = usedNumbers.last().intValue() + 1;
                 Switch newSwitch = new DefaultSwitch(nextNumber,
                     selectedSwitchGroup.getName()
                         + nextNumber);

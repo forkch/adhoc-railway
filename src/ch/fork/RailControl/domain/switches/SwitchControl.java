@@ -62,8 +62,6 @@ public class SwitchControl implements GAInfoListener {
     public void setSessionOnSwitches(SRCPSession session) {
         for (Switch aSwitch : addressToSwitch.values()) {
             aSwitch.setSession(session);
-
-            // System.out.println("Setting session on : " + aSwitch);
         }
     }
 
@@ -148,6 +146,7 @@ public class SwitchControl implements GAInfoListener {
 
     public void setSession(SRCPSession session) {
         this.session = session;
+        setSessionOnSwitches(session);
         session.getInfoChannel().addGAInfoListener(this);
     }
 

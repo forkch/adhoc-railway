@@ -4,8 +4,6 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
 
-import ch.fork.RailControl.ui.ImageTools;
-
 public class FunctionToggleButton extends JToggleButton {
 
     public FunctionToggleButton() {

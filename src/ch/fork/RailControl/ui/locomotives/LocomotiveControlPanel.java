@@ -87,19 +87,27 @@ public class LocomotiveControlPanel extends JPanel {
         repaint();
     }
 
-    private class LocomotiveStopAction extends AbstractAction {
+    private class LocomotiveStopAction extends AbstractAction implements Runnable {
 
         public void actionPerformed(ActionEvent e) {
+            Thread t = new Thread(this);
+            t.start();
+        }
+
+        public void run() {
             try {
                 for (LocomotiveWidget widget : locomotiveWidgets) {
                     Locomotive myLocomotive = widget.getMyLocomotive();
 
                     LocomotiveControl.getInstance().setSpeed(
                         myLocomotive, 0);
+                    Thread.sleep(1000);
                 }
 
             } catch (LocomotiveException e3) {
                 ExceptionProcessor.getInstance().processException(e3);
+            } catch (InterruptedException e) {
+                ExceptionProcessor.getInstance().processException(e);
             }
         }
     }

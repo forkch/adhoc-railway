@@ -5,12 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sun.awt.GlobalCursorManager;
-
 import ch.fork.RailControl.domain.Constants;
 import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
-import ch.fork.RailControl.domain.switches.Switch;
-import ch.fork.RailControl.domain.switches.exception.SwitchException;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GLInfoListener;
 
@@ -26,6 +22,7 @@ public class LocomotiveControl implements GLInfoListener {
 
     private LocomotiveControl() {
         listeners = new ArrayList<LocomotiveChangeListener>();
+        locomotives = new HashMap<Integer, Locomotive>();
     }
 
     public static LocomotiveControl getInstance() {
@@ -38,7 +35,7 @@ public class LocomotiveControl implements GLInfoListener {
     }
 
     public void registerLocomotives(List<Locomotive> locomotivesToRegister) {
-        locomotives = new HashMap<Integer, Locomotive>();
+        
         for (Locomotive l : locomotivesToRegister) {
             locomotives.put(l.getAddress(), l);
         }

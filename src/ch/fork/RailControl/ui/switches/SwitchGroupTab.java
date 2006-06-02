@@ -33,7 +33,7 @@ public class SwitchGroupTab extends JPanel {
         switchGroup = sg;
         layout = new GridBagLayout();
         setLayout(layout);
-        maxCols = 7;
+        maxCols = 10;
         currentRow = 0;
         currentCol = 0;
         gbc = new GridBagConstraints();

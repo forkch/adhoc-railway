@@ -21,7 +21,6 @@ import javax.swing.table.TableModel;
 import ch.fork.RailControl.domain.configuration.Preferences;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
 import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
-import ch.fork.RailControl.domain.switches.SwitchGroup;
 import ch.fork.RailControl.ui.TableResizer;
 
 public class LocomotiveConfigurationDialog extends JDialog {
