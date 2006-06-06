@@ -31,8 +31,12 @@ public class PreferencesDialog extends JDialog {
     private SpinnerNumberModel defaultRoutingDelayModel;
 
     private JSpinner locomotiveControlNumber;
+    
+    private JSpinner switchControlNumber;
 
     private SpinnerNumberModel locomotiveControlNumberModel;
+
+    private SpinnerNumberModel switchControlNumberModel;
 
     private JComboBox hostnamesComboBox;
 
@@ -47,6 +51,8 @@ public class PreferencesDialog extends JDialog {
     private JComboBox keyBoardLayoutComboBox;
 
     private JCheckBox interface6051;
+    
+    private JCheckBox writeLog;
 
     public PreferencesDialog(JFrame owner) {
         super(owner, "Preferences", true);
@@ -98,16 +104,22 @@ public class PreferencesDialog extends JDialog {
         locomotiveControlNumberModel = new SpinnerNumberModel(5, 1, 10, 1);
         locomotiveControlNumber = new JSpinner(
             locomotiveControlNumberModel);
-
+        
+        JLabel switchControlNumberLabel = new JLabel(
+        "Number of Switch Controls per row:");
+        switchControlNumberModel = new SpinnerNumberModel(7, 1, 10, 1);
+        switchControlNumber = new JSpinner(switchControlNumberModel);
         JLabel keyBoardLayoutLabel = new JLabel("Keyboard-Layout");
         keyBoardLayoutComboBox = new JComboBox();
         keyBoardLayoutComboBox.addItem("Swiss German");
         keyBoardLayoutComboBox.addItem("English");
         guiSettingsTab.add(locomotiveControlNumberLabel);
         guiSettingsTab.add(locomotiveControlNumber);
+        guiSettingsTab.add(switchControlNumberLabel);
+        guiSettingsTab.add(switchControlNumber);
         guiSettingsTab.add(keyBoardLayoutLabel);
         guiSettingsTab.add(keyBoardLayoutComboBox);
-        SpringUtilities.makeCompactGrid(guiSettingsTab, 2, 2, // rows, cols
+        SpringUtilities.makeCompactGrid(guiSettingsTab, 3, 2, // rows, cols
             6, 6, // initX, initY
             6, 6); // xPad, yPad
         return guiSettingsTab;
@@ -131,16 +143,20 @@ public class PreferencesDialog extends JDialog {
             10);
         defaultRoutingDelay = new JSpinner(defaultRoutingDelayModel);
 
-        digitalDataTab.add(defaultRoutingDelayLabel);
-        digitalDataTab.add(defaultRoutingDelay);
-
         interface6051 = new JCheckBox();
         JLabel interface6051Label = new JLabel("Interface 6051 attached");
+        
+        writeLog = new JCheckBox();
+        JLabel writeLogLabel = new JLabel("Write Log");
 
+        digitalDataTab.add(defaultRoutingDelayLabel);
+        digitalDataTab.add(defaultRoutingDelay);
         digitalDataTab.add(interface6051Label);
         digitalDataTab.add(interface6051);
+        digitalDataTab.add(writeLogLabel);
+        digitalDataTab.add(writeLog);
 
-        SpringUtilities.makeCompactGrid(digitalDataTab, 3, 2, // rows, cols
+        SpringUtilities.makeCompactGrid(digitalDataTab, 4, 2, // rows, cols
             6, 6, // initX, initY
             6, 6); // xPad, yPad
         return digitalDataTab;
@@ -184,10 +200,13 @@ public class PreferencesDialog extends JDialog {
             .getIntValue("Portnumber")));
         locomotiveControlNumberModel.setValue(p
             .getIntValue("LocomotiveControlesAmount"));
+        switchControlNumberModel.setValue(p
+            .getIntValue("SwitchControlesAmount"));
         keyBoardLayoutComboBox.setSelectedItem(p
             .getStringValue("KeyBoardLayout"));
 
         interface6051.setSelected(p.getBooleanValue("Interface6051"));
+        writeLog.setSelected(p.getBooleanValue("WriteLog"));
 
     }
 
@@ -203,10 +222,14 @@ public class PreferencesDialog extends JDialog {
         p.setIntValue(
             "LocomotiveControlesAmount", locomotiveControlNumberModel
                 .getNumber().intValue());
+        p.setIntValue(
+            "SwitchControlesAmount", switchControlNumberModel
+                .getNumber().intValue());
         p.setStringValue("KeyBoardLayout", keyBoardLayoutComboBox
             .getSelectedItem().toString());
 
         p.setBooleanValue("Interface6051", interface6051.isSelected());
+        p.setBooleanValue("WriteLog", interface6051.isSelected());
 
     }
 

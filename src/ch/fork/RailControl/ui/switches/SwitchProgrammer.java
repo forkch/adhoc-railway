@@ -1,5 +1,6 @@
 package ch.fork.RailControl.ui.switches;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,9 +8,10 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import ch.fork.RailControl.ui.ExceptionProcessor;
-
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GA;
@@ -25,10 +27,11 @@ public class SwitchProgrammer extends JDialog {
     }
     
     private void initGUI() {
-        setLayout(new GridLayout(4, 4));
+        setLayout(new BorderLayout());
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 4));
         for(int i = 1; i <= 112; i=i+4) {
             JButton button = new JButton("" + i);
-            add(button);
+            buttonPanel.add(button);
             button.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -45,6 +48,9 @@ public class SwitchProgrammer extends JDialog {
                 
             });
         }
+        JLabel titleLabel = new JLabel("Enter first address of decoder");
+        add(titleLabel, BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.CENTER);
         pack();
         setVisible(true);
     }

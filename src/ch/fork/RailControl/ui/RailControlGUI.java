@@ -127,6 +127,8 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
     private JMenu recentFilesMenu;
 
     private File actualFile;
+    private File logFile;
+    private FileWriter logFileWriter;
 
     private JComboBox hostnamesComboBox;
 
@@ -259,14 +261,21 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         JToolBar toolBar = new JToolBar();
 
         JButton openToolBarButton = new JButton(new OpenAction(null));
+        openToolBarButton.setFocusable(false);
         JButton saveToolBarButton = new JButton(new SaveAction());
+        saveToolBarButton.setFocusable(false);
         JButton saveAsToolBarButton = new JButton(new SaveAsAction());
+        saveAsToolBarButton.setFocusable(false);
         JButton exitToolBarButton = new JButton(new ExitAction());
+        exitToolBarButton.setFocusable(false);
         JButton switchesToolBarButton = new JButton(new SwitchesAction());
+        switchesToolBarButton.setFocusable(false);
         JButton locomotivesToolBarButton = new JButton(
             new LocomotivesAction());
+        locomotivesToolBarButton.setFocusable(false);
         JButton preferencesToolBarButton = new JButton(
             new PreferencesAction());
+        preferencesToolBarButton.setFocusable(false);
 
         hostnamesComboBox = new JComboBox();
         for (String host : Preferences.getInstance().getHostnames()) {
@@ -283,8 +292,11 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
             }
 
         });
+        hostnamesComboBox.setFocusable(false);
         connectToolBarButton = new JButton(new ConnectAction());
+        connectToolBarButton.setFocusable(false);
         disconnectToolBarButton = new JButton(new DisconnectAction());
+        disconnectToolBarButton.setFocusable(false);
         disconnectToolBarButton.setEnabled(false);
 
         JButton setAllSwitchesStraightButton = new JButton(
@@ -513,6 +525,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         String date = df.format(GregorianCalendar.getInstance().getTime());
         String fullText = "["
             + date + "]: " + text;
+        
         SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
     }
 
@@ -538,8 +551,12 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
         }
 
         public void run() {
+            if(commandHistoryModel.getSize() > 100) {
+                commandHistoryModel.removeElementAt(99);
+            }
             commandHistoryModel.insertElementAt(text, 0);
             commandHistory.setSelectedIndex(0);
+            
         }
     }
 
@@ -760,6 +777,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
             p.editPreferences(Preferences.getInstance());
             if (p.isOkPressed()) {
                 locomotiveControlPanel.update(locomotives);
+                switchGroupPane.update(switchGroups);
                 updateCommandHistory("Preferences changed");
             }
         }
@@ -785,6 +803,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
                 session.getInfoChannel().addInfoDataListener(
                     RailControlGUI.this);
                 session.connect();
+                
                 SwitchControl.getInstance().setSessionOnSwitches(session);
                 LocomotiveControl.getInstance().setSessionOnLocomotives(
                     session);
@@ -882,6 +901,7 @@ public class RailControlGUI extends JFrame implements CommandDataListener,
 
         public void actionPerformed(ActionEvent e) {
             SwitchControl sc = SwitchControl.getInstance();
+            sc.setSessionOnSwitches(session);
             try {
                 for (Switch s : switchNumberToSwitch.values()) {
                     sc.setStraight(s);

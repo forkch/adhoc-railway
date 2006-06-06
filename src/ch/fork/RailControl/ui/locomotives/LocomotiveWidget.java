@@ -114,6 +114,7 @@ public class LocomotiveWidget extends JPanel implements
         locomotiveComboBox = new JComboBox();
         Locomotive none = new NoneLocomotive();
         locomotiveComboBox.addItem(none);
+        locomotiveComboBox.setFocusable(false);
         myLocomotive = none;
 
         locomotiveComboBox.addActionListener(new ActionListener() {
@@ -126,7 +127,6 @@ public class LocomotiveWidget extends JPanel implements
                 desc.setText(myLocomotive.getDesc());
                 speedBar.requestFocus();
             }
-
         });
         add(locomotiveComboBox, BorderLayout.NORTH);
 
@@ -248,7 +248,7 @@ public class LocomotiveWidget extends JPanel implements
 
                     LocomotiveControl.getInstance().setSpeed(
                         myLocomotive, 0);
-                    //updateWidget();
+                    updateWidget();
                 } catch (LocomotiveException e3) {
                     ExceptionProcessor.getInstance().processException(e3);
                 }
@@ -264,6 +264,7 @@ public class LocomotiveWidget extends JPanel implements
                     ExceptionProcessor.getInstance().processException(e1);
                 }
                 speedBar.requestFocus();
+                updateWidget();
             }
         });
 
@@ -274,7 +275,7 @@ public class LocomotiveWidget extends JPanel implements
                     LocomotiveControl.getInstance().increaseSpeed(
                         myLocomotive);
 
-                    //updateWidget();
+                    updateWidget();
                 } catch (LocomotiveException e3) {
                     ExceptionProcessor.getInstance().processException(e3);
                 }
@@ -288,7 +289,7 @@ public class LocomotiveWidget extends JPanel implements
                     LocomotiveControl.getInstance().decreaseSpeed(
                         myLocomotive);
 
-                    //updateWidget();
+                    updateWidget();
                 } catch (LocomotiveException e3) {
                     ExceptionProcessor.getInstance().processException(e3);
                 }
@@ -300,7 +301,7 @@ public class LocomotiveWidget extends JPanel implements
         return speedControlPanel;
     }
 
-    private void updateWidget() {
+    protected void updateWidget() {
         double speedInPercent = ((double) myLocomotive.getCurrentSpeed())
             / ((double) myLocomotive.getDrivingSteps());
         if (speedInPercent > 0.9) {
@@ -431,7 +432,7 @@ public class LocomotiveWidget extends JPanel implements
                     ExceptionProcessor.getInstance().processException(e3);
                 }
             } else {
-                if (e.getWhen() > time + 100) {
+                if (e.getWhen() > time + 1000) {
                     try {
                         if (type == LocomotiveActionType.ACCELERATE) {
                             LocomotiveControl.getInstance()
@@ -446,7 +447,8 @@ public class LocomotiveWidget extends JPanel implements
                     }
                     time = 0;
                 }
-            }
+            } 
+            updateWidget();
         }
     }
 

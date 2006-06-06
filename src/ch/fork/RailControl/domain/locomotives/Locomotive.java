@@ -145,7 +145,6 @@ public abstract class Locomotive implements Constants {
         int newSpeed = currentSpeed + 1;
         if (newSpeed <= drivingSteps) {
             setSpeed(newSpeed);
-            currentSpeed++;
         }
     }
 
@@ -153,7 +152,6 @@ public abstract class Locomotive implements Constants {
         int newSpeed = currentSpeed - 1;
         if (newSpeed >= 0) {
             setSpeed(newSpeed);
-            currentSpeed--;
         }
     }
 

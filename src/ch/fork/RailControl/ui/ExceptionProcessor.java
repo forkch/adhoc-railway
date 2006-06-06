@@ -33,7 +33,7 @@ public class ExceptionProcessor {
         }
         JOptionPane.showMessageDialog(
             parent, msg, "Error occured", JOptionPane.ERROR_MESSAGE);
-        //e.printStackTrace();
+        e.printStackTrace();
     }
 
     public void processException(String msg, Exception e) {
@@ -46,6 +46,6 @@ public class ExceptionProcessor {
         }
         JOptionPane.showMessageDialog(
             parent, msg, "Error occured", JOptionPane.ERROR_MESSAGE);
-        //e.printStackTrace();
+        e.printStackTrace();
     }
 }

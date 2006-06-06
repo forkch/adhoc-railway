@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import ch.fork.RailControl.domain.configuration.Preferences;
 import ch.fork.RailControl.domain.switches.SwitchControl;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 
@@ -33,7 +34,7 @@ public class SwitchGroupTab extends JPanel {
         switchGroup = sg;
         layout = new GridBagLayout();
         setLayout(layout);
-        maxCols = 10;
+        maxCols = Preferences.getInstance().getIntValue("SwitchControlesAmount");
         currentRow = 0;
         currentCol = 0;
         gbc = new GridBagConstraints();

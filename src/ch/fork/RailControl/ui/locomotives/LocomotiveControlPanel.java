@@ -101,6 +101,7 @@ public class LocomotiveControlPanel extends JPanel {
 
                     LocomotiveControl.getInstance().setSpeed(
                         myLocomotive, 0);
+                    widget.updateWidget();
                     Thread.sleep(1000);
                 }
 

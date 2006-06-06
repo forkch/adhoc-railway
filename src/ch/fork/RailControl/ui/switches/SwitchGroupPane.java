@@ -23,16 +23,20 @@ public class SwitchGroupPane extends JTabbedPane {
     public void update(List<SwitchGroup> switchGroups) {
         this.switchGroups = switchGroups;
         this.removeAll();
+        int i = 1;
         for (SwitchGroup switchGroup : switchGroups) {
             SwitchGroupTab switchGroupTab = new SwitchGroupTab(switchGroup);
             JScrollPane switchGroupPane = new JScrollPane(switchGroupTab);
-            add(switchGroupPane, switchGroup.getName());
+            switchGroupPane.getVerticalScrollBar().setUnitIncrement(10);
+            switchGroupPane.getVerticalScrollBar().setBlockIncrement(10);
+            add(switchGroupPane, "F" + i + ": " + switchGroup.getName());
 
             for (Switch aSwitch : switchGroup.getSwitches()) {
                 SwitchWidget switchWidget = new SwitchWidget(aSwitch,
                     switchGroup, switchNumberToSwitch);
                 switchGroupTab.addSwitchWidget(switchWidget);
             }
+            i++;
         }
         revalidate();
         repaint();

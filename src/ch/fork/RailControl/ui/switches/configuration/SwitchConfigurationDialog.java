@@ -346,9 +346,7 @@ public class SwitchConfigurationDialog extends JDialog {
                 SortedSet<Integer> usedNumbers = new TreeSet<Integer>(
                     switchNumberToSwitch.keySet());
                 int nextNumber = usedNumbers.last().intValue() + 1;
-                Switch newSwitch = new DefaultSwitch(nextNumber,
-                    selectedSwitchGroup.getName()
-                        + nextNumber);
+                Switch newSwitch = new DefaultSwitch(nextNumber, "");
                 selectedSwitchGroup.addSwitch(newSwitch);
                 switchNumberToSwitch.put(newSwitch.getNumber(), newSwitch);
                 updateSwitchesPanel();
