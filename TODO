@@ -1,1 +1,11 @@
 - Buttons duerfen keinen Focus erhalten
+- Clients duerfen nicht unendlich kommandos senden koennen (queue)
+
+- Blockieren von Lok's
+- Lok-Auswahl verbessern
+- Zuletzt geschaltete Weichen bleiben sichtbar und koennen zurueckgeschaltet werden
+- Lokauswahl speichern (pro User)
+- Drehen von Weichen-Kabel via SW
+- Sofort Stopp von Lok's (Bremsverz. ausschalten via F4)
+- Preferenzliste
+- Wenn Lok faehrt kann keine andere im Slot ausgewaehlt werden
