@@ -43,6 +43,7 @@ import javax.swing.table.TableModel;
 import ch.fork.RailControl.domain.configuration.Preferences;
 import ch.fork.RailControl.domain.switches.DefaultSwitch;
 import ch.fork.RailControl.domain.switches.Switch;
+import ch.fork.RailControl.domain.switches.SwitchControl;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 import ch.fork.RailControl.domain.switches.Switch.SwitchOrientation;
 import ch.fork.RailControl.domain.switches.Switch.SwitchState;
@@ -73,22 +74,22 @@ public class SwitchConfigurationDialog extends JDialog {
     private boolean cancelPressed = false;
 
     private boolean okPressed = false;
+    
+    private SwitchControl switchControl;
 
-    public SwitchConfigurationDialog(Frame owner, Preferences preferences,
-        Map<Integer, Switch> switchNumberToSwitch,
-        List<SwitchGroup> switchGroups) {
+    public SwitchConfigurationDialog(Frame owner, Preferences preferences) {
         super(owner, "Switch Configuration", true);
 
         this.owner = owner;
         this.preferences = preferences;
-
+        this.switchControl = SwitchControl.getInstance();
         this.switchNumberToSwitch = new HashMap<Integer, Switch>();
-        for (Switch s : switchNumberToSwitch.values()) {
+        for (Switch s : switchControl.getNumberToSwitch().values()) {
             Switch clone = s.clone();
             this.switchNumberToSwitch.put(clone.getNumber(), clone);
         }
         this.switchGroups = new ArrayList<SwitchGroup>();
-        for (SwitchGroup sg : switchGroups) {
+        for (SwitchGroup sg : switchControl.getSwitchGroups()) {
             SwitchGroup clone = sg.clone();
             this.switchGroups.add(clone);
             for (Switch s : sg.getSwitches()) {

@@ -104,27 +104,6 @@ public abstract class Switch implements Constants, Comparable {
             + ": " + getType() + " @ bus " + bus + " @ address " + address;
     }
 
-    public String toXML() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<Switch ");
-        sb.append(" desc=\""
-            + desc + "\" ");
-        sb.append(" number=\""
-            + number + "\" ");
-        sb.append(" type=\""
-            + getType() + "\" ");
-        sb.append(" bus=\""
-            + bus + "\" ");
-        sb.append(" defaultstate=\""
-            + defaultState + "\" ");
-        sb.append(" orientation=\""
-            + switchOrientation + "\" >\n");
-        sb.append(address.toXML()
-            + "\n");
-        sb.append("</Switch>\n");
-        return sb.toString();
-    }
-
     public int getNumber() {
         return number;
     }
@@ -193,4 +172,25 @@ public abstract class Switch implements Constants, Comparable {
     public SwitchState getSwitchState() {
         return switchState;
     }
+    public String toXML() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("<Switch ");
+        sb.append(" desc=\""
+            + desc + "\" ");
+        sb.append(" number=\""
+            + number + "\" ");
+        sb.append(" type=\""
+            + getType() + "\" ");
+        sb.append(" bus=\""
+            + bus + "\" ");
+        sb.append(" defaultstate=\""
+            + defaultState + "\" ");
+        sb.append(" orientation=\""
+            + switchOrientation + "\" >\n");
+        sb.append(address.toXML()
+            + "\n");
+        sb.append("</Switch>\n");
+        return sb.toString();
+    }
+
 }

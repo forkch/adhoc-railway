@@ -19,36 +19,47 @@ public class SwitchControl implements GAInfoListener {
 
     private List<SwitchChangeListener> listeners;
 
+    private List<SwitchGroup> switchGroups;
+
     private Map<Integer, Switch> addressToSwitch;
+    
+    private Map<Integer, Switch> numberToSwitch;
 
     private SwitchControl() {
         listeners = new ArrayList<SwitchChangeListener>();
         addressToSwitch = new HashMap<Integer, Switch>();
+        numberToSwitch = new HashMap<Integer, Switch>();
+        switchGroups = new ArrayList<SwitchGroup>();
     }
 
     public static SwitchControl getInstance() {
         if (instance == null) {
             instance = new SwitchControl();
-            return instance;
-        } else {
-            return instance;
         }
+        return instance;
+    }
+
+    public void registerSwitch(Switch aSwitch) {
+        Address address = aSwitch.getAddress();
+        addressToSwitch.put(address.getAddress1(), aSwitch);
+        if (address.getAddress2() != 0) {
+            addressToSwitch.put(address.getAddress2(), aSwitch);
+        }
+        numberToSwitch.put(aSwitch.getNumber(), aSwitch);
+
+        aSwitch.setSession(session);
     }
 
     public void registerSwitches(Collection<Switch> switches) {
-        for (Switch aSwitch : switches) {
+        for(Switch aSwitch : switches) {
             Address address = aSwitch.getAddress();
             addressToSwitch.put(address.getAddress1(), aSwitch);
             if (address.getAddress2() != 0) {
                 addressToSwitch.put(address.getAddress2(), aSwitch);
             }
-        }
-    }
-
-    public void unregisterSwitches(List<Switch> switches) {
-        for (Switch aSwitch : switches) {
-            // aSwitch.term();
-            addressToSwitch.remove(aSwitch.getAddress());
+            numberToSwitch.put(aSwitch.getNumber(), aSwitch);
+            
+            aSwitch.setSession(session);
         }
     }
 
@@ -57,14 +68,45 @@ public class SwitchControl implements GAInfoListener {
             // aSwitch.term();
         }
         addressToSwitch.clear();
+        numberToSwitch.clear();
+    }
+    
+    public Map<Integer, Switch> getNumberToSwitch() {
+        return numberToSwitch;
     }
 
-    public void setSessionOnSwitches(SRCPSession session) {
+    public void registerSwitchGroup(SwitchGroup sg) {
+        switchGroups.add(sg);
+    }
+
+    public void registerSwitchGroups(Collection<SwitchGroup> sgs) {
+        switchGroups.addAll(sgs);
+    }
+
+    public void unregisterAllSwitchGroups() {
+        switchGroups.clear();
+    }
+
+    public Collection<SwitchGroup> getSwitchGroups() {
+        return switchGroups;
+    }
+
+    public void setSession(SRCPSession session) {
+        this.session = session;
         for (Switch aSwitch : addressToSwitch.values()) {
             aSwitch.setSession(session);
         }
+        session.getInfoChannel().addGAInfoListener(this);
     }
 
+    public void addSwitchChangeListener(SwitchChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeSwitchChangeListener(SwitchChangeListener listener) {
+        listeners.remove(listener);
+    }
+    
     public void toggle(Switch aSwitch) throws SwitchException {
         checkSwitchSession(aSwitch);
         initSwitch(aSwitch);
@@ -93,9 +135,6 @@ public class SwitchControl implements GAInfoListener {
         aSwitch.setCurvedLeft();
     }
 
-    public void addSwitchChangeListener(SwitchChangeListener listener) {
-        listeners.add(listener);
-    }
 
     public void GAset(double timestamp, int bus, int address, int port,
         int value) {
@@ -140,16 +179,6 @@ public class SwitchControl implements GAInfoListener {
         }
     }
 
-    public SRCPSession getSession() {
-        return session;
-    }
-
-    public void setSession(SRCPSession session) {
-        this.session = session;
-        setSessionOnSwitches(session);
-        session.getInfoChannel().addGAInfoListener(this);
-    }
-
     private void checkSwitchSession(Switch aSwitch) throws SwitchException {
         if (aSwitch.getSession() == null) {
             throw new SwitchException(Constants.ERR_NO_SESSION);
@@ -161,5 +190,4 @@ public class SwitchControl implements GAInfoListener {
             aSwitch.init();
         }
     }
-
 }

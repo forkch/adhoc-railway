@@ -1,9 +1,11 @@
 package ch.fork.RailControl.ui.locomotives;
 
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -13,6 +15,7 @@ import javax.swing.KeyStroke;
 
 import ch.fork.RailControl.domain.configuration.Preferences;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
+import ch.fork.RailControl.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
 import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
 import ch.fork.RailControl.ui.ExceptionProcessor;
@@ -65,7 +68,11 @@ public class LocomotiveControlPanel extends JPanel {
 
     }
 
-    public void update(List<Locomotive> locomotives) {
+    public void update(Collection<Locomotive> locomotives) {
+        LocomotiveControl lc = LocomotiveControl.getInstance();
+        for(Component c : getComponents()) {
+            lc.removeLocomotiveChangeListener((LocomotiveChangeListener)c);
+        }
         removeAll();
         locomotiveWidgets.clear();
         if (Preferences.getInstance().getStringValue("KeyBoardLayout")

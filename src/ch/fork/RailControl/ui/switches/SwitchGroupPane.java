@@ -1,27 +1,32 @@
 package ch.fork.RailControl.ui.switches;
 
-import java.util.List;
-import java.util.Map;
+import java.awt.Component;
+import java.awt.Container;
+import java.util.Collection;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import ch.fork.RailControl.domain.switches.Switch;
+import ch.fork.RailControl.domain.switches.SwitchChangeListener;
+import ch.fork.RailControl.domain.switches.SwitchControl;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 
 public class SwitchGroupPane extends JTabbedPane {
+    private Collection<SwitchGroup> switchGroups;
 
-    private Map<Integer, Switch> switchNumberToSwitch;
-
-    private List<SwitchGroup> switchGroups;
-
-    public SwitchGroupPane(Map<Integer, Switch> switchNumberToSwitch) {
+    public SwitchGroupPane() {
         super(JTabbedPane.BOTTOM);
-        this.switchNumberToSwitch = switchNumberToSwitch;
     }
 
-    public void update(List<SwitchGroup> switchGroups) {
+    public void update(Collection<SwitchGroup> switchGroups) {
         this.switchGroups = switchGroups;
+        SwitchControl sc = SwitchControl.getInstance();
+        for(Component switchGroupTabs : getComponents()) {
+            for (Component switchWidgets : 
+                ((Container)switchGroupTabs).getComponents())
+            sc.removeSwitchChangeListener((SwitchChangeListener)switchWidgets);
+        }
         this.removeAll();
         int i = 1;
         for (SwitchGroup switchGroup : switchGroups) {
@@ -33,7 +38,7 @@ public class SwitchGroupPane extends JTabbedPane {
 
             for (Switch aSwitch : switchGroup.getSwitches()) {
                 SwitchWidget switchWidget = new SwitchWidget(aSwitch,
-                    switchGroup, switchNumberToSwitch);
+                    switchGroup);
                 switchGroupTab.addSwitchWidget(switchWidget);
             }
             i++;

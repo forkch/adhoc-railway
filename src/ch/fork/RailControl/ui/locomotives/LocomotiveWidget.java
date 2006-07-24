@@ -8,7 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+import java.util.Collection;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -341,7 +341,7 @@ public class LocomotiveWidget extends JPanel implements
 
     }
 
-    public void registerLocomotives(List<Locomotive> locomotives) {
+    public void registerLocomotives(Collection<Locomotive> locomotives) {
         for (Locomotive l : locomotives) {
             locomotiveComboBox.addItem(l);
         }

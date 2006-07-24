@@ -1,8 +1,6 @@
 package ch.fork.RailControl.domain.configuration;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -16,11 +14,14 @@ import org.xml.sax.helpers.DefaultHandler;
 import ch.fork.RailControl.domain.locomotives.DeltaLocomotive;
 import ch.fork.RailControl.domain.locomotives.DigitalLocomotive;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
+import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
 import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
+import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
 import ch.fork.RailControl.domain.switches.Address;
 import ch.fork.RailControl.domain.switches.DefaultSwitch;
 import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
 import ch.fork.RailControl.domain.switches.Switch;
+import ch.fork.RailControl.domain.switches.SwitchControl;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 import ch.fork.RailControl.domain.switches.ThreeWaySwitch;
 import ch.fork.RailControl.domain.switches.Switch.SwitchOrientation;
@@ -29,13 +30,7 @@ import ch.fork.RailControl.ui.ExceptionProcessor;
 
 public class XMLImporter extends DefaultHandler implements ContentHandler {
 
-    private Map<Integer, Switch> switchNumberToSwitch;
-
-    private List<SwitchGroup> switchGroups;
-
     private Preferences preferences;
-
-    private List<Locomotive> locomotives;
 
     private Switch actualSwitch;
 
@@ -43,20 +38,22 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 
     private Address actualAddress;
 
+    private SwitchControl switchControl;
+
     private Locomotive actualLocomotive;
 
-    public XMLImporter(Preferences preferences,
-        Map<Integer, Switch> switchNumberToSwitch,
-        List<SwitchGroup> switchGroups, List<Locomotive> locomotives,
-        String filename) {
+    private LocomotiveControl locomotiveControl;
+
+    public XMLImporter(Preferences preferences, String filename)
+        throws LocomotiveException {
 
         this.preferences = preferences;
-        this.switchGroups = switchGroups;
-        this.switchNumberToSwitch = switchNumberToSwitch;
-        this.locomotives = locomotives;
-        switchGroups.clear();
-        switchNumberToSwitch.clear();
-        locomotives.clear();
+
+        this.switchControl = SwitchControl.getInstance();
+        switchControl.unregisterAllSwitchGroups();
+        switchControl.unregisterAllSwitches();
+        locomotiveControl = LocomotiveControl.getInstance();
+        locomotiveControl.unregisterAllLocomotives();
         parseDocument(filename);
     }
 
@@ -166,17 +163,14 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
         throws SAXException {
         qName = qName.toLowerCase();
         if (qName.equals("switchgroup")) {
-            switchGroups.add(actualSwitchGroup);
+            switchControl.registerSwitchGroup(actualSwitchGroup);
         } else if (qName.equals("switch")) {
-            if (switchNumberToSwitch.get(actualSwitch.getNumber()) == null) {
-                actualSwitch.setAddress(actualAddress);
-                actualSwitchGroup.addSwitch(actualSwitch);
-                switchNumberToSwitch.put(
-                    actualSwitch.getNumber(), actualSwitch);
-            }
+            actualSwitch.setAddress(actualAddress);
+            actualSwitchGroup.addSwitch(actualSwitch);
+            switchControl.registerSwitch(actualSwitch);
             actualSwitch = null;
         } else if (qName.equals("locomotive")) {
-            locomotives.add(actualLocomotive);
+            locomotiveControl.registerLocomotive(actualLocomotive);
             actualLocomotive = null;
         }
     }

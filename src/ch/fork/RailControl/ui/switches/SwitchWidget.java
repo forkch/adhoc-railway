@@ -1,14 +1,11 @@
 package ch.fork.RailControl.ui.switches;
 
-import static ch.fork.RailControl.ui.ImageTools.createImageIcon;
-
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -43,13 +40,11 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener {
 
     private SwitchGroup switchGroup;
 
-    private Map<Integer, Switch> switchNumberToSwitch;
+    private SwitchCanvas switchCanvas;
 
-    public SwitchWidget(Switch aSwitch, SwitchGroup switchGroup,
-        Map<Integer, Switch> switchNumberToSwitch) {
+    public SwitchWidget(Switch aSwitch, SwitchGroup switchGroup) {
         mySwitch = aSwitch;
         this.switchGroup = switchGroup;
-        this.switchNumberToSwitch = switchNumberToSwitch;
         initGUI();
     }
 
@@ -75,13 +70,25 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
-        String icon = getSwitchIcon();
+        /*
+         * String icon = getSwitchIcon();
+         * 
+         * switchStateLabel = new JLabel();
+         * switchStateLabel.setIcon(createImageIcon(icon, "", this));
+         */
 
-        switchStateLabel = new JLabel();
-        switchStateLabel.setIcon(createImageIcon(icon, "", this));
-        layout.setConstraints(switchStateLabel, gbc);
-        add(switchStateLabel);
-        switchStateLabel.addMouseListener(new MouseAction());
+        switchCanvas = null;
+        if (mySwitch instanceof DoubleCrossSwitch) {
+            switchCanvas = new DoubleCrossSwitchCanvas(mySwitch);
+        } else if (mySwitch instanceof DefaultSwitch) {
+            switchCanvas = new DefaultSwitchCanvas(mySwitch);
+        } else if (mySwitch instanceof ThreeWaySwitch) {
+            switchCanvas = new ThreeWaySwitchCanvas(mySwitch);
+        }
+
+        layout.setConstraints(switchCanvas, gbc);
+        add(switchCanvas);
+        switchCanvas.addMouseListener(new MouseAction());
         addMouseListener(new MouseAction());
     }
 
@@ -145,8 +152,8 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener {
         public void run() {
             numberLabel.setText(Integer.toString(mySwitch.getNumber()));
             descLabel.setText(mySwitch.getDesc());
-            String icon = getSwitchIcon();
-            switchStateLabel.setIcon(createImageIcon(icon, "", this));
+            SwitchWidget.this.revalidate();
+            SwitchWidget.this.repaint();
         }
 
     }
@@ -167,11 +174,9 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener {
                     if (switchConf.isOkPressed()) {
 
                         switchGroup.removeSwitch(mySwitch);
-                        switchNumberToSwitch.remove(mySwitch.getNumber());
 
                         Switch newSwitch = switchConf.getSwitch();
-                        switchNumberToSwitch.put(
-                            newSwitch.getNumber(), newSwitch);
+
                         switchGroup.addSwitch(newSwitch);
 
                         newSwitch.setSession(mySwitch.getSession());

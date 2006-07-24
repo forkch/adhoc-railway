@@ -1,15 +1,16 @@
 package ch.fork.RailControl.ui.switches;
 
-import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JPanel;
+
 import ch.fork.RailControl.domain.switches.Switch;
 
-public class SwitchCanvas extends Canvas {
+public class SwitchCanvas extends JPanel {
 
     protected Switch mySwitch;
 

@@ -30,7 +30,7 @@ public class Preferences {
         hostnames = new ArrayList<String>();
         hostnames.add("192.168.2.1");
         hostnames.add("localhost");
-        //setStringValue("Hostname", "localhost");
+        setStringValue("Hostname", "localhost");
         setIntValue("Portnumber", 12345);
         setIntValue("DefaultActivationTime", 50);
         setIntValue("DefaultRoutingDelay", 250);

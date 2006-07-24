@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -20,6 +19,7 @@ import javax.swing.table.TableModel;
 
 import ch.fork.RailControl.domain.configuration.Preferences;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
+import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
 import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
 import ch.fork.RailControl.ui.TableResizer;
 
@@ -33,19 +33,18 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
     private boolean cancelPressed = false;
 
-    private List<Locomotive> locomotives;
-
+    private LocomotiveControl locomotiveControl;
     private TableModel locomotiveTableModel;
 
     private JTable locomotiveTable;
 
     public LocomotiveConfigurationDialog(Frame owner,
-        Preferences preferences, List<Locomotive> locomotives) {
+        Preferences preferences) {
         super(owner, "Switch Configuration", true);
 
         this.owner = owner;
         this.preferences = preferences;
-        this.locomotives = locomotives;
+        locomotiveControl = LocomotiveControl.getInstance();
         initGUI();
     }
 
@@ -77,13 +76,12 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
         pack();
         setVisible(true);
-        System.out.println(locomotives.get(1).getAddress());
     }
 
     private JPanel createLocomotivesPanel() {
         JPanel locomotivesPanel = new JPanel(new BorderLayout());
 
-        locomotiveTableModel = new LocomotiveTableModel(locomotives);
+        locomotiveTableModel = new LocomotiveTableModel(locomotiveControl.getLocomotives());
         locomotiveTable = new JTable(locomotiveTableModel);
 
         // locomotiveType
@@ -108,7 +106,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
         addLocomotiveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Locomotive newLocomotive = new NoneLocomotive();
-                locomotives.add(newLocomotive);
+                locomotiveControl.registerLocomotive(newLocomotive);
                 TableResizer.adjustColumnWidths(locomotiveTable, 5);
                 if (locomotiveTable.getRowCount() > 0) {
                     TableResizer.adjustRowHeight(locomotiveTable);
@@ -128,7 +126,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
                 Integer number = (Integer) locomotiveTable.getValueAt(
                     locomotiveTable.getSelectedRow(), 0);
-                locomotives.remove(number);
+                locomotiveControl.unregisterLocomotive(number);
                 locomotiveTable.revalidate();
                 locomotiveTable.repaint();
 

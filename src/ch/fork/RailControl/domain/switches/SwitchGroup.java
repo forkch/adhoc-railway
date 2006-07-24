@@ -58,5 +58,4 @@ public class SwitchGroup {
         sb.append("</SwitchGroup>\n");
         return sb.toString();
     }
-
 }

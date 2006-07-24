@@ -1,6 +1,7 @@
 package ch.fork.RailControl.domain.locomotives;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,17 +29,18 @@ public class LocomotiveControl implements GLInfoListener {
     public static LocomotiveControl getInstance() {
         if (instance == null) {
             instance = new LocomotiveControl();
-            return instance;
-        } else {
-            return instance;
         }
+        return instance;
     }
 
-    public void registerLocomotives(List<Locomotive> locomotivesToRegister) {
-        
-        for (Locomotive l : locomotivesToRegister) {
-            locomotives.put(l.getAddress(), l);
-        }
+    public void registerLocomotive(Locomotive locomotiveToRegister) {
+        locomotives.put(
+            locomotiveToRegister.getAddress(), locomotiveToRegister);
+        locomotiveToRegister.setSession(session);
+    }
+
+    public void unregisterLocomotive(Integer locomotiveToUnregister) {
+        locomotives.remove(locomotiveToUnregister);
     }
 
     public void unregisterAllLocomotives() throws LocomotiveException {
@@ -48,14 +50,24 @@ public class LocomotiveControl implements GLInfoListener {
         locomotives.clear();
     }
 
-    public void setSessionOnLocomotives(SRCPSession session) {
+    public Collection<Locomotive> getLocomotives() {
+        return locomotives.values();
+    }
+
+    public void setSession(SRCPSession session) {
+        this.session = session;
         for (Locomotive l : locomotives.values()) {
             l.setSession(session);
         }
+        session.getInfoChannel().addGLInfoListener(this);
     }
 
     public void addLocomotiveChangeListener(LocomotiveChangeListener l) {
         listeners.add(l);
+    }
+    
+    public void removeLocomotiveChangeListener(LocomotiveChangeListener l) {
+        listeners.remove(l);
     }
 
     public void toggleDirection(Locomotive locomotive)
@@ -110,10 +122,10 @@ public class LocomotiveControl implements GLInfoListener {
     public void GLset(double timestamp, int bus, int address,
         String drivemode, int v, int vMax, boolean[] functions) {
 
-        //FIXME: removed to get a smoother LocomotiveWidget
-        //Locomotive locomotive = locomotives.get(address);
-        //locomotive.locomotiveChanged(drivemode, v, vMax, functions);
-        //informListeners(locomotive);
+        // FIXME: removed to get a smoother LocomotiveWidget
+        // Locomotive locomotive = locomotives.get(address);
+        // locomotive.locomotiveChanged(drivemode, v, vMax, functions);
+        // informListeners(locomotive);
     }
 
     public void GLinit(double timestamp, int bus, int address,
@@ -140,15 +152,6 @@ public class LocomotiveControl implements GLInfoListener {
         for (LocomotiveChangeListener l : listeners) {
             l.locomotiveChanged(changedLocomotive);
         }
-    }
-
-    public SRCPSession getSession() {
-        return session;
-    }
-
-    public void setSession(SRCPSession session) {
-        this.session = session;
-        session.getInfoChannel().addGLInfoListener(this);
     }
 
     private void checkLocomotiveSession(Locomotive locomotive)

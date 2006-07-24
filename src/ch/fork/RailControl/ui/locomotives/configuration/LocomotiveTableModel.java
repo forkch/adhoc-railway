@@ -1,5 +1,7 @@
 package ch.fork.RailControl.ui.locomotives.configuration;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -22,9 +24,9 @@ public class LocomotiveTableModel extends AbstractTableModel {
         super();
     }
 
-    public LocomotiveTableModel(List<Locomotive> locomotives) {
+    public LocomotiveTableModel(Collection<Locomotive> locomotives) {
         super();
-        this.locomotives = locomotives;
+        this.locomotives = new ArrayList<Locomotive>(locomotives);
     }
 
     public int getRowCount() {

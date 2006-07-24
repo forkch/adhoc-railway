@@ -12,7 +12,6 @@ public class ThreeWaySwitchCanvas extends SwitchCanvas {
 
     public ThreeWaySwitchCanvas(Switch mySwitch) {
         super(mySwitch);
-        // TODO Auto-generated constructor stub
     }
 
     public void paint(Graphics g) {

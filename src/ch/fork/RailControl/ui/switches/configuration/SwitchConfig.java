@@ -22,7 +22,6 @@ import ch.fork.RailControl.domain.switches.ThreeWaySwitch;
 import ch.fork.RailControl.domain.switches.Switch.SwitchOrientation;
 import ch.fork.RailControl.domain.switches.Switch.SwitchState;
 import ch.fork.RailControl.ui.SpringUtilities;
-import ch.fork.RailControl.ui.switches.Test;
 
 public class SwitchConfig extends JDialog {
 
@@ -98,13 +97,10 @@ public class SwitchConfig extends JDialog {
                 SwitchConfig.this.setVisible(false);
             }
         });
-        Test test = new Test();
-        JLabel gugus = new JLabel(test.getImage(mySwitch));
         JPanel buttonPanel = new JPanel(
             new FlowLayout(FlowLayout.TRAILING));
         buttonPanel.add(okButton);
         buttonPanel.add(cancelButton);
-        buttonPanel.add(gugus);
 
         add(configPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
