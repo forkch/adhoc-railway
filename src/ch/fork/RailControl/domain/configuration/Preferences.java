@@ -28,8 +28,8 @@ public class Preferences {
     private Preferences() {
         preferences = new HashMap<String, String>();
         hostnames = new ArrayList<String>();
-        hostnames.add("192.168.2.1");
         hostnames.add("localhost");
+        hostnames.add("192.168.2.1");
         setStringValue("Hostname", "localhost");
         setIntValue("Portnumber", 12345);
         setIntValue("DefaultActivationTime", 50);

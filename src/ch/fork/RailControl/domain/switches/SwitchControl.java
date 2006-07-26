@@ -22,7 +22,7 @@ public class SwitchControl implements GAInfoListener {
     private List<SwitchGroup> switchGroups;
 
     private Map<Integer, Switch> addressToSwitch;
-    
+
     private Map<Integer, Switch> numberToSwitch;
 
     private SwitchControl() {
@@ -51,14 +51,14 @@ public class SwitchControl implements GAInfoListener {
     }
 
     public void registerSwitches(Collection<Switch> switches) {
-        for(Switch aSwitch : switches) {
+        for (Switch aSwitch : switches) {
             Address address = aSwitch.getAddress();
             addressToSwitch.put(address.getAddress1(), aSwitch);
             if (address.getAddress2() != 0) {
                 addressToSwitch.put(address.getAddress2(), aSwitch);
             }
             numberToSwitch.put(aSwitch.getNumber(), aSwitch);
-            
+
             aSwitch.setSession(session);
         }
     }
@@ -70,7 +70,7 @@ public class SwitchControl implements GAInfoListener {
         addressToSwitch.clear();
         numberToSwitch.clear();
     }
-    
+
     public Map<Integer, Switch> getNumberToSwitch() {
         return numberToSwitch;
     }
@@ -87,7 +87,7 @@ public class SwitchControl implements GAInfoListener {
         switchGroups.clear();
     }
 
-    public Collection<SwitchGroup> getSwitchGroups() {
+    public List<SwitchGroup> getSwitchGroups() {
         return switchGroups;
     }
 
@@ -106,7 +106,7 @@ public class SwitchControl implements GAInfoListener {
     public void removeSwitchChangeListener(SwitchChangeListener listener) {
         listeners.remove(listener);
     }
-    
+
     public void toggle(Switch aSwitch) throws SwitchException {
         checkSwitchSession(aSwitch);
         initSwitch(aSwitch);
@@ -134,7 +134,6 @@ public class SwitchControl implements GAInfoListener {
         initSwitch(aSwitch);
         aSwitch.setCurvedLeft();
     }
-
 
     public void GAset(double timestamp, int bus, int address, int port,
         int value) {

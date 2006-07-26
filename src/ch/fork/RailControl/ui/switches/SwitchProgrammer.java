@@ -19,18 +19,19 @@ import de.dermoba.srcp.devices.GA;
 public class SwitchProgrammer extends JDialog {
 
     private SRCPSession session;
-    
+
     public SwitchProgrammer(JFrame owner, SRCPSession session) {
         super(owner, "Switch Programmer", true);
         this.session = session;
         initGUI();
     }
-    
+
     private void initGUI() {
         setLayout(new BorderLayout());
         JPanel buttonPanel = new JPanel(new GridLayout(4, 4));
-        for(int i = 1; i <= 112; i=i+4) {
-            JButton button = new JButton("" + i);
+        for (int i = 1; i <= 112; i = i + 4) {
+            JButton button = new JButton(""
+                + i);
             buttonPanel.add(button);
             button.addActionListener(new ActionListener() {
 
@@ -42,10 +43,11 @@ public class SwitchProgrammer extends JDialog {
                     try {
                         ga.set(0, 1, 1000);
                     } catch (SRCPException e1) {
-                        ExceptionProcessor.getInstance().processException(e1);
+                        ExceptionProcessor.getInstance().processException(
+                            e1);
                     }
                 }
-                
+
             });
         }
         JLabel titleLabel = new JLabel("Enter first address of decoder");

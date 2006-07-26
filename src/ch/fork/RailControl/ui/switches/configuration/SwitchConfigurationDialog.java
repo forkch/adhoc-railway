@@ -31,8 +31,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -47,6 +49,7 @@ import ch.fork.RailControl.domain.switches.SwitchControl;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 import ch.fork.RailControl.domain.switches.Switch.SwitchOrientation;
 import ch.fork.RailControl.domain.switches.Switch.SwitchState;
+import ch.fork.RailControl.ui.ListListModel;
 import ch.fork.RailControl.ui.TableResizer;
 
 public class SwitchConfigurationDialog extends JDialog {
@@ -57,7 +60,7 @@ public class SwitchConfigurationDialog extends JDialog {
 
     private Preferences preferences;
 
-    private DefaultListModel switchGroupListModel;
+    private ListListModel<SwitchGroup> switchGroupListModel;
 
     private JPopupMenu switchGroupPopupMenu;
 
@@ -74,7 +77,7 @@ public class SwitchConfigurationDialog extends JDialog {
     private boolean cancelPressed = false;
 
     private boolean okPressed = false;
-    
+
     private SwitchControl switchControl;
 
     public SwitchConfigurationDialog(Frame owner, Preferences preferences) {
@@ -98,7 +101,6 @@ public class SwitchConfigurationDialog extends JDialog {
             }
         }
         initGUI();
-
     }
 
     private void initGUI() {
@@ -141,20 +143,23 @@ public class SwitchConfigurationDialog extends JDialog {
         switchGroupPanel.setBorder(title);
         switchGroupPanel.getInsets(new Insets(5, 5, 5, 5));
 
-        switchGroupListModel = new DefaultListModel();
+        switchGroupListModel = new ListListModel<SwitchGroup>(switchGroups);
         switchGroupList = new JList(switchGroupListModel);
-        for (SwitchGroup switchGroup : switchGroups) {
-            switchGroupListModel.addElement(switchGroup);
-        }
+        switchGroupList
+            .setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         switchGroupPopupMenu = new JPopupMenu();
         JMenuItem addItem = new JMenuItem("Add");
-
         JMenuItem removeItem = new JMenuItem("Remove");
         JMenuItem renameItem = new JMenuItem("Rename");
+        JMenuItem moveUpItem = new JMenuItem("Move up");
+        JMenuItem moveDownItem = new JMenuItem("Move down");
         switchGroupPopupMenu.add(addItem);
         switchGroupPopupMenu.add(removeItem);
         switchGroupPopupMenu.add(renameItem);
+        switchGroupPopupMenu.add(new JSeparator());
+        switchGroupPopupMenu.add(moveUpItem);
+        switchGroupPopupMenu.add(moveDownItem);
 
         JButton addSwitchGroupButton = new JButton("Add");
         JButton removeSwitchGroupButton = new JButton("Remove");
@@ -192,77 +197,16 @@ public class SwitchConfigurationDialog extends JDialog {
             }
         });
 
-        addItem.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                addSwitchGroup();
-            }
-        });
-
-        addSwitchGroupButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                addSwitchGroup();
-            }
-
-        });
-
-        removeItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                removeSwitchGroup();
-            }
-        });
-
-        removeSwitchGroupButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                removeSwitchGroup();
-            }
-        });
-
-        renameItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                renameSwitchGroup();
-            }
-        });
+        addItem.addActionListener(new AddSwitchGroupAction());
+        addSwitchGroupButton.addActionListener(new AddSwitchGroupAction());
+        removeItem.addActionListener(new RemoveSwitchGroupAction());
+        removeSwitchGroupButton
+            .addActionListener(new RemoveSwitchGroupAction());
+        renameItem.addActionListener(new RenameSwitchGroupAction());
+        moveUpItem.addActionListener(new MoveSwitchGroupAction(true));
+        moveDownItem.addActionListener(new MoveSwitchGroupAction(false));
 
         return switchGroupPanel;
-    }
-
-    private void addSwitchGroup() {
-        String newGroupName = JOptionPane.showInputDialog(
-            SwitchConfigurationDialog.this,
-            "Enter the name of the new Switch-Group", "Add Switch-Group",
-            JOptionPane.QUESTION_MESSAGE);
-        SwitchGroup newSection = new SwitchGroup(newGroupName);
-        switchGroups.add(newSection);
-        switchGroupListModel.addElement(newSection);
-    }
-
-    private void removeSwitchGroup() {
-        SwitchGroup groupToDelete = (SwitchGroup) (switchGroupList
-            .getSelectedValue());
-        int response = JOptionPane.showConfirmDialog(
-            SwitchConfigurationDialog.this, "Really remove Switch-Group '"
-                + groupToDelete.getName() + "' ?", "Remove Switch-Group",
-            JOptionPane.YES_NO_OPTION);
-
-        if (response == JOptionPane.YES_OPTION) {
-            switchGroups.remove(groupToDelete);
-            switchGroupListModel.removeElement(groupToDelete);
-        }
-    }
-
-    private void renameSwitchGroup() {
-        SwitchGroup groupToRename = (SwitchGroup) (switchGroupList
-            .getSelectedValue());
-        String newSectionName = JOptionPane.showInputDialog(
-            SwitchConfigurationDialog.this, "Enter new name",
-            "Rename Switch-Group", JOptionPane.QUESTION_MESSAGE);
-        if (!newSectionName.equals("")) {
-            groupToRename.setName(newSectionName);
-            switchGroupList.revalidate();
-            switchGroupList.repaint();
-        }
     }
 
     private JPanel createSwitchesPanel() {
@@ -338,41 +282,16 @@ public class SwitchConfigurationDialog extends JDialog {
         switchesPanel.add(switchGroupTablePane, BorderLayout.CENTER);
 
         JButton addSwitchButton = new JButton("Add");
+        JButton add10SwitchesButton = new JButton("Add 10 Switches");
         JButton removeSwitchButton = new JButton("Remove");
 
-        addSwitchButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
-                    .getSelectedValue());
-                SortedSet<Integer> usedNumbers = new TreeSet<Integer>(
-                    switchNumberToSwitch.keySet());
-                int nextNumber = usedNumbers.last().intValue() + 1;
-                Switch newSwitch = new DefaultSwitch(nextNumber, "");
-                selectedSwitchGroup.addSwitch(newSwitch);
-                switchNumberToSwitch.put(newSwitch.getNumber(), newSwitch);
-                updateSwitchesPanel();
-            }
-        });
-
-        removeSwitchButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
-                if (switchesTable.isEditing())
-                    switchesTable.getCellEditor().stopCellEditing();
-
-                SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
-                    .getSelectedValue());
-                Integer number = (Integer) switchesTable.getValueAt(
-                    switchesTable.getSelectedRow(), 0);
-                selectedSwitchGroup.removeSwitch(switchNumberToSwitch
-                    .get(number));
-                switchNumberToSwitch.remove(number);
-                updateSwitchesPanel();
-            }
-        });
+        addSwitchButton.addActionListener(new AddSwitchAction());
+        add10SwitchesButton.addActionListener(new Add10SwitchesAction());
+        removeSwitchButton.addActionListener(new RemoveSwitchAction());
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(addSwitchButton);
+        buttonPanel.add(add10SwitchesButton);
         buttonPanel.add(removeSwitchButton);
 
         switchesPanel.add(buttonPanel, BorderLayout.SOUTH);
@@ -397,10 +316,6 @@ public class SwitchConfigurationDialog extends JDialog {
         if (switchesTable.getRowCount() > 0) {
             TableResizer.adjustRowHeight(switchesTable);
         }
-        switchesTable.revalidate();
-        switchesTable.repaint();
-        switchesPanel.revalidate();
-        switchesPanel.repaint();
         pack();
     }
 
@@ -420,4 +335,143 @@ public class SwitchConfigurationDialog extends JDialog {
         return switchNumberToSwitch;
     }
 
+    class AddSwitchGroupAction extends AbstractAction {
+
+        public void actionPerformed(ActionEvent arg0) {
+            String newGroupName = JOptionPane.showInputDialog(
+                SwitchConfigurationDialog.this,
+                "Enter the name of the new Switch-Group",
+                "Add Switch-Group", JOptionPane.QUESTION_MESSAGE);
+            SwitchGroup newSection = new SwitchGroup(newGroupName);
+            switchGroups.add(newSection);
+            switchGroupListModel.updated();
+        }
+
+    }
+
+    class RemoveSwitchGroupAction extends AbstractAction {
+
+        public void actionPerformed(ActionEvent arg0) {
+            SwitchGroup groupToDelete = (SwitchGroup) (switchGroupList
+                .getSelectedValue());
+            int response = JOptionPane.showConfirmDialog(
+                SwitchConfigurationDialog.this,
+                "Really remove Switch-Group '"
+                    + groupToDelete.getName() + "' ?",
+                "Remove Switch-Group", JOptionPane.YES_NO_OPTION);
+
+            if (response == JOptionPane.YES_OPTION) {
+                switchGroups.remove(groupToDelete);
+                switchGroupListModel.updated();
+            }
+        }
+    }
+
+    class RenameSwitchGroupAction extends AbstractAction {
+
+        public void actionPerformed(ActionEvent e) {
+            SwitchGroup groupToRename = (SwitchGroup) (switchGroupList
+                .getSelectedValue());
+            String newSectionName = JOptionPane.showInputDialog(
+                SwitchConfigurationDialog.this, "Enter new name",
+                "Rename Switch-Group", JOptionPane.QUESTION_MESSAGE);
+            if (!newSectionName.equals("")) {
+                groupToRename.setName(newSectionName);
+                switchGroupListModel.updated();
+            }
+        }
+    }
+
+    class MoveSwitchGroupAction extends AbstractAction {
+
+        private boolean up;
+
+        public MoveSwitchGroupAction(boolean up) {
+            this.up = up;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            SwitchGroup groupToMove = (SwitchGroup) (switchGroupList
+                .getSelectedValue());
+            
+            int oldIndex = switchGroups.indexOf(groupToMove);
+            int newIndex = oldIndex;
+            if (up) {
+                if (oldIndex != 0) {
+
+                    newIndex = oldIndex - 1;
+
+                } else {
+                    return;
+                }
+            } else {
+                if (oldIndex != switchGroups.size() - 1) {
+
+                    newIndex = oldIndex + 1;
+                } else {
+                    return;
+                }
+            }
+            switchGroups.remove(oldIndex);
+            switchGroups.add(newIndex, groupToMove);
+            switchGroupList.setSelectedIndex(newIndex);
+            switchGroupListModel.updated();
+            updateSwitchesPanel();
+        }
+    }
+
+    class AddSwitchAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
+                .getSelectedValue());
+            SortedSet<Integer> usedNumbers = new TreeSet<Integer>(
+                switchNumberToSwitch.keySet());
+            int nextNumber = usedNumbers.last().intValue() + 1;
+            Switch newSwitch = new DefaultSwitch(nextNumber, "");
+            SwitchConfig switchConfig = new SwitchConfig(
+                SwitchConfigurationDialog.this, newSwitch);
+            if (switchConfig.isOkPressed()) {
+                switchNumberToSwitch.put(switchConfig.getSwitch()
+                    .getNumber(), switchConfig.getSwitch());
+                selectedSwitchGroup.addSwitch(switchConfig.getSwitch());
+            }
+            newSwitch = null;
+            updateSwitchesPanel();
+        }
+    }
+
+    class Add10SwitchesAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
+                .getSelectedValue());
+            if (selectedSwitchGroup == null) {
+                return;
+            }
+            for (int i = 0; i < 10; i++) {
+                SortedSet<Integer> usedNumbers = new TreeSet<Integer>(
+                    switchNumberToSwitch.keySet());
+                int nextNumber = usedNumbers.last().intValue() + 1;
+                Switch newSwitch = new DefaultSwitch(nextNumber, "");
+                switchNumberToSwitch.put(newSwitch.getNumber(), newSwitch);
+                selectedSwitchGroup.addSwitch(newSwitch);
+            }
+            updateSwitchesPanel();
+        }
+    }
+
+    class RemoveSwitchAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            if (switchesTable.isEditing())
+                switchesTable.getCellEditor().stopCellEditing();
+
+            SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
+                .getSelectedValue());
+            Integer number = (Integer) switchesTable.getValueAt(
+                switchesTable.getSelectedRow(), 0);
+            selectedSwitchGroup.removeSwitch(switchNumberToSwitch
+                .get(number));
+            switchNumberToSwitch.remove(number);
+            updateSwitchesPanel();
+        }
+    }
 }

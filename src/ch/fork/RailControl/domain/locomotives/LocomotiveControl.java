@@ -2,9 +2,11 @@ package ch.fork.RailControl.domain.locomotives;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import ch.fork.RailControl.domain.Constants;
 import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
@@ -17,13 +19,16 @@ public class LocomotiveControl implements GLInfoListener {
 
     private List<LocomotiveChangeListener> listeners;
 
-    private Map<Integer, Locomotive> locomotives;
+    private SortedMap<Integer, Locomotive> locomotives;
+
+    private List<LocomotiveGroup> locomotiveGroups;
 
     private SRCPSession session;
 
     private LocomotiveControl() {
         listeners = new ArrayList<LocomotiveChangeListener>();
-        locomotives = new HashMap<Integer, Locomotive>();
+        locomotives = new TreeMap<Integer, Locomotive>();
+        locomotiveGroups = new ArrayList<LocomotiveGroup>();
     }
 
     public static LocomotiveControl getInstance() {
@@ -39,8 +44,12 @@ public class LocomotiveControl implements GLInfoListener {
         locomotiveToRegister.setSession(session);
     }
 
-    public void unregisterLocomotive(Integer locomotiveToUnregister) {
-        locomotives.remove(locomotiveToUnregister);
+    public void registerLocomotives(
+        Collection<Locomotive> locomotivesToRegister) {
+        for (Locomotive l : locomotivesToRegister) {
+            locomotives.put(l.getAddress(), l);
+            l.setSession(session);
+        }
     }
 
     public void unregisterAllLocomotives() throws LocomotiveException {
@@ -50,8 +59,25 @@ public class LocomotiveControl implements GLInfoListener {
         locomotives.clear();
     }
 
-    public Collection<Locomotive> getLocomotives() {
-        return locomotives.values();
+    public SortedSet<Locomotive> getLocomotives() {
+        return new TreeSet<Locomotive>(locomotives.values());
+    }
+
+    public void registerLocomotiveGroup(LocomotiveGroup locomotiveGroup) {
+        locomotiveGroups.add(locomotiveGroup);
+    }
+
+    public void registerLocomotiveGroups(
+        Collection<LocomotiveGroup> locomotiveGroups) {
+        locomotiveGroups.addAll(locomotiveGroups);
+    }
+
+    public void unregisterAllLocomotiveGroups() {
+        locomotiveGroups.clear();
+    }
+
+    public List<LocomotiveGroup> getLocomotiveGroups() {
+        return locomotiveGroups;
     }
 
     public void setSession(SRCPSession session) {
@@ -65,7 +91,7 @@ public class LocomotiveControl implements GLInfoListener {
     public void addLocomotiveChangeListener(LocomotiveChangeListener l) {
         listeners.add(l);
     }
-    
+
     public void removeLocomotiveChangeListener(LocomotiveChangeListener l) {
         listeners.remove(l);
     }

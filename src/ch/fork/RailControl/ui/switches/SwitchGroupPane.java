@@ -8,7 +8,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import ch.fork.RailControl.domain.switches.Switch;
-import ch.fork.RailControl.domain.switches.SwitchChangeListener;
 import ch.fork.RailControl.domain.switches.SwitchControl;
 import ch.fork.RailControl.domain.switches.SwitchGroup;
 
@@ -22,10 +21,14 @@ public class SwitchGroupPane extends JTabbedPane {
     public void update(Collection<SwitchGroup> switchGroups) {
         this.switchGroups = switchGroups;
         SwitchControl sc = SwitchControl.getInstance();
-        for(Component switchGroupTabs : getComponents()) {
-            for (Component switchWidgets : 
-                ((Container)switchGroupTabs).getComponents())
-            sc.removeSwitchChangeListener((SwitchChangeListener)switchWidgets);
+        for (Component switchGroupTabs : getComponents()) {
+            for (Component switchWidget : ((Container) switchGroupTabs)
+                .getComponents())
+                if (switchWidget instanceof SwitchWidget) {
+                    SwitchWidget sw = (SwitchWidget) switchWidget;
+                    sc.removeSwitchChangeListener(sw);
+                }
+
         }
         this.removeAll();
         int i = 1;
@@ -34,7 +37,8 @@ public class SwitchGroupPane extends JTabbedPane {
             JScrollPane switchGroupPane = new JScrollPane(switchGroupTab);
             switchGroupPane.getVerticalScrollBar().setUnitIncrement(10);
             switchGroupPane.getVerticalScrollBar().setBlockIncrement(10);
-            add(switchGroupPane, "F" + i + ": " + switchGroup.getName());
+            add(switchGroupPane, "F"
+                + i + ": " + switchGroup.getName());
 
             for (Switch aSwitch : switchGroup.getSwitches()) {
                 SwitchWidget switchWidget = new SwitchWidget(aSwitch,
@@ -43,7 +47,5 @@ public class SwitchGroupPane extends JTabbedPane {
             }
             i++;
         }
-        revalidate();
-        repaint();
     }
 }

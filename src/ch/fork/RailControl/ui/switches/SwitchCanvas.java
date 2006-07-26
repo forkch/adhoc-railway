@@ -44,7 +44,7 @@ public class SwitchCanvas extends JPanel {
     }
 
     public Dimension getPreferredSize() {
-        return new Dimension(56, 56);
+        return new Dimension(56, 35);
     }
 
     public Dimension getMinimumSize() {

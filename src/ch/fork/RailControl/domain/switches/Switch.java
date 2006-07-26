@@ -172,6 +172,7 @@ public abstract class Switch implements Constants, Comparable {
     public SwitchState getSwitchState() {
         return switchState;
     }
+
     public String toXML() {
         StringBuffer sb = new StringBuffer();
         sb.append("<Switch ");

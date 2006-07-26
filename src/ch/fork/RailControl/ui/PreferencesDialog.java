@@ -31,7 +31,7 @@ public class PreferencesDialog extends JDialog {
     private SpinnerNumberModel defaultRoutingDelayModel;
 
     private JSpinner locomotiveControlNumber;
-    
+
     private JSpinner switchControlNumber;
 
     private SpinnerNumberModel locomotiveControlNumberModel;
@@ -51,7 +51,7 @@ public class PreferencesDialog extends JDialog {
     private JComboBox keyBoardLayoutComboBox;
 
     private JCheckBox interface6051;
-    
+
     private JCheckBox writeLog;
 
     public PreferencesDialog(JFrame owner) {
@@ -104,9 +104,9 @@ public class PreferencesDialog extends JDialog {
         locomotiveControlNumberModel = new SpinnerNumberModel(5, 1, 10, 1);
         locomotiveControlNumber = new JSpinner(
             locomotiveControlNumberModel);
-        
+
         JLabel switchControlNumberLabel = new JLabel(
-        "Number of Switch Controls per row:");
+            "Number of Switch Controls per row:");
         switchControlNumberModel = new SpinnerNumberModel(7, 1, 10, 1);
         switchControlNumber = new JSpinner(switchControlNumberModel);
         JLabel keyBoardLayoutLabel = new JLabel("Keyboard-Layout");
@@ -145,7 +145,7 @@ public class PreferencesDialog extends JDialog {
 
         interface6051 = new JCheckBox();
         JLabel interface6051Label = new JLabel("Interface 6051 attached");
-        
+
         writeLog = new JCheckBox();
         JLabel writeLogLabel = new JLabel("Write Log");
 
@@ -222,9 +222,8 @@ public class PreferencesDialog extends JDialog {
         p.setIntValue(
             "LocomotiveControlesAmount", locomotiveControlNumberModel
                 .getNumber().intValue());
-        p.setIntValue(
-            "SwitchControlesAmount", switchControlNumberModel
-                .getNumber().intValue());
+        p.setIntValue("SwitchControlesAmount", switchControlNumberModel
+            .getNumber().intValue());
         p.setStringValue("KeyBoardLayout", keyBoardLayoutComboBox
             .getSelectedItem().toString());
 

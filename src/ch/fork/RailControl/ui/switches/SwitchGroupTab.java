@@ -34,7 +34,8 @@ public class SwitchGroupTab extends JPanel {
         switchGroup = sg;
         layout = new GridBagLayout();
         setLayout(layout);
-        maxCols = Preferences.getInstance().getIntValue("SwitchControlesAmount");
+        maxCols = Preferences.getInstance().getIntValue(
+            "SwitchControlesAmount");
         currentRow = 0;
         currentCol = 0;
         gbc = new GridBagConstraints();

@@ -47,6 +47,14 @@ public class SwitchGroup {
         SwitchGroup newSwitchGroup = new SwitchGroup(name);
         return newSwitchGroup;
     }
+    
+    public boolean equals(Object o) {
+        if (o instanceof SwitchGroup) {
+            SwitchGroup sg = (SwitchGroup) o;
+            return sg.getName().equals(name);
+        }
+        return false;
+    }
 
     public String toXML() {
         StringBuffer sb = new StringBuffer();

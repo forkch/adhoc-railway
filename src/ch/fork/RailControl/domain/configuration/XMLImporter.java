@@ -15,6 +15,7 @@ import ch.fork.RailControl.domain.locomotives.DeltaLocomotive;
 import ch.fork.RailControl.domain.locomotives.DigitalLocomotive;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
 import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
+import ch.fork.RailControl.domain.locomotives.LocomotiveGroup;
 import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
 import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
 import ch.fork.RailControl.domain.switches.Address;
@@ -41,6 +42,7 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
     private SwitchControl switchControl;
 
     private Locomotive actualLocomotive;
+    private LocomotiveGroup actualLocomotiveGroup;
 
     private LocomotiveControl locomotiveControl;
 
@@ -54,6 +56,7 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
         switchControl.unregisterAllSwitches();
         locomotiveControl = LocomotiveControl.getInstance();
         locomotiveControl.unregisterAllLocomotives();
+
         parseDocument(filename);
     }
 
@@ -92,6 +95,9 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
             actualAddress = new Address(Integer.parseInt(attributes
                 .getValue("address1")), Integer.parseInt(attributes
                 .getValue("address2")));
+        } else if (qName.equals("locomotivegroup")) {
+            actualLocomotiveGroup = new LocomotiveGroup(attributes
+                .getValue("name"));
         } else if (qName.equals("locomotive")) {
             parseLocomotive(qName, attributes);
         } else if (qName.equals("guiconfigparameter")) {
@@ -164,12 +170,17 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
         qName = qName.toLowerCase();
         if (qName.equals("switchgroup")) {
             switchControl.registerSwitchGroup(actualSwitchGroup);
+        } else if (qName.equals("locomotivegroup")) {
+            locomotiveControl
+                .registerLocomotiveGroup(actualLocomotiveGroup);
         } else if (qName.equals("switch")) {
             actualSwitch.setAddress(actualAddress);
             actualSwitchGroup.addSwitch(actualSwitch);
             switchControl.registerSwitch(actualSwitch);
             actualSwitch = null;
         } else if (qName.equals("locomotive")) {
+            actualLocomotiveGroup.addLocomotive(actualLocomotive);
+
             locomotiveControl.registerLocomotive(actualLocomotive);
             actualLocomotive = null;
         }

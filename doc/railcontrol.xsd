@@ -69,9 +69,18 @@
 
   <xs:complexType name="LocomotiveConfigurationType" mixed="true">
     <xs:sequence minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="Locomotive" type="LocomotiveType"/>
+      <xs:element name="LocomotiveGroup" type="LocomotiveGroupType"/>
     </xs:sequence>
   </xs:complexType>
+  
+  <xs:complexType name="LocomotiveGroupType">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Locomotive" type="LocomotiveType">
+        <xs:attribute name="name" type="xs:string"/>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
   <xs:complexType name="LocomotiveType">
     <xs:attribute name="name" type="xs:string"/>
     <xs:attribute name="desc" type="xs:string"/>

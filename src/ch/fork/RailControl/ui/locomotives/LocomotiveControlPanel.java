@@ -17,6 +17,7 @@ import ch.fork.RailControl.domain.configuration.Preferences;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
 import ch.fork.RailControl.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
+import ch.fork.RailControl.domain.locomotives.LocomotiveGroup;
 import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
 import ch.fork.RailControl.ui.ExceptionProcessor;
 
@@ -53,25 +54,24 @@ public class LocomotiveControlPanel extends JPanel {
     public LocomotiveControlPanel() {
         super();
         locomotiveWidgets = new ArrayList<LocomotiveWidget>();
-        FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.LEFT,
-            10, 0);
-        setLayout(controlPanelLayout);
-        for (int i = 0; i < Preferences.getInstance().getIntValue(
-            "LocomotiveControlesAmount"); i++) {
-            LocomotiveWidget w = new LocomotiveWidget(keyBindings[i][0],
-                keyBindings[i][1], keyBindings[i][2]);
-            add(w);
-        }
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "stop_all");
-        this.getActionMap().put("stop_all", new LocomotiveStopAction());
 
     }
 
-    public void update(Collection<Locomotive> locomotives) {
+    private void initGUI() {
+        FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.LEFT,
+            10, 0);
+        setLayout(controlPanelLayout);
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "stop_all");
+        this.getActionMap().put("stop_all", new LocomotiveStopAction());
+    }
+
+    public void update(Collection<LocomotiveGroup> locomotiveGroups) {
         LocomotiveControl lc = LocomotiveControl.getInstance();
-        for(Component c : getComponents()) {
-            lc.removeLocomotiveChangeListener((LocomotiveChangeListener)c);
+        for (Component c : getComponents()) {
+            lc
+                .removeLocomotiveChangeListener((LocomotiveChangeListener) c);
         }
         removeAll();
         locomotiveWidgets.clear();
@@ -85,16 +85,15 @@ public class LocomotiveControlPanel extends JPanel {
             "LocomotiveControlesAmount"); i++) {
             LocomotiveWidget w = new LocomotiveWidget(keyBindings[i][0],
                 keyBindings[i][1], keyBindings[i][2]);
-            w.registerLocomotives(locomotives);
             LocomotiveControl.getInstance().addLocomotiveChangeListener(w);
+            w.updateLocomotiveGroups(locomotiveGroups);
             add(w);
             locomotiveWidgets.add(w);
         }
-        revalidate();
-        repaint();
     }
 
-    private class LocomotiveStopAction extends AbstractAction implements Runnable {
+    private class LocomotiveStopAction extends AbstractAction implements
+        Runnable {
 
         public void actionPerformed(ActionEvent e) {
             Thread t = new Thread(this);
@@ -109,7 +108,7 @@ public class LocomotiveControlPanel extends JPanel {
                     LocomotiveControl.getInstance().setSpeed(
                         myLocomotive, 0);
                     widget.updateWidget();
-                    Thread.sleep(1000);
+                    Thread.sleep(200);
                 }
 
             } catch (LocomotiveException e3) {

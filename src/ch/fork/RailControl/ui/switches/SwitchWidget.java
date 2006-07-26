@@ -1,5 +1,7 @@
 package ch.fork.RailControl.ui.switches;
 
+import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,7 +13,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EtchedBorder;
 
 import ch.fork.RailControl.domain.switches.DefaultSwitch;
 import ch.fork.RailControl.domain.switches.DoubleCrossSwitch;
@@ -30,8 +31,6 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener {
 
     private Switch mySwitch;
 
-    private SwitchCanvas switchState;
-
     private JLabel switchStateLabel;
 
     private JLabel numberLabel;
@@ -42,41 +41,25 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener {
 
     private SwitchCanvas switchCanvas;
 
+    private GridBagLayout switchWidgetLayout;
+
+    private GridBagConstraints switchWidgetConstraints;
+
+    private boolean horizontal;
+
     public SwitchWidget(Switch aSwitch, SwitchGroup switchGroup) {
+        this(aSwitch, switchGroup, false);
+    }
+
+    public SwitchWidget(Switch aSwitch, SwitchGroup switchGroup,
+        boolean horizontal) {
         mySwitch = aSwitch;
         this.switchGroup = switchGroup;
+        this.horizontal = horizontal;
         initGUI();
     }
 
     private void initGUI() {
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        GridBagLayout layout = new GridBagLayout();
-        GridBagConstraints gbc = new GridBagConstraints();
-        setLayout(layout);
-
-        gbc.insets = new Insets(5, 5, 5, 5);
-
-        gbc.gridx = 0;
-        numberLabel = new JLabel(Integer.toString(mySwitch.getNumber()));
-        numberLabel.setFont(new Font("Dialog", Font.BOLD, 40));
-        layout.setConstraints(numberLabel, gbc);
-        add(numberLabel);
-
-        gbc.gridx = 1;
-        descLabel = new JLabel(mySwitch.getDesc());
-        layout.setConstraints(descLabel, gbc);
-        add(descLabel);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
-        /*
-         * String icon = getSwitchIcon();
-         * 
-         * switchStateLabel = new JLabel();
-         * switchStateLabel.setIcon(createImageIcon(icon, "", this));
-         */
-
         switchCanvas = null;
         if (mySwitch instanceof DoubleCrossSwitch) {
             switchCanvas = new DoubleCrossSwitchCanvas(mySwitch);
@@ -86,10 +69,53 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener {
             switchCanvas = new ThreeWaySwitchCanvas(mySwitch);
         }
 
-        layout.setConstraints(switchCanvas, gbc);
-        add(switchCanvas);
         switchCanvas.addMouseListener(new MouseAction());
+
         addMouseListener(new MouseAction());
+
+        if (!horizontal) {
+            setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            switchWidgetLayout = new GridBagLayout();
+            switchWidgetConstraints = new GridBagConstraints();
+            setLayout(switchWidgetLayout);
+
+            switchWidgetConstraints.insets = new Insets(5, 5, 5, 5);
+
+            switchWidgetConstraints.gridx = 0;
+            numberLabel = new JLabel(Integer
+                .toString(mySwitch.getNumber()));
+            numberLabel.setFont(new Font("Dialog", Font.BOLD, 30));
+            switchWidgetLayout.setConstraints(
+                numberLabel, switchWidgetConstraints);
+            add(numberLabel);
+
+            switchWidgetConstraints.gridx = 1;
+            descLabel = new JLabel(mySwitch.getDesc());
+            switchWidgetLayout.setConstraints(
+                descLabel, switchWidgetConstraints);
+            add(descLabel);
+
+            switchWidgetConstraints.gridx = 0;
+            switchWidgetConstraints.gridy = 1;
+            switchWidgetConstraints.gridwidth = 2;
+
+            switchWidgetLayout.setConstraints(
+                switchCanvas, switchWidgetConstraints);
+            add(switchCanvas);
+        } else {
+
+            setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            setLayout(new FlowLayout());
+
+            descLabel = new JLabel();
+            numberLabel = new JLabel(Integer
+                .toString(mySwitch.getNumber()));
+            numberLabel.setFont(new Font("Dialog", Font.BOLD, 20));
+
+            add(numberLabel);
+
+            add(switchCanvas);
+        }
     }
 
     private String getSwitchIcon() {
@@ -163,40 +189,39 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener {
             try {
                 if (e.getClickCount() == 1
                     && e.getButton() == MouseEvent.BUTTON1) {
-
                     SwitchControl.getInstance().toggle(mySwitch);
-                    SwitchWidget.this.revalidate();
-                    SwitchWidget.this.repaint();
                 } else if (e.getClickCount() == 1
                     && e.getButton() == MouseEvent.BUTTON3) {
-                    SwitchConfig switchConf = new SwitchConfig(null,
-                        mySwitch);
+                    SwitchConfig switchConf = new SwitchConfig(mySwitch);
                     if (switchConf.isOkPressed()) {
 
                         switchGroup.removeSwitch(mySwitch);
-
                         Switch newSwitch = switchConf.getSwitch();
-
                         switchGroup.addSwitch(newSwitch);
-
                         newSwitch.setSession(mySwitch.getSession());
-
                         mySwitch = newSwitch;
 
+                        remove(switchCanvas);
+                        switchWidgetConstraints.gridx = 0;
+                        switchWidgetConstraints.gridy = 1;
+                        switchWidgetConstraints.gridwidth = 2;
+
+                        switchCanvas = null;
                         if (mySwitch instanceof DoubleCrossSwitch) {
-                            switchState = new DoubleCrossSwitchCanvas(
+                            switchCanvas = new DoubleCrossSwitchCanvas(
                                 mySwitch);
                         } else if (mySwitch instanceof DefaultSwitch) {
-                            switchState = new DefaultSwitchCanvas(mySwitch);
+                            switchCanvas = new DefaultSwitchCanvas(
+                                mySwitch);
                         } else if (mySwitch instanceof ThreeWaySwitch) {
-                            switchState = new ThreeWaySwitchCanvas(
+                            switchCanvas = new ThreeWaySwitchCanvas(
                                 mySwitch);
                         }
 
-                        switchState.repaint();
-                        switchState.addMouseListener(new MouseAction());
-                        switchStateLabel.removeAll();
-                        switchStateLabel.add(switchState);
+                        switchWidgetLayout.setConstraints(
+                            switchCanvas, switchWidgetConstraints);
+                        add(switchCanvas);
+                        switchCanvas.addMouseListener(new MouseAction());
                         switchChanged(mySwitch);
                     }
                 }
@@ -204,5 +229,9 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener {
                 ExceptionProcessor.getInstance().processException(e1);
             }
         }
+    }
+
+    public Switch getMySwitch() {
+        return mySwitch;
     }
 }

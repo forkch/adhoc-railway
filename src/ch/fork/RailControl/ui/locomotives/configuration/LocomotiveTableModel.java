@@ -9,6 +9,7 @@ import javax.swing.table.AbstractTableModel;
 import ch.fork.RailControl.domain.locomotives.DeltaLocomotive;
 import ch.fork.RailControl.domain.locomotives.DigitalLocomotive;
 import ch.fork.RailControl.domain.locomotives.Locomotive;
+import ch.fork.RailControl.domain.locomotives.LocomotiveGroup;
 import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
 import ch.fork.RailControl.domain.locomotives.exception.LocomotiveException;
 import ch.fork.RailControl.ui.ExceptionProcessor;
@@ -18,7 +19,8 @@ public class LocomotiveTableModel extends AbstractTableModel {
     private final String[] columnNames = { "Name", "Type", "Bus",
         "Address", "Image", "Desc" };
 
-    private List<Locomotive> locomotives;
+
+    private LocomotiveGroup locomotiveGroup;
 
     public LocomotiveTableModel() {
         super();
@@ -26,11 +28,14 @@ public class LocomotiveTableModel extends AbstractTableModel {
 
     public LocomotiveTableModel(Collection<Locomotive> locomotives) {
         super();
-        this.locomotives = new ArrayList<Locomotive>(locomotives);
+        //this.locomotives = new ArrayList<Locomotive>(locomotives);
     }
 
     public int getRowCount() {
-        return locomotives.size();
+        if (locomotiveGroup == null) {
+            return 0;
+        }
+        return locomotiveGroup.getLocomotives().size();
     }
 
     public int getColumnCount() {
@@ -41,7 +46,22 @@ public class LocomotiveTableModel extends AbstractTableModel {
         return columnNames[col];
     }
 
+    public Locomotive getLocomotiveAt(int rowIndex) {
+        if (locomotiveGroup == null) {
+            return null;
+        }
+
+        List<Locomotive> locomotives = new ArrayList<Locomotive>(
+            locomotiveGroup.getLocomotives());
+        return locomotives.get(rowIndex);
+    }
     public Object getValueAt(int rowIndex, int columnIndex) {
+        if (locomotiveGroup == null) {
+            return null;
+        }
+
+        List<Locomotive> locomotives = new ArrayList<Locomotive>(
+            locomotiveGroup.getLocomotives());
         switch (columnIndex) {
         case 0:
             return locomotives.get(rowIndex).getName();
@@ -64,8 +84,11 @@ public class LocomotiveTableModel extends AbstractTableModel {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     public void setValueAt(Object value, int row, int col) {
+        if (locomotiveGroup == null) {
+            return;
+        }
+        List<Locomotive> locomotives = new ArrayList<Locomotive>(locomotiveGroup.getLocomotives());
         Locomotive locomotiveOfThisRow = locomotives.get(row);
         switch (col) {
         case 0:
@@ -109,5 +132,9 @@ public class LocomotiveTableModel extends AbstractTableModel {
             return;
         }
         fireTableCellUpdated(row, col);
+    }
+
+    public void setLocomotiveGroup(LocomotiveGroup selectedLocomotiveGroup) {
+        locomotiveGroup = selectedLocomotiveGroup;
     }
 }

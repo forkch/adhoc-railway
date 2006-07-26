@@ -8,7 +8,7 @@ import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GL;
 
-public abstract class Locomotive implements Constants {
+public abstract class Locomotive implements Constants, Comparable {
     protected String name;
 
     protected String desc;
@@ -94,11 +94,11 @@ public abstract class Locomotive implements Constants {
             if (gl != null) {
                 gl.term();
             }
+            if (session != null) {
+                init();
+            }
         } catch (SRCPException e) {
             throw new LocomotiveException(ERR_REINIT_FAILED, e);
-        }
-        if (session != null) {
-            init();
         }
     }
 
@@ -213,6 +213,14 @@ public abstract class Locomotive implements Constants {
             + name + "\" type=\"" + getType() + "\" bus=\"" + bus
             + "\" address=\"" + address + "\" desc=\"" + desc + "\" />\n");
         return sb.toString();
+    }
+
+    public int compareTo(Object o) {
+        if (o instanceof Locomotive) {
+            Locomotive anotherLocomotive = (Locomotive) o;
+            return (name.compareTo(anotherLocomotive.getName()));
+        }
+        return 0;
     }
 
     public boolean isInitialized() {

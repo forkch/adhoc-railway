@@ -88,13 +88,12 @@ public class SwitchesTableModel extends AbstractTableModel {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     public void setValueAt(Object value, int row, int col) {
         if (switchGroup == null) {
             return;
         }
-        ArrayList arrayList = new ArrayList(switchGroup.getSwitches());
-        List<Switch> switches = arrayList;
+        List<Switch> switches = new ArrayList<Switch>(switchGroup.getSwitches());
+        
         Switch switchOfThisRow = switches.get(row);
         switch (col) {
         case 0:

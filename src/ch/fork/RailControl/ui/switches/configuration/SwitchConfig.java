@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -45,7 +46,19 @@ public class SwitchConfig extends JDialog {
 
     private JComboBox switchOrientationComboBox;
 
+    public SwitchConfig(Switch mySwitch) {
+        super(new JFrame(), "Switch Config", true);
+        this.mySwitch = mySwitch.clone();
+        initGUI();
+    }
+
     public SwitchConfig(Frame owner, Switch mySwitch) {
+        super(owner, "Switch Config", true);
+        this.mySwitch = mySwitch.clone();
+        initGUI();
+    }
+
+    public SwitchConfig(JDialog owner, Switch mySwitch) {
         super(owner, "Switch Config", true);
         this.mySwitch = mySwitch.clone();
         initGUI();
@@ -61,19 +74,20 @@ public class SwitchConfig extends JDialog {
                 mySwitch.setNumber(Integer.parseInt(numberTextField
                     .getText()));
                 Switch tmp = mySwitch;
-                String value = (String)switchTypeComboBox.getSelectedItem();
+                String value = (String) switchTypeComboBox
+                    .getSelectedItem();
                 if (value.equals("DefaultSwitch")) {
                     mySwitch = new DefaultSwitch(tmp.getNumber(), tmp
                         .getDesc(), tmp.getBus(), tmp.getAddress());
                 } else if (value.equals("DoubleCrossSwitch")) {
-                    mySwitch = new DoubleCrossSwitch(tmp.getNumber(),
-                        tmp.getDesc(), tmp.getBus(), tmp.getAddress());
+                    mySwitch = new DoubleCrossSwitch(tmp.getNumber(), tmp
+                        .getDesc(), tmp.getBus(), tmp.getAddress());
                 } else if (value.equals("ThreeWaySwitch")) {
                     mySwitch = new ThreeWaySwitch(tmp.getNumber(), tmp
                         .getDesc(), tmp.getBus(), tmp.getAddress());
                 }
                 mySwitch.setSession(tmp.getSession());
-                
+
                 mySwitch.setBus(Integer.parseInt(busTextField.getText()));
                 mySwitch
                     .setAddress(new Address(addressTextField.getText()));
@@ -142,14 +156,16 @@ public class SwitchConfig extends JDialog {
         switchDefaultStateComboBox.addItem(SwitchState.LEFT);
         switchDefaultStateComboBox
             .setRenderer(new SwitchDefaultStateComboBoxCellRenderer());
-        switchDefaultStateComboBox.setSelectedItem(mySwitch.getDefaultState());
+        switchDefaultStateComboBox.setSelectedItem(mySwitch
+            .getDefaultState());
 
         switchOrientationComboBox = new JComboBox();
         switchOrientationComboBox.addItem(SwitchOrientation.NORTH);
         switchOrientationComboBox.addItem(SwitchOrientation.EAST);
         switchOrientationComboBox.addItem(SwitchOrientation.SOUTH);
         switchOrientationComboBox.addItem(SwitchOrientation.WEST);
-        switchOrientationComboBox.setSelectedItem(mySwitch.getSwitchOrientation());
+        switchOrientationComboBox.setSelectedItem(mySwitch
+            .getSwitchOrientation());
 
         configPanel.add(numberLabel);
         configPanel.add(numberTextField);
