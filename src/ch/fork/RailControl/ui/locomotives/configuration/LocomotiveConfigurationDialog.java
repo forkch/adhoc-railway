@@ -18,7 +18,9 @@ import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JList;
@@ -34,6 +36,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import ch.fork.RailControl.domain.configuration.Preferences;
@@ -41,6 +44,7 @@ import ch.fork.RailControl.domain.locomotives.Locomotive;
 import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
 import ch.fork.RailControl.domain.locomotives.LocomotiveGroup;
 import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
+import ch.fork.RailControl.domain.switches.Switch.SwitchOrientation;
 import ch.fork.RailControl.ui.ListListModel;
 import ch.fork.RailControl.ui.TableResizer;
 
@@ -69,7 +73,6 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
     private ListListModel locomotiveGroupListModel;
     private SortedSet<Locomotive> locomotives;
-    private JTable locomotiveTable;
 
     public LocomotiveConfigurationDialog(Frame owner,
         Preferences preferences) {
@@ -229,6 +232,16 @@ public class LocomotiveConfigurationDialog extends JDialog {
             locomotivesTable);
         switchGroupTablePane.setPreferredSize(new Dimension(600, 400));
         locomotivesPanel.add(switchGroupTablePane, BorderLayout.CENTER);
+
+        JComboBox locomotiveTypeCombobox = new JComboBox();
+        locomotiveTypeCombobox.addItem("NoneLocomotive");
+        locomotiveTypeCombobox.addItem("DeltaLocomotive");
+        locomotiveTypeCombobox.addItem("DigitalLocomotive");
+
+        TableColumn locomotiveTypeColumn = locomotivesTable
+            .getColumnModel().getColumn(1);
+        locomotiveTypeColumn.setCellEditor(new DefaultCellEditor(
+            locomotiveTypeCombobox));
 
         JButton addLocomotiveButton = new JButton("Add");
         JButton removeLocomotiveButton = new JButton("Remove");
