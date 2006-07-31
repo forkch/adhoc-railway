@@ -44,7 +44,6 @@ import ch.fork.RailControl.domain.locomotives.Locomotive;
 import ch.fork.RailControl.domain.locomotives.LocomotiveControl;
 import ch.fork.RailControl.domain.locomotives.LocomotiveGroup;
 import ch.fork.RailControl.domain.locomotives.NoneLocomotive;
-import ch.fork.RailControl.domain.switches.Switch.SwitchOrientation;
 import ch.fork.RailControl.ui.ListListModel;
 import ch.fork.RailControl.ui.TableResizer;
 
