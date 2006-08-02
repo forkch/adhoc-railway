@@ -3,6 +3,8 @@ package ch.fork.AdHocRailway.domain.locomotives;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import ch.fork.AdHocRailway.domain.switches.Switch;
+
 public class LocomotiveGroup implements Comparable {
 
     private String name;
@@ -22,6 +24,11 @@ public class LocomotiveGroup implements Comparable {
         locomotives.remove(locomotive);
     }
 
+    public void replaceLocomotive(Locomotive oldLocomotive, Locomotive newLocomotive) {
+        locomotives.remove(oldLocomotive);
+        locomotives.add(newLocomotive);
+    }
+    
     public String getName() {
         return name;
     }

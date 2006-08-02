@@ -344,8 +344,9 @@ public class SwitchConfigurationDialog extends JDialog {
             SwitchGroup newSection = new SwitchGroup(newGroupName);
             switchGroups.add(newSection);
             switchGroupListModel.updated();
+            switchGroupList.setSelectedValue(newSection, true);
         }
-
+        
     }
 
     class RemoveSwitchGroupAction extends AbstractAction {
@@ -425,7 +426,12 @@ public class SwitchConfigurationDialog extends JDialog {
                 .getSelectedValue());
             SortedSet<Integer> usedNumbers = new TreeSet<Integer>(
                 switchNumberToSwitch.keySet());
-            int nextNumber = usedNumbers.last().intValue() + 1;
+            int nextNumber = 1;
+            if(usedNumbers.size() == 0) {
+        	    nextNumber = 1;
+            } else {
+        	    nextNumber = usedNumbers.last().intValue() + 1;
+            }
             Switch newSwitch = new DefaultSwitch(nextNumber, "");
             SwitchConfig switchConfig = new SwitchConfig(
                 SwitchConfigurationDialog.this, newSwitch);
@@ -445,14 +451,19 @@ public class SwitchConfigurationDialog extends JDialog {
                 .getSelectedValue());
             if (selectedSwitchGroup == null) {
                 return;
+            }SortedSet<Integer> usedNumbers = new TreeSet<Integer>(
+                    switchNumberToSwitch.keySet());
+            int nextNumber = 1;
+            if(usedNumbers.size() == 0) {
+        	    nextNumber = 1;
+            } else {
+        	    nextNumber = usedNumbers.last().intValue() + 1;
             }
             for (int i = 0; i < 10; i++) {
-                SortedSet<Integer> usedNumbers = new TreeSet<Integer>(
-                    switchNumberToSwitch.keySet());
-                int nextNumber = usedNumbers.last().intValue() + 1;
                 Switch newSwitch = new DefaultSwitch(nextNumber, "");
                 switchNumberToSwitch.put(newSwitch.getNumber(), newSwitch);
                 selectedSwitchGroup.addSwitch(newSwitch);
+                nextNumber++;
             }
             updateSwitchesPanel();
         }

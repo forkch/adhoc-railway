@@ -68,8 +68,9 @@ public class LocomotiveControl implements GLInfoListener {
     }
 
     public void registerLocomotiveGroups(
-        Collection<LocomotiveGroup> locomotiveGroups) {
-        locomotiveGroups.addAll(locomotiveGroups);
+        Collection<LocomotiveGroup> locomotiveGroupsToRegister) {
+        locomotiveGroups.addAll(locomotiveGroupsToRegister);
+
     }
 
     public void unregisterAllLocomotiveGroups() {
@@ -185,6 +186,7 @@ public class LocomotiveControl implements GLInfoListener {
         if (locomotive instanceof NoneLocomotive) {
             return;
         }
+       
         if (locomotive.getSession() == null) {
             throw new LocomotiveException(Constants.ERR_NO_SESSION);
         }
