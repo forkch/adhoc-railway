@@ -1,3 +1,4 @@
+
 package ch.fork.AdHocRailway.ui.switches;
 
 import java.awt.AWTEvent;
@@ -12,39 +13,35 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class Segment7 extends Canvas {
-    private int digit;
-
+    private int     digit;
     private boolean hasfocus;
-
     private int[][] polysx = { { 1, 2, 8, 9, 8, 2 }, // Segment 0
-        { 9, 10, 10, 9, 8, 8 }, // Segment 1
-        { 9, 10, 10, 9, 8, 8 }, // Segment 2
-        { 1, 2, 8, 9, 8, 2 }, // Segment 3
-        { 1, 2, 2, 1, 0, 0 }, // Segment 4
-        { 1, 2, 2, 1, 0, 0 }, // Segment 5
-        { 1, 2, 8, 9, 8, 2 }, // Segment 6
-    };
-
+                           { 9, 10, 10, 9, 8, 8 }, // Segment 1
+                           { 9, 10, 10, 9, 8, 8 }, // Segment 2
+                           { 1, 2, 8, 9, 8, 2 }, // Segment 3
+                           { 1, 2, 2, 1, 0, 0 }, // Segment 4
+                           { 1, 2, 2, 1, 0, 0 }, // Segment 5
+                           { 1, 2, 8, 9, 8, 2 }, // Segment 6
+                           };
     private int[][] polysy = { { 1, 0, 0, 1, 2, 2 }, // Segment 0
-        { 1, 2, 8, 9, 8, 2 }, // Segment 1
-        { 9, 10, 16, 17, 16, 10 }, // Segment 2
-        { 17, 16, 16, 17, 18, 18 }, // Segment 3
-        { 9, 10, 16, 17, 16, 10 }, // Segment 4
-        { 1, 2, 8, 9, 8, 2 }, // Segment 5
-        { 9, 8, 8, 9, 10, 10 }, // Segment 6
-    };
-
+                           { 1, 2, 8, 9, 8, 2 }, // Segment 1
+                           { 9, 10, 16, 17, 16, 10 }, // Segment 2
+                           { 17, 16, 16, 17, 18, 18 }, // Segment 3
+                           { 9, 10, 16, 17, 16, 10 }, // Segment 4
+                           { 1, 2, 8, 9, 8, 2 }, // Segment 5
+                           { 9, 8, 8, 9, 10, 10 }, // Segment 6
+                           };
     private int[][] digits = { { 1, 1, 1, 1, 1, 1, 0 }, // Ziffer 0
-        { 0, 1, 1, 0, 0, 0, 0 }, // Ziffer 1
-        { 1, 1, 0, 1, 1, 0, 1 }, // Ziffer 2
-        { 1, 1, 1, 1, 0, 0, 1 }, // Ziffer 3
-        { 0, 1, 1, 0, 0, 1, 1 }, // Ziffer 4
-        { 1, 0, 1, 1, 0, 1, 1 }, // Ziffer 5
-        { 1, 0, 1, 1, 1, 1, 1 }, // Ziffer 6
-        { 1, 1, 1, 0, 0, 0, 0 }, // Ziffer 7
-        { 1, 1, 1, 1, 1, 1, 1 }, // Ziffer 8
-        { 1, 1, 1, 1, 0, 1, 1 } // Ziffer 9
-    };
+                           { 0, 1, 1, 0, 0, 0, 0 }, // Ziffer 1
+                           { 1, 1, 0, 1, 1, 0, 1 }, // Ziffer 2
+                           { 1, 1, 1, 1, 0, 0, 1 }, // Ziffer 3
+                           { 0, 1, 1, 0, 0, 1, 1 }, // Ziffer 4
+                           { 1, 0, 1, 1, 0, 1, 1 }, // Ziffer 5
+                           { 1, 0, 1, 1, 1, 1, 1 }, // Ziffer 6
+                           { 1, 1, 1, 0, 0, 0, 0 }, // Ziffer 7
+                           { 1, 1, 1, 1, 1, 1, 1 }, // Ziffer 8
+                           { 1, 1, 1, 1, 0, 1, 1 } // Ziffer 9
+                           };
 
     public Segment7() {
         this(0);
@@ -92,9 +89,7 @@ public class Segment7 extends Canvas {
             if (digits[digit][i] == 1) {
                 Polygon poly = new Polygon();
                 for (int j = 0; j < 6; ++j) { // alle Eckpunkte
-                    poly.addPoint(dx
-                        * polysx[i][j], dy
-                        * polysy[i][j]);
+                    poly.addPoint(dx * polysx[i][j], dy * polysy[i][j]);
                 }
                 g.fillPolygon(poly);
             }
@@ -144,8 +139,7 @@ public class Segment7 extends Canvas {
     protected void processKeyEvent(KeyEvent event) {
         if (event.getID() == KeyEvent.KEY_PRESSED) {
             char key = event.getKeyChar();
-            if (key >= '0'
-                && key <= '9') {
+            if (key >= '0' && key <= '9') {
                 setValue(key - '0');
                 repaint();
             } else if (key == '+') {

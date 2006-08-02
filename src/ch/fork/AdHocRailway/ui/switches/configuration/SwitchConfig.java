@@ -1,3 +1,4 @@
+
 package ch.fork.AdHocRailway.ui.switches.configuration;
 
 import java.awt.BorderLayout;
@@ -5,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-
 import ch.fork.AdHocRailway.domain.switches.Address;
 import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
@@ -25,26 +24,16 @@ import ch.fork.AdHocRailway.domain.switches.Switch.SwitchState;
 import ch.fork.AdHocRailway.ui.SpringUtilities;
 
 public class SwitchConfig extends JDialog {
-
-    private Switch mySwitch;
-
-    private boolean okPressed;
-
-    private boolean cancelPressed;
-
+    private Switch     mySwitch;
+    private boolean    okPressed;
+    private boolean    cancelPressed;
     private JTextField numberTextField;
-
     private JTextField busTextField;
-
     private JTextField addressTextField;
-
     private JTextField descTextField;
-
-    private JComboBox switchTypeComboBox;
-
-    private JComboBox switchDefaultStateComboBox;
-
-    private JComboBox switchOrientationComboBox;
+    private JComboBox  switchTypeComboBox;
+    private JComboBox  switchDefaultStateComboBox;
+    private JComboBox  switchOrientationComboBox;
 
     public SwitchConfig(Switch mySwitch) {
         super(new JFrame(), "Switch Config", true);
@@ -67,18 +56,15 @@ public class SwitchConfig extends JDialog {
     private void initGUI() {
         setLayout(new BorderLayout());
         JPanel configPanel = initConfigPanel();
-
         JButton okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                mySwitch.setNumber(Integer.parseInt(numberTextField
-                    .getText()));
+                mySwitch.setNumber(Integer.parseInt(numberTextField.getText()));
                 Switch tmp = mySwitch;
-                String value = (String) switchTypeComboBox
-                    .getSelectedItem();
+                String value = (String) switchTypeComboBox.getSelectedItem();
                 if (value.equals("DefaultSwitch")) {
-                    mySwitch = new DefaultSwitch(tmp.getNumber(), tmp
-                        .getDesc(), tmp.getBus(), tmp.getAddress());
+                    mySwitch = new DefaultSwitch(tmp.getNumber(),
+                        tmp.getDesc(), tmp.getBus(), tmp.getAddress());
                 } else if (value.equals("DoubleCrossSwitch")) {
                     mySwitch = new DoubleCrossSwitch(tmp.getNumber(), tmp
                         .getDesc(), tmp.getBus(), tmp.getAddress());
@@ -86,11 +72,8 @@ public class SwitchConfig extends JDialog {
                     mySwitch = new ThreeWaySwitch(tmp.getNumber(), tmp
                         .getDesc(), tmp.getBus(), tmp.getAddress());
                 }
-                mySwitch.setSession(tmp.getSession());
-
                 mySwitch.setBus(Integer.parseInt(busTextField.getText()));
-                mySwitch
-                    .setAddress(new Address(addressTextField.getText()));
+                mySwitch.setAddress(new Address(addressTextField.getText()));
                 mySwitch
                     .setDefaultState((SwitchState) switchDefaultStateComboBox
                         .getSelectedItem());
@@ -98,7 +81,6 @@ public class SwitchConfig extends JDialog {
                     .setSwitchOrientation((SwitchOrientation) switchOrientationComboBox
                         .getSelectedItem());
                 mySwitch.setDesc(descTextField.getText());
-
                 okPressed = true;
                 SwitchConfig.this.setVisible(false);
             }
@@ -111,11 +93,9 @@ public class SwitchConfig extends JDialog {
                 SwitchConfig.this.setVisible(false);
             }
         });
-        JPanel buttonPanel = new JPanel(
-            new FlowLayout(FlowLayout.TRAILING));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         buttonPanel.add(okButton);
         buttonPanel.add(cancelButton);
-
         add(configPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
         setLocationByPlatform(true);
@@ -125,7 +105,6 @@ public class SwitchConfig extends JDialog {
 
     private JPanel initConfigPanel() {
         JPanel configPanel = new JPanel(new SpringLayout());
-
         JLabel numberLabel = new JLabel("Number");
         JLabel typeLabel = new JLabel("Type");
         JLabel busLabel = new JLabel("Bus");
@@ -133,7 +112,6 @@ public class SwitchConfig extends JDialog {
         JLabel defaultStateLabel = new JLabel("Default State");
         JLabel orientationLabel = new JLabel("Orientation");
         JLabel descLabel = new JLabel("Desc");
-
         numberTextField = new JTextField();
         numberTextField.setText(Integer.toString(mySwitch.getNumber()));
         busTextField = new JTextField();
@@ -142,23 +120,18 @@ public class SwitchConfig extends JDialog {
         addressTextField.setText(mySwitch.getAddress().toString());
         descTextField = new JTextField();
         descTextField.setText(mySwitch.getDesc());
-
         switchTypeComboBox = new JComboBox();
         switchTypeComboBox.addItem("DefaultSwitch");
         switchTypeComboBox.addItem("DoubleCrossSwitch");
         switchTypeComboBox.addItem("ThreeWaySwitch");
-        switchTypeComboBox
-            .setRenderer(new SwitchTypeComboBoxCellRenderer());
+        switchTypeComboBox.setRenderer(new SwitchTypeComboBoxCellRenderer());
         switchTypeComboBox.setSelectedItem(mySwitch.getType());
-
         switchDefaultStateComboBox = new JComboBox();
         switchDefaultStateComboBox.addItem(SwitchState.STRAIGHT);
         switchDefaultStateComboBox.addItem(SwitchState.LEFT);
         switchDefaultStateComboBox
             .setRenderer(new SwitchDefaultStateComboBoxCellRenderer());
-        switchDefaultStateComboBox.setSelectedItem(mySwitch
-            .getDefaultState());
-
+        switchDefaultStateComboBox.setSelectedItem(mySwitch.getDefaultState());
         switchOrientationComboBox = new JComboBox();
         switchOrientationComboBox.addItem(SwitchOrientation.NORTH);
         switchOrientationComboBox.addItem(SwitchOrientation.EAST);
@@ -166,7 +139,6 @@ public class SwitchConfig extends JDialog {
         switchOrientationComboBox.addItem(SwitchOrientation.WEST);
         switchOrientationComboBox.setSelectedItem(mySwitch
             .getSwitchOrientation());
-
         configPanel.add(numberLabel);
         configPanel.add(numberTextField);
         configPanel.add(typeLabel);
@@ -181,7 +153,6 @@ public class SwitchConfig extends JDialog {
         configPanel.add(switchOrientationComboBox);
         configPanel.add(descLabel);
         configPanel.add(descTextField);
-
         SpringUtilities.makeCompactGrid(configPanel, 7, 2, // rows, cols
             6, 6, // initX, initY
             6, 6); // xPad, yPad

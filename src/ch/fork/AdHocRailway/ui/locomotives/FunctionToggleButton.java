@@ -1,3 +1,4 @@
+
 package ch.fork.AdHocRailway.ui.locomotives;
 
 import javax.swing.Action;
@@ -5,7 +6,6 @@ import javax.swing.Icon;
 import javax.swing.JToggleButton;
 
 public class FunctionToggleButton extends JToggleButton {
-
     public FunctionToggleButton() {
         super();
     }
@@ -42,5 +42,4 @@ public class FunctionToggleButton extends JToggleButton {
     public FunctionToggleButton(String text, Icon icon, boolean selected) {
         super(text, icon, selected);
     }
-
 }

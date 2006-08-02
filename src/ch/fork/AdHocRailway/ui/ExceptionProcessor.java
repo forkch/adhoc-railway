@@ -1,12 +1,11 @@
+
 package ch.fork.AdHocRailway.ui;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class ExceptionProcessor {
-
-    private JFrame parent;
-
+    private JFrame                    parent;
     private static ExceptionProcessor instance;
 
     private ExceptionProcessor(JFrame parent) {
@@ -18,7 +17,6 @@ public class ExceptionProcessor {
             instance = new ExceptionProcessor(parent);
         }
         return instance;
-
     }
 
     public static ExceptionProcessor getInstance() {
@@ -28,24 +26,21 @@ public class ExceptionProcessor {
     public void processException(Exception e) {
         String msg = e.getMessage();
         if (e.getCause() != null) {
-            msg += ":\n"
-                + e.getCause().getMessage();
+            msg += ":\n" + e.getCause().getMessage();
         }
-        JOptionPane.showMessageDialog(
-            parent, msg, "Error occured", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(parent, msg, "Error occured",
+            JOptionPane.ERROR_MESSAGE);
         e.printStackTrace();
     }
 
     public void processException(String msg, Exception e) {
         String exceptionMsg = e.getMessage();
-        msg = msg
-            + "\n" + exceptionMsg;
+        msg = msg + "\n" + exceptionMsg;
         if (e.getCause() != null) {
-            exceptionMsg += ":\n"
-                + e.getCause().getMessage();
+            exceptionMsg += ":\n" + e.getCause().getMessage();
         }
-        JOptionPane.showMessageDialog(
-            parent, msg, "Error occured", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(parent, msg, "Error occured",
+            JOptionPane.ERROR_MESSAGE);
         e.printStackTrace();
     }
 }

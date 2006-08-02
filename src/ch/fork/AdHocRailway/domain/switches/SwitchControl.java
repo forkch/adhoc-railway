@@ -1,3 +1,4 @@
+
 package ch.fork.AdHocRailway.domain.switches;
 
 import java.util.ArrayList;
@@ -5,25 +6,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GAInfoListener;
 
 public class SwitchControl implements GAInfoListener {
-
-    private static SwitchControl instance;
-
-    private SRCPSession session;
-
+    private static SwitchControl       instance;
+    private SRCPSession                session;
     private List<SwitchChangeListener> listeners;
-
-    private List<SwitchGroup> switchGroups;
-
-    private Map<Integer, Switch> addressToSwitch;
-
-    private Map<Integer, Switch> numberToSwitch;
+    private List<SwitchGroup>          switchGroups;
+    private Map<Integer, Switch>       addressToSwitch;
+    private Map<Integer, Switch>       numberToSwitch;
 
     private SwitchControl() {
         listeners = new ArrayList<SwitchChangeListener>();
@@ -46,7 +40,6 @@ public class SwitchControl implements GAInfoListener {
             addressToSwitch.put(address.getAddress2(), aSwitch);
         }
         numberToSwitch.put(aSwitch.getNumber(), aSwitch);
-
         aSwitch.setSession(session);
     }
 
@@ -58,9 +51,14 @@ public class SwitchControl implements GAInfoListener {
                 addressToSwitch.put(address.getAddress2(), aSwitch);
             }
             numberToSwitch.put(aSwitch.getNumber(), aSwitch);
-
             aSwitch.setSession(session);
         }
+    }
+
+    public void unregisterSwitch(Switch aSwitch) {
+        Address address = aSwitch.getAddress();
+        addressToSwitch.remove(address);
+        numberToSwitch.remove(aSwitch.getNumber());
     }
 
     public void unregisterAllSwitches() {
@@ -99,38 +97,29 @@ public class SwitchControl implements GAInfoListener {
         session.getInfoChannel().addGAInfoListener(this);
     }
 
-    public void addSwitchChangeListener(SwitchChangeListener listener) {
-        listeners.add(listener);
-    }
-
-    public void removeSwitchChangeListener(SwitchChangeListener listener) {
-        listeners.remove(listener);
-    }
-
     public void toggle(Switch aSwitch) throws SwitchException {
-        checkSwitchSession(aSwitch);
+        checkSwitch(aSwitch);
         initSwitch(aSwitch);
         aSwitch.toggle();
-
         for (SwitchChangeListener l : listeners) {
             l.switchChanged(aSwitch);
         }
     }
 
     public void setStraight(Switch aSwitch) throws SwitchException {
-        checkSwitchSession(aSwitch);
+        checkSwitch(aSwitch);
         initSwitch(aSwitch);
         aSwitch.setStraight();
     }
 
     public void setCurvedRight(Switch aSwitch) throws SwitchException {
-        checkSwitchSession(aSwitch);
+        checkSwitch(aSwitch);
         initSwitch(aSwitch);
         aSwitch.setCurvedRight();
     }
 
     public void setCurvedLeft(Switch aSwitch) throws SwitchException {
-        checkSwitchSession(aSwitch);
+        checkSwitch(aSwitch);
         initSwitch(aSwitch);
         aSwitch.setCurvedLeft();
     }
@@ -150,8 +139,8 @@ public class SwitchControl implements GAInfoListener {
         }
     }
 
-    public void GAinit(double timestamp, int bus, int address,
-        String protocol, String[] params) {
+    public void GAinit(double timestamp, int bus, int address, String protocol,
+        String[] params) {
         /*
          * System.out.println("GAinit(" + bus + " , " + address + " , " +
          * protocol + " , " + params + " )");
@@ -172,15 +161,30 @@ public class SwitchControl implements GAInfoListener {
         informListeners(s);
     }
 
+    public void addSwitchChangeListener(SwitchChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeSwitchChangeListener(SwitchChangeListener listener) {
+        listeners.remove(listener);
+    }
+
     private void informListeners(Switch changedSwitch) {
         for (SwitchChangeListener l : listeners) {
             l.switchChanged(changedSwitch);
         }
     }
 
-    private void checkSwitchSession(Switch aSwitch) throws SwitchException {
+    private void checkSwitch(Switch aSwitch) throws SwitchException {
         if (aSwitch.getSession() == null) {
             throw new SwitchException(Constants.ERR_NO_SESSION);
+        }
+        if (aSwitch.getAddress().getAddress1() == 0) {
+            throw new SwitchException(Constants.ERR_INVALID_ADDRESS);
+        }
+        if (aSwitch instanceof ThreeWaySwitch
+            && aSwitch.getAddress().getAddress2() == 0) {
+            throw new SwitchException(Constants.ERR_INVALID_ADDRESS);
         }
     }
 

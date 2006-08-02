@@ -1,41 +1,32 @@
+
 package ch.fork.AdHocRailway.ui.switches;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
-
 import javax.swing.JPanel;
-
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
 import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
 
 public class SwitchGroupTab extends JPanel {
-
-    private static final long serialVersionUID = 1L;
-
-    private ArrayList switchWidgets;
-
-    private int maxCols;
-
-    private int currentRow;
-
-    private int currentCol;
-
-    private GridBagLayout layout;
-
+    private static final long  serialVersionUID = 1L;
+    private ArrayList          switchWidgets;
+    private int                maxCols;
+    private int                currentRow;
+    private int                currentCol;
+    private GridBagLayout      layout;
     private GridBagConstraints gbc;
-
-    private SwitchGroup switchGroup;
+    private SwitchGroup        switchGroup;
 
     public SwitchGroupTab(SwitchGroup sg) {
         this.switchWidgets = new ArrayList();
         switchGroup = sg;
         layout = new GridBagLayout();
         setLayout(layout);
-        maxCols = Preferences.getInstance().getIntValue(
-            "SwitchControlesAmount");
+        maxCols = Preferences.getInstance()
+            .getIntValue("SwitchControlesAmount");
         currentRow = 0;
         currentCol = 0;
         gbc = new GridBagConstraints();
@@ -62,5 +53,4 @@ public class SwitchGroupTab extends JPanel {
     public SwitchGroup getSwitchGroup() {
         return switchGroup;
     }
-
 }

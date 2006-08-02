@@ -1,3 +1,4 @@
+
 package ch.fork.AdHocRailway.domain.configuration;
 
 import java.util.ArrayList;
@@ -6,24 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 public class Preferences {
-
     private Map<String, String> preferences;
-
-    private List<String> hostnames;
-
-    private String hostname = "titan";
-
-    private int portnumber = 12345;
-
-    private int defaultActivationTime = 50;
-
-    private int defaultRoutingDelay = 250;
-
-    private int locomotiveControlNumber = 5;
-
-    private String keyBoardLayout = "Swiss German";
-
-    private static Preferences instance = null;
+    private List<String>        hostnames;
+    private String              hostname                = "titan";
+    private int                 portnumber              = 12345;
+    private int                 defaultActivationTime   = 50;
+    private int                 defaultRoutingDelay     = 250;
+    private int                 locomotiveControlNumber = 5;
+    private String              keyBoardLayout          = "Swiss German";
+    private static Preferences  instance                = null;
 
     private Preferences() {
         preferences = new HashMap<String, String>();
@@ -38,7 +30,6 @@ public class Preferences {
         setStringValue("Interface6051", "Y");
         setIntValue("SwitchControlesAmount", 5);
         setIntValue("LocomotivesControlesAmount", 5);
-        
     }
 
     public static Preferences getInstance() {
@@ -85,13 +76,10 @@ public class Preferences {
     public String toXML() {
         StringBuffer sb = new StringBuffer();
         sb.append("<GuiConfiguration>\n");
-
         for (String key : preferences.keySet()) {
             sb.append("<GuiConfigParameter ");
-            sb.append(" name=\""
-                + key + "\"");
-            sb.append(" value=\""
-                + preferences.get(key) + "\"");
+            sb.append(" name=\"" + key + "\"");
+            sb.append(" value=\"" + preferences.get(key) + "\"");
             sb.append("/>\n");
         }
         sb.append("</GuiConfiguration>\n");

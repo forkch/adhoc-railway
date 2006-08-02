@@ -1,3 +1,4 @@
+
 package ch.fork.AdHocRailway.domain.switches;
 
 import ch.fork.AdHocRailway.domain.Constants;
@@ -5,38 +6,28 @@ import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import de.dermoba.srcp.client.SRCPSession;
 
 public abstract class Switch implements Constants, Comparable {
-
-    protected int number;
-
-    protected int bus;
-
+    protected int     number;
+    protected int     bus;
     protected Address address;
-
-    protected String desc;
+    protected String  desc;
 
     public enum SwitchState {
         LEFT, STRAIGHT, RIGHT, UNDEF
     };
 
-    protected SwitchState switchState = SwitchState.UNDEF;
-
+    protected SwitchState switchState  = SwitchState.UNDEF;
     protected SwitchState defaultState = SwitchState.STRAIGHT;
-
-    protected boolean initialized = false;
+    protected boolean     initialized  = false;
 
     public enum SwitchOrientation {
         NORTH, SOUTH, WEST, EAST
     };
 
-    protected SwitchOrientation switchOrientation = SwitchOrientation.EAST;
-
-    protected int SWITCH_PORT_ACTIVATE = 1;
-
-    protected int SWITCH_PORT_DEACTIVATE = 0;
-
-    protected String ERR_TOGGLE_FAILED = "Toggle of switch failed";
-
-    protected SRCPSession session;
+    protected SwitchOrientation switchOrientation      = SwitchOrientation.EAST;
+    protected int               SWITCH_PORT_ACTIVATE   = 1;
+    protected int               SWITCH_PORT_DEACTIVATE = 0;
+    protected String            ERR_TOGGLE_FAILED      = "Toggle of switch failed";
+    protected SRCPSession       session;
 
     public Switch(int number, String desc, int bus, Address address) {
         this.number = number;
@@ -45,13 +36,13 @@ public abstract class Switch implements Constants, Comparable {
         this.desc = desc;
     }
 
-    public void init() throws SwitchException {
+    protected void init() throws SwitchException {
         if (session == null) {
             throw new SwitchException(ERR_NO_SESSION);
         }
     }
 
-    public void term() throws SwitchException {
+    protected void term() throws SwitchException {
         if (session == null) {
             throw new SwitchException(ERR_NO_SESSION);
         }
@@ -67,8 +58,8 @@ public abstract class Switch implements Constants, Comparable {
 
     protected abstract void setCurvedRight() throws SwitchException;
 
-    protected abstract void switchPortChanged(int pAddress,
-        int pChangedPort, int value);
+    protected abstract void switchPortChanged(int pAddress, int pChangedPort,
+        int value);
 
     protected abstract void switchInitialized(int pBus, int pAddress);
 
@@ -77,8 +68,7 @@ public abstract class Switch implements Constants, Comparable {
     public abstract Switch clone();
 
     public boolean equals(Switch aSwitch) {
-        if (address == aSwitch.getAddress()
-            && bus == aSwitch.getBus()) {
+        if (address == aSwitch.getAddress() && bus == aSwitch.getBus()) {
             return true;
         } else {
             return false;
@@ -100,8 +90,8 @@ public abstract class Switch implements Constants, Comparable {
     }
 
     public String toString() {
-        return number
-            + ": " + getType() + " @ bus " + bus + " @ address " + address;
+        return "\"" + number + ": " + getType() + " @ bus " + bus + " @ ports "
+            + address + "\"";
     }
 
     public int getNumber() {
@@ -141,15 +131,15 @@ public abstract class Switch implements Constants, Comparable {
         initialized = false;
     }
 
-    public SRCPSession getSession() {
+    protected SRCPSession getSession() {
         return session;
     }
 
-    public void setSession(SRCPSession session) {
+    protected void setSession(SRCPSession session) {
         this.session = session;
     }
 
-    public boolean isInitialized() {
+    protected boolean isInitialized() {
         return initialized;
     }
 
@@ -161,6 +151,10 @@ public abstract class Switch implements Constants, Comparable {
         this.defaultState = defaultState;
     }
 
+    public SwitchState getSwitchState() {
+        return switchState;
+    }
+
     public SwitchOrientation getSwitchOrientation() {
         return switchOrientation;
     }
@@ -169,29 +163,17 @@ public abstract class Switch implements Constants, Comparable {
         this.switchOrientation = switchOrientation;
     }
 
-    public SwitchState getSwitchState() {
-        return switchState;
-    }
-
     public String toXML() {
         StringBuffer sb = new StringBuffer();
         sb.append("<Switch ");
-        sb.append(" desc=\""
-            + desc + "\" ");
-        sb.append(" number=\""
-            + number + "\" ");
-        sb.append(" type=\""
-            + getType() + "\" ");
-        sb.append(" bus=\""
-            + bus + "\" ");
-        sb.append(" defaultstate=\""
-            + defaultState + "\" ");
-        sb.append(" orientation=\""
-            + switchOrientation + "\" >\n");
-        sb.append(address.toXML()
-            + "\n");
+        sb.append(" desc=\"" + desc + "\" ");
+        sb.append(" number=\"" + number + "\" ");
+        sb.append(" type=\"" + getType() + "\" ");
+        sb.append(" bus=\"" + bus + "\" ");
+        sb.append(" defaultstate=\"" + defaultState + "\" ");
+        sb.append(" orientation=\"" + switchOrientation + "\" >\n");
+        sb.append(address.toXML() + "\n");
         sb.append("</Switch>\n");
         return sb.toString();
     }
-
 }

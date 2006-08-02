@@ -1,3 +1,4 @@
+
 package ch.fork.AdHocRailway.domain.switches;
 
 import java.util.Set;
@@ -6,8 +7,7 @@ import java.util.TreeSet;
 
 public class SwitchGroup {
     private SortedSet<Switch> switches;
-
-    private String name;
+    private String            name;
 
     public SwitchGroup(String name) {
         this.name = name;
@@ -47,7 +47,7 @@ public class SwitchGroup {
         SwitchGroup newSwitchGroup = new SwitchGroup(name);
         return newSwitchGroup;
     }
-    
+
     public boolean equals(Object o) {
         if (o instanceof SwitchGroup) {
             SwitchGroup sg = (SwitchGroup) o;
@@ -58,8 +58,7 @@ public class SwitchGroup {
 
     public String toXML() {
         StringBuffer sb = new StringBuffer();
-        sb.append("<SwitchGroup name=\""
-            + name + "\">\n");
+        sb.append("<SwitchGroup name=\"" + name + "\">\n");
         for (Switch s : switches) {
             sb.append(s.toXML());
         }

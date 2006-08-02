@@ -1,29 +1,26 @@
+
 package ch.fork.AdHocRailway.ui.switches.configuration;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
-
 import javax.swing.AbstractCellEditor;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.TableCellEditor;
-
 import ch.fork.AdHocRailway.domain.switches.Address;
 
 public class SwitchAddressCellEditor extends AbstractCellEditor implements
     TableCellEditor {
-
     private JTextField addressTextField1, addressTextField2;
 
     public SwitchAddressCellEditor() {
-        addressTextField1 = new JTextField(3);
-        addressTextField2 = new JTextField(3);
+        addressTextField1 = new JTextField(2);
+        addressTextField2 = new JTextField(2);
     }
 
-    public Component getTableCellEditorComponent(JTable table,
-        Object value, boolean isSelected, int row, int column) {
-
+    public Component getTableCellEditorComponent(JTable table, Object value,
+        boolean isSelected, int row, int column) {
         Address addr = (Address) value;
         addressTextField1.setText(Integer.toString(addr.getAddress1()));
         addressTextField2.setText(Integer.toString(addr.getAddress2()));
@@ -31,7 +28,6 @@ public class SwitchAddressCellEditor extends AbstractCellEditor implements
         panel.add(addressTextField1);
         panel.add(addressTextField2);
         return panel;
-
     }
 
     public Object getCellEditorValue() {

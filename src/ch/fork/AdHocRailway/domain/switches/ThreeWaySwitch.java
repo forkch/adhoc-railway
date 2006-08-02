@@ -1,25 +1,21 @@
+
 package ch.fork.AdHocRailway.domain.switches;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import de.dermoba.srcp.client.SRCPSession;
 
 public class ThreeWaySwitch extends Switch {
-
-    private DefaultSwitch switch1;
-
-    private DefaultSwitch switch2;
-
+    private DefaultSwitch        switch1;
+    private DefaultSwitch        switch2;
     private Map<Integer, Switch> addressToSwitch;
 
     public ThreeWaySwitch(int pNumber, String pDesc) {
         this(pNumber, pDesc, 1, new Address(0, 0));
     }
 
-    public ThreeWaySwitch(int pNumber, String pDesc, int pBus,
-        Address address) {
+    public ThreeWaySwitch(int pNumber, String pDesc, int pBus, Address address) {
         super(pNumber, pDesc, pBus, address);
         switch1 = new DefaultSwitch(number, desc, bus, new Address(address
             .getAddress1()));
@@ -30,7 +26,7 @@ public class ThreeWaySwitch extends Switch {
         addressToSwitch.put(address.getAddress2(), switch2);
     }
 
-    public void init() throws SwitchException {
+    protected void init() throws SwitchException {
         super.init();
         switch1.setSession(session);
         switch2.setSession(session);
@@ -39,7 +35,7 @@ public class ThreeWaySwitch extends Switch {
         initialized = true;
     }
 
-    public void term() throws SwitchException {
+    protected void term() throws SwitchException {
         super.term();
         switch1.term();
         switch2.term();
@@ -87,9 +83,18 @@ public class ThreeWaySwitch extends Switch {
         }
     }
 
-    protected void switchPortChanged(int pAddress, int pChangedPort,
-        int value) {
-
+    protected void switchPortChanged(int pAddress, int pChangedPort, int value) {
+        Switch s = addressToSwitch.get(pAddress);
+        s.switchPortChanged(pAddress, pChangedPort, value);
+        if(switch1.getSwitchState() == SwitchState.STRAIGHT && switch2.getSwitchState() == SwitchState.STRAIGHT) {
+            switchState = SwitchState.STRAIGHT;
+        } else if(switch1.getSwitchState() == SwitchState.LEFT && switch2.getSwitchState() == SwitchState.STRAIGHT) {
+            switchState = SwitchState.LEFT;
+        } else if(switch1.getSwitchState() == SwitchState.STRAIGHT && switch2.getSwitchState() == SwitchState.LEFT) {
+            switchState = SwitchState.RIGHT;
+        } else {
+            switchState = SwitchState.UNDEF;
+        }
     }
 
     @Override
@@ -140,7 +145,6 @@ public class ThreeWaySwitch extends Switch {
         switch1.setAddress(new Address(address.getAddress1(), 0));
         switch2.setAddress(new Address(address.getAddress2(), 0));
         addressToSwitch.clear();
-
         addressToSwitch.put(address.getAddress1(), switch1);
         addressToSwitch.put(address.getAddress2(), switch2);
         initialized = false;

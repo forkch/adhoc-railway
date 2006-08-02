@@ -1,3 +1,4 @@
+
 package ch.fork.AdHocRailway.domain.locomotives;
 
 public interface LocomotiveChangeListener {

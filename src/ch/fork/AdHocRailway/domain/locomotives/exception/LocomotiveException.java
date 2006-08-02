@@ -1,7 +1,7 @@
+
 package ch.fork.AdHocRailway.domain.locomotives.exception;
 
 public class LocomotiveException extends Exception {
-
     public LocomotiveException(String msg) {
         super(msg);
     }

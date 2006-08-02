@@ -1,12 +1,14 @@
+
 package ch.fork.AdHocRailway.domain.switches;
 
 import java.util.StringTokenizer;
 
 public class Address {
-
     private int address1;
-
     private int address2;
+    private int bus;
+    private boolean address1Turned;
+    private boolean address2Turned;
 
     public Address(int address1) {
         this(address1, 0);
@@ -25,8 +27,8 @@ public class Address {
 
     public String toXML() {
         StringBuffer sb = new StringBuffer();
-        sb.append("<Address address1=\""
-            + address1 + "\" address2=\"" + address2 + "\" />");
+        sb.append("<Address address1=\"" + address1 + "\" address2=\""
+            + address2 + "\" />");
         return sb.toString();
     }
 
@@ -46,17 +48,22 @@ public class Address {
         this.address2 = address2;
     }
 
-    public boolean equals(Address address) {
-        if (address.getAddress1() == address1
-            && address.getAddress2() == address2) {
-            return true;
-        }
+    public int hashCode() {
+        return Integer.valueOf(address1).hashCode()
+            + Integer.valueOf(address2).hashCode();
+    }
+
+    public boolean equals(Object address){
+        if(address instanceof Address){
+            Address ad = (Address)address;
+            if (ad.address1 == address1 && ad.address2 == address2) {
+                return true;
+            }
+        }   
         return false;
     }
 
     public String toString() {
-        return address1
-            + ", " + address2;
+        return address1 + ", " + address2;
     }
-
 }

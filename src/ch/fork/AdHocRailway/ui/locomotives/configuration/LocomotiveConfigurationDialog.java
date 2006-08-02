@@ -1,3 +1,4 @@
+
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
 import java.awt.BorderLayout;
@@ -15,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
@@ -38,7 +38,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
@@ -47,52 +46,36 @@ import ch.fork.AdHocRailway.domain.locomotives.NoneLocomotive;
 import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.TableResizer;
 
-public class LocomotiveConfigurationDialog extends
-    JDialog
-{
-
+public class LocomotiveConfigurationDialog extends JDialog {
     private Preferences           preferences;
-
     private Frame                 owner;
-
     private boolean               okPressed     = false;
-
     private boolean               cancelPressed = false;
-
     private LocomotiveControl     locomotiveControl;
     private TableModel            locomotiveTableModel;
-    private List<LocomotiveGroup> locomotiveGroups;
-
+    private List<LocomotiveGroup> locomotiveGroupsWorkCopy;
     private TableModel            locomotivesTableModel;
-
     private JTable                locomotivesTable;
     private JPopupMenu            switchGroupPopupMenu;
-
     private JList                 locomotiveGroupList;
-
     private JPanel                locomotivesPanel;
-
     private ListListModel         locomotiveGroupListModel;
-    private SortedSet<Locomotive> locomotives;
+    private SortedSet<Locomotive> locomotivesWorkCopy;
 
-    public LocomotiveConfigurationDialog(Frame owner,
-        Preferences preferences)
-    {
-        super(owner,
-            "Locomotive Configuration",
-            true);
+    public LocomotiveConfigurationDialog(Frame owner, Preferences preferences) {
+        super(owner, "Locomotive Configuration", true);
         this.owner = owner;
         this.preferences = preferences;
         this.locomotiveControl = LocomotiveControl.getInstance();
-        this.locomotives = new TreeSet<Locomotive>();
+        this.locomotivesWorkCopy = new TreeSet<Locomotive>();
         for (Locomotive l : locomotiveControl.getLocomotives()) {
             Locomotive clone = l.clone();
-            this.locomotives.add(clone);
+            this.locomotivesWorkCopy.add(clone);
         }
-        this.locomotiveGroups = new ArrayList<LocomotiveGroup>();
+        this.locomotiveGroupsWorkCopy = new ArrayList<LocomotiveGroup>();
         for (LocomotiveGroup lg : locomotiveControl.getLocomotiveGroups()) {
             LocomotiveGroup clone = lg.clone();
-            this.locomotiveGroups.add(clone);
+            this.locomotiveGroupsWorkCopy.add(clone);
             for (Locomotive l : lg.getLocomotives()) {
                 clone.addLocomotive(l);
             }
@@ -100,34 +83,23 @@ public class LocomotiveConfigurationDialog extends
         initGUI();
     }
 
-    private void initGUI()
-    {
-
+    private void initGUI() {
         JPanel locomotiveGroupPanel = createLocomotiveGroupPanel();
-        add(locomotiveGroupPanel,
-            BorderLayout.WEST);
-
+        add(locomotiveGroupPanel, BorderLayout.WEST);
         JPanel locomotivesPanel = createLocomotivesPanel();
-
-        add(locomotivesPanel,
-            BorderLayout.CENTER);
+        add(locomotivesPanel, BorderLayout.CENTER);
         updateLocomotivesPanel();
-
         JButton okButton = new JButton("OK");
-        okButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 okPressed = true;
                 LocomotiveConfigurationDialog.this.setVisible(false);
             }
         });
         JButton cancelButton = new JButton("Cancel");
         cancelPressed = false;
-        cancelButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 cancelPressed = true;
                 LocomotiveConfigurationDialog.this.setVisible(false);
             }
@@ -135,27 +107,22 @@ public class LocomotiveConfigurationDialog extends
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         buttonPanel.add(okButton);
         buttonPanel.add(cancelButton);
-        add(buttonPanel,
-            BorderLayout.SOUTH);
-
+        add(buttonPanel, BorderLayout.SOUTH);
         pack();
         setVisible(true);
     }
 
-    private JPanel createLocomotiveGroupPanel()
-    {
+    private JPanel createLocomotiveGroupPanel() {
         JPanel locomotiveGroupPanel = new JPanel(new BorderLayout());
-        TitledBorder title = BorderFactory.createTitledBorder("Locomotive-Groups");
+        TitledBorder title = BorderFactory
+            .createTitledBorder("Locomotive-Groups");
         locomotiveGroupPanel.setBorder(title);
-        locomotiveGroupPanel.getInsets(new Insets(5,
-            5,
-            5,
-            5));
-
-        locomotiveGroupListModel = new ListListModel<LocomotiveGroup>(locomotiveGroups);
+        locomotiveGroupPanel.getInsets(new Insets(5, 5, 5, 5));
+        locomotiveGroupListModel = new ListListModel<LocomotiveGroup>(
+            locomotiveGroupsWorkCopy);
         locomotiveGroupList = new JList(locomotiveGroupListModel);
-        locomotiveGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
+        locomotiveGroupList
+            .setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         switchGroupPopupMenu = new JPopupMenu();
         JMenuItem addItem = new JMenuItem("Add");
         JMenuItem removeItem = new JMenuItem("Remove");
@@ -168,133 +135,100 @@ public class LocomotiveConfigurationDialog extends
         switchGroupPopupMenu.add(new JSeparator());
         switchGroupPopupMenu.add(moveUpItem);
         switchGroupPopupMenu.add(moveDownItem);
-
         JButton addSwitchGroupButton = new JButton("Add");
         JButton removeSwitchGroupButton = new JButton("Remove");
-
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(addSwitchGroupButton);
         buttonPanel.add(removeSwitchGroupButton);
-
-        locomotiveGroupPanel.add(locomotiveGroupList,
-            BorderLayout.CENTER);
-        locomotiveGroupPanel.add(buttonPanel,
-            BorderLayout.SOUTH);
-
+        locomotiveGroupPanel.add(locomotiveGroupList, BorderLayout.CENTER);
+        locomotiveGroupPanel.add(buttonPanel, BorderLayout.SOUTH);
         /* Install ActionListeners */
-        locomotiveGroupList.addListSelectionListener(new ListSelectionListener()
-        {
-            public void valueChanged(ListSelectionEvent e)
-            {
-                updateLocomotivesPanel();
-            }
-        });
-
-        locomotiveGroupList.addMouseListener(new MouseAdapter()
-        {
-
-            public void mousePressed(MouseEvent e)
-            {
+        locomotiveGroupList
+            .addListSelectionListener(new ListSelectionListener() {
+                public void valueChanged(ListSelectionEvent e) {
+                    updateLocomotivesPanel();
+                }
+            });
+        locomotiveGroupList.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
                 maybeShowPopup(e);
             }
 
-            public void mouseReleased(MouseEvent e)
-            {
+            public void mouseReleased(MouseEvent e) {
                 maybeShowPopup(e);
             }
 
-            private void maybeShowPopup(MouseEvent e)
-            {
+            private void maybeShowPopup(MouseEvent e) {
                 if (e.isPopupTrigger()) {
-                    switchGroupPopupMenu.show(e.getComponent(),
-                        e.getX(),
-                        e.getY());
+                    switchGroupPopupMenu.show(e.getComponent(), e.getX(), e
+                        .getY());
                 }
             }
         });
-
         addItem.addActionListener(new AddLocomotiveGroupAction());
         addSwitchGroupButton.addActionListener(new AddLocomotiveGroupAction());
         removeItem.addActionListener(new RemoveLocomotiveGroupAction());
-        removeSwitchGroupButton.addActionListener(new RemoveLocomotiveGroupAction());
+        removeSwitchGroupButton
+            .addActionListener(new RemoveLocomotiveGroupAction());
         renameItem.addActionListener(new RenameLocomotiveGroupAction());
         moveUpItem.addActionListener(new MoveLocomotiveGroupAction(true));
         moveDownItem.addActionListener(new MoveLocomotiveGroupAction(false));
         return locomotiveGroupPanel;
     }
 
-    private JPanel createLocomotivesPanel()
-    {
+    private JPanel createLocomotivesPanel() {
         locomotivesPanel = new JPanel(new BorderLayout());
-        locomotivesPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-            .put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE,
-                0),
-                "escapeAction");
-        locomotivesPanel.getActionMap()
-            .put("escapeAction",
-                new AbstractAction()
-                {
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        cancelPressed = true;
-                        LocomotiveConfigurationDialog.this.setVisible(false);
-                    }
-                });
-
-        locomotivesPanel.getInsets(new Insets(5,
-            5,
-            5,
-            5));
-
-        TitledBorder title = BorderFactory.createTitledBorder("Locomotive-Group");
+        locomotivesPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "escapeAction");
+        locomotivesPanel.getActionMap().put("escapeAction",
+            new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    cancelPressed = true;
+                    LocomotiveConfigurationDialog.this.setVisible(false);
+                }
+            });
+        locomotivesPanel.getInsets(new Insets(5, 5, 5, 5));
+        TitledBorder title = BorderFactory
+            .createTitledBorder("Locomotive-Group");
         locomotivesPanel.setBorder(title);
-
-        locomotivesTableModel = new LocomotiveTableModel(locomotives);
+        locomotivesTableModel = new LocomotiveTableModel(locomotivesWorkCopy);
         locomotivesTable = new JTable(locomotivesTableModel);
-
         JScrollPane switchGroupTablePane = new JScrollPane(locomotivesTable);
-        switchGroupTablePane.setPreferredSize(new Dimension(600,
-            400));
-        locomotivesPanel.add(switchGroupTablePane,
-            BorderLayout.CENTER);
-
+        switchGroupTablePane.setPreferredSize(new Dimension(600, 400));
+        locomotivesPanel.add(switchGroupTablePane, BorderLayout.CENTER);
         JComboBox locomotiveTypeCombobox = new JComboBox();
         locomotiveTypeCombobox.addItem("NoneLocomotive");
         locomotiveTypeCombobox.addItem("DeltaLocomotive");
         locomotiveTypeCombobox.addItem("DigitalLocomotive");
-
         TableColumn locomotiveTypeColumn = locomotivesTable.getColumnModel()
             .getColumn(1);
-        locomotiveTypeColumn.setCellEditor(new DefaultCellEditor(locomotiveTypeCombobox));
-
+        locomotiveTypeColumn.setCellEditor(new DefaultCellEditor(
+            locomotiveTypeCombobox));
         JButton addLocomotiveButton = new JButton("Add");
         JButton removeLocomotiveButton = new JButton("Remove");
-
         addLocomotiveButton.addActionListener(new AddLocomotiveAction());
         removeLocomotiveButton.addActionListener(new RemoveLocomotiveAction());
-
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(addLocomotiveButton);
         buttonPanel.add(removeLocomotiveButton);
-
-        locomotivesPanel.add(buttonPanel,
-            BorderLayout.SOUTH);
+        locomotivesPanel.add(buttonPanel, BorderLayout.SOUTH);
         return locomotivesPanel;
     }
 
-    private void updateLocomotivesPanel()
-    {
-        LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) (locomotiveGroupList.getSelectedValue());
+    private void updateLocomotivesPanel() {
+        LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) (locomotiveGroupList
+            .getSelectedValue());
         if (selectedLocomotiveGroup == null) {
-            ((TitledBorder) locomotivesPanel.getBorder()).setTitle("Locomotive-Group");
+            ((TitledBorder) locomotivesPanel.getBorder())
+                .setTitle("Locomotive-Group");
         } else {
-            ((TitledBorder) locomotivesPanel.getBorder()).setTitle("Locomotive-Group '" + selectedLocomotiveGroup.getName()
-                + "'");
+            ((TitledBorder) locomotivesPanel.getBorder())
+                .setTitle("Locomotive-Group '"
+                    + selectedLocomotiveGroup.getName() + "'");
         }
-
-        ((LocomotiveTableModel) locomotivesTableModel).setLocomotiveGroup(selectedLocomotiveGroup);
-        TableResizer.adjustColumnWidths(locomotivesTable,
-            30);
+        ((LocomotiveTableModel) locomotivesTableModel)
+            .setLocomotiveGroup(selectedLocomotiveGroup);
+        TableResizer.adjustColumnWidths(locomotivesTable, 30);
         if (locomotivesTable.getRowCount() > 0) {
             TableResizer.adjustRowHeight(locomotivesTable);
         }
@@ -303,151 +237,112 @@ public class LocomotiveConfigurationDialog extends
         pack();
     }
 
-    public boolean isCancelPressed()
-    {
+    public boolean isCancelPressed() {
         return cancelPressed;
     }
 
-    public boolean isOkPressed()
-    {
+    public boolean isOkPressed() {
         return okPressed;
     }
 
-    public Collection<Locomotive> getLocomotives()
-    {
-        return locomotives;
+    public Collection<Locomotive> getLocomotives() {
+        return locomotivesWorkCopy;
     }
 
-    public Collection<LocomotiveGroup> getLocomotiveGroups()
-    {
-        return locomotiveGroups;
+    public Collection<LocomotiveGroup> getLocomotiveGroups() {
+        return locomotiveGroupsWorkCopy;
     }
 
-    class AddLocomotiveGroupAction extends
-        AbstractAction
-    {
-
-        public void actionPerformed(ActionEvent arg0)
-        {
-            String newGroupName = JOptionPane.showInputDialog(LocomotiveConfigurationDialog.this,
+    class AddLocomotiveGroupAction extends AbstractAction {
+        public void actionPerformed(ActionEvent arg0) {
+            String newGroupName = JOptionPane.showInputDialog(
+                LocomotiveConfigurationDialog.this,
                 "Enter the name of the new Locomotive-Group",
-                "Add Locomotive-Group",
-                JOptionPane.QUESTION_MESSAGE);
+                "Add Locomotive-Group", JOptionPane.QUESTION_MESSAGE);
             LocomotiveGroup newSection = new LocomotiveGroup(newGroupName);
-            locomotiveGroups.add(newSection);
+            locomotiveGroupsWorkCopy.add(newSection);
             locomotiveGroupListModel.updated();
-            locomotiveGroupList.setSelectedValue(newSection,
-                true);
+            locomotiveGroupList.setSelectedValue(newSection, true);
         }
-
     }
-
-    class RemoveLocomotiveGroupAction extends
-        AbstractAction
-    {
-
-        public void actionPerformed(ActionEvent arg0)
-        {
-            LocomotiveGroup groupToDelete = (LocomotiveGroup) (locomotiveGroupList.getSelectedValue());
-            int response = JOptionPane.showConfirmDialog(LocomotiveConfigurationDialog.this,
+    class RemoveLocomotiveGroupAction extends AbstractAction {
+        public void actionPerformed(ActionEvent arg0) {
+            LocomotiveGroup groupToDelete = (LocomotiveGroup) (locomotiveGroupList
+                .getSelectedValue());
+            int response = JOptionPane.showConfirmDialog(
+                LocomotiveConfigurationDialog.this,
                 "Really remove Locomotive-Group '" + groupToDelete.getName()
-                    + "' ?",
-                "Remove Locomotive-Group",
+                    + "' ?", "Remove Locomotive-Group",
                 JOptionPane.YES_NO_OPTION);
-
             if (response == JOptionPane.YES_OPTION) {
-                locomotiveGroups.remove(groupToDelete);
+                locomotiveGroupsWorkCopy.remove(groupToDelete);
                 locomotiveGroupListModel.updated();
             }
         }
     }
-
-    class RenameLocomotiveGroupAction extends
-        AbstractAction
-    {
-
-        public void actionPerformed(ActionEvent e)
-        {
-            LocomotiveGroup groupToRename = (LocomotiveGroup) (locomotiveGroupList.getSelectedValue());
-            String newSectionName = JOptionPane.showInputDialog(LocomotiveConfigurationDialog.this,
-                "Enter new name",
-                "Rename Locomotive-Group",
-                JOptionPane.QUESTION_MESSAGE);
+    class RenameLocomotiveGroupAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            LocomotiveGroup groupToRename = (LocomotiveGroup) (locomotiveGroupList
+                .getSelectedValue());
+            String newSectionName = JOptionPane.showInputDialog(
+                LocomotiveConfigurationDialog.this, "Enter new name",
+                "Rename Locomotive-Group", JOptionPane.QUESTION_MESSAGE);
             if (!newSectionName.equals("")) {
                 groupToRename.setName(newSectionName);
                 locomotiveGroupListModel.updated();
             }
         }
     }
-
-    class AddLocomotiveAction extends
-        AbstractAction
-    {
-        public void actionPerformed(ActionEvent e)
-        {
-            LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) (locomotiveGroupList.getSelectedValue());
+    class AddLocomotiveAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) (locomotiveGroupList
+                .getSelectedValue());
             Locomotive newLocomotive = new NoneLocomotive();
-
-            locomotives.add(newLocomotive);
+            locomotivesWorkCopy.add(newLocomotive);
             selectedLocomotiveGroup.addLocomotive(newLocomotive);
-
             updateLocomotivesPanel();
         }
     }
-
-    class RemoveLocomotiveAction extends
-        AbstractAction
-    {
-        public void actionPerformed(ActionEvent e)
-        {
+    class RemoveLocomotiveAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
             if (locomotivesTable.isEditing())
-                locomotivesTable.getCellEditor()
-                    .stopCellEditing();
-
-            LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) (locomotiveGroupList.getSelectedValue());
-            Locomotive locomotiveToRemove = ((LocomotiveTableModel) locomotivesTableModel).getLocomotiveAt(locomotivesTable.getSelectedRow());
+                locomotivesTable.getCellEditor().stopCellEditing();
+            LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) (locomotiveGroupList
+                .getSelectedValue());
+            Locomotive locomotiveToRemove = ((LocomotiveTableModel) locomotivesTableModel)
+                .getLocomotiveAt(locomotivesTable.getSelectedRow());
             selectedLocomotiveGroup.removeLocomotive(locomotiveToRemove);
-            locomotives.remove(locomotiveToRemove);
+            locomotivesWorkCopy.remove(locomotiveToRemove);
             updateLocomotivesPanel();
         }
     }
-
-    class MoveLocomotiveGroupAction extends
-        AbstractAction
-    {
-
+    class MoveLocomotiveGroupAction extends AbstractAction {
         private boolean up;
 
-        public MoveLocomotiveGroupAction(boolean up)
-        {
+        public MoveLocomotiveGroupAction(boolean up) {
             this.up = up;
         }
 
-        public void actionPerformed(ActionEvent e)
-        {
-            LocomotiveGroup groupToMove = (LocomotiveGroup) (locomotiveGroupList.getSelectedValue());
-
-            int oldIndex = locomotiveGroups.indexOf(groupToMove);
+        public void actionPerformed(ActionEvent e) {
+            LocomotiveGroup groupToMove = (LocomotiveGroup) (locomotiveGroupList
+                .getSelectedValue());
+            int oldIndex = locomotiveGroupsWorkCopy.indexOf(groupToMove);
             int newIndex = oldIndex;
             if (up) {
                 if (oldIndex != 0) {
-
                     newIndex = oldIndex - 1;
-
                 } else {
                     return;
                 }
             } else {
-                if (oldIndex != locomotiveGroups.size() - 1) {
-
+                if (oldIndex != locomotiveGroupsWorkCopy.size() - 1) {
                     newIndex = oldIndex + 1;
                 } else {
                     return;
                 }
             }
-            locomotiveGroups.remove(oldIndex);
-            locomotiveGroups.add(newIndex,
-                groupToMove);
+            locomotiveGroupsWorkCopy.remove(oldIndex);
+            locomotiveGroupsWorkCopy.add(newIndex, groupToMove);
             locomotiveGroupList.setSelectedIndex(newIndex);
             locomotiveGroupListModel.updated();
             updateLocomotivesPanel();

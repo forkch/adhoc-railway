@@ -1,11 +1,10 @@
+
 package ch.fork.AdHocRailway.ui.switches.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.table.AbstractTableModel;
-
 import ch.fork.AdHocRailway.domain.switches.Address;
 import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
@@ -16,12 +15,9 @@ import ch.fork.AdHocRailway.domain.switches.Switch.SwitchOrientation;
 import ch.fork.AdHocRailway.domain.switches.Switch.SwitchState;
 
 public class SwitchesTableModel extends AbstractTableModel {
-
-    private final String[] columnNames = { "Switch #", "Type", "Bus",
+    private final String[]       columnNames = { "Switch #", "Type", "Bus",
         "Address", "Default State", "Orientation", "Desc" };
-
-    private SwitchGroup switchGroup;
-
+    private SwitchGroup          switchGroup;
     private Map<Integer, Switch> switchNumberToSwitch;
 
     public SwitchesTableModel(Map<Integer, Switch> switchNumberToSwitch) {
@@ -54,7 +50,6 @@ public class SwitchesTableModel extends AbstractTableModel {
         if (switchGroup == null) {
             return null;
         }
-
         List<Switch> switches = new ArrayList(switchGroup.getSwitches());
         Switch switchOfThisRow = switches.get(rowIndex);
         switch (columnIndex) {
@@ -81,8 +76,7 @@ public class SwitchesTableModel extends AbstractTableModel {
     public boolean isCellEditable(int row, int col) {
         List<Switch> switches = new ArrayList(switchGroup.getSwitches());
         Switch switchOfThisRow = switches.get(row);
-        if (col == 4
-            && switchOfThisRow.getType().equals("ThreeWaySwitch")) {
+        if (col == 4 && switchOfThisRow.getType().equals("ThreeWaySwitch")) {
             return false;
         }
         return true;
@@ -93,7 +87,6 @@ public class SwitchesTableModel extends AbstractTableModel {
             return;
         }
         List<Switch> switches = new ArrayList<Switch>(switchGroup.getSwitches());
-        
         Switch switchOfThisRow = switches.get(row);
         switch (col) {
         case 0:
@@ -105,17 +98,16 @@ public class SwitchesTableModel extends AbstractTableModel {
                 switchOfThisRow = new DefaultSwitch(tmp.getNumber(), tmp
                     .getDesc(), tmp.getBus(), tmp.getAddress());
             } else if (value.equals("DoubleCrossSwitch")) {
-                switchOfThisRow = new DoubleCrossSwitch(tmp.getNumber(),
-                    tmp.getDesc(), tmp.getBus(), tmp.getAddress());
+                switchOfThisRow = new DoubleCrossSwitch(tmp.getNumber(), tmp
+                    .getDesc(), tmp.getBus(), tmp.getAddress());
             } else if (value.equals("ThreeWaySwitch")) {
                 switchOfThisRow = new ThreeWaySwitch(tmp.getNumber(), tmp
                     .getDesc(), tmp.getBus(), tmp.getAddress());
             }
-            switchOfThisRow.setSession(tmp.getSession());
             switchGroup.replaceSwitch(tmp, switchOfThisRow);
             switchNumberToSwitch.remove(tmp.getNumber());
-            switchNumberToSwitch.put(
-                switchOfThisRow.getNumber(), switchOfThisRow);
+            switchNumberToSwitch.put(switchOfThisRow.getNumber(),
+                switchOfThisRow);
             tmp = null;
             break;
         case 2:
@@ -128,8 +120,7 @@ public class SwitchesTableModel extends AbstractTableModel {
             switchOfThisRow.setDefaultState((SwitchState) value);
             break;
         case 5:
-            switchOfThisRow
-                .setSwitchOrientation((SwitchOrientation) value);
+            switchOfThisRow.setSwitchOrientation((SwitchOrientation) value);
             break;
         case 6:
             switchOfThisRow.setDesc((String) value);
@@ -146,5 +137,4 @@ public class SwitchesTableModel extends AbstractTableModel {
     public void setSwitchGroup(SwitchGroup switchGroup) {
         this.switchGroup = switchGroup;
     }
-
 }
