@@ -29,7 +29,6 @@ public class Preferences {
         preferences = new HashMap<String, String>();
         hostnames = new ArrayList<String>();
         hostnames.add("localhost");
-        hostnames.add("192.168.2.1");
         setStringValue("Hostname", "localhost");
         setIntValue("Portnumber", 12345);
         setIntValue("DefaultActivationTime", 50);
@@ -37,6 +36,9 @@ public class Preferences {
         setIntValue("LocomotiveControlesAmount", 5);
         setStringValue("KeyBoardLayout", "Swiss German");
         setStringValue("Interface6051", "Y");
+        setIntValue("SwitchControlesAmount", 5);
+        setIntValue("LocomotivesControlesAmount", 5);
+        
     }
 
     public static Preferences getInstance() {
