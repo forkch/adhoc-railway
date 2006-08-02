@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Sealed: true
-Main-Class: ch.fork.RailControl.ui.RailControlGUI
+Main-Class: ch.fork.AdHocRailway.ui.AdHocRailway
 Class-Path: jsrcpc.jar
 
