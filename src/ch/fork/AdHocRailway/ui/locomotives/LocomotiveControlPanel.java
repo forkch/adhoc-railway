@@ -51,6 +51,7 @@ public class LocomotiveControlPanel extends JPanel {
     public LocomotiveControlPanel() {
         super();
         locomotiveWidgets = new ArrayList<LocomotiveWidget>();
+        initGUI();
     }
 
     private void initGUI() {

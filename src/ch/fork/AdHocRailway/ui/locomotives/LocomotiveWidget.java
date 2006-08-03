@@ -9,6 +9,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -35,6 +37,7 @@ import ch.fork.AdHocRailway.domain.locomotives.NoneLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
+import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 
 public class LocomotiveWidget extends JPanel implements
     LocomotiveChangeListener {
@@ -83,6 +86,8 @@ public class LocomotiveWidget extends JPanel implements
         JPanel controlPanel = initControlPanel();
         JPanel centerPanel = new JPanel(new BorderLayout());
         desc = new JLabel(myLocomotive.getDesc(), SwingConstants.CENTER);
+
+        addMouseListener(new MouseAction());
         centerPanel.add(controlPanel, BorderLayout.CENTER);
         centerPanel.add(desc, BorderLayout.NORTH);
         add(centerPanel, BorderLayout.CENTER);
@@ -426,6 +431,24 @@ public class LocomotiveWidget extends JPanel implements
                 ExceptionProcessor.getInstance().processException(e3);
             }
             speedBar.requestFocus();
+        }
+    }
+    private class MouseAction extends MouseAdapter {
+        public void mouseClicked(MouseEvent e) {
+
+            if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
+                LocomotiveConfig locomotiveConfig = new LocomotiveConfig(
+                    myLocomotive);
+                if (locomotiveConfig.isOkPressed()) {
+                    LocomotiveControl lc = LocomotiveControl.getInstance();
+                    lc.unregisterLocomotive(myLocomotive);
+                    
+                    myLocomotive = locomotiveConfig.getLocomotive();
+                    lc.registerLocomotive(myLocomotive);
+                    desc.setText(myLocomotive.getDesc());
+                    locomotiveChanged(myLocomotive);
+                }
+            }
         }
     }
 }

@@ -18,7 +18,7 @@ import de.dermoba.srcp.devices.GLInfoListener;
 public class LocomotiveControl implements GLInfoListener {
     private static LocomotiveControl       instance;
     private List<LocomotiveChangeListener> listeners;
-    private Map<Address, Locomotive> addressToLocomotives;
+    private Map<Address, Locomotive>       addressToLocomotives;
     private List<LocomotiveGroup>          locomotiveGroups;
     private SRCPSession                    session;
 
@@ -36,8 +36,8 @@ public class LocomotiveControl implements GLInfoListener {
     }
 
     public void registerLocomotive(Locomotive locomotiveToRegister) {
-        addressToLocomotives
-            .put(locomotiveToRegister.getAddress(), locomotiveToRegister);
+        addressToLocomotives.put(locomotiveToRegister.getAddress(),
+            locomotiveToRegister);
         locomotiveToRegister.setSession(session);
     }
 
@@ -48,9 +48,13 @@ public class LocomotiveControl implements GLInfoListener {
         }
     }
 
-    public void unregisterAllLocomotives() throws LocomotiveException {
+    public void unregisterLocomotive(Locomotive locomotiveToUnregister) {
+        addressToLocomotives.remove(locomotiveToUnregister.getAddress());
+    }
+
+    public void unregisterAllLocomotives() {
         for (Locomotive l : addressToLocomotives.values()) {
-            l.term();
+            // l.term();
         }
         addressToLocomotives.clear();
     }
@@ -173,15 +177,14 @@ public class LocomotiveControl implements GLInfoListener {
         }
     }
 
-    private void checkSwitch(Locomotive locomotive)
-        throws LocomotiveException {
+    private void checkSwitch(Locomotive locomotive) throws LocomotiveException {
         if (locomotive instanceof NoneLocomotive) {
             return;
         }
         if (locomotive.getSession() == null) {
             throw new LocomotiveException(Constants.ERR_NO_SESSION);
         }
-        if(locomotive.getAddress().getAddress() == 0) {
+        if (locomotive.getAddress().getAddress() == 0) {
             throw new LocomotiveException(Constants.ERR_INVALID_ADDRESS);
         }
     }

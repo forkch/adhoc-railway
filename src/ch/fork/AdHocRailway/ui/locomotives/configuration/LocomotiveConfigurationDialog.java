@@ -198,8 +198,8 @@ public class LocomotiveConfigurationDialog extends JDialog {
         JScrollPane switchGroupTablePane = new JScrollPane(locomotivesTable);
         switchGroupTablePane.setPreferredSize(new Dimension(600, 400));
         locomotivesPanel.add(switchGroupTablePane, BorderLayout.CENTER);
+
         JComboBox locomotiveTypeCombobox = new JComboBox();
-        locomotiveTypeCombobox.addItem("NoneLocomotive");
         locomotiveTypeCombobox.addItem("DeltaLocomotive");
         locomotiveTypeCombobox.addItem("DigitalLocomotive");
         TableColumn locomotiveTypeColumn = locomotivesTable.getColumnModel()
@@ -300,9 +300,18 @@ public class LocomotiveConfigurationDialog extends JDialog {
             LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) (locomotiveGroupList
                 .getSelectedValue());
             Locomotive newLocomotive = new NoneLocomotive();
-            locomotivesWorkCopy.add(newLocomotive);
-            selectedLocomotiveGroup.addLocomotive(newLocomotive);
+
+            LocomotiveConfig locomotiveConfig = new LocomotiveConfig(
+                LocomotiveConfigurationDialog.this, newLocomotive);
+            if (locomotiveConfig.isOkPressed()) {
+
+                locomotivesWorkCopy.add(locomotiveConfig.getLocomotive());
+                selectedLocomotiveGroup.addLocomotive(locomotiveConfig
+                    .getLocomotive());
+            }
+            newLocomotive = null;
             updateLocomotivesPanel();
+
         }
     }
     class RemoveLocomotiveAction extends AbstractAction {

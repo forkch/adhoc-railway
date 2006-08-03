@@ -16,13 +16,6 @@ public class Address {
         address = Integer.parseInt(anAddress);
     }
 
-    public String toXML() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<Address bus=\"" + bus + "\" address=\"" + address
-            + "\" switched=\"" + addressSwitched + "\" />");
-        return sb.toString();
-    }
-
     public int getAddress() {
         return address;
     }

@@ -35,13 +35,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
+import ch.fork.AdHocRailway.domain.configuration.XMLExporter;
 import ch.fork.AdHocRailway.domain.configuration.XMLImporter;
+import ch.fork.AdHocRailway.domain.configuration.exception.ConfigurationException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
-import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
@@ -129,27 +128,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         return locomotiveControlPanel;
     }
 
-    public String toXML() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<?xml version=\"1.0\"?>\n");
-        sb.append("<RailControl xmlns=\"http://www.fork.ch/RailControl\" "
-            + "ExporterVersion=\"0.1\">\n");
-        sb.append("<SwitchConfiguration>\n");
-        for (SwitchGroup sg : SwitchControl.getInstance().getSwitchGroups()) {
-            sb.append(sg.toXML());
-        }
-        sb.append("</SwitchConfiguration>\n");
-        sb.append("<LocomotiveConfiguration>\n");
-        for (LocomotiveGroup lg : LocomotiveControl.getInstance()
-            .getLocomotiveGroups()) {
-            sb.append(lg.toXML());
-        }
-        sb.append("</LocomotiveConfiguration>\n");
-        sb.append(Preferences.getInstance().toXML());
-        sb.append("</RailControl>");
-        return sb.toString();
-    }
-
     public void processException(Exception e) {
         JOptionPane.showMessageDialog(this, e.getMessage(), "Error occured",
             JOptionPane.ERROR_MESSAGE);
@@ -216,9 +194,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         private void openFile(File file) {
             LocomotiveControl lc = LocomotiveControl.getInstance();
             SwitchControl sc = SwitchControl.getInstance();
+
             try {
-                XMLImporter importer = new XMLImporter(Preferences
-                    .getInstance(), file.getAbsolutePath());
+                XMLImporter importer = new XMLImporter(file.getAbsolutePath());
+
                 hostnameLabel.setText(Preferences.getInstance().getStringValue(
                     "Hostname"));
                 if (recentFilesMenu.getComponentCount() > 1) {
@@ -235,10 +214,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                     + actualFile.getAbsolutePath() + " ]");
                 switchesControlPanel.update(sc.getSwitchGroups());
                 locomotiveControlPanel.update(lc.getLocomotiveGroups());
-            } catch (LocomotiveException e) {
+            } catch (ConfigurationException e) {
                 ExceptionProcessor.getInstance().processException(
-                    "Error unregistering locomotives", e);
+                    "Error loading file", e);
             }
+
         }
     }
     protected class SaveAsAction extends AbstractAction {
@@ -254,14 +234,17 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 File file = fileChooser.getSelectedFile();
                 // This is where a real application would open
                 // the file.
-                String xmlConfig = AdHocRailway.this.toXML();
                 FileWriter fileWriter = null;
                 try {
+                    String xmlConfig = XMLExporter.export(0.2);
                     fileWriter = new FileWriter(file);
                     fileWriter.write(xmlConfig);
                     updateCommandHistory("Configuration saved: "
                         + file.getName());
                 } catch (IOException e1) {
+                    ExceptionProcessor.getInstance().processException(
+                        "Error writing file", e1);
+                } catch (ConfigurationException e1) {
                     ExceptionProcessor.getInstance().processException(
                         "Error writing file", e1);
                 } finally {
@@ -285,13 +268,18 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
         public void actionPerformed(ActionEvent e) {
             if (actualFile != null) {
-                String xmlConfig = AdHocRailway.this.toXML();
+
                 FileWriter fileWriter = null;
                 try {
+                    String xmlConfig = XMLExporter.export(0.2);
                     fileWriter = new FileWriter(actualFile);
                     fileWriter.write(xmlConfig);
                     updateCommandHistory("Configuration saved: "
                         + actualFile.getName());
+                } catch (ConfigurationException e1) {
+                    ExceptionProcessor.getInstance().processException(
+                        "Error writing file", e1);
+
                 } catch (IOException e1) {
                     ExceptionProcessor.getInstance().processException(
                         "Error writing file", e1);
@@ -355,16 +343,14 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             LocomotiveConfigurationDialog locomotiveConfig = new LocomotiveConfigurationDialog(
                 AdHocRailway.this, Preferences.getInstance());
             if (locomotiveConfig.isOkPressed()) {
-                try {
-                    lc.unregisterAllLocomotives();
-                    lc.unregisterAllLocomotiveGroups();
-                    lc.registerLocomotives(locomotiveConfig.getLocomotives());
-                    lc.registerLocomotiveGroups(locomotiveConfig
-                        .getLocomotiveGroups());
-                    locomotiveControlPanel.update(lc.getLocomotiveGroups());
-                } catch (LocomotiveException e1) {
-                    ExceptionProcessor.getInstance().processException(e1);
-                }
+
+                lc.unregisterAllLocomotives();
+                lc.unregisterAllLocomotiveGroups();
+                lc.registerLocomotives(locomotiveConfig.getLocomotives());
+                lc.registerLocomotiveGroups(locomotiveConfig
+                    .getLocomotiveGroups());
+                locomotiveControlPanel.update(lc.getLocomotiveGroups());
+
                 updateCommandHistory("Locomotive configuration changed");
             }
         }

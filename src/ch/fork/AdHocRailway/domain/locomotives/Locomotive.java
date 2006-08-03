@@ -14,6 +14,7 @@ public abstract class Locomotive implements Constants, Comparable {
     protected String  name;
     protected String  desc;
     protected Address address;
+    protected String  image;
 
     public enum Direction {
         FORWARD, REVERSE, UNDEF
@@ -182,13 +183,6 @@ public abstract class Locomotive implements Constants, Comparable {
         }
     }
 
-    public String toXML() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<Locomotive name=\"" + name + "\" type=\"" + getType()
-            + "\" bus=\"" + address.getBus() + "\" address=\""
-            + address.getAddress() + "\" desc=\"" + desc + "\" />\n");
-        return sb.toString();
-    }
 
     public int compareTo(Object o) {
         if (o instanceof Locomotive) {
@@ -266,5 +260,13 @@ public abstract class Locomotive implements Constants, Comparable {
 
     public boolean[] getFunctions() {
         return functions;
+    }
+
+    public String getImage() {
+        return this.image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

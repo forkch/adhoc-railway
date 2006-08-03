@@ -48,15 +48,6 @@ public class LocomotiveGroup implements Comparable {
         return newLocomotiveGroup;
     }
 
-    public String toXML() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<LocomotiveGroup name=\"" + name + "\">\n");
-        for (Locomotive l : locomotives) {
-            sb.append(l.toXML());
-        }
-        sb.append("</LocomotiveGroup>\n");
-        return sb.toString();
-    }
 
     public int compareTo(Object o) {
         if (o instanceof LocomotiveGroup) {

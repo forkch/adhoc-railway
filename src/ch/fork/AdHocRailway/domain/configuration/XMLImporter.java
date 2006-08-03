@@ -12,45 +12,23 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import ch.fork.AdHocRailway.domain.Address;
-import ch.fork.AdHocRailway.domain.locomotives.DeltaLocomotive;
-import ch.fork.AdHocRailway.domain.locomotives.DigitalLocomotive;
-import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.NoneLocomotive;
-import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
-import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
-import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
-import ch.fork.AdHocRailway.domain.switches.Switch;
-import ch.fork.AdHocRailway.domain.switches.SwitchControl;
-import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
-import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
-import ch.fork.AdHocRailway.domain.switches.Switch.SwitchOrientation;
-import ch.fork.AdHocRailway.domain.switches.Switch.SwitchState;
+import ch.fork.AdHocRailway.domain.Constants;
+import ch.fork.AdHocRailway.domain.configuration.exception.ConfigurationException;
+import ch.fork.AdHocRailway.domain.configuration.importer.XMLImporter_0_1;
+import ch.fork.AdHocRailway.domain.configuration.importer.XMLImporter_0_2;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class XMLImporter extends DefaultHandler implements ContentHandler {
-    private Preferences       preferences;
-    private Switch            actualSwitch;
-    private SwitchGroup       actualSwitchGroup;
-    private Address           actualAddress;
-    private Address[]         actualAddresses;
-    private int               actualAddressCounter = 0;
-    private SwitchControl     switchControl;
-    private Locomotive        actualLocomotive;
-    private LocomotiveGroup   actualLocomotiveGroup;
-    private LocomotiveControl locomotiveControl;
 
-    public XMLImporter(Preferences preferences, String filename)
-        throws LocomotiveException {
-        this.preferences = preferences;
-        this.switchControl = SwitchControl.getInstance();
-        switchControl.unregisterAllSwitchGroups();
-        switchControl.unregisterAllSwitches();
-        locomotiveControl = LocomotiveControl.getInstance();
-        locomotiveControl.unregisterAllLocomotives();
+    private String filename;
+    private boolean supported = true;
+    
+    public XMLImporter(String filename) throws ConfigurationException {
+        this.filename = filename;
         parseDocument(filename);
+        if(!supported ) {
+            throw new ConfigurationException(Constants.ERR_VERSION_NOT_SUPPORTED);
+        }
     }
 
     private void parseDocument(String filename) {
@@ -75,101 +53,18 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
     public void startElement(String uri, String localName, String qName,
         Attributes attributes) throws SAXException {
         qName = qName.toLowerCase();
-        if (qName.equals("switchgroup")) {
-            actualSwitchGroup = new SwitchGroup(attributes.getValue("name"));
-        } else if (qName.equals("switch")) {
-            parseSwitch(qName, attributes);
-        } else if (qName.equals("address")) {
-            int address = Integer.parseInt(attributes.getValue("address"));
-            int bus = Integer.parseInt(attributes.getValue("bus"));
-            actualAddress = new Address(bus, address);
-            actualAddresses[actualAddressCounter] = actualAddress;
-            actualAddressCounter++;
-        } else if (qName.equals("locomotivegroup")) {
-            actualLocomotiveGroup = new LocomotiveGroup(attributes
-                .getValue("name"));
-        } else if (qName.equals("locomotive")) {
-            parseLocomotive(qName, attributes);
-        } else if (qName.equals("guiconfigparameter")) {
-            parseGuiConfig(qName, attributes);
-        }
-    }
-
-    private void parseSwitch(String qName, Attributes attributes) {
-        String type = attributes.getValue("type");
-        String desc = attributes.getValue("desc");
-        String defaultstate = attributes.getValue("defaultstate");
-        String orientation = attributes.getValue("orientation");
-        int number = Integer.parseInt(attributes.getValue("number"));
-        if (type.equals("DefaultSwitch")) {
-            actualSwitch = new DefaultSwitch(number, desc);
-            actualAddresses = new Address[1];
-        } else if (type.equals("DoubleCrossSwitch")) {
-            actualSwitch = new DoubleCrossSwitch(number, desc);
-            actualAddresses = new Address[1];
-        } else if (type.equals("ThreeWaySwitch")) {
-            actualSwitch = new ThreeWaySwitch(number, desc);
-            actualAddresses = new Address[2];
-        }
-        if (defaultstate.equals("straight")) {
-            actualSwitch.setDefaultState(SwitchState.STRAIGHT);
-        } else if (defaultstate.equals("curved")) {
-            actualSwitch.setDefaultState(SwitchState.LEFT);
-        } else {
-            actualSwitch.setDefaultState(SwitchState.STRAIGHT);
-        }
-        if (orientation.toLowerCase().equals("north")) {
-            actualSwitch.setSwitchOrientation(SwitchOrientation.NORTH);
-        } else if (orientation.toLowerCase().equals("east")) {
-            actualSwitch.setSwitchOrientation(SwitchOrientation.EAST);
-        } else if (orientation.toLowerCase().equals("south")) {
-            actualSwitch.setSwitchOrientation(SwitchOrientation.SOUTH);
-        } else if (orientation.toLowerCase().equals("west")) {
-            actualSwitch.setSwitchOrientation(SwitchOrientation.WEST);
-        } else {
-            actualSwitch.setSwitchOrientation(SwitchOrientation.EAST);
-        }
-    }
-
-    private void parseLocomotive(String qName, Attributes attributes) {
-        String name = attributes.getValue("name");
-        String desc = attributes.getValue("desc");
-        String type = attributes.getValue("type");
-        int bus = Integer.parseInt(attributes.getValue("bus"));
-        int address = Integer.parseInt(attributes.getValue("address"));
-        if (attributes.getValue("type").equals("NoneLocomotive")) {
-            actualLocomotive = new NoneLocomotive();
-        } else if (attributes.getValue("type").equals("DeltaLocomotive")) {
-            actualLocomotive = new DeltaLocomotive(name, new Address(bus,
-                address), desc);
-        } else if (attributes.getValue("type").equals("DigitalLocomotive")) {
-            actualLocomotive = new DigitalLocomotive(name, new Address(bus,
-                address), desc);
-        }
-    }
-
-    private void parseGuiConfig(String gName, Attributes attributes) {
-        preferences.setStringValue(attributes.getValue("name"), attributes
-            .getValue("value"));
-    }
-
-    public void endElement(String uri, String localName, String qName)
-        throws SAXException {
-        qName = qName.toLowerCase();
-        if (qName.equals("switchgroup")) {
-            switchControl.registerSwitchGroup(actualSwitchGroup);
-        } else if (qName.equals("locomotivegroup")) {
-            locomotiveControl.registerLocomotiveGroup(actualLocomotiveGroup);
-        } else if (qName.equals("switch")) {
-            actualSwitch.setAddresses(actualAddresses);
-            actualSwitchGroup.addSwitch(actualSwitch);
-            switchControl.registerSwitch(actualSwitch);
-            actualSwitch = null;
-            actualAddressCounter = 0;
-        } else if (qName.equals("locomotive")) {
-            actualLocomotiveGroup.addLocomotive(actualLocomotive);
-            locomotiveControl.registerLocomotive(actualLocomotive);
-            actualLocomotive = null;
+        if (qName.equals("railcontrol")) {
+            double version = Double.parseDouble(attributes
+                .getValue("ExporterVersion"));
+            if (version == 0.1) {
+                XMLImporter_0_1 importer = new XMLImporter_0_1(filename);
+                return;
+            } else if (version == 0.2) {
+                XMLImporter_0_2 importer = new XMLImporter_0_2(filename);
+                return;
+            }
+            supported = false;
+            return;
         }
     }
 }

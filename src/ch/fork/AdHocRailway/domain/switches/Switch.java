@@ -175,18 +175,4 @@ public abstract class Switch implements Constants, Comparable {
         this.switchOrientation = switchOrientation;
     }
 
-    public String toXML() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<Switch ");
-        sb.append(" desc=\"" + desc + "\" ");
-        sb.append(" number=\"" + number + "\" ");
-        sb.append(" type=\"" + getType() + "\" ");
-        sb.append(" defaultstate=\"" + defaultState + "\" ");
-        sb.append(" orientation=\"" + switchOrientation + "\" >\n");
-        for (Address address : addresses) {
-            sb.append(address.toXML() + "\n");
-        }
-        sb.append("</Switch>\n");
-        return sb.toString();
-    }
 }

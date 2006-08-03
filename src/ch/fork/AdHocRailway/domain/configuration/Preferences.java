@@ -73,16 +73,7 @@ public class Preferences {
         this.hostnames = hostnames;
     }
 
-    public String toXML() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<GuiConfiguration>\n");
-        for (String key : preferences.keySet()) {
-            sb.append("<GuiConfigParameter ");
-            sb.append(" name=\"" + key + "\"");
-            sb.append(" value=\"" + preferences.get(key) + "\"");
-            sb.append("/>\n");
-        }
-        sb.append("</GuiConfiguration>\n");
-        return sb.toString();
+    public Map<String, String> getPreferences() {
+        return preferences;
     }
 }
