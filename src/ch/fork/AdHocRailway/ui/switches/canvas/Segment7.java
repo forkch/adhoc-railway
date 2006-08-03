@@ -1,5 +1,5 @@
 
-package ch.fork.AdHocRailway.ui.switches;
+package ch.fork.AdHocRailway.ui.switches.canvas;
 
 import java.awt.AWTEvent;
 import java.awt.Canvas;

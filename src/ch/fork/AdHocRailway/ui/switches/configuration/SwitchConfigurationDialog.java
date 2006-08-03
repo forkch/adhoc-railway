@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
@@ -37,9 +38,11 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+
+import ch.fork.AdHocRailway.domain.Address;
+import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
 import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch;
@@ -193,7 +196,8 @@ public class SwitchConfigurationDialog extends JDialog {
         switchesTableModel = new SwitchesTableModel(
             switchNumberToSwitchWorkCopy);
         switchesTable = new JTable(switchesTableModel);
-        switchesTable.setRowHeight(40);
+        switchesTable.setRowHeight(24);
+
         // SwitchType
         JComboBox switchTypeComboBox = new JComboBox();
         switchTypeComboBox.addItem("DefaultSwitch");
@@ -203,10 +207,14 @@ public class SwitchConfigurationDialog extends JDialog {
         TableColumn typeColumn = switchesTable.getColumnModel().getColumn(1);
         typeColumn.setCellEditor(new DefaultCellEditor(switchTypeComboBox));
         typeColumn.setCellRenderer(new SwitchTypeCellRenderer());
+
         // SwitchAddress
-        TableColumn addressColumn = switchesTable.getColumnModel().getColumn(3);
-        addressColumn
-            .setCellEditor((TableCellEditor) new SwitchAddressCellEditor());
+        /*
+         * TableColumn addressColumn =
+         * switchesTable.getColumnModel().getColumn(3); addressColumn
+         * .setCellEditor((TableCellEditor) new SwitchAddressCellEditor());
+         */
+
         // DefaultState
         JComboBox switchDefaultStateComboBox = new JComboBox();
         switchDefaultStateComboBox.addItem(SwitchState.STRAIGHT);
@@ -214,34 +222,43 @@ public class SwitchConfigurationDialog extends JDialog {
         switchDefaultStateComboBox
             .setRenderer(new SwitchDefaultStateComboBoxCellRenderer());
         TableColumn defaultStateColumn = switchesTable.getColumnModel()
-            .getColumn(4);
+            .getColumn(5);
         defaultStateColumn.setCellEditor(new DefaultCellEditor(
             switchDefaultStateComboBox));
         defaultStateColumn
             .setCellRenderer(new SwitchDefaultStateCellRenderer());
+
         // SwitchOrientation
         JComboBox switchOrientationComboBox = new JComboBox();
         switchOrientationComboBox.addItem(SwitchOrientation.NORTH);
         switchOrientationComboBox.addItem(SwitchOrientation.EAST);
         switchOrientationComboBox.addItem(SwitchOrientation.SOUTH);
         switchOrientationComboBox.addItem(SwitchOrientation.WEST);
+
         TableColumn switchOrientationColumn = switchesTable.getColumnModel()
-            .getColumn(5);
+            .getColumn(6);
         switchOrientationColumn.setCellEditor(new DefaultCellEditor(
             switchOrientationComboBox));
+
         JScrollPane switchGroupTablePane = new JScrollPane(switchesTable);
-        switchGroupTablePane.setPreferredSize(new Dimension(600, 400));
+        switchGroupTablePane.setPreferredSize(new Dimension(750, 400));
+
         switchesPanel.add(switchGroupTablePane, BorderLayout.CENTER);
+
+
         JButton addSwitchButton = new JButton("Add");
         JButton add10SwitchesButton = new JButton("Add 10 Switches");
         JButton removeSwitchButton = new JButton("Remove");
+
         addSwitchButton.addActionListener(new AddSwitchAction());
         add10SwitchesButton.addActionListener(new Add10SwitchesAction());
         removeSwitchButton.addActionListener(new RemoveSwitchAction());
         JPanel buttonPanel = new JPanel(new FlowLayout());
+
         buttonPanel.add(addSwitchButton);
         buttonPanel.add(add10SwitchesButton);
         buttonPanel.add(removeSwitchButton);
+
         switchesPanel.add(buttonPanel, BorderLayout.SOUTH);
         return switchesPanel;
     }
@@ -392,7 +409,8 @@ public class SwitchConfigurationDialog extends JDialog {
                 nextNumber = usedNumbers.last().intValue() + 1;
             }
             for (int i = 0; i < 10; i++) {
-                Switch newSwitch = new DefaultSwitch(nextNumber, "");
+                Switch newSwitch = new DefaultSwitch(nextNumber, "", 
+                    new Address(Constants.DEFAULT_BUS, nextNumber));
                 switchNumberToSwitchWorkCopy.put(newSwitch.getNumber(),
                     newSwitch);
                 selectedSwitchGroup.addSwitch(newSwitch);

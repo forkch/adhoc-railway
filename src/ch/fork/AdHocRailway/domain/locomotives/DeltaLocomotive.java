@@ -1,6 +1,7 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 
 public class DeltaLocomotive extends Locomotive {
@@ -8,8 +9,8 @@ public class DeltaLocomotive extends Locomotive {
     private static final int STEPPING      = 2;
     private static final int FUNCTIONCOUNT = 1;
 
-    public DeltaLocomotive(String name, int bus, int address, String desc) {
-        super(name, bus, address, DRIVING_STEPS, desc, FUNCTIONCOUNT);
+    public DeltaLocomotive(String name, Address address, String desc) {
+        super(name, address, DRIVING_STEPS, desc, FUNCTIONCOUNT);
     }
 
     protected void increaseSpeedStep() throws LocomotiveException {
@@ -22,7 +23,7 @@ public class DeltaLocomotive extends Locomotive {
 
     @Override
     public Locomotive clone() {
-        DeltaLocomotive clone = new DeltaLocomotive(name, bus, address, desc);
+        DeltaLocomotive clone = new DeltaLocomotive(name, address, desc);
         clone.functions = functions;
         clone.initialized = initialized;
         clone.currentSpeed = currentSpeed;

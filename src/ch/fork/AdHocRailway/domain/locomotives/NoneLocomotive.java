@@ -1,6 +1,7 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 
 public class NoneLocomotive extends Locomotive {
@@ -8,7 +9,8 @@ public class NoneLocomotive extends Locomotive {
     private static final int FUNCTIONCOUNT = 0;
 
     public NoneLocomotive() {
-        super("NONE", 0, 0, DRIVING_STEPS, "Dummy", FUNCTIONCOUNT);
+        super("NONE", new Address(DEFAULT_BUS, 0), DRIVING_STEPS, "Dummy",
+            FUNCTIONCOUNT);
     }
 
     @Override

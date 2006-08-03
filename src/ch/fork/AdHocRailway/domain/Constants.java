@@ -9,4 +9,6 @@ public interface Constants {
     public static final String ERR_LOCKED          = "Device locked";
     public static final String ERR_FAILED          = "Command failed";
     public static final String ERR_INVALID_ADDRESS = "Invalid address";
+
+    public static final int    DEFAULT_BUS         = 1;
 }

@@ -1,11 +1,13 @@
 
-package ch.fork.AdHocRailway.ui.switches;
+package ch.fork.AdHocRailway.ui.switches.canvas;
 
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+
 import ch.fork.AdHocRailway.domain.switches.Switch;
 
 public class DefaultSwitchCanvas extends SwitchCanvas {

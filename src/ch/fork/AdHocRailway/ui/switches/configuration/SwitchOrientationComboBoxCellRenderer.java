@@ -2,6 +2,7 @@
 package ch.fork.AdHocRailway.ui.switches.configuration;
 
 import java.awt.Component;
+
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 

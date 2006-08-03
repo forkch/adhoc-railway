@@ -2,6 +2,7 @@
 package ch.fork.AdHocRailway.ui;
 
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
+
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,7 @@ import java.net.ConnectException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
@@ -31,6 +33,7 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
+
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
 import ch.fork.AdHocRailway.domain.configuration.XMLImporter;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;

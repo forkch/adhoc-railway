@@ -4,14 +4,15 @@ package ch.fork.AdHocRailway.ui.locomotives.configuration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import javax.swing.table.AbstractTableModel;
+
+import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.locomotives.DeltaLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.DigitalLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.NoneLocomotive;
-import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class LocomotiveTableModel extends AbstractTableModel {
     private final String[]  columnNames = { "Name", "Type", "Bus", "Address",
@@ -60,9 +61,9 @@ public class LocomotiveTableModel extends AbstractTableModel {
         case 1:
             return locomotives.get(rowIndex).getType();
         case 2:
-            return locomotives.get(rowIndex).getBus();
+            return locomotives.get(rowIndex).getAddress().getBus();
         case 3:
-            return locomotives.get(rowIndex).getAddress();
+            return locomotives.get(rowIndex).getAddress().getAddress();
         case 4:
             return null;
         case 5:
@@ -83,37 +84,40 @@ public class LocomotiveTableModel extends AbstractTableModel {
         List<Locomotive> locomotivesOfGroup = new ArrayList<Locomotive>(
             locomotiveGroup.getLocomotives());
         Locomotive locomotiveOfThisRow = locomotivesOfGroup.get(row);
+        Address tmpAddress = locomotiveOfThisRow.getAddress();
         switch (col) {
         case 0:
             locomotiveOfThisRow.setName(value.toString());
             break;
         case 1:
             Locomotive tmp = locomotiveOfThisRow;
+            Address newAddress = new Address(tmp.getAddress().getBus(), tmp
+                .getAddress().getAddress());
             if (value.equals("NoneLocomotive")) {
                 locomotiveOfThisRow = new NoneLocomotive();
             } else if (value.equals("DeltaLocomotive")) {
-                locomotiveOfThisRow = new DeltaLocomotive(tmp.getName(), tmp
-                    .getBus(), tmp.getAddress(), tmp.getDesc());
+                locomotiveOfThisRow = new DeltaLocomotive(tmp.getName(),
+                    newAddress, tmp.getDesc());
             } else if (value.equals("DigitalLocomotive")) {
-                locomotiveOfThisRow = new DigitalLocomotive(tmp.getName(), tmp
-                    .getBus(), tmp.getAddress(), tmp.getDesc());
+                locomotiveOfThisRow = new DigitalLocomotive(tmp.getName(),
+                    newAddress, tmp.getDesc());
             }
             locomotiveGroup.replaceLocomotive(tmp, locomotiveOfThisRow);
             locomotives.remove(tmp);
             locomotives.add(locomotiveOfThisRow);
             break;
         case 2:
-            locomotiveOfThisRow.setBus(Integer.parseInt(value.toString()));
+            tmpAddress = locomotiveOfThisRow.getAddress();
+            tmpAddress.setBus(Integer.parseInt(value.toString()));
+            locomotiveOfThisRow.setAddress(tmpAddress);
+
             break;
         case 3:
-            try {
-                locomotiveOfThisRow.setAddress(Integer.parseInt(value
-                    .toString()));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            } catch (LocomotiveException e) {
-                ExceptionProcessor.getInstance().processException(e);
-            }
+
+            tmpAddress = locomotiveOfThisRow.getAddress();
+            tmpAddress.setAddress(Integer.parseInt(value.toString()));
+            locomotiveOfThisRow.setAddress(tmpAddress);
+
             break;
         case 4:
             break;
@@ -128,5 +132,24 @@ public class LocomotiveTableModel extends AbstractTableModel {
 
     public void setLocomotiveGroup(LocomotiveGroup selectedLocomotiveGroup) {
         locomotiveGroup = selectedLocomotiveGroup;
+    }
+    public Class<?> getColumnClass(int columnIndex) {
+        switch(columnIndex){
+        case 0:
+            return String.class;
+        case 1:
+            return String.class;
+        case 2:
+            return Integer.class;
+        case 3:
+            return Integer.class;
+        case 4:
+            return String.class;
+        case 5:
+            return String.class;
+        
+        default:
+            return Object.class;
+        }
     }
 }

@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import de.dermoba.srcp.client.SRCPSession;
@@ -16,12 +18,12 @@ public class SwitchControl implements GAInfoListener {
     private SRCPSession                session;
     private List<SwitchChangeListener> listeners;
     private List<SwitchGroup>          switchGroups;
-    private Map<Integer, Switch>       addressToSwitch;
+    private Map<Address, Switch>       addressToSwitch;
     private Map<Integer, Switch>       numberToSwitch;
 
     private SwitchControl() {
         listeners = new ArrayList<SwitchChangeListener>();
-        addressToSwitch = new HashMap<Integer, Switch>();
+        addressToSwitch = new HashMap<Address, Switch>();
         numberToSwitch = new HashMap<Integer, Switch>();
         switchGroups = new ArrayList<SwitchGroup>();
     }
@@ -34,10 +36,12 @@ public class SwitchControl implements GAInfoListener {
     }
 
     public void registerSwitch(Switch aSwitch) {
-        Address address = aSwitch.getAddress();
-        addressToSwitch.put(address.getAddress1(), aSwitch);
-        if (address.getAddress2() != 0) {
-            addressToSwitch.put(address.getAddress2(), aSwitch);
+        Address[] addresses = aSwitch.getAddresses();
+        addressToSwitch.put(addresses[0], aSwitch);
+        for (int i = 1; i < addresses.length; i++) {
+            if (addresses[i] != null) {
+                addressToSwitch.put(addresses[i], aSwitch);
+            }
         }
         numberToSwitch.put(aSwitch.getNumber(), aSwitch);
         aSwitch.setSession(session);
@@ -45,10 +49,12 @@ public class SwitchControl implements GAInfoListener {
 
     public void registerSwitches(Collection<Switch> switches) {
         for (Switch aSwitch : switches) {
-            Address address = aSwitch.getAddress();
-            addressToSwitch.put(address.getAddress1(), aSwitch);
-            if (address.getAddress2() != 0) {
-                addressToSwitch.put(address.getAddress2(), aSwitch);
+            Address[] addresses = aSwitch.getAddresses();
+            addressToSwitch.put(addresses[0], aSwitch);
+            for (int i = 1; i < addresses.length; i++) {
+                if (addresses[i] != null) {
+                    addressToSwitch.put(addresses[i], aSwitch);
+                }
             }
             numberToSwitch.put(aSwitch.getNumber(), aSwitch);
             aSwitch.setSession(session);
@@ -56,8 +62,14 @@ public class SwitchControl implements GAInfoListener {
     }
 
     public void unregisterSwitch(Switch aSwitch) {
-        Address address = aSwitch.getAddress();
-        addressToSwitch.remove(address);
+        Address[] addresses = aSwitch.getAddresses();
+        addressToSwitch.remove(addresses[0]);
+        for (int i = 1; i < addresses.length; i++) {
+            if (addresses[i] != null) {
+                addressToSwitch.remove(addresses[i]);
+            }
+            addressToSwitch.remove(addresses[i]);
+        }
         numberToSwitch.remove(aSwitch.getNumber());
     }
 
@@ -130,9 +142,10 @@ public class SwitchControl implements GAInfoListener {
          * System.out.println("GAset(" + bus + " , " + address + " , " + port + " , " +
          * value + " )");
          */
-        Switch s = addressToSwitch.get(address);
+        Address addr = new Address(bus, address);
+        Switch s = addressToSwitch.get(addr);
         if (s != null) {
-            s.switchPortChanged(address, port, value);
+            s.switchPortChanged(addr, port, value);
             if (value != 0) {
                 informListeners(s);
             }
@@ -145,9 +158,10 @@ public class SwitchControl implements GAInfoListener {
          * System.out.println("GAinit(" + bus + " , " + address + " , " +
          * protocol + " , " + params + " )");
          */
-        Switch s = addressToSwitch.get(Integer.valueOf(address));
+        Address addr = new Address(bus, address);
+        Switch s = addressToSwitch.get(addr);
         if (s != null) {
-            s.switchInitialized(bus, address);
+            s.switchInitialized(addr);
             informListeners(s);
         }
     }
@@ -156,8 +170,9 @@ public class SwitchControl implements GAInfoListener {
         /*
          * System.out.println("GAterm( " + bus + " , " + address + " )");
          */
-        Switch s = addressToSwitch.get(address);
-        s.switchTerminated(address);
+        Address addr = new Address(bus, address);
+        Switch s = addressToSwitch.get(addr);
+        s.switchTerminated(addr);
         informListeners(s);
     }
 
@@ -179,11 +194,14 @@ public class SwitchControl implements GAInfoListener {
         if (aSwitch.getSession() == null) {
             throw new SwitchException(Constants.ERR_NO_SESSION);
         }
-        if (aSwitch.getAddress().getAddress1() == 0) {
-            throw new SwitchException(Constants.ERR_INVALID_ADDRESS);
+        Address[] addresses = aSwitch.getAddresses();
+        for (int i = 0; i < addresses.length; i++) {
+            if (addresses[i].getAddress() == 0) {
+                throw new SwitchException(Constants.ERR_INVALID_ADDRESS);
+            }
         }
         if (aSwitch instanceof ThreeWaySwitch
-            && aSwitch.getAddress().getAddress2() == 0) {
+            && aSwitch.getAddress(1).getAddress() == 0) {
             throw new SwitchException(Constants.ERR_INVALID_ADDRESS);
         }
     }

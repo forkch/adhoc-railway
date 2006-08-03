@@ -1,20 +1,21 @@
 
 package ch.fork.AdHocRailway.domain.switches;
 
+import ch.fork.AdHocRailway.domain.Address;
+
 public class DoubleCrossSwitch extends DefaultSwitch {
     public DoubleCrossSwitch(int pNumber, String pDesc) {
         super(pNumber, pDesc);
     }
 
-    public DoubleCrossSwitch(int pNumber, String pDesc, int pBus,
-        Address address) {
-        super(pNumber, pDesc, pBus, address);
+    public DoubleCrossSwitch(int pNumber, String pDesc, Address address) {
+        super(pNumber, pDesc, address);
     }
 
     @Override
     public Switch clone() {
-        DoubleCrossSwitch newSwitch = new DoubleCrossSwitch(number, desc, bus,
-            address);
+        DoubleCrossSwitch newSwitch = new DoubleCrossSwitch(number, desc,
+            addresses[0]);
         newSwitch.setSession(session);
         newSwitch.setSwitchOrientation(switchOrientation);
         newSwitch.setDefaultState(defaultState);

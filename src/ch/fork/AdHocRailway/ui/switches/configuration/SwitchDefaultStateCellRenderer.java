@@ -2,10 +2,11 @@
 package ch.fork.AdHocRailway.ui.switches.configuration;
 
 import java.awt.Component;
-import java.awt.Dimension;
+
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
+
 import ch.fork.AdHocRailway.domain.switches.Switch.SwitchState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
@@ -19,13 +20,14 @@ public class SwitchDefaultStateCellRenderer implements TableCellRenderer {
             return iconLabel;
         }
         if (value.equals(SwitchState.STRAIGHT)) {
-            iconLabel.setIcon(ImageTools.createStraightState(iconLabel,
+            iconLabel.setIcon(ImageTools.createImageIcon(
+                "icons/default_straight.png", "Default Switch",
                 SwitchWidget.class));
         } else {
-            iconLabel.setIcon(ImageTools.createCurvedState(iconLabel,
+            iconLabel.setIcon(ImageTools.createImageIcon(
+                "icons/default_curved.png", "Default Switch",
                 SwitchWidget.class));
         }
-        iconLabel.setPreferredSize(new Dimension(120, 40));
         return iconLabel;
     }
 }

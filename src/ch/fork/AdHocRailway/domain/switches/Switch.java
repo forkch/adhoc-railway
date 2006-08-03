@@ -1,15 +1,15 @@
 
 package ch.fork.AdHocRailway.domain.switches;
 
+import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import de.dermoba.srcp.client.SRCPSession;
 
 public abstract class Switch implements Constants, Comparable {
-    protected int     number;
-    protected int     bus;
-    protected Address address;
-    protected String  desc;
+    protected int       number;
+    protected Address[] addresses;
+    protected String    desc;
 
     public enum SwitchState {
         LEFT, STRAIGHT, RIGHT, UNDEF
@@ -26,13 +26,18 @@ public abstract class Switch implements Constants, Comparable {
     protected SwitchOrientation switchOrientation      = SwitchOrientation.EAST;
     protected int               SWITCH_PORT_ACTIVATE   = 1;
     protected int               SWITCH_PORT_DEACTIVATE = 0;
+    protected final int         MAX_ADDRESSES          = 2;
     protected String            ERR_TOGGLE_FAILED      = "Toggle of switch failed";
     protected SRCPSession       session;
 
-    public Switch(int number, String desc, int bus, Address address) {
+    public Switch(int number, String desc, Address address) {
+        this(number, desc, new Address[] { address });
+
+    }
+
+    public Switch(int number, String desc, Address[] address) {
         this.number = number;
-        this.bus = bus;
-        this.address = address;
+        this.addresses = address;
         this.desc = desc;
     }
 
@@ -58,21 +63,22 @@ public abstract class Switch implements Constants, Comparable {
 
     protected abstract void setCurvedRight() throws SwitchException;
 
-    protected abstract void switchPortChanged(int pAddress, int pChangedPort,
+    protected abstract void switchPortChanged(Address addr, int pChangedPort,
         int value);
 
-    protected abstract void switchInitialized(int pBus, int pAddress);
+    protected abstract void switchInitialized(Address addr);
 
-    protected abstract void switchTerminated(int pAddress);
+    protected abstract void switchTerminated(Address addr);
 
     public abstract Switch clone();
 
     public boolean equals(Switch aSwitch) {
-        if (address == aSwitch.getAddress() && bus == aSwitch.getBus()) {
-            return true;
-        } else {
-            return false;
+        for (int i = 0; i < addresses.length; i++) {
+            if (!addresses[i].equals(aSwitch.getAddresses()[i])) {
+                return false;
+            }
         }
+        return true;
     }
 
     public int compareTo(Object o) {
@@ -90,8 +96,11 @@ public abstract class Switch implements Constants, Comparable {
     }
 
     public String toString() {
-        return "\"" + number + ": " + getType() + " @ bus " + bus + " @ ports "
-            + address + "\"";
+        String buf = "\"" + number + ": " + getType() + " @";
+        for (Address a : addresses) {
+            buf += " " + a;
+        }
+        return buf;
     }
 
     public int getNumber() {
@@ -114,20 +123,23 @@ public abstract class Switch implements Constants, Comparable {
         return this.getClass().getSimpleName();
     }
 
-    public int getBus() {
-        return bus;
+
+    public Address[] getAddresses() {
+        return addresses;
     }
 
-    public void setBus(int bus) {
-        this.bus = bus;
+    public Address getAddress(int index) {
+        return addresses[index];
     }
 
-    public Address getAddress() {
-        return address;
+    public void setAddresses(Address[] addresses) {
+        this.addresses = addresses;
+        initialized = false;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+
+    public void setAddress(int index, Address address) {
+        this.addresses[index] = address;
         initialized = false;
     }
 
@@ -169,10 +181,11 @@ public abstract class Switch implements Constants, Comparable {
         sb.append(" desc=\"" + desc + "\" ");
         sb.append(" number=\"" + number + "\" ");
         sb.append(" type=\"" + getType() + "\" ");
-        sb.append(" bus=\"" + bus + "\" ");
         sb.append(" defaultstate=\"" + defaultState + "\" ");
         sb.append(" orientation=\"" + switchOrientation + "\" >\n");
-        sb.append(address.toXML() + "\n");
+        for (Address address : addresses) {
+            sb.append(address.toXML() + "\n");
+        }
         sb.append("</Switch>\n");
         return sb.toString();
     }

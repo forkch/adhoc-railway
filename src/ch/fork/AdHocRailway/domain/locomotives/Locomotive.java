@@ -1,6 +1,7 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveLockedException;
@@ -10,10 +11,9 @@ import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GL;
 
 public abstract class Locomotive implements Constants, Comparable {
-    protected String name;
-    protected String desc;
-    protected int    address;
-    protected int    bus;
+    protected String  name;
+    protected String  desc;
+    protected Address address;
 
     public enum Direction {
         FORWARD, REVERSE, UNDEF
@@ -38,10 +38,9 @@ public abstract class Locomotive implements Constants, Comparable {
 
     public abstract Locomotive clone();
 
-    public Locomotive(String name, int bus, int address, int drivingSteps,
+    public Locomotive(String name, Address address, int drivingSteps,
         String desc, int functionCount) {
         this.name = name;
-        this.bus = bus;
         this.address = address;
         this.drivingSteps = drivingSteps;
         this.desc = desc;
@@ -58,7 +57,7 @@ public abstract class Locomotive implements Constants, Comparable {
                 throw new LocomotiveException(ERR_NO_SESSION);
             }
             gl = new GL(session);
-            gl.init(bus, address, PROTOCOL, params);
+            gl.init(address.getBus(), address.getAddress(), PROTOCOL, params);
             initialized = true;
         } catch (SRCPException x) {
             if (x instanceof SRCPDeviceLockedException) {
@@ -74,11 +73,11 @@ public abstract class Locomotive implements Constants, Comparable {
             if (gl != null) {
                 gl.term();
             }
-            if (session != null) {
-                init();
-            }
         } catch (SRCPException e) {
             throw new LocomotiveException(ERR_REINIT_FAILED, e);
+        }
+        if (session != null) {
+            init();
         }
     }
 
@@ -161,13 +160,12 @@ public abstract class Locomotive implements Constants, Comparable {
         this.functions = functions;
     }
 
-    protected void locomotiveInitialized(int pBus, int pAddress,
-        String protocol, String[] params) {
+    protected void locomotiveInitialized(Address pAddress, String protocol,
+        String[] params) {
         gl = new GL(session);
         this.address = pAddress;
-        this.bus = pBus;
-        gl.setBus(bus);
-        gl.setAddress(address);
+        gl.setBus(address.getBus());
+        gl.setAddress(address.getAddress());
         initialized = true;
     }
 
@@ -177,7 +175,7 @@ public abstract class Locomotive implements Constants, Comparable {
     }
 
     public boolean equals(Locomotive l) {
-        if (address == l.getAddress() && bus == l.getBus()) {
+        if (address.equals(l.getAddress())) {
             return true;
         } else {
             return false;
@@ -187,8 +185,8 @@ public abstract class Locomotive implements Constants, Comparable {
     public String toXML() {
         StringBuffer sb = new StringBuffer();
         sb.append("<Locomotive name=\"" + name + "\" type=\"" + getType()
-            + "\" bus=\"" + bus + "\" address=\"" + address + "\" desc=\""
-            + desc + "\" />\n");
+            + "\" bus=\"" + address.getBus() + "\" address=\""
+            + address.getAddress() + "\" desc=\"" + desc + "\" />\n");
         return sb.toString();
     }
 
@@ -236,13 +234,10 @@ public abstract class Locomotive implements Constants, Comparable {
         return currentSpeed;
     }
 
-    public int getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public int getBus() {
-        return bus;
-    }
 
     public Direction getDirection() {
         return direction;
@@ -264,13 +259,9 @@ public abstract class Locomotive implements Constants, Comparable {
         return this.getClass().getSimpleName();
     }
 
-    public void setAddress(int address) throws LocomotiveException {
+    public void setAddress(Address address) {
         this.address = address;
-        reinit();
-    }
-
-    public void setBus(int bus) {
-        this.bus = bus;
+        initialized = false;
     }
 
     public boolean[] getFunctions() {

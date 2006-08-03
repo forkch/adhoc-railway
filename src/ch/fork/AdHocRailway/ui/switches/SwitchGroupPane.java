@@ -4,8 +4,10 @@ package ch.fork.AdHocRailway.ui.switches;
 import java.awt.Component;
 import java.awt.Container;
 import java.util.Collection;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
 import ch.fork.AdHocRailway.domain.switches.SwitchGroup;

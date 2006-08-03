@@ -1,6 +1,7 @@
 
 package ch.fork.AdHocRailway.domain.switches;
 
+import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchLockedException;
@@ -14,11 +15,11 @@ public class DefaultSwitch extends Switch {
     private int CURVED_PORT   = 1;
 
     public DefaultSwitch(int pNumber, String pDesc) {
-        this(pNumber, pDesc, 1, new Address(1,0));
+        this(pNumber, pDesc, new Address(DEFAULT_BUS, 1));
     }
 
-    public DefaultSwitch(int pNumber, String pDesc, int pBus, Address address) {
-        super(pNumber, pDesc, pBus, address);
+    public DefaultSwitch(int pNumber, String pDesc, Address address) {
+        super(pNumber, pDesc, address);
     }
 
     protected void init() throws SwitchException {
@@ -26,10 +27,10 @@ public class DefaultSwitch extends Switch {
         try {
             ga = new GA(session);
             if (!Preferences.getInstance().getBooleanValue("Interface6051")) {
-                ga.init(bus, address.getAddress1(), "M");
+                ga.init(addresses[0].getBus(), addresses[0].getAddress(), "M");
             } else {
-                ga.setAddress(address.getAddress1());
-                ga.setBus(bus);
+                ga.setAddress(addresses[0].getAddress());
+                ga.setBus(addresses[0].getBus());
             }
             initialized = true;
         } catch (SRCPException x) {
@@ -75,25 +76,33 @@ public class DefaultSwitch extends Switch {
                 "DefaultActivationTime");
             switch (switchState) {
             case STRAIGHT:
-                ga
-                    .set(CURVED_PORT, SWITCH_PORT_ACTIVATE,
-                        defaultActivationTime);
+                ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
+                    defaultActivationTime);
+                ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
+                    defaultActivationTime);
                 switchState = SwitchState.LEFT;
                 break;
             case RIGHT:
             case LEFT:
-                ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE,
+                ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
+                    defaultActivationTime);
+                ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
                     defaultActivationTime);
                 switchState = SwitchState.STRAIGHT;
                 break;
             case UNDEF:
                 if (defaultState == SwitchState.STRAIGHT) {
-                    ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE,
+                    ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
+                        defaultActivationTime);
+                    ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
                         defaultActivationTime);
                     switchState = SwitchState.STRAIGHT;
                 } else if (defaultState == SwitchState.RIGHT
                     || defaultState == SwitchState.LEFT) {
-                    ga.set(CURVED_PORT, SWITCH_PORT_ACTIVATE,
+
+                    ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
+                        defaultActivationTime);
+                    ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
                         defaultActivationTime);
                     switchState = SwitchState.LEFT;
                 }
@@ -107,30 +116,30 @@ public class DefaultSwitch extends Switch {
         }
     }
 
-    protected void switchPortChanged(int pAddress, int pChangedPort, int value) {
+    protected void switchPortChanged(Address addr, int pChangedPort, int value) {
         if (value == 0) {
         } else {
             // a port has been ACTIVATED
-            if (pChangedPort == STRAIGHT_PORT) {
+            if (pChangedPort == getPort(STRAIGHT_PORT)) {
                 switchState = SwitchState.STRAIGHT;
-            } else if (pChangedPort == CURVED_PORT) {
+            } else if (pChangedPort == getPort(CURVED_PORT)) {
                 switchState = SwitchState.LEFT;
             }
+
         }
     }
 
     @Override
-    protected void switchInitialized(int pBus, int pAddress) {
+    protected void switchInitialized(Address addr) {
         ga = new GA(session);
-        address.setAddress1(pAddress);
-        this.bus = pBus;
-        ga.setBus(bus);
-        ga.setAddress(address.getAddress1());
+        this.addresses[0] = addr;
+        ga.setBus(addr.getBus());
+        ga.setAddress(addr.getAddress());
         initialized = true;
     }
 
     @Override
-    protected void switchTerminated(int pAddress) {
+    protected void switchTerminated(Address addr) {
         ga = null;
         initialized = false;
     }
@@ -141,20 +150,17 @@ public class DefaultSwitch extends Switch {
             int defaultActivationTime = Preferences.getInstance().getIntValue(
                 "DefaultActivationTime");
             if (defaultState == SwitchState.STRAIGHT) {
-                ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE,
+                ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
                     defaultActivationTime);
-                ga.set(CURVED_PORT, SWITCH_PORT_DEACTIVATE,
+                ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
                     defaultActivationTime);
-                // TODO: resolve get
                 switchState = SwitchState.STRAIGHT;
             } else if (defaultState == SwitchState.LEFT
                 || defaultState == SwitchState.RIGHT) {
-                ga
-                    .set(CURVED_PORT, SWITCH_PORT_ACTIVATE,
-                        defaultActivationTime);
-                ga.set(STRAIGHT_PORT, SWITCH_PORT_DEACTIVATE,
+                ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
                     defaultActivationTime);
-                // TODO: resolve get
+                ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
+                    defaultActivationTime);
                 switchState = SwitchState.LEFT;
             }
         } catch (SRCPException e) {
@@ -169,19 +175,16 @@ public class DefaultSwitch extends Switch {
                 "DefaultActivationTime");
             if (defaultState == SwitchState.LEFT
                 || defaultState == SwitchState.RIGHT) {
-                ga.set(STRAIGHT_PORT, SWITCH_PORT_ACTIVATE,
+                ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
                     defaultActivationTime);
-                ga.set(CURVED_PORT, SWITCH_PORT_DEACTIVATE,
+                ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
                     defaultActivationTime);
-                // TODO: resolve get
                 switchState = SwitchState.STRAIGHT;
             } else if (defaultState == SwitchState.STRAIGHT) {
-                ga
-                    .set(CURVED_PORT, SWITCH_PORT_ACTIVATE,
-                        defaultActivationTime);
-                ga.set(STRAIGHT_PORT, SWITCH_PORT_DEACTIVATE,
+                ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
                     defaultActivationTime);
-                // TODO: resolve get
+                ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
+                    defaultActivationTime);
                 switchState = SwitchState.LEFT;
             }
         } catch (SRCPException e) {
@@ -196,10 +199,33 @@ public class DefaultSwitch extends Switch {
 
     @Override
     public Switch clone() {
-        DefaultSwitch newSwitch = new DefaultSwitch(number, desc, bus, address);
+        DefaultSwitch newSwitch = new DefaultSwitch(number, desc, addresses[0]);
         newSwitch.setSession(session);
         newSwitch.setSwitchOrientation(switchOrientation);
         newSwitch.setDefaultState(defaultState);
         return newSwitch;
+    }
+
+    protected void setAddress(Address address) {
+        this.addresses[0] = address;
+    }
+
+    /**
+     * Returns the port to activate according to the addressSwitched flag.
+     * 
+     * @param wantedPort
+     *            The port to 'convert'
+     * @return The 'converted' port
+     */
+    private int getPort(int wantedPort) {
+        if (!addresses[0].isAddressSwitched()) {
+            return wantedPort;
+        } else {
+            if (wantedPort == STRAIGHT_PORT) {
+                return CURVED_PORT;
+            } else {
+                return STRAIGHT_PORT;
+            }
+        }
     }
 }

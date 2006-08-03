@@ -2,6 +2,7 @@
 package ch.fork.AdHocRailway.ui;
 
 import java.util.List;
+
 import javax.swing.AbstractListModel;
 
 public class ListListModel<E> extends AbstractListModel {

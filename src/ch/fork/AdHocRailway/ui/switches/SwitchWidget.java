@@ -9,10 +9,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
 import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch;
@@ -22,6 +24,10 @@ import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
 import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
+import ch.fork.AdHocRailway.ui.switches.canvas.DefaultSwitchCanvas;
+import ch.fork.AdHocRailway.ui.switches.canvas.DoubleCrossSwitchCanvas;
+import ch.fork.AdHocRailway.ui.switches.canvas.SwitchCanvas;
+import ch.fork.AdHocRailway.ui.switches.canvas.ThreeWaySwitchCanvas;
 import ch.fork.AdHocRailway.ui.switches.configuration.SwitchConfig;
 
 public class SwitchWidget extends JPanel implements SwitchChangeListener {

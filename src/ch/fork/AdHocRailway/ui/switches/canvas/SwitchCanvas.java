@@ -1,12 +1,14 @@
 
-package ch.fork.AdHocRailway.ui.switches;
+package ch.fork.AdHocRailway.ui.switches.canvas;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+
 import javax.swing.JPanel;
+
 import ch.fork.AdHocRailway.domain.switches.Switch;
 
 public class SwitchCanvas extends JPanel {

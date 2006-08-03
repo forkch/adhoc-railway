@@ -7,6 +7,7 @@ package ch.fork.AdHocRailway.ui;
 // J.-P. Dubois / May 2006
 //
 import java.awt.Component;
+
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;

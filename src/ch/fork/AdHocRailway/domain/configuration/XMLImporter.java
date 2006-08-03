@@ -2,13 +2,17 @@
 package ch.fork.AdHocRailway.domain.configuration;
 
 import java.io.IOException;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.locomotives.DeltaLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.DigitalLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
@@ -16,7 +20,6 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.NoneLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
-import ch.fork.AdHocRailway.domain.switches.Address;
 import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch;
@@ -32,6 +35,8 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
     private Switch            actualSwitch;
     private SwitchGroup       actualSwitchGroup;
     private Address           actualAddress;
+    private Address[]         actualAddresses;
+    private int               actualAddressCounter = 0;
     private SwitchControl     switchControl;
     private Locomotive        actualLocomotive;
     private LocomotiveGroup   actualLocomotiveGroup;
@@ -75,9 +80,11 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
         } else if (qName.equals("switch")) {
             parseSwitch(qName, attributes);
         } else if (qName.equals("address")) {
-            actualAddress = new Address(Integer.parseInt(attributes
-                .getValue("address1")), Integer.parseInt(attributes
-                .getValue("address2")));
+            int address = Integer.parseInt(attributes.getValue("address"));
+            int bus = Integer.parseInt(attributes.getValue("bus"));
+            actualAddress = new Address(bus, address);
+            actualAddresses[actualAddressCounter] = actualAddress;
+            actualAddressCounter++;
         } else if (qName.equals("locomotivegroup")) {
             actualLocomotiveGroup = new LocomotiveGroup(attributes
                 .getValue("name"));
@@ -93,16 +100,17 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
         String desc = attributes.getValue("desc");
         String defaultstate = attributes.getValue("defaultstate");
         String orientation = attributes.getValue("orientation");
-        int bus = Integer.parseInt(attributes.getValue("bus"));
         int number = Integer.parseInt(attributes.getValue("number"));
         if (type.equals("DefaultSwitch")) {
             actualSwitch = new DefaultSwitch(number, desc);
+            actualAddresses = new Address[1];
         } else if (type.equals("DoubleCrossSwitch")) {
             actualSwitch = new DoubleCrossSwitch(number, desc);
+            actualAddresses = new Address[1];
         } else if (type.equals("ThreeWaySwitch")) {
             actualSwitch = new ThreeWaySwitch(number, desc);
+            actualAddresses = new Address[2];
         }
-        actualSwitch.setBus(bus);
         if (defaultstate.equals("straight")) {
             actualSwitch.setDefaultState(SwitchState.STRAIGHT);
         } else if (defaultstate.equals("curved")) {
@@ -132,9 +140,11 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
         if (attributes.getValue("type").equals("NoneLocomotive")) {
             actualLocomotive = new NoneLocomotive();
         } else if (attributes.getValue("type").equals("DeltaLocomotive")) {
-            actualLocomotive = new DeltaLocomotive(name, bus, address, desc);
+            actualLocomotive = new DeltaLocomotive(name, new Address(bus,
+                address), desc);
         } else if (attributes.getValue("type").equals("DigitalLocomotive")) {
-            actualLocomotive = new DigitalLocomotive(name, bus, address, desc);
+            actualLocomotive = new DigitalLocomotive(name, new Address(bus,
+                address), desc);
         }
     }
 
@@ -151,10 +161,11 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
         } else if (qName.equals("locomotivegroup")) {
             locomotiveControl.registerLocomotiveGroup(actualLocomotiveGroup);
         } else if (qName.equals("switch")) {
-            actualSwitch.setAddress(actualAddress);
+            actualSwitch.setAddresses(actualAddresses);
             actualSwitchGroup.addSwitch(actualSwitch);
             switchControl.registerSwitch(actualSwitch);
             actualSwitch = null;
+            actualAddressCounter = 0;
         } else if (qName.equals("locomotive")) {
             actualLocomotiveGroup.addLocomotive(actualLocomotive);
             locomotiveControl.registerLocomotive(actualLocomotive);
