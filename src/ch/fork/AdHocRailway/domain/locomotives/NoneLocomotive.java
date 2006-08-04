@@ -30,15 +30,6 @@ public class NoneLocomotive extends Locomotive {
     void init() throws LocomotiveException {
     }
 
-    protected @Override
-    boolean isInitialized() {
-        return true;
-    }
-
-    @Override
-    public void setInitialized(boolean initialized) {
-    }
-
     @Override
     public void setSpeed(int speed) throws LocomotiveException {
     }

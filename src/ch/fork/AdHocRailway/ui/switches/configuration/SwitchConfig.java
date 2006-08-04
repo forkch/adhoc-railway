@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -34,6 +35,8 @@ public class SwitchConfig extends JDialog {
     private JTextField busTextField;
     private JTextField address0TextField;
     private JTextField address1TextField;
+    private JCheckBox  switched0Checkbox;
+    private JCheckBox  switched1Checkbox;
     private JTextField descTextField;
     private JComboBox  switchTypeComboBox;
     private JComboBox  switchDefaultStateComboBox;
@@ -86,7 +89,9 @@ public class SwitchConfig extends JDialog {
         JLabel typeLabel = new JLabel("Type");
         JLabel busLabel = new JLabel("Bus");
         JLabel address0Label = new JLabel("Address 1");
-        JLabel address1Label = new JLabel("Address 2");
+        final JLabel address1Label = new JLabel("Address 2");
+        JLabel address0SwitchedLabel = new JLabel("Address 1 switched");
+        final JLabel address1SwitchedLabel = new JLabel("Address 2 switched");
         JLabel defaultStateLabel = new JLabel("Default State");
         JLabel orientationLabel = new JLabel("Orientation");
         JLabel descLabel = new JLabel("Desc");
@@ -108,6 +113,19 @@ public class SwitchConfig extends JDialog {
             address1TextField.setEnabled(true);
             address1Label.setEnabled(true);
         }
+        switched0Checkbox = new JCheckBox();
+        switched0Checkbox.setSelected(mySwitch.getAddress(0)
+            .isAddressSwitched());
+
+        switched1Checkbox = new JCheckBox();
+        switched1Checkbox.setEnabled(false);
+        address1SwitchedLabel.setEnabled(false);
+        if (mySwitch instanceof ThreeWaySwitch) {
+            switched1Checkbox.setEnabled(mySwitch.getAddress(1)
+                .isAddressSwitched());
+            switched1Checkbox.setEnabled(true);
+            address1SwitchedLabel.setEnabled(true);
+        }
 
 
         descTextField = new JTextField();
@@ -117,6 +135,21 @@ public class SwitchConfig extends JDialog {
         switchTypeComboBox.addItem("DefaultSwitch");
         switchTypeComboBox.addItem("DoubleCrossSwitch");
         switchTypeComboBox.addItem("ThreeWaySwitch");
+        switchTypeComboBox.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                String selected = ((String) switchTypeComboBox
+                    .getSelectedItem());
+                if (selected.equals("ThreeWaySwitch")) {
+                    address1Label.setEnabled(true);
+                    address1TextField.setEnabled(true);
+
+                    address1SwitchedLabel.setEnabled(true);
+                    switched1Checkbox.setEnabled(true);
+                }
+            }
+
+        });
         switchTypeComboBox.setRenderer(new SwitchTypeComboBoxCellRenderer());
         switchTypeComboBox.setSelectedItem(mySwitch.getType());
         switchDefaultStateComboBox = new JComboBox();
@@ -142,13 +175,17 @@ public class SwitchConfig extends JDialog {
         configPanel.add(address0TextField);
         configPanel.add(address1Label);
         configPanel.add(address1TextField);
+        configPanel.add(address0SwitchedLabel);
+        configPanel.add(switched0Checkbox);
+        configPanel.add(address1SwitchedLabel);
+        configPanel.add(switched1Checkbox);
         configPanel.add(defaultStateLabel);
         configPanel.add(switchDefaultStateComboBox);
         configPanel.add(orientationLabel);
         configPanel.add(switchOrientationComboBox);
         configPanel.add(descLabel);
         configPanel.add(descTextField);
-        SpringUtilities.makeCompactGrid(configPanel, 8, 2, // rows, cols
+        SpringUtilities.makeCompactGrid(configPanel, 10, 2, // rows, cols
             6, 6, // initX, initY
             6, 6); // xPad, yPad
         return configPanel;
@@ -174,26 +211,35 @@ public class SwitchConfig extends JDialog {
                 mySwitch = new DoubleCrossSwitch(tmp.getNumber(),
                     tmp.getDesc(), tmp.getAddress(0));
             } else if (value.equals("ThreeWaySwitch")) {
-                mySwitch = new ThreeWaySwitch(tmp.getNumber(), tmp.getDesc(),
-                    tmp.getAddresses());
+                if (!(mySwitch instanceof ThreeWaySwitch)) {
+                    Address[] addresses = new Address[2];
+                    addresses[0] = tmp.getAddress(0);
+                    addresses[1] = new Address(tmp.getAddress(0).getBus(), 0);
+
+                    mySwitch = new ThreeWaySwitch(tmp.getNumber(), tmp
+                        .getDesc(), addresses);
+                } else {
+                    mySwitch = new ThreeWaySwitch(tmp.getNumber(), tmp
+                        .getDesc(), tmp.getAddresses());
+                }
             }
             int bus = Integer.parseInt(busTextField.getText());
-            mySwitch.getAddress(0).setBus(bus
-                );
+            int address0 = Integer.parseInt(address0TextField.getText());
+
+            mySwitch.getAddress(0).setBus(bus);
+            mySwitch.getAddress(0).setAddress(address0);
+            mySwitch.getAddress(0).setAddressSwitched(
+                switched0Checkbox.isSelected());
             if (mySwitch.getAddresses().length == 2) {
+
+                int address1 = Integer.parseInt(address0TextField.getText());
                 mySwitch.getAddress(1).setBus(bus);
-            }
-            Address[] newAddress = null;
-            if (mySwitch instanceof ThreeWaySwitch) {
-                newAddress = new Address[] {
-                    new Address(address0TextField.getText()),
-                    new Address(address1TextField.getText()) };
-            } else {
-                newAddress = new Address[] { new Address(address0TextField
-                    .getText()) };
+                mySwitch.getAddress(1).setAddress(address1);
+                mySwitch.getAddress(1).setAddressSwitched(
+                    switched1Checkbox.isSelected());
             }
 
-            mySwitch.setAddresses(newAddress);
+
             mySwitch.setDefaultState((SwitchState) switchDefaultStateComboBox
                 .getSelectedItem());
             mySwitch

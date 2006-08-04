@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
+import ch.fork.AdHocRailway.domain.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
@@ -69,14 +70,14 @@ public class LocomotiveControlPanel extends JPanel {
         }
         removeAll();
         locomotiveWidgets.clear();
-        if (Preferences.getInstance().getStringValue("KeyBoardLayout").equals(
+        if (Preferences.getInstance().getStringValue(PreferencesKeys.KEYBOARD_LAYOUT).equals(
             "Swiss German")) {
             keyBindings = keyBindingsDE;
         } else {
             keyBindings = keyBindingsUS;
         }
         for (int i = 0; i < Preferences.getInstance().getIntValue(
-            "LocomotiveControlesAmount"); i++) {
+            PreferencesKeys.LOCOMOTIVE_CONTROLES); i++) {
             LocomotiveWidget w = new LocomotiveWidget(keyBindings[i][0],
                 keyBindings[i][1], keyBindings[i][2]);
             LocomotiveControl.getInstance().addLocomotiveChangeListener(w);

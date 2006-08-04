@@ -60,7 +60,7 @@ public class ThreeWaySwitch extends Switch {
 
     protected void toggle() throws SwitchException {
         if (session == null) {
-            throw new SwitchException(ERR_NO_SESSION);
+            throw new SwitchException(ERR_NOT_CONNECTED);
         }
         switch (switchState) {
         case LEFT:
@@ -134,7 +134,7 @@ public class ThreeWaySwitch extends Switch {
         switchState = SwitchState.RIGHT;
     }
 
-    public void setSession(SRCPSession session) {
+    protected void setSession(SRCPSession session) {
         this.session = session;
         switch1.setSession(session);
         switch2.setSession(session);
@@ -171,4 +171,5 @@ public class ThreeWaySwitch extends Switch {
         newSwitch.setDefaultState(defaultState);
         return newSwitch;
     }
+
 }

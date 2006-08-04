@@ -35,9 +35,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
+import ch.fork.AdHocRailway.domain.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.domain.configuration.XMLExporter;
 import ch.fork.AdHocRailway.domain.configuration.XMLImporter;
 import ch.fork.AdHocRailway.domain.configuration.exception.ConfigurationException;
+import ch.fork.AdHocRailway.domain.locking.LockControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
@@ -80,6 +82,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         setIconImage(createImageIcon("icons/RailControl.png", "RailControl",
             AdHocRailway.this).getImage());
         initGUI();
+        ExceptionDialog.start(this);
         File standardFile = new File("etc/standard.conf");
         // if (standardFile.exists()) {
         // OpenAction oa = new OpenAction(null);
@@ -126,12 +129,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         LocomotiveControlPanel locomotiveControlPanel = new LocomotiveControlPanel();
         locomotiveControlPanel.setBorder(new EtchedBorder());
         return locomotiveControlPanel;
-    }
-
-    public void processException(Exception e) {
-        JOptionPane.showMessageDialog(this, e.getMessage(), "Error occured",
-            JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
     }
 
     public static void main(String[] args) {
@@ -199,7 +196,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 XMLImporter importer = new XMLImporter(file.getAbsolutePath());
 
                 hostnameLabel.setText(Preferences.getInstance().getStringValue(
-                    "Hostname"));
+                    PreferencesKeys.HOSTNAME));
                 if (recentFilesMenu.getComponentCount() > 1) {
                     recentFilesMenu.remove(10);
                 }
@@ -305,7 +302,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
         public void actionPerformed(ActionEvent e) {
             int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
-                "Really exit ?", "Exit", JOptionPane.YES_NO_OPTION);
+                "Really exit ?", "Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageTools.createImageIcon(
+                    "icons/messagebox_warning.png", "Warning", this));
             if (result == JOptionPane.OK_OPTION) {
                 System.exit(0);
             }
@@ -319,7 +317,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
         public void actionPerformed(ActionEvent e) {
             SwitchConfigurationDialog switchConfig = new SwitchConfigurationDialog(
-                AdHocRailway.this, Preferences.getInstance());
+                AdHocRailway.this);
             if (switchConfig.isOkPressed()) {
                 SwitchControl sc = SwitchControl.getInstance();
                 sc.unregisterAllSwitchGroups();
@@ -341,7 +339,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         public void actionPerformed(ActionEvent e) {
             LocomotiveControl lc = LocomotiveControl.getInstance();
             LocomotiveConfigurationDialog locomotiveConfig = new LocomotiveConfigurationDialog(
-                AdHocRailway.this, Preferences.getInstance());
+                AdHocRailway.this);
             if (locomotiveConfig.isOkPressed()) {
 
                 lc.unregisterAllLocomotives();
@@ -389,14 +387,16 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         public void actionPerformed(ActionEvent e) {
             try {
                 String host = Preferences.getInstance().getStringValue(
-                    "Hostname");
-                int port = Preferences.getInstance().getIntValue("Portnumber");
+                    PreferencesKeys.HOSTNAME);
+                int port = Preferences.getInstance().getIntValue(
+                    PreferencesKeys.PORT);
                 session = new SRCPSession(host, port, false);
                 session.getCommandChannel().addCommandDataListener(
                     AdHocRailway.this);
                 session.getInfoChannel().addInfoDataListener(AdHocRailway.this);
                 SwitchControl.getInstance().setSession(session);
                 LocomotiveControl.getInstance().setSession(session);
+                LockControl.getInstance().setSession(session);
                 session.connect();
                 daemonConnectItem.setEnabled(false);
                 daemonDisconnectItem.setEnabled(true);
@@ -422,8 +422,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         public void actionPerformed(ActionEvent e) {
             try {
                 String host = Preferences.getInstance().getStringValue(
-                    "Hostname");
-                int port = Preferences.getInstance().getIntValue("Portnumber");
+                    PreferencesKeys.HOSTNAME);
+                int port = Preferences.getInstance().getIntValue(
+                    PreferencesKeys.PORT);
                 session.disconnect();
                 daemonConnectItem.setEnabled(true);
                 daemonDisconnectItem.setEnabled(false);
@@ -433,7 +434,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 updateCommandHistory("Disconnected from server " + host
                     + " on port " + port);
             } catch (SRCPException e1) {
-                processException(e1);
+                ExceptionProcessor.getInstance().processException(e1);
             }
         }
     }

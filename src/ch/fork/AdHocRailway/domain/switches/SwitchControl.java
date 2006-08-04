@@ -9,13 +9,14 @@ import java.util.Map;
 
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
+import ch.fork.AdHocRailway.domain.Control;
+import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GAInfoListener;
 
-public class SwitchControl implements GAInfoListener {
+public class SwitchControl extends Control implements GAInfoListener {
     private static SwitchControl       instance;
-    private SRCPSession                session;
     private List<SwitchChangeListener> listeners;
     private List<SwitchGroup>          switchGroups;
     private Map<Address, Switch>       addressToSwitch;
@@ -44,7 +45,7 @@ public class SwitchControl implements GAInfoListener {
             }
         }
         numberToSwitch.put(aSwitch.getNumber(), aSwitch);
-        aSwitch.setSession(session);
+        setSessionOnControlObject(aSwitch);
     }
 
     public void registerSwitches(Collection<Switch> switches) {
@@ -57,7 +58,7 @@ public class SwitchControl implements GAInfoListener {
                 }
             }
             numberToSwitch.put(aSwitch.getNumber(), aSwitch);
-            aSwitch.setSession(session);
+            setSessionOnControlObject(aSwitch);
         }
     }
 
@@ -104,7 +105,7 @@ public class SwitchControl implements GAInfoListener {
     public void setSession(SRCPSession session) {
         this.session = session;
         for (Switch aSwitch : addressToSwitch.values()) {
-            aSwitch.setSession(session);
+            setSessionOnControlObject(aSwitch);
         }
         session.getInfoChannel().addGAInfoListener(this);
     }
@@ -191,14 +192,10 @@ public class SwitchControl implements GAInfoListener {
     }
 
     private void checkSwitch(Switch aSwitch) throws SwitchException {
-        if (aSwitch.getSession() == null) {
-            throw new SwitchException(Constants.ERR_NO_SESSION);
-        }
-        Address[] addresses = aSwitch.getAddresses();
-        for (int i = 0; i < addresses.length; i++) {
-            if (addresses[i].getAddress() == 0) {
-                throw new SwitchException(Constants.ERR_INVALID_ADDRESS);
-            }
+        try {
+            checkControlObject(aSwitch);
+        } catch (ControlException e) {
+            throw new SwitchException(Constants.ERR_NOT_CONNECTED, e);
         }
         if (aSwitch instanceof ThreeWaySwitch
             && aSwitch.getAddress(1).getAddress() == 0) {

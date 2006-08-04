@@ -5,8 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -29,18 +27,23 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
+import ch.fork.AdHocRailway.domain.ControlObject;
+import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
+import ch.fork.AdHocRailway.domain.locking.LockControl;
+import ch.fork.AdHocRailway.domain.locking.exception.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.NoneLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
+import ch.fork.AdHocRailway.ui.ExceptionDialog;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 
 public class LocomotiveWidget extends JPanel implements
-    LocomotiveChangeListener {
+    LocomotiveChangeListener, LockChangeListener {
     private static final long serialVersionUID = 1L;
 
     private enum LocomotiveActionType {
@@ -57,6 +60,7 @@ public class LocomotiveWidget extends JPanel implements
     private JLabel                      currentSpeed;
     private JButton                     stopButton;
     private JButton                     directionButton;
+    private LockToggleButton            lockButton;
     private Locomotive                  myLocomotive;
     private int                         accelerateKey, deccelerateKey,
         toggleDirectionKey;
@@ -125,6 +129,11 @@ public class LocomotiveWidget extends JPanel implements
 
     private JPanel initFunctionsControl() {
         JPanel functionsPanel = new JPanel();
+        BoxLayout bl = new BoxLayout(functionsPanel, BoxLayout.PAGE_AXIS);
+        functionsPanel.setLayout(bl);
+        Dimension size = new Dimension(60, 30);
+        Insets margin = new Insets(2, 2, 2, 2);
+
         FunctionToggleButton functionButton = new FunctionToggleButton("Fn");
         FunctionToggleButton f1Button = new FunctionToggleButton("F1");
         FunctionToggleButton f2Button = new FunctionToggleButton("F2");
@@ -132,55 +141,67 @@ public class LocomotiveWidget extends JPanel implements
         FunctionToggleButton f4Button = new FunctionToggleButton("F4");
         functionToggleButtons = new FunctionToggleButton[] { functionButton,
             f1Button, f2Button, f3Button, f4Button };
-        Insets margin = new Insets(3, 3, 3, 3);
-        GridBagLayout functionControlLayout = new GridBagLayout();
-        functionsPanel.setLayout(functionControlLayout);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 2, 2, 2);
+
         for (int i = 0; i < functionToggleButtons.length; i++) {
             functionToggleButtons[i].setMargin(margin);
+            functionToggleButtons[i].setMaximumSize(size);
             functionToggleButtons[i]
                 .addActionListener(new LocomotiveFunctionAction(i));
-            gbc.gridy = i;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            functionControlLayout.setConstraints(functionToggleButtons[i], gbc);
             functionsPanel.add(functionToggleButtons[i]);
         }
         return functionsPanel;
     }
 
     private JPanel initSpeedControl() {
-        Dimension size = new Dimension(70, 30);
+
         JPanel speedControlPanel = new JPanel();
+        BoxLayout bl = new BoxLayout(speedControlPanel, BoxLayout.PAGE_AXIS);
+        speedControlPanel.setLayout(bl);
+        Dimension size = new Dimension(60, 30);
+        Insets margin = new Insets(2, 2, 2, 2);
         currentSpeed = new JLabel("0%", SwingConstants.CENTER);
-        currentDirection = new JLabel(ImageTools.createImageIcon(
-            "icons/forward.png", "Forward", this));
+        /*
+         * currentDirection = new JLabel(ImageTools.createImageIcon(
+         * "icons/forward.png", "Forward", this));
+         */
         increaseSpeed = new JButton("+");
         decreaseSpeed = new JButton("-");
         stopButton = new JButton("Stop");
         directionButton = new JButton(ImageTools.createImageIcon(
-            "icons/reload.png", "Toggle Direction", this));
+            "icons/forward.png", "Toggle Direction", this));
+        lockButton = new LockToggleButton("");
+
         currentSpeed.setMaximumSize(size);
         increaseSpeed.setMaximumSize(size);
         decreaseSpeed.setMaximumSize(size);
         stopButton.setMaximumSize(size);
         directionButton.setMaximumSize(size);
-        BoxLayout bl = new BoxLayout(speedControlPanel, BoxLayout.PAGE_AXIS);
-        speedControlPanel.setLayout(bl);
-        currentDirection.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lockButton.setMaximumSize(size);
+
+        increaseSpeed.setMargin(margin);
+        decreaseSpeed.setMargin(margin);
+        stopButton.setMargin(margin);
+        directionButton.setMargin(margin);
+        lockButton.setMargin(margin);
+        // currentDirection.setAlignmentX(Component.CENTER_ALIGNMENT);
         increaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
         decreaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
         stopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         directionButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lockButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         increaseSpeed.addActionListener(new IncreaseSpeedAction());
         decreaseSpeed.addActionListener(new DecreaseSpeedAction());
         stopButton.addActionListener(new StopAction());
         directionButton.addActionListener(new ToggleDirectionAction());
-        speedControlPanel.add(currentDirection);
+        lockButton.addActionListener(new LockAction());
+
+        // speedControlPanel.add(currentDirection);
         speedControlPanel.add(increaseSpeed);
         speedControlPanel.add(decreaseSpeed);
         speedControlPanel.add(stopButton);
         speedControlPanel.add(directionButton);
+        speedControlPanel.add(lockButton);
         return speedControlPanel;
     }
 
@@ -224,15 +245,15 @@ public class LocomotiveWidget extends JPanel implements
         }
         switch (myLocomotive.getDirection()) {
         case FORWARD:
-            currentDirection.setIcon(ImageTools.createImageIcon(
+            directionButton.setIcon(ImageTools.createImageIcon(
                 "icons/forward.png", "Forward", this));
             break;
         case REVERSE:
-            currentDirection.setIcon(ImageTools.createImageIcon(
+            directionButton.setIcon(ImageTools.createImageIcon(
                 "icons/back.png", "Reverse", this));
             break;
         default:
-            currentDirection.setIcon(ImageTools.createImageIcon(
+            directionButton.setIcon(ImageTools.createImageIcon(
                 "icons/forward.png", "Forward", this));
         }
         setPreferredSize(new Dimension(200, 250));
@@ -405,7 +426,7 @@ public class LocomotiveWidget extends JPanel implements
             try {
                 LocomotiveControl.getInstance().toggleDirection(myLocomotive);
             } catch (LocomotiveException e1) {
-                ExceptionProcessor.getInstance().processException(e1);
+                ExceptionDialog.getInstance().processException(e1);
             }
             speedBar.requestFocus();
             updateWidget();
@@ -433,6 +454,26 @@ public class LocomotiveWidget extends JPanel implements
             speedBar.requestFocus();
         }
     }
+
+    private class LockAction extends AbstractAction {
+
+        public void actionPerformed(ActionEvent e) {
+            LockControl lc = LockControl.getInstance();
+            System.out.println(lockButton.isSelected());
+            try {
+                if (lockButton.isSelected()) {
+                    lc.acquireLock(myLocomotive);
+                } else {
+                    lc.releaseLock(myLocomotive);
+                }
+            } catch (LockingException e1) {
+                lockButton.setSelected(false);
+                ExceptionProcessor.getInstance().processException(e1);
+            }
+        }
+
+    }
+
     private class MouseAction extends MouseAdapter {
         public void mouseClicked(MouseEvent e) {
 
@@ -442,7 +483,7 @@ public class LocomotiveWidget extends JPanel implements
                 if (locomotiveConfig.isOkPressed()) {
                     LocomotiveControl lc = LocomotiveControl.getInstance();
                     lc.unregisterLocomotive(myLocomotive);
-                    
+
                     myLocomotive = locomotiveConfig.getLocomotive();
                     lc.registerLocomotive(myLocomotive);
                     desc.setText(myLocomotive.getDesc());
@@ -450,5 +491,10 @@ public class LocomotiveWidget extends JPanel implements
                 }
             }
         }
+    }
+
+    public void lockChanged(ControlObject changedLock) {
+        // TODO Auto-generated method stub
+
     }
 }

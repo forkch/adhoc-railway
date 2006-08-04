@@ -1,0 +1,36 @@
++---------------------------------------------------------+
+|						AdHoc-Railway					  |
++---------------------------------------------------------+
+
+1. Introduction
+
+AdHoc-Railway is a Java-GUI to control a model railway over the SRCP-Protocol. 
+It is very simple to setup and drive immediately without having a complete map of 
+the railway on the screen.
+AdHoc-Railway is designed to be used in a Multiuser-Environment. This means
+that many persons can control the whole railway and each AdHoc-Railway-Instance 
+is informed about the changes on the railway which were made by the other 
+users.
+It uses the jsrcpc-Library to communicate with a srcp-server.
+
+2. Installation
+
+AdHoc-Railway needs the xerces-java library in order to save and load its configuration,
+see that you have them installed. The jsrcpc-library is already in the binary-distribution included.
+
+3. Run
+
+Just download the .jar-Version and start it via
+	% java -jar AdHoc-Railway.jar
+
+3. Usage
+
+TBD.
+
+4. Image-Source
+
+All images used in the AdHoc-Railway are coming either from the KDE-Project or 
+from the SpDrS60-Project. Both are distributed under the terms of the GPL.
+
+KDE:     http://www.kde.org
+SpDrS60: http://spdrs60.sourceforge.net

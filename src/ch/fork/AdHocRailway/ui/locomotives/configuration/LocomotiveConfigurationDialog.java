@@ -40,7 +40,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-import ch.fork.AdHocRailway.domain.configuration.Preferences;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -49,7 +48,6 @@ import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.TableResizer;
 
 public class LocomotiveConfigurationDialog extends JDialog {
-    private Preferences           preferences;
     private Frame                 owner;
     private boolean               okPressed     = false;
     private boolean               cancelPressed = false;
@@ -64,10 +62,9 @@ public class LocomotiveConfigurationDialog extends JDialog {
     private ListListModel         locomotiveGroupListModel;
     private SortedSet<Locomotive> locomotivesWorkCopy;
 
-    public LocomotiveConfigurationDialog(Frame owner, Preferences preferences) {
+    public LocomotiveConfigurationDialog(Frame owner) {
         super(owner, "Locomotive Configuration", true);
         this.owner = owner;
-        this.preferences = preferences;
         this.locomotiveControl = LocomotiveControl.getInstance();
         this.locomotivesWorkCopy = new TreeSet<Locomotive>();
         for (Locomotive l : locomotiveControl.getLocomotives()) {

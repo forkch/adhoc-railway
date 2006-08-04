@@ -3,12 +3,11 @@ package ch.fork.AdHocRailway.domain.switches;
 
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
+import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
-import de.dermoba.srcp.client.SRCPSession;
 
-public abstract class Switch implements Constants, Comparable {
+public abstract class Switch extends ControlObject implements Constants, Comparable {
     protected int       number;
-    protected Address[] addresses;
     protected String    desc;
 
     public enum SwitchState {
@@ -17,7 +16,6 @@ public abstract class Switch implements Constants, Comparable {
 
     protected SwitchState switchState  = SwitchState.UNDEF;
     protected SwitchState defaultState = SwitchState.STRAIGHT;
-    protected boolean     initialized  = false;
 
     public enum SwitchOrientation {
         NORTH, SOUTH, WEST, EAST
@@ -28,28 +26,27 @@ public abstract class Switch implements Constants, Comparable {
     protected int               SWITCH_PORT_DEACTIVATE = 0;
     protected final int         MAX_ADDRESSES          = 2;
     protected String            ERR_TOGGLE_FAILED      = "Toggle of switch failed";
-    protected SRCPSession       session;
 
     public Switch(int number, String desc, Address address) {
         this(number, desc, new Address[] { address });
 
     }
 
-    public Switch(int number, String desc, Address[] address) {
+    public Switch(int number, String desc, Address[] addresses) {
+        super(addresses);
         this.number = number;
-        this.addresses = address;
         this.desc = desc;
     }
 
     protected void init() throws SwitchException {
         if (session == null) {
-            throw new SwitchException(ERR_NO_SESSION);
+            throw new SwitchException(ERR_NOT_CONNECTED);
         }
     }
 
     protected void term() throws SwitchException {
         if (session == null) {
-            throw new SwitchException(ERR_NO_SESSION);
+            throw new SwitchException(ERR_NOT_CONNECTED);
         }
     }
 
@@ -123,37 +120,10 @@ public abstract class Switch implements Constants, Comparable {
         return this.getClass().getSimpleName();
     }
 
-
-    public Address[] getAddresses() {
-        return addresses;
-    }
-
     public Address getAddress(int index) {
         return addresses[index];
     }
 
-    public void setAddresses(Address[] addresses) {
-        this.addresses = addresses;
-        initialized = false;
-    }
-
-
-    public void setAddress(int index, Address address) {
-        this.addresses[index] = address;
-        initialized = false;
-    }
-
-    protected SRCPSession getSession() {
-        return session;
-    }
-
-    protected void setSession(SRCPSession session) {
-        this.session = session;
-    }
-
-    protected boolean isInitialized() {
-        return initialized;
-    }
 
     public SwitchState getDefaultState() {
         return defaultState;
@@ -175,4 +145,7 @@ public abstract class Switch implements Constants, Comparable {
         this.switchOrientation = switchOrientation;
     }
 
+    public String getDeviceGroup() {
+        return "GA";
+    }
 }

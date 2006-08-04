@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
+import ch.fork.AdHocRailway.domain.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
 import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
 
@@ -28,7 +29,7 @@ public class SwitchGroupTab extends JPanel {
         layout = new GridBagLayout();
         setLayout(layout);
         maxCols = Preferences.getInstance()
-            .getIntValue("SwitchControlesAmount");
+            .getIntValue(PreferencesKeys.SWITCH_CONTROLES);
         currentRow = 0;
         currentCol = 0;
         gbc = new GridBagConstraints();

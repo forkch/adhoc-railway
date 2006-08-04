@@ -3,18 +3,18 @@ package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
+import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveLockedException;
-import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GL;
 
-public abstract class Locomotive implements Constants, Comparable {
+public abstract class Locomotive extends ControlObject implements Constants, Comparable {
     protected String  name;
     protected String  desc;
-    protected Address address;
     protected String  image;
+    protected Address address;
 
     public enum Direction {
         FORWARD, REVERSE, UNDEF
@@ -27,12 +27,10 @@ public abstract class Locomotive implements Constants, Comparable {
     protected final String REVERSE_DIRECTION = "0";
     protected int          drivingSteps;
     protected int          currentSpeed;
-    protected SRCPSession  session;
     private GL             gl;
     protected boolean[]    functions;
     protected String[]     params;
-    protected boolean      initialized       = false;
-
+    
     protected abstract void increaseSpeedStep() throws LocomotiveException;
 
     protected abstract void decreaseSpeedStep() throws LocomotiveException;
@@ -41,10 +39,11 @@ public abstract class Locomotive implements Constants, Comparable {
 
     public Locomotive(String name, Address address, int drivingSteps,
         String desc, int functionCount) {
+        super(new Address[]{address});
         this.name = name;
-        this.address = address;
         this.drivingSteps = drivingSteps;
         this.desc = desc;
+        this.address = address; //convenience   
         params = new String[3];
         params[0] = Integer.toString(PROTOCOL_VERSION);
         params[1] = Integer.toString(drivingSteps);
@@ -55,7 +54,7 @@ public abstract class Locomotive implements Constants, Comparable {
     protected void init() throws LocomotiveException {
         try {
             if (session == null) {
-                throw new LocomotiveException(ERR_NO_SESSION);
+                throw new LocomotiveException(ERR_NOT_CONNECTED);
             }
             gl = new GL(session);
             gl.init(address.getBus(), address.getAddress(), PROTOCOL, params);
@@ -183,7 +182,6 @@ public abstract class Locomotive implements Constants, Comparable {
         }
     }
 
-
     public int compareTo(Object o) {
         if (o instanceof Locomotive) {
             Locomotive anotherLocomotive = (Locomotive) o;
@@ -198,22 +196,6 @@ public abstract class Locomotive implements Constants, Comparable {
          * return name + ": " + getType() + " @ bus " + bus + " @ address " +
          * address;
          */
-    }
-
-    protected boolean isInitialized() {
-        return initialized;
-    }
-
-    protected void setInitialized(boolean initialized) {
-        this.initialized = initialized;
-    }
-
-    protected SRCPSession getSession() {
-        return session;
-    }
-
-    protected void setSession(SRCPSession session) {
-        this.session = session;
     }
 
     public int getDrivingSteps() {
@@ -268,5 +250,9 @@ public abstract class Locomotive implements Constants, Comparable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+    
+    public String getDeviceGroup() {
+        return "GL";
     }
 }

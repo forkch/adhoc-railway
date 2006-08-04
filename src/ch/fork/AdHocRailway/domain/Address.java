@@ -12,10 +12,6 @@ public class Address {
         this.address = address;
     }
 
-    public Address(String anAddress) {
-        address = Integer.parseInt(anAddress);
-    }
-
     public int getAddress() {
         return address;
     }

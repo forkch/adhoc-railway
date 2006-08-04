@@ -2,10 +2,10 @@
 - Clients duerfen nicht unendlich kommandos senden koennen (queue)
 
 - Blockieren von Lok's
-- Lok-Auswahl verbessern
-- Zuletzt geschaltete Weichen bleiben sichtbar und koennen zurueckgeschaltet werden
+- Lok-Auswahl verbessern (ok)
+- Zuletzt geschaltete Weichen bleiben sichtbar und koennen zurueckgeschaltet werden (ok)
 - Lokauswahl speichern (pro User)
-- Drehen von Weichen-Kabel via SW
+- Drehen von Weichen-Kabel via SW (ok)
 - Sofort Stopp von Lok's (Bremsverz. ausschalten via F4)
 - Preferenzliste
-- Wenn Lok faehrt kann keine andere im Slot ausgewaehlt werden
+- Wenn Lok faehrt kann keine andere im Slot ausgewaehlt werden (ok)

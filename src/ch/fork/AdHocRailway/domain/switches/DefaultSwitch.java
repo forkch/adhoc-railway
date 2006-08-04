@@ -3,8 +3,10 @@ package ch.fork.AdHocRailway.domain.switches;
 
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
+import ch.fork.AdHocRailway.domain.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchLockedException;
+import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GA;
@@ -26,7 +28,8 @@ public class DefaultSwitch extends Switch {
         super.init();
         try {
             ga = new GA(session);
-            if (!Preferences.getInstance().getBooleanValue("Interface6051")) {
+            if (!Preferences.getInstance().getBooleanValue(
+                PreferencesKeys.INTERFACE_6051)) {
                 ga.init(addresses[0].getBus(), addresses[0].getAddress(), "M");
             } else {
                 ga.setAddress(addresses[0].getAddress());
@@ -73,7 +76,7 @@ public class DefaultSwitch extends Switch {
     protected void toggle() throws SwitchException {
         try {
             int defaultActivationTime = Preferences.getInstance().getIntValue(
-                "DefaultActivationTime");
+                PreferencesKeys.ACTIVATION_TIME);
             switch (switchState) {
             case STRAIGHT:
                 ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
@@ -148,7 +151,7 @@ public class DefaultSwitch extends Switch {
     protected void setStraight() throws SwitchException {
         try {
             int defaultActivationTime = Preferences.getInstance().getIntValue(
-                "DefaultActivationTime");
+                PreferencesKeys.ACTIVATION_TIME);
             if (defaultState == SwitchState.STRAIGHT) {
                 ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
                     defaultActivationTime);
@@ -172,7 +175,7 @@ public class DefaultSwitch extends Switch {
     protected void setCurvedLeft() throws SwitchException {
         try {
             int defaultActivationTime = Preferences.getInstance().getIntValue(
-                "DefaultActivationTime");
+                PreferencesKeys.ACTIVATION_TIME);
             if (defaultState == SwitchState.LEFT
                 || defaultState == SwitchState.RIGHT) {
                 ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
@@ -227,5 +230,9 @@ public class DefaultSwitch extends Switch {
                 return STRAIGHT_PORT;
             }
         }
+    }
+    
+    protected void setSession(SRCPSession session) {
+        this.session = session;
     }
 }

@@ -15,6 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import ch.fork.AdHocRailway.domain.ControlObject;
+import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
 import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch;
@@ -30,7 +32,7 @@ import ch.fork.AdHocRailway.ui.switches.canvas.SwitchCanvas;
 import ch.fork.AdHocRailway.ui.switches.canvas.ThreeWaySwitchCanvas;
 import ch.fork.AdHocRailway.ui.switches.configuration.SwitchConfig;
 
-public class SwitchWidget extends JPanel implements SwitchChangeListener {
+public class SwitchWidget extends JPanel implements SwitchChangeListener, LockChangeListener {
     private static final long  serialVersionUID = 1L;
     private Switch             mySwitch;
     private JLabel             switchStateLabel;
@@ -156,5 +158,10 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener {
 
     public Switch getMySwitch() {
         return mySwitch;
+    }
+
+    public void lockChanged(ControlObject changedLock) {
+        // TODO Auto-generated method stub
+        
     }
 }

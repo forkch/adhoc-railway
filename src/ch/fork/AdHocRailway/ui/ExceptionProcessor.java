@@ -7,9 +7,11 @@ import javax.swing.JOptionPane;
 public class ExceptionProcessor {
     private JFrame                    parent;
     private static ExceptionProcessor instance;
+    
 
     private ExceptionProcessor(JFrame parent) {
         this.parent = parent;
+        
     }
 
     public static ExceptionProcessor getInstance(JFrame parent) {
@@ -24,23 +26,26 @@ public class ExceptionProcessor {
     }
 
     public void processException(Exception e) {
-        String msg = e.getMessage();
+        String exceptionMsg = e.getMessage();
         if (e.getCause() != null) {
-            msg += ":\n" + e.getCause().getMessage();
+            exceptionMsg += ":\n\nCause: " + e.getCause().getMessage();
         }
-        JOptionPane.showMessageDialog(parent, msg, "Error occured",
-            JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(parent, exceptionMsg, "Error occured",
+            JOptionPane.ERROR_MESSAGE, ImageTools.createImageIcon(
+                "icons/messagebox_critical.png", "Critical", this));
         e.printStackTrace();
+        
     }
 
     public void processException(String msg, Exception e) {
         String exceptionMsg = e.getMessage();
         msg = msg + "\n" + exceptionMsg;
         if (e.getCause() != null) {
-            exceptionMsg += ":\n" + e.getCause().getMessage();
+            exceptionMsg += ":\n\nCause: " + e.getCause().getMessage();
         }
         JOptionPane.showMessageDialog(parent, msg, "Error occured",
-            JOptionPane.ERROR_MESSAGE);
+            JOptionPane.ERROR_MESSAGE, ImageTools.createImageIcon(
+                "icons/messagebox_critical.png", "Critical", this));
         e.printStackTrace();
     }
 }

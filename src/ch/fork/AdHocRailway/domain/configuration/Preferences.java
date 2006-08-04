@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Preferences {
+public class Preferences implements PreferencesKeys{
     private Map<String, String> preferences;
     private List<String>        hostnames;
     private String              hostname                = "titan";
@@ -21,15 +21,15 @@ public class Preferences {
         preferences = new HashMap<String, String>();
         hostnames = new ArrayList<String>();
         hostnames.add("localhost");
-        setStringValue("Hostname", "localhost");
-        setIntValue("Portnumber", 12345);
-        setIntValue("DefaultActivationTime", 50);
-        setIntValue("DefaultRoutingDelay", 250);
-        setIntValue("LocomotiveControlesAmount", 5);
-        setStringValue("KeyBoardLayout", "Swiss German");
-        setStringValue("Interface6051", "Y");
-        setIntValue("SwitchControlesAmount", 5);
-        setIntValue("LocomotivesControlesAmount", 5);
+        setStringValue(HOSTNAME, "localhost");
+        setIntValue(PORT, 12345);
+        setIntValue(ACTIVATION_TIME, 50);
+        setIntValue(ROUTING_DELAY, 250);
+        setIntValue(LOCK_DURATION, -1);
+        setIntValue(LOCOMOTIVE_CONTROLES, 5);
+        setStringValue(KEYBOARD_LAYOUT, "Swiss German");
+        setStringValue(INTERFACE_6051, "Y");
+        setIntValue(SWITCH_CONTROLES, 5);
     }
 
     public static Preferences getInstance() {

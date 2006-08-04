@@ -43,7 +43,6 @@ import javax.swing.table.TableModel;
 
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.configuration.Preferences;
 import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
@@ -56,7 +55,6 @@ import ch.fork.AdHocRailway.ui.TableResizer;
 public class SwitchConfigurationDialog extends JDialog {
     private List<SwitchGroup>          switchGroupsWorkCopy;
     private Map<Integer, Switch>       switchNumberToSwitchWorkCopy;
-    private Preferences                preferences;
     private ListListModel<SwitchGroup> switchGroupListModel;
     private JPopupMenu                 switchGroupPopupMenu;
     private JList                      switchGroupList;
@@ -68,10 +66,9 @@ public class SwitchConfigurationDialog extends JDialog {
     private boolean                    okPressed     = false;
     private SwitchControl              switchControl;
 
-    public SwitchConfigurationDialog(Frame owner, Preferences preferences) {
+    public SwitchConfigurationDialog(Frame owner) {
         super(owner, "Switch Configuration", true);
         this.owner = owner;
-        this.preferences = preferences;
         this.switchControl = SwitchControl.getInstance();
         this.switchNumberToSwitchWorkCopy = new HashMap<Integer, Switch>();
         for (Switch s : switchControl.getNumberToSwitch().values()) {
@@ -208,13 +205,6 @@ public class SwitchConfigurationDialog extends JDialog {
         typeColumn.setCellEditor(new DefaultCellEditor(switchTypeComboBox));
         typeColumn.setCellRenderer(new SwitchTypeCellRenderer());
 
-        // SwitchAddress
-        /*
-         * TableColumn addressColumn =
-         * switchesTable.getColumnModel().getColumn(3); addressColumn
-         * .setCellEditor((TableCellEditor) new SwitchAddressCellEditor());
-         */
-
         // DefaultState
         JComboBox switchDefaultStateComboBox = new JComboBox();
         switchDefaultStateComboBox.addItem(SwitchState.STRAIGHT);
@@ -222,7 +212,7 @@ public class SwitchConfigurationDialog extends JDialog {
         switchDefaultStateComboBox
             .setRenderer(new SwitchDefaultStateComboBoxCellRenderer());
         TableColumn defaultStateColumn = switchesTable.getColumnModel()
-            .getColumn(5);
+            .getColumn(7);
         defaultStateColumn.setCellEditor(new DefaultCellEditor(
             switchDefaultStateComboBox));
         defaultStateColumn
@@ -236,7 +226,7 @@ public class SwitchConfigurationDialog extends JDialog {
         switchOrientationComboBox.addItem(SwitchOrientation.WEST);
 
         TableColumn switchOrientationColumn = switchesTable.getColumnModel()
-            .getColumn(6);
+            .getColumn(8);
         switchOrientationColumn.setCellEditor(new DefaultCellEditor(
             switchOrientationComboBox));
 
