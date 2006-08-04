@@ -249,15 +249,15 @@ public class LocomotiveWidget extends JPanel implements
         }
         lockButton.setSelected(myLocomotive.isLocked());
         if (myLocomotive.isLocked()) {
-            
-            if (LockControl.getInstance().getSessionID() == myLocomotive
-                .getLockedBySession()) {
+            if (lockedByMe()) {
                 lockButton.setSelectedIcon(ImageTools.createImageIcon(
                     "icons/locked_by_me.png", "Locked by me", this));
+
             } else {
                 lockButton.setSelectedIcon(ImageTools.createImageIcon(
                     "icons/locked_by_enemy.png", "Locked by enemy", this));
-            }            
+
+            }
         }
         lockButton.revalidate();
         lockButton.repaint();
@@ -386,8 +386,9 @@ public class LocomotiveWidget extends JPanel implements
             if (locomotiveComboBox.getItemCount() == 0) {
                 return;
             }
-            if (myLocomotive.getCurrentSpeed() == 0) {
+            if (myLocomotive.getCurrentSpeed() == 0 && !lockedByMe()) {
                 locomotiveComboBox.setBackground(defaultBackground);
+                lockButton.setBackground(defaultBackground);
                 myLocomotive = (Locomotive) locomotiveComboBox
                     .getSelectedItem();
                 updateWidget();
@@ -427,21 +428,21 @@ public class LocomotiveWidget extends JPanel implements
             try {
                 LocomotiveControl.getInstance().setSpeed(myLocomotive, 0);
                 updateWidget();
+                speedBar.requestFocus();
             } catch (LocomotiveException e3) {
                 ExceptionProcessor.getInstance().processException(e3);
             }
-            speedBar.requestFocus();
         }
     }
     class ToggleDirectionAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             try {
                 LocomotiveControl.getInstance().toggleDirection(myLocomotive);
+                speedBar.requestFocus();
+                updateWidget();
             } catch (LocomotiveException e1) {
                 ExceptionDialog.getInstance().processException(e1);
             }
-            speedBar.requestFocus();
-            updateWidget();
         }
     }
     class IncreaseSpeedAction extends AbstractAction {
@@ -449,10 +450,10 @@ public class LocomotiveWidget extends JPanel implements
             try {
                 LocomotiveControl.getInstance().increaseSpeed(myLocomotive);
                 updateWidget();
+                speedBar.requestFocus();
             } catch (LocomotiveException e3) {
                 ExceptionProcessor.getInstance().processException(e3);
             }
-            speedBar.requestFocus();
         }
     }
     class DecreaseSpeedAction extends AbstractAction {
@@ -460,10 +461,10 @@ public class LocomotiveWidget extends JPanel implements
             try {
                 LocomotiveControl.getInstance().decreaseSpeed(myLocomotive);
                 updateWidget();
+                speedBar.requestFocus();
             } catch (LocomotiveException e3) {
                 ExceptionProcessor.getInstance().processException(e3);
             }
-            speedBar.requestFocus();
         }
     }
 
@@ -476,10 +477,15 @@ public class LocomotiveWidget extends JPanel implements
                     boolean succeeded = lc.acquireLock(myLocomotive);
                     lockButton.setSelected(succeeded);
                 } else {
-                    boolean succeeded = !lc.releaseLock(myLocomotive);
-                    lockButton.setSelected(succeeded);
+                    if (lockedByMe()) {
+                        boolean succeeded = !lc.releaseLock(myLocomotive);
+                        lockButton.setSelected(succeeded);
+                    } else {
+                        lockButton.setSelected(true);
+                    }
                 }
                 updateWidget();
+                speedBar.requestFocus();
             } catch (LockingException e1) {
                 lockButton.setSelected(false);
                 ExceptionProcessor.getInstance().processException(e1);
@@ -505,5 +511,10 @@ public class LocomotiveWidget extends JPanel implements
                 }
             }
         }
+    }
+
+    private boolean lockedByMe() {
+        return LockControl.getInstance().getSessionID() == myLocomotive
+            .getLockedBySession();
     }
 }

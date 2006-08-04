@@ -77,22 +77,34 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private FileWriter             logFileWriter;
     private SwitchesControlPanel   switchesControlPanel;
 
+
     public AdHocRailway() {
+        this(null);
+    }
+
+    public AdHocRailway(String file) {
         super(NAME);
         setIconImage(createImageIcon("icons/RailControl.png", "RailControl",
             AdHocRailway.this).getImage());
         initGUI();
         ExceptionDialog.start(this);
-        File standardFile = new File("etc/standard.conf");
-        // if (standardFile.exists()) {
-        // OpenAction oa = new OpenAction(null);
-        // oa.openFile(standardFile);
-        // } else {
-        switchesControlPanel.update(SwitchControl.getInstance()
-            .getSwitchGroups());
-        locomotiveControlPanel.update(LocomotiveControl.getInstance()
-            .getLocomotiveGroups());
-        // }
+        if (file != null) {
+            File standardFile = new File(file);
+            if (standardFile.exists()) {
+                OpenAction oa = new OpenAction(null);
+                oa.openFile(standardFile);
+            } else {
+                switchesControlPanel.update(SwitchControl.getInstance()
+                    .getSwitchGroups());
+                locomotiveControlPanel.update(LocomotiveControl.getInstance()
+                    .getLocomotiveGroups());
+            }
+        } else {
+            switchesControlPanel.update(SwitchControl.getInstance()
+                .getSwitchGroups());
+            locomotiveControlPanel.update(LocomotiveControl.getInstance()
+                .getLocomotiveGroups());
+        }
         switchesControlPanel.revalidate();
         switchesControlPanel.repaint();
     }
@@ -132,7 +144,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     public static void main(String[] args) {
-        new AdHocRailway();
+        if (args.length == 1) {
+            new AdHocRailway(args[0]);
+        } else {
+            new AdHocRailway();
+        }
     }
 
     public void commandDataSent(String commandData) {
