@@ -64,7 +64,6 @@ public class LocomotiveWidget extends JPanel implements
     private Locomotive                  myLocomotive;
     private int                         accelerateKey, deccelerateKey,
         toggleDirectionKey;
-    private JLabel                      currentDirection;
     private FunctionToggleButton[]      functionToggleButtons;
     private Color                       defaultBackground;
     private Locomotive                  none;
@@ -159,11 +158,7 @@ public class LocomotiveWidget extends JPanel implements
         speedControlPanel.setLayout(bl);
         Dimension size = new Dimension(60, 30);
         Insets margin = new Insets(2, 2, 2, 2);
-        currentSpeed = new JLabel("0%", SwingConstants.CENTER);
-        /*
-         * currentDirection = new JLabel(ImageTools.createImageIcon(
-         * "icons/forward.png", "Forward", this));
-         */
+
         increaseSpeed = new JButton("+");
         decreaseSpeed = new JButton("-");
         stopButton = new JButton("Stop");
@@ -171,7 +166,6 @@ public class LocomotiveWidget extends JPanel implements
             "icons/forward.png", "Toggle Direction", this));
         lockButton = new LockToggleButton("");
 
-        currentSpeed.setMaximumSize(size);
         increaseSpeed.setMaximumSize(size);
         decreaseSpeed.setMaximumSize(size);
         stopButton.setMaximumSize(size);
@@ -183,14 +177,13 @@ public class LocomotiveWidget extends JPanel implements
         stopButton.setMargin(margin);
         directionButton.setMargin(margin);
         lockButton.setMargin(margin);
-        // currentDirection.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         increaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
         decreaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
         stopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         directionButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         lockButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        lockButton.setEnabled(false);
+
 
         increaseSpeed.addActionListener(new IncreaseSpeedAction());
         decreaseSpeed.addActionListener(new DecreaseSpeedAction());
@@ -198,7 +191,6 @@ public class LocomotiveWidget extends JPanel implements
         directionButton.addActionListener(new ToggleDirectionAction());
         lockButton.addActionListener(new LockAction());
 
-        // speedControlPanel.add(currentDirection);
         speedControlPanel.add(increaseSpeed);
         speedControlPanel.add(decreaseSpeed);
         speedControlPanel.add(stopButton);
@@ -238,9 +230,6 @@ public class LocomotiveWidget extends JPanel implements
         speedBar.setMinimum(0);
         speedBar.setMaximum(myLocomotive.getDrivingSteps());
         speedBar.setValue(myLocomotive.getCurrentSpeed());
-        currentSpeed.setText((int) ((double) (myLocomotive.getCurrentSpeed())
-            / (double) (myLocomotive.getDrivingSteps()) * 100.)
-            + "%");
         boolean functions[] = myLocomotive.getFunctions();
         for (int i = 0; i < functions.length; i++) {
             functionToggleButtons[i].setSelected(functions[i]);
@@ -258,6 +247,20 @@ public class LocomotiveWidget extends JPanel implements
             directionButton.setIcon(ImageTools.createImageIcon(
                 "icons/forward.png", "Forward", this));
         }
+        lockButton.setSelected(myLocomotive.isLocked());
+        if (myLocomotive.isLocked()) {
+            
+            if (LockControl.getInstance().getSessionID() == myLocomotive
+                .getLockedBySession()) {
+                lockButton.setSelectedIcon(ImageTools.createImageIcon(
+                    "icons/locked_by_me.png", "Locked by me", this));
+            } else {
+                lockButton.setSelectedIcon(ImageTools.createImageIcon(
+                    "icons/locked_by_enemy.png", "Locked by enemy", this));
+            }            
+        }
+        lockButton.revalidate();
+        lockButton.repaint();
         setPreferredSize(new Dimension(200, 250));
     }
 
@@ -286,6 +289,13 @@ public class LocomotiveWidget extends JPanel implements
         if (myLocomotive.equals(changedLocomotive)) {
             SwingUtilities.invokeLater(new LocomotiveWidgetUpdater(
                 changedLocomotive));
+        }
+    }
+
+    public void lockChanged(ControlObject changedLock) {
+        if (changedLock instanceof Locomotive) {
+            Locomotive changedLocomotive = (Locomotive) changedLock;
+            locomotiveChanged(changedLocomotive);
         }
     }
 
@@ -461,13 +471,15 @@ public class LocomotiveWidget extends JPanel implements
 
         public void actionPerformed(ActionEvent e) {
             LockControl lc = LockControl.getInstance();
-            System.out.println(lockButton.isSelected());
             try {
                 if (lockButton.isSelected()) {
-                    lc.acquireLock(myLocomotive);
+                    boolean succeeded = lc.acquireLock(myLocomotive);
+                    lockButton.setSelected(succeeded);
                 } else {
-                    lc.releaseLock(myLocomotive);
+                    boolean succeeded = !lc.releaseLock(myLocomotive);
+                    lockButton.setSelected(succeeded);
                 }
+                updateWidget();
             } catch (LockingException e1) {
                 lockButton.setSelected(false);
                 ExceptionProcessor.getInstance().processException(e1);
@@ -493,10 +505,5 @@ public class LocomotiveWidget extends JPanel implements
                 }
             }
         }
-    }
-
-    public void lockChanged(ControlObject changedLock) {
-        // TODO Auto-generated method stub
-
     }
 }

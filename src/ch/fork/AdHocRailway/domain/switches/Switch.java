@@ -6,9 +6,10 @@ import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 
-public abstract class Switch extends ControlObject implements Constants, Comparable {
-    protected int       number;
-    protected String    desc;
+public abstract class Switch extends ControlObject implements Constants,
+    Comparable {
+    protected int    number;
+    protected String desc;
 
     public enum SwitchState {
         LEFT, STRAIGHT, RIGHT, UNDEF
@@ -38,19 +39,11 @@ public abstract class Switch extends ControlObject implements Constants, Compara
         this.desc = desc;
     }
 
-    protected void init() throws SwitchException {
-        if (session == null) {
-            throw new SwitchException(ERR_NOT_CONNECTED);
-        }
-    }
-
-    protected void term() throws SwitchException {
-        if (session == null) {
-            throw new SwitchException(ERR_NOT_CONNECTED);
-        }
-    }
-
     protected abstract void reinit() throws SwitchException;
+
+    protected abstract void init() throws SwitchException;
+
+    protected abstract void term() throws SwitchException;
 
     protected abstract void toggle() throws SwitchException;
 
@@ -148,4 +141,5 @@ public abstract class Switch extends ControlObject implements Constants, Compara
     public String getDeviceGroup() {
         return "GA";
     }
+    
 }

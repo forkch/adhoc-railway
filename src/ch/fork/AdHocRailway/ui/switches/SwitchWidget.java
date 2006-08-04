@@ -32,7 +32,8 @@ import ch.fork.AdHocRailway.ui.switches.canvas.SwitchCanvas;
 import ch.fork.AdHocRailway.ui.switches.canvas.ThreeWaySwitchCanvas;
 import ch.fork.AdHocRailway.ui.switches.configuration.SwitchConfig;
 
-public class SwitchWidget extends JPanel implements SwitchChangeListener, LockChangeListener {
+public class SwitchWidget extends JPanel implements SwitchChangeListener,
+    LockChangeListener {
     private static final long  serialVersionUID = 1L;
     private Switch             mySwitch;
     private JLabel             switchStateLabel;
@@ -107,6 +108,13 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener, LockCh
         }
     }
 
+    public void lockChanged(ControlObject changedLock) {
+        if (changedLock instanceof Switch) {
+            Switch changedSwitch = (Switch) changedLock;
+            switchChanged(changedSwitch);
+        }
+    }
+
     private class SwitchWidgetUpdater implements Runnable {
         public void run() {
             numberLabel.setText(Integer.toString(mySwitch.getNumber()));
@@ -160,8 +168,4 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener, LockCh
         return mySwitch;
     }
 
-    public void lockChanged(ControlObject changedLock) {
-        // TODO Auto-generated method stub
-        
-    }
 }

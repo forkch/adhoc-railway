@@ -39,11 +39,11 @@ import ch.fork.AdHocRailway.domain.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.domain.configuration.XMLExporter;
 import ch.fork.AdHocRailway.domain.configuration.XMLImporter;
 import ch.fork.AdHocRailway.domain.configuration.exception.ConfigurationException;
+import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.locking.LockControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
-import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
 import ch.fork.AdHocRailway.ui.switches.SwitchProgrammer;
@@ -302,7 +302,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
         public void actionPerformed(ActionEvent e) {
             int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
-                "Really exit ?", "Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageTools.createImageIcon(
+                "Really exit ?", "Exit", JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE, ImageTools.createImageIcon(
                     "icons/messagebox_warning.png", "Warning", this));
             if (result == JOptionPane.OK_OPTION) {
                 System.exit(0);
@@ -479,13 +480,15 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
         public void actionPerformed(ActionEvent e) {
             SwitchControl sc = SwitchControl.getInstance();
-            try {
-                for (Switch s : sc.getNumberToSwitch().values()) {
+
+            for (Switch s : sc.getNumberToSwitch().values()) {
+                try {
                     sc.setStraight(s);
+                } catch (ControlException e1) {
+                    ExceptionProcessor.getInstance().processException(e1);
                 }
-            } catch (SwitchException e1) {
-                ExceptionProcessor.getInstance().processException(e1);
             }
+
         }
     }
 

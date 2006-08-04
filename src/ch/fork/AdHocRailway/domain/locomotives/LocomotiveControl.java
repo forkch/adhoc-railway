@@ -12,7 +12,9 @@ import java.util.TreeSet;
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.Control;
-import ch.fork.AdHocRailway.domain.exception.ControlException;
+import ch.fork.AdHocRailway.domain.exception.InvalidAddressException;
+import ch.fork.AdHocRailway.domain.exception.NoSessionException;
+import ch.fork.AdHocRailway.domain.locking.LockControl;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GLInfoListener;
@@ -40,17 +42,21 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         addressToLocomotives.put(locomotiveToRegister.getAddress(),
             locomotiveToRegister);
         setSessionOnControlObject(locomotiveToRegister);
+        LockControl.getInstance().registerControlObject(locomotiveToRegister);
     }
 
     public void registerLocomotives(Collection<Locomotive> locomotivesToRegister) {
+        LockControl lc = LockControl.getInstance();
         for (Locomotive l : locomotivesToRegister) {
             addressToLocomotives.put(l.getAddress(), l);
             setSessionOnControlObject(l);
+            lc.registerControlObject(l);
         }
     }
 
     public void unregisterLocomotive(Locomotive locomotiveToUnregister) {
         addressToLocomotives.remove(locomotiveToUnregister.getAddress());
+        LockControl.getInstance().unregisterControlObject(locomotiveToUnregister);
     }
 
     public void unregisterAllLocomotives() {
@@ -58,6 +64,7 @@ public class LocomotiveControl extends Control implements GLInfoListener {
             // l.term();
         }
         addressToLocomotives.clear();
+        LockControl.getInstance().unregisterAllControlObjects();
     }
 
     public SortedSet<Locomotive> getLocomotives() {
@@ -180,14 +187,15 @@ public class LocomotiveControl extends Control implements GLInfoListener {
 
     private void checkLocomotive(Locomotive locomotive)
         throws LocomotiveException {
-
         if (locomotive instanceof NoneLocomotive) {
             return;
         }
         try {
             checkControlObject(locomotive);
-        } catch (ControlException e) {
+        } catch (NoSessionException e) {
             throw new LocomotiveException(Constants.ERR_NOT_CONNECTED, e);
+        } catch (InvalidAddressException e) {
+            throw new LocomotiveException(Constants.ERR_FAILED, e);
         }
     }
 
@@ -197,4 +205,5 @@ public class LocomotiveControl extends Control implements GLInfoListener {
             locomotive.init();
         }
     }
+
 }

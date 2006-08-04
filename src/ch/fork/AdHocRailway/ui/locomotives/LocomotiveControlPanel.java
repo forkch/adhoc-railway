@@ -16,6 +16,8 @@ import javax.swing.KeyStroke;
 
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
 import ch.fork.AdHocRailway.domain.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
+import ch.fork.AdHocRailway.domain.locking.LockControl;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
@@ -65,8 +67,10 @@ public class LocomotiveControlPanel extends JPanel {
 
     public void update(Collection<LocomotiveGroup> locomotiveGroups) {
         LocomotiveControl lc = LocomotiveControl.getInstance();
+        LockControl lockc = LockControl.getInstance();
         for (Component c : getComponents()) {
             lc.removeLocomotiveChangeListener((LocomotiveChangeListener) c);
+            lockc.removeLockChangeListener((LockChangeListener) c);
         }
         removeAll();
         locomotiveWidgets.clear();
@@ -81,6 +85,7 @@ public class LocomotiveControlPanel extends JPanel {
             LocomotiveWidget w = new LocomotiveWidget(keyBindings[i][0],
                 keyBindings[i][1], keyBindings[i][2]);
             LocomotiveControl.getInstance().addLocomotiveChangeListener(w);
+            LockControl.getInstance().addLockChangeListener(w);
             w.updateLocomotiveGroups(locomotiveGroups);
             add(w);
             locomotiveWidgets.add(w);

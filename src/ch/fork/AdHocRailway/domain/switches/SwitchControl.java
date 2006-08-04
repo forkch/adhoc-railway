@@ -10,7 +10,9 @@ import java.util.Map;
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.Control;
-import ch.fork.AdHocRailway.domain.exception.ControlException;
+import ch.fork.AdHocRailway.domain.exception.InvalidAddressException;
+import ch.fork.AdHocRailway.domain.exception.NoSessionException;
+import ch.fork.AdHocRailway.domain.locking.LockControl;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GAInfoListener;
@@ -46,9 +48,11 @@ public class SwitchControl extends Control implements GAInfoListener {
         }
         numberToSwitch.put(aSwitch.getNumber(), aSwitch);
         setSessionOnControlObject(aSwitch);
+        LockControl.getInstance().registerControlObject(aSwitch);
     }
 
     public void registerSwitches(Collection<Switch> switches) {
+        LockControl lc = LockControl.getInstance();
         for (Switch aSwitch : switches) {
             Address[] addresses = aSwitch.getAddresses();
             addressToSwitch.put(addresses[0], aSwitch);
@@ -59,6 +63,7 @@ public class SwitchControl extends Control implements GAInfoListener {
             }
             numberToSwitch.put(aSwitch.getNumber(), aSwitch);
             setSessionOnControlObject(aSwitch);
+            lc.registerControlObject(aSwitch);
         }
     }
 
@@ -72,6 +77,7 @@ public class SwitchControl extends Control implements GAInfoListener {
             addressToSwitch.remove(addresses[i]);
         }
         numberToSwitch.remove(aSwitch.getNumber());
+        LockControl.getInstance().unregisterControlObject(aSwitch);
     }
 
     public void unregisterAllSwitches() {
@@ -80,7 +86,9 @@ public class SwitchControl extends Control implements GAInfoListener {
         }
         addressToSwitch.clear();
         numberToSwitch.clear();
+        LockControl.getInstance().unregisterAllControlObjects();
     }
+
 
     public Map<Integer, Switch> getNumberToSwitch() {
         return numberToSwitch;
@@ -194,12 +202,15 @@ public class SwitchControl extends Control implements GAInfoListener {
     private void checkSwitch(Switch aSwitch) throws SwitchException {
         try {
             checkControlObject(aSwitch);
-        } catch (ControlException e) {
+        } catch (NoSessionException e) {
             throw new SwitchException(Constants.ERR_NOT_CONNECTED, e);
+        } catch (InvalidAddressException e) {
+            throw new SwitchException(Constants.ERR_FAILED, e);
         }
         if (aSwitch instanceof ThreeWaySwitch
             && aSwitch.getAddress(1).getAddress() == 0) {
-            throw new SwitchException(Constants.ERR_INVALID_ADDRESS);
+            throw new SwitchException(Constants.ERR_FAILED,
+                new InvalidAddressException());
         }
     }
 
@@ -208,4 +219,5 @@ public class SwitchControl extends Control implements GAInfoListener {
             aSwitch.init();
         }
     }
+
 }

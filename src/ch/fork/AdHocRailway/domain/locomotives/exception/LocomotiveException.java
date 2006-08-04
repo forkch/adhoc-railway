@@ -1,7 +1,9 @@
 
 package ch.fork.AdHocRailway.domain.locomotives.exception;
 
-public class LocomotiveException extends Exception {
+import ch.fork.AdHocRailway.domain.exception.ControlException;
+
+public class LocomotiveException extends ControlException {
     public LocomotiveException(String msg) {
         super(msg);
     }

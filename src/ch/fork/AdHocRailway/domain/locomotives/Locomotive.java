@@ -10,7 +10,8 @@ import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GL;
 
-public abstract class Locomotive extends ControlObject implements Constants, Comparable {
+public abstract class Locomotive extends ControlObject implements Constants,
+    Comparable {
     protected String  name;
     protected String  desc;
     protected String  image;
@@ -30,7 +31,7 @@ public abstract class Locomotive extends ControlObject implements Constants, Com
     private GL             gl;
     protected boolean[]    functions;
     protected String[]     params;
-    
+
     protected abstract void increaseSpeedStep() throws LocomotiveException;
 
     protected abstract void decreaseSpeedStep() throws LocomotiveException;
@@ -39,11 +40,11 @@ public abstract class Locomotive extends ControlObject implements Constants, Com
 
     public Locomotive(String name, Address address, int drivingSteps,
         String desc, int functionCount) {
-        super(new Address[]{address});
+        super(new Address[] { address });
         this.name = name;
         this.drivingSteps = drivingSteps;
         this.desc = desc;
-        this.address = address; //convenience   
+        this.address = address; // convenience
         params = new String[3];
         params[0] = Integer.toString(PROTOCOL_VERSION);
         params[1] = Integer.toString(drivingSteps);
@@ -53,32 +54,19 @@ public abstract class Locomotive extends ControlObject implements Constants, Com
 
     protected void init() throws LocomotiveException {
         try {
-            if (session == null) {
-                throw new LocomotiveException(ERR_NOT_CONNECTED);
-            }
             gl = new GL(session);
             gl.init(address.getBus(), address.getAddress(), PROTOCOL, params);
             initialized = true;
+        } catch (SRCPDeviceLockedException x1) {
+            throw new LocomotiveLockedException(ERR_LOCKED, x1);
         } catch (SRCPException x) {
-            if (x instanceof SRCPDeviceLockedException) {
-                throw new LocomotiveLockedException(ERR_LOCKED);
-            } else {
-                throw new LocomotiveException(ERR_INIT_FAILED, x);
-            }
+            throw new LocomotiveException(ERR_INIT_FAILED, x);
         }
     }
 
     protected void reinit() throws LocomotiveException {
-        try {
-            if (gl != null) {
-                gl.term();
-            }
-        } catch (SRCPException e) {
-            throw new LocomotiveException(ERR_REINIT_FAILED, e);
-        }
-        if (session != null) {
-            init();
-        }
+        term();
+        init();
     }
 
     protected void term() throws LocomotiveException {
@@ -86,6 +74,8 @@ public abstract class Locomotive extends ControlObject implements Constants, Com
             if (gl != null) {
                 gl.term();
             }
+        } catch (SRCPDeviceLockedException x1) {
+            throw new LocomotiveLockedException(ERR_LOCKED, x1);
         } catch (SRCPException e) {
             throw new LocomotiveException(ERR_TERM_FAILED, e);
         }
@@ -251,8 +241,9 @@ public abstract class Locomotive extends ControlObject implements Constants, Com
     public void setImage(String image) {
         this.image = image;
     }
-    
+
     public String getDeviceGroup() {
         return "GL";
     }
+    
 }

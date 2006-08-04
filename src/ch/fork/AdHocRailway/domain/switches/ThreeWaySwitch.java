@@ -30,7 +30,6 @@ public class ThreeWaySwitch extends Switch {
     }
 
     protected void init() throws SwitchException {
-        super.init();
         switch1.setSession(session);
         switch2.setSession(session);
         switch1.init();
@@ -39,7 +38,6 @@ public class ThreeWaySwitch extends Switch {
     }
 
     protected void term() throws SwitchException {
-        super.term();
         switch1.term();
         switch2.term();
         initialized = false;
@@ -59,9 +57,6 @@ public class ThreeWaySwitch extends Switch {
     }
 
     protected void toggle() throws SwitchException {
-        if (session == null) {
-            throw new SwitchException(ERR_NOT_CONNECTED);
-        }
         switch (switchState) {
         case LEFT:
             switch1.setStraight();

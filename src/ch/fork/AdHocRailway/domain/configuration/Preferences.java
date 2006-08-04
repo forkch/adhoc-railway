@@ -25,7 +25,7 @@ public class Preferences implements PreferencesKeys{
         setIntValue(PORT, 12345);
         setIntValue(ACTIVATION_TIME, 50);
         setIntValue(ROUTING_DELAY, 250);
-        setIntValue(LOCK_DURATION, -1);
+        setIntValue(LOCK_DURATION, 0);
         setIntValue(LOCOMOTIVE_CONTROLES, 5);
         setStringValue(KEYBOARD_LAYOUT, "Swiss German");
         setStringValue(INTERFACE_6051, "Y");

@@ -1,3 +1,4 @@
+
 package ch.fork.AdHocRailway.domain.exception;
 
 public class ControlException extends Exception {
@@ -17,5 +18,6 @@ public class ControlException extends Exception {
     public ControlException(Throwable cause) {
         super(cause);
     }
+
 
 }

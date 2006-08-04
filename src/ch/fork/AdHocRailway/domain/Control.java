@@ -2,25 +2,37 @@
 package ch.fork.AdHocRailway.domain;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
+import ch.fork.AdHocRailway.domain.exception.InvalidAddressException;
+import ch.fork.AdHocRailway.domain.exception.NoSessionException;
 import de.dermoba.srcp.client.SRCPSession;
 
 
-public class Control {
+public abstract class Control {
 
-    protected SRCPSession session = null; 
-    protected Control() {}
-    public void checkControlObject(ControlObject co) throws ControlException {
+    protected SRCPSession session = null;
+
+
+    public void checkControlObject(ControlObject co) throws NoSessionException,
+        InvalidAddressException {
         if (co.getSession() == null) {
-            throw new ControlException(Constants.ERR_NO_SESSION);
+            throw new NoSessionException();
         }
         for (Address a : co.getAddresses()) {
             if (a.getAddress() == 0) {
-                throw new ControlException(Constants.ERR_INVALID_ADDRESS);
+                throw new InvalidAddressException();
             }
         }
-    }    
-    
+    }
+
     public void setSessionOnControlObject(ControlObject co) {
         co.setSession(session);
     }
+
+    protected void initControlObject(ControlObject object)
+        throws ControlException {
+        if (!object.isInitialized()) {
+            object.init();
+        }
+    }
+    
 }

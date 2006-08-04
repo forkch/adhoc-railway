@@ -1,7 +1,9 @@
 
 package ch.fork.AdHocRailway.domain.switches.exception;
 
-public class SwitchException extends Exception {
+import ch.fork.AdHocRailway.domain.exception.ControlException;
+
+public class SwitchException extends ControlException {
     public SwitchException(String msg) {
         super(msg);
     }

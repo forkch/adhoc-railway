@@ -127,8 +127,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys{
         defaultRoutingDelayModel = new SpinnerNumberModel(250, 100, 1000, 10);
         defaultRoutingDelay = new JSpinner(defaultRoutingDelayModel);
         
-        JLabel defaultLockDurationLabel = new JLabel("Default Lock time (-1 forever) [s]:");
-        defaultLockDurationModel = new SpinnerNumberModel(-1, -1, 60, 1);
+        JLabel defaultLockDurationLabel = new JLabel("Default Lock time (0 means forever) [s]:");
+        defaultLockDurationModel = new SpinnerNumberModel(0, 0, 60, 1);
         defaultLockDuration = new JSpinner(defaultLockDurationModel);
         
         interface6051 = new JCheckBox();

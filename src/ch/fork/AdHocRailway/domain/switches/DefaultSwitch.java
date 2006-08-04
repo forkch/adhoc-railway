@@ -25,7 +25,6 @@ public class DefaultSwitch extends Switch {
     }
 
     protected void init() throws SwitchException {
-        super.init();
         try {
             ga = new GA(session);
             if (!Preferences.getInstance().getBooleanValue(
@@ -36,41 +35,28 @@ public class DefaultSwitch extends Switch {
                 ga.setBus(addresses[0].getBus());
             }
             initialized = true;
+        } catch (SRCPDeviceLockedException x1) {
+            throw new SwitchLockedException(ERR_LOCKED, x1);
         } catch (SRCPException x) {
-            if (x instanceof SRCPDeviceLockedException) {
-                throw new SwitchLockedException(ERR_LOCKED);
-            } else {
-                throw new SwitchException(ERR_INIT_FAILED, x);
-            }
+            throw new SwitchException(ERR_INIT_FAILED, x);
         }
     }
 
     protected void term() throws SwitchException {
         try {
-            super.term();
             ga.term();
             initialized = false;
+        } catch (SRCPDeviceLockedException x1) {
+            throw new SwitchLockedException(ERR_LOCKED, x1);
         } catch (SRCPException x) {
-            if (x instanceof SRCPDeviceLockedException) {
-                throw new SwitchLockedException(ERR_LOCKED);
-            } else {
-                throw new SwitchException(ERR_TERM_FAILED, x);
-            }
+            throw new SwitchException(ERR_TERM_FAILED, x);
         }
     }
 
     @Override
     protected void reinit() throws SwitchException {
-        try {
-            if (ga != null) {
-                ga.term();
-            }
-        } catch (SRCPException e) {
-            throw new SwitchException(ERR_REINIT_FAILED, e);
-        }
-        if (session != null) {
-            init();
-        }
+        term();
+        init();
     }
 
     protected void toggle() throws SwitchException {
@@ -110,12 +96,11 @@ public class DefaultSwitch extends Switch {
                     switchState = SwitchState.LEFT;
                 }
             }
+        } catch (SRCPDeviceLockedException x1) {
+            throw new SwitchLockedException(ERR_LOCKED, x1);
         } catch (SRCPException x) {
-            if (x instanceof SRCPDeviceLockedException) {
-                throw new SwitchLockedException(ERR_LOCKED);
-            } else {
-                throw new SwitchException(ERR_TOGGLE_FAILED, x);
-            }
+            throw new SwitchException(ERR_TOGGLE_FAILED, x);
+
         }
     }
 
@@ -166,6 +151,8 @@ public class DefaultSwitch extends Switch {
                     defaultActivationTime);
                 switchState = SwitchState.LEFT;
             }
+        } catch (SRCPDeviceLockedException x1) {
+            throw new SwitchLockedException(ERR_LOCKED, x1);
         } catch (SRCPException e) {
             throw new SwitchException(ERR_TOGGLE_FAILED, e);
         }
@@ -190,6 +177,8 @@ public class DefaultSwitch extends Switch {
                     defaultActivationTime);
                 switchState = SwitchState.LEFT;
             }
+        } catch (SRCPDeviceLockedException x1) {
+            throw new SwitchLockedException(ERR_LOCKED, x1);
         } catch (SRCPException e) {
             throw new SwitchException(ERR_TOGGLE_FAILED, e);
         }
@@ -231,7 +220,7 @@ public class DefaultSwitch extends Switch {
             }
         }
     }
-    
+
     protected void setSession(SRCPSession session) {
         this.session = session;
     }
