@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Build file for AdHoc-Railway" default="compile" basedir=".">
-<!-- build-specific properties -->
+  <!-- build-specific properties -->
   <property file="${user.home}/.ant.properties"/>
   <property file="build.properties"/>
-<!-- set global properties for this build -->
+  <!-- set global properties for this build -->
   <property name="src.dir" value="src"/>
   <property name="build.dir" value="build"/>
   <property name="javadoc.dir" value="javadoc"/>
-<!-- main class for run target -->
+  <!-- main class for run target -->
   <property name="main.class" value="ch.fork.AdHocRailway.ui.AdHocRailway"/>
-<!-- =================================================================== -->
-<!-- Class paths                                                         -->
-<!-- =================================================================== -->
+  <!-- =================================================================== -->
+  <!-- Class paths                                                         -->
+  <!-- =================================================================== -->
   <path id="compile.class.path">
     <pathelement location="lib/xercesImpl.jar"/>
     <pathelement location="lib/jsrcpc.jar"/>
@@ -24,28 +24,28 @@
   <path id="javadoc.src.path">
     <pathelement location="./src/"/>
   </path>
-<!-- =================================================================== -->
-<!-- Init targets                                                        -->
-<!-- =================================================================== -->
+  <!-- =================================================================== -->
+  <!-- Init targets                                                        -->
+  <!-- =================================================================== -->
   <target name="init">
-<!-- Create the time stamp -->
+    <!-- Create the time stamp -->
     <tstamp/>
-<!-- Create the build directory structure used by compile -->
+    <!-- Create the build directory structure used by compile -->
     <mkdir dir="${build.dir}"/>
   </target>
-<!-- =================================================================== -->
-<!-- CopyImages                                                          -->
-<!-- =================================================================== -->
-<target name="copy_images" depends="init">
-  <copy todir="${build.dir}">
-    <fileset dir="./src">
-      <include name="**/*.png"/>
-    </fileset>
-  </copy>
-</target>
-<!-- =================================================================== -->
-<!-- Compile: Default                                                    -->
-<!-- =================================================================== -->
+  <!-- =================================================================== -->
+  <!-- CopyImages                                                          -->
+  <!-- =================================================================== -->
+  <target name="copy_images" depends="init">
+    <copy todir="${build.dir}">
+      <fileset dir="./src">
+        <include name="**/*.png"/>
+      </fileset>
+    </copy>
+  </target>
+  <!-- =================================================================== -->
+  <!-- Compile: Default                                                    -->
+  <!-- =================================================================== -->
   <target name="compile" depends="copy_images" description="Compiles all Java sources">
     <javac destdir="${build.dir}" classpathref="compile.class.path" deprecation="off">
       <src path="${src.dir}"/>
@@ -53,39 +53,52 @@
       <include name="**/*.png"/>
     </javac>
   </target>
-<!-- =================================================================== -->
-<!-- Run and Run-tests targets                                           -->
-<!-- =================================================================== -->
+  <!-- =================================================================== -->
+  <!-- Run and Run-tests targets                                           -->
+  <!-- =================================================================== -->
   <target name="run" depends="compile" description="Runs the program">
     <java classname="${main.class}" fork="yes" classpathref="run.class.path">
-		</java>
+    </java>
   </target>
-<!-- =================================================================== -->
-<!-- Documentation                                                       -->
-<!-- =================================================================== -->
+  <!-- =================================================================== -->
+  <!-- Documentation                                                       -->
+  <!-- =================================================================== -->
   <target name="javadoc" description="Generate JavaDoc HTML pages" depends="init">
     <mkdir dir="${javadoc.dir}"/>
     <javadoc sourcepathref="javadoc.src.path" packagenames="ch.fork.*" destdir="${javadoc.dir}" author="true" use="true" verbose="true" package="true">
-		</javadoc>
+    </javadoc>
   </target>
-<!-- =================================================================== -->
-<!-- Zip targets                                                         -->
-<!-- =================================================================== -->
+  <!-- =================================================================== -->
+  <!-- Jar targets                                                         -->
+  <!-- =================================================================== -->
+  <target name="jar" depends="compile" description="Builds the ZIP file containing all stuff">
+    <delete file="AdHoc-Railway-bin.jar"/>
+    <jar destfile="AdHoc-Railway-bin.jar" manifest="./src/manifest.mf">
+      <fileset dir="${build.dir}/"
+        includes="**/*.class"
+        />
+      <fileset dir="${build.dir}/"
+        includes="**/*.png"
+        />
+    </jar>
+  </target>
+  <!-- =================================================================== -->
+  <!-- Zip targets                                                         -->
+  <!-- =================================================================== -->
   <target name="zip" depends="clean" description="Builds the ZIP file containing all stuff">
     <delete file="AdHoc-Railway-src.tar.bz2"/>
-    <tar tarfile="AdHocRailway-src.tar" basedir="." includes="README COPYRIGHT src/**, doc/**, lib/**, javadoc/**, build.xml, build.properties etc/**" />
-    <bzip2 src="AdHocRailway-src.tar" destfile="AdHoc-Railway-src.tar.bz2"/>
+    <tar tarfile="AdHoc-Railway-src.tar.bz2" basedir="." includes="README COPYRIGHT src/**, doc/**, lib/**, javadoc/**, build.xml, build.properties etc/**" compression="bzip2" />
   </target>
-<!-- =================================================================== -->
-<!-- Clean targets                                                       -->
-<!-- =================================================================== -->
+  <!-- =================================================================== -->
+  <!-- Clean targets                                                       -->
+  <!-- =================================================================== -->
   <target name="clean" description="Removes generated class files">
-<!-- Delete the ${build.dir} directory tree -->
+    <!-- Delete the ${build.dir} directory tree -->
     <delete dir="${build.dir}"/>
   </target>
   <target name="clean-javadoc" description="Removes generated Javadoc files">
     <delete dir="${javadoc.dir}"/>
   </target>
   <target name="clean-all" depends="clean, clean-javadoc" description="Removes all generated artifacts">
-	</target>
+  </target>
 </project>

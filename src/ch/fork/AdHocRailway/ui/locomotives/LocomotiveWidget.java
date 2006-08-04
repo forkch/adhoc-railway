@@ -189,6 +189,8 @@ public class LocomotiveWidget extends JPanel implements
         stopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         directionButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         lockButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        lockButton.setEnabled(false);
 
         increaseSpeed.addActionListener(new IncreaseSpeedAction());
         decreaseSpeed.addActionListener(new DecreaseSpeedAction());

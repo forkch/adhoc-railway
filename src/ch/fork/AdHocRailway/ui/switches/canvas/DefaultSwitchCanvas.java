@@ -22,32 +22,32 @@ public class DefaultSwitchCanvas extends SwitchCanvas {
         Graphics2D g3 = img.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON);
-        g3.drawImage(createImageIcon("../icons/default_switch.png", "", this)
+        g3.drawImage(createImageIcon("icons/default_switch.png", "", this)
             .getImage(), 0, 0, this);
         switch (mySwitch.getSwitchState()) {
         case STRAIGHT:
-            g3.drawImage(createImageIcon("../icons/LED_middle_yellow.png", "",
+            g3.drawImage(createImageIcon("icons/LED_middle_yellow.png", "",
                 this).getImage(), 28, 0, this);
-            g3.drawImage(createImageIcon("../icons/LED_up_white.png", "", this)
+            g3.drawImage(createImageIcon("icons/LED_up_white.png", "", this)
                 .getImage(), 28, 0, this);
             break;
         case LEFT:
         case RIGHT:
-            g3.drawImage(createImageIcon("../icons/LED_up_yellow.png", "", this)
+            g3.drawImage(createImageIcon("icons/LED_up_yellow.png", "", this)
                 .getImage(), 28, 0, this);
             g3.drawImage(
-                createImageIcon("../icons/LED_middle_white.png", "", this)
+                createImageIcon("icons/LED_middle_white.png", "", this)
                     .getImage(), 28, 0, this);
             break;
         case UNDEF:
-            g3.drawImage(createImageIcon("../icons/LED_up_white.png", "", this)
+            g3.drawImage(createImageIcon("icons/LED_up_white.png", "", this)
                 .getImage(), 28, 0, this);
             g3.drawImage(
-                createImageIcon("../icons/LED_middle_white.png", "", this)
+                createImageIcon("icons/LED_middle_white.png", "", this)
                     .getImage(), 28, 0, this);
             break;
         }
-        g3.drawImage(createImageIcon("../icons/LED_middle_white.png", "", this)
+        g3.drawImage(createImageIcon("icons/LED_middle_white.png", "", this)
             .getImage(), 0, 0, this);
         rotate(g2, img);
     }
