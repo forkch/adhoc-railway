@@ -7,6 +7,8 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -125,7 +127,14 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             BorderLayout.SOUTH);
         add(switchesAndLocomotivesPanel, BorderLayout.CENTER);
         add(statusBarPanel, BorderLayout.SOUTH);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                ExitAction a = new ExitAction();
+                a.actionPerformed(null);
+                super.windowClosing(e);
+            }
+        });
         setSize(1000, 700);
         setVisible(true);
         updateCommandHistory("RailControl started");
@@ -160,10 +169,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     public void updateCommandHistory(String text) {
-        DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
-        String date = df.format(GregorianCalendar.getInstance().getTime());
-        String fullText = "[" + date + "]: " + text;
-        SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
+        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.LOGGING)) {
+            DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
+            String date = df.format(GregorianCalendar.getInstance().getTime());
+            String fullText = "[" + date + "]: " + text;
+            SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
+        }
     }
 
     private class CommandHistoryUpdater implements Runnable {
@@ -181,7 +192,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             commandHistory.setSelectedIndex(0);
         }
     }
-    protected class OpenAction extends AbstractAction {
+    private class OpenAction extends AbstractAction {
         private File file;
 
         public OpenAction(File file) {
@@ -234,7 +245,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
         }
     }
-    protected class SaveAsAction extends AbstractAction {
+    private class SaveAsAction extends AbstractAction {
         public SaveAsAction() {
             super("Save as...", createImageIcon("icons/filesaveas.png",
                 "Save as...", AdHocRailway.this));
@@ -273,7 +284,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             }
         }
     }
-    protected class SaveAction extends AbstractAction {
+    private class SaveAction extends AbstractAction {
         public SaveAction() {
             super("Save", createImageIcon("icons/filesave.png", "Save",
                 AdHocRailway.this));
@@ -310,7 +321,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             }
         }
     }
-    protected class ExitAction extends AbstractAction {
+    private class ExitAction extends AbstractAction {
         public ExitAction() {
             super("Exit", createImageIcon("icons/exit.png", "Exit",
                 AdHocRailway.this));
@@ -326,7 +337,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             }
         }
     }
-    protected class SwitchesAction extends AbstractAction {
+    private class SwitchesAction extends AbstractAction {
         public SwitchesAction() {
             super("Switches", createImageIcon("icons/switch.png", "Switches",
                 AdHocRailway.this));
@@ -347,7 +358,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             }
         }
     }
-    protected class LocomotivesAction extends AbstractAction {
+    private class LocomotivesAction extends AbstractAction {
         public LocomotivesAction() {
             super("Locomotives", createImageIcon("icons/locomotive.png",
                 "Locomotives", AdHocRailway.this));
@@ -370,7 +381,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             }
         }
     }
-    protected class PreferencesAction extends AbstractAction {
+    private class PreferencesAction extends AbstractAction {
         public PreferencesAction() {
             super("Preferences", createImageIcon("icons/package_settings.png",
                 "Preferences", AdHocRailway.this));
@@ -395,7 +406,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
      * 
      * @author fork
      */
-    protected class ConnectAction extends AbstractAction {
+    private class ConnectAction extends AbstractAction {
         public ConnectAction() {
             super("Connect", createImageIcon("icons/daemonconnect.png",
                 "Connect", AdHocRailway.this));
@@ -430,7 +441,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             }
         }
     }
-    protected class DisconnectAction extends AbstractAction {
+    private class DisconnectAction extends AbstractAction {
         public DisconnectAction() {
             super("Disconnect", createImageIcon("icons/daemondisconnect.png",
                 "Disconnect", AdHocRailway.this));
@@ -455,7 +466,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             }
         }
     }
-    protected class ResetAction extends AbstractAction {
+    private class ResetAction extends AbstractAction {
         public ResetAction() {
             super("Reset", createImageIcon("icons/daemonreset.png", "Reset",
                 AdHocRailway.this));
@@ -464,7 +475,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         public void actionPerformed(ActionEvent e) {
         }
     }
-    protected class RefreshAction extends AbstractAction {
+    private class RefreshAction extends AbstractAction {
         public RefreshAction() {
             super("Refresh", createImageIcon("icons/reload.png", "Refresh",
                 AdHocRailway.this));
@@ -477,7 +488,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 .getLocomotiveGroups());
         }
     }
-    protected class SwitchProgrammerAction extends AbstractAction {
+    private class SwitchProgrammerAction extends AbstractAction {
         public SwitchProgrammerAction() {
             super("SwitchProgrammer", createImageIcon("icons/switch.png",
                 "SwitchProgrammer", AdHocRailway.this));
@@ -488,7 +499,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 session);
         }
     }
-    protected class SwitchesStraightAction extends AbstractAction {
+    private class SwitchesStraightAction extends AbstractAction {
         public SwitchesStraightAction() {
             super("", createImageIcon("icons/switch.png",
                 "Set all switches straight", AdHocRailway.this));
@@ -500,8 +511,13 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             for (Switch s : sc.getNumberToSwitch().values()) {
                 try {
                     sc.setStraight(s);
+                    Thread.sleep(10);
                 } catch (ControlException e1) {
                     ExceptionProcessor.getInstance().processException(e1);
+                    return;
+                } catch (InterruptedException e2) {
+                    // TODO Auto-generated catch block
+                    e2.printStackTrace();
                 }
             }
 

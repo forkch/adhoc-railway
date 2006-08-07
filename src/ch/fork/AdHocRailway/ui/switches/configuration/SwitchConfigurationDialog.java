@@ -288,7 +288,7 @@ public class SwitchConfigurationDialog extends JDialog {
         return switchNumberToSwitchWorkCopy;
     }
 
-    class AddSwitchGroupAction extends AbstractAction {
+    private class AddSwitchGroupAction extends AbstractAction {
         public void actionPerformed(ActionEvent arg0) {
             String newGroupName = JOptionPane.showInputDialog(
                 SwitchConfigurationDialog.this,
@@ -300,7 +300,7 @@ public class SwitchConfigurationDialog extends JDialog {
             switchGroupList.setSelectedValue(newSection, true);
         }
     }
-    class RemoveSwitchGroupAction extends AbstractAction {
+    private class RemoveSwitchGroupAction extends AbstractAction {
         public void actionPerformed(ActionEvent arg0) {
             SwitchGroup groupToDelete = (SwitchGroup) (switchGroupList
                 .getSelectedValue());
@@ -314,7 +314,7 @@ public class SwitchConfigurationDialog extends JDialog {
             }
         }
     }
-    class RenameSwitchGroupAction extends AbstractAction {
+    private class RenameSwitchGroupAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             SwitchGroup groupToRename = (SwitchGroup) (switchGroupList
                 .getSelectedValue());
@@ -327,7 +327,7 @@ public class SwitchConfigurationDialog extends JDialog {
             }
         }
     }
-    class MoveSwitchGroupAction extends AbstractAction {
+    private class MoveSwitchGroupAction extends AbstractAction {
         private boolean up;
 
         public MoveSwitchGroupAction(boolean up) {
@@ -359,7 +359,7 @@ public class SwitchConfigurationDialog extends JDialog {
             updateSwitchesPanel();
         }
     }
-    class AddSwitchAction extends AbstractAction {
+    private class AddSwitchAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
                 .getSelectedValue());
@@ -383,7 +383,7 @@ public class SwitchConfigurationDialog extends JDialog {
             updateSwitchesPanel();
         }
     }
-    class Add10SwitchesAction extends AbstractAction {
+    private class Add10SwitchesAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
                 .getSelectedValue());
@@ -409,7 +409,7 @@ public class SwitchConfigurationDialog extends JDialog {
             updateSwitchesPanel();
         }
     }
-    class RemoveSwitchAction extends AbstractAction {
+    private class RemoveSwitchAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             if (switchesTable.isEditing())
                 switchesTable.getCellEditor().stopCellEditing();

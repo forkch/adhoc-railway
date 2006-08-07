@@ -381,7 +381,7 @@ public class LocomotiveWidget extends JPanel implements
             updateWidget();
         }
     }
-    class LocomotiveSelectAction extends AbstractAction {
+    private class LocomotiveSelectAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             if (locomotiveComboBox.getItemCount() == 0) {
                 return;
@@ -400,7 +400,7 @@ public class LocomotiveWidget extends JPanel implements
             }
         }
     }
-    class LocomotiveGroupSelectAction extends AbstractAction {
+    private class LocomotiveGroupSelectAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             LocomotiveGroup lg = (LocomotiveGroup) locomotiveGroupComboBox
                 .getSelectedItem();
@@ -423,7 +423,7 @@ public class LocomotiveWidget extends JPanel implements
             locomotiveComboBox.repaint();
         }
     }
-    class StopAction extends AbstractAction {
+    private class StopAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             try {
                 LocomotiveControl.getInstance().setSpeed(myLocomotive, 0);
@@ -434,7 +434,7 @@ public class LocomotiveWidget extends JPanel implements
             }
         }
     }
-    class ToggleDirectionAction extends AbstractAction {
+    private class ToggleDirectionAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             try {
                 LocomotiveControl.getInstance().toggleDirection(myLocomotive);
@@ -445,7 +445,7 @@ public class LocomotiveWidget extends JPanel implements
             }
         }
     }
-    class IncreaseSpeedAction extends AbstractAction {
+    private class IncreaseSpeedAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             try {
                 LocomotiveControl.getInstance().increaseSpeed(myLocomotive);
@@ -456,7 +456,7 @@ public class LocomotiveWidget extends JPanel implements
             }
         }
     }
-    class DecreaseSpeedAction extends AbstractAction {
+    private class DecreaseSpeedAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             try {
                 LocomotiveControl.getInstance().decreaseSpeed(myLocomotive);

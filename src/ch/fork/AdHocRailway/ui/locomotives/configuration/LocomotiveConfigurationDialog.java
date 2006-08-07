@@ -252,7 +252,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
         return locomotiveGroupsWorkCopy;
     }
 
-    class AddLocomotiveGroupAction extends AbstractAction {
+    private class AddLocomotiveGroupAction extends AbstractAction {
         public void actionPerformed(ActionEvent arg0) {
             String newGroupName = JOptionPane.showInputDialog(
                 LocomotiveConfigurationDialog.this,
@@ -264,7 +264,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
             locomotiveGroupList.setSelectedValue(newSection, true);
         }
     }
-    class RemoveLocomotiveGroupAction extends AbstractAction {
+    private class RemoveLocomotiveGroupAction extends AbstractAction {
         public void actionPerformed(ActionEvent arg0) {
             LocomotiveGroup groupToDelete = (LocomotiveGroup) (locomotiveGroupList
                 .getSelectedValue());
@@ -279,7 +279,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
             }
         }
     }
-    class RenameLocomotiveGroupAction extends AbstractAction {
+    private class RenameLocomotiveGroupAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             LocomotiveGroup groupToRename = (LocomotiveGroup) (locomotiveGroupList
                 .getSelectedValue());
@@ -292,7 +292,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
             }
         }
     }
-    class AddLocomotiveAction extends AbstractAction {
+    private class AddLocomotiveAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) (locomotiveGroupList
                 .getSelectedValue());
@@ -311,7 +311,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
         }
     }
-    class RemoveLocomotiveAction extends AbstractAction {
+    private class RemoveLocomotiveAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             if (locomotivesTable.isEditing())
                 locomotivesTable.getCellEditor().stopCellEditing();
@@ -324,7 +324,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
             updateLocomotivesPanel();
         }
     }
-    class MoveLocomotiveGroupAction extends AbstractAction {
+    private class MoveLocomotiveGroupAction extends AbstractAction {
         private boolean up;
 
         public MoveLocomotiveGroupAction(boolean up) {

@@ -99,13 +99,19 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys{
         keyBoardLayoutComboBox = new JComboBox();
         keyBoardLayoutComboBox.addItem("Swiss German");
         keyBoardLayoutComboBox.addItem("English");
+
+        writeLog = new JCheckBox();
+        JLabel writeLogLabel = new JLabel("Write Log");
+        
         guiSettingsTab.add(locomotiveControlNumberLabel);
         guiSettingsTab.add(locomotiveControlNumber);
         guiSettingsTab.add(switchControlNumberLabel);
         guiSettingsTab.add(switchControlNumber);
         guiSettingsTab.add(keyBoardLayoutLabel);
         guiSettingsTab.add(keyBoardLayoutComboBox);
-        SpringUtilities.makeCompactGrid(guiSettingsTab, 3, 2, // rows, cols
+        guiSettingsTab.add(writeLogLabel);
+        guiSettingsTab.add(writeLog);
+        SpringUtilities.makeCompactGrid(guiSettingsTab, 4, 2, // rows, cols
             6, 6, // initX, initY
             6, 6); // xPad, yPad
 
@@ -134,8 +140,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys{
         interface6051 = new JCheckBox();
         JLabel interface6051Label = new JLabel("Interface 6051 attached");
         
-        writeLog = new JCheckBox();
-        JLabel writeLogLabel = new JLabel("Write Log");
         
         digitalDataTab.add(defaultActivationTimeLabel);
         digitalDataTab.add(defaultActivationTime);
@@ -145,9 +149,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys{
         digitalDataTab.add(defaultLockDuration);
         digitalDataTab.add(interface6051Label);
         digitalDataTab.add(interface6051);
-        digitalDataTab.add(writeLogLabel);
-        digitalDataTab.add(writeLog);
-        SpringUtilities.makeCompactGrid(digitalDataTab, 5, 2, // rows, cols
+        SpringUtilities.makeCompactGrid(digitalDataTab, 4, 2, // rows, cols
             6, 6, // initX, initY
             6, 6); // xPad, yPad
         JPanel north = new JPanel(new BorderLayout());
