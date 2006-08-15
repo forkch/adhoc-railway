@@ -14,12 +14,12 @@
   <!-- =================================================================== -->
   <path id="compile.class.path">
     <pathelement location="lib/xercesImpl.jar"/>
-    <pathelement location="lib/jsrcpc.jar"/>
+    <pathelement location="lib/jsrcpc-bin.jar"/>
   </path>
   <path id="run.class.path">
     <pathelement location="${build.dir}"/>
     <pathelement location="lib/xercesImpl.jar"/>
-    <pathelement location="lib/jsrcpc.jar"/>
+    <pathelement location="lib/jsrcpc-bin.jar"/>
   </path>
   <path id="javadoc.src.path">
     <pathelement location="./src/"/>

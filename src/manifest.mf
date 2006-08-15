@@ -1,2 +1,3 @@
 Manifest-Version: 1.0
 Main-Class: ch.fork.AdHocRailway.ui.AdHocRailway
+Class-Path: jsrcpc-bin.jar xercesImpl.jar

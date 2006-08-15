@@ -1,6 +1,5 @@
 - Buttons duerfen keinen Focus erhalten
 - Clients duerfen nicht unendlich kommandos senden koennen (queue)
-
 - Blockieren von Lok's (ok)
 - Lok-Auswahl verbessern (ok)
 - Zuletzt geschaltete Weichen bleiben sichtbar und koennen zurueckgeschaltet werden (ok)
