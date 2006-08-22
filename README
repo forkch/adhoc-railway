@@ -23,11 +23,15 @@ see that you have them installed. The jsrcpc-library is already in the binary-di
 Just download the .jar-Version and start it via
 	% java -jar AdHoc-Railway.jar
 
-3. Usage
+4. Build from source
+
+To build AdHoc-Railway from source copy the actual jsrcpc-library into the lib-directory and update the link.
+
+4. Usage
 
 TBD.
 
-4. Image-Source
+5. Image-Source
 
 All images used in the AdHoc-Railway are coming either from the KDE-Project or 
 from the SpDrS60-Project. Both are distributed under the terms of the GPL.
