@@ -7,8 +7,11 @@
   <property name="src.dir" value="src"/>
   <property name="build.dir" value="build"/>
   <property name="javadoc.dir" value="javadoc"/>
+  <property name="release.dir" value="release/"/>
+  <property environment="env"/>
   <!-- main class for run target -->
   <property name="main.class" value="ch.fork.AdHocRailway.ui.AdHocRailway"/>
+
   <!-- =================================================================== -->
   <!-- Class paths                                                         -->
   <!-- =================================================================== -->
@@ -18,7 +21,6 @@
   </path>
   <path id="run.class.path">
     <pathelement location="${build.dir}"/>
-    <pathelement location="lib/xercesImpl.jar"/>
     <pathelement location="lib/jsrcpc-bin.jar"/>
   </path>
   <path id="javadoc.src.path">
@@ -56,38 +58,67 @@
   <!-- =================================================================== -->
   <!-- Run and Run-tests targets                                           -->
   <!-- =================================================================== -->
-  <target name="run" depends="compile" description="Runs the program">
-    <java classname="${main.class}" fork="yes" classpathref="run.class.path">
-    </java>
+  <target name="run" depends="init, compile" description="runs the examples" >
+    <java classname="${main.class}" fork="yes" classpathref="run.class.path"/>
   </target>
+  <!-- =================================================================== -->
+  <!-- RELEASE                                                             -->
+  <!-- =================================================================== -->
+  <target name="makerelease" description="Generates a release">
+    <antcall target="javadoc"/>
+    <antcall target="bin"/>
+    <antcall target="src"/>
+  </target>
+
   <!-- =================================================================== -->
   <!-- Documentation                                                       -->
   <!-- =================================================================== -->
   <target name="javadoc" description="Generate JavaDoc HTML pages" depends="init">
     <mkdir dir="${javadoc.dir}"/>
-    <javadoc sourcepathref="javadoc.src.path" packagenames="ch.fork.*" destdir="${javadoc.dir}" author="true" use="true" verbose="true" package="true">
+    <javadoc sourcepath="${src.dir}" packagenames="*" classpath="./lib/jsrcpc-bin.jar" destdir="${javadoc.dir}" author="true" use="true" verbose="false" package="true">
     </javadoc>
   </target>
   <!-- =================================================================== -->
   <!-- Jar targets                                                         -->
   <!-- =================================================================== -->
-  <target name="jar" depends="compile" description="Builds the ZIP file containing all stuff">
-    <delete file="AdHoc-Railway-bin.jar"/>
-    <jar destfile="AdHoc-Railway-bin.jar" manifest="./src/manifest.mf">
+  <target name="bin" depends="compile" description="Builds the ZIP file containing all stuff">
+    <mkdir dir="${release.dir}"/>
+    <unjar src="./lib/jsrcpc-bin.jar" dest="${build.dir}"/>
+    <delete file="AdHoc-Railway-${release}-bin.jar"/>
+    <jar destfile="AdHoc-Railway-${release}-bin.jar" manifest="./src/manifest.mf">
       <fileset dir="${build.dir}/"
         includes="**/*.class"
         />
       <fileset dir="${build.dir}/"
         includes="**/*.png"
         />
+      <fileset dir="${build.dir}/"
+        includes="**/*.properties"
+        />
     </jar>
   </target>
   <!-- =================================================================== -->
   <!-- Zip targets                                                         -->
   <!-- =================================================================== -->
-  <target name="zip" depends="clean" description="Builds the ZIP file containing all stuff">
-    <delete file="AdHoc-Railway-src.tar.bz2"/>
-    <tar tarfile="AdHoc-Railway-src.tar.bz2" basedir="." includes="README COPYRIGHT src/**, doc/**, lib/**, javadoc/**, build.xml, build.properties etc/**" compression="bzip2" />
+  <target name="src" depends="" description="Builds the ZIP file containing all stuff">
+    <mkdir dir="AdHoc-Railway-${release}-src"/>
+    <exec dir="." executable="update_changelog">
+      <env key="PATH" path="./utils:${env.PATH}"/>
+      <arg value="https://svn.sourceforge.net/svnroot/adhocrailway/trunk"/>
+    </exec>
+    <copy todir="AdHoc-Railway-${release}-src">
+      <fileset dir="." includes="ChangeLog, README, COPYING, TODO, build.xml,
+        build.properties"/>
+      <fileset dir="." includes="src/"/>
+      <fileset dir="." includes="doc/"/>
+      <fileset dir="." includes="javadoc/"/>
+      <fileset dir="." includes="etc/"/>
+      <fileset dir="." includes="lib/"/>
+    </copy>
+    <tar destfile="AdHoc-Railway-${release}-src.tar.bz2"
+      basedir="" includes="AdHoc-Railway-${release}-src/**" compression="bzip2" longfile="gnu"/>
+    <delete dir="AdHoc-Railway-${release}-src"/>
+    <delete file="ChangeLog"/>
   </target>
   <!-- =================================================================== -->
   <!-- Clean targets                                                       -->
