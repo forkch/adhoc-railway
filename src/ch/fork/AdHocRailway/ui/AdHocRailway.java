@@ -1,4 +1,4 @@
-    
+
 package ch.fork.AdHocRailway.ui;
 
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
@@ -78,6 +78,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private File                   logFile;
     private FileWriter             logFileWriter;
     private SwitchesControlPanel   switchesControlPanel;
+    private JButton                toggleFullscreenButton;
+    private JMenuBar menuBar;
+    
 
 
     public AdHocRailway() {
@@ -86,6 +89,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
     public AdHocRailway(String file) {
         super(NAME);
+
         setIconImage(createImageIcon("icons/RailControl.png", "RailControl",
             AdHocRailway.this).getImage());
         initGUI();
@@ -108,7 +112,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 .getLocomotiveGroups());
         }
         switchesControlPanel.revalidate();
-        switchesControlPanel.repaint();
+        locomotiveControlPanel.revalidate();
     }
 
     private void initGUI() {
@@ -135,24 +139,29 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 super.windowClosing(e);
             }
         });
-        setSize(1000, 700);
+
+        menuBar.setVisible(false);
+        setResizable(false);
+        setUndecorated(true);
+        setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
         setVisible(true);
         updateCommandHistory("RailControl started");
     }
 
     private SwitchesControlPanel initSwitchPanel() {
-        SwitchesControlPanel switchesControlPanel = new SwitchesControlPanel();
+        SwitchesControlPanel switchesControlPanel = new SwitchesControlPanel(this);
         switchesControlPanel.setBorder(new EtchedBorder());
         return switchesControlPanel;
     }
 
     private LocomotiveControlPanel initLocomotiveControl() {
-        LocomotiveControlPanel locomotiveControlPanel = new LocomotiveControlPanel();
+        LocomotiveControlPanel locomotiveControlPanel = new LocomotiveControlPanel(this);
         locomotiveControlPanel.setBorder(new EtchedBorder());
         return locomotiveControlPanel;
     }
 
     public static void main(String[] args) {
+        
         if (args.length == 1) {
             new AdHocRailway(args[0]);
         } else {
@@ -332,7 +341,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 "Really exit ?", "Exit", JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE, ImageTools.createImageIcon(
                     "icons/messagebox_warning.png", "Warning", this));
-            if (result == JOptionPane.OK_OPTION) {
+            if (result == JOptionPane.YES_OPTION) {
                 System.exit(0);
             }
         }
@@ -490,13 +499,50 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
     private class SwitchProgrammerAction extends AbstractAction {
         public SwitchProgrammerAction() {
-            super("SwitchProgrammer", createImageIcon("icons/switch.png",
-                "SwitchProgrammer", AdHocRailway.this));
+            super("SwitchProgrammer", createImageIcon(
+                "icons/switch_programmer.png", "SwitchProgrammer",
+                AdHocRailway.this));
         }
 
         public void actionPerformed(ActionEvent e) {
             SwitchProgrammer sp = new SwitchProgrammer(AdHocRailway.this,
                 session);
+        }
+    }
+    private class ToggleFullscreenAction extends AbstractAction {
+
+        boolean fullscreen = true;
+
+        public ToggleFullscreenAction() {
+            super("ToggleFullscreen", createImageIcon(
+                "icons/window_nofullscreen.png", "ToggleFullscreen",
+                AdHocRailway.this));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            if (fullscreen) {
+                dispose();
+                menuBar.setVisible(true);
+                setResizable(true); 
+                setUndecorated(false);
+                setSize(1000, 700);
+                setVisible(true);
+                toggleFullscreenButton.setIcon(createImageIcon(
+                    "icons/window_fullscreen.png", "ToggleFullscreen",
+                    AdHocRailway.this));
+                fullscreen = false;
+            } else {
+                dispose();
+                menuBar.setVisible(false);
+                setResizable(false);
+                setUndecorated(true);
+                setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
+                setVisible(true);
+                toggleFullscreenButton.setIcon(createImageIcon(
+                    "icons/window_nofullscreen.png", "ToggleFullscreen",
+                    AdHocRailway.this));
+                fullscreen = true; 
+            }
         }
     }
     private class SwitchesStraightAction extends AbstractAction {
@@ -525,7 +571,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     private void initMenu() {
-        JMenuBar menuBar = new JMenuBar();
+        menuBar = new JMenuBar();
         /* FILE */
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
@@ -615,9 +661,16 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         disconnectToolBarButton.setEnabled(false);
         JButton setAllSwitchesStraightButton = new JButton(
             new SwitchesStraightAction());
+        setAllSwitchesStraightButton.setFocusable(false);
         JButton refreshButton = new JButton(new RefreshAction());
+        refreshButton.setFocusable(false);
         JButton switchProgrammerButton = new JButton(
             new SwitchProgrammerAction());
+        switchProgrammerButton.setFocusable(false);
+
+        toggleFullscreenButton = new JButton(new ToggleFullscreenAction());
+        toggleFullscreenButton.setFocusable(false);
+
         openToolBarButton.setText("");
         saveToolBarButton.setText("");
         saveAsToolBarButton.setText("");
@@ -629,6 +682,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         disconnectToolBarButton.setText("");
         refreshButton.setText("");
         switchProgrammerButton.setText("");
+        toggleFullscreenButton.setText("");
+
         toolBar.add(openToolBarButton);
         toolBar.add(saveToolBarButton);
         toolBar.add(exitToolBarButton);
@@ -645,6 +700,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         toolBar.add(setAllSwitchesStraightButton);
         toolBar.add(refreshButton);
         toolBar.add(switchProgrammerButton);
+        toolBar.add(toggleFullscreenButton);
+
         JPanel toolbarPanel = new JPanel(new BorderLayout());
         toolbarPanel.add(toolBar, BorderLayout.WEST);
         add(toolbarPanel, BorderLayout.PAGE_START);
@@ -655,6 +712,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         commandHistoryModel = new DefaultComboBoxModel();
         commandHistory = new JComboBox(commandHistoryModel);
         commandHistory.setEditable(false);
+        commandHistory.setFocusable(false);
         statusBarPanel.setLayout(new BorderLayout());
         statusBarPanel.add(commandHistory, BorderLayout.SOUTH);
     }

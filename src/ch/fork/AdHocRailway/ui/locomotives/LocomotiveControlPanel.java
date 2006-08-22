@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
@@ -50,9 +51,10 @@ public class LocomotiveControlPanel extends JPanel {
         { KeyEvent.VK_COLON, KeyEvent.VK_MINUS, KeyEvent.VK_P } };
     private int[][]                keyBindings   = keyBindingsDE;
     private List<LocomotiveWidget> locomotiveWidgets;
-
-    public LocomotiveControlPanel() {
+    private JFrame frame;
+    public LocomotiveControlPanel(JFrame frame) {
         super();
+        this.frame = frame;
         locomotiveWidgets = new ArrayList<LocomotiveWidget>();
         initGUI();
     }
@@ -83,7 +85,7 @@ public class LocomotiveControlPanel extends JPanel {
         for (int i = 0; i < Preferences.getInstance().getIntValue(
             PreferencesKeys.LOCOMOTIVE_CONTROLES); i++) {
             LocomotiveWidget w = new LocomotiveWidget(keyBindings[i][0],
-                keyBindings[i][1], keyBindings[i][2]);
+                keyBindings[i][1], keyBindings[i][2], frame);
             LocomotiveControl.getInstance().addLocomotiveChangeListener(w);
             LockControl.getInstance().addLockChangeListener(w);
             w.updateLocomotiveGroups(locomotiveGroups);

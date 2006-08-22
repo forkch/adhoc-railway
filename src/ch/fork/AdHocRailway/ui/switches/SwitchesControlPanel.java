@@ -12,6 +12,7 @@ import java.util.Collection;
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
@@ -30,8 +31,10 @@ public class SwitchesControlPanel extends JPanel {
     private Segment7        seg3;
     private StringBuffer    enteredNumberKeys;
     private JPanel          switchesHistory;
-
-    public SwitchesControlPanel() {
+    private JFrame  frame;
+        
+    public SwitchesControlPanel(JFrame frame) {
+        this.frame = frame;
         enteredNumberKeys = new StringBuffer();
         initGUI();
         initKeyboardActions();
@@ -43,7 +46,7 @@ public class SwitchesControlPanel extends JPanel {
 
     private void initGUI() {
         setLayout(new BorderLayout());
-        switchGroupPane = new SwitchGroupPane();
+        switchGroupPane = new SwitchGroupPane(frame);
         JPanel segmentPanelNorth = new JPanel(new FlowLayout(
             FlowLayout.TRAILING, 5, 0));
         segmentPanelNorth.setBackground(new Color(0, 0, 0));
@@ -129,12 +132,7 @@ public class SwitchesControlPanel extends JPanel {
             seg3.setValue(seg3Value);
             seg3.repaint();
             switchNumber = switchNumber - seg3Value * 100;
-            /*
-             * Switch searchedSwitch = null; SwitchControl sc =
-             * SwitchControl.getInstance(); searchedSwitch =
-             * sc.getNumberToSwitch().get(origNumber); if (searchedSwitch ==
-             * null) { return; }
-             */
+           
         }
     }
     private class SwitchingAction extends AbstractAction {
@@ -170,7 +168,7 @@ public class SwitchesControlPanel extends JPanel {
                     handleEnter(searchedSwitch);
                 }
                 resetSelectedSwitchDisplay();
-                SwitchWidget sw = new SwitchWidget(searchedSwitch, null, true);
+                SwitchWidget sw = new SwitchWidget(searchedSwitch, null, true, frame);
                 SwitchControl.getInstance().addSwitchChangeListener(sw);
                 Component[] oldWidgets = switchesHistory.getComponents();
                 switchesHistory.removeAll();

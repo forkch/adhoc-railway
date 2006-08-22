@@ -9,6 +9,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -19,6 +21,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -70,13 +73,15 @@ public class LocomotiveWidget extends JPanel implements
     private LocomotiveGroup             allLocomotives;
     private LocomotiveSelectAction      locomotiveSelectAction;
     private LocomotiveGroupSelectAction groupSelectAction;
+    private JFrame frame;
 
     public LocomotiveWidget(int accelerateKey, int deccelerateKey,
-        int toggleDirectionKey) {
+        int toggleDirectionKey, JFrame frame) {
         super();
         this.accelerateKey = accelerateKey;
         this.deccelerateKey = deccelerateKey;
         this.toggleDirectionKey = toggleDirectionKey;
+        this.frame = frame;
         initGUI();
         initKeyboardActions();
     }
@@ -95,6 +100,8 @@ public class LocomotiveWidget extends JPanel implements
         centerPanel.add(desc, BorderLayout.NORTH);
         add(centerPanel, BorderLayout.CENTER);
         add(selectionPanel, BorderLayout.NORTH);
+
+        addMouseWheelListener(new WheelControl());
     }
 
     private JPanel initSelectionPanel() {
@@ -498,7 +505,7 @@ public class LocomotiveWidget extends JPanel implements
         public void mouseClicked(MouseEvent e) {
 
             if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
-                LocomotiveConfig locomotiveConfig = new LocomotiveConfig(
+                LocomotiveConfig locomotiveConfig = new LocomotiveConfig(frame, 
                     myLocomotive);
                 if (locomotiveConfig.isOkPressed()) {
                     LocomotiveControl lc = LocomotiveControl.getInstance();
@@ -510,6 +517,23 @@ public class LocomotiveWidget extends JPanel implements
                     locomotiveChanged(myLocomotive);
                 }
             }
+        }
+    }
+
+    private class WheelControl implements MouseWheelListener {
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            AbstractAction a = null;
+            switch (e.getWheelRotation()) {
+            case -1:
+                a = new IncreaseSpeedAction();
+                break;
+            case 1:
+                a = new DecreaseSpeedAction();
+                break;
+            default:
+                return;
+            }
+            a.actionPerformed(null);
         }
     }
 

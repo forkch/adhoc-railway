@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -44,16 +45,18 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
     private GridBagLayout      switchWidgetLayout;
     private GridBagConstraints switchWidgetConstraints;
     private boolean            horizontal;
-
-    public SwitchWidget(Switch aSwitch, SwitchGroup switchGroup) {
-        this(aSwitch, switchGroup, false);
+    private JFrame             frame;
+    
+    public SwitchWidget(Switch aSwitch, SwitchGroup switchGroup, JFrame frame) {
+        this(aSwitch, switchGroup, false, frame);
     }
 
     public SwitchWidget(Switch aSwitch, SwitchGroup switchGroup,
-        boolean horizontal) {
+        boolean horizontal, JFrame frame) {
         mySwitch = aSwitch;
         this.switchGroup = switchGroup;
         this.horizontal = horizontal;
+        this.frame = frame;
         initGUI();
     }
 
@@ -68,6 +71,7 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
         }
         switchCanvas.addMouseListener(new MouseAction());
         addMouseListener(new MouseAction());
+        
         if (!horizontal) {
             setBorder(BorderFactory.createLineBorder(Color.GRAY));
             switchWidgetLayout = new GridBagLayout();
@@ -131,7 +135,7 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
                     SwitchControl.getInstance().toggle(mySwitch);
                 } else if (e.getClickCount() == 1
                     && e.getButton() == MouseEvent.BUTTON3) {
-                    SwitchConfig switchConf = new SwitchConfig(mySwitch);
+                    SwitchConfig switchConf = new SwitchConfig(frame, mySwitch);
                     if (switchConf.isOkPressed()) {
                         switchGroup.removeSwitch(mySwitch);
                         Switch newSwitch = switchConf.getSwitch();

@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.util.Collection;
 
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
@@ -14,9 +15,11 @@ import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
 
 public class SwitchGroupPane extends JTabbedPane {
     private Collection<SwitchGroup> switchGroups;
+    private JFrame frame;
 
-    public SwitchGroupPane() {
+    public SwitchGroupPane(JFrame frame) {
         super(JTabbedPane.BOTTOM);
+        this.frame = frame;
     }
 
     public void update(Collection<SwitchGroup> switchGroups) {
@@ -40,7 +43,7 @@ public class SwitchGroupPane extends JTabbedPane {
             add(switchGroupPane, "F" + i + ": " + switchGroup.getName());
             for (Switch aSwitch : switchGroup.getSwitches()) {
                 SwitchWidget switchWidget = new SwitchWidget(aSwitch,
-                    switchGroup);
+                    switchGroup, frame);
                 switchGroupTab.addSwitchWidget(switchWidget);
             }
             i++;

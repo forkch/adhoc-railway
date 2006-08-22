@@ -2,7 +2,6 @@
 package ch.fork.AdHocRailway.ui.switches.canvas;
 
 import java.awt.AWTEvent;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -12,7 +11,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public class Segment7 extends Canvas {
+import javax.swing.JPanel;
+
+public class Segment7 extends JPanel {
     private int     digit;
     private boolean hasfocus;
     private int[][] polysx = { { 1, 2, 8, 9, 8, 2 }, // Segment 0
