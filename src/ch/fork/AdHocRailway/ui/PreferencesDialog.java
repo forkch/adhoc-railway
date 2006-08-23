@@ -23,7 +23,7 @@ import javax.swing.SpringLayout;
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
 import ch.fork.AdHocRailway.domain.configuration.PreferencesKeys;
 
-public class PreferencesDialog extends JDialog implements PreferencesKeys{
+public class PreferencesDialog extends JDialog implements PreferencesKeys {
     private JSpinner           defaultActivationTime;
     private JSpinner           defaultRoutingDelay;
     private JSpinner           defaultLockDuration;
@@ -42,6 +42,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys{
     private JComboBox          keyBoardLayoutComboBox;
     private JCheckBox          interface6051;
     private JCheckBox          writeLog;
+    private JCheckBox          fullscreen;
     private List<String>       hostnames;
 
     public PreferencesDialog(JFrame owner) {
@@ -102,7 +103,9 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys{
 
         writeLog = new JCheckBox();
         JLabel writeLogLabel = new JLabel("Write Log");
-        
+        fullscreen = new JCheckBox();
+        JLabel fullscreenLabel = new JLabel("Fullscreen");
+
         guiSettingsTab.add(locomotiveControlNumberLabel);
         guiSettingsTab.add(locomotiveControlNumber);
         guiSettingsTab.add(switchControlNumberLabel);
@@ -111,7 +114,9 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys{
         guiSettingsTab.add(keyBoardLayoutComboBox);
         guiSettingsTab.add(writeLogLabel);
         guiSettingsTab.add(writeLog);
-        SpringUtilities.makeCompactGrid(guiSettingsTab, 4, 2, // rows, cols
+        guiSettingsTab.add(fullscreenLabel);
+        guiSettingsTab.add(fullscreen);
+        SpringUtilities.makeCompactGrid(guiSettingsTab, 5, 2, // rows, cols
             6, 6, // initX, initY
             6, 6); // xPad, yPad
 
@@ -122,25 +127,26 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys{
 
     private JPanel createDigitalDataTab() {
         JPanel digitalDataTab = new JPanel(new SpringLayout());
-        
+
         JLabel defaultActivationTimeLabel = new JLabel(
             "Default activation time for solenoids [ms]:");
         defaultActivationTimeModel = new SpinnerNumberModel(50, 50, 1000, 10);
         defaultActivationTime = new JSpinner(defaultActivationTimeModel);
-        
+
         JLabel defaultRoutingDelayLabel = new JLabel(
             "Default routing delay for solenoids [ms]:");
         defaultRoutingDelayModel = new SpinnerNumberModel(250, 100, 1000, 10);
         defaultRoutingDelay = new JSpinner(defaultRoutingDelayModel);
-        
-        JLabel defaultLockDurationLabel = new JLabel("Default Lock time (0 means forever) [s]:");
+
+        JLabel defaultLockDurationLabel = new JLabel(
+            "Default Lock time (0 means forever) [s]:");
         defaultLockDurationModel = new SpinnerNumberModel(0, 0, 60, 1);
         defaultLockDuration = new JSpinner(defaultLockDurationModel);
-        
+
         interface6051 = new JCheckBox();
         JLabel interface6051Label = new JLabel("Interface 6051 attached");
-        
-        
+
+
         digitalDataTab.add(defaultActivationTimeLabel);
         digitalDataTab.add(defaultActivationTime);
         digitalDataTab.add(defaultRoutingDelayLabel);
@@ -186,43 +192,40 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys{
     private void loadPreferences(Preferences p) {
         locomotiveControlNumberModel.setValue(p
             .getIntValue(LOCOMOTIVE_CONTROLES));
-        switchControlNumberModel.setValue(p
-            .getIntValue(SWITCH_CONTROLES));
+        switchControlNumberModel.setValue(p.getIntValue(SWITCH_CONTROLES));
         keyBoardLayoutComboBox.setSelectedItem(p
             .getStringValue(KEYBOARD_LAYOUT));
-        
-        defaultActivationTimeModel.setValue(p
-            .getIntValue(ACTIVATION_TIME));
+
+        defaultActivationTimeModel.setValue(p.getIntValue(ACTIVATION_TIME));
         defaultRoutingDelayModel.setValue(p.getIntValue(ROUTING_DELAY));
         defaultLockDurationModel.setValue(p.getIntValue(LOCK_DURATION));
-        
+
         interface6051.setSelected(p.getBooleanValue(INTERFACE_6051));
         writeLog.setSelected(p.getBooleanValue(LOGGING));
-        
+        fullscreen.setSelected(p.getBooleanValue(FULLSCREEN));
         hostnameTextField.setText(p.getStringValue(HOSTNAME));
-        portnumberTextField.setText(Integer.toString(p
-            .getIntValue(PORT)));
+        portnumberTextField.setText(Integer.toString(p.getIntValue(PORT)));
     }
 
     private void savePreferences(Preferences p) {
         p.setIntValue(LOCOMOTIVE_CONTROLES, locomotiveControlNumberModel
             .getNumber().intValue());
-        p.setIntValue(SWITCH_CONTROLES, switchControlNumberModel
-            .getNumber().intValue());
+        p.setIntValue(SWITCH_CONTROLES, switchControlNumberModel.getNumber()
+            .intValue());
         p.setStringValue(KEYBOARD_LAYOUT, keyBoardLayoutComboBox
             .getSelectedItem().toString());
-        
-        p.setIntValue(ACTIVATION_TIME, defaultActivationTimeModel
-            .getNumber().intValue());
-        p.setIntValue(ROUTING_DELAY, defaultRoutingDelayModel
-            .getNumber().intValue());
-        p.setIntValue(LOCK_DURATION, defaultLockDurationModel
-            .getNumber().intValue());
+
+        p.setIntValue(ACTIVATION_TIME, defaultActivationTimeModel.getNumber()
+            .intValue());
+        p.setIntValue(ROUTING_DELAY, defaultRoutingDelayModel.getNumber()
+            .intValue());
+        p.setIntValue(LOCK_DURATION, defaultLockDurationModel.getNumber()
+            .intValue());
         p.setBooleanValue(INTERFACE_6051, interface6051.isSelected());
         p.setBooleanValue(LOGGING, interface6051.isSelected());
-        
+        p.setBooleanValue(FULLSCREEN, fullscreen.isSelected());
+
         p.setStringValue(HOSTNAME, (String) hostnameTextField.getText());
-        p.setIntValue(PORT, Integer.parseInt(portnumberTextField
-            .getText()));
+        p.setIntValue(PORT, Integer.parseInt(portnumberTextField.getText()));
     }
 }

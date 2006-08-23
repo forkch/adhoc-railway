@@ -79,8 +79,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private FileWriter             logFileWriter;
     private SwitchesControlPanel   switchesControlPanel;
     private JButton                toggleFullscreenButton;
-    private JMenuBar menuBar;
-    
+    private JMenuBar               menuBar;
 
 
     public AdHocRailway() {
@@ -90,29 +89,40 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     public AdHocRailway(String file) {
         super(NAME);
 
+        SplashWindow splash = new SplashWindow(createImageIcon(
+            "icons/splash.png", "RailControl", AdHocRailway.this), this, 500,
+            4);
+        splash.nextStep("Starting AdHoc-Railway ...");
         setIconImage(createImageIcon("icons/RailControl.png", "RailControl",
             AdHocRailway.this).getImage());
+
         initGUI();
+
         ExceptionDialog.start(this);
         if (file != null) {
             File standardFile = new File(file);
             if (standardFile.exists()) {
+                splash.nextStep("Loading configuration from " + file + " ...");
                 OpenAction oa = new OpenAction(null);
                 oa.openFile(standardFile);
-            } else {
-                switchesControlPanel.update(SwitchControl.getInstance()
-                    .getSwitchGroups());
-                locomotiveControlPanel.update(LocomotiveControl.getInstance()
-                    .getLocomotiveGroups());
             }
         } else {
-            switchesControlPanel.update(SwitchControl.getInstance()
-                .getSwitchGroups());
-            locomotiveControlPanel.update(LocomotiveControl.getInstance()
-                .getLocomotiveGroups());
+            splash.nextStep("");
         }
+        splash.nextStep("Creating GUI ...");
+        switchesControlPanel.update(SwitchControl.getInstance()
+            .getSwitchGroups());
+        locomotiveControlPanel.update(LocomotiveControl.getInstance()
+            .getLocomotiveGroups());
+
         switchesControlPanel.revalidate();
         locomotiveControlPanel.revalidate();
+
+        setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
+        setVisible(true);
+
+        splash.nextStep("RailControl started");
+        updateCommandHistory("RailControl started");
     }
 
     private void initGUI() {
@@ -139,29 +149,24 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 super.windowClosing(e);
             }
         });
-
-        menuBar.setVisible(false);
-        setResizable(false);
-        setUndecorated(true);
-        setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
-        setVisible(true);
-        updateCommandHistory("RailControl started");
     }
 
     private SwitchesControlPanel initSwitchPanel() {
-        SwitchesControlPanel switchesControlPanel = new SwitchesControlPanel(this);
+        SwitchesControlPanel switchesControlPanel = new SwitchesControlPanel(
+            this);
         switchesControlPanel.setBorder(new EtchedBorder());
         return switchesControlPanel;
     }
 
     private LocomotiveControlPanel initLocomotiveControl() {
-        LocomotiveControlPanel locomotiveControlPanel = new LocomotiveControlPanel(this);
+        LocomotiveControlPanel locomotiveControlPanel = new LocomotiveControlPanel(
+            this);
         locomotiveControlPanel.setBorder(new EtchedBorder());
         return locomotiveControlPanel;
     }
 
     public static void main(String[] args) {
-        
+
         if (args.length == 1) {
             new AdHocRailway(args[0]);
         } else {
@@ -195,7 +200,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
         public void run() {
             if (commandHistoryModel.getSize() > 100) {
-                commandHistoryModel.removeElementAt(99);
+                commandHistoryModel.removeElementAt(100);
             }
             commandHistoryModel.insertElementAt(text, 0);
             commandHistory.setSelectedIndex(0);
@@ -245,8 +250,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 updateCommandHistory("Opened configuration: " + file.getName());
                 setTitle(AdHocRailway.NAME + " : [ "
                     + actualFile.getAbsolutePath() + " ]");
-                switchesControlPanel.update(sc.getSwitchGroups());
-                locomotiveControlPanel.update(lc.getLocomotiveGroups());
             } catch (ConfigurationException e) {
                 ExceptionProcessor.getInstance().processException(
                     "Error loading file", e);
@@ -442,6 +445,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 disconnectToolBarButton.setEnabled(true);
                 updateCommandHistory("Connected to server " + host
                     + " on port " + port);
+                // debugDialog = new DebugDialog(session, AdHocRailway.this);
             } catch (SRCPException e1) {
                 if (e1.getCause() instanceof ConnectException) {
                     ExceptionProcessor.getInstance().processException(
@@ -511,7 +515,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
     private class ToggleFullscreenAction extends AbstractAction {
 
-        boolean fullscreen = true;
+        boolean fullscreen = false;
 
         public ToggleFullscreenAction() {
             super("ToggleFullscreen", createImageIcon(
@@ -523,7 +527,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             if (fullscreen) {
                 dispose();
                 menuBar.setVisible(true);
-                setResizable(true); 
+                setResizable(true);
                 setUndecorated(false);
                 setSize(1000, 700);
                 setVisible(true);
@@ -541,7 +545,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 toggleFullscreenButton.setIcon(createImageIcon(
                     "icons/window_nofullscreen.png", "ToggleFullscreen",
                     AdHocRailway.this));
-                fullscreen = true; 
+                fullscreen = true;
             }
         }
     }
@@ -562,7 +566,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                     ExceptionProcessor.getInstance().processException(e1);
                     return;
                 } catch (InterruptedException e2) {
-                    // TODO Auto-generated catch block
                     e2.printStackTrace();
                 }
             }
@@ -715,5 +718,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         commandHistory.setFocusable(false);
         statusBarPanel.setLayout(new BorderLayout());
         statusBarPanel.add(commandHistory, BorderLayout.SOUTH);
+    }
+
+    public void infoDataReceived(double timestamp, int bus, String deviceGroup,
+        String data) {
+
     }
 }

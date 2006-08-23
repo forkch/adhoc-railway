@@ -31,6 +31,7 @@ public class Preferences implements PreferencesKeys{
         setStringValue(INTERFACE_6051, "Y");
         setIntValue(SWITCH_CONTROLES, 5);
         setBooleanValue(LOGGING, false);
+        setBooleanValue(FULLSCREEN, false);
     }
 
     public static Preferences getInstance() {
