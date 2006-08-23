@@ -1,3 +1,24 @@
+/*------------------------------------------------------------------------
+ * 
+ * <./ui/switches/SwitchWidget.java>  -  <desc>
+ * 
+ * begin     : Wed Aug 23 16:59:35 BST 2006
+ * copyright : (C) by Benjamin Mueller 
+ * email     : news@fork.ch
+ * language  : java
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 
 package ch.fork.AdHocRailway.ui.switches;
 
@@ -46,7 +67,7 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
     private GridBagConstraints switchWidgetConstraints;
     private boolean            horizontal;
     private JFrame             frame;
-    
+
     public SwitchWidget(Switch aSwitch, SwitchGroup switchGroup, JFrame frame) {
         this(aSwitch, switchGroup, false, frame);
     }
@@ -71,7 +92,7 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
         }
         switchCanvas.addMouseListener(new MouseAction());
         addMouseListener(new MouseAction());
-        
+
         if (!horizontal) {
             setBorder(BorderFactory.createLineBorder(Color.GRAY));
             switchWidgetLayout = new GridBagLayout();

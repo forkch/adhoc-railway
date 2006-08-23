@@ -1,3 +1,24 @@
+/*------------------------------------------------------------------------
+ * 
+ * <./ui/locomotives/LocomotiveWidget.java>  -  <desc>
+ * 
+ * begin     : Wed Aug 23 17:00:02 BST 2006
+ * copyright : (C) by Benjamin Mueller 
+ * email     : news@fork.ch
+ * language  : java
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 
 package ch.fork.AdHocRailway.ui.locomotives;
 
@@ -73,7 +94,7 @@ public class LocomotiveWidget extends JPanel implements
     private LocomotiveGroup             allLocomotives;
     private LocomotiveSelectAction      locomotiveSelectAction;
     private LocomotiveGroupSelectAction groupSelectAction;
-    private JFrame frame;
+    private JFrame                      frame;
 
     public LocomotiveWidget(int accelerateKey, int deccelerateKey,
         int toggleDirectionKey, JFrame frame) {
@@ -505,7 +526,7 @@ public class LocomotiveWidget extends JPanel implements
         public void mouseClicked(MouseEvent e) {
 
             if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
-                LocomotiveConfig locomotiveConfig = new LocomotiveConfig(frame, 
+                LocomotiveConfig locomotiveConfig = new LocomotiveConfig(frame,
                     myLocomotive);
                 if (locomotiveConfig.isOkPressed()) {
                     LocomotiveControl lc = LocomotiveControl.getInstance();

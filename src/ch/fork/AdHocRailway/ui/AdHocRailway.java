@@ -1,3 +1,24 @@
+/*------------------------------------------------------------------------
+ * 
+ * <./ui/AdHocRailway.java>  -  <desc>
+ * 
+ * begin     : Wed Aug 23 17:00:30 BST 2006
+ * copyright : (C) by Benjamin Mueller 
+ * email     : news@fork.ch
+ * language  : java
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 
 package ch.fork.AdHocRailway.ui;
 
@@ -90,8 +111,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         super(NAME);
 
         SplashWindow splash = new SplashWindow(createImageIcon(
-            "icons/splash.png", "RailControl", AdHocRailway.this), this, 500,
-            4);
+            "icons/splash.png", "RailControl", AdHocRailway.this), this, 500, 4);
         splash.nextStep("Starting AdHoc-Railway ...");
         setIconImage(createImageIcon("icons/RailControl.png", "RailControl",
             AdHocRailway.this).getImage());
@@ -105,6 +125,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 splash.nextStep("Loading configuration from " + file + " ...");
                 OpenAction oa = new OpenAction(null);
                 oa.openFile(standardFile);
+            } else {
+                splash.nextStep("");
             }
         } else {
             splash.nextStep("");
@@ -165,21 +187,17 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         return locomotiveControlPanel;
     }
 
-    public static void main(String[] args) {
-
-        if (args.length == 1) {
-            new AdHocRailway(args[0]);
-        } else {
-            new AdHocRailway();
-        }
-    }
-
     public void commandDataSent(String commandData) {
         updateCommandHistory("To Server: " + commandData);
     }
 
     public void infoDataReceived(String infoData) {
         updateCommandHistory("From Server: " + infoData);
+    }
+
+    public void infoDataReceived(double timestamp, int bus, String deviceGroup,
+        String data) {
+
     }
 
     public void updateCommandHistory(String text) {
@@ -221,6 +239,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     file = fileChooser.getSelectedFile();
                     openFile(file);
+                    switchesControlPanel.update(SwitchControl.getInstance()
+                        .getSwitchGroups());
+                    locomotiveControlPanel.update(LocomotiveControl
+                        .getInstance().getLocomotiveGroups());
                 } else {
                     updateCommandHistory("Open command cancelled by user");
                 }
@@ -413,6 +435,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             }
         }
     }
+
     /**
      * Handels the start of a connection with the srcpd-server.
      * 
@@ -445,7 +468,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 disconnectToolBarButton.setEnabled(true);
                 updateCommandHistory("Connected to server " + host
                     + " on port " + port);
-                // debugDialog = new DebugDialog(session, AdHocRailway.this);
             } catch (SRCPException e1) {
                 if (e1.getCause() instanceof ConnectException) {
                     ExceptionProcessor.getInstance().processException(
@@ -569,7 +591,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                     e2.printStackTrace();
                 }
             }
-
         }
     }
 
@@ -720,8 +741,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         statusBarPanel.add(commandHistory, BorderLayout.SOUTH);
     }
 
-    public void infoDataReceived(double timestamp, int bus, String deviceGroup,
-        String data) {
+    public static void main(String[] args) {
 
+        if (args.length == 1) {
+            new AdHocRailway(args[0]);
+        } else {
+            new AdHocRailway();
+        }
     }
 }

@@ -1,7 +1,35 @@
+/*------------------------------------------------------------------------
+ * 
+ * <Address.java>  -  <>
+ * 
+ * begin     : Wed Aug 23 16:53:53 BST 2006
+ * copyright : (C) by Benjamin Mueller 
+ * email     : news@fork.ch
+ * language  : java
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 
 package ch.fork.AdHocRailway.domain;
 
-
+/**
+ * An Address of a control object consists of a bus and an address. Additionally
+ * the port of this address can be 'turned' by the software (usefull for
+ * switches)
+ * 
+ * @author fork
+ * 
+ */
 public class Address {
     private int     bus;
     private int     address;
@@ -21,7 +49,8 @@ public class Address {
     }
 
     public int hashCode() {
-        return Integer.valueOf(bus).hashCode()*1000 + Integer.valueOf(address).hashCode();
+        return Integer.valueOf(bus).hashCode() * 1000
+            + Integer.valueOf(address).hashCode();
     }
 
     public boolean equals(Object anAddress) {
@@ -36,7 +65,8 @@ public class Address {
     }
 
     public String toString() {
-        return " bus: " + bus + " address: " + address + " : " + addressSwitched;
+        return " bus: " + bus + " address: " + address + " : "
+            + addressSwitched;
     }
 
     public boolean isAddressSwitched() {

@@ -1,3 +1,24 @@
+/*------------------------------------------------------------------------
+ * 
+ * <./domain/locking/LockControl.java>  -  <desc>
+ * 
+ * begin     : Wed Aug 23 16:58:45 BST 2006
+ * copyright : (C) by Benjamin Mueller 
+ * email     : news@fork.ch
+ * language  : java
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 
 package ch.fork.AdHocRailway.domain.locking;
 
@@ -77,7 +98,7 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
             }
         }
     }
-    
+
     public void unregisterAllControlObjects() {
         addressToControlObject.clear();
     }
@@ -148,9 +169,10 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
 
     public void LOCKset(double timestamp, int bus, int address,
         String deviceGroup, int duration, int sessionID) {
-        /*System.out.println("LOCKset(" + bus + " , " + address + " , "
-        + deviceGroup + " , " + duration + " , " + sessionID + " )");
-        */
+        /*
+         * System.out.println("LOCKset(" + bus + " , " + address + " , " +
+         * deviceGroup + " , " + duration + " , " + sessionID + " )");
+         */
         Address addr = new Address(bus, address);
         ControlObject object = addressToControlObject.get(addr);
         if (object != null) {
@@ -162,9 +184,9 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
     public void LOCKterm(double timestamp, int bus, int address,
         String deviceGroup) {
         /*
-        System.out.println("LOCKtern(" + bus + " , " + address + " , "
-            + deviceGroup + " )");
-        */
+         * System.out.println("LOCKtern(" + bus + " , " + address + " , " +
+         * deviceGroup + " )");
+         */
         Address addr = new Address(bus, address);
         ControlObject object = addressToControlObject.get(addr);
         if (object != null) {
@@ -190,7 +212,7 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
     public ControlObject getControlObject(Address address) {
         return null;
     }
-    
+
     public int getSessionID() {
         return session.getCommandChannelID();
     }

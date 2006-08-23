@@ -1,3 +1,24 @@
+/*------------------------------------------------------------------------
+ * 
+ * <./ui/switches/SwitchesControlPanel.java>  -  <desc>
+ * 
+ * begin     : Wed Aug 23 16:59:29 BST 2006
+ * copyright : (C) by Benjamin Mueller 
+ * email     : news@fork.ch
+ * language  : java
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 
 package ch.fork.AdHocRailway.ui.switches;
 
@@ -31,8 +52,8 @@ public class SwitchesControlPanel extends JPanel {
     private Segment7        seg3;
     private StringBuffer    enteredNumberKeys;
     private JPanel          switchesHistory;
-    private JFrame  frame;
-        
+    private JFrame          frame;
+
     public SwitchesControlPanel(JFrame frame) {
         this.frame = frame;
         enteredNumberKeys = new StringBuffer();
@@ -132,7 +153,7 @@ public class SwitchesControlPanel extends JPanel {
             seg3.setValue(seg3Value);
             seg3.repaint();
             switchNumber = switchNumber - seg3Value * 100;
-           
+
         }
     }
     private class SwitchingAction extends AbstractAction {
@@ -168,7 +189,8 @@ public class SwitchesControlPanel extends JPanel {
                     handleEnter(searchedSwitch);
                 }
                 resetSelectedSwitchDisplay();
-                SwitchWidget sw = new SwitchWidget(searchedSwitch, null, true, frame);
+                SwitchWidget sw = new SwitchWidget(searchedSwitch, null, true,
+                    frame);
                 SwitchControl.getInstance().addSwitchChangeListener(sw);
                 Component[] oldWidgets = switchesHistory.getComponents();
                 switchesHistory.removeAll();

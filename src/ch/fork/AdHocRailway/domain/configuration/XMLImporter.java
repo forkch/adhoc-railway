@@ -1,3 +1,24 @@
+/*------------------------------------------------------------------------
+ * 
+ * <./domain/configuration/XMLImporter.java>  -  <desc>
+ * 
+ * begin     : Wed Aug 23 16:58:17 BST 2006
+ * copyright : (C) by Benjamin Mueller 
+ * email     : news@fork.ch
+ * language  : java
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 
 package ch.fork.AdHocRailway.domain.configuration;
 
@@ -20,14 +41,15 @@ import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class XMLImporter extends DefaultHandler implements ContentHandler {
 
-    private String filename;
+    private String  filename;
     private boolean supported = true;
-    
+
     public XMLImporter(String filename) throws ConfigurationException {
         this.filename = filename;
         parseDocument(filename);
-        if(!supported ) {
-            throw new ConfigurationException(Constants.ERR_VERSION_NOT_SUPPORTED);
+        if (!supported) {
+            throw new ConfigurationException(
+                Constants.ERR_VERSION_NOT_SUPPORTED);
         }
     }
 

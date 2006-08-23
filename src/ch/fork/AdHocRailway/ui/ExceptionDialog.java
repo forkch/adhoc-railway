@@ -1,3 +1,24 @@
+/*------------------------------------------------------------------------
+ * 
+ * <./ui/ExceptionDialog.java>  -  <desc>
+ * 
+ * begin     : Wed Aug 23 17:00:12 BST 2006
+ * copyright : (C) by Benjamin Mueller 
+ * email     : news@fork.ch
+ * language  : java
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 
 package ch.fork.AdHocRailway.ui;
 
@@ -42,7 +63,7 @@ public class ExceptionDialog extends JDialog {
         messageLabel.setIconTextGap(20);
         JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         southPanel.add(okButton);
-        //southPanel.add(detailsButton);
+        // southPanel.add(detailsButton);
         add(messageLabel, BorderLayout.CENTER);
         add(southPanel, BorderLayout.SOUTH);
         setLocationByPlatform(true);
@@ -61,7 +82,7 @@ public class ExceptionDialog extends JDialog {
 
     public void processException(Exception e) {
         String msg = e.getMessage();
-        
+
         messageLabel.setText(msg);
         pack();
         setVisible(true);

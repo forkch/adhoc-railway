@@ -1,3 +1,24 @@
+/*------------------------------------------------------------------------
+ * 
+ * <./ui/locomotives/configuration/LocomotiveConfig.java>  -  <desc>
+ * 
+ * begin     : Wed Aug 23 16:59:57 BST 2006
+ * copyright : (C) by Benjamin Mueller 
+ * email     : news@fork.ch
+ * language  : java
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
@@ -97,7 +118,7 @@ public class LocomotiveConfig extends JDialog {
 
         imageTextField = new JTextField();
         imageTextField.setText(myLocomotive.getImage());
-        
+
         descTextField = new JTextField();
         descTextField.setText(myLocomotive.getDesc());
 
@@ -147,10 +168,10 @@ public class LocomotiveConfig extends JDialog {
             }
             int bus = Integer.parseInt(busTextField.getText());
             myLocomotive.getAddress().setBus(bus);
-            
+
             int newAddress = Integer.parseInt(addressTextField.getText());
             myLocomotive.getAddress().setAddress(newAddress);
-            
+
             myLocomotive.setImage(imageTextField.getText());
             myLocomotive.setDesc(descTextField.getText());
             okPressed = true;

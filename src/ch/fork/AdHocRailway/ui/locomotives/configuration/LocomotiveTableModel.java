@@ -1,3 +1,24 @@
+/*------------------------------------------------------------------------
+ * 
+ * <./ui/locomotives/configuration/LocomotiveTableModel.java>  -  <desc>
+ * 
+ * begin     : Wed Aug 23 16:59:55 BST 2006
+ * copyright : (C) by Benjamin Mueller 
+ * email     : news@fork.ch
+ * language  : java
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
@@ -133,8 +154,9 @@ public class LocomotiveTableModel extends AbstractTableModel {
     public void setLocomotiveGroup(LocomotiveGroup selectedLocomotiveGroup) {
         locomotiveGroup = selectedLocomotiveGroup;
     }
+
     public Class<?> getColumnClass(int columnIndex) {
-        switch(columnIndex){
+        switch (columnIndex) {
         case 0:
             return String.class;
         case 1:
@@ -147,7 +169,7 @@ public class LocomotiveTableModel extends AbstractTableModel {
             return String.class;
         case 5:
             return String.class;
-        
+
         default:
             return Object.class;
         }
