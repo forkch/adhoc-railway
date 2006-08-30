@@ -21,10 +21,9 @@
 
   <xs:complexType name="SwitchGroupType">
     <xs:sequence minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="Switch" type="SwitchType">
-        <xs:attribute name="name" type="xs:string"/>
-      </xs:element>
+      <xs:element name="Switch" type="SwitchType"/>
     </xs:sequence>
+    <xs:attribute name="name" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="SwitchType">
@@ -75,10 +74,9 @@
   
   <xs:complexType name="LocomotiveGroupType">
     <xs:sequence minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="Locomotive" type="LocomotiveType">
-        <xs:attribute name="name" type="xs:string"/>
-      </xs:element>
+      <xs:element name="Locomotive" type="LocomotiveType"/>
     </xs:sequence>
+    <xs:attribute name="name" type="xs:string"/>
   </xs:complexType>
   
   <xs:complexType name="LocomotiveType">

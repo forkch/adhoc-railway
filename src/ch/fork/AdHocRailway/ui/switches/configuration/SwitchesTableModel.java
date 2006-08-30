@@ -34,9 +34,9 @@ import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
+import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch.SwitchOrientation;
-import ch.fork.AdHocRailway.domain.switches.Switch.SwitchState;
 
 public class SwitchesTableModel extends AbstractTableModel {
     private final String[]       columnNames = { "#", "Type", "Bus", "Addr. 1",
@@ -119,7 +119,7 @@ public class SwitchesTableModel extends AbstractTableModel {
         if (col == 4 && switchOfThisRow.getAddresses().length == 1) {
             return false;
         }
-        if (col == 5 && switchOfThisRow.getAddresses().length == 1) {
+        if (col == 6 && switchOfThisRow.getAddresses().length == 1) {
             return false;
         }
         if (col == 7 && switchOfThisRow.getType().equals("ThreeWaySwitch")) {

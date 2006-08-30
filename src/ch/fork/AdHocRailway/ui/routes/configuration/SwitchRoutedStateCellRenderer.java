@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/switches/configuration/SwitchOrientationCellRenderer.java>  -  <desc>
+ * <./ui/switches/configuration/SwitchDefaultStateCellRenderer.java>  -  <desc>
  * 
- * begin     : Wed Aug 23 16:59:16 BST 2006
+ * begin     : Wed Aug 23 16:59:26 BST 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
@@ -20,7 +20,7 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.ui.switches.configuration;
+package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import java.awt.Component;
 
@@ -32,15 +32,22 @@ import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
 
-public class SwitchOrientationCellRenderer implements TableCellRenderer {
+public class SwitchRoutedStateCellRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel iconLabel = new JLabel();
+        if (table.getValueAt(row, 1).equals("ThreeWaySwitch")) {
+            iconLabel.setIcon(ImageTools.createImageIcon(
+                "icons/default_straight.png", "Default Switch",
+                SwitchWidget.class));
+        }
         if (value.equals(SwitchState.STRAIGHT)) {
-            iconLabel.setIcon(ImageTools.createStraightState(iconLabel,
+            iconLabel.setIcon(ImageTools.createImageIcon(
+                "icons/default_straight.png", "Default Switch",
                 SwitchWidget.class));
         } else {
-            iconLabel.setIcon(ImageTools.createCurvedState(iconLabel,
+            iconLabel.setIcon(ImageTools.createImageIcon(
+                "icons/default_curved.png", "Default Switch",
                 SwitchWidget.class));
         }
         return iconLabel;

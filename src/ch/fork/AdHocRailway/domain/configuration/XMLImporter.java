@@ -37,13 +37,14 @@ import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.configuration.exception.ConfigurationException;
 import ch.fork.AdHocRailway.domain.configuration.importer.XMLImporter_0_1;
 import ch.fork.AdHocRailway.domain.configuration.importer.XMLImporter_0_2;
+import ch.fork.AdHocRailway.domain.configuration.importer.XMLImporter_0_3;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class XMLImporter extends DefaultHandler implements ContentHandler {
 
     private String  filename;
     private boolean supported = true;
-
+    private double actualVersion;
     public XMLImporter(String filename) throws ConfigurationException {
         this.filename = filename;
         parseDocument(filename);
@@ -75,18 +76,26 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
     public void startElement(String uri, String localName, String qName,
         Attributes attributes) throws SAXException {
         qName = qName.toLowerCase();
-        if (qName.equals("railcontrol")) {
-            double version = Double.parseDouble(attributes
+        if (qName.equals("railcontrol") || qName.equals("adhoc-railway")) {
+            actualVersion = Double.parseDouble(attributes
                 .getValue("ExporterVersion"));
-            if (version == 0.1) {
+
+            if (actualVersion == 0.1) {
                 XMLImporter_0_1 importer = new XMLImporter_0_1(filename);
                 return;
-            } else if (version == 0.2) {
+            } else if (actualVersion == 0.2) {
                 XMLImporter_0_2 importer = new XMLImporter_0_2(filename);
+                return;
+            }else if (actualVersion == 0.3) {
+                XMLImporter_0_3 importer = new XMLImporter_0_3(filename);
                 return;
             }
             supported = false;
             return;
         }
+    }
+
+    public double getActualVersion() {
+        return actualVersion;
     }
 }

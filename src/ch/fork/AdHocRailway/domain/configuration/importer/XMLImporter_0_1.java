@@ -46,9 +46,9 @@ import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
 import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
+import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch.SwitchOrientation;
-import ch.fork.AdHocRailway.domain.switches.Switch.SwitchState;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class XMLImporter_0_1 extends DefaultHandler implements ContentHandler {

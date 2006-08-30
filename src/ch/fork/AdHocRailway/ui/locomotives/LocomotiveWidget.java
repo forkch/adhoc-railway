@@ -41,7 +41,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -228,21 +227,12 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private void initKeyboardActions() {
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke(accelerateKey, 0), "acc" + accelerateKey);
-        this.getActionMap().put("acc" + accelerateKey,
-            new LocomotiveControlAction(LocomotiveActionType.ACCELERATE, 1));
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke(deccelerateKey, 0), "dec" + deccelerateKey);
-        this.getActionMap().put("dec" + deccelerateKey,
-            new LocomotiveControlAction(LocomotiveActionType.DECCELERATE, 1));
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke(toggleDirectionKey, 0),
-            "tog" + toggleDirectionKey);
-        this.getActionMap().put(
-            "tog" + toggleDirectionKey,
-            new LocomotiveControlAction(LocomotiveActionType.TOGGLE_DIRECTION,
-                1));
+        registerKeyboardAction(new LocomotiveControlAction(), "accelerate", KeyStroke.getKeyStroke(
+            accelerateKey, 0), WHEN_IN_FOCUSED_WINDOW);
+        registerKeyboardAction(new LocomotiveControlAction(), "deccelerate", KeyStroke.getKeyStroke(
+            deccelerateKey, 0), WHEN_IN_FOCUSED_WINDOW);
+        registerKeyboardAction(new LocomotiveControlAction(), "toggle_direction", KeyStroke.getKeyStroke(
+            toggleDirectionKey, 0), WHEN_IN_FOCUSED_WINDOW);
     }
 
     protected void updateWidget() {
@@ -361,24 +351,17 @@ public class LocomotiveWidget extends JPanel implements
     private class LocomotiveControlAction extends AbstractAction {
         private LocomotiveActionType type;
         private long                 time = 0;
-        private int                  locomotiveNumber;
-
-        public LocomotiveControlAction(LocomotiveActionType type,
-            int locomotiveNumber) {
-            this.type = type;
-            this.locomotiveNumber = locomotiveNumber;
-        }
 
         public void actionPerformed(ActionEvent e) {
             if (time == 0 || e.getWhen() > time + 200) {
                 try {
-                    if (type == LocomotiveActionType.ACCELERATE) {
+                    if (e.getActionCommand().equals("accelerate")) {
                         LocomotiveControl.getInstance().increaseSpeed(
                             myLocomotive);
-                    } else if (type == LocomotiveActionType.DECCELERATE) {
+                    } else if (e.getActionCommand().equals("deccelerate")) {
                         LocomotiveControl.getInstance().decreaseSpeed(
                             myLocomotive);
-                    } else if (type == LocomotiveActionType.TOGGLE_DIRECTION) {
+                    } else if (e.getActionCommand().equals("toggle_direction")) {
                         LocomotiveControl.getInstance().toggleDirection(
                             myLocomotive);
                     }

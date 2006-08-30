@@ -28,7 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
-import ch.fork.AdHocRailway.domain.switches.Switch.SwitchState;
+import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
 

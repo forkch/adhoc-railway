@@ -43,9 +43,9 @@ import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch;
+import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch.SwitchOrientation;
-import ch.fork.AdHocRailway.domain.switches.Switch.SwitchState;
 import ch.fork.AdHocRailway.ui.SpringUtilities;
 
 public class SwitchConfig extends JDialog {

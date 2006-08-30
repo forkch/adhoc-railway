@@ -23,12 +23,13 @@
 package ch.fork.AdHocRailway.ui.switches.configuration;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
+import java.awt.FocusTraversalPolicy;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -45,7 +46,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -68,12 +69,14 @@ import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
 import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
+import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.domain.switches.Switch.SwitchOrientation;
-import ch.fork.AdHocRailway.domain.switches.Switch.SwitchState;
+import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.TableResizer;
 
-public class SwitchConfigurationDialog extends JDialog {
+public class SwitchConfigurationDialog<E> extends
+    ConfigurationDialog<SwitchConfiguration> {
     private List<SwitchGroup>          switchGroupsWorkCopy;
     private Map<Integer, Switch>       switchNumberToSwitchWorkCopy;
     private ListListModel<SwitchGroup> switchGroupListModel;
@@ -82,14 +85,38 @@ public class SwitchConfigurationDialog extends JDialog {
     private JPanel                     switchesPanel;
     private TableModel                 switchesTableModel;
     private JTable                     switchesTable;
-    private Frame                      owner;
-    private boolean                    cancelPressed = false;
-    private boolean                    okPressed     = false;
     private SwitchControl              switchControl;
+    private JPanel                     switchGroupPanel;
+    private JButton                    addSwitchGroupButton;
+    private JButton                    removeSwitchGroupButton;
+    private JButton                    addSwitchButton;
+    private JButton                    add10SwitchesButton;
+    private JButton                    removeSwitchButton;
 
-    public SwitchConfigurationDialog(Frame owner) {
-        super(owner, "Switch Configuration", true);
-        this.owner = owner;
+    public SwitchConfigurationDialog(JFrame owner) {
+        super(owner, "Switch Configuration");
+
+        initGUI();
+    }
+
+    private void initGUI() {
+        JPanel switchGroupPanel = createSwitchGroupPanel();
+        JPanel switchesPanel = createSwitchesPanel();
+
+        // updateSwitchesPanel();
+
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(switchGroupPanel, BorderLayout.WEST);
+        mainPanel.add(switchesPanel, BorderLayout.CENTER);
+        addMainComponent(mainPanel);
+        SwitchConfigurationFocusTraversalPolicy newPolicy = new SwitchConfigurationFocusTraversalPolicy();
+        setFocusTraversalPolicy(newPolicy);
+        pack();
+        setVisible(true);
+    }
+
+    @Override
+    public void createTempConfiguration() {
         this.switchControl = SwitchControl.getInstance();
         this.switchNumberToSwitchWorkCopy = new HashMap<Integer, Switch>();
         for (Switch s : switchControl.getNumberToSwitch().values()) {
@@ -105,40 +132,16 @@ public class SwitchConfigurationDialog extends JDialog {
                     .getNumber()));
             }
         }
-        initGUI();
     }
 
-    private void initGUI() {
-        JPanel switchGroupPanel = createSwitchGroupPanel();
-        add(switchGroupPanel, BorderLayout.WEST);
-        JPanel switchesPanel = createSwitchesPanel();
-        add(switchesPanel, BorderLayout.CENTER);
-        updateSwitchesPanel();
-        JButton okButton = new JButton("OK");
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                okPressed = true;
-                SwitchConfigurationDialog.this.setVisible(false);
-            }
-        });
-        JButton cancelButton = new JButton("Cancel");
-        cancelPressed = false;
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                cancelPressed = true;
-                SwitchConfigurationDialog.this.setVisible(false);
-            }
-        });
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-        buttonPanel.add(okButton);
-        buttonPanel.add(cancelButton);
-        add(buttonPanel, BorderLayout.SOUTH);
-        pack();
-        setVisible(true);
+    @Override
+    public SwitchConfiguration getTempConfiguration() {
+        return new SwitchConfiguration(this.switchGroupsWorkCopy,
+            this.switchNumberToSwitchWorkCopy);
     }
 
     private JPanel createSwitchGroupPanel() {
-        JPanel switchGroupPanel = new JPanel(new BorderLayout());
+        switchGroupPanel = new JPanel(new BorderLayout());
         TitledBorder title = BorderFactory.createTitledBorder("Switch Groups");
         switchGroupPanel.setBorder(title);
         switchGroupPanel.getInsets(new Insets(5, 5, 5, 5));
@@ -158,8 +161,8 @@ public class SwitchConfigurationDialog extends JDialog {
         switchGroupPopupMenu.add(new JSeparator());
         switchGroupPopupMenu.add(moveUpItem);
         switchGroupPopupMenu.add(moveDownItem);
-        JButton addSwitchGroupButton = new JButton("Add");
-        JButton removeSwitchGroupButton = new JButton("Remove");
+        addSwitchGroupButton = new JButton("Add");
+        removeSwitchGroupButton = new JButton("Remove");
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(addSwitchGroupButton);
         buttonPanel.add(removeSwitchGroupButton);
@@ -195,6 +198,7 @@ public class SwitchConfigurationDialog extends JDialog {
         renameItem.addActionListener(new RenameSwitchGroupAction());
         moveUpItem.addActionListener(new MoveSwitchGroupAction(true));
         moveDownItem.addActionListener(new MoveSwitchGroupAction(false));
+
         return switchGroupPanel;
     }
 
@@ -257,10 +261,9 @@ public class SwitchConfigurationDialog extends JDialog {
         switchesPanel.add(switchGroupTablePane, BorderLayout.CENTER);
 
 
-        JButton addSwitchButton = new JButton("Add");
-        JButton add10SwitchesButton = new JButton("Add 10 Switches");
-        JButton removeSwitchButton = new JButton("Remove");
-
+        addSwitchButton = new JButton("Add");
+        add10SwitchesButton = new JButton("Add 10 Switches");
+        removeSwitchButton = new JButton("Remove");
         addSwitchButton.addActionListener(new AddSwitchAction());
         add10SwitchesButton.addActionListener(new Add10SwitchesAction());
         removeSwitchButton.addActionListener(new RemoveSwitchAction());
@@ -293,21 +296,6 @@ public class SwitchConfigurationDialog extends JDialog {
         pack();
     }
 
-    public List<SwitchGroup> getSwitchGroups() {
-        return switchGroupsWorkCopy;
-    }
-
-    public boolean isCancelPressed() {
-        return cancelPressed;
-    }
-
-    public boolean isOkPressed() {
-        return okPressed;
-    }
-
-    public Map<Integer, Switch> getSwitchNumberToSwitch() {
-        return switchNumberToSwitchWorkCopy;
-    }
 
     private class AddSwitchGroupAction extends AbstractAction {
         public void actionPerformed(ActionEvent arg0) {
@@ -315,10 +303,10 @@ public class SwitchConfigurationDialog extends JDialog {
                 SwitchConfigurationDialog.this,
                 "Enter the name of the new Switch-Group", "Add Switch-Group",
                 JOptionPane.QUESTION_MESSAGE);
-            SwitchGroup newSection = new SwitchGroup(newGroupName);
-            switchGroupsWorkCopy.add(newSection);
+            SwitchGroup newSwitchGroup = new SwitchGroup(newGroupName);
+            switchGroupsWorkCopy.add(newSwitchGroup);
             switchGroupListModel.updated();
-            switchGroupList.setSelectedValue(newSection, true);
+            switchGroupList.setSelectedValue(newSwitchGroup, true);
         }
     }
     private class RemoveSwitchGroupAction extends AbstractAction {
@@ -444,4 +432,57 @@ public class SwitchConfigurationDialog extends JDialog {
             updateSwitchesPanel();
         }
     }
+
+    private class SwitchConfigurationFocusTraversalPolicy extends FocusTraversalPolicy {
+
+        public Component getComponentAfter(Container focusCycleRoot,
+            Component aComponent) {
+            if (aComponent.equals(okButton)) {
+                return cancelButton;
+            } else if (aComponent.equals(cancelButton)) {
+               return addSwitchGroupButton;
+            } else if (aComponent.equals(addSwitchGroupButton)) {
+                return removeSwitchGroupButton;
+            } else if (aComponent.equals(removeSwitchGroupButton)) {
+                return addSwitchButton;
+            } else if (aComponent.equals(addSwitchButton)) {
+                return add10SwitchesButton;
+            } else if (aComponent.equals(add10SwitchesButton)) {
+                return removeSwitchButton;
+            }
+            return okButton;
+        }
+
+        public Component getComponentBefore(Container focusCycleRoot,
+            Component aComponent) {
+
+            if (aComponent.equals(okButton)) {
+                return removeSwitchButton;
+            } else if (aComponent.equals(removeSwitchButton)) {
+                return add10SwitchesButton;
+            } else if (aComponent.equals(add10SwitchesButton)) {
+                return addSwitchButton;
+            } else if (aComponent.equals(addSwitchButton)) {
+                return removeSwitchGroupButton;
+            } else if (aComponent.equals(removeSwitchGroupButton)) {
+                return addSwitchGroupButton;
+            } else if (aComponent.equals(addSwitchGroupButton)) {
+                return cancelButton;
+            }
+            return okButton;
+        }
+
+        public Component getDefaultComponent(Container focusCycleRoot) {
+            return okButton;
+        }
+
+        public Component getLastComponent(Container focusCycleRoot) {
+            return cancelButton;
+        }
+
+        public Component getFirstComponent(Container focusCycleRoot) {
+            return okButton;
+        }
+    }
+
 }

@@ -64,7 +64,6 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
         return instance;
     }
 
-
     public void registerControlObject(ControlObject object) {
         Address[] addresses = object.getAddresses();
         addressToControlObject.put(addresses[0], object);

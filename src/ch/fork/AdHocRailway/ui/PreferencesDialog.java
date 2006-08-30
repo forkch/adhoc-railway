@@ -26,11 +26,13 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 
@@ -58,26 +61,18 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
     private JTextField         hostnameTextField;
     private JTextField         portnumberTextField;
     private JTabbedPane        preferencesPane;
-    private boolean            cancelPressed = false;
-    private boolean            okPressed     = false;
     private JComboBox          keyBoardLayoutComboBox;
     private JCheckBox          interface6051;
     private JCheckBox          writeLog;
     private JCheckBox          fullscreen;
     private List<String>       hostnames;
 
+    private boolean okPressed;
+    private boolean cancelPressed;
+
     public PreferencesDialog(JFrame owner) {
         super(owner, "Preferences", true);
-    }
-
-    protected void editPreferences(Preferences p) {
         initGUI();
-        loadPreferences(p);
-        pack();
-        setVisible(true);
-        if (okPressed) {
-            savePreferences(p);
-        }
     }
 
     private void initGUI() {
@@ -101,10 +96,22 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
                 PreferencesDialog.this.setVisible(false);
             }
         });
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-        buttonPanel.add(okButton);
-        buttonPanel.add(cancelButton);
-        add(buttonPanel, BorderLayout.SOUTH);
+        JPanel mainButtonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+        mainButtonPanel.registerKeyboardAction(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cancelPressed = true;
+                PreferencesDialog.this.setVisible(false);
+            }
+        }, "", KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+            JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+        mainButtonPanel.add(okButton);
+        mainButtonPanel.add(cancelButton);
+        add(mainButtonPanel, BorderLayout.SOUTH);
+        loadPreferences();
+        pack();
+        setVisible(true);
+        savePreferences();
     }
 
     private JPanel createGUISettingsTab() {
@@ -210,7 +217,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         return okPressed;
     }
 
-    private void loadPreferences(Preferences p) {
+    private void loadPreferences() {
+        Preferences p = Preferences.getInstance();
         locomotiveControlNumberModel.setValue(p
             .getIntValue(LOCOMOTIVE_CONTROLES));
         switchControlNumberModel.setValue(p.getIntValue(SWITCH_CONTROLES));
@@ -228,7 +236,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         portnumberTextField.setText(Integer.toString(p.getIntValue(PORT)));
     }
 
-    private void savePreferences(Preferences p) {
+    public void savePreferences() {
+        Preferences p = Preferences.getInstance();
         p.setIntValue(LOCOMOTIVE_CONTROLES, locomotiveControlNumberModel
             .getNumber().intValue());
         p.setIntValue(SWITCH_CONTROLES, switchControlNumberModel.getNumber()
@@ -249,4 +258,5 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         p.setStringValue(HOSTNAME, (String) hostnameTextField.getText());
         p.setIntValue(PORT, Integer.parseInt(portnumberTextField.getText()));
     }
+
 }

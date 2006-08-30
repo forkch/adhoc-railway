@@ -99,4 +99,8 @@ public class Preferences implements PreferencesKeys {
     public Map<String, String> getPreferences() {
         return preferences;
     }
+    
+    public void setPreferences(Map<String, String> preferences) {
+        this.preferences = preferences;
+    }
 }

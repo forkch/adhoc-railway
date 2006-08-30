@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -84,9 +83,9 @@ public class LocomotiveControlPanel extends JPanel {
     private void initGUI() {
         FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.LEFT, 10, 0);
         setLayout(controlPanelLayout);
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "stop_all");
-        this.getActionMap().put("stop_all", new LocomotiveStopAction());
+        registerKeyboardAction(new LocomotiveStopAction(), "", KeyStroke
+            .getKeyStroke(KeyEvent.VK_SPACE, 0), WHEN_IN_FOCUSED_WINDOW);
+
     }
 
     public void update(Collection<LocomotiveGroup> locomotiveGroups) {

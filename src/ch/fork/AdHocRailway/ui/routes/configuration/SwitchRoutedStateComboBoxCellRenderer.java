@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/switches/configuration/SwitchOrientationCellRenderer.java>  -  <desc>
+ * <./ui/switches/configuration/SwitchDefaultStateComboBoxCellRenderer.java>  -  <desc>
  * 
- * begin     : Wed Aug 23 16:59:16 BST 2006
+ * begin     : Wed Aug 23 16:59:18 BST 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
@@ -20,27 +20,31 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.ui.switches.configuration;
+package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import java.awt.Component;
+import java.awt.Dimension;
 
 import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
 import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
 
-public class SwitchOrientationCellRenderer implements TableCellRenderer {
-    public Component getTableCellRendererComponent(JTable table, Object value,
-        boolean isSelected, boolean hasFocus, int row, int column) {
+public class SwitchRoutedStateComboBoxCellRenderer implements ListCellRenderer {
+    public Component getListCellRendererComponent(JList list, Object value,
+        int index, boolean isSelected, boolean cellHasFocus) {
         JLabel iconLabel = new JLabel();
+        iconLabel.setPreferredSize(new Dimension(150, 38));
         if (value.equals(SwitchState.STRAIGHT)) {
-            iconLabel.setIcon(ImageTools.createStraightState(iconLabel,
+            iconLabel.setIcon(ImageTools.createImageIcon(
+                "icons/default_straight.png", "Default Switch",
                 SwitchWidget.class));
         } else {
-            iconLabel.setIcon(ImageTools.createCurvedState(iconLabel,
+            iconLabel.setIcon(ImageTools.createImageIcon(
+                "icons/default_curved.png", "Default Switch",
                 SwitchWidget.class));
         }
         return iconLabel;

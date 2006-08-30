@@ -32,9 +32,11 @@ public abstract class Switch extends ControlObject implements Constants,
     protected int    number;
     protected String desc;
 
+    /*
     public enum SwitchState {
         LEFT, STRAIGHT, RIGHT, UNDEF
     };
+    */
 
     protected SwitchState switchState  = SwitchState.UNDEF;
     protected SwitchState defaultState = SwitchState.STRAIGHT;
@@ -107,11 +109,15 @@ public abstract class Switch extends ControlObject implements Constants,
     }
 
     public String toString() {
+        /*
         String buf = "\"" + number + ": " + getType() + " @";
         for (Address a : addresses) {
             buf += " " + a;
         }
         return buf;
+        */
+        return Integer.toString(number);
+        
     }
 
     public int getNumber() {

@@ -1,4 +1,4 @@
-- Buttons duerfen keinen Focus erhalten
+- Buttons duerfen keinen Focus erhalten (ok)
 - Clients duerfen nicht unendlich kommandos senden koennen (queue)
 - Blockieren von Lok's (ok)
 - Lok-Auswahl verbessern (ok)

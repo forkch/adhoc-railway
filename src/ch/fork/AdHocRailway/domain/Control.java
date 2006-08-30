@@ -38,7 +38,12 @@ public abstract class Control {
 
     protected SRCPSession session = null;
 
-
+    /** Checks the validity of the given ControlObject.
+     * 
+     * @param co The ControlObject to test
+     * @throws NoSessionException If the ControlObject has no valid SRCPSession
+     * @throws InvalidAddressException If the ControlObject has no valid Address
+     */
     public void checkControlObject(ControlObject co) throws NoSessionException,
         InvalidAddressException {
         if (co.getSession() == null) {
@@ -51,10 +56,19 @@ public abstract class Control {
         }
     }
 
+    /** Sets the active SRCPSession on the ControlObject.
+     * 
+     * @param co
+     */
     public void setSessionOnControlObject(ControlObject co) {
         co.setSession(session);
     }
 
+    /** Initialises the ControlObject
+     * 
+     * @param object
+     * @throws ControlException If the initialization fails
+     */
     protected void initControlObject(ControlObject object)
         throws ControlException {
         if (!object.isInitialized()) {

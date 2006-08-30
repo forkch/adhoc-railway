@@ -23,6 +23,7 @@
 package ch.fork.AdHocRailway.domain.configuration.importer;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -41,6 +42,9 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.NoneLocomotive;
+import ch.fork.AdHocRailway.domain.routes.Route;
+import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch;
@@ -51,10 +55,12 @@ import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch.SwitchOrientation;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
-public class XMLImporter_0_2 extends DefaultHandler implements ContentHandler {
+public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
     private Preferences       preferences;
     private Switch            actualSwitch;
     private SwitchGroup       actualSwitchGroup;
+    private Route             actualRoute;
+    private RouteItem         actualRouteItem;
     private Address           actualAddress;
     private Address[]         actualAddresses;
     private int               actualAddressCounter = 0;
@@ -62,15 +68,19 @@ public class XMLImporter_0_2 extends DefaultHandler implements ContentHandler {
     private Locomotive        actualLocomotive;
     private LocomotiveGroup   actualLocomotiveGroup;
     private LocomotiveControl locomotiveControl;
+    private RouteControl      routeControl;
 
-    public XMLImporter_0_2(String filename) {
+    public XMLImporter_0_3(String filename) {
         this.preferences = Preferences.getInstance();
         this.switchControl = SwitchControl.getInstance();
         this.locomotiveControl = LocomotiveControl.getInstance();
+        this.routeControl = RouteControl.getInstance();
         switchControl.unregisterAllSwitchGroups();
         switchControl.unregisterAllSwitches();
         locomotiveControl.unregisterAllLocomotives();
+        routeControl.unregisterAllRoutes();
         parseDocument(filename);
+        
     }
 
     private void parseDocument(String filename) {
@@ -103,13 +113,12 @@ public class XMLImporter_0_2 extends DefaultHandler implements ContentHandler {
             int address = Integer.parseInt(attributes.getValue("address"));
             int bus = Integer.parseInt(attributes.getValue("bus"));
             actualAddress = new Address(bus, address);
-            if (attributes.getValue("switched").equals("true")) {
-                actualAddress.setAddressSwitched(true);
-            } else {
-                actualAddress.setAddressSwitched(false);
-            }
             actualAddresses[actualAddressCounter] = actualAddress;
             actualAddressCounter++;
+        } else if (qName.equals("route")) {
+            actualRoute = new Route(attributes.getValue("name"));
+        } else if (qName.equals("routedswitch")) {
+            parseRoutedSwitch(qName, attributes);
         } else if (qName.equals("locomotivegroup")) {
             actualLocomotiveGroup = new LocomotiveGroup(attributes
                 .getValue("name"));
@@ -154,6 +163,25 @@ public class XMLImporter_0_2 extends DefaultHandler implements ContentHandler {
         } else {
             actualSwitch.setSwitchOrientation(SwitchOrientation.EAST);
         }
+
+    }
+
+    private void parseRoutedSwitch(String qName, Attributes attributes) {
+        int switchNumber = Integer
+            .parseInt(attributes.getValue("switchNumber"));
+        String switchStateRouted = attributes.getValue("switchStateRouted");
+        String type = attributes.getValue("type");
+        Map<Integer, Switch> numberToSwitch = switchControl.getNumberToSwitch();
+        if (switchStateRouted.equals("STRAIGHT")) {
+            actualRouteItem = new RouteItem(numberToSwitch.get(switchNumber),
+                SwitchState.STRAIGHT);
+        } else if (switchStateRouted.equals("LEFT")) {
+            actualRouteItem = new RouteItem(numberToSwitch.get(switchNumber),
+                SwitchState.LEFT);
+        } else if (switchStateRouted.equals("RIGHT")) {
+            actualRouteItem = new RouteItem(numberToSwitch.get(switchNumber),
+                SwitchState.RIGHT);
+        }
     }
 
     private void parseLocomotive(String qName, Attributes attributes) {
@@ -183,14 +211,21 @@ public class XMLImporter_0_2 extends DefaultHandler implements ContentHandler {
         qName = qName.toLowerCase();
         if (qName.equals("switchgroup")) {
             switchControl.registerSwitchGroup(actualSwitchGroup);
-        } else if (qName.equals("locomotivegroup")) {
-            locomotiveControl.registerLocomotiveGroup(actualLocomotiveGroup);
+        } else if (qName.equals("routedswitch")) {
+            
+            actualRoute.addRouteItem(actualRouteItem);
+            actualRouteItem = null;
+        } else if(qName.equals("route")) {
+            routeControl.registerRoute(actualRoute);
+            actualRoute = null;
         } else if (qName.equals("switch")) {
             actualSwitch.setAddresses(actualAddresses);
             actualSwitchGroup.addSwitch(actualSwitch);
             switchControl.registerSwitch(actualSwitch);
             actualSwitch = null;
             actualAddressCounter = 0;
+        } else if (qName.equals("locomotivegroup")) {
+            locomotiveControl.registerLocomotiveGroup(actualLocomotiveGroup);
         } else if (qName.equals("locomotive")) {
             actualLocomotiveGroup.addLocomotive(actualLocomotive);
             locomotiveControl.registerLocomotive(actualLocomotive);

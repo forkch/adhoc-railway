@@ -32,7 +32,6 @@ import java.util.Collection;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -85,39 +84,43 @@ public class SwitchesControlPanel extends JPanel {
         JPanel segmentPanel = new JPanel(new BorderLayout());
         segmentPanel.add(segmentPanelNorth, BorderLayout.NORTH);
         segmentPanel.add(sh1, BorderLayout.CENTER);
+
         add(switchGroupPane, BorderLayout.CENTER);
         add(segmentPanel, BorderLayout.EAST);
     }
 
     private void initKeyboardActions() {
         for (int i = 0; i <= 10; i++) {
-            getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                KeyStroke.getKeyStroke(Integer.toString(i)), "numberKey");
-            getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                KeyStroke.getKeyStroke("NUMPAD" + Integer.toString(i)),
-                "numberKey");
+            registerKeyboardAction(new NumberEnteredAction(), Integer
+                .toString(i), KeyStroke.getKeyStroke(Integer.toString(i)),
+                WHEN_IN_FOCUSED_WINDOW);
+            registerKeyboardAction(new NumberEnteredAction(), Integer
+                .toString(i), KeyStroke.getKeyStroke("NUMPAD"
+                + Integer.toString(i)), WHEN_IN_FOCUSED_WINDOW);
+
         }
-        getActionMap().put("numberKey", new NumberEnteredAction());
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke("ENTER"), "switchingAction");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ADD, 0), "switchingAction");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0),
-            "switchingAction");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_DIVIDE, 0), "switchingAction");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_MULTIPLY, 0), "switchingAction");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, 0), "switchingAction");
-        getActionMap().put("switchingAction", new SwitchingAction());
+        registerKeyboardAction(new SwitchingAction(), "\n", KeyStroke
+            .getKeyStroke("ENTER"), WHEN_IN_FOCUSED_WINDOW);
+
+        registerKeyboardAction(new SwitchingAction(), "+", KeyStroke
+            .getKeyStroke(KeyEvent.VK_ADD, 0), WHEN_IN_FOCUSED_WINDOW);
+
+        registerKeyboardAction(new SwitchingAction(), "", KeyStroke
+            .getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), WHEN_IN_FOCUSED_WINDOW);
+
+        registerKeyboardAction(new SwitchingAction(), "/", KeyStroke
+            .getKeyStroke(KeyEvent.VK_DIVIDE, 0), WHEN_IN_FOCUSED_WINDOW);
+
+        registerKeyboardAction(new SwitchingAction(), "*", KeyStroke
+            .getKeyStroke(KeyEvent.VK_MULTIPLY, 0), WHEN_IN_FOCUSED_WINDOW);
+
+        registerKeyboardAction(new SwitchingAction(), "-", KeyStroke
+            .getKeyStroke(KeyEvent.VK_SUBTRACT, 0), WHEN_IN_FOCUSED_WINDOW);
+
         for (int i = 1; i <= 12; i++) {
-            getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                KeyStroke.getKeyStroke("F" + Integer.toString(i)),
-                "f" + Integer.toString(i));
-            getActionMap().put("f" + Integer.toString(i),
-                new SwitchGroupChangeAction(i - 1));
+            registerKeyboardAction(new SwitchGroupChangeAction(), Integer
+                .toString(i - 1), KeyStroke.getKeyStroke("F"
+                + Integer.toString(i)), WHEN_IN_FOCUSED_WINDOW);
         }
     }
 
@@ -232,13 +235,9 @@ public class SwitchesControlPanel extends JPanel {
         }
     }
     private class SwitchGroupChangeAction extends AbstractAction {
-        private int selectedSwitchGroup;
-
-        public SwitchGroupChangeAction(int selectedSwitchGroup) {
-            this.selectedSwitchGroup = selectedSwitchGroup;
-        }
 
         public void actionPerformed(ActionEvent e) {
+            int selectedSwitchGroup = Integer.parseInt(e.getActionCommand());
             if (selectedSwitchGroup < SwitchControl.getInstance()
                 .getSwitchGroups().size()) {
                 switchGroupPane.setSelectedIndex(selectedSwitchGroup);
