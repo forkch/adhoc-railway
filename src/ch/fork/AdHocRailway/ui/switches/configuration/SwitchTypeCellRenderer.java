@@ -26,15 +26,19 @@ import java.awt.Component;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
 
 public class SwitchTypeCellRenderer implements TableCellRenderer {
+    
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel iconLabel = new JLabel();
+        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
         if (value.equals("DefaultSwitch")) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "icons/default_switch_small.png", "Default Switch",

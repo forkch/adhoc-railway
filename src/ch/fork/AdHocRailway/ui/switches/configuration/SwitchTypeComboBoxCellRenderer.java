@@ -28,6 +28,7 @@ import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
 
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
@@ -36,6 +37,7 @@ public class SwitchTypeComboBoxCellRenderer implements ListCellRenderer {
     public Component getListCellRendererComponent(JList list, Object value,
         int index, boolean isSelected, boolean cellHasFocus) {
         JLabel iconLabel = new JLabel();
+        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
         iconLabel.setPreferredSize(new Dimension(56, 38));
         if (value.equals("DefaultSwitch")) {
             iconLabel.setIcon(ImageTools.createImageIcon(

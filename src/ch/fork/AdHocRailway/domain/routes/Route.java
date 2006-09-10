@@ -1,8 +1,8 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Route {
@@ -40,9 +40,13 @@ public class Route {
     public boolean equals(Object o) {
         if (o instanceof Route) {
             Route route = (Route) o;
-            return route.equals(name);
+            return route.getName().equals(name);
         }
         return false;
+    }
+    
+    public int hashCode() {
+        return name.hashCode();
     }
 
     public boolean isEnabled() {

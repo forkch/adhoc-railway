@@ -12,7 +12,9 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -26,14 +28,17 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.TableResizer;
 
-public class RoutesConfigurationDialog<E> extends ConfigurationDialog<RoutesConfiguration> {
+public class RoutesConfigurationDialog<E> extends
+    ConfigurationDialog<RoutesConfiguration> {
     private RouteControl             routeControl;
     private List<Route>              routesWorkCopy;
     private ListListModel            routesListModel;
@@ -159,9 +164,21 @@ public class RoutesConfigurationDialog<E> extends ConfigurationDialog<RoutesConf
         Route selectedRoute = (Route) routeList.getSelectedValue();
         routedSwitchesTableModel = new RoutedSwitchesTableModel();
         routedSwitchesTable = new JTable(routedSwitchesTableModel);
+
+        routedSwitchesTable.setRowHeight(24);
         JScrollPane tableScrollPane = new JScrollPane(routedSwitchesTable);
         routeDetailPanel.add(tableScrollPane, BorderLayout.CENTER);
 
+        TableColumn stateColumn = routedSwitchesTable.getColumnModel().getColumn(2);
+        
+        JComboBox switchStateRoutedComboBox = new JComboBox();
+        switchStateRoutedComboBox.addItem(SwitchState.STRAIGHT);
+        switchStateRoutedComboBox.addItem(SwitchState.LEFT);
+        switchStateRoutedComboBox.addItem(SwitchState.RIGHT);
+        switchStateRoutedComboBox.setRenderer(new SwitchRoutedStateComboBoxCellRenderer());
+        stateColumn.setCellEditor(new DefaultCellEditor(switchStateRoutedComboBox));
+        stateColumn.setCellRenderer(new SwitchRoutedStateCellRenderer());
+        
         return routeDetailPanel;
     }
 
@@ -201,8 +218,8 @@ public class RoutesConfigurationDialog<E> extends ConfigurationDialog<RoutesConf
     private class RemoveRouteAction extends AbstractAction {
 
         public void actionPerformed(ActionEvent e) {
-            Route routeToDelete = (Route) (routeList
-                .getSelectedValue());
+            Route routeToDelete = (Route) (routeList.getSelectedValue());
+
             int response = JOptionPane.showConfirmDialog(
                 RoutesConfigurationDialog.this, "Really remove Route '"
                     + routeToDelete.getName() + "' ?", "Remove Route",
@@ -217,8 +234,7 @@ public class RoutesConfigurationDialog<E> extends ConfigurationDialog<RoutesConf
     private class RenameRouteAction extends AbstractAction {
 
         public void actionPerformed(ActionEvent e) {
-            Route routeToRename = (Route) (routeList
-                .getSelectedValue());
+            Route routeToRename = (Route) (routeList.getSelectedValue());
             String newSectionName = JOptionPane.showInputDialog(
                 RoutesConfigurationDialog.this, "Enter new name",
                 "Rename Switch-Group", JOptionPane.QUESTION_MESSAGE);
@@ -238,10 +254,8 @@ public class RoutesConfigurationDialog<E> extends ConfigurationDialog<RoutesConf
         }
 
         public void actionPerformed(ActionEvent e) {
-            Route routeToMove = (Route) (routeList
-                .getSelectedValue());
+            Route routeToMove = (Route) (routeList.getSelectedValue());
             int oldIndex = routesWorkCopy.indexOf(routeToMove);
-            System.out.println(oldIndex);
             int newIndex = oldIndex;
             if (up) {
                 if (oldIndex != 0) {

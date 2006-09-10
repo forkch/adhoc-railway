@@ -28,27 +28,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GA;
 
-public class SwitchProgrammer extends JDialog {
+public class SwitchProgrammer extends ConfigurationDialog {
     private SRCPSession session;
 
     public SwitchProgrammer(JFrame owner, SRCPSession session) {
-        super(owner, "Switch Programmer", true);
+        super(owner, "Switch Programmer");
         this.session = session;
         initGUI();
     }
 
     private void initGUI() {
-        setLayout(new BorderLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout());
         JPanel buttonPanel = new JPanel(new GridLayout(4, 4));
         for (int i = 1; i <= 112; i = i + 4) {
             JButton button = new JButton("" + i);
@@ -68,9 +68,20 @@ public class SwitchProgrammer extends JDialog {
             });
         }
         JLabel titleLabel = new JLabel("Enter first address of decoder");
-        add(titleLabel, BorderLayout.NORTH);
-        add(buttonPanel, BorderLayout.CENTER);
+        mainPanel.add(titleLabel, BorderLayout.NORTH);
+        mainPanel.add(buttonPanel, BorderLayout.CENTER);
+        addMainComponent(mainPanel);
         pack();
         setVisible(true);
+    }
+
+    @Override
+    public void createTempConfiguration() {
+        
+    }
+
+    @Override
+    public Object getTempConfiguration() {
+        return null;
     }
 }

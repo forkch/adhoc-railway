@@ -23,11 +23,11 @@
 package ch.fork.AdHocRailway.ui.switches.configuration;
 
 import java.awt.Component;
-import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
 
 import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.ui.ImageTools;
@@ -37,7 +37,8 @@ public class SwitchDefaultStateComboBoxCellRenderer implements ListCellRenderer 
     public Component getListCellRendererComponent(JList list, Object value,
         int index, boolean isSelected, boolean cellHasFocus) {
         JLabel iconLabel = new JLabel();
-        iconLabel.setPreferredSize(new Dimension(150, 38));
+        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        //iconLabel.setPreferredSize(new Dimension(150, 38));
         if (value.equals(SwitchState.STRAIGHT)) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "icons/default_straight.png", "Default Switch",

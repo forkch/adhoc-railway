@@ -26,9 +26,14 @@ import java.awt.Component;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
+import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
+import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
+import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchState;
+import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
 
@@ -36,19 +41,45 @@ public class SwitchRoutedStateCellRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel iconLabel = new JLabel();
-        if (table.getValueAt(row, 1).equals("ThreeWaySwitch")) {
-            iconLabel.setIcon(ImageTools.createImageIcon(
-                "icons/default_straight.png", "Default Switch",
-                SwitchWidget.class));
+        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        Switch currentSwitch = (Switch) table.getValueAt(row, 1);
+        SwitchState routedState = (SwitchState) value;
+        String stateString = "";
+        switch (routedState) {
+        case STRAIGHT:
+            stateString = "straight";
+            break;
+        case LEFT:
+        case RIGHT:
+            stateString = "curved";
+            break;
         }
-        if (value.equals(SwitchState.STRAIGHT)) {
+        if (currentSwitch instanceof DefaultSwitch) {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "icons/default_straight.png", "Default Switch",
-                SwitchWidget.class));
-        } else {
+                "icons/default_switch_" + stateString + ".png",
+                "Default Switch", SwitchWidget.class));
+        } else if (currentSwitch instanceof DoubleCrossSwitch) {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "icons/default_curved.png", "Default Switch",
-                SwitchWidget.class));
+                "icons/double_cross_switch_" + stateString + ".png",
+                "Double Cross Switch", SwitchWidget.class));
+        } else if (currentSwitch instanceof ThreeWaySwitch) {
+            switch (routedState) {
+            case STRAIGHT:
+                iconLabel.setIcon(ImageTools.createImageIcon(
+                    "icons/three_way_switch_stright.png", "Threeway Switch",
+                    SwitchWidget.class));
+                break;
+            case LEFT:
+                iconLabel.setIcon(ImageTools.createImageIcon(
+                    "icons/three_way_switch_left.png", "Threeway Switch",
+                    SwitchWidget.class));
+                break;
+            case RIGHT:
+                iconLabel.setIcon(ImageTools.createImageIcon(
+                    "icons/three_way_switch_right.png", "Threeway Switch",
+                    SwitchWidget.class));
+                break;
+            }
         }
         return iconLabel;
     }
