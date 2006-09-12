@@ -56,8 +56,6 @@ import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EtchedBorder;
 
 import ch.fork.AdHocRailway.domain.configuration.Preferences;
@@ -718,6 +716,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         /* DAEMON */
         JMenu daemonMenu = new JMenu("Daemon");
         daemonConnectItem = new JMenuItem(new ConnectAction());
+        daemonConnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
+            ActionEvent.CTRL_MASK));
         daemonDisconnectItem = new JMenuItem(new DisconnectAction());
         daemonResetItem = new JMenuItem(new ResetAction());
         daemonDisconnectItem.setEnabled(false);

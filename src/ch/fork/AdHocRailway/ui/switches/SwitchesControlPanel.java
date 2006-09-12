@@ -161,19 +161,22 @@ public class SwitchesControlPanel extends JPanel {
     }
     private class SwitchingAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
-            if (enteredNumberKeys.toString().equals("")) {
-                return;
-            }
-            String switchNumberAsString = enteredNumberKeys.toString();
-            int switchNumber = Integer.parseInt(switchNumberAsString);
-            Switch searchedSwitch = null;
             SwitchControl sc = SwitchControl.getInstance();
-            searchedSwitch = sc.getNumberToSwitch().get(switchNumber);
-            if (searchedSwitch == null) {
-                resetSelectedSwitchDisplay();
-                return;
-            }
             try {
+                if (enteredNumberKeys.toString().equals("")) {
+                    sc.undoLastSwitchChange();
+                    return;
+                }
+                String switchNumberAsString = enteredNumberKeys.toString();
+                int switchNumber = Integer.parseInt(switchNumberAsString);
+                Switch searchedSwitch = null;
+
+                searchedSwitch = sc.getNumberToSwitch().get(switchNumber);
+                if (searchedSwitch == null) {
+                    resetSelectedSwitchDisplay();
+                    return;
+                }
+
                 if (e.getActionCommand().equals("/")) {
                     handleDivide(searchedSwitch);
                 } else if (e.getActionCommand().equals("*")) {

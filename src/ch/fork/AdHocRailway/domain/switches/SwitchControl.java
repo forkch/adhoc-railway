@@ -45,6 +45,9 @@ public class SwitchControl extends Control implements GAInfoListener {
     private Map<Address, Switch>       addressToSwitch;
     private Map<Integer, Switch>       numberToSwitch;
 
+    private Switch                     lastChangedSwitch;
+    private SwitchState                previousState;
+
     private SwitchControl() {
         listeners = new ArrayList<SwitchChangeListener>();
         addressToSwitch = new HashMap<Address, Switch>();
@@ -142,28 +145,73 @@ public class SwitchControl extends Control implements GAInfoListener {
     public void toggle(Switch aSwitch) throws SwitchException {
         checkSwitch(aSwitch);
         initSwitch(aSwitch);
+
+        previousState = aSwitch.getSwitchState();
         aSwitch.toggle();
         for (SwitchChangeListener l : listeners) {
             l.switchChanged(aSwitch);
         }
+        lastChangedSwitch = aSwitch;
     }
 
     public void setStraight(Switch aSwitch) throws SwitchException {
         checkSwitch(aSwitch);
         initSwitch(aSwitch);
+
+        previousState = aSwitch.getSwitchState();
         aSwitch.setStraight();
+        for (SwitchChangeListener l : listeners) {
+            l.switchChanged(aSwitch);
+        }
+        lastChangedSwitch = aSwitch;
     }
 
     public void setCurvedRight(Switch aSwitch) throws SwitchException {
         checkSwitch(aSwitch);
         initSwitch(aSwitch);
+        previousState = aSwitch.getSwitchState();
         aSwitch.setCurvedRight();
+        for (SwitchChangeListener l : listeners) {
+            l.switchChanged(aSwitch);
+        }
+        lastChangedSwitch = aSwitch;
     }
 
     public void setCurvedLeft(Switch aSwitch) throws SwitchException {
         checkSwitch(aSwitch);
         initSwitch(aSwitch);
+        previousState = aSwitch.getSwitchState();
         aSwitch.setCurvedLeft();
+        for (SwitchChangeListener l : listeners) {
+            l.switchChanged(aSwitch);
+        }
+        lastChangedSwitch = aSwitch;
+    }
+
+    public void undoLastSwitchChange() throws SwitchException {
+        if(lastChangedSwitch == null) {
+            return;
+        }
+        switch (previousState) {
+
+        case STRAIGHT:
+            setStraight(lastChangedSwitch);
+            break;
+        case LEFT:
+            setCurvedLeft(lastChangedSwitch);
+            break;
+        case RIGHT:
+            setCurvedRight(lastChangedSwitch);
+            break;
+        case UNDEF: 
+            setStraight(lastChangedSwitch);
+            break;
+        }
+        for (SwitchChangeListener l : listeners) {
+            l.switchChanged(lastChangedSwitch);
+        }
+        lastChangedSwitch = null;
+        previousState = null;
     }
 
     public void GAset(double timestamp, int bus, int address, int port,
