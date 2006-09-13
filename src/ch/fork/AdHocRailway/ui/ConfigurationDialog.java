@@ -29,6 +29,14 @@ public abstract class ConfigurationDialog<E> extends JDialog {
         initBasicGUI();
 
     }
+    
+    public ConfigurationDialog(JDialog owner, String title) {
+        super(owner, title, true);
+        createTempConfiguration();
+
+        initBasicGUI();
+
+    }
 
 
     public abstract void createTempConfiguration();

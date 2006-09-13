@@ -42,7 +42,7 @@ public class SwitchRoutedStateCellRenderer implements TableCellRenderer {
         boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel iconLabel = new JLabel();
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        Switch currentSwitch = (Switch) table.getValueAt(row, 1);
+        Switch currentSwitch = (Switch) table.getValueAt(row, 0);
         SwitchState routedState = (SwitchState) value;
         String stateString = "";
         switch (routedState) {
@@ -66,7 +66,7 @@ public class SwitchRoutedStateCellRenderer implements TableCellRenderer {
             switch (routedState) {
             case STRAIGHT:
                 iconLabel.setIcon(ImageTools.createImageIcon(
-                    "icons/three_way_switch_stright.png", "Threeway Switch",
+                    "icons/three_way_switch_straight.png", "Threeway Switch",
                     SwitchWidget.class));
                 break;
             case LEFT:
