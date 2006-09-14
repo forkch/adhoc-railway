@@ -32,12 +32,6 @@ public abstract class Switch extends ControlObject implements Constants,
     protected int    number;
     protected String desc;
 
-    /*
-    public enum SwitchState {
-        LEFT, STRAIGHT, RIGHT, UNDEF
-    };
-    */
-
     protected SwitchState switchState  = SwitchState.UNDEF;
     protected SwitchState defaultState = SwitchState.STRAIGHT;
 
@@ -53,7 +47,6 @@ public abstract class Switch extends ControlObject implements Constants,
 
     public Switch(int number, String desc, Address address) {
         this(number, desc, new Address[] { address });
-
     }
 
     public Switch(int number, String desc, Address[] addresses) {

@@ -148,9 +148,8 @@ public class SwitchControl extends Control implements GAInfoListener {
 
         previousState = aSwitch.getSwitchState();
         aSwitch.toggle();
-        for (SwitchChangeListener l : listeners) {
-            l.switchChanged(aSwitch);
-        }
+
+        informListeners(aSwitch);
         lastChangedSwitch = aSwitch;
     }
 
@@ -160,9 +159,8 @@ public class SwitchControl extends Control implements GAInfoListener {
 
         previousState = aSwitch.getSwitchState();
         aSwitch.setStraight();
-        for (SwitchChangeListener l : listeners) {
-            l.switchChanged(aSwitch);
-        }
+
+        informListeners(aSwitch);
         lastChangedSwitch = aSwitch;
     }
 
@@ -171,9 +169,8 @@ public class SwitchControl extends Control implements GAInfoListener {
         initSwitch(aSwitch);
         previousState = aSwitch.getSwitchState();
         aSwitch.setCurvedRight();
-        for (SwitchChangeListener l : listeners) {
-            l.switchChanged(aSwitch);
-        }
+
+        informListeners(aSwitch);
         lastChangedSwitch = aSwitch;
     }
 
@@ -182,14 +179,13 @@ public class SwitchControl extends Control implements GAInfoListener {
         initSwitch(aSwitch);
         previousState = aSwitch.getSwitchState();
         aSwitch.setCurvedLeft();
-        for (SwitchChangeListener l : listeners) {
-            l.switchChanged(aSwitch);
-        }
+        informListeners(aSwitch);
+
         lastChangedSwitch = aSwitch;
     }
 
     public void undoLastSwitchChange() throws SwitchException {
-        if(lastChangedSwitch == null) {
+        if (lastChangedSwitch == null) {
             return;
         }
         switch (previousState) {
@@ -203,13 +199,12 @@ public class SwitchControl extends Control implements GAInfoListener {
         case RIGHT:
             setCurvedRight(lastChangedSwitch);
             break;
-        case UNDEF: 
+        case UNDEF:
             setStraight(lastChangedSwitch);
             break;
         }
-        for (SwitchChangeListener l : listeners) {
-            l.switchChanged(lastChangedSwitch);
-        }
+        informListeners(lastChangedSwitch);
+
         lastChangedSwitch = null;
         previousState = null;
     }

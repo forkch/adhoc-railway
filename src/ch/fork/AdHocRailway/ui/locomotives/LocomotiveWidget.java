@@ -60,7 +60,6 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.NoneLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
-import ch.fork.AdHocRailway.ui.ExceptionDialog;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
@@ -452,7 +451,7 @@ public class LocomotiveWidget extends JPanel implements
                 speedBar.requestFocus();
                 updateWidget();
             } catch (LocomotiveException e1) {
-                ExceptionDialog.getInstance().processException(e1);
+                ExceptionProcessor.getInstance().processException(e1);
             }
         }
     }

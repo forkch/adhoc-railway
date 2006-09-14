@@ -128,7 +128,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
         initGUI();
 
-        ExceptionDialog.start(this);
         if (file != null) {
             File standardFile = new File(file);
             if (standardFile.exists()) {
