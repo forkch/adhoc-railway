@@ -20,20 +20,20 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.configuration.exporter;
+package ch.fork.AdHocRailway.technical.configuration.exporter;
 
 import java.util.Map;
 
 import ch.fork.AdHocRailway.domain.Address;
-import ch.fork.AdHocRailway.domain.configuration.Preferences;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
 import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
 
-public class XMLExporter_0_2 {
+public class XMLExporter_0_3 {
 
     private static StringBuffer sb;
 

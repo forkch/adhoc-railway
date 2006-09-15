@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/configuration/importer/XMLImporter_0_1.java>  -  <desc>
+ * <./domain/configuration/importer/XMLImporter_0_2.java>  -  <desc>
  * 
- * begin     : Wed Aug 23 16:58:19 BST 2006
+ * begin     : Wed Aug 23 16:58:23 BST 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
@@ -20,7 +20,7 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.configuration.importer;
+package ch.fork.AdHocRailway.technical.configuration.importer;
 
 import java.io.IOException;
 
@@ -34,7 +34,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import ch.fork.AdHocRailway.domain.Address;
-import ch.fork.AdHocRailway.domain.configuration.Preferences;
 import ch.fork.AdHocRailway.domain.locomotives.DeltaLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.DigitalLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
@@ -49,26 +48,27 @@ import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
 import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch.SwitchOrientation;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
-public class XMLImporter_0_1 extends DefaultHandler implements ContentHandler {
+public class XMLImporter_0_2 extends DefaultHandler implements ContentHandler {
     private Preferences       preferences;
     private Switch            actualSwitch;
     private SwitchGroup       actualSwitchGroup;
+    private Address           actualAddress;
     private Address[]         actualAddresses;
-    private int               actualBus;
+    private int               actualAddressCounter = 0;
     private SwitchControl     switchControl;
     private Locomotive        actualLocomotive;
     private LocomotiveGroup   actualLocomotiveGroup;
     private LocomotiveControl locomotiveControl;
 
-    public XMLImporter_0_1(String filename) {
-        this.switchControl = SwitchControl.getInstance();
+    public XMLImporter_0_2(String filename) {
         this.preferences = Preferences.getInstance();
+        this.switchControl = SwitchControl.getInstance();
         this.locomotiveControl = LocomotiveControl.getInstance();
         switchControl.unregisterAllSwitchGroups();
         switchControl.unregisterAllSwitches();
-        locomotiveControl = LocomotiveControl.getInstance();
         locomotiveControl.unregisterAllLocomotives();
         parseDocument(filename);
     }
@@ -100,14 +100,16 @@ public class XMLImporter_0_1 extends DefaultHandler implements ContentHandler {
         } else if (qName.equals("switch")) {
             parseSwitch(qName, attributes);
         } else if (qName.equals("address")) {
-            int address1 = Integer.parseInt(attributes.getValue("address1"));
-            int address2 = Integer.parseInt(attributes.getValue("address2"));
-            Address actualAddress1 = new Address(actualBus, address1);
-            Address actualAddress2 = new Address(actualBus, address2);
-            actualAddresses[0] = actualAddress1;
-            if (actualAddresses.length == 2) {
-                actualAddresses[1] = actualAddress2;
+            int address = Integer.parseInt(attributes.getValue("address"));
+            int bus = Integer.parseInt(attributes.getValue("bus"));
+            actualAddress = new Address(bus, address);
+            if (attributes.getValue("switched").equals("true")) {
+                actualAddress.setAddressSwitched(true);
+            } else {
+                actualAddress.setAddressSwitched(false);
             }
+            actualAddresses[actualAddressCounter] = actualAddress;
+            actualAddressCounter++;
         } else if (qName.equals("locomotivegroup")) {
             actualLocomotiveGroup = new LocomotiveGroup(attributes
                 .getValue("name"));
@@ -121,7 +123,6 @@ public class XMLImporter_0_1 extends DefaultHandler implements ContentHandler {
     private void parseSwitch(String qName, Attributes attributes) {
         String type = attributes.getValue("type");
         String desc = attributes.getValue("desc");
-        actualBus = Integer.parseInt(attributes.getValue("bus"));
         String defaultstate = attributes.getValue("defaultstate");
         String orientation = attributes.getValue("orientation");
         int number = Integer.parseInt(attributes.getValue("number"));
@@ -189,6 +190,7 @@ public class XMLImporter_0_1 extends DefaultHandler implements ContentHandler {
             actualSwitchGroup.addSwitch(actualSwitch);
             switchControl.registerSwitch(actualSwitch);
             actualSwitch = null;
+            actualAddressCounter = 0;
         } else if (qName.equals("locomotive")) {
             actualLocomotiveGroup.addLocomotive(actualLocomotive);
             locomotiveControl.registerLocomotive(actualLocomotive);

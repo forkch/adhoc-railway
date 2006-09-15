@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Route {
+public class Route implements Comparable {
 
     private List<RouteItem> routeItems;
     private String          name;
@@ -75,4 +75,12 @@ public class Route {
         }
         return newRoute;
     }
+
+	public int compareTo(Object o) {
+		if (o instanceof Route) {
+			Route r = (Route) o;
+			return name.compareTo(r.getName());
+		}
+		return -1;
+	}
 }

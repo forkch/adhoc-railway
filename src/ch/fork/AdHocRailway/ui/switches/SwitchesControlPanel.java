@@ -65,17 +65,9 @@ public class SwitchesControlPanel extends JPanel {
     }
 
     private void initGUI() {
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(5,5));
         switchGroupPane = new SwitchGroupPane(frame);
-        JPanel segmentPanelNorth = new JPanel(new FlowLayout(
-            FlowLayout.TRAILING, 5, 0));
-        segmentPanelNorth.setBackground(new Color(0, 0, 0));
-        seg1 = new Segment7();
-        seg2 = new Segment7();
-        seg3 = new Segment7();
-        segmentPanelNorth.add(seg3);
-        segmentPanelNorth.add(seg2);
-        segmentPanelNorth.add(seg1);
+        JPanel segmentPanelNorth = initSegmentPanel();
         switchesHistory = new JPanel();
         JPanel sh1 = new JPanel(new BorderLayout());
         sh1.add(switchesHistory, BorderLayout.NORTH);
@@ -86,8 +78,23 @@ public class SwitchesControlPanel extends JPanel {
         segmentPanel.add(sh1, BorderLayout.CENTER);
 
         add(switchGroupPane, BorderLayout.CENTER);
-        add(segmentPanel, BorderLayout.EAST);
+        add(segmentPanel, BorderLayout.WEST);
     }
+
+	private JPanel initSegmentPanel() {
+		JPanel segmentPanelNorth = new JPanel(new FlowLayout(
+            FlowLayout.TRAILING, 5, 0));
+        segmentPanelNorth.setBackground(new Color(0, 0, 0));
+        seg1 = new Segment7();
+        seg2 = new Segment7();
+        seg3 = new Segment7();
+        segmentPanelNorth.add(seg3);
+        segmentPanelNorth.add(seg2);
+        segmentPanelNorth.add(seg1);
+		JPanel p = new JPanel(new BorderLayout());
+		p.add(segmentPanelNorth, BorderLayout.WEST);
+		return p;
+	}
 
     private void initKeyboardActions() {
         for (int i = 0; i <= 10; i++) {

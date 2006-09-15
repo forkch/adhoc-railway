@@ -56,22 +56,23 @@ import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
-import ch.fork.AdHocRailway.domain.configuration.Preferences;
-import ch.fork.AdHocRailway.domain.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.domain.configuration.XMLExporter;
-import ch.fork.AdHocRailway.domain.configuration.XMLImporter;
-import ch.fork.AdHocRailway.domain.configuration.exception.ConfigurationException;
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.locking.LockControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.technical.configuration.XMLExporter;
+import ch.fork.AdHocRailway.technical.configuration.XMLImporter;
+import ch.fork.AdHocRailway.technical.configuration.exception.ConfigurationException;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfiguration;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
+import ch.fork.AdHocRailway.ui.routes.RoutesControlPanel;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfiguration;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.switches.SwitchProgrammer;
@@ -109,9 +110,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private JMenuBar               menuBar;
 
     boolean                        fullscreen       = false;
-
-    private double                 actualConfigVersion;
-
+	private RoutesControlPanel routesControlPanel;
 
     public AdHocRailway() {
         this(null);
@@ -143,10 +142,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         splash.nextStep("Creating GUI ...");
         switchesControlPanel.update(SwitchControl.getInstance()
             .getSwitchGroups());
+        routesControlPanel.update(RouteControl.getInstance().getRoutes());
         locomotiveControlPanel.update(LocomotiveControl.getInstance()
             .getLocomotiveGroups());
 
         switchesControlPanel.revalidate();
+        routesControlPanel.revalidate();
         locomotiveControlPanel.revalidate();
 
         setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
@@ -161,16 +162,19 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         setLayout(new BorderLayout());
         ExceptionProcessor.getInstance(this);
         switchesControlPanel = initSwitchPanel();
-        locomotiveControlPanel = initLocomotiveControl();
+        routesControlPanel = initRoutesPanel();
+		locomotiveControlPanel = initLocomotiveControl();
+
         initMenu();
         initToolbar();
         initStatusBar();
-        JPanel switchesAndLocomotivesPanel = new JPanel(new BorderLayout(5, 5));
-        switchesAndLocomotivesPanel.add(switchesControlPanel,
+        JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
+        mainPanel.add(switchesControlPanel,
             BorderLayout.CENTER);
-        switchesAndLocomotivesPanel.add(locomotiveControlPanel,
+        mainPanel.add(routesControlPanel, BorderLayout.EAST);
+        mainPanel.add(locomotiveControlPanel,
             BorderLayout.SOUTH);
-        add(switchesAndLocomotivesPanel, BorderLayout.CENTER);
+        add(mainPanel, BorderLayout.CENTER);
         add(statusBarPanel, BorderLayout.SOUTH);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -183,16 +187,20 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     private SwitchesControlPanel initSwitchPanel() {
-        SwitchesControlPanel switchesControlPanel = new SwitchesControlPanel(
-            this);
-        switchesControlPanel.setBorder(new EtchedBorder());
+        SwitchesControlPanel switchesControlPanel = new SwitchesControlPanel(this);
+        switchesControlPanel.setBorder(new TitledBorder("Switches"));
         return switchesControlPanel;
+    }
+    
+    private RoutesControlPanel initRoutesPanel() {
+    	RoutesControlPanel routesControlPanel = new RoutesControlPanel(this);
+    	routesControlPanel.setBorder(new TitledBorder("Routes"));
+    	return routesControlPanel;
     }
 
     private LocomotiveControlPanel initLocomotiveControl() {
-        LocomotiveControlPanel locomotiveControlPanel = new LocomotiveControlPanel(
-            this);
-        locomotiveControlPanel.setBorder(new EtchedBorder());
+        LocomotiveControlPanel locomotiveControlPanel = new LocomotiveControlPanel(this);
+        locomotiveControlPanel.setBorder(new TitledBorder("Locomotives"));
         return locomotiveControlPanel;
     }
 
@@ -278,7 +286,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
             try {
                 XMLImporter importer = new XMLImporter(file.getAbsolutePath());
-                actualConfigVersion = importer.getActualVersion();
                 hostnameLabel.setText(Preferences.getInstance().getStringValue(
                     PreferencesKeys.HOSTNAME));
                 if (recentFilesMenu.getComponentCount() > 1) {

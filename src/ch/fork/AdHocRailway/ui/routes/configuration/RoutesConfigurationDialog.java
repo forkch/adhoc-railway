@@ -85,7 +85,7 @@ public class RoutesConfigurationDialog<E> extends
 	public void createTempConfiguration() {
 		this.routeControl = RouteControl.getInstance();
 		this.routesWorkCopy = new ArrayList<Route>();
-		for (Route r : routeControl.getRoutes().values()) {
+		for (Route r : routeControl.getRoutes()) {
 			Route newRoute = (Route) r.clone();
 			routesWorkCopy.add(newRoute);
 		}

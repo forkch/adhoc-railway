@@ -29,10 +29,10 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-import ch.fork.AdHocRailway.domain.configuration.Preferences;
-import ch.fork.AdHocRailway.domain.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
 import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public class SwitchGroupTab extends JPanel {
     private static final long  serialVersionUID = 1L;

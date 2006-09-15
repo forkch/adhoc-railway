@@ -20,7 +20,7 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.configuration.importer;
+package ch.fork.AdHocRailway.technical.configuration.importer;
 
 import java.io.IOException;
 import java.util.Map;
@@ -35,7 +35,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import ch.fork.AdHocRailway.domain.Address;
-import ch.fork.AdHocRailway.domain.configuration.Preferences;
 import ch.fork.AdHocRailway.domain.locomotives.DeltaLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.DigitalLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
@@ -53,6 +52,7 @@ import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
 import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
 import ch.fork.AdHocRailway.domain.switches.Switch.SwitchOrientation;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {

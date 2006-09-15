@@ -148,6 +148,7 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
             SwitchWidget.this.repaint();
         }
     }
+    
     private class MouseAction extends MouseAdapter {
         public void mouseClicked(MouseEvent e) {
             try {

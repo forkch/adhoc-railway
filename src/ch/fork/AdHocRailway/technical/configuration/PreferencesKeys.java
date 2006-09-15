@@ -19,7 +19,7 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.domain.configuration;
+package ch.fork.AdHocRailway.technical.configuration;
 
 public interface PreferencesKeys {
 

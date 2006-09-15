@@ -20,7 +20,7 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.configuration;
+package ch.fork.AdHocRailway.technical.configuration;
 
 import java.util.ArrayList;
 import java.util.HashMap;

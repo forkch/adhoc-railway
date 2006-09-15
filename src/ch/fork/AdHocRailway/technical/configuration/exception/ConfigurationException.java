@@ -20,7 +20,7 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.configuration.exception;
+package ch.fork.AdHocRailway.technical.configuration.exception;
 
 public class ConfigurationException extends Exception {
     public ConfigurationException(String msg) {

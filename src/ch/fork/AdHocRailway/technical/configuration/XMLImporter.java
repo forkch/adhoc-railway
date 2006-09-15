@@ -20,7 +20,7 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.configuration;
+package ch.fork.AdHocRailway.technical.configuration;
 
 import java.io.IOException;
 
@@ -34,10 +34,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.configuration.exception.ConfigurationException;
-import ch.fork.AdHocRailway.domain.configuration.importer.XMLImporter_0_1;
-import ch.fork.AdHocRailway.domain.configuration.importer.XMLImporter_0_2;
-import ch.fork.AdHocRailway.domain.configuration.importer.XMLImporter_0_3;
+import ch.fork.AdHocRailway.technical.configuration.exception.ConfigurationException;
+import ch.fork.AdHocRailway.technical.configuration.importer.XMLImporter_0_1;
+import ch.fork.AdHocRailway.technical.configuration.importer.XMLImporter_0_2;
+import ch.fork.AdHocRailway.technical.configuration.importer.XMLImporter_0_3;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class XMLImporter extends DefaultHandler implements ContentHandler {

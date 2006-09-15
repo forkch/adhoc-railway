@@ -1,69 +1,66 @@
-
 package ch.fork.AdHocRailway.domain.routes;
 
 import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import ch.fork.AdHocRailway.domain.Control;
-import ch.fork.AdHocRailway.domain.configuration.Preferences;
-import ch.fork.AdHocRailway.domain.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public class RouteControl extends Control {
 
-    private static RouteControl instance;
-    private Map<String, Route>  routes;
+	private static RouteControl instance;
 
-    private RouteControl() {
-        routes = new TreeMap<String, Route>();
-    }
+	private SortedSet<Route> routes;
 
-    public static RouteControl getInstance() {
-        if (instance == null) {
-            instance = new RouteControl();
-        }
-        return instance;
-    }
+	private RouteControl() {
+		routes = new TreeSet<Route>();
+	}
 
-    public void registerRoute(Route route) {
-        routes.put(route.getName(), route);
-    }
+	public static RouteControl getInstance() {
+		if (instance == null) {
+			instance = new RouteControl();
+		}
+		return instance;
+	}
 
-    public void unregisterRoute(Route route) {
-        routes.remove(route.getName());
-    }
+	public void registerRoute(Route route) {
+		routes.add(route);
+	}
 
-    public void registerRoutes(Collection<Route> routesToRegister) {
-        for (Route r : routesToRegister) {
-            routes.put(r.getName(), r);
-        }
-    }
+	public void unregisterRoute(Route route) {
+		routes.remove(route.getName());
+	}
 
-    public void unregisterAllRoutes() {
-        routes.clear();
-    }
-    
-    public Route getRoute(String name) {
-        return routes.get(name);
-    }
-    public Map<String, Route> getRoutes() {
-        return routes;
-    }
+	public void registerRoutes(Collection<Route> routesToRegister) {
+		for (Route route : routesToRegister) {
+			routes.add(route);
+		}
+	}
 
-    public void enableRoute(Route r) throws SwitchException {
-        //System.out.println("enabling route: " + r);
-        int waitTime = Preferences.getInstance().getIntValue(
-            PreferencesKeys.ROUTING_DELAY);
-        Thread switchRouter = new Router(r, true, waitTime);
-        switchRouter.start();
-    }
+	public void unregisterAllRoutes() {
+		routes.clear();
+	}
 
-    public void disableRoute(Route r) throws SwitchException {
-        //System.out.println("disabling route: " + r);
-        int waitTime = Preferences.getInstance().getIntValue(
-            PreferencesKeys.ROUTING_DELAY);
-        Thread switchRouter = new Router(r, false, waitTime);
-        switchRouter.start();
-    }
+	public SortedSet<Route> getRoutes() {
+		return routes;
+	}
+
+	public void enableRoute(Route r) throws SwitchException {
+		// System.out.println("enabling route: " + r);
+		int waitTime = Preferences.getInstance().getIntValue(
+				PreferencesKeys.ROUTING_DELAY);
+		Thread switchRouter = new Router(r, true, waitTime);
+		switchRouter.start();
+	}
+
+	public void disableRoute(Route r) throws SwitchException {
+		// System.out.println("disabling route: " + r);
+		int waitTime = Preferences.getInstance().getIntValue(
+				PreferencesKeys.ROUTING_DELAY);
+		Thread switchRouter = new Router(r, false, waitTime);
+		switchRouter.start();
+	}
 }

@@ -44,12 +44,12 @@ public class LocomotiveControl extends Control implements GLInfoListener {
     private static LocomotiveControl       instance;
     private List<LocomotiveChangeListener> listeners;
     private Map<Address, Locomotive>       addressToLocomotives;
-    private List<LocomotiveGroup>          locomotiveGroups;
+    private SortedSet<LocomotiveGroup>          locomotiveGroups;
 
     private LocomotiveControl() {
         listeners = new ArrayList<LocomotiveChangeListener>();
         addressToLocomotives = new HashMap<Address, Locomotive>();
-        locomotiveGroups = new ArrayList<LocomotiveGroup>();
+        locomotiveGroups = new TreeSet<LocomotiveGroup>();
     }
 
     public static LocomotiveControl getInstance() {
@@ -106,7 +106,7 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         locomotiveGroups.clear();
     }
 
-    public List<LocomotiveGroup> getLocomotiveGroups() {
+    public SortedSet<LocomotiveGroup> getLocomotiveGroups() {
         return locomotiveGroups;
     }
 

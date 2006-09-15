@@ -44,8 +44,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 
-import ch.fork.AdHocRailway.domain.configuration.Preferences;
-import ch.fork.AdHocRailway.domain.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public class PreferencesDialog extends JDialog implements PreferencesKeys {
     private JSpinner           defaultActivationTime;

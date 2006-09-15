@@ -20,12 +20,12 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.configuration;
+package ch.fork.AdHocRailway.technical.configuration;
 
 import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.configuration.exception.ConfigurationException;
-import ch.fork.AdHocRailway.domain.configuration.exporter.XMLExporter_0_2;
-import ch.fork.AdHocRailway.domain.configuration.exporter.XMLExporter_0_3;
+import ch.fork.AdHocRailway.technical.configuration.exception.ConfigurationException;
+import ch.fork.AdHocRailway.technical.configuration.exporter.XMLExporter_0_2;
+import ch.fork.AdHocRailway.technical.configuration.exporter.XMLExporter_0_3;
 
 public class XMLExporter {
 
