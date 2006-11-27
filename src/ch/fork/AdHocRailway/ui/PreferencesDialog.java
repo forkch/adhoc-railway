@@ -252,7 +252,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         p.setIntValue(LOCK_DURATION, defaultLockDurationModel.getNumber()
             .intValue());
         p.setBooleanValue(INTERFACE_6051, interface6051.isSelected());
-        p.setBooleanValue(LOGGING, interface6051.isSelected());
+        p.setBooleanValue(LOGGING, writeLog.isSelected());
         p.setBooleanValue(FULLSCREEN, fullscreen.isSelected());
 
         p.setStringValue(HOSTNAME, (String) hostnameTextField.getText());

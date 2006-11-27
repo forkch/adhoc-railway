@@ -35,17 +35,17 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public class SwitchGroupTab extends JPanel {
-    private static final long  serialVersionUID = 1L;
-    private ArrayList          switchWidgets;
-    private int                maxCols;
-    private int                currentRow;
-    private int                currentCol;
-    private GridBagLayout      layout;
-    private GridBagConstraints gbc;
-    private SwitchGroup        switchGroup;
+    private static final long       serialVersionUID = 1L;
+    private ArrayList<SwitchWidget> switchWidgets;
+    private int                     maxCols;
+    private int                     currentRow;
+    private int                     currentCol;
+    private GridBagLayout           layout;
+    private GridBagConstraints      gbc;
+    private SwitchGroup             switchGroup;
 
     public SwitchGroupTab(SwitchGroup sg) {
-        this.switchWidgets = new ArrayList();
+        this.switchWidgets = new ArrayList<SwitchWidget>();
         switchGroup = sg;
         layout = new GridBagLayout();
         setLayout(layout);
@@ -59,7 +59,6 @@ public class SwitchGroupTab extends JPanel {
         gbc.gridy = currentCol;
     }
 
-    @SuppressWarnings("unchecked")
     public void addSwitchWidget(SwitchWidget aSwitchWidget) {
         add(aSwitchWidget);
         switchWidgets.add(aSwitchWidget);

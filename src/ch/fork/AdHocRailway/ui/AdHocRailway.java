@@ -110,7 +110,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private JMenuBar               menuBar;
 
     boolean                        fullscreen       = false;
-	private RoutesControlPanel routesControlPanel;
+    private RoutesControlPanel     routesControlPanel;
 
     public AdHocRailway() {
         this(null);
@@ -163,17 +163,15 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         ExceptionProcessor.getInstance(this);
         switchesControlPanel = initSwitchPanel();
         routesControlPanel = initRoutesPanel();
-		locomotiveControlPanel = initLocomotiveControl();
+        locomotiveControlPanel = initLocomotiveControl();
 
         initMenu();
         initToolbar();
         initStatusBar();
         JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
-        mainPanel.add(switchesControlPanel,
-            BorderLayout.CENTER);
+        mainPanel.add(switchesControlPanel, BorderLayout.CENTER);
         mainPanel.add(routesControlPanel, BorderLayout.EAST);
-        mainPanel.add(locomotiveControlPanel,
-            BorderLayout.SOUTH);
+        mainPanel.add(locomotiveControlPanel, BorderLayout.SOUTH);
         add(mainPanel, BorderLayout.CENTER);
         add(statusBarPanel, BorderLayout.SOUTH);
         addWindowListener(new WindowAdapter() {
@@ -187,29 +185,35 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     private SwitchesControlPanel initSwitchPanel() {
-        SwitchesControlPanel switchesControlPanel = new SwitchesControlPanel(this);
+        SwitchesControlPanel switchesControlPanel = new SwitchesControlPanel(
+            this);
         switchesControlPanel.setBorder(new TitledBorder("Switches"));
         return switchesControlPanel;
     }
-    
+
     private RoutesControlPanel initRoutesPanel() {
-    	RoutesControlPanel routesControlPanel = new RoutesControlPanel(this);
-    	routesControlPanel.setBorder(new TitledBorder("Routes"));
-    	return routesControlPanel;
+        RoutesControlPanel routesControlPanel = new RoutesControlPanel(this);
+        routesControlPanel.setBorder(new TitledBorder("Routes"));
+        return routesControlPanel;
     }
 
     private LocomotiveControlPanel initLocomotiveControl() {
-        LocomotiveControlPanel locomotiveControlPanel = new LocomotiveControlPanel(this);
+        LocomotiveControlPanel locomotiveControlPanel = new LocomotiveControlPanel(
+            this);
         locomotiveControlPanel.setBorder(new TitledBorder("Locomotives"));
         return locomotiveControlPanel;
     }
 
     public void commandDataSent(String commandData) {
-        updateCommandHistory("To Server: " + commandData);
+        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.LOGGING)) {
+            updateCommandHistory("To Server: " + commandData);
+        }
     }
 
     public void infoDataReceived(String infoData) {
-        updateCommandHistory("From Server: " + infoData);
+        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.LOGGING)) {
+            updateCommandHistory("From Server: " + infoData);
+        }
     }
 
     public void infoDataReceived(double timestamp, int bus, String deviceGroup,
@@ -218,12 +222,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     public void updateCommandHistory(String text) {
-        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.LOGGING)) {
-            DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
-            String date = df.format(GregorianCalendar.getInstance().getTime());
-            String fullText = "[" + date + "]: " + text;
-            SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
-        }
+        DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
+        String date = df.format(GregorianCalendar.getInstance().getTime());
+        String fullText = "[" + date + "]: " + text;
+        SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
+
     }
 
     private class CommandHistoryUpdater implements Runnable {
@@ -427,7 +430,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             }
         }
     }
-    
+
     private class RoutesAction extends AbstractAction {
         public RoutesAction() {
             super("Routes", createImageIcon("icons/route_edit.png", "Routes",
@@ -439,7 +442,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 AdHocRailway.this);
             if (routesConfig.isOkPressed()) {
                 RouteControl rc = RouteControl.getInstance();
-                RoutesConfiguration routesConfiguration = routesConfig.getTempConfiguration();
+                RoutesConfiguration routesConfiguration = routesConfig
+                    .getTempConfiguration();
                 rc.unregisterAllRoutes();
                 rc.registerRoutes(routesConfiguration.getRoutes());
 
