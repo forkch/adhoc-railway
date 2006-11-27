@@ -19,37 +19,46 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 
+/**
+ * Implementation of a Locomotive with a Maerklin-Delta decoder.
+ * 
+ * @author fork
+ * 
+ */
 public class DeltaLocomotive extends Locomotive {
-    private static final int DRIVING_STEPS = 14;
-    private static final int STEPPING      = 2;
-    private static final int FUNCTIONCOUNT = 1;
+	private static final int DRIVING_STEPS = 14;
 
-    public DeltaLocomotive(String name, Address address, String desc) {
-        super(name, address, DRIVING_STEPS, desc, FUNCTIONCOUNT);
-    }
+	private static final int STEPPING = 2;
 
-    protected void increaseSpeedStep() throws LocomotiveException {
-        super.setSpeed(getCurrentSpeed() + STEPPING);
-    }
+	private static final int FUNCTIONCOUNT = 1;
 
-    protected void decreaseSpeedStep() throws LocomotiveException {
-        super.setSpeed(getCurrentSpeed() - STEPPING);
-    }
+	public DeltaLocomotive(String name, Address address, String desc) {
+		super(name, address, DRIVING_STEPS, desc, FUNCTIONCOUNT);
+	}
 
-    @Override
-    public Locomotive clone() {
-        DeltaLocomotive clone = new DeltaLocomotive(name, address, desc);
-        clone.functions = functions;
-        clone.initialized = initialized;
-        clone.currentSpeed = currentSpeed;
-        clone.direction = direction;
-        clone.params = params;
-        return clone;
-    }
+	@Override
+	protected void increaseSpeedStep() throws LocomotiveException {
+		super.setSpeed(getCurrentSpeed() + STEPPING);
+	}
+
+	@Override
+	protected void decreaseSpeedStep() throws LocomotiveException {
+		super.setSpeed(getCurrentSpeed() - STEPPING);
+	}
+
+	@Override
+	public Locomotive clone() {
+		DeltaLocomotive clone = new DeltaLocomotive(name, address, desc);
+		clone.functions = functions;
+		clone.initialized = initialized;
+		clone.currentSpeed = currentSpeed;
+		clone.direction = direction;
+		clone.params = params;
+		return clone;
+	}
 }

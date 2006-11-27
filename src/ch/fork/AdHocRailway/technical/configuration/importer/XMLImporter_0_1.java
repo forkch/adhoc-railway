@@ -69,7 +69,7 @@ public class XMLImporter_0_1 extends DefaultHandler implements ContentHandler {
         switchControl.unregisterAllSwitchGroups();
         switchControl.unregisterAllSwitches();
         locomotiveControl = LocomotiveControl.getInstance();
-        locomotiveControl.unregisterAllLocomotives();
+        locomotiveControl.clear();
         parseDocument(filename);
     }
 

@@ -25,6 +25,11 @@ package ch.fork.AdHocRailway.domain.locomotives;
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 
+/** Dummy Locomotive.
+ * 
+ * @author fork
+ *
+ */
 public class NoneLocomotive extends Locomotive {
     private static final int DRIVING_STEPS = 0;
     private static final int FUNCTIONCOUNT = 0;
@@ -57,12 +62,10 @@ public class NoneLocomotive extends Locomotive {
 
     @Override
     protected void increaseSpeedStep() throws LocomotiveException {
-        // TODO Auto-generated method stub
     }
 
     @Override
     protected void decreaseSpeedStep() throws LocomotiveException {
-        // TODO Auto-generated method stub
     }
 
     @Override

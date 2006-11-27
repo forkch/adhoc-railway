@@ -25,6 +25,11 @@ package ch.fork.AdHocRailway.domain.locomotives;
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 
+/** Implementation of a Locomotive with a Maerklin-Digital decoder.
+ * 
+ * @author fork
+ *
+ */
 public class DigitalLocomotive extends Locomotive {
     private static final int DRIVING_STEPS = 28;
     private static final int STEPPING      = 4;
@@ -34,10 +39,12 @@ public class DigitalLocomotive extends Locomotive {
         super(name, address, DRIVING_STEPS, desc, FUNCTIONCOUNT);
     }
 
+    @Override
     protected void increaseSpeedStep() throws LocomotiveException {
         super.setSpeed(getCurrentSpeed() + STEPPING);
     }
-
+    
+    @Override
     protected void decreaseSpeedStep() throws LocomotiveException {
         super.setSpeed(getCurrentSpeed() - STEPPING);
     }

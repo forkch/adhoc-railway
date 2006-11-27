@@ -31,6 +31,11 @@ import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GL;
 
+/** Basic Locomotive.
+ * 
+ * @author fork
+ *
+ */
 public abstract class Locomotive extends ControlObject implements Constants,
     Comparable {
     protected String  name;
@@ -53,12 +58,14 @@ public abstract class Locomotive extends ControlObject implements Constants,
     protected boolean[]    functions;
     protected String[]     params;
 
-    protected abstract void increaseSpeedStep() throws LocomotiveException;
-
-    protected abstract void decreaseSpeedStep() throws LocomotiveException;
-
-    public abstract Locomotive clone();
-
+    /** Creates a new Locomotive.
+     * 
+     * @param name The name of the Locomotive
+     * @param address The address of the Locomotive
+     * @param drivingSteps How many driving-steps does the Locomotive has (e.g. 14 by delta)
+     * @param desc A description of the Locmotive
+     * @param functionCount How many functions are supported
+     */
     public Locomotive(String name, Address address, int drivingSteps,
         String desc, int functionCount) {
         super(new Address[] { address });
@@ -72,7 +79,28 @@ public abstract class Locomotive extends ControlObject implements Constants,
         params[2] = Integer.toString(functionCount);
         functions = new boolean[] { false, false, false, false, false };
     }
+    
+    /** Increases the speed of the Locomotive by a defined speed-step.
+     * 
+     * @throws LocomotiveException
+     */
+    protected abstract void increaseSpeedStep() throws LocomotiveException;
 
+    /** Decreases the speed of the Locomotive by a defined speed-step.
+     * 
+     * @throws LocomotiveException
+     */
+    protected abstract void decreaseSpeedStep() throws LocomotiveException;
+
+    /** Clones this Locomotive
+     * 
+     */
+    public abstract Locomotive clone();
+
+
+    /** Initializes the Locomotive.
+     * 
+     */
     protected void init() throws LocomotiveException {
         try {
             gl = new GL(session);
@@ -85,11 +113,19 @@ public abstract class Locomotive extends ControlObject implements Constants,
         }
     }
 
+    /** Reinitializes the Locomotive
+     * 
+     * @throws LocomotiveException
+     */
     protected void reinit() throws LocomotiveException {
         term();
         init();
     }
 
+    /** Terminates the Locomotive
+     * 
+     * @throws LocomotiveException
+     */
     protected void term() throws LocomotiveException {
         try {
             if (gl != null) {
@@ -102,6 +138,11 @@ public abstract class Locomotive extends ControlObject implements Constants,
         }
     }
 
+    /** Sets the speed of the Locomotive
+     * 
+     * @param speed
+     * @throws LocomotiveException
+     */
     protected void setSpeed(int speed) throws LocomotiveException {
         try {
             if (speed < 0 || speed > drivingSteps) {
@@ -130,13 +171,21 @@ public abstract class Locomotive extends ControlObject implements Constants,
         }
     }
 
+    /** Increases speed by one drivingStep
+     * 
+     * @throws LocomotiveException
+     */
     protected void increaseSpeed() throws LocomotiveException {
         int newSpeed = currentSpeed + 1;
         if (newSpeed <= drivingSteps) {
             setSpeed(newSpeed);
         }
     }
-
+    
+    /** Decreases speed by one drivingStep
+     * 
+     * @throws LocomotiveException
+     */
     protected void decreaseSpeed() throws LocomotiveException {
         int newSpeed = currentSpeed - 1;
         if (newSpeed >= 0) {
@@ -144,6 +193,9 @@ public abstract class Locomotive extends ControlObject implements Constants,
         }
     }
 
+    /** Toggles the direction, only applied by the next speed-command.
+     * 
+     */
     protected void toggleDirection() {
         switch (this.direction) {
         case FORWARD:
@@ -155,11 +207,23 @@ public abstract class Locomotive extends ControlObject implements Constants,
         }
     }
 
+    /** Sets the functions on or off.
+     * 
+     * @param functions
+     * @throws LocomotiveException
+     */
     protected void setFunctions(boolean[] functions) throws LocomotiveException {
         this.functions = functions;
         setSpeed(currentSpeed);
     }
 
+    /** Another client has changed the Locomotive.
+     * 
+     * @param pDrivemode
+     * @param v
+     * @param vMax
+     * @param functions
+     */
     protected void locomotiveChanged(String pDrivemode, int v, int vMax,
         boolean[] functions) {
         if (pDrivemode.equals(FORWARD_DIRECTION)) {
@@ -171,6 +235,12 @@ public abstract class Locomotive extends ControlObject implements Constants,
         this.functions = functions;
     }
 
+    /** Another client has initialized the Locomotive.
+     * 
+     * @param pAddress
+     * @param protocol
+     * @param params
+     */
     protected void locomotiveInitialized(Address pAddress, String protocol,
         String[] params) {
         gl = new GL(session);
@@ -180,17 +250,26 @@ public abstract class Locomotive extends ControlObject implements Constants,
         initialized = true;
     }
 
+    /** Another client has terminated the Locomotive.
+     * 
+     *
+     */
     protected void locomotiveTerminated() {
         gl = null;
         initialized = false;
     }
 
-    public boolean equals(Locomotive l) {
-        if (address.equals(l.getAddress())) {
-            return true;
-        } else {
-            return false;
-        }
+    @Override
+    public boolean equals(Object l) {
+    	if (l instanceof Locomotive) {
+			Locomotive loco = (Locomotive) l;
+			if (address.equals(loco.getAddress())) {
+	            return true;
+	        } else {
+	            return false;
+	        }
+		}
+    	return false;
     }
 
     public int compareTo(Object o) {
@@ -209,6 +288,7 @@ public abstract class Locomotive extends ControlObject implements Constants,
          */
     }
 
+    
     public int getDrivingSteps() {
         return drivingSteps;
     }

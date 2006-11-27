@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Build file for AdHoc-Railway" default="compile" basedir=".">
+<project name="AdHoc-Railway" default="compile" basedir=".">
   <!-- build-specific properties -->
   <property file="${user.home}/.ant.properties"/>
   <property file="build.properties"/>

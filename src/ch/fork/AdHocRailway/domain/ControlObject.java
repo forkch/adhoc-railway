@@ -59,6 +59,10 @@ public abstract class ControlObject {
         return session;
     }
 
+    /** Sets the SRCPSession on this ControlObject.
+     * 
+     * @param session
+     */
     protected void setSession(SRCPSession session) {
         this.session = session;
         lock = new LOCK(session, addresses[0].getBus());
