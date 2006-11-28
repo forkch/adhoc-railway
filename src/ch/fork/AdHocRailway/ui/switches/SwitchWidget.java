@@ -56,6 +56,7 @@ import ch.fork.AdHocRailway.ui.switches.configuration.SwitchConfig;
 
 public class SwitchWidget extends JPanel implements SwitchChangeListener,
     LockChangeListener {
+    private SwitchControl      switchControl;
     private static final long  serialVersionUID = 1L;
     private Switch             mySwitch;
     private JLabel             switchStateLabel;
@@ -78,7 +79,9 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
         this.switchGroup = switchGroup;
         this.horizontal = horizontal;
         this.frame = frame;
+        this.switchControl = SwitchControl.getInstance();
         initGUI();
+        switchControl.addSwitchChangeListener(aSwitch, this);
     }
 
     private void initGUI() {
@@ -154,38 +157,42 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
             try {
                 if (e.getClickCount() == 1
                     && e.getButton() == MouseEvent.BUTTON1) {
-                    SwitchControl.getInstance().toggle(mySwitch);
+                    switchControl.toggle(mySwitch);
                 } else if (e.getClickCount() == 1
                     && e.getButton() == MouseEvent.BUTTON3) {
-                    SwitchConfig switchConf = new SwitchConfig(frame, mySwitch);
-                    if (switchConf.isOkPressed()) {
-                        switchGroup.removeSwitch(mySwitch);
-                        Switch newSwitch = switchConf.getSwitch();
-                        switchGroup.addSwitch(newSwitch);
-                        SwitchControl.getInstance().unregisterSwitch(mySwitch);
-                        SwitchControl.getInstance().registerSwitch(newSwitch);
-                        mySwitch = newSwitch;
-                        remove(switchCanvas);
-                        switchWidgetConstraints.gridx = 0;
-                        switchWidgetConstraints.gridy = 1;
-                        switchWidgetConstraints.gridwidth = 2;
-                        switchCanvas = null;
-                        if (mySwitch instanceof DoubleCrossSwitch) {
-                            switchCanvas = new DoubleCrossSwitchCanvas(mySwitch);
-                        } else if (mySwitch instanceof DefaultSwitch) {
-                            switchCanvas = new DefaultSwitchCanvas(mySwitch);
-                        } else if (mySwitch instanceof ThreeWaySwitch) {
-                            switchCanvas = new ThreeWaySwitchCanvas(mySwitch);
-                        }
-                        switchWidgetLayout.setConstraints(switchCanvas,
-                            switchWidgetConstraints);
-                        add(switchCanvas);
-                        switchCanvas.addMouseListener(new MouseAction());
-                        switchChanged(mySwitch);
-                    }
+                    displaySwitchConfig();
                 }
             } catch (SwitchException e1) {
                 ExceptionProcessor.getInstance().processException(e1);
+            }
+        }
+
+        private void displaySwitchConfig() {
+            SwitchConfig switchConf = new SwitchConfig(frame, mySwitch);
+            if (switchConf.isOkPressed()) {
+                switchGroup.removeSwitch(mySwitch);
+                Switch newSwitch = switchConf.getSwitch();
+                switchGroup.addSwitch(newSwitch);
+                switchControl.unregisterSwitch(mySwitch);
+                switchControl.registerSwitch(newSwitch);
+                mySwitch = newSwitch;
+                remove(switchCanvas);
+                switchWidgetConstraints.gridx = 0;
+                switchWidgetConstraints.gridy = 1;
+                switchWidgetConstraints.gridwidth = 2;
+                switchCanvas = null;
+                if (mySwitch instanceof DoubleCrossSwitch) {
+                    switchCanvas = new DoubleCrossSwitchCanvas(mySwitch);
+                } else if (mySwitch instanceof DefaultSwitch) {
+                    switchCanvas = new DefaultSwitchCanvas(mySwitch);
+                } else if (mySwitch instanceof ThreeWaySwitch) {
+                    switchCanvas = new ThreeWaySwitchCanvas(mySwitch);
+                }
+                switchWidgetLayout.setConstraints(switchCanvas,
+                    switchWidgetConstraints);
+                add(switchCanvas);
+                switchCanvas.addMouseListener(new MouseAction());
+                switchChanged(mySwitch);
             }
         }
     }
@@ -193,5 +200,4 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
     public Switch getMySwitch() {
         return mySwitch;
     }
-
 }

@@ -25,28 +25,21 @@ package ch.fork.AdHocRailway.ui.switches;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-import ch.fork.AdHocRailway.domain.switches.SwitchControl;
-import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public class SwitchGroupTab extends JPanel {
     private static final long       serialVersionUID = 1L;
-    private ArrayList<SwitchWidget> switchWidgets;
     private int                     maxCols;
     private int                     currentRow;
     private int                     currentCol;
     private GridBagLayout           layout;
     private GridBagConstraints      gbc;
-    private SwitchGroup             switchGroup;
 
-    public SwitchGroupTab(SwitchGroup sg) {
-        this.switchWidgets = new ArrayList<SwitchWidget>();
-        switchGroup = sg;
+    public SwitchGroupTab() {
         layout = new GridBagLayout();
         setLayout(layout);
         maxCols = Preferences.getInstance().getIntValue(
@@ -61,7 +54,6 @@ public class SwitchGroupTab extends JPanel {
 
     public void addSwitchWidget(SwitchWidget aSwitchWidget) {
         add(aSwitchWidget);
-        switchWidgets.add(aSwitchWidget);
         if (currentCol == maxCols) {
             currentRow++;
             currentCol = 0;
@@ -70,10 +62,5 @@ public class SwitchGroupTab extends JPanel {
         gbc.gridy = currentRow;
         layout.setConstraints(aSwitchWidget, gbc);
         currentCol++;
-        SwitchControl.getInstance().addSwitchChangeListener(aSwitchWidget);
-    }
-
-    public SwitchGroup getSwitchGroup() {
-        return switchGroup;
-    }
+   }
 }

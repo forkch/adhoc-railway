@@ -22,8 +22,6 @@
 
 package ch.fork.AdHocRailway.ui.switches;
 
-import java.awt.Component;
-import java.awt.Container;
 import java.util.Collection;
 
 import javax.swing.JFrame;
@@ -46,18 +44,12 @@ public class SwitchGroupPane extends JTabbedPane {
     public void update(Collection<SwitchGroup> switchGroups) {
         this.switchGroups = switchGroups;
         SwitchControl sc = SwitchControl.getInstance();
-        for (Component switchGroupTabs : getComponents()) {
-            for (Component switchWidget : ((Container) switchGroupTabs)
-                .getComponents())
-                if (switchWidget instanceof SwitchWidget) {
-                    SwitchWidget sw = (SwitchWidget) switchWidget;
-                    sc.removeSwitchChangeListener(sw);
-                }
-        }
+        sc.removeAllSwitchChangeListener();
+
         this.removeAll();
         int i = 1;
         for (SwitchGroup switchGroup : switchGroups) {
-            SwitchGroupTab switchGroupTab = new SwitchGroupTab(switchGroup);
+            SwitchGroupTab switchGroupTab = new SwitchGroupTab();
             JScrollPane switchGroupPane = new JScrollPane(switchGroupTab);
             switchGroupPane.getVerticalScrollBar().setUnitIncrement(10);
             switchGroupPane.getVerticalScrollBar().setBlockIncrement(10);

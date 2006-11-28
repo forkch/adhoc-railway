@@ -22,7 +22,6 @@
 
 package ch.fork.AdHocRailway.ui.locomotives;
 
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -35,10 +34,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
 import ch.fork.AdHocRailway.domain.locking.LockControl;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
@@ -47,6 +44,8 @@ import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class LocomotiveControlPanel extends JPanel {
+
+    private LocomotiveControl      locomotiveControl;
     private int[][]                keyBindingsUS = new int[][] {
         { KeyEvent.VK_A, KeyEvent.VK_Z, KeyEvent.VK_Q },
         { KeyEvent.VK_S, KeyEvent.VK_X, KeyEvent.VK_W },
@@ -77,6 +76,7 @@ public class LocomotiveControlPanel extends JPanel {
         super();
         this.frame = frame;
         locomotiveWidgets = new ArrayList<LocomotiveWidget>();
+        locomotiveControl = LocomotiveControl.getInstance();
         initGUI();
     }
 
@@ -89,12 +89,11 @@ public class LocomotiveControlPanel extends JPanel {
     }
 
     public void update(Collection<LocomotiveGroup> locomotiveGroups) {
-        LocomotiveControl lc = LocomotiveControl.getInstance();
         LockControl lockc = LockControl.getInstance();
-        for (Component c : getComponents()) {
-            lc.removeLocomotiveChangeListener((LocomotiveChangeListener) c);
-            lockc.removeLockChangeListener((LockChangeListener) c);
-        }
+
+        locomotiveControl.removeAllLocomotiveChangeListener();
+        lockc.removeAllLockChangeListener();
+
         removeAll();
         locomotiveWidgets.clear();
         if (Preferences.getInstance().getStringValue(
@@ -107,7 +106,6 @@ public class LocomotiveControlPanel extends JPanel {
             PreferencesKeys.LOCOMOTIVE_CONTROLES); i++) {
             LocomotiveWidget w = new LocomotiveWidget(keyBindings[i][0],
                 keyBindings[i][1], keyBindings[i][2], frame);
-            LocomotiveControl.getInstance().addLocomotiveChangeListener(w);
             LockControl.getInstance().addLockChangeListener(w);
             w.updateLocomotiveGroups(locomotiveGroups);
             add(w);

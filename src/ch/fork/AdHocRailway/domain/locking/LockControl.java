@@ -205,8 +205,8 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
 		listeners.add(l);
 	}
 
-	public void removeLockChangeListener(LockChangeListener l) {
-		listeners.remove(l);
+	public void removeAllLockChangeListener() {
+		listeners.clear();
 	}
 
 	public ControlObject getControlObject(Address address) {

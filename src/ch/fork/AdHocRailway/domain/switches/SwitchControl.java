@@ -39,17 +39,17 @@ import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GAInfoListener;
 
 public class SwitchControl extends Control implements GAInfoListener {
-    private static SwitchControl       instance;
-    private List<SwitchChangeListener> listeners;
-    private List<SwitchGroup>          switchGroups;
-    private Map<Address, Switch>       addressToSwitch;
-    private Map<Integer, Switch>       numberToSwitch;
+    private static SwitchControl              instance;
+    private Map<Switch, SwitchChangeListener> listeners;
+    private List<SwitchGroup>                 switchGroups;
+    private Map<Address, Switch>              addressToSwitch;
+    private Map<Integer, Switch>              numberToSwitch;
 
-    private Switch                     lastChangedSwitch;
-    private SwitchState                previousState;
+    private Switch                            lastChangedSwitch;
+    private SwitchState                       previousState;
 
     private SwitchControl() {
-        listeners = new ArrayList<SwitchChangeListener>();
+        listeners = new HashMap<Switch, SwitchChangeListener>();
         addressToSwitch = new HashMap<Address, Switch>();
         numberToSwitch = new HashMap<Integer, Switch>();
         switchGroups = new ArrayList<SwitchGroup>();
@@ -111,6 +111,11 @@ public class SwitchControl extends Control implements GAInfoListener {
         addressToSwitch.clear();
         numberToSwitch.clear();
         LockControl.getInstance().unregisterAllControlObjects();
+    }
+    
+    public void clear() {
+        unregisterAllSwitches();
+        unregisterAllSwitchGroups();
     }
 
 
@@ -249,18 +254,19 @@ public class SwitchControl extends Control implements GAInfoListener {
         informListeners(s);
     }
 
-    public void addSwitchChangeListener(SwitchChangeListener listener) {
-        listeners.add(listener);
+    public void addSwitchChangeListener(Switch aSwitch,
+        SwitchChangeListener listener) {
+        listeners.put(aSwitch, listener);
     }
 
-    public void removeSwitchChangeListener(SwitchChangeListener listener) {
-        listeners.remove(listener);
+    public void removeAllSwitchChangeListener() {
+        listeners.clear();
     }
 
     private void informListeners(Switch changedSwitch) {
-        for (SwitchChangeListener l : listeners) {
-            l.switchChanged(changedSwitch);
-        }
+        SwitchChangeListener l = listeners.get(changedSwitch);
+        l.switchChanged(changedSwitch);
+
     }
 
     private void checkSwitch(Switch aSwitch) throws SwitchException {

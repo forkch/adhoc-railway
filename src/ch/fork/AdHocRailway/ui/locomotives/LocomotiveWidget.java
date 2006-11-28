@@ -121,6 +121,7 @@ public class LocomotiveWidget extends JPanel implements
         add(selectionPanel, BorderLayout.NORTH);
 
         addMouseWheelListener(new WheelControl());
+
     }
 
     private JPanel initSelectionPanel() {
@@ -226,12 +227,13 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private void initKeyboardActions() {
-        registerKeyboardAction(new LocomotiveControlAction(), "accelerate", KeyStroke.getKeyStroke(
-            accelerateKey, 0), WHEN_IN_FOCUSED_WINDOW);
-        registerKeyboardAction(new LocomotiveControlAction(), "deccelerate", KeyStroke.getKeyStroke(
-            deccelerateKey, 0), WHEN_IN_FOCUSED_WINDOW);
-        registerKeyboardAction(new LocomotiveControlAction(), "toggle_direction", KeyStroke.getKeyStroke(
-            toggleDirectionKey, 0), WHEN_IN_FOCUSED_WINDOW);
+        registerKeyboardAction(new LocomotiveControlAction(), "accelerate",
+            KeyStroke.getKeyStroke(accelerateKey, 0), WHEN_IN_FOCUSED_WINDOW);
+        registerKeyboardAction(new LocomotiveControlAction(), "deccelerate",
+            KeyStroke.getKeyStroke(deccelerateKey, 0), WHEN_IN_FOCUSED_WINDOW);
+        registerKeyboardAction(new LocomotiveControlAction(),
+            "toggle_direction", KeyStroke.getKeyStroke(toggleDirectionKey, 0),
+            WHEN_IN_FOCUSED_WINDOW);
     }
 
     protected void updateWidget() {
@@ -401,6 +403,10 @@ public class LocomotiveWidget extends JPanel implements
                 lockButton.setBackground(defaultBackground);
                 myLocomotive = (Locomotive) locomotiveComboBox
                     .getSelectedItem();
+
+                LocomotiveControl.getInstance().addLocomotiveChangeListener(
+                    myLocomotive, LocomotiveWidget.this);
+
                 updateWidget();
                 desc.setText(myLocomotive.getDesc());
                 speedBar.requestFocus();

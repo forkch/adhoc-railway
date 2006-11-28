@@ -21,10 +21,8 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -47,18 +45,19 @@ import de.dermoba.srcp.devices.GLInfoListener;
  */
 public class LocomotiveControl extends Control implements GLInfoListener {
 
-    private static LocomotiveControl       instance;
-    private List<LocomotiveChangeListener> listeners;
-    private Map<Address, Locomotive>       addressToLocomotives;
-    private SortedSet<LocomotiveGroup>     locomotiveGroups;
+    private static LocomotiveControl                  instance;
+    private Map<Locomotive, LocomotiveChangeListener> listeners;
+    private Map<Address, Locomotive>                  addressToLocomotives;
+    private SortedSet<LocomotiveGroup>                locomotiveGroups;
 
     private LocomotiveControl() {
-        listeners = new ArrayList<LocomotiveChangeListener>();
+        listeners = new HashMap<Locomotive, LocomotiveChangeListener>();
         addressToLocomotives = new HashMap<Address, Locomotive>();
         locomotiveGroups = new TreeSet<LocomotiveGroup>();
     }
 
-    /** Gets an instance of a LocomotiveControl.
+    /**
+     * Gets an instance of a LocomotiveControl.
      * 
      * @return an instance of LocomotiveControl
      */
@@ -69,18 +68,20 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         return instance;
     }
 
-    /** Registers a new Locomotive.
+    /**
+     * Registers a new Locomotive.
      * 
      * @param locomotiveToRegister
      */
     public void registerLocomotive(Locomotive locomotiveToRegister) {
         addressToLocomotives.put(locomotiveToRegister.getAddress(),
-                locomotiveToRegister);
+            locomotiveToRegister);
         setSessionOnControlObject(locomotiveToRegister);
         LockControl.getInstance().registerControlObject(locomotiveToRegister);
     }
 
-    /** Registers a Collection of Locomotives.
+    /**
+     * Registers a Collection of Locomotives.
      * 
      * @param locomotivesToRegister
      */
@@ -93,18 +94,20 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         }
     }
 
-    /** Unregisters a Locomotive
+    /**
+     * Unregisters a Locomotive
      * 
      * @param locomotiveToUnregister
      */
     public void unregisterLocomotive(Locomotive locomotiveToUnregister) {
         addressToLocomotives.remove(locomotiveToUnregister.getAddress());
         LockControl.getInstance().unregisterControlObject(
-                locomotiveToUnregister);
+            locomotiveToUnregister);
     }
 
 
-    /** Get a SortedSet of Locomotives.
+    /**
+     * Get a SortedSet of Locomotives.
      * 
      * @return locomotives
      */
@@ -112,7 +115,8 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         return new TreeSet<Locomotive>(addressToLocomotives.values());
     }
 
-    /** Registers a new LocomotiveGroup
+    /**
+     * Registers a new LocomotiveGroup
      * 
      * @param locomotiveGroup
      */
@@ -120,12 +124,13 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         locomotiveGroups.add(locomotiveGroup);
     }
 
-    /** Registers a Collection of LocomotiveGroups
+    /**
+     * Registers a Collection of LocomotiveGroups
      * 
      * @param locomotiveGroupsToRegister
      */
     public void registerLocomotiveGroups(
-            Collection<LocomotiveGroup> locomotiveGroupsToRegister) {
+        Collection<LocomotiveGroup> locomotiveGroupsToRegister) {
         locomotiveGroups.addAll(locomotiveGroupsToRegister);
     }
 
@@ -134,8 +139,9 @@ public class LocomotiveControl extends Control implements GLInfoListener {
     }
 
 
-    /** Unregisters all Locomotives and LocomotiveGroups.
-     *
+    /**
+     * Unregisters all Locomotives and LocomotiveGroups.
+     * 
      */
     public void clear() {
         for (Locomotive l : addressToLocomotives.values()) {
@@ -145,8 +151,9 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         locomotiveGroups.clear();
         LockControl.getInstance().unregisterAllControlObjects();
     }
-    
-    /** Sets the SRCPSession on this Control.
+
+    /**
+     * Sets the SRCPSession on this Control.
      * 
      * @param session
      */
@@ -158,32 +165,35 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         session.getInfoChannel().addGLInfoListener(this);
     }
 
-    /** Toggles the direction of the Locomotive
+    /**
+     * Toggles the direction of the Locomotive
      * 
      * @param locomotive
      * @throws LocomotiveException
      */
     public void toggleDirection(Locomotive locomotive)
-            throws LocomotiveException {
+        throws LocomotiveException {
         checkLocomotive(locomotive);
         initLocomotive(locomotive);
         locomotive.toggleDirection();
     }
 
-    /** Sets the speed of the Locomotive
+    /**
+     * Sets the speed of the Locomotive
      * 
      * @param locomotive
      * @param speed
      * @throws LocomotiveException
      */
     public void setSpeed(Locomotive locomotive, int speed)
-            throws LocomotiveException {
+        throws LocomotiveException {
         checkLocomotive(locomotive);
         initLocomotive(locomotive);
         locomotive.setSpeed(speed);
     }
 
-    /** Increases the speed of the Locomotive.
+    /**
+     * Increases the speed of the Locomotive.
      * 
      * @param locomotive
      * @throws LocomotiveException
@@ -194,7 +204,8 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         locomotive.increaseSpeed();
     }
 
-    /** Decreases the speed of the Locomotive.
+    /**
+     * Decreases the speed of the Locomotive.
      * 
      * @param locomotive
      * @throws LocomotiveException
@@ -205,45 +216,48 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         locomotive.decreaseSpeed();
     }
 
-    /** Increases the speed of the Locomotive by a step.
+    /**
+     * Increases the speed of the Locomotive by a step.
      * 
      * @param locomotive
      * @throws LocomotiveException
      */
     public void increaseSpeedStep(Locomotive locomotive)
-            throws LocomotiveException {
+        throws LocomotiveException {
         checkLocomotive(locomotive);
         initLocomotive(locomotive);
         locomotive.increaseSpeedStep();
     }
 
-    /** Decreases the speed of the Locomotive by a step.
+    /**
+     * Decreases the speed of the Locomotive by a step.
      * 
      * @param locomotive
      * @throws LocomotiveException
      */
     public void decreaseSpeedStep(Locomotive locomotive)
-            throws LocomotiveException {
+        throws LocomotiveException {
         checkLocomotive(locomotive);
         initLocomotive(locomotive);
         locomotive.decreaseSpeedStep();
     }
 
-    /** Sets the functions of the Locomotive on or off.
+    /**
+     * Sets the functions of the Locomotive on or off.
      * 
      * @param locomotive
      * @param functions
      * @throws LocomotiveException
      */
     public void setFunctions(Locomotive locomotive, boolean[] functions)
-            throws LocomotiveException {
+        throws LocomotiveException {
         checkLocomotive(locomotive);
         initLocomotive(locomotive);
         locomotive.setFunctions(functions);
     }
 
     public void GLinit(double timestamp, int bus, int address, String protocol,
-            String[] params) {
+        String[] params) {
         Address addr = new Address(bus, address);
         Locomotive locomotive = addressToLocomotives.get(addr);
         if (locomotive != null) {
@@ -253,7 +267,7 @@ public class LocomotiveControl extends Control implements GLInfoListener {
     }
 
     public void GLset(double timestamp, int bus, int address, String drivemode,
-            int v, int vMax, boolean[] functions) {
+        int v, int vMax, boolean[] functions) {
         // FIXME: removed to get a smoother LocomotiveWidget
         // Address addr = new Address(bus, address);
         // Locomotive locomotive = locomotives.get(addr);
@@ -270,22 +284,23 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         }
     }
 
-    public void addLocomotiveChangeListener(LocomotiveChangeListener l) {
-        listeners.add(l);
+    public void addLocomotiveChangeListener(Locomotive loco,
+        LocomotiveChangeListener l) {
+        listeners.put(loco, l);
     }
 
-    public void removeLocomotiveChangeListener(LocomotiveChangeListener l) {
-        listeners.remove(l);
+    public void removeAllLocomotiveChangeListener() {
+        listeners.clear();
     }
 
     private void informListeners(Locomotive changedLocomotive) {
-        for (LocomotiveChangeListener l : listeners) {
-            l.locomotiveChanged(changedLocomotive);
-        }
+        LocomotiveChangeListener l = listeners.get(changedLocomotive);
+        l.locomotiveChanged(changedLocomotive);
+
     }
 
     private void checkLocomotive(Locomotive locomotive)
-            throws LocomotiveException {
+        throws LocomotiveException {
         if (locomotive instanceof NoneLocomotive) {
             return;
         }
@@ -299,7 +314,7 @@ public class LocomotiveControl extends Control implements GLInfoListener {
     }
 
     private void initLocomotive(Locomotive locomotive)
-            throws LocomotiveException {
+        throws LocomotiveException {
         if (!locomotive.isInitialized()) {
             locomotive.init();
         }

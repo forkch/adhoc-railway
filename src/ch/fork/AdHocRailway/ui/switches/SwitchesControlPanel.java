@@ -45,6 +45,7 @@ import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.switches.canvas.Segment7;
 
 public class SwitchesControlPanel extends JPanel {
+    private SwitchControl   switchControl;
     private SwitchGroupPane switchGroupPane;
     private Segment7        seg1;
     private Segment7        seg2;
@@ -56,6 +57,7 @@ public class SwitchesControlPanel extends JPanel {
     public SwitchesControlPanel(JFrame frame) {
         this.frame = frame;
         enteredNumberKeys = new StringBuffer();
+        switchControl = SwitchControl.getInstance();
         initGUI();
         initKeyboardActions();
     }
@@ -67,12 +69,14 @@ public class SwitchesControlPanel extends JPanel {
     private void initGUI() {
         setLayout(new BorderLayout(5,5));
         switchGroupPane = new SwitchGroupPane(frame);
+        
         JPanel segmentPanelNorth = initSegmentPanel();
         switchesHistory = new JPanel();
         JPanel sh1 = new JPanel(new BorderLayout());
         sh1.add(switchesHistory, BorderLayout.NORTH);
         BoxLayout boxLayout = new BoxLayout(switchesHistory, BoxLayout.Y_AXIS);
         switchesHistory.setLayout(boxLayout);
+        
         JPanel segmentPanel = new JPanel(new BorderLayout());
         segmentPanel.add(segmentPanelNorth, BorderLayout.NORTH);
         segmentPanel.add(sh1, BorderLayout.CENTER);
@@ -166,19 +170,20 @@ public class SwitchesControlPanel extends JPanel {
 
         }
     }
+    
     private class SwitchingAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
-            SwitchControl sc = SwitchControl.getInstance();
+            
             try {
                 if (enteredNumberKeys.toString().equals("")) {
-                    sc.undoLastSwitchChange();
+                    switchControl.undoLastSwitchChange();
                     return;
                 }
                 String switchNumberAsString = enteredNumberKeys.toString();
                 int switchNumber = Integer.parseInt(switchNumberAsString);
                 Switch searchedSwitch = null;
 
-                searchedSwitch = sc.getNumberToSwitch().get(switchNumber);
+                searchedSwitch = switchControl.getNumberToSwitch().get(switchNumber);
                 if (searchedSwitch == null) {
                     resetSelectedSwitchDisplay();
                     return;
@@ -204,7 +209,6 @@ public class SwitchesControlPanel extends JPanel {
                 resetSelectedSwitchDisplay();
                 SwitchWidget sw = new SwitchWidget(searchedSwitch, null, true,
                     frame);
-                SwitchControl.getInstance().addSwitchChangeListener(sw);
                 Component[] oldWidgets = switchesHistory.getComponents();
                 switchesHistory.removeAll();
                 switchesHistory.add(sw);
@@ -225,30 +229,30 @@ public class SwitchesControlPanel extends JPanel {
         }
 
         private void handleDivide(Switch aSwitch) throws SwitchException {
-            SwitchControl.getInstance().setCurvedLeft(aSwitch);
+            switchControl.setCurvedLeft(aSwitch);
         }
 
         private void handleMultiply(Switch aSwitch) throws SwitchException {
-            SwitchControl.getInstance().setStraight(aSwitch);
+            switchControl.setStraight(aSwitch);
         }
 
         private void handleMinus(Switch aSwitch) throws SwitchException {
-            SwitchControl.getInstance().setCurvedRight(aSwitch);
+            switchControl.setCurvedRight(aSwitch);
         }
 
         private void handlePlus(Switch aSwitch) throws SwitchException {
-            SwitchControl.getInstance().setCurvedLeft(aSwitch);
+            switchControl.setCurvedLeft(aSwitch);
         }
 
         private void handleEnter(Switch aSwitch) throws SwitchException {
-            SwitchControl.getInstance().setStraight(aSwitch);
+            switchControl.setStraight(aSwitch);
         }
     }
     private class SwitchGroupChangeAction extends AbstractAction {
 
         public void actionPerformed(ActionEvent e) {
             int selectedSwitchGroup = Integer.parseInt(e.getActionCommand());
-            if (selectedSwitchGroup < SwitchControl.getInstance()
+            if (selectedSwitchGroup < switchControl
                 .getSwitchGroups().size()) {
                 switchGroupPane.setSelectedIndex(selectedSwitchGroup);
             }
