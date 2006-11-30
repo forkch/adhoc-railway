@@ -270,7 +270,7 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         int v, int vMax, boolean[] functions) {
         // FIXME: removed to get a smoother LocomotiveWidget
         // Address addr = new Address(bus, address);
-        // Locomotive locomotive = locomotives.get(addr);
+        // Locomotive locomotive = addressToLocomotives.get(addr);
         // locomotive.locomotiveChanged(drivemode, v, vMax, functions);
         // informListeners(locomotive);
     }
