@@ -48,7 +48,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
     }
 
     private void initGUI() {
-        setLayout(new BorderLayout());
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
         JPanel northPanel = new JPanel();
@@ -57,6 +57,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         routeStartIcon = createImageIcon("icons/route_start.png", "", this);
         nameLabel = new JLabel(route.getName());
         iconLabel = new JLabel(routeStopIcon);
+        
         routingProgress =
             new JProgressBar(SwingConstants.HORIZONTAL, 0, route
                 .getRouteItems().size());
@@ -69,16 +70,18 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         addMouseListener(new MouseAction());
 
         northPanel.add(Box.createHorizontalStrut(5));
-        northPanel.add(nameLabel, BorderLayout.WEST);
+        northPanel.add(nameLabel);
         northPanel.add(Box.createGlue());
         northPanel.add(Box.createHorizontalStrut(5));
-        northPanel.add(iconLabel, BorderLayout.EAST);
+        northPanel.add(iconLabel);
         northPanel.add(Box.createHorizontalStrut(5));
 
         southPanel = new JPanel();
         southPanel.add(routingProgress);
-        add(northPanel, BorderLayout.CENTER);
-        add(southPanel, BorderLayout.SOUTH);
+        add(Box.createVerticalStrut(5));
+        add(northPanel);
+        add(southPanel);
+        add(Box.createVerticalStrut(5));
     }
 
     private class MouseAction extends MouseAdapter {

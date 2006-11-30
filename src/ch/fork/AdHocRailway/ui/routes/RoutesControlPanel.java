@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.SortedSet;
@@ -24,7 +25,7 @@ public class RoutesControlPanel extends JPanel {
 
     private JFrame             frame;
     private JPanel             routesPanel;
-    private GridLayout         layout;
+    private GridBagLayout         layout;
     private GridBagConstraints gbc;
 
     public RoutesControlPanel(JFrame frame) {
@@ -60,7 +61,7 @@ public class RoutesControlPanel extends JPanel {
 
     private JPanel initRoutesPanel() {
         routesPanel = new JPanel();
-        layout = new GridLayout(10, 1, 5, 5);
+        layout = new GridBagLayout();
         gbc = new GridBagConstraints();
         routesPanel.setLayout(layout);
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -75,7 +76,7 @@ public class RoutesControlPanel extends JPanel {
         for (Route route : routes) {
             RouteWidget routeWidget = new RouteWidget(route, frame);
             routesPanel.add(routeWidget);
-            // layout.setConstraints(routeWidget, gbc);
+            layout.setConstraints(routeWidget, gbc);
             currentRow++;
             gbc.gridy = currentRow;
         }
