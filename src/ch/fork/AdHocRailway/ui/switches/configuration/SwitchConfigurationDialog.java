@@ -162,6 +162,7 @@ public class SwitchConfigurationDialog<E> extends
 				switchGroupsWorkCopy);
 		switchGroupList = new JList(switchGroupListModel);
 		switchGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 		switchGroupPopupMenu = new JPopupMenu();
 		JMenuItem addItem = new JMenuItem("Add");
 		JMenuItem removeItem = new JMenuItem("Remove");

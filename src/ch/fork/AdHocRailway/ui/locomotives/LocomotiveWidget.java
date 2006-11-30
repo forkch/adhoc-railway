@@ -311,13 +311,6 @@ public class LocomotiveWidget extends JPanel implements
         }
     }
 
-    public void lockChanged(ControlObject changedLock) {
-        if (changedLock instanceof Locomotive) {
-            Locomotive changedLocomotive = (Locomotive) changedLock;
-            locomotiveChanged(changedLocomotive);
-        }
-    }
-
     private class LocomotiveWidgetUpdater implements Runnable {
         private Locomotive locomotive;
 
@@ -329,6 +322,14 @@ public class LocomotiveWidget extends JPanel implements
             updateWidget();
         }
     }
+    
+    public void lockChanged(ControlObject changedLock) {
+        if (changedLock instanceof Locomotive) {
+            Locomotive changedLocomotive = (Locomotive) changedLock;
+            locomotiveChanged(changedLocomotive);
+        }
+    }
+
     private class LocomotiveFunctionAction extends AbstractAction {
         private int function;
 

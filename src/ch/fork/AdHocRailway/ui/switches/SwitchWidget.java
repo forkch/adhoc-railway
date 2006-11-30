@@ -132,7 +132,14 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
 
     public void switchChanged(Switch changedSwitch) {
         if (mySwitch.equals(changedSwitch)) {
-            SwingUtilities.invokeLater(new SwitchWidgetUpdater());
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    numberLabel.setText(Integer.toString(mySwitch.getNumber()));
+                    descLabel.setText(mySwitch.getDesc());
+                    SwitchWidget.this.revalidate();
+                    SwitchWidget.this.repaint();
+                }
+            });
         }
     }
 
@@ -140,15 +147,6 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
         if (changedLock instanceof Switch) {
             Switch changedSwitch = (Switch) changedLock;
             switchChanged(changedSwitch);
-        }
-    }
-
-    private class SwitchWidgetUpdater implements Runnable {
-        public void run() {
-            numberLabel.setText(Integer.toString(mySwitch.getNumber()));
-            descLabel.setText(mySwitch.getDesc());
-            SwitchWidget.this.revalidate();
-            SwitchWidget.this.repaint();
         }
     }
     
@@ -170,12 +168,18 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
         private void displaySwitchConfig() {
             SwitchConfig switchConf = new SwitchConfig(frame, mySwitch);
             if (switchConf.isOkPressed()) {
+                switchControl.removeSwitchChangeListener(mySwitch);
                 switchGroup.removeSwitch(mySwitch);
+                
                 Switch newSwitch = switchConf.getSwitch();
                 switchGroup.addSwitch(newSwitch);
                 switchControl.unregisterSwitch(mySwitch);
+                switchControl.removeSwitchChangeListener(mySwitch);
                 switchControl.registerSwitch(newSwitch);
+                switchControl.addSwitchChangeListener(newSwitch, SwitchWidget.this);
+                
                 mySwitch = newSwitch;
+                
                 remove(switchCanvas);
                 switchWidgetConstraints.gridx = 0;
                 switchWidgetConstraints.gridy = 1;

@@ -19,7 +19,6 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.technical.configuration.exporter;
 
 import java.util.Map;
@@ -28,6 +27,9 @@ import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.domain.routes.Route;
+import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
 import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
@@ -41,9 +43,10 @@ public class XMLExporter_0_3 {
         sb = new StringBuffer();
         sb.append("<?xml version=\"1.0\"?>\n");
         sb.append("<RailControl xmlns=\"http://www.fork.ch/RailControl\" "
-            + "ExporterVersion=\"0.2\">\n");
+            + "ExporterVersion=\"0.3\">\n");
 
         exportSwitchConfiguration();
+        exportRouteConfiguration();
         exportLocomotiveConfiguration();
         exportPreferences();
 
@@ -79,6 +82,20 @@ public class XMLExporter_0_3 {
         }
     }
 
+    private static void exportRouteConfiguration() {
+        sb.append("<RouteConfiguration>\n");
+        for (Route route : RouteControl.getInstance().getRoutes()) {
+            sb.append("<Route name=\"" + route.getName() + "\">\n");
+            for (RouteItem routeItem : route.getRouteItems()) {
+                sb.append("<RoutedSwitch switchNumber=\""
+                    + routeItem.getRoutedSwitch() + "\" switchStateRouted=\""
+                    + routeItem.getRoutedSwitchState() + "\"/>\n");
+            }
+            sb.append("</Route>\n");
+        }
+        sb.append("</RouteConfiguration>\n");
+    }
+
     private static void exportLocomotiveConfiguration() {
         sb.append("<LocomotiveConfiguration>\n");
         for (LocomotiveGroup lg : LocomotiveControl.getInstance()
@@ -100,8 +117,8 @@ public class XMLExporter_0_3 {
 
     private static void exportPreferences() {
         sb.append("<GuiConfiguration>\n");
-        Map<String, String> preferences = Preferences.getInstance()
-            .getPreferences();
+        Map<String, String> preferences =
+            Preferences.getInstance().getPreferences();
         for (String key : preferences.keySet()) {
             sb.append("<GuiConfigParameter ");
             sb.append(" name=\"" + key + "\"");

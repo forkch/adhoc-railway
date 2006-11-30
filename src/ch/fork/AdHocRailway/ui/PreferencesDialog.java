@@ -69,6 +69,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
     private boolean okPressed;
     private boolean cancelPressed;
+    private JCheckBox autoconnectCheckBox;
 
     public PreferencesDialog(JFrame owner) {
         super(owner, "Preferences", true);
@@ -201,7 +202,11 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         portnumberTextField = new JTextField("12345", 15);
         serverTab.add(portnumberLabel);
         serverTab.add(portnumberTextField);
-        SpringUtilities.makeCompactGrid(serverTab, 2, 2, // rows, cols
+        JLabel autoconnectLabel = new JLabel("Autoconnect:");
+        autoconnectCheckBox = new JCheckBox();
+        serverTab.add(autoconnectLabel);
+        serverTab.add(autoconnectCheckBox);
+        SpringUtilities.makeCompactGrid(serverTab, 3, 2, // rows, cols
             6, 6, // initX, initY
             6, 6); // xPad, yPad
         JPanel north = new JPanel(new BorderLayout());
@@ -234,6 +239,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         fullscreen.setSelected(p.getBooleanValue(FULLSCREEN));
         hostnameTextField.setText(p.getStringValue(HOSTNAME));
         portnumberTextField.setText(Integer.toString(p.getIntValue(PORT)));
+        autoconnectCheckBox.setSelected(p.getBooleanValue(AUTOCONNECT));
     }
 
     public void savePreferences() {
@@ -257,6 +263,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
         p.setStringValue(HOSTNAME, (String) hostnameTextField.getText());
         p.setIntValue(PORT, Integer.parseInt(portnumberTextField.getText()));
+        p.setBooleanValue(AUTOCONNECT, autoconnectCheckBox.isSelected());
     }
 
 }

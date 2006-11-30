@@ -1,22 +1,26 @@
 package ch.fork.AdHocRailway.domain.routes;
 
 import ch.fork.AdHocRailway.domain.switches.Switch;
+import ch.fork.AdHocRailway.domain.switches.SwitchControl;
 import ch.fork.AdHocRailway.domain.switches.SwitchState;
 
+public class RouteItem implements Comparable {
 
-public class RouteItem {
-
-    private Switch routedSwitch;
+    private int         routedSwitchNumber;
     private SwitchState routedSwitchState;
     private SwitchState previousSwitchState;
-    
-    public RouteItem(Switch routedSwitch, SwitchState switchState) {
-        this.routedSwitch = routedSwitch;
+
+    public RouteItem(int routedSwitchNumber) {
+        this(routedSwitchNumber, SwitchState.STRAIGHT);
+    }
+    public RouteItem(int routedSwitchNumber, SwitchState switchState) {
+        this.routedSwitchNumber = routedSwitchNumber;
         this.routedSwitchState = switchState;
     }
 
     public Switch getRoutedSwitch() {
-        return routedSwitch;
+        return SwitchControl.getInstance().getNumberToSwitch().get(
+            routedSwitchNumber);
     }
 
     public SwitchState getSwitchState() {
@@ -38,14 +42,30 @@ public class RouteItem {
     public void setRoutedSwitchState(SwitchState routedSwitchState) {
         this.routedSwitchState = routedSwitchState;
     }
-    
+
     public Object clone() {
-        RouteItem newItem = new RouteItem(routedSwitch, routedSwitchState);
+        RouteItem newItem =
+            new RouteItem(routedSwitchNumber, routedSwitchState);
         return newItem;
     }
     public String toString() {
-        return getRoutedSwitch().getNumber() + " : "
-        + getRoutedSwitchState();
+        return routedSwitchNumber + " : " + getRoutedSwitchState();
+    }
+    public int compareTo(Object o) {
+        if (o instanceof RouteItem) {
+            RouteItem routeItem = (RouteItem) o;
+            if (routedSwitchNumber < routeItem.routedSwitchNumber)
+                return -1;
+            else if (routedSwitchNumber > routeItem.routedSwitchNumber)
+                return 1;
+
+            return 0;
+        }
+        return -1;
+    }
+
+    public int getRoutedSwitchNumber() {
+        return routedSwitchNumber;
     }
 
 }

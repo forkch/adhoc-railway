@@ -1,6 +1,8 @@
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -12,7 +14,7 @@ public class RoutedSwitchesTableModel extends AbstractTableModel {
 
 	private String[] columnNames = { "Switch-Number", "Routed-State" };
 
-	private List<RouteItem> routeItems;
+	private Set<RouteItem> routeItems;
 
 	public RoutedSwitchesTableModel() {
 	}
@@ -29,7 +31,8 @@ public class RoutedSwitchesTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		RouteItem actualRouteItem = routeItems.get(rowIndex);
+        List<RouteItem> routeItemsArrayList = new ArrayList<RouteItem>(routeItems);
+		RouteItem actualRouteItem = routeItemsArrayList.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return actualRouteItem.getRoutedSwitch();
@@ -40,7 +43,8 @@ public class RoutedSwitchesTableModel extends AbstractTableModel {
 	}
 
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
-		RouteItem actualRouteItem = routeItems.get(rowIndex);
+        List<RouteItem> routeItemsArrayList = new ArrayList<RouteItem>(routeItems);
+		RouteItem actualRouteItem = routeItemsArrayList.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return;

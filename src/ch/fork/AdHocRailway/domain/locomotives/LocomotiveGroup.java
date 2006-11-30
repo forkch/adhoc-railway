@@ -69,7 +69,6 @@ public class LocomotiveGroup implements Comparable {
         return newLocomotiveGroup;
     }
 
-
     public int compareTo(Object o) {
         if (o instanceof LocomotiveGroup) {
             LocomotiveGroup anotherLocomotiveGroup = (LocomotiveGroup) o;

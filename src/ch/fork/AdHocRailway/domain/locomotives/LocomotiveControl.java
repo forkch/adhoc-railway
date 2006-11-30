@@ -105,7 +105,6 @@ public class LocomotiveControl extends Control implements GLInfoListener {
             locomotiveToUnregister);
     }
 
-
     /**
      * Get a SortedSet of Locomotives.
      * 
@@ -137,7 +136,6 @@ public class LocomotiveControl extends Control implements GLInfoListener {
     public SortedSet<LocomotiveGroup> getLocomotiveGroups() {
         return locomotiveGroups;
     }
-
 
     /**
      * Unregisters all Locomotives and LocomotiveGroups.

@@ -335,8 +335,7 @@ public class RoutesConfigurationDialog<E> extends
 					"Enter the number of the Switch", "Add switch to route",
 					JOptionPane.QUESTION_MESSAGE);
 			int switchNumber = Integer.parseInt(switchNumberAsString);
-			Switch switchToAdd = numberToSwitch.get(switchNumber);
-			selectedRoute.addRouteItem(new RouteItem(switchToAdd, SwitchState.STRAIGHT));
+			selectedRoute.addRouteItem(new RouteItem(switchNumber, SwitchState.STRAIGHT));
 			updateRouteDetailPanel();
 		}
 

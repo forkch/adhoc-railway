@@ -259,6 +259,10 @@ public class SwitchControl extends Control implements GAInfoListener {
         listeners.put(aSwitch, listener);
     }
 
+    public void removeSwitchChangeListener(Switch aSwitch) {
+        listeners.remove(aSwitch);
+    }
+    
     public void removeAllSwitchChangeListener() {
         listeners.clear();
     }

@@ -38,4 +38,5 @@ public interface PreferencesKeys {
     // Server
     public static final String HOSTNAME             = "Hostname";
     public static final String PORT                 = "Port";
+    public static final String AUTOCONNECT          = "Autoconnect";
 }

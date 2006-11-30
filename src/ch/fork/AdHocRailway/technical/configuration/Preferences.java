@@ -33,7 +33,7 @@ public class Preferences implements PreferencesKeys {
     private String              hostname                = "titan";
     private int                 portnumber              = 12345;
     private int                 defaultActivationTime   = 50;
-    private int                 defaultRoutingDelay     = 250;
+    private int                 defaultRoutingDelay     = 100;
     private int                 locomotiveControlNumber = 5;
     private String              keyBoardLayout          = "Swiss German";
     private static Preferences  instance                = null;
@@ -53,6 +53,7 @@ public class Preferences implements PreferencesKeys {
         setIntValue(SWITCH_CONTROLES, 5);
         setBooleanValue(LOGGING, false);
         setBooleanValue(FULLSCREEN, false);
+        setBooleanValue(AUTOCONNECT, false);
     }
 
     public static Preferences getInstance() {

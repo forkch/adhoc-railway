@@ -19,7 +19,6 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.technical.configuration.importer;
 
 import java.io.IOException;
@@ -56,6 +55,7 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
+
     private Preferences       preferences;
     private Switch            actualSwitch;
     private SwitchGroup       actualSwitchGroup;
@@ -80,7 +80,7 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
         locomotiveControl.clear();
         routeControl.unregisterAllRoutes();
         parseDocument(filename);
-        
+
     }
 
     private void parseDocument(String filename) {
@@ -120,8 +120,8 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
         } else if (qName.equals("routedswitch")) {
             parseRoutedSwitch(qName, attributes);
         } else if (qName.equals("locomotivegroup")) {
-            actualLocomotiveGroup = new LocomotiveGroup(attributes
-                .getValue("name"));
+            actualLocomotiveGroup =
+                new LocomotiveGroup(attributes.getValue("name"));
         } else if (qName.equals("locomotive")) {
             parseLocomotive(qName, attributes);
         } else if (qName.equals("guiconfigparameter")) {
@@ -167,20 +167,25 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
     }
 
     private void parseRoutedSwitch(String qName, Attributes attributes) {
-        int switchNumber = Integer
-            .parseInt(attributes.getValue("switchNumber"));
+        int switchNumber =
+            Integer.parseInt(attributes.getValue("switchNumber"));
         String switchStateRouted = attributes.getValue("switchStateRouted");
         String type = attributes.getValue("type");
         Map<Integer, Switch> numberToSwitch = switchControl.getNumberToSwitch();
-        if (switchStateRouted.equals("STRAIGHT")) {
-            actualRouteItem = new RouteItem(numberToSwitch.get(switchNumber),
-                SwitchState.STRAIGHT);
-        } else if (switchStateRouted.equals("LEFT")) {
-            actualRouteItem = new RouteItem(numberToSwitch.get(switchNumber),
-                SwitchState.LEFT);
-        } else if (switchStateRouted.equals("RIGHT")) {
-            actualRouteItem = new RouteItem(numberToSwitch.get(switchNumber),
-                SwitchState.RIGHT);
+        if (numberToSwitch.get(switchNumber) != null) {
+            if (switchStateRouted.equals("STRAIGHT")) {
+                actualRouteItem =
+                    new RouteItem(switchNumber,
+                        SwitchState.STRAIGHT);
+            } else if (switchStateRouted.equals("LEFT")) {
+                actualRouteItem =
+                    new RouteItem(switchNumber,
+                        SwitchState.LEFT);
+            } else if (switchStateRouted.equals("RIGHT")) {
+                actualRouteItem =
+                    new RouteItem(switchNumber,
+                        SwitchState.RIGHT);
+            }
         }
     }
 
@@ -193,11 +198,11 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
         if (attributes.getValue("type").equals("NoneLocomotive")) {
             actualLocomotive = new NoneLocomotive();
         } else if (attributes.getValue("type").equals("DeltaLocomotive")) {
-            actualLocomotive = new DeltaLocomotive(name, new Address(bus,
-                address), desc);
+            actualLocomotive =
+                new DeltaLocomotive(name, new Address(bus, address), desc);
         } else if (attributes.getValue("type").equals("DigitalLocomotive")) {
-            actualLocomotive = new DigitalLocomotive(name, new Address(bus,
-                address), desc);
+            actualLocomotive =
+                new DigitalLocomotive(name, new Address(bus, address), desc);
         }
     }
 
@@ -212,10 +217,11 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
         if (qName.equals("switchgroup")) {
             switchControl.registerSwitchGroup(actualSwitchGroup);
         } else if (qName.equals("routedswitch")) {
-            
-            actualRoute.addRouteItem(actualRouteItem);
+            if (actualRouteItem != null) {
+                actualRoute.addRouteItem(actualRouteItem);
+            }
             actualRouteItem = null;
-        } else if(qName.equals("route")) {
+        } else if (qName.equals("route")) {
             routeControl.registerRoute(actualRoute);
             actualRoute = null;
         } else if (qName.equals("switch")) {
