@@ -65,11 +65,12 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
     private JCheckBox          interface6051;
     private JCheckBox          writeLog;
     private JCheckBox          fullscreen;
+    private JCheckBox          tabbedTrackCheckBox;
     private List<String>       hostnames;
 
-    private boolean okPressed;
-    private boolean cancelPressed;
-    private JCheckBox autoconnectCheckBox;
+    private boolean            okPressed;
+    private boolean            cancelPressed;
+    private JCheckBox          autoconnectCheckBox;
 
     public PreferencesDialog(JFrame owner) {
         super(owner, "Preferences", true);
@@ -134,6 +135,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         JLabel writeLogLabel = new JLabel("Write Log");
         fullscreen = new JCheckBox();
         JLabel fullscreenLabel = new JLabel("Fullscreen");
+        tabbedTrackCheckBox = new JCheckBox();
+        JLabel tabbedTrackLabel = new JLabel("Tabbed Track-Control");
 
         guiSettingsTab.add(locomotiveControlNumberLabel);
         guiSettingsTab.add(locomotiveControlNumber);
@@ -145,7 +148,9 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         guiSettingsTab.add(writeLog);
         guiSettingsTab.add(fullscreenLabel);
         guiSettingsTab.add(fullscreen);
-        SpringUtilities.makeCompactGrid(guiSettingsTab, 5, 2, // rows, cols
+        guiSettingsTab.add(tabbedTrackLabel);
+        guiSettingsTab.add(tabbedTrackCheckBox);
+        SpringUtilities.makeCompactGrid(guiSettingsTab, 6, 2, // rows, cols
             6, 6, // initX, initY
             6, 6); // xPad, yPad
 
@@ -237,6 +242,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         interface6051.setSelected(p.getBooleanValue(INTERFACE_6051));
         writeLog.setSelected(p.getBooleanValue(LOGGING));
         fullscreen.setSelected(p.getBooleanValue(FULLSCREEN));
+        tabbedTrackCheckBox.setSelected(p.getBooleanValue(TABBED_TRACK));
         hostnameTextField.setText(p.getStringValue(HOSTNAME));
         portnumberTextField.setText(Integer.toString(p.getIntValue(PORT)));
         autoconnectCheckBox.setSelected(p.getBooleanValue(AUTOCONNECT));
@@ -260,6 +266,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         p.setBooleanValue(INTERFACE_6051, interface6051.isSelected());
         p.setBooleanValue(LOGGING, writeLog.isSelected());
         p.setBooleanValue(FULLSCREEN, fullscreen.isSelected());
+        p.setBooleanValue(TABBED_TRACK, tabbedTrackCheckBox.isSelected());
 
         p.setStringValue(HOSTNAME, (String) hostnameTextField.getText());
         p.setIntValue(PORT, Integer.parseInt(portnumberTextField.getText()));

@@ -2,7 +2,6 @@ package ch.fork.AdHocRailway.ui.routes;
 
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -77,7 +76,10 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         northPanel.add(Box.createHorizontalStrut(5));
 
         southPanel = new JPanel();
+        southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.LINE_AXIS));
+        southPanel.add(Box.createHorizontalStrut(5));
         southPanel.add(routingProgress);
+        southPanel.add(Box.createHorizontalStrut(5));
         add(Box.createVerticalStrut(5));
         add(northPanel);
         add(southPanel);

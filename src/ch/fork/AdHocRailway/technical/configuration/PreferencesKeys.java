@@ -28,6 +28,7 @@ public interface PreferencesKeys {
     public static final String SWITCH_CONTROLES     = "SwitchControlesAmount";
     public static final String KEYBOARD_LAYOUT      = "KeyBoardLayout";
     public static final String FULLSCREEN           = "Fullscreen";
+    public static final String TABBED_TRACK         = "TabbedTrack";
     // Digital Data
     public static final String ACTIVATION_TIME      = "DefaultActivationTime";
     public static final String ROUTING_DELAY        = "DefaultRoutingDelay";

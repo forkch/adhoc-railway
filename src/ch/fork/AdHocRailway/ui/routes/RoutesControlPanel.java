@@ -1,3 +1,4 @@
+
 package ch.fork.AdHocRailway.ui.routes;
 
 import java.awt.BorderLayout;
@@ -5,7 +6,6 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.SortedSet;
 
@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.switches.canvas.Segment7;
 
 public class RoutesControlPanel extends JPanel {
@@ -25,8 +27,9 @@ public class RoutesControlPanel extends JPanel {
 
     private JFrame             frame;
     private JPanel             routesPanel;
-    private GridBagLayout         layout;
+    private GridBagLayout      layout;
     private GridBagConstraints gbc;
+    private int maxCols;
 
     public RoutesControlPanel(JFrame frame) {
         super();
@@ -39,13 +42,13 @@ public class RoutesControlPanel extends JPanel {
         setLayout(new BorderLayout(5, 5));
         JPanel segmentPanelNorth = initSegmentPanel();
         JPanel routesPanel = initRoutesPanel();
-        add(segmentPanelNorth, BorderLayout.NORTH);
+        //add(segmentPanelNorth, BorderLayout.NORTH);
         add(routesPanel, BorderLayout.CENTER);
     }
 
     private JPanel initSegmentPanel() {
-        JPanel segmentPanelNorth =
-            new JPanel(new FlowLayout(FlowLayout.TRAILING, 5, 0));
+        JPanel segmentPanelNorth = new JPanel(new FlowLayout(
+            FlowLayout.TRAILING, 5, 0));
         seg1 = new Segment7();
         seg2 = new Segment7();
         seg3 = new Segment7();
@@ -65,6 +68,9 @@ public class RoutesControlPanel extends JPanel {
         gbc = new GridBagConstraints();
         routesPanel.setLayout(layout);
         gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        maxCols = Preferences.getInstance().getIntValue(
+            PreferencesKeys.SWITCH_CONTROLES);
         return routesPanel;
     }
 
@@ -74,10 +80,17 @@ public class RoutesControlPanel extends JPanel {
         gbc.gridx = currentCol;
         gbc.gridy = currentRow;
         for (Route route : routes) {
+            
             RouteWidget routeWidget = new RouteWidget(route, frame);
             routesPanel.add(routeWidget);
             layout.setConstraints(routeWidget, gbc);
-            currentRow++;
+            if (currentCol == maxCols) {
+                currentRow++;
+                currentCol = 0;
+            } else {
+                currentCol++;
+            }
+            gbc.gridx = currentCol;
             gbc.gridy = currentRow;
         }
     }

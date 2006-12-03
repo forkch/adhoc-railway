@@ -21,8 +21,10 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -45,13 +47,13 @@ import de.dermoba.srcp.devices.GLInfoListener;
  */
 public class LocomotiveControl extends Control implements GLInfoListener {
 
-    private static LocomotiveControl                  instance;
-    private Map<Locomotive, LocomotiveChangeListener> listeners;
-    private Map<Address, Locomotive>                  addressToLocomotives;
-    private SortedSet<LocomotiveGroup>                locomotiveGroups;
+    private static LocomotiveControl       instance;
+    private List<LocomotiveChangeListener> listeners;
+    private Map<Address, Locomotive>       addressToLocomotives;
+    private SortedSet<LocomotiveGroup>     locomotiveGroups;
 
     private LocomotiveControl() {
-        listeners = new HashMap<Locomotive, LocomotiveChangeListener>();
+        listeners = new ArrayList<LocomotiveChangeListener>();
         addressToLocomotives = new HashMap<Address, Locomotive>();
         locomotiveGroups = new TreeSet<LocomotiveGroup>();
     }
@@ -267,9 +269,9 @@ public class LocomotiveControl extends Control implements GLInfoListener {
     public void GLset(double timestamp, int bus, int address, String drivemode,
         int v, int vMax, boolean[] functions) {
         // FIXME: removed to get a smoother LocomotiveWidget
-        // Address addr = new Address(bus, address);
-        // Locomotive locomotive = addressToLocomotives.get(addr);
-        // locomotive.locomotiveChanged(drivemode, v, vMax, functions);
+        Address addr = new Address(bus, address);
+        Locomotive locomotive = addressToLocomotives.get(addr);
+        locomotive.locomotiveChanged(drivemode, v, vMax, functions);
         // informListeners(locomotive);
     }
 
@@ -284,7 +286,7 @@ public class LocomotiveControl extends Control implements GLInfoListener {
 
     public void addLocomotiveChangeListener(Locomotive loco,
         LocomotiveChangeListener l) {
-        listeners.put(loco, l);
+        listeners.add(l);
     }
 
     public void removeAllLocomotiveChangeListener() {
@@ -292,8 +294,8 @@ public class LocomotiveControl extends Control implements GLInfoListener {
     }
 
     private void informListeners(Locomotive changedLocomotive) {
-        LocomotiveChangeListener l = listeners.get(changedLocomotive);
-        l.locomotiveChanged(changedLocomotive);
+        for (LocomotiveChangeListener l : listeners)
+            l.locomotiveChanged(changedLocomotive);
 
     }
 
