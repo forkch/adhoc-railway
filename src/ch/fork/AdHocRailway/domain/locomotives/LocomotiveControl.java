@@ -268,11 +268,10 @@ public class LocomotiveControl extends Control implements GLInfoListener {
 
     public void GLset(double timestamp, int bus, int address, String drivemode,
         int v, int vMax, boolean[] functions) {
-        // FIXME: removed to get a smoother LocomotiveWidget
         Address addr = new Address(bus, address);
         Locomotive locomotive = addressToLocomotives.get(addr);
         locomotive.locomotiveChanged(drivemode, v, vMax, functions);
-        // informListeners(locomotive);
+        informListeners(locomotive);
     }
 
     public void GLterm(double timestamp, int bus, int address) {

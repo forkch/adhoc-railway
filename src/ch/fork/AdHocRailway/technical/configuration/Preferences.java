@@ -54,7 +54,7 @@ public class Preferences implements PreferencesKeys {
         setBooleanValue(LOGGING, false);
         setBooleanValue(FULLSCREEN, false);
         setBooleanValue(AUTOCONNECT, false);
-        setBooleanValue(TABBED_TRACK, false);
+        setBooleanValue(TABBED_TRACK, true);
     }
 
     public static Preferences getInstance() {

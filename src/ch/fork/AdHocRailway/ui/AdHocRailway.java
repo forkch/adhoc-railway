@@ -252,6 +252,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
     private void updateGUI() {
         switchesControlPanel.update(switchControl.getSwitchGroups());
+        routesControlPanel.update(RouteControl.getInstance().getRoutes());
         locomotiveControlPanel.update(locomotiveControl.getLocomotiveGroups());
 
     }
