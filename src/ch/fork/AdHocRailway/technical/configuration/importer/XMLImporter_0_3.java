@@ -78,7 +78,7 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
         switchControl.unregisterAllSwitchGroups();
         switchControl.unregisterAllSwitches();
         locomotiveControl.clear();
-        routeControl.unregisterAllRoutes();
+        routeControl.clear();
         parseDocument(filename);
 
     }

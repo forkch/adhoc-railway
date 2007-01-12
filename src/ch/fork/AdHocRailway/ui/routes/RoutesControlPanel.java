@@ -79,6 +79,7 @@ public class RoutesControlPanel extends JPanel {
         int currentCol = 0;
         gbc.gridx = currentCol;
         gbc.gridy = currentRow;
+        routesPanel.removeAll();
         for (Route route : routes) {
             
             RouteWidget routeWidget = new RouteWidget(route, frame);

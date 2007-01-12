@@ -57,6 +57,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
@@ -203,13 +204,14 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         mainPanel.add(locomotiveControlPanel, BorderLayout.SOUTH);
         add(mainPanel, BorderLayout.CENTER);
         add(statusBarPanel, BorderLayout.SOUTH);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
 
             private boolean exit = false;
 
             @Override
             public void windowClosing(WindowEvent e) {
-                System.exit(0);
+                new ExitAction().actionPerformed(null);
             }
         });
     }
@@ -320,6 +322,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             actualFile = null;
             switchControl.clear();
             locomotiveControl.clear();
+            RouteControl.getInstance().clear();
             updateGUI();
             updateCommandHistory("Created new configuration");
             setTitle(AdHocRailway.NAME + " : [ ]");
@@ -512,7 +515,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 RouteControl rc = RouteControl.getInstance();
                 RoutesConfiguration routesConfiguration = routesConfig
                     .getTempConfiguration();
-                rc.unregisterAllRoutes();
+                rc.clear();
                 rc.registerRoutes(routesConfiguration.getRoutes());
 
                 updateCommandHistory("Routes configuration changed");

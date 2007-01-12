@@ -46,7 +46,7 @@ public class RouteControl extends Control {
         }
     }
 
-    public void unregisterAllRoutes() {
+    public void clear() {
         routes.clear();
     }
 

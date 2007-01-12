@@ -108,15 +108,15 @@
     </exec>
     <copy todir="AdHoc-Railway-${release}-src">
       <fileset dir="." includes="ChangeLog, README, COPYING, TODO, build.xml,
-        build.properties"/>
-      <fileset dir="." includes="src/"/>
-      <fileset dir="." includes="doc/"/>
-      <fileset dir="." includes="javadoc/"/>
-      <fileset dir="." includes="etc/"/>
-      <fileset dir="." includes="lib/"/>
+        build.properties" excludes="**/.svn/"/>
+      <fileset dir="." includes="src/" excludes="**/.svn/"/>
+      <!--fileset dir="." includes="doc/" excludes="**/.svn/"/-->
+      <!--fileset dir="." includes="javadoc/" excludes="**/.svn/"/-->
+      <fileset dir="." includes="etc/" excludes="**/.svn/"/>
+      <fileset dir="." includes="lib/" excludes="**/.svn/"/>
     </copy>
     <tar destfile="AdHoc-Railway-${release}-src.tar.bz2"
-      basedir="" includes="AdHoc-Railway-${release}-src/**" compression="bzip2" longfile="gnu"/>
+      basedir="" includes="AdHoc-Railway-${release}-src/**" compression="bzip2" longfile="gnu" excludes="**/.svn/"/>
     <delete dir="AdHoc-Railway-${release}-src"/>
     <delete file="ChangeLog"/>
   </target>
