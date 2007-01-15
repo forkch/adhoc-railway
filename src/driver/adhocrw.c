@@ -49,25 +49,28 @@ struct file_operations adhocrw_fops = {
 
 struct adhocrw_dev *adhocrw_devices;
 
+/* read */
 ssize_t adhocrw_read    (struct file *filep, char __user *buf, size_t count, 
     loff_t *f_pos) {
     printk(KERN_INFO "adhocrw: received read\n");
     return count;
 }
 
+/* write */
 ssize_t adhocrw_write   (struct file *filep, const char __user *buf, 
     size_t count, loff_t *f_pos) {
     printk(KERN_INFO "adhocrw: received write\n");
     return count;
 }
 
+/* ioctl */
 int     adhocrw_ioctl   (struct inode *inode, struct file *filep, 
     unsigned int cmd, unsigned long arg) {
     printk(KERN_INFO "adhocrw: received ioctl\n");
     return 0;
 }
 
-/* Open */
+/* open */
 int     adhocrw_open    (struct inode *inode, struct file *filep) {
     struct adhocrw_dev *dev;
     printk(KERN_INFO "adhocrw: received open\n");
@@ -76,7 +79,7 @@ int     adhocrw_open    (struct inode *inode, struct file *filep) {
     return 0;
 }
 
-/* Release */
+/* release */
 int     adhocrw_release (struct inode *inode, struct file *filep) {
     printk(KERN_INFO "adhocrw: received release\n");
     return 0;
@@ -106,7 +109,8 @@ static int __init init_driver(void)
         return result;
     }
 
-    adhocrw_devices = kmalloc(adhocrw_nr_devs * sizeof(struct adhocrw_dev), GFP_KERNEL);
+    adhocrw_devices = kmalloc(adhocrw_nr_devs * sizeof(struct adhocrw_dev), 
+        GFP_KERNEL);
     if (!adhocrw_devices) {
         result = -ENOMEM;
         goto fail;  /* Make this more graceful */
