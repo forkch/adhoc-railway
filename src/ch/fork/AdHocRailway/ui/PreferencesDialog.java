@@ -27,7 +27,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -66,7 +65,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
     private JCheckBox          writeLog;
     private JCheckBox          fullscreen;
     private JCheckBox          tabbedTrackCheckBox;
-    private List<String>       hostnames;
 
     private boolean            okPressed;
     private boolean            cancelPressed;

@@ -54,8 +54,7 @@ public class ExceptionProcessor {
             exceptionMsg += "\n\nCause: " + e.getCause().getMessage();
         }
         JOptionPane.showMessageDialog(parent, exceptionMsg, "Error occured",
-            JOptionPane.ERROR_MESSAGE, ImageTools.createImageIcon(
-                "icons/messagebox_critical.png", "Critical", this));
+            JOptionPane.ERROR_MESSAGE, ImageTools.createImageIcon("messagebox_critical.png"));
 
     }
 
@@ -68,6 +67,6 @@ public class ExceptionProcessor {
         }
         JOptionPane.showMessageDialog(parent, msg, "Error occured",
             JOptionPane.ERROR_MESSAGE, ImageTools.createImageIcon(
-                "icons/messagebox_critical.png", "Critical", this));
+                "messagebox_critical.png"));
     }
 }

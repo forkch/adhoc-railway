@@ -44,10 +44,8 @@ public class LockToggleButton extends JToggleButton {
     public LockToggleButton(String text) {
         super(text);
 
-        setIcon(ImageTools.createImageIcon("icons/unlocked.png", "Disabled",
-            this));
-        setSelectedIcon(ImageTools.createImageIcon("icons/locked.png",
-            "Enabled", this));
+        setIcon(ImageTools.createImageIcon("locomotives/unlocked.png"));
+        setSelectedIcon(ImageTools.createImageIcon("locomotives/locked.png"));
 
     }
 

@@ -40,7 +40,7 @@
   <!-- =================================================================== -->
   <target name="copy_images" depends="init">
     <copy todir="${build.dir}">
-      <fileset dir="./src">
+      <fileset dir="./res">
         <include name="**/*.png"/>
       </fileset>
     </copy>
@@ -85,7 +85,7 @@
     <mkdir dir="${release.dir}"/>
     <unjar src="./lib/jsrcpc-bin.jar" dest="${build.dir}"/>
     <delete file="AdHoc-Railway-${release}-bin.jar"/>
-    <jar destfile="AdHoc-Railway-${release}-bin.jar" manifest="./src/manifest.mf">
+    <jar destfile="./release/AdHoc-Railway-${release}-bin.jar" manifest="./src/manifest.mf">
       <fileset dir="${build.dir}/"
         includes="**/*.class"
         />
@@ -115,7 +115,7 @@
       <fileset dir="." includes="etc/" excludes="**/.svn/"/>
       <fileset dir="." includes="lib/" excludes="**/.svn/"/>
     </copy>
-    <tar destfile="AdHoc-Railway-${release}-src.tar.bz2"
+    <tar destfile="./release/AdHoc-Railway-${release}-src.tar.bz2"
       basedir="" includes="AdHoc-Railway-${release}-src/**" compression="bzip2" longfile="gnu" excludes="**/.svn/"/>
     <delete dir="AdHoc-Railway-${release}-src"/>
     <delete file="ChangeLog"/>
@@ -126,6 +126,7 @@
   <target name="clean" description="Removes generated class files">
     <!-- Delete the ${build.dir} directory tree -->
     <delete dir="${build.dir}"/>
+    <delete dir="./release/"/>
   </target>
   <target name="clean-javadoc" description="Removes generated Javadoc files">
     <delete dir="${javadoc.dir}"/>

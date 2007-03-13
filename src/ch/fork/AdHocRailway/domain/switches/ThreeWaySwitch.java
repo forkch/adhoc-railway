@@ -82,22 +82,22 @@ public class ThreeWaySwitch extends Switch {
         case LEFT:
             switch1.setStraight();
             switch2.setStraight();
-            switchState = SwitchState.STRAIGHT;
+            //switchState = SwitchState.STRAIGHT;
             break;
         case STRAIGHT:
             switch1.setStraight();
             switch2.setCurvedRight();
-            switchState = SwitchState.RIGHT;
+            //switchState = SwitchState.RIGHT;
             break;
         case RIGHT:
             switch1.setCurvedRight();
             switch2.setStraight();
-            switchState = SwitchState.LEFT;
+            //switchState = SwitchState.LEFT;
             break;
         case UNDEF:
             switch1.setStraight();
             switch2.setStraight();
-            switchState = SwitchState.STRAIGHT;
+            //switchState = SwitchState.STRAIGHT;
             break;
         }
     }

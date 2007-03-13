@@ -46,7 +46,6 @@ import ch.fork.AdHocRailway.ui.SpringUtilities;
 public class LocomotiveConfig extends JDialog {
     private Locomotive          myLocomotive;
     private boolean             okPressed;
-    private boolean             cancelPressed;
     private JTextField          nameTextField;
     private JTextField          busTextField;
     private JTextField          addressTextField;
@@ -79,10 +78,8 @@ public class LocomotiveConfig extends JDialog {
         JButton okButton = new JButton("OK");
         okButton.addActionListener(new ApplyChangesAction());
         JButton cancelButton = new JButton("Cancel");
-        cancelPressed = false;
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                cancelPressed = true;
                 LocomotiveConfig.this.setVisible(false);
             }
         });

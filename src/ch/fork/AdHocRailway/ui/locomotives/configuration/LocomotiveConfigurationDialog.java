@@ -28,7 +28,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.FocusTraversalPolicy;
-import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -72,11 +71,9 @@ import ch.fork.AdHocRailway.ui.TableResizer;
 
 public class LocomotiveConfigurationDialog<E> extends
     ConfigurationDialog<LocomotiveConfiguration> {
-    private Frame                 owner;
     private boolean               okPressed     = false;
     private boolean               cancelPressed = false;
     private LocomotiveControl     locomotiveControl;
-    private TableModel            locomotiveTableModel;
 
     private TableModel            locomotivesTableModel;
     private JTable                locomotivesTable;

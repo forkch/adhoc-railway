@@ -8,7 +8,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -33,8 +32,6 @@ import javax.swing.table.TableColumn;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.domain.switches.Switch;
-import ch.fork.AdHocRailway.domain.switches.SwitchControl;
 import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ListListModel;
@@ -62,7 +59,6 @@ public class RoutesConfigurationDialog<E> extends
 
 	private JTable routedSwitchesTable;
 	
-	private Map<Integer, Switch> numberToSwitch;
 
 	public RoutesConfigurationDialog(JFrame parent) {
 		super(parent, "Edit Routes");
@@ -89,7 +85,6 @@ public class RoutesConfigurationDialog<E> extends
 			Route newRoute = (Route) r.clone();
 			routesWorkCopy.add(newRoute);
 		}
-		numberToSwitch = SwitchControl.getInstance().getNumberToSwitch();
 	}
 
 	@Override

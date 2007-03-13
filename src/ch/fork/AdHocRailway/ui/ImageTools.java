@@ -26,19 +26,8 @@ import javax.swing.ImageIcon;
 
 public class ImageTools {
 
-    public static ImageIcon createImageIcon(String path, String description,
-        Object o) {
-        return createImageIcon(path, description, o.getClass());
+    public static ImageIcon createImageIcon(String icon) {
+        return new ImageIcon(ClassLoader.getSystemResource(icon));
     }
 
-    public static ImageIcon createImageIcon(String path, String description,
-        Class o) {
-        java.net.URL imgURL = o.getResource(path);
-        if (imgURL != null) {
-            return new ImageIcon(imgURL, description);
-        } else {
-            System.err.println("Couldn't find file: " + path);
-            return null;
-        }
-    }
 }

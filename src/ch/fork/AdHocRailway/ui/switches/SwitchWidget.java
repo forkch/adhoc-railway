@@ -59,7 +59,6 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
     private SwitchControl      switchControl;
     private static final long  serialVersionUID = 1L;
     private Switch             mySwitch;
-    private JLabel             switchStateLabel;
     private JLabel             numberLabel;
     private JLabel             descLabel;
     private SwitchGroup        switchGroup;

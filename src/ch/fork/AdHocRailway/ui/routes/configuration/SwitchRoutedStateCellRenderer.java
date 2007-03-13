@@ -56,28 +56,23 @@ public class SwitchRoutedStateCellRenderer implements TableCellRenderer {
         }
         if (currentSwitch instanceof DefaultSwitch) {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "icons/default_switch_" + stateString + ".png",
-                "Default Switch", SwitchWidget.class));
+                "switches/default_switch_" + stateString + ".png"));
         } else if (currentSwitch instanceof DoubleCrossSwitch) {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "icons/double_cross_switch_" + stateString + ".png",
-                "Double Cross Switch", SwitchWidget.class));
+                "switches/double_cross_switch_" + stateString + ".png"));
         } else if (currentSwitch instanceof ThreeWaySwitch) {
             switch (routedState) {
             case STRAIGHT:
                 iconLabel.setIcon(ImageTools.createImageIcon(
-                    "icons/three_way_switch_straight.png", "Threeway Switch",
-                    SwitchWidget.class));
+                    "switches/three_way_switch_straight.png"));
                 break;
             case LEFT:
                 iconLabel.setIcon(ImageTools.createImageIcon(
-                    "icons/three_way_switch_left.png", "Threeway Switch",
-                    SwitchWidget.class));
+                    "switches/three_way_switch_left.png"));
                 break;
             case RIGHT:
                 iconLabel.setIcon(ImageTools.createImageIcon(
-                    "icons/three_way_switch_right.png", "Threeway Switch",
-                    SwitchWidget.class));
+                    "switches/three_way_switch_right.png"));
                 break;
             }
         }

@@ -160,7 +160,7 @@ public abstract class Locomotive extends ControlObject implements Constants,
                 direction = Direction.FORWARD;
                 break;
             }
-            currentSpeed = speed;
+            //currentSpeed = speed;
             // gl.get();
         } catch (SRCPException x) {
             if (x instanceof SRCPDeviceLockedException) {
@@ -213,7 +213,7 @@ public abstract class Locomotive extends ControlObject implements Constants,
      * @throws LocomotiveException
      */
     protected void setFunctions(boolean[] functions) throws LocomotiveException {
-        this.functions = functions;
+        //this.functions = functions;
         setSpeed(currentSpeed);
     }
 

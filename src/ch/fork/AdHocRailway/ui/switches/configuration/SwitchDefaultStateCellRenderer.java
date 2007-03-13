@@ -44,12 +44,10 @@ public class SwitchDefaultStateCellRenderer implements TableCellRenderer {
         }
         if (value.equals(SwitchState.STRAIGHT)) {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "icons/default_straight.png", "Default Switch",
-                SwitchWidget.class));
+                "switches/default_straight.png"));
         } else {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "icons/default_curved.png", "Default Switch",
-                SwitchWidget.class));
+                "switches/default_curved.png"));
         }
         return iconLabel;
     }

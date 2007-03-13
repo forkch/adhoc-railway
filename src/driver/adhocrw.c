@@ -31,12 +31,16 @@
 #include <linux/seq_file.h>
 #include <linux/cdev.h>
 
-
 #include "adhocrw.h"
 
 int adhocrw_major = ADHOCRW_MAJOR;
 int adhocrw_minor = ADHOCRW_MINOR;
 int adhocrw_nr_devs = ADHOCRW_NR_DEVS;
+
+/* propagate our parameters */
+module_param(adhocrw_major, int, S_IRUGO);
+module_param(adhocrw_minor, int, S_IRUGO);
+module_param(adhocrw_nr_devs, int, S_IRUGO);
 
 struct file_operations adhocrw_fops = {
     .owner =    THIS_MODULE,
@@ -50,28 +54,28 @@ struct file_operations adhocrw_fops = {
 struct adhocrw_dev *adhocrw_devices;
 
 /* read */
-ssize_t adhocrw_read    (struct file *filep, char __user *buf, size_t count, 
+ssize_t adhocrw_read (struct file *filep, char __user *buf, size_t count, 
     loff_t *f_pos) {
     printk(KERN_INFO "adhocrw: received read\n");
     return count;
 }
 
 /* write */
-ssize_t adhocrw_write   (struct file *filep, const char __user *buf, 
+ssize_t adhocrw_write (struct file *filep, const char __user *buf, 
     size_t count, loff_t *f_pos) {
     printk(KERN_INFO "adhocrw: received write\n");
     return count;
 }
 
 /* ioctl */
-int     adhocrw_ioctl   (struct inode *inode, struct file *filep, 
+int adhocrw_ioctl (struct inode *inode, struct file *filep, 
     unsigned int cmd, unsigned long arg) {
     printk(KERN_INFO "adhocrw: received ioctl\n");
     return 0;
 }
 
 /* open */
-int     adhocrw_open    (struct inode *inode, struct file *filep) {
+int adhocrw_open    (struct inode *inode, struct file *filep) {
     struct adhocrw_dev *dev;
     printk(KERN_INFO "adhocrw: received open\n");
     dev = container_of(inode->i_cdev, struct adhocrw_dev, cdev);
@@ -80,7 +84,7 @@ int     adhocrw_open    (struct inode *inode, struct file *filep) {
 }
 
 /* release */
-int     adhocrw_release (struct inode *inode, struct file *filep) {
+int adhocrw_release (struct inode *inode, struct file *filep) {
     printk(KERN_INFO "adhocrw: received release\n");
     return 0;
 }

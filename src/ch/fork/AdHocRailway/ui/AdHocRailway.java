@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
@@ -41,6 +42,8 @@ import java.util.GregorianCalendar;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -87,20 +90,19 @@ import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 
 public class AdHocRailway extends JFrame implements CommandDataListener,
-    InfoDataListener, PreferencesKeys {
+        InfoDataListener, PreferencesKeys {
 
     private static final long      serialVersionUID  = 1L;
     private static final String    NAME              = "AdHoc-Railway";
     private SRCPSession            session;
-    private String                 typedChars        = "";
     private SwitchControl          switchControl     = SwitchControl
-                                                         .getInstance();
+                                                             .getInstance();
     private LocomotiveControl      locomotiveControl = LocomotiveControl
-                                                         .getInstance();
+                                                             .getInstance();
     private LockControl            lockControl       = LockControl
-                                                         .getInstance();
+                                                             .getInstance();
     private Preferences            preferences       = Preferences
-                                                         .getInstance();
+                                                             .getInstance();
 
     // GUI-Components
     private LocomotiveControlPanel locomotiveControlPanel;
@@ -130,15 +132,15 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
     public AdHocRailway(String file) {
         super(NAME);
-
-        splash = new SplashWindow(createImageIcon("icons/splash.png",
-            "RailControl", AdHocRailway.this), this, 500, 4);
+        // Plastic3DLookAndFeel.setPlasticTheme(new DesertBlue());
+        // try {
+        // UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
+        // } catch (Exception e) {}
+        splash = new SplashWindow(createImageIcon("splash.png"), this, 500, 4);
         splash.nextStep("Starting AdHoc-Railway ...");
-        setIconImage(createImageIcon("icons/RailControl.png", "RailControl",
-            AdHocRailway.this).getImage());
+        setIconImage(createImageIcon("RailControl.png").getImage());
 
         loadConfiguration(file);
-
 
         splash.nextStep("Creating GUI ...");
         initGUI();
@@ -161,7 +163,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             new ConnectAction().actionPerformed(null);
     }
 
-
     private void loadConfiguration(String file) {
         if (file != null) {
             File standardFile = new File(file);
@@ -178,13 +179,13 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     private void initGUI() {
+
         setFont(new Font("Verdana", Font.PLAIN, 19));
         setLayout(new BorderLayout());
         ExceptionProcessor.getInstance(this);
         switchesControlPanel = initSwitchPanel();
         routesControlPanel = initRoutesPanel();
         locomotiveControlPanel = initLocomotiveControl();
-
 
         initMenu();
         initToolbar();
@@ -206,9 +207,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         add(statusBarPanel, BorderLayout.SOUTH);
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
-
-            private boolean exit = false;
-
             @Override
             public void windowClosing(WindowEvent e) {
                 new ExitAction().actionPerformed(null);
@@ -218,20 +216,20 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
     private SwitchesControlPanel initSwitchPanel() {
         SwitchesControlPanel switchesControlPanel = new SwitchesControlPanel(
-            this);
+                this);
         switchesControlPanel.setBorder(new TitledBorder("Switches"));
         return switchesControlPanel;
     }
 
     private RoutesControlPanel initRoutesPanel() {
-        RoutesControlPanel routesControlPanel = new RoutesControlPanel(this);
+        RoutesControlPanel routesControlPanel = new RoutesControlPanel();
         routesControlPanel.setBorder(new TitledBorder("Routes"));
         return routesControlPanel;
     }
 
     private LocomotiveControlPanel initLocomotiveControl() {
         LocomotiveControlPanel locomotiveControlPanel = new LocomotiveControlPanel(
-            this);
+                this);
         locomotiveControlPanel.setBorder(new TitledBorder("Trains"));
         return locomotiveControlPanel;
     }
@@ -248,7 +246,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 }
 
             }, "", KeyStroke.getKeyStroke(KeyEvent.VK_BACK_QUOTE, 0),
-                JComponent.WHEN_IN_FOCUSED_WINDOW);
+                    JComponent.WHEN_IN_FOCUSED_WINDOW);
         }
     }
 
@@ -280,7 +278,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     public void infoDataReceived(double timestamp, int bus, String deviceGroup,
-        String data) {
+            String data) {
 
     }
 
@@ -311,11 +309,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
     private class NewAction extends AbstractAction {
 
-        private File file;
-
         public NewAction() {
-            super("New file", createImageIcon("icons/filenew.png", "New file",
-                AdHocRailway.this));
+            super("New file", createImageIcon("filenew.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -334,8 +329,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         private File file;
 
         public OpenAction(File file) {
-            super("Open file...", createImageIcon("icons/fileopen.png",
-                "File open...", AdHocRailway.this));
+            super("Open file...", createImageIcon("fileopen.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -357,7 +351,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         private void openFile(File file) {
 
             try {
-                XMLImporter importer = new XMLImporter(file.getAbsolutePath());
+                new XMLImporter(file.getAbsolutePath());
 
                 /*
                  * if (recentFilesMenu.getComponentCount() > 1) {
@@ -370,10 +364,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 // updateCommandHistory("Opened configuration: " +
                 // file.getName());
                 setTitle(AdHocRailway.NAME + " : [ "
-                    + actualFile.getAbsolutePath() + " ]");
+                        + actualFile.getAbsolutePath() + " ]");
             } catch (ConfigurationException e) {
                 ExceptionProcessor.getInstance().processException(
-                    "Error loading file", e);
+                        "Error loading file", e);
             }
 
         }
@@ -382,8 +376,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class SaveAsAction extends AbstractAction {
 
         public SaveAsAction() {
-            super("Save as...", createImageIcon("icons/filesaveas.png",
-                "Save as...", AdHocRailway.this));
+            super("Save as...", createImageIcon("filesaveas.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -396,23 +389,23 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 FileWriter fileWriter = null;
                 try {
                     String xmlConfig = XMLExporter
-                        .export(Constants.ACTUAL_CONFIG_VERSION);
+                            .export(Constants.ACTUAL_CONFIG_VERSION);
                     fileWriter = new FileWriter(file);
                     fileWriter.write(xmlConfig);
                     updateCommandHistory("Configuration saved: "
-                        + file.getName());
+                            + file.getName());
                 } catch (IOException e1) {
                     ExceptionProcessor.getInstance().processException(
-                        "Error writing file", e1);
+                            "Error writing file", e1);
                 } catch (ConfigurationException e1) {
                     ExceptionProcessor.getInstance().processException(
-                        "Error writing file", e1);
+                            "Error writing file", e1);
                 } finally {
                     try {
                         fileWriter.close();
                     } catch (IOException e1) {
                         ExceptionProcessor.getInstance().processException(
-                            "Error writing file", e1);
+                                "Error writing file", e1);
                     }
                 }
             } else {
@@ -423,8 +416,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class SaveAction extends AbstractAction {
 
         public SaveAction() {
-            super("Save", createImageIcon("icons/filesave.png", "Save",
-                AdHocRailway.this));
+            super("Save", createImageIcon("filesave.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -433,24 +425,24 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 FileWriter fileWriter = null;
                 try {
                     String xmlConfig = XMLExporter
-                        .export(Constants.ACTUAL_CONFIG_VERSION);
+                            .export(Constants.ACTUAL_CONFIG_VERSION);
                     fileWriter = new FileWriter(actualFile);
                     fileWriter.write(xmlConfig);
                     updateCommandHistory("Configuration saved: "
-                        + actualFile.getName());
+                            + actualFile.getName());
                 } catch (ConfigurationException e1) {
                     ExceptionProcessor.getInstance().processException(
-                        "Error writing file", e1);
+                            "Error writing file", e1);
 
                 } catch (IOException e1) {
                     ExceptionProcessor.getInstance().processException(
-                        "Error writing file", e1);
+                            "Error writing file", e1);
                 } finally {
                     try {
                         fileWriter.close();
                     } catch (IOException e1) {
                         ExceptionProcessor.getInstance().processException(
-                            "Error writing file", e1);
+                                "Error writing file", e1);
                     }
                 }
             } else {
@@ -462,15 +454,13 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class ExitAction extends AbstractAction {
 
         public ExitAction() {
-            super("Exit", createImageIcon("icons/exit.png", "Exit",
-                AdHocRailway.this));
+            super("Exit", createImageIcon("exit.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
             int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
-                "Really exit ?", "Exit", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE, ImageTools.createImageIcon(
-                    "icons/messagebox_warning.png", "Warning", this));
+                    "Really exit ?", "Exit", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,createImageIcon("messagebox_warning.png"));
             if (result == JOptionPane.YES_OPTION) {
                 System.exit(0);
             }
@@ -479,22 +469,21 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class SwitchesAction extends AbstractAction {
 
         public SwitchesAction() {
-            super("Switches", createImageIcon("icons/switch.png", "Switches",
-                AdHocRailway.this));
+            super("Switches", createImageIcon("switch.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
             SwitchConfigurationDialog switchConfigDialog = new SwitchConfigurationDialog(
-                AdHocRailway.this);
+                    AdHocRailway.this);
             if (switchConfigDialog.isOkPressed()) {
 
                 SwitchConfiguration switchConf = (SwitchConfiguration) switchConfigDialog
-                    .getTempConfiguration();
+                        .getTempConfiguration();
                 switchControl.clear();
                 switchControl
-                    .registerSwitchGroups(switchConf.getSwitchGroups());
+                        .registerSwitchGroups(switchConf.getSwitchGroups());
                 switchControl.registerSwitches(switchConf
-                    .getSwitchNumberToSwitch().values());
+                        .getSwitchNumberToSwitch().values());
                 updateSwitches();
                 updateCommandHistory("Switch configuration changed");
             }
@@ -504,17 +493,16 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class RoutesAction extends AbstractAction {
 
         public RoutesAction() {
-            super("Routes", createImageIcon("icons/route_edit.png", "Routes",
-                AdHocRailway.this));
+            super("Routes", createImageIcon("route_edit.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
             RoutesConfigurationDialog routesConfig = new RoutesConfigurationDialog(
-                AdHocRailway.this);
+                    AdHocRailway.this);
             if (routesConfig.isOkPressed()) {
                 RouteControl rc = RouteControl.getInstance();
                 RoutesConfiguration routesConfiguration = routesConfig
-                    .getTempConfiguration();
+                        .getTempConfiguration();
                 rc.clear();
                 rc.registerRoutes(routesConfiguration.getRoutes());
 
@@ -525,22 +513,21 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class LocomotivesAction extends AbstractAction {
 
         public LocomotivesAction() {
-            super("Locomotives", createImageIcon("icons/locomotive.png",
-                "Locomotives", AdHocRailway.this));
+            super("Locomotives", createImageIcon("locomotive.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
             LocomotiveConfigurationDialog locomotiveConfigDialog = new LocomotiveConfigurationDialog(
-                AdHocRailway.this);
+                    AdHocRailway.this);
             if (locomotiveConfigDialog.isOkPressed()) {
                 LocomotiveConfiguration locomotiveConfiguration = locomotiveConfigDialog
-                    .getTempConfiguration();
+                        .getTempConfiguration();
                 locomotiveControl.clear();
                 locomotiveControl.registerLocomotives(locomotiveConfiguration
-                    .getLocomotives());
+                        .getLocomotives());
                 locomotiveControl
-                    .registerLocomotiveGroups(locomotiveConfiguration
-                        .getLocomotiveGroups());
+                        .registerLocomotiveGroups(locomotiveConfiguration
+                                .getLocomotiveGroups());
                 updateLocomotives();
                 updateCommandHistory("Locomotive configuration changed");
             }
@@ -549,8 +536,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class PreferencesAction extends AbstractAction {
 
         public PreferencesAction() {
-            super("Preferences", createImageIcon("icons/package_settings.png",
-                "Preferences", AdHocRailway.this));
+            super("Preferences", createImageIcon("package_settings.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -571,8 +557,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class ConnectAction extends AbstractAction {
 
         public ConnectAction() {
-            super("Connect", createImageIcon("icons/daemonconnect.png",
-                "Connect", AdHocRailway.this));
+            super("Connect", createImageIcon("daemonconnect.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -581,7 +566,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 int port = preferences.getIntValue(PORT);
                 session = new SRCPSession(host, port, false);
                 session.getCommandChannel().addCommandDataListener(
-                    AdHocRailway.this);
+                        AdHocRailway.this);
                 session.getInfoChannel().addInfoDataListener(AdHocRailway.this);
                 switchControl.setSession(session);
                 locomotiveControl.setSession(session);
@@ -593,11 +578,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 connectToolBarButton.setEnabled(false);
                 disconnectToolBarButton.setEnabled(true);
                 updateCommandHistory("Connected to server " + host
-                    + " on port " + port);
+                        + " on port " + port);
             } catch (SRCPException e1) {
                 if (e1.getCause() instanceof ConnectException) {
                     ExceptionProcessor.getInstance().processException(
-                        "Server not running", e1);
+                            "Server not running", e1);
                 }
             }
         }
@@ -605,8 +590,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class DisconnectAction extends AbstractAction {
 
         public DisconnectAction() {
-            super("Disconnect", createImageIcon("icons/daemondisconnect.png",
-                "Disconnect", AdHocRailway.this));
+            super("Disconnect", createImageIcon("daemondisconnect.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -624,7 +608,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 connectToolBarButton.setEnabled(true);
                 disconnectToolBarButton.setEnabled(false);
                 updateCommandHistory("Disconnected from server " + host
-                    + " on port " + port);
+                        + " on port " + port);
             } catch (SRCPException e1) {
                 ExceptionProcessor.getInstance().processException(e1);
             }
@@ -633,8 +617,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class ResetAction extends AbstractAction {
 
         public ResetAction() {
-            super("Reset", createImageIcon("icons/daemonreset.png", "Reset",
-                AdHocRailway.this));
+            super("Reset", createImageIcon("daemonreset.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -643,8 +626,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class RefreshAction extends AbstractAction {
 
         public RefreshAction() {
-            super("Refresh", createImageIcon("icons/reload.png", "Refresh",
-                AdHocRailway.this));
+            super("Refresh", createImageIcon("reload.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -654,22 +636,18 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class SwitchProgrammerAction extends AbstractAction {
 
         public SwitchProgrammerAction() {
-            super("SwitchProgrammer", createImageIcon(
-                "icons/switch_programmer.png", "SwitchProgrammer",
-                AdHocRailway.this));
+            super("SwitchProgrammer", createImageIcon("switch_programmer.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
             SwitchProgrammer sp = new SwitchProgrammer(AdHocRailway.this,
-                session);
+                    session);
         }
     }
     private class ToggleFullscreenAction extends AbstractAction {
 
         public ToggleFullscreenAction() {
-            super("ToggleFullscreen", createImageIcon(
-                "icons/window_fullscreen.png", "ToggleFullscreen",
-                AdHocRailway.this));
+            super("ToggleFullscreen",createImageIcon("window_fullscreen.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -680,9 +658,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 setUndecorated(false);
                 setSize(1000, 700);
                 setVisible(true);
-                toggleFullscreenButton.setIcon(createImageIcon(
-                    "icons/window_fullscreen.png", "ToggleFullscreen",
-                    AdHocRailway.this));
+                toggleFullscreenButton.setIcon(createImageIcon("window_fullscreen.png"));
                 fullscreen = false;
             } else {
                 dispose();
@@ -691,9 +667,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 setUndecorated(true);
                 setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
                 setVisible(true);
-                toggleFullscreenButton.setIcon(createImageIcon(
-                    "icons/window_nofullscreen.png", "ToggleFullscreen",
-                    AdHocRailway.this));
+                toggleFullscreenButton.setIcon(createImageIcon("window_nofullscreen.png"));
                 fullscreen = true;
             }
         }
@@ -701,9 +675,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private class SwitchesStraightAction extends AbstractAction {
 
         public SwitchesStraightAction() {
-            super("Set all switches straight", createImageIcon(
-                "icons/switch.png", "Set all switches straight",
-                AdHocRailway.this));
+            super("Set all switches straight", createImageIcon("switch.png"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -738,26 +710,26 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         JMenuItem newItem = new JMenuItem(new NewAction());
         newItem.setMnemonic(KeyEvent.VK_N);
         newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
-            ActionEvent.CTRL_MASK));
+                ActionEvent.CTRL_MASK));
 
         JMenuItem openItem = new JMenuItem(new OpenAction(null));
         openItem.setMnemonic(KeyEvent.VK_O);
         openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
-            ActionEvent.CTRL_MASK));
+                ActionEvent.CTRL_MASK));
 
         JMenuItem saveAsItem = new JMenuItem(new SaveAsAction());
 
         JMenuItem saveItem = new JMenuItem(new SaveAction());
         saveItem.setMnemonic(KeyEvent.VK_S);
         saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-            ActionEvent.CTRL_MASK));
+                ActionEvent.CTRL_MASK));
 
         recentFilesMenu = new JMenu("Recent files...");
 
         JMenuItem exitItem = new JMenuItem(new ExitAction());
         exitItem.setMnemonic(KeyEvent.VK_X);
         exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-            ActionEvent.CTRL_MASK));
+                ActionEvent.CTRL_MASK));
 
         fileMenu.add(newItem);
         fileMenu.add(openItem);
@@ -776,16 +748,16 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         editMenu.setMnemonic(KeyEvent.VK_E);
         switchesItem.setMnemonic(KeyEvent.VK_S);
         switchesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-            ActionEvent.ALT_MASK));
+                ActionEvent.ALT_MASK));
         routesItem.setMnemonic(KeyEvent.VK_R);
         routesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
-            ActionEvent.ALT_MASK));
+                ActionEvent.ALT_MASK));
         locomotivesItem.setMnemonic(KeyEvent.VK_L);
         locomotivesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L,
-            ActionEvent.ALT_MASK));
+                ActionEvent.ALT_MASK));
         preferencesItem.setMnemonic(KeyEvent.VK_P);
         preferencesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
-            ActionEvent.ALT_MASK));
+                ActionEvent.ALT_MASK));
         editMenu.add(switchesItem);
         editMenu.add(routesItem);
         editMenu.add(locomotivesItem);
@@ -796,7 +768,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         JMenu daemonMenu = new JMenu("Daemon");
         daemonConnectItem = new JMenuItem(new ConnectAction());
         daemonConnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
-            ActionEvent.CTRL_MASK));
+                ActionEvent.CTRL_MASK));
         daemonDisconnectItem = new JMenuItem(new DisconnectAction());
         daemonResetItem = new JMenuItem(new ResetAction());
         daemonDisconnectItem.setEnabled(false);
@@ -817,9 +789,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         /* TOOLS */
         JMenu toolsMenu = new JMenu("Tools");
         JMenuItem switchesStraightItem = new JMenuItem(
-            new SwitchesStraightAction());
+                new SwitchesStraightAction());
         JMenuItem switchProgrammerItem = new JMenuItem(
-            new SwitchProgrammerAction());
+                new SwitchProgrammerAction());
 
         toolsMenu.add(switchesStraightItem);
         toolsMenu.add(switchProgrammerItem);
@@ -843,7 +815,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         JButton newToolBarButton = new SmallToolbarButton(new NewAction());
         JButton openToolBarButton = new SmallToolbarButton(new OpenAction(null));
         JButton saveToolBarButton = new SmallToolbarButton(new SaveAction());
-        JButton saveAsToolBarButton = new SmallToolbarButton(new SaveAsAction());
+        // JButton saveAsToolBarButton = new SmallToolbarButton(new
+        // SaveAsAction());
         JButton exitToolBarButton = new SmallToolbarButton(new ExitAction());
 
         fileTooBar.add(newToolBarButton);
@@ -854,12 +827,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         /* DIGITAL */
         JToolBar digitalToolBar = new JToolBar();
         JButton switchesToolBarButton = new SmallToolbarButton(
-            new SwitchesAction());
+                new SwitchesAction());
         JButton routesToolBarButton = new SmallToolbarButton(new RoutesAction());
         JButton locomotivesToolBarButton = new SmallToolbarButton(
-            new LocomotivesAction());
+                new LocomotivesAction());
         JButton preferencesToolBarButton = new SmallToolbarButton(
-            new PreferencesAction());
+                new PreferencesAction());
 
         digitalToolBar.add(switchesToolBarButton);
         digitalToolBar.add(routesToolBarButton);
@@ -882,9 +855,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         /* TOOLS */
         JToolBar toolsToolBar = new JToolBar();
         JButton setAllSwitchesStraightButton = new SmallToolbarButton(
-            new SwitchesStraightAction());
+                new SwitchesStraightAction());
         JButton switchProgrammerButton = new SmallToolbarButton(
-            new SwitchProgrammerAction());
+                new SwitchProgrammerAction());
 
         toolsToolBar.add(setAllSwitchesStraightButton);
         toolsToolBar.add(switchProgrammerButton);
@@ -893,13 +866,13 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         JToolBar viewToolBar = new JToolBar();
         JButton refreshButton = new SmallToolbarButton(new RefreshAction());
         toggleFullscreenButton = new SmallToolbarButton(
-            new ToggleFullscreenAction());
+                new ToggleFullscreenAction());
 
         viewToolBar.add(refreshButton);
         viewToolBar.add(toggleFullscreenButton);
 
         JPanel toolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0,
-            0));
+                0));
         toolbarPanel.add(fileTooBar);
         toolbarPanel.add(digitalToolBar);
         toolbarPanel.add(daemonToolBar);

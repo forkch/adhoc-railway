@@ -41,16 +41,13 @@ public class SwitchTypeCellRenderer implements TableCellRenderer {
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
         if (value.equals("DefaultSwitch")) {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "icons/default_switch_small.png", "Default Switch",
-                SwitchWidget.class));
+                "switches/default_switch_small.png"));
         } else if (value.equals("DoubleCrossSwitch")) {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "icons/double_cross_switch_small.png", "Double Cross Switch",
-                SwitchWidget.class));
+                "switches/double_cross_switch_small.png"));
         } else if (value.equals("ThreeWaySwitch")) {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "icons/three_way_switch_small.png", "Threeway Switch",
-                SwitchWidget.class));
+                "switches"));
         }
         return iconLabel;
     }

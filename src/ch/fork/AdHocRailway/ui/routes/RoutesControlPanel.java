@@ -9,40 +9,34 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.SortedSet;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteControl;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.switches.canvas.Segment7;
 
 public class RoutesControlPanel extends JPanel {
 
-    private RouteControl       routeControl;
     private Segment7           seg1;
     private Segment7           seg2;
     private Segment7           seg3;
 
-    private JFrame             frame;
     private JPanel             routesPanel;
     private GridBagLayout      layout;
     private GridBagConstraints gbc;
     private int maxCols;
 
-    public RoutesControlPanel(JFrame frame) {
+    public RoutesControlPanel() {
         super();
-        this.frame = frame;
         initGUI();
-        routeControl = RouteControl.getInstance();
     }
 
     private void initGUI() {
         setLayout(new BorderLayout(5, 5));
         JPanel segmentPanelNorth = initSegmentPanel();
         JPanel routesPanel = initRoutesPanel();
-        //add(segmentPanelNorth, BorderLayout.NORTH);
+        add(segmentPanelNorth, BorderLayout.NORTH);
         add(routesPanel, BorderLayout.CENTER);
     }
 
@@ -82,7 +76,7 @@ public class RoutesControlPanel extends JPanel {
         routesPanel.removeAll();
         for (Route route : routes) {
             
-            RouteWidget routeWidget = new RouteWidget(route, frame);
+            RouteWidget routeWidget = new RouteWidget(route);
             routesPanel.add(routeWidget);
             layout.setConstraints(routeWidget, gbc);
             if (currentCol == maxCols) {

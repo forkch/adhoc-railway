@@ -150,7 +150,6 @@ public class SwitchesControlPanel extends JPanel {
             enteredNumberKeys.append(e.getActionCommand());
             String switchNumberAsString = enteredNumberKeys.toString();
             int switchNumber = Integer.parseInt(switchNumberAsString);
-            int origNumber = switchNumber;
             if (switchNumber > 999) {
                 resetSelectedSwitchDisplay();
                 return;

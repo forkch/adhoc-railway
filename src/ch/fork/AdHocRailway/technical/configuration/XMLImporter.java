@@ -81,13 +81,13 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
                 .getValue("ExporterVersion"));
 
             if (actualVersion == 0.1) {
-                XMLImporter_0_1 importer = new XMLImporter_0_1(filename);
+                new XMLImporter_0_1(filename);
                 return;
             } else if (actualVersion == 0.2) {
-                XMLImporter_0_2 importer = new XMLImporter_0_2(filename);
+                new XMLImporter_0_2(filename);
                 return;
             }else if (actualVersion == 0.3) {
-                XMLImporter_0_3 importer = new XMLImporter_0_3(filename);
+                new XMLImporter_0_3(filename);
                 return;
             }
             supported = false;

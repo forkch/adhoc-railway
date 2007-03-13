@@ -30,10 +30,8 @@ public class FunctionToggleButton extends JToggleButton {
 
     public FunctionToggleButton(String text) {
         super(text);
-        setIcon(ImageTools.createImageIcon("icons/button_cancel.png",
-            "Disabled", this));
-        setSelectedIcon(ImageTools.createImageIcon("icons/button_ok.png",
-            "Enabled", this));
+        setIcon(ImageTools.createImageIcon("locomotives/button_cancel.png"));
+        setSelectedIcon(ImageTools.createImageIcon("locomotives/button_ok.png"));
 
     }
 }

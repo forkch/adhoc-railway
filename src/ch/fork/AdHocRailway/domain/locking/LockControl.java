@@ -48,8 +48,6 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
 
 	private static LockControl instance = null;
 
-	private LOCK locker;
-
 	private Map<Address, ControlObject> addressToControlObject;
 
 	private List<LockChangeListener> listeners;
@@ -112,7 +110,6 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
 	public boolean acquireLock(ControlObject object) throws LockingException {
 		try {
 			if (object instanceof NoneLocomotive) {
-				NoneLocomotive none = (NoneLocomotive) object;
 				return false;
 			}
 			checkControlObject(object);
@@ -142,7 +139,6 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
 	public boolean releaseLock(ControlObject object) throws LockingException {
 		try {
 			if (object instanceof NoneLocomotive) {
-				NoneLocomotive none = (NoneLocomotive) object;
 				return false;
 			}
 			checkControlObject(object);

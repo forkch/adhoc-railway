@@ -4,7 +4,6 @@ import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -12,7 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
-import javax.swing.JFrame;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -29,7 +28,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
     private Route        route;
     private RouteControl routeControl;
-    private Frame        frame;
     private JLabel       nameLabel;
     private JLabel       iconLabel;
     private Icon         routeStopIcon;
@@ -38,9 +36,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
     private JPanel       southPanel;
     private MouseAction  mouseAction;
 
-    public RouteWidget(Route route, JFrame frame) {
+    public RouteWidget(Route route) {
         this.route = route;
-        this.frame = frame;
         routeControl = RouteControl.getInstance();
         initGUI();
         routeControl.addRouteChangeListener(route, this);
@@ -52,8 +49,10 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
         JPanel northPanel = new JPanel();
         northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.LINE_AXIS));
-        routeStopIcon = createImageIcon("icons/route_stop.png", "", this);
-        routeStartIcon = createImageIcon("icons/route_start.png", "", this);
+        routeStopIcon = new ImageIcon(ClassLoader
+                .getSystemResource("routes/route_stop.png"));
+        routeStartIcon = new ImageIcon(ClassLoader
+                .getSystemResource("routes/route_start.png"));
         nameLabel = new JLabel(route.getName());
         iconLabel = new JLabel(routeStopIcon);
         

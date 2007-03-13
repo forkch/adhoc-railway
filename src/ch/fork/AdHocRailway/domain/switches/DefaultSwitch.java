@@ -90,7 +90,7 @@ public class DefaultSwitch extends Switch {
                     defaultActivationTime);
                 ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
                     defaultActivationTime);
-                switchState = SwitchState.LEFT;
+                //switchState = SwitchState.LEFT;
                 break;
             case RIGHT:
             case LEFT:
@@ -98,7 +98,7 @@ public class DefaultSwitch extends Switch {
                     defaultActivationTime);
                 ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
                     defaultActivationTime);
-                switchState = SwitchState.STRAIGHT;
+                //switchState = SwitchState.STRAIGHT;
                 break;
             case UNDEF:
                 if (defaultState == SwitchState.STRAIGHT) {
@@ -106,7 +106,7 @@ public class DefaultSwitch extends Switch {
                         defaultActivationTime);
                     ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
                         defaultActivationTime);
-                    switchState = SwitchState.STRAIGHT;
+                    //switchState = SwitchState.STRAIGHT;
                 } else if (defaultState == SwitchState.RIGHT
                     || defaultState == SwitchState.LEFT) {
 
@@ -114,7 +114,7 @@ public class DefaultSwitch extends Switch {
                         defaultActivationTime);
                     ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
                         defaultActivationTime);
-                    switchState = SwitchState.LEFT;
+                    //switchState = SwitchState.LEFT;
                 }
             }
         } catch (SRCPDeviceLockedException x1) {

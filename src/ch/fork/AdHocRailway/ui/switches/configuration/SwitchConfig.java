@@ -51,7 +51,6 @@ import ch.fork.AdHocRailway.ui.SpringUtilities;
 public class SwitchConfig extends JDialog {
     private Switch     mySwitch;
     private boolean    okPressed;
-    private boolean    cancelPressed;
     private JTextField numberTextField;
     private JTextField busTextField;
     private JTextField address0TextField;
@@ -87,10 +86,8 @@ public class SwitchConfig extends JDialog {
         JButton okButton = new JButton("OK");
         okButton.addActionListener(new ApplyChangesAction());
         JButton cancelButton = new JButton("Cancel");
-        cancelPressed = false;
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                cancelPressed = true;
                 SwitchConfig.this.setVisible(false);
             }
         });

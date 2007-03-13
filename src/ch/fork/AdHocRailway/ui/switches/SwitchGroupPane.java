@@ -33,7 +33,6 @@ import ch.fork.AdHocRailway.domain.switches.SwitchControl;
 import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
 
 public class SwitchGroupPane extends JTabbedPane {
-    private Collection<SwitchGroup> switchGroups;
     private JFrame                  frame;
 
     public SwitchGroupPane(JFrame frame) {
@@ -42,7 +41,6 @@ public class SwitchGroupPane extends JTabbedPane {
     }
 
     public void update(Collection<SwitchGroup> switchGroups) {
-        this.switchGroups = switchGroups;
         SwitchControl sc = SwitchControl.getInstance();
         sc.removeAllSwitchChangeListener();
 
