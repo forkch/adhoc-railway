@@ -31,7 +31,6 @@ import javax.swing.table.TableCellRenderer;
 
 import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.ui.ImageTools;
-import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
 
 public class SwitchDefaultStateCellRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value,

@@ -34,7 +34,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
@@ -42,8 +41,6 @@ import java.util.GregorianCalendar;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -182,7 +179,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
         setFont(new Font("Verdana", Font.PLAIN, 19));
         setLayout(new BorderLayout());
-        ExceptionProcessor.getInstance(this);
         switchesControlPanel = initSwitchPanel();
         routesControlPanel = initRoutesPanel();
         locomotiveControlPanel = initLocomotiveControl();
@@ -871,6 +867,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         viewToolBar.add(refreshButton);
         viewToolBar.add(toggleFullscreenButton);
 
+        /* ERROR */
+        ErrorPanel errorPanel = new ErrorPanel();
+        ExceptionProcessor.getInstance(errorPanel);
+        
         JPanel toolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0,
                 0));
         toolbarPanel.add(fileTooBar);
@@ -878,7 +878,13 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         toolbarPanel.add(daemonToolBar);
         toolbarPanel.add(toolsToolBar);
         toolbarPanel.add(viewToolBar);
-        add(toolbarPanel, BorderLayout.PAGE_START);
+        toolbarPanel.add(errorPanel);
+        
+        JPanel toolbarErrorPanel = new JPanel(new BorderLayout(10,10));
+        toolbarErrorPanel.add(toolbarPanel, BorderLayout.WEST);
+        toolbarErrorPanel.add(errorPanel, BorderLayout.CENTER);
+        
+        add(toolbarErrorPanel, BorderLayout.PAGE_START);
     }
 
     private void initStatusBar() {

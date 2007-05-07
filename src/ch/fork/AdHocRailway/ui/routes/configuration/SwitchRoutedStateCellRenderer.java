@@ -35,7 +35,6 @@ import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchState;
 import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
 import ch.fork.AdHocRailway.ui.ImageTools;
-import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
 
 public class SwitchRoutedStateCellRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value,

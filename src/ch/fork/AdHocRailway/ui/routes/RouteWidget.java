@@ -1,7 +1,5 @@
 package ch.fork.AdHocRailway.ui.routes;
 
-import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;

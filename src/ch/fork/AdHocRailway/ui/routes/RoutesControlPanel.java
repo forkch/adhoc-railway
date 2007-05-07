@@ -36,7 +36,7 @@ public class RoutesControlPanel extends JPanel {
         setLayout(new BorderLayout(5, 5));
         JPanel segmentPanelNorth = initSegmentPanel();
         JPanel routesPanel = initRoutesPanel();
-        add(segmentPanelNorth, BorderLayout.NORTH);
+        add(segmentPanelNorth, BorderLayout.WEST);
         add(routesPanel, BorderLayout.CENTER);
     }
 
@@ -52,7 +52,8 @@ public class RoutesControlPanel extends JPanel {
         segmentPanelNorth.add(seg2);
         segmentPanelNorth.add(seg1);
         JPanel p = new JPanel(new BorderLayout());
-        p.add(segmentPanelNorth, BorderLayout.WEST);
+        p.add(segmentPanelNorth, BorderLayout.NORTH);
+        p.add(new JPanel(), BorderLayout.CENTER);
         return p;
     }
 
@@ -63,8 +64,9 @@ public class RoutesControlPanel extends JPanel {
         routesPanel.setLayout(layout);
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        maxCols = Preferences.getInstance().getIntValue(
-            PreferencesKeys.SWITCH_CONTROLES);
+        //maxCols = Preferences.getInstance().getIntValue(
+        //    PreferencesKeys.SWITCH_CONTROLES);
+        maxCols = 5;
         return routesPanel;
     }
 

@@ -30,7 +30,6 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
 import ch.fork.AdHocRailway.ui.ImageTools;
-import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
 
 public class SwitchTypeCellRenderer implements TableCellRenderer {
     

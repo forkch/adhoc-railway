@@ -40,7 +40,6 @@ import java.util.TreeSet;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -63,7 +62,6 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.NoneLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
-import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 
 public class LocomotiveWidget extends JPanel implements

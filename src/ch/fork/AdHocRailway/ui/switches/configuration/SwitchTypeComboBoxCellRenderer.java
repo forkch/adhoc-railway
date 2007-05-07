@@ -31,7 +31,6 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
 import ch.fork.AdHocRailway.ui.ImageTools;
-import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
 
 public class SwitchTypeComboBoxCellRenderer implements ListCellRenderer {
     public Component getListCellRendererComponent(JList list, Object value,
