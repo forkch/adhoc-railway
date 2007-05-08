@@ -75,5 +75,7 @@ public abstract class Control {
             object.init();
         }
     }
+    
+    abstract public void previousDeviceToDefault() throws ControlException;
 
 }

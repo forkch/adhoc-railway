@@ -9,8 +9,12 @@ public class Route implements Comparable {
 
     private SortedSet<RouteItem> routeItems;
     private String          name;
-    private boolean         enabled;
-    private boolean         routing = false;
+    private RouteState		routeState;
+    private boolean         changeingRoute = false;
+    public enum RouteState {
+        ENABLED, DISABLED
+    };
+
 
     public Route(String name) {
         this.name = name;
@@ -49,21 +53,21 @@ public class Route implements Comparable {
         return name.hashCode();
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public RouteState getRouteState() {
+        return this.routeState;
     }
 
-    protected void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    protected void setRouteState(RouteState routeState) {
+        this.routeState = routeState;
     }
     
-    public boolean isRouting() {
-        return routing;
+    public boolean isChangeingRoute() {
+        return changeingRoute;
     }
 
     
-    protected void setRouting(boolean routing) {
-        this.routing = routing;
+    protected void setChangeingRoute(boolean routing) {
+        this.changeingRoute = routing;
     }
 
     public String toString() {

@@ -215,4 +215,10 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
 		else
 			return -1;
 	}
+
+	@Override
+	public void previousDeviceToDefault() throws ControlException {
+		// TODO Auto-generated method stub
+		
+	}
 }

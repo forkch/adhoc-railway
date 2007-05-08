@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
@@ -87,11 +88,11 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
         public void mouseClicked(MouseEvent e) {
             try {
-                if (route.isRouting())
+                if (route.isChangeingRoute())
                     return;
                 if (e.getClickCount() == 1
                     && e.getButton() == MouseEvent.BUTTON1) {
-                    if (route.isEnabled())
+                    if (route.getRouteState() == RouteState.ENABLED)
                         routeControl.disableRoute(route);
                     else
                         routeControl.enableRoute(route);
@@ -115,7 +116,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
             SwingUtilities.invokeLater(new Runnable() {
 
                 public void run() {
-                    if (route.isEnabled()) {
+                    if (route.getRouteState() == RouteState.ENABLED) {
                         iconLabel.setIcon(routeStartIcon);
                         routingProgress.setForeground(Color.GREEN);
                     } else {

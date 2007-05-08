@@ -31,6 +31,7 @@ import java.util.Map;
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.Control;
+import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.exception.InvalidAddressException;
 import ch.fork.AdHocRailway.domain.exception.NoSessionException;
 import ch.fork.AdHocRailway.domain.locking.LockControl;
@@ -189,31 +190,6 @@ public class SwitchControl extends Control implements GAInfoListener {
         lastChangedSwitch = aSwitch;
     }
 
-    public void undoLastSwitchChange() throws SwitchException {
-        if (lastChangedSwitch == null) {
-            return;
-        }
-        switch (previousState) {
-
-        case STRAIGHT:
-            setStraight(lastChangedSwitch);
-            break;
-        case LEFT:
-            setCurvedLeft(lastChangedSwitch);
-            break;
-        case RIGHT:
-            setCurvedRight(lastChangedSwitch);
-            break;
-        case UNDEF:
-            setStraight(lastChangedSwitch);
-            break;
-        }
-        informListeners(lastChangedSwitch);
-
-        lastChangedSwitch = null;
-        previousState = null;
-    }
-
     public void GAset(double timestamp, int bus, int address, int port,
         int value) {
         /*
@@ -293,5 +269,31 @@ public class SwitchControl extends Control implements GAInfoListener {
             aSwitch.init();
         }
     }
+
+	@Override
+	public void previousDeviceToDefault() throws ControlException{
+		if (lastChangedSwitch == null) {
+            return;
+        }
+        switch (previousState) {
+
+        case STRAIGHT:
+            setStraight(lastChangedSwitch);
+            break;
+        case LEFT:
+            setCurvedLeft(lastChangedSwitch);
+            break;
+        case RIGHT:
+            setCurvedRight(lastChangedSwitch);
+            break;
+        case UNDEF:
+            setStraight(lastChangedSwitch);
+            break;
+        }
+        informListeners(lastChangedSwitch);
+
+        lastChangedSwitch = null;
+        previousState = null;
+	}
 
 }

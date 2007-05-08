@@ -32,6 +32,7 @@ import java.util.TreeSet;
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.Control;
+import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.exception.InvalidAddressException;
 import ch.fork.AdHocRailway.domain.exception.NoSessionException;
 import ch.fork.AdHocRailway.domain.locking.LockControl;
@@ -318,5 +319,11 @@ public class LocomotiveControl extends Control implements GLInfoListener {
             locomotive.init();
         }
     }
+
+	@Override
+	public void previousDeviceToDefault() throws ControlException {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

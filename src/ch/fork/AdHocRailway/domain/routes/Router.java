@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.domain.routes;
 
 import java.util.Collection;
 
+import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
@@ -25,13 +26,13 @@ public class Router extends Thread {
 
     public void run() {
         try {
-            route.setRouting(true);
+            route.setChangeingRoute(true);
             if (enableRoute) {
                 enableRoute();
             } else {
                 disableRoute();
             }
-            route.setRouting(false);
+            route.setChangeingRoute(false);
         } catch (SwitchException e) {
             this.switchException = e;
             ExceptionProcessor.getInstance().processException(e);
@@ -63,7 +64,7 @@ public class Router extends Thread {
             listener.nextSwitchDerouted();
             Thread.sleep(waitTime);
         }
-        route.setEnabled(false);
+        route.setRouteState(RouteState.DISABLED);
         listener.routeChanged(route);
     }
 
@@ -89,7 +90,7 @@ public class Router extends Thread {
             listener.nextSwitchRouted();
             Thread.sleep(waitTime);
         }
-        route.setEnabled(true);
+        route.setRouteState(RouteState.ENABLED);
         listener.routeChanged(route);
     }
 

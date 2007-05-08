@@ -22,6 +22,7 @@
 
 package ch.fork.AdHocRailway.ui.locomotives;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -30,9 +31,11 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.border.TitledBorder;
 
 import ch.fork.AdHocRailway.domain.locking.LockControl;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
@@ -71,6 +74,7 @@ public class LocomotiveControlPanel extends JPanel {
     private int[][]                keyBindings   = keyBindingsDE;
     private List<LocomotiveWidget> locomotiveWidgets;
     private JFrame                 frame;
+	private JPanel controlPanel;
 
     public LocomotiveControlPanel(JFrame frame) {
         super();
@@ -81,11 +85,15 @@ public class LocomotiveControlPanel extends JPanel {
     }
 
     private void initGUI() {
+    	setLayout(new BorderLayout());
+    	setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.LEFT, 10, 0);
-        setLayout(controlPanelLayout);
+        controlPanel = new JPanel(controlPanelLayout); 
+		controlPanel.setBorder(new TitledBorder("Trains"));
+		add(controlPanel, BorderLayout.NORTH);
         registerKeyboardAction(new LocomotiveStopAction(), "", KeyStroke
             .getKeyStroke(KeyEvent.VK_SPACE, 0), WHEN_IN_FOCUSED_WINDOW);
-
+        
     }
 
     public void update(Collection<LocomotiveGroup> locomotiveGroups) {
@@ -94,7 +102,7 @@ public class LocomotiveControlPanel extends JPanel {
         locomotiveControl.removeAllLocomotiveChangeListener();
         lockc.removeAllLockChangeListener();
 
-        removeAll();
+        controlPanel.removeAll();
         locomotiveWidgets.clear();
         if (Preferences.getInstance().getStringValue(
             PreferencesKeys.KEYBOARD_LAYOUT).equals("Swiss German")) {
@@ -108,7 +116,7 @@ public class LocomotiveControlPanel extends JPanel {
                 keyBindings[i][1], keyBindings[i][2], frame);
             LockControl.getInstance().addLockChangeListener(w);
             w.updateLocomotiveGroups(locomotiveGroups);
-            add(w);
+            controlPanel.add(w);
             locomotiveWidgets.add(w);
         }
     }

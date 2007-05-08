@@ -18,10 +18,6 @@ import ch.fork.AdHocRailway.ui.switches.canvas.Segment7;
 
 public class RoutesControlPanel extends JPanel {
 
-    private Segment7           seg1;
-    private Segment7           seg2;
-    private Segment7           seg3;
-
     private JPanel             routesPanel;
     private GridBagLayout      layout;
     private GridBagConstraints gbc;
@@ -34,27 +30,8 @@ public class RoutesControlPanel extends JPanel {
 
     private void initGUI() {
         setLayout(new BorderLayout(5, 5));
-        JPanel segmentPanelNorth = initSegmentPanel();
         JPanel routesPanel = initRoutesPanel();
-        add(segmentPanelNorth, BorderLayout.WEST);
         add(routesPanel, BorderLayout.CENTER);
-    }
-
-    private JPanel initSegmentPanel() {
-        JPanel segmentPanelNorth = new JPanel(new FlowLayout(
-            FlowLayout.TRAILING, 5, 0));
-        seg1 = new Segment7();
-        seg2 = new Segment7();
-        seg3 = new Segment7();
-
-        segmentPanelNorth.setBackground(new Color(0, 0, 0));
-        segmentPanelNorth.add(seg3);
-        segmentPanelNorth.add(seg2);
-        segmentPanelNorth.add(seg1);
-        JPanel p = new JPanel(new BorderLayout());
-        p.add(segmentPanelNorth, BorderLayout.NORTH);
-        p.add(new JPanel(), BorderLayout.CENTER);
-        return p;
     }
 
     private JPanel initRoutesPanel() {

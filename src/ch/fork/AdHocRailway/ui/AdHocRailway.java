@@ -102,9 +102,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                                                              .getInstance();
 
     // GUI-Components
+    private TrackControlPanel      trackControlPanel;
     private LocomotiveControlPanel locomotiveControlPanel;
-    private RoutesControlPanel     routesControlPanel;
-    private SwitchesControlPanel   switchesControlPanel;
     private JPanel                 statusBarPanel;
     private JLabel                 hostnameLabel;
     private JButton                connectToolBarButton;
@@ -142,12 +141,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         splash.nextStep("Creating GUI ...");
         initGUI();
 
-        switchesControlPanel.update(switchControl.getSwitchGroups());
-        routesControlPanel.update(RouteControl.getInstance().getRoutes());
+        trackControlPanel.update();
+        //trackControlPanel.revalidate();
         locomotiveControlPanel.update(locomotiveControl.getLocomotiveGroups());
-
-        switchesControlPanel.revalidate();
-        routesControlPanel.revalidate();
         locomotiveControlPanel.revalidate();
 
         initKeyboardActions();
@@ -179,25 +175,16 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
         setFont(new Font("Verdana", Font.PLAIN, 19));
         setLayout(new BorderLayout());
-        switchesControlPanel = initSwitchPanel();
-        routesControlPanel = initRoutesPanel();
+        
+        
+        trackControlPanel = new TrackControlPanel(this); 
         locomotiveControlPanel = initLocomotiveControl();
 
         initMenu();
         initToolbar();
         initStatusBar();
         JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
-
-        if (preferences.getBooleanValue(TABBED_TRACK)) {
-            trackControl = new JTabbedPane();
-            trackControl.add("Switches", switchesControlPanel);
-            trackControl.add("Routes", routesControlPanel);
-            mainPanel.add(trackControl, BorderLayout.CENTER);
-        } else {
-            mainPanel.add(switchesControlPanel, BorderLayout.CENTER);
-            mainPanel.add(routesControlPanel, BorderLayout.EAST);
-        }
-
+        mainPanel.add(trackControlPanel, BorderLayout.CENTER);
         mainPanel.add(locomotiveControlPanel, BorderLayout.SOUTH);
         add(mainPanel, BorderLayout.CENTER);
         add(statusBarPanel, BorderLayout.SOUTH);
@@ -210,23 +197,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         });
     }
 
-    private SwitchesControlPanel initSwitchPanel() {
-        SwitchesControlPanel switchesControlPanel = new SwitchesControlPanel(
-                this);
-        switchesControlPanel.setBorder(new TitledBorder("Switches"));
-        return switchesControlPanel;
-    }
-
-    private RoutesControlPanel initRoutesPanel() {
-        RoutesControlPanel routesControlPanel = new RoutesControlPanel();
-        routesControlPanel.setBorder(new TitledBorder("Routes"));
-        return routesControlPanel;
-    }
-
     private LocomotiveControlPanel initLocomotiveControl() {
         LocomotiveControlPanel locomotiveControlPanel = new LocomotiveControlPanel(
                 this);
-        locomotiveControlPanel.setBorder(new TitledBorder("Trains"));
+        
         return locomotiveControlPanel;
     }
 
@@ -247,10 +221,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     private void updateGUI() {
-        switchesControlPanel.update(switchControl.getSwitchGroups());
-        routesControlPanel.update(RouteControl.getInstance().getRoutes());
+    	trackControlPanel.update();
         locomotiveControlPanel.update(locomotiveControl.getLocomotiveGroups());
-
     }
 
     private void updateLocomotives() {
@@ -258,7 +230,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     private void updateSwitches() {
-        switchesControlPanel.update(switchControl.getSwitchGroups());
+        trackControlPanel.update();
     }
 
     public void commandDataSent(String commandData) {
@@ -878,11 +850,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         toolbarPanel.add(daemonToolBar);
         toolbarPanel.add(toolsToolBar);
         toolbarPanel.add(viewToolBar);
-        toolbarPanel.add(errorPanel);
+        //toolbarPanel.add(errorPanel);
         
         JPanel toolbarErrorPanel = new JPanel(new BorderLayout(10,10));
         toolbarErrorPanel.add(toolbarPanel, BorderLayout.WEST);
-        toolbarErrorPanel.add(errorPanel, BorderLayout.CENTER);
+        toolbarErrorPanel.add(errorPanel, BorderLayout.EAST);
         
         add(toolbarErrorPanel, BorderLayout.PAGE_START);
     }
