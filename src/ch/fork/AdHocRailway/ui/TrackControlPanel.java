@@ -301,7 +301,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	public void update() {
 		switchGroupPane.update(switchControl.getSwitchGroups());
 		routesControlPanel.update(routeControl.getRoutes());
-		switchGroupPane.revalidate();
-		routesControlPanel.revalidate();
+		revalidate();
+        repaint();
+        
 	}
 }

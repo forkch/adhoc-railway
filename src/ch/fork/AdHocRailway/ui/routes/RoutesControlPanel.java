@@ -2,8 +2,6 @@
 package ch.fork.AdHocRailway.ui.routes;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -12,9 +10,6 @@ import java.util.SortedSet;
 import javax.swing.JPanel;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.technical.configuration.Preferences;
-import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.switches.canvas.Segment7;
 
 public class RoutesControlPanel extends JPanel {
 

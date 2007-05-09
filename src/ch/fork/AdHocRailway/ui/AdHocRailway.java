@@ -58,7 +58,6 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.border.TitledBorder;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.locking.LockControl;
@@ -74,11 +73,9 @@ import ch.fork.AdHocRailway.technical.configuration.exception.ConfigurationExcep
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfiguration;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
-import ch.fork.AdHocRailway.ui.routes.RoutesControlPanel;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfiguration;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.switches.SwitchProgrammer;
-import ch.fork.AdHocRailway.ui.switches.SwitchesControlPanel;
 import ch.fork.AdHocRailway.ui.switches.configuration.SwitchConfiguration;
 import ch.fork.AdHocRailway.ui.switches.configuration.SwitchConfigurationDialog;
 import de.dermoba.srcp.client.CommandDataListener;
@@ -142,18 +139,20 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         initGUI();
 
         trackControlPanel.update();
-        //trackControlPanel.revalidate();
         locomotiveControlPanel.update(locomotiveControl.getLocomotiveGroups());
-        locomotiveControlPanel.revalidate();
 
         initKeyboardActions();
+
+        //setSize(1000, 700);
+
         setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
-        setVisible(true);
 
         splash.nextStep("RailControl started");
         updateCommandHistory("RailControl started");
         if (preferences.getBooleanValue(AUTOCONNECT))
             new ConnectAction().actionPerformed(null);
+        //pack();
+        setVisible(true);
     }
 
     private void loadConfiguration(String file) {
@@ -179,10 +178,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         
         trackControlPanel = new TrackControlPanel(this); 
         locomotiveControlPanel = initLocomotiveControl();
-
+        statusBarPanel = initStatusBar();
+        
         initMenu();
         initToolbar();
-        initStatusBar();
         JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
         mainPanel.add(trackControlPanel, BorderLayout.CENTER);
         mainPanel.add(locomotiveControlPanel, BorderLayout.SOUTH);
@@ -859,14 +858,15 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         add(toolbarErrorPanel, BorderLayout.PAGE_START);
     }
 
-    private void initStatusBar() {
-        statusBarPanel = new JPanel();
+    private JPanel initStatusBar() {
+        JPanel statusBarPanel = new JPanel();
         commandHistoryModel = new DefaultComboBoxModel();
         commandHistory = new JComboBox(commandHistoryModel);
         commandHistory.setEditable(false);
         commandHistory.setFocusable(false);
         statusBarPanel.setLayout(new BorderLayout());
         statusBarPanel.add(commandHistory, BorderLayout.SOUTH);
+        return statusBarPanel;
     }
 
     public static void main(String[] args) {

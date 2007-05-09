@@ -89,16 +89,17 @@ public class LocomotiveControlPanel extends JPanel {
     	setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.LEFT, 10, 0);
         controlPanel = new JPanel(controlPanelLayout); 
-		controlPanel.setBorder(new TitledBorder("Trains"));
+		controlPanel.setLayout(controlPanelLayout);
+        controlPanel.setBorder(new TitledBorder("Trains"));
 		add(controlPanel, BorderLayout.NORTH);
         registerKeyboardAction(new LocomotiveStopAction(), "", KeyStroke
             .getKeyStroke(KeyEvent.VK_SPACE, 0), WHEN_IN_FOCUSED_WINDOW);
-        
+        revalidate();
+        repaint();
     }
 
     public void update(Collection<LocomotiveGroup> locomotiveGroups) {
         LockControl lockc = LockControl.getInstance();
-
         locomotiveControl.removeAllLocomotiveChangeListener();
         lockc.removeAllLockChangeListener();
 
@@ -119,6 +120,8 @@ public class LocomotiveControlPanel extends JPanel {
             controlPanel.add(w);
             locomotiveWidgets.add(w);
         }
+        revalidate();
+        repaint();
     }
 
     private class LocomotiveStopAction extends AbstractAction implements

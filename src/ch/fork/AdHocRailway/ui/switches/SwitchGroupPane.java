@@ -48,9 +48,7 @@ public class SwitchGroupPane extends JTabbedPane {
 		int i = 1;
 		for (SwitchGroup switchGroup : switchGroups) {
 			SwitchGroupTab switchGroupTab = new SwitchGroupTab();
-			JScrollPane switchGroupPane = new JScrollPane(switchGroupTab,
-					ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			JScrollPane switchGroupPane = new JScrollPane(switchGroupTab);
 			switchGroupPane.getVerticalScrollBar().setUnitIncrement(10);
 			switchGroupPane.getVerticalScrollBar().setBlockIncrement(10);
 			add(switchGroupPane, "F" + i + ": " + switchGroup.getName());
