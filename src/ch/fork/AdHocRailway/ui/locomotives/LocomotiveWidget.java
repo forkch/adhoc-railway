@@ -343,6 +343,7 @@ public class LocomotiveWidget extends JPanel implements
         public void actionPerformed(ActionEvent e) {
             try {
                 if (e.getActionCommand().equals("accelerate")) {
+                	System.out.println(myLocomotive.getCurrentSpeed());
                     LocomotiveControl.getInstance().increaseSpeed(myLocomotive);
                 } else if (e.getActionCommand().equals("deccelerate")) {
                     LocomotiveControl.getInstance().decreaseSpeed(myLocomotive);
@@ -355,6 +356,7 @@ public class LocomotiveWidget extends JPanel implements
                 } else {
                     time = 0;
                 }
+                SwingUtilities.invokeLater(new LocomotiveWidgetUpdater());
             } catch (LocomotiveException e3) {
                 ExceptionProcessor.getInstance().processException(e3);
             }
@@ -480,7 +482,7 @@ public class LocomotiveWidget extends JPanel implements
 
     private class MouseAction extends MouseAdapter {
         public void mouseClicked(MouseEvent e) {
-
+        	
             if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
                 LocomotiveConfig locomotiveConfig = new LocomotiveConfig(frame,
                         myLocomotive);
@@ -493,6 +495,9 @@ public class LocomotiveWidget extends JPanel implements
                     desc.setText(myLocomotive.getDesc());
                     locomotiveChanged(myLocomotive);
                 }
+            } else if(e.getButton() == MouseEvent.BUTTON2) {
+            	ToggleDirectionAction a = new ToggleDirectionAction();
+            	a.actionPerformed(null);
             }
         }
     }

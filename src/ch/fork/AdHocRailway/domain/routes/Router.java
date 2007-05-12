@@ -47,7 +47,6 @@ public class Router extends Thread {
         for (RouteItem ri : routeItems) {
             Switch switchToRoute = ri.getRoutedSwitch();
 
-            // switch (ri.getPreviousSwitchState()) {
             switch (switchToRoute.getDefaultState()) {
             case STRAIGHT:
                 sc.setStraight(switchToRoute);
@@ -59,13 +58,12 @@ public class Router extends Thread {
                 sc.setCurvedRight(switchToRoute);
                 break;
             }
-            //System.out.println("Switch: " + switchToRoute.getNumber()
-            //   + " derouted");
             listener.nextSwitchDerouted();
             Thread.sleep(waitTime);
         }
         route.setRouteState(RouteState.DISABLED);
         listener.routeChanged(route);
+        System.out.println("route disabled");
     }
 
     private void enableRoute() throws SwitchException, InterruptedException {
@@ -74,24 +72,27 @@ public class Router extends Thread {
         for (RouteItem ri : routeItems) {
             Switch switchToRoute = ri.getRoutedSwitch();
             ri.setPreviousSwitchState(switchToRoute.getSwitchState());
+            System.out.println("Switch number: " + switchToRoute.getNumber());
             switch (ri.getRoutedSwitchState()) {
             case STRAIGHT:
+            	System.out.println("STRAIGHT");
                 sc.setStraight(switchToRoute);
                 break;
             case LEFT:
+            	System.out.println("LEFT");
                 sc.setCurvedLeft(switchToRoute);
                 break;
             case RIGHT:
+            	System.out.println("RIGHT");
                 sc.setCurvedRight(switchToRoute);
                 break;
             }
-            //System.out.println("Switch: " + switchToRoute.getNumber()
-            //    + " routed");
             listener.nextSwitchRouted();
             Thread.sleep(waitTime);
         }
         route.setRouteState(RouteState.ENABLED);
         listener.routeChanged(route);
+        System.out.println("route enabled");
     }
 
     public SwitchException getSwitchException() {

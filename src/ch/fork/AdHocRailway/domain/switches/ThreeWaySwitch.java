@@ -41,10 +41,8 @@ public class ThreeWaySwitch extends Switch {
 
     public ThreeWaySwitch(int pNumber, String pDesc, Address[] addresses) {
         super(pNumber, pDesc, addresses);
-        switch1 = new DefaultSwitch(number, desc, new Address(addresses[0]
-            .getBus(), addresses[0].getAddress()));
-        switch2 = new DefaultSwitch(number, desc, new Address(addresses[1]
-            .getBus(), addresses[1].getAddress()));
+        switch1 = new DefaultSwitch(number, desc, addresses[0]);
+        switch2 = new DefaultSwitch(number, desc, addresses[1]);
         addressToSwitch = new HashMap<Address, Switch>();
         addressToSwitch.put(addresses[0], switch1);
         addressToSwitch.put(addresses[1], switch2);
@@ -82,22 +80,18 @@ public class ThreeWaySwitch extends Switch {
         case LEFT:
             switch1.setStraight();
             switch2.setStraight();
-            //switchState = SwitchState.STRAIGHT;
             break;
         case STRAIGHT:
             switch1.setStraight();
             switch2.setCurvedRight();
-            //switchState = SwitchState.RIGHT;
             break;
         case RIGHT:
             switch1.setCurvedRight();
             switch2.setStraight();
-            //switchState = SwitchState.LEFT;
             break;
         case UNDEF:
             switch1.setStraight();
             switch2.setStraight();
-            //switchState = SwitchState.STRAIGHT;
             break;
         }
     }
@@ -105,6 +99,7 @@ public class ThreeWaySwitch extends Switch {
     protected void switchPortChanged(Address addr, int pChangedPort, int value) {
         Switch s = addressToSwitch.get(addr);
         s.switchPortChanged(addr, pChangedPort, value);
+        //System.out.println(addressToSwitch);
         if (switch1.getSwitchState() == SwitchState.STRAIGHT
             && switch2.getSwitchState() == SwitchState.STRAIGHT) {
             switchState = SwitchState.STRAIGHT;
@@ -133,21 +128,18 @@ public class ThreeWaySwitch extends Switch {
     protected void setStraight() throws SwitchException {
         switch1.setStraight();
         switch2.setStraight();
-        switchState = SwitchState.STRAIGHT;
     }
 
     @Override
     protected void setCurvedLeft() throws SwitchException {
         switch1.setCurvedRight();
         switch2.setStraight();
-        switchState = SwitchState.LEFT;
     }
 
     @Override
     protected void setCurvedRight() throws SwitchException {
         switch1.setStraight();
         switch2.setCurvedRight();
-        switchState = SwitchState.RIGHT;
     }
 
     protected void setSession(SRCPSession session) {
@@ -165,14 +157,8 @@ public class ThreeWaySwitch extends Switch {
 
     public void setAddresses(Address[] addresses) {
         this.addresses = addresses;
-        Address address1 = new Address(addresses[0].getBus(), addresses[0]
-            .getAddress());
-        address1.setAddressSwitched(addresses[0].isAddressSwitched());
-        Address address2 = new Address(addresses[1].getBus(), addresses[1]
-            .getAddress());
-        address1.setAddressSwitched(addresses[1].isAddressSwitched());
-        switch1.setAddress(address1);
-        switch2.setAddress(address2);
+        switch1.setAddress(addresses[0]);
+        switch2.setAddress(addresses[1]);
         addressToSwitch.clear();
         addressToSwitch.put(addresses[0], switch1);
         addressToSwitch.put(addresses[1], switch2);

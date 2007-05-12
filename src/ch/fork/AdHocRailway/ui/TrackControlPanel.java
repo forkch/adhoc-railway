@@ -18,6 +18,7 @@ import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
+import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
@@ -25,6 +26,7 @@ import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.routes.RoutesControlPanel;
 import ch.fork.AdHocRailway.ui.switches.SwitchGroupPane;
 import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
@@ -122,6 +124,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		}
 		registerKeyboardAction(new NumberEnteredAction(), ".", KeyStroke
 				.getKeyStroke(KeyEvent.VK_PERIOD, 0), WHEN_IN_FOCUSED_WINDOW);
+		registerKeyboardAction(new SwitchingAction(), "\\", KeyStroke
+				.getKeyStroke(92,0), WHEN_IN_FOCUSED_WINDOW);
 		registerKeyboardAction(new NumberEnteredAction(), ".", KeyStroke
 				.getKeyStroke(110, 0), WHEN_IN_FOCUSED_WINDOW);
 		registerKeyboardAction(new SwitchingAction(), "\n", KeyStroke
@@ -132,7 +136,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		registerKeyboardAction(new SwitchingAction(), "", KeyStroke
 				.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0),
-				WHEN_IN_FOCUSED_WINDOW);
+				WHEN_IN_FOCUSED_WINDOW);	
 
 		registerKeyboardAction(new SwitchingAction(), "/", KeyStroke
 				.getKeyStroke(KeyEvent.VK_DIVIDE, 0), WHEN_IN_FOCUSED_WINDOW);
@@ -150,7 +154,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		}
 	}
 
-	private void resetSelectedSwitchDisplay() {
+	private void resetSegmentDisplay() {
 		enteredNumberKeys = new StringBuffer();
 		seg1.setValue(0);
 		seg2.setValue(0);
@@ -171,7 +175,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				String switchNumberAsString = enteredNumberKeys.toString();
 				int switchNumber = Integer.parseInt(switchNumberAsString);
 				if (switchNumber > 999) {
-					resetSelectedSwitchDisplay();
+					resetSegmentDisplay();
 					return;
 				}
 				int seg1Value = switchNumber % 10;
@@ -202,74 +206,104 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 					}
 					return;
 				}
-				String switchNumberAsString = enteredNumberKeys.toString();
-				int switchNumber = Integer.parseInt(switchNumberAsString);
-				Switch searchedSwitch = null;
-
-				searchedSwitch = switchControl.getNumberToSwitch().get(
-						switchNumber);
-				if (searchedSwitch == null) {
-					resetSelectedSwitchDisplay();
-					return;
+				String enteredNumberAsString = enteredNumberKeys.toString();
+				int enteredNumber = Integer.parseInt(enteredNumberAsString);
+				if(routeMode) {
+					handleRouteChange(e, enteredNumber);
+				} else {
+					handleSwitchChange(e, enteredNumber);
 				}
-
-				if (e.getActionCommand().equals("/")) {
-					handleDivide(searchedSwitch);
-				} else if (e.getActionCommand().equals("*")) {
-					handleMultiply(searchedSwitch);
-				} else if (e.getActionCommand().equals("-")) {
-					handleMinus(searchedSwitch);
-				} else if (e.getActionCommand().equals("+")) {
-					if (!(searchedSwitch instanceof ThreeWaySwitch)) {
-						handlePlus(searchedSwitch);
-					}
-				} else if (e.getActionCommand().equals("")) {
-					if (!(searchedSwitch instanceof ThreeWaySwitch)) {
-						handlePlus(searchedSwitch);
-					}
-				} else if (e.getActionCommand().equals("\n")) {
-					handleEnter(searchedSwitch);
-				}
-				resetSelectedSwitchDisplay();
-				SwitchWidget sw = new SwitchWidget(searchedSwitch, null, true,
-						frame);
-				Component[] oldWidgets = switchesHistory.getComponents();
-				switchesHistory.removeAll();
-				switchesHistory.add(sw);
-				if (oldWidgets.length > 0
-						&& sw.getMySwitch() != ((SwitchWidget) oldWidgets[0])
-								.getMySwitch())
-					switchesHistory.add(oldWidgets[0]);
-				if (oldWidgets.length > 1
-						&& sw.getMySwitch() != ((SwitchWidget) oldWidgets[1])
-								.getMySwitch())
-					switchesHistory.add(oldWidgets[1]);
-				repaint();
-				revalidate();
+				
+				
 			} catch (ControlException e1) {
-				resetSelectedSwitchDisplay();
+				resetSegmentDisplay();
 				ExceptionProcessor.getInstance().processException(e1);
 			}
 		}
 
-		private void handleDivide(Switch aSwitch) throws SwitchException {
-			switchControl.setCurvedLeft(aSwitch);
+		private void handleSwitchChange(ActionEvent e, int enteredNumber) throws SwitchException {
+			Switch searchedSwitch = null;
+
+			searchedSwitch = switchControl.getNumberToSwitch().get(
+					enteredNumber);
+			if (searchedSwitch == null) {
+				resetSegmentDisplay();
+				return;
+			}
+			System.out.println(searchedSwitch);
+
+			if (e.getActionCommand().equals("/")) {
+				switchControl.setCurvedLeft(searchedSwitch);
+			} else if (e.getActionCommand().equals("*")) {
+				switchControl.setStraight(searchedSwitch);
+			} else if (e.getActionCommand().equals("-")) {
+				switchControl.setCurvedRight(searchedSwitch);
+			} else if (e.getActionCommand().equals("+")) {
+				if (!(searchedSwitch instanceof ThreeWaySwitch)) {
+					switchControl.setCurvedLeft(searchedSwitch);
+				}
+			} else if (e.getActionCommand().equals("")) {
+				if (!(searchedSwitch instanceof ThreeWaySwitch)) {
+					switchControl.setCurvedLeft(searchedSwitch);
+				}
+			} else if (e.getActionCommand().equals("\n")) {
+				switchControl.setStraight(searchedSwitch);
+			}
+			resetSegmentDisplay();
+			/*
+			SwitchWidget sw = new SwitchWidget(searchedSwitch, null, true,
+					frame);
+			Component[] oldWidgets = switchesHistory.getComponents();
+			switchesHistory.removeAll();
+			switchesHistory.add(sw);
+			if (oldWidgets.length > 0
+					&& sw.getMySwitch() != ((SwitchWidget) oldWidgets[0])
+							.getMySwitch())
+				switchesHistory.add(oldWidgets[0]);
+			if (oldWidgets.length > 1
+					&& sw.getMySwitch() != ((SwitchWidget) oldWidgets[1])
+							.getMySwitch())
+				switchesHistory.add(oldWidgets[1]);
+				*/
+			repaint();
+			revalidate();
 		}
 
-		private void handleMultiply(Switch aSwitch) throws SwitchException {
-			switchControl.setStraight(aSwitch);
-		}
+		private void handleRouteChange(ActionEvent e, int enteredNumber) throws SwitchException {
+			Route searchedRoute = null;
 
-		private void handleMinus(Switch aSwitch) throws SwitchException {
-			switchControl.setCurvedRight(aSwitch);
-		}
-
-		private void handlePlus(Switch aSwitch) throws SwitchException {
-			switchControl.setCurvedLeft(aSwitch);
-		}
-
-		private void handleEnter(Switch aSwitch) throws SwitchException {
-			switchControl.setStraight(aSwitch);
+			searchedRoute = routeControl.getNumberToRoutes().get(
+					enteredNumber);
+			if (searchedRoute == null) {
+				resetSegmentDisplay();
+				return;
+			}
+			if (e.getActionCommand().equals("+")) {
+				routeControl.enableRoute(searchedRoute);
+			} else if (e.getActionCommand().equals("\n")) {
+				routeControl.disableRoute(searchedRoute);
+			} else if (e.getActionCommand().equals("\\")) {
+				routeControl.enableRoute(searchedRoute);
+			}
+			resetSegmentDisplay();
+			/*
+			RouteWidget rw = new RouteWidget(searchedRoute);
+			Component[] oldWidgets = switchesHistory.getComponents();
+			switchesHistory.removeAll();
+			switchesHistory.add(rw);
+			if (oldWidgets.length > 0
+					&& oldWidgets[0] instanceof RouteWidget 
+					&& rw.getRoute() != ((RouteWidget) oldWidgets[0])
+							.getRoute())
+				switchesHistory.add(oldWidgets[0]);
+			if (oldWidgets.length > 1
+					&& oldWidgets[0] instanceof RouteWidget 
+					&& rw.getRoute() != ((RouteWidget) oldWidgets[1])
+							.getRoute())
+				switchesHistory.add(oldWidgets[1]);
+			repaint();
+			revalidate();
+			*/
 		}
 	}
 

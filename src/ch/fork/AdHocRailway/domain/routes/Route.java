@@ -9,6 +9,7 @@ public class Route implements Comparable {
 
     private SortedSet<RouteItem> routeItems;
     private String          name;
+    private int             number;
     private RouteState		routeState;
     private boolean         changeingRoute = false;
     public enum RouteState {
@@ -16,8 +17,9 @@ public class Route implements Comparable {
     };
 
 
-    public Route(String name) {
+    public Route(String name, int number) {
         this.name = name;
+        this.number = number;
         routeItems = new TreeSet<RouteItem>();
     }
 
@@ -82,7 +84,7 @@ public class Route implements Comparable {
     }
 
     public Object clone() {
-        Route newRoute = new Route(name);
+        Route newRoute = new Route(name, number);
         for (RouteItem origItem : routeItems) {
             newRoute.addRouteItem((RouteItem) origItem.clone());
         }
@@ -95,5 +97,13 @@ public class Route implements Comparable {
 			return name.compareTo(r.getName());
 		}
 		return -1;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
 	}
 }

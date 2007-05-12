@@ -137,7 +137,6 @@ public abstract class Switch extends ControlObject implements Constants,
         return addresses[index];
     }
 
-
     public SwitchState getDefaultState() {
         return defaultState;
     }

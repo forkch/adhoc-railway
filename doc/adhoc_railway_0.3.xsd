@@ -81,6 +81,7 @@
             <xs:element name="RoutedSwitch" type="RoutedSwitchType"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="number" type="xs:integer"/>
     </xs:complexType>
     
     <xs:complexType name="RoutedSwitchType">

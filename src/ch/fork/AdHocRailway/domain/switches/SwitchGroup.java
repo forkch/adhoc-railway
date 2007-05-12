@@ -66,6 +66,9 @@ public class SwitchGroup {
 
     public SwitchGroup clone() {
         SwitchGroup newSwitchGroup = new SwitchGroup(name);
+        for(Switch s : getSwitches()) {
+        	newSwitchGroup.addSwitch(s);
+        }
         return newSwitchGroup;
     }
 

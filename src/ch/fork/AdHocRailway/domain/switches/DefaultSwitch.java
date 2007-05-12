@@ -86,11 +86,10 @@ public class DefaultSwitch extends Switch {
                 PreferencesKeys.ACTIVATION_TIME);
             switch (switchState) {
             case STRAIGHT:
-                ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
+            	ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
                     defaultActivationTime);
                 ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
                     defaultActivationTime);
-                //switchState = SwitchState.LEFT;
                 break;
             case RIGHT:
             case LEFT:
@@ -98,7 +97,6 @@ public class DefaultSwitch extends Switch {
                     defaultActivationTime);
                 ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
                     defaultActivationTime);
-                //switchState = SwitchState.STRAIGHT;
                 break;
             case UNDEF:
                 if (defaultState == SwitchState.STRAIGHT) {
@@ -106,15 +104,12 @@ public class DefaultSwitch extends Switch {
                         defaultActivationTime);
                     ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
                         defaultActivationTime);
-                    //switchState = SwitchState.STRAIGHT;
                 } else if (defaultState == SwitchState.RIGHT
                     || defaultState == SwitchState.LEFT) {
-
-                    ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
+                	ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
                         defaultActivationTime);
                     ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
                         defaultActivationTime);
-                    //switchState = SwitchState.LEFT;
                 }
             }
         } catch (SRCPDeviceLockedException x1) {
@@ -129,12 +124,17 @@ public class DefaultSwitch extends Switch {
         if (value == 0) {
         } else {
             // a port has been ACTIVATED
-            if (pChangedPort == getPort(STRAIGHT_PORT)) {
-                switchState = SwitchState.STRAIGHT;
-            } else if (pChangedPort == getPort(CURVED_PORT)) {
-                switchState = SwitchState.LEFT;
+            if (pChangedPort == STRAIGHT_PORT) {
+            	if(!addresses[0].isAddressSwitched())
+            		switchState = SwitchState.STRAIGHT;
+            	else 
+            		switchState = SwitchState.LEFT;
+            } else if (pChangedPort == CURVED_PORT) {
+            	if(!addresses[0].isAddressSwitched())
+            		switchState = SwitchState.LEFT;
+            	else 
+            		switchState = SwitchState.STRAIGHT;		
             }
-
         }
     }
 
@@ -158,19 +158,23 @@ public class DefaultSwitch extends Switch {
         try {
             int defaultActivationTime = Preferences.getInstance().getIntValue(
                 PreferencesKeys.ACTIVATION_TIME);
+            //System.out.println(defaultState);
             if (defaultState == SwitchState.STRAIGHT) {
+            	//System.out.println("original: " + STRAIGHT_PORT);
+            	//System.out.println("getPort: " + getPort(STRAIGHT_PORT));
                 ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
                     defaultActivationTime);
                 ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
                     defaultActivationTime);
-                switchState = SwitchState.STRAIGHT;
             } else if (defaultState == SwitchState.LEFT
                 || defaultState == SwitchState.RIGHT) {
+            	//System.out.println("original: " + CURVED_PORT);
+            	//System.out.println("getPort: " + getPort(CURVED_PORT));
+                
                 ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
                     defaultActivationTime);
                 ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
                     defaultActivationTime);
-                switchState = SwitchState.LEFT;
             }
         } catch (SRCPDeviceLockedException x1) {
             throw new SwitchLockedException(ERR_LOCKED, x1);
@@ -190,13 +194,11 @@ public class DefaultSwitch extends Switch {
                     defaultActivationTime);
                 ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
                     defaultActivationTime);
-                switchState = SwitchState.STRAIGHT;
             } else if (defaultState == SwitchState.STRAIGHT) {
                 ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
                     defaultActivationTime);
                 ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
                     defaultActivationTime);
-                switchState = SwitchState.LEFT;
             }
         } catch (SRCPDeviceLockedException x1) {
             throw new SwitchLockedException(ERR_LOCKED, x1);

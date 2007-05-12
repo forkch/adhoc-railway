@@ -20,6 +20,7 @@ public class RouteControl extends Control {
 	private Map<Route, RouteChangeListener> listeners;
 
 	private SortedSet<Route> routes;
+    private Map<Integer, Route>              numberToRoutes;
 
 	private Route lastChangedRoute;
 
@@ -30,6 +31,7 @@ public class RouteControl extends Control {
 	private RouteControl() {
 		listeners = new HashMap<Route, RouteChangeListener>();
 		routes = new TreeSet<Route>();
+		numberToRoutes = new HashMap<Integer, Route>();
 	}
 
 	public static RouteControl getInstance() {
@@ -41,24 +43,32 @@ public class RouteControl extends Control {
 
 	public void registerRoute(Route route) {
 		routes.add(route);
+		numberToRoutes.put(route.getNumber(), route);
 	}
 
 	public void unregisterRoute(Route route) {
 		routes.remove(route.getName());
+		numberToRoutes.remove(route.getNumber());
 	}
 
 	public void registerRoutes(Collection<Route> routesToRegister) {
 		for (Route route : routesToRegister) {
 			routes.add(route);
+			numberToRoutes.put(route.getNumber(), route);
 		}
 	}
 
 	public void clear() {
 		routes.clear();
+		numberToRoutes.clear();
 	}
 
 	public SortedSet<Route> getRoutes() {
 		return routes;
+	}
+
+	public Map<Integer, Route> getNumberToRoutes() {
+		return numberToRoutes;
 	}
 
 	public void enableRoute(Route r) throws SwitchException {

@@ -220,6 +220,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     private void updateGUI() {
+    	hostnameLabel.setText(preferences.getStringValue("Hostname"));
     	trackControlPanel.update();
         locomotiveControlPanel.update(locomotiveControl.getLocomotiveGroups());
     }
@@ -375,6 +376,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                                 "Error writing file", e1);
                     }
                 }
+                actualFile = file;
             } else {
                 updateCommandHistory("Save cancelled by user");
             }
@@ -472,7 +474,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                         .getTempConfiguration();
                 rc.clear();
                 rc.registerRoutes(routesConfiguration.getRoutes());
-
+                trackControlPanel.update();
                 updateCommandHistory("Routes configuration changed");
             }
         }
@@ -490,6 +492,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 LocomotiveConfiguration locomotiveConfiguration = locomotiveConfigDialog
                         .getTempConfiguration();
                 locomotiveControl.clear();
+                System.out.println(locomotiveConfiguration
+                        .getLocomotives());
                 locomotiveControl.registerLocomotives(locomotiveConfiguration
                         .getLocomotives());
                 locomotiveControl

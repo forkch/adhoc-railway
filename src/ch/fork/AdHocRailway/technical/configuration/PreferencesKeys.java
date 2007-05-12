@@ -26,6 +26,7 @@ public interface PreferencesKeys {
     // GUI
     public static final String LOCOMOTIVE_CONTROLES = "LocomotiveControlesAmount";
     public static final String SWITCH_CONTROLES     = "SwitchControlesAmount";
+    public static final String ROUTE_CONTROLES     = "RouteControlesAmount";
     public static final String KEYBOARD_LAYOUT      = "KeyBoardLayout";
     public static final String FULLSCREEN           = "Fullscreen";
     public static final String TABBED_TRACK         = "TabbedTrack";

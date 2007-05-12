@@ -85,10 +85,10 @@ public class XMLExporter_0_3 {
     private static void exportRouteConfiguration() {
         sb.append("<RouteConfiguration>\n");
         for (Route route : RouteControl.getInstance().getRoutes()) {
-            sb.append("<Route name=\"" + route.getName() + "\">\n");
+            sb.append("<Route name=\"" + route.getName() + "\" number=\"" + route.getNumber() + "\">\n");
             for (RouteItem routeItem : route.getRouteItems()) {
                 sb.append("<RoutedSwitch switchNumber=\""
-                    + routeItem.getRoutedSwitch() + "\" switchStateRouted=\""
+                    + routeItem.getRoutedSwitch().getNumber() + "\" switchStateRouted=\""
                     + routeItem.getRoutedSwitchState() + "\"/>\n");
             }
             sb.append("</Route>\n");

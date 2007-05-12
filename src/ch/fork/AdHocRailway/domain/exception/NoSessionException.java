@@ -27,6 +27,6 @@ import ch.fork.AdHocRailway.domain.Constants;
 public class NoSessionException extends ControlException {
 
     public NoSessionException() {
-        super(Constants.ERR_NO_SESSION + "\nConnect to the SRCP-Server");
+        super(Constants.ERR_NO_SESSION);
     }
 }

@@ -10,6 +10,8 @@ import java.util.SortedSet;
 import javax.swing.JPanel;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public class RoutesControlPanel extends JPanel {
 
@@ -36,9 +38,8 @@ public class RoutesControlPanel extends JPanel {
         routesPanel.setLayout(layout);
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        //maxCols = Preferences.getInstance().getIntValue(
-        //    PreferencesKeys.SWITCH_CONTROLES);
-        maxCols = 5;
+        maxCols = Preferences.getInstance().getIntValue(
+            PreferencesKeys.ROUTE_CONTROLES);
         return routesPanel;
     }
 
@@ -53,7 +54,7 @@ public class RoutesControlPanel extends JPanel {
             RouteWidget routeWidget = new RouteWidget(route);
             routesPanel.add(routeWidget);
             layout.setConstraints(routeWidget, gbc);
-            if (currentCol == maxCols) {
+            if (currentCol == maxCols-1) {
                 currentRow++;
                 currentCol = 0;
             } else {

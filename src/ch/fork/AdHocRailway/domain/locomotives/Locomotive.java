@@ -160,7 +160,7 @@ public abstract class Locomotive extends ControlObject implements Constants,
                 direction = Direction.FORWARD;
                 break;
             }
-            //currentSpeed = speed;
+            currentSpeed = speed;
             // gl.get();
         } catch (SRCPException x) {
             if (x instanceof SRCPDeviceLockedException) {
@@ -213,7 +213,27 @@ public abstract class Locomotive extends ControlObject implements Constants,
      * @throws LocomotiveException
      */
     protected void setFunctions(boolean[] functions) throws LocomotiveException {
-        //this.functions = functions;
+    	try {
+    		switch (direction) {
+    		case FORWARD:
+    			gl.set(FORWARD_DIRECTION, currentSpeed, drivingSteps, functions);
+            	break;
+    		case REVERSE:
+    			gl.set(REVERSE_DIRECTION, currentSpeed, drivingSteps, functions);
+    			break;
+    		case UNDEF:
+    			gl.set(FORWARD_DIRECTION, currentSpeed, drivingSteps, functions);
+    			direction = Direction.FORWARD;
+    			break;
+    		}
+    	} catch (SRCPException x) {
+    		if (x instanceof SRCPDeviceLockedException) {
+    			throw new LocomotiveLockedException(ERR_LOCKED);
+    		} else {
+    			throw new LocomotiveException(ERR_FAILED, x);
+    		}
+    	}
+    	this.functions = functions;
         setSpeed(currentSpeed);
     }
 

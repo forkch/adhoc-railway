@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
@@ -41,7 +42,7 @@ import de.dermoba.srcp.devices.GAInfoListener;
 
 public class SwitchControl extends Control implements GAInfoListener {
     private static SwitchControl              instance;
-    private Map<Switch, SwitchChangeListener> listeners;
+    private Map<Switch, List<SwitchChangeListener>> listeners;
     private List<SwitchGroup>                 switchGroups;
     private Map<Address, Switch>              addressToSwitch;
     private Map<Integer, Switch>              numberToSwitch;
@@ -50,7 +51,7 @@ public class SwitchControl extends Control implements GAInfoListener {
     private SwitchState                       previousState;
 
     private SwitchControl() {
-        listeners = new HashMap<Switch, SwitchChangeListener>();
+        listeners = new HashMap<Switch, List<SwitchChangeListener>>();
         addressToSwitch = new HashMap<Address, Switch>();
         numberToSwitch = new HashMap<Integer, Switch>();
         switchGroups = new ArrayList<SwitchGroup>();
@@ -197,7 +198,13 @@ public class SwitchControl extends Control implements GAInfoListener {
          * value + " )");
          */
         Address addr = new Address(bus, address);
+        addr.setAddressSwitched(false);
         Switch s = addressToSwitch.get(addr);
+        if(s == null) {
+        	addr = new Address(bus, address);
+        	addr.setAddressSwitched(true);
+        	s = addressToSwitch.get(addr);
+        }
         if (s != null) {
             s.switchPortChanged(addr, port, value);
             if (value != 0) {
@@ -232,7 +239,10 @@ public class SwitchControl extends Control implements GAInfoListener {
 
     public void addSwitchChangeListener(Switch aSwitch,
         SwitchChangeListener listener) {
-        listeners.put(aSwitch, listener);
+    	if(listeners.get(aSwitch) == null) {
+    		listeners.put(aSwitch, new ArrayList<SwitchChangeListener>());
+    	}
+        listeners.get(aSwitch).add(listener);
     }
 
     public void removeSwitchChangeListener(Switch aSwitch) {
@@ -244,9 +254,9 @@ public class SwitchControl extends Control implements GAInfoListener {
     }
 
     private void informListeners(Switch changedSwitch) {
-        SwitchChangeListener l = listeners.get(changedSwitch);
-        l.switchChanged(changedSwitch);
-
+        List<SwitchChangeListener> ll = listeners.get(changedSwitch);
+        for(SwitchChangeListener scl : ll) 
+        	scl.switchChanged(changedSwitch);
     }
 
     private void checkSwitch(Switch aSwitch) throws SwitchException {

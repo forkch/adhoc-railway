@@ -271,8 +271,8 @@ public class LocomotiveControl extends Control implements GLInfoListener {
         int v, int vMax, boolean[] functions) {
         Address addr = new Address(bus, address);
         Locomotive locomotive = addressToLocomotives.get(addr);
-        locomotive.locomotiveChanged(drivemode, v, vMax, functions);
-        informListeners(locomotive);
+        //locomotive.locomotiveChanged(drivemode, v, vMax, functions);
+        //informListeners(locomotive);
     }
 
     public void GLterm(double timestamp, int bus, int address) {

@@ -7,7 +7,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -15,6 +19,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -23,6 +28,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -43,6 +49,8 @@ public class RoutesConfigurationDialog<E> extends
 
 	private List<Route> routesWorkCopy;
 
+	private Map<Integer, Route> numberToRouteWorkCopy;
+
 	private ListListModel routesListModel;
 
 	private JList routeList;
@@ -58,7 +66,8 @@ public class RoutesConfigurationDialog<E> extends
 	private JPanel routeDetailPanel;
 
 	private JTable routedSwitchesTable;
-	
+
+	private JTextField routeNumberField;
 
 	public RoutesConfigurationDialog(JFrame parent) {
 		super(parent, "Edit Routes");
@@ -81,9 +90,13 @@ public class RoutesConfigurationDialog<E> extends
 	public void createTempConfiguration() {
 		this.routeControl = RouteControl.getInstance();
 		this.routesWorkCopy = new ArrayList<Route>();
+		this.numberToRouteWorkCopy = new HashMap<Integer, Route>();
 		for (Route r : routeControl.getRoutes()) {
 			Route newRoute = (Route) r.clone();
 			routesWorkCopy.add(newRoute);
+		}
+		for (Route r : routeControl.getNumberToRoutes().values()) {
+			numberToRouteWorkCopy.put(r.getNumber(), r);
 		}
 	}
 
@@ -165,17 +178,31 @@ public class RoutesConfigurationDialog<E> extends
 	}
 
 	private JPanel createRouteDetailPanel() {
+
+		Route selectedRoute = (Route) routeList.getSelectedValue();
+
 		routeDetailPanel = new JPanel(new BorderLayout());
 		TitledBorder title = BorderFactory.createTitledBorder("Route");
 		routeDetailPanel.setBorder(title);
 		routeDetailPanel.getInsets(new Insets(5, 5, 5, 5));
 
-		Route selectedRoute = (Route) routeList.getSelectedValue();
+		JLabel routeNumberLabel = new JLabel("Route Number");
+		if (selectedRoute != null) {
+			routeNumberField = new JTextField(15);
+			routeNumberField.setText(""+selectedRoute.getNumber());
+		}else
+			routeNumberField = new JTextField(15);
+
+		JPanel numberPanel = new JPanel(new FlowLayout());
+		numberPanel.add(routeNumberLabel);
+		numberPanel.add(routeNumberField);
 		routedSwitchesTableModel = new RoutedSwitchesTableModel();
 		routedSwitchesTable = new JTable(routedSwitchesTableModel);
 
 		routedSwitchesTable.setRowHeight(24);
 		JScrollPane tableScrollPane = new JScrollPane(routedSwitchesTable);
+
+		routeDetailPanel.add(numberPanel, BorderLayout.NORTH);
 		routeDetailPanel.add(tableScrollPane, BorderLayout.CENTER);
 
 		TableColumn stateColumn = routedSwitchesTable.getColumnModel()
@@ -209,9 +236,11 @@ public class RoutesConfigurationDialog<E> extends
 		Route selectedRoute = (Route) (routeList.getSelectedValue());
 		if (selectedRoute == null) {
 			((TitledBorder) routeDetailPanel.getBorder()).setTitle("Route");
+			routeNumberField.setText("");
 		} else {
 			((TitledBorder) routeDetailPanel.getBorder()).setTitle("Route '"
 					+ selectedRoute.getName() + "'");
+			routeNumberField.setText(""+selectedRoute.getNumber());
 		}
 		((RoutedSwitchesTableModel) routedSwitchesTableModel)
 				.setRoute(selectedRoute);
@@ -230,10 +259,19 @@ public class RoutesConfigurationDialog<E> extends
 					RoutesConfigurationDialog.this,
 					"Enter the name of the new Route", "Add Route",
 					JOptionPane.QUESTION_MESSAGE);
-			Route newRoute = new Route(newRouteName);
+			SortedSet<Integer> usedNumbers = new TreeSet<Integer>(
+					numberToRouteWorkCopy.keySet());
+			int nextNumber = 1;
+			if (usedNumbers.size() == 0) {
+				nextNumber = 1;
+			} else {
+				nextNumber = usedNumbers.last().intValue() + 1;
+			}
+			Route newRoute = new Route(newRouteName, nextNumber);
 			routesWorkCopy.add(newRoute);
 			routesListModel.updated();
 			routeList.setSelectedValue(newRoute, true);
+			updateRouteDetailPanel();
 		}
 
 	}
@@ -242,8 +280,10 @@ public class RoutesConfigurationDialog<E> extends
 
 		public void actionPerformed(ActionEvent e) {
 			Route routeToDelete = (Route) (routeList.getSelectedValue());
-			if(routeToDelete == null) {
-				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this, "Please select a route", "Error", JOptionPane.ERROR_MESSAGE);
+			if (routeToDelete == null) {
+				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
+						"Please select a route", "Error",
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			int response = JOptionPane.showConfirmDialog(
@@ -262,8 +302,10 @@ public class RoutesConfigurationDialog<E> extends
 
 		public void actionPerformed(ActionEvent e) {
 			Route routeToRename = (Route) (routeList.getSelectedValue());
-			if(routeToRename == null) {
-				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this, "Please select a route", "Error", JOptionPane.ERROR_MESSAGE);
+			if (routeToRename == null) {
+				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
+						"Please select a route", "Error",
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			String newSectionName = JOptionPane.showInputDialog(
@@ -321,8 +363,10 @@ public class RoutesConfigurationDialog<E> extends
 
 		public void actionPerformed(ActionEvent e) {
 			Route selectedRoute = (Route) (routeList.getSelectedValue());
-			if(selectedRoute == null) {
-				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this, "Please select a route", "Error", JOptionPane.ERROR_MESSAGE);
+			if (selectedRoute == null) {
+				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
+						"Please select a route", "Error",
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			String switchNumberAsString = JOptionPane.showInputDialog(
@@ -330,7 +374,8 @@ public class RoutesConfigurationDialog<E> extends
 					"Enter the number of the Switch", "Add switch to route",
 					JOptionPane.QUESTION_MESSAGE);
 			int switchNumber = Integer.parseInt(switchNumberAsString);
-			selectedRoute.addRouteItem(new RouteItem(switchNumber, SwitchState.STRAIGHT));
+			selectedRoute.addRouteItem(new RouteItem(switchNumber,
+					SwitchState.STRAIGHT));
 			updateRouteDetailPanel();
 		}
 

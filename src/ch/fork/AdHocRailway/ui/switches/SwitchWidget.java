@@ -165,15 +165,16 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
         }
 
         private void displaySwitchConfig() {
-            SwitchConfig switchConf = new SwitchConfig(frame, mySwitch);
+            SwitchConfig switchConf = new SwitchConfig(frame, mySwitch.clone());
             if (switchConf.isOkPressed()) {
                 switchControl.removeSwitchChangeListener(mySwitch);
                 switchGroup.removeSwitch(mySwitch);
-                
-                Switch newSwitch = switchConf.getSwitch();
-                switchGroup.addSwitch(newSwitch);
                 switchControl.unregisterSwitch(mySwitch);
                 switchControl.removeSwitchChangeListener(mySwitch);
+                
+                Switch newSwitch = switchConf.getSwitch();
+                System.out.println(newSwitch);
+                switchGroup.addSwitch(newSwitch);
                 switchControl.registerSwitch(newSwitch);
                 switchControl.addSwitchChangeListener(newSwitch, SwitchWidget.this);
                 

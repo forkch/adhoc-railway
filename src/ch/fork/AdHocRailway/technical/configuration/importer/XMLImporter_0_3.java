@@ -24,6 +24,7 @@ package ch.fork.AdHocRailway.technical.configuration.importer;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.smartcardio.ATR;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -112,11 +113,19 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
         } else if (qName.equals("address")) {
             int address = Integer.parseInt(attributes.getValue("address"));
             int bus = Integer.parseInt(attributes.getValue("bus"));
+            boolean switched = false;
+            if(attributes.getValue("switched").equals("true"))
+            	switched = true;
+            else 
+            	switched = false;
             actualAddress = new Address(bus, address);
+            actualAddress.setAddressSwitched(switched);
             actualAddresses[actualAddressCounter] = actualAddress;
             actualAddressCounter++;
         } else if (qName.equals("route")) {
-            actualRoute = new Route(attributes.getValue("name"));
+        	String name = attributes.getValue("name");
+        	int number = Integer.parseInt(attributes.getValue("number"));
+            actualRoute = new Route(name, number);
         } else if (qName.equals("routedswitch")) {
             parseRoutedSwitch(qName, attributes);
         } else if (qName.equals("locomotivegroup")) {
@@ -132,7 +141,7 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
     private void parseSwitch(String qName, Attributes attributes) {
         String type = attributes.getValue("type");
         String desc = attributes.getValue("desc");
-        String defaultstate = attributes.getValue("defaultstate");
+        String defaultstate = attributes.getValue("defaultstate").toLowerCase();
         String orientation = attributes.getValue("orientation");
         int number = Integer.parseInt(attributes.getValue("number"));
         if (type.equals("DefaultSwitch")) {
@@ -149,7 +158,11 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
             actualSwitch.setDefaultState(SwitchState.STRAIGHT);
         } else if (defaultstate.equals("curved")) {
             actualSwitch.setDefaultState(SwitchState.LEFT);
-        } else {
+        } else if (defaultstate.equals("left")) {
+            actualSwitch.setDefaultState(SwitchState.LEFT);
+        }else if (defaultstate.equals("right")) {
+            actualSwitch.setDefaultState(SwitchState.RIGHT);
+        }else {
             actualSwitch.setDefaultState(SwitchState.STRAIGHT);
         }
         if (orientation.toLowerCase().equals("north")) {

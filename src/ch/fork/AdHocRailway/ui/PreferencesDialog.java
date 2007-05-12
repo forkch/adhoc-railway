@@ -55,6 +55,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
     private SpinnerNumberModel defaultLockDurationModel;
     private JSpinner           locomotiveControlNumber;
     private JSpinner           switchControlNumber;
+    private JSpinner           routeControlNumber;
     private SpinnerNumberModel locomotiveControlNumberModel;
     private SpinnerNumberModel switchControlNumberModel;
     private JTextField         hostnameTextField;
@@ -69,6 +70,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
     private boolean            okPressed;
     private boolean            cancelPressed;
     private JCheckBox          autoconnectCheckBox;
+	private SpinnerNumberModel routeControlNumberModel;
 
     public PreferencesDialog(JFrame owner) {
         super(owner, "Preferences", true);
@@ -124,6 +126,12 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
             "Number of Switch Controls per row:");
         switchControlNumberModel = new SpinnerNumberModel(7, 1, 10, 1);
         switchControlNumber = new JSpinner(switchControlNumberModel);
+    
+        JLabel routeControlNumberLabel = new JLabel(
+        "Number of Route Controls per row:");
+        routeControlNumberModel = new SpinnerNumberModel(7, 1, 10, 1);
+        routeControlNumber = new JSpinner(routeControlNumberModel);
+
         JLabel keyBoardLayoutLabel = new JLabel("Keyboard-Layout");
         keyBoardLayoutComboBox = new JComboBox();
         keyBoardLayoutComboBox.addItem("Swiss German");
@@ -140,6 +148,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         guiSettingsTab.add(locomotiveControlNumber);
         guiSettingsTab.add(switchControlNumberLabel);
         guiSettingsTab.add(switchControlNumber);
+        guiSettingsTab.add(routeControlNumberLabel);
+        guiSettingsTab.add(routeControlNumber);
         guiSettingsTab.add(keyBoardLayoutLabel);
         guiSettingsTab.add(keyBoardLayoutComboBox);
         guiSettingsTab.add(writeLogLabel);
@@ -148,7 +158,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         guiSettingsTab.add(fullscreen);
         guiSettingsTab.add(tabbedTrackLabel);
         guiSettingsTab.add(tabbedTrackCheckBox);
-        SpringUtilities.makeCompactGrid(guiSettingsTab, 6, 2, // rows, cols
+        SpringUtilities.makeCompactGrid(guiSettingsTab, 7, 2, // rows, cols
             6, 6, // initX, initY
             6, 6); // xPad, yPad
 
@@ -230,6 +240,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         locomotiveControlNumberModel.setValue(p
             .getIntValue(LOCOMOTIVE_CONTROLES));
         switchControlNumberModel.setValue(p.getIntValue(SWITCH_CONTROLES));
+        routeControlNumberModel.setValue(p.getIntValue(ROUTE_CONTROLES));
+        
         keyBoardLayoutComboBox.setSelectedItem(p
             .getStringValue(KEYBOARD_LAYOUT));
 
@@ -252,6 +264,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
             .getNumber().intValue());
         p.setIntValue(SWITCH_CONTROLES, switchControlNumberModel.getNumber()
             .intValue());
+        p.setIntValue(ROUTE_CONTROLES, routeControlNumberModel.getNumber()
+                .intValue());
         p.setStringValue(KEYBOARD_LAYOUT, keyBoardLayoutComboBox
             .getSelectedItem().toString());
 
