@@ -211,9 +211,9 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			try {
 				if (enteredNumberKeys.toString().equals("")) {
 					if (changedSwitch) {
-						switchControl.undoLastChange();
+						switchControl.previousDeviceToDefault();
 					} else if(changedRoute){
-						routeControl.undoLastChange();
+						routeControl.previousDeviceToDefault();
 					}
 					changedSwitch = false;
 					changedRoute = false;

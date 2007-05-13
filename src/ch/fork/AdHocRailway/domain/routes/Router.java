@@ -73,15 +73,12 @@ public class Router extends Thread {
             ri.setPreviousSwitchState(switchToRoute.getSwitchState());
             switch (ri.getRoutedSwitchState()) {
             case STRAIGHT:
-            	System.out.println("STRAIGHT");
                 sc.setStraight(switchToRoute);
                 break;
             case LEFT:
-            	System.out.println("LEFT");
                 sc.setCurvedLeft(switchToRoute);
                 break;
             case RIGHT:
-            	System.out.println("RIGHT");
                 sc.setCurvedRight(switchToRoute);
                 break;
             }

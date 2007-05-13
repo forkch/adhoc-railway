@@ -120,57 +120,30 @@ public class DefaultSwitch extends Switch {
         }
     }
 
-    protected void switchPortChanged(Address addr, int pChangedPort, int value) {
-        if (value == 0) {
-        } else {
-            // a port has been ACTIVATED
-            if (pChangedPort == STRAIGHT_PORT) {
-            	if(!addresses[0].isAddressSwitched())
-            		switchState = SwitchState.STRAIGHT;
-            	else 
-            		switchState = SwitchState.LEFT;
-            } else if (pChangedPort == CURVED_PORT) {
-            	if(!addresses[0].isAddressSwitched())
-            		switchState = SwitchState.LEFT;
-            	else 
-            		switchState = SwitchState.STRAIGHT;		
-            }
-        }
-    }
+	@Override
+	protected void setDefaultState() throws SwitchException {
+		// TODO Auto-generated method stub
+		
+	}
 
-    @Override
-    protected void switchInitialized(Address addr) {
-        ga = new GA(session);
-        this.addresses[0] = addr;
-        ga.setBus(addr.getBus());
-        ga.setAddress(addr.getAddress());
-        initialized = true;
-    }
-
-    @Override
-    protected void switchTerminated(Address addr) {
-        ga = null;
-        initialized = false;
-    }
-
+	@Override
+	protected void setNonDefaultState() throws SwitchException {
+		// TODO Auto-generated method stub
+		
+	}
+	
     @Override
     protected void setStraight() throws SwitchException {
         try {
             int defaultActivationTime = Preferences.getInstance().getIntValue(
                 PreferencesKeys.ACTIVATION_TIME);
-            //System.out.println(defaultState);
             if (defaultState == SwitchState.STRAIGHT) {
-            	//System.out.println("original: " + STRAIGHT_PORT);
-            	//System.out.println("getPort: " + getPort(STRAIGHT_PORT));
                 ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
                     defaultActivationTime);
                 ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
                     defaultActivationTime);
             } else if (defaultState == SwitchState.LEFT
-                || defaultState == SwitchState.RIGHT) {
-            	//System.out.println("original: " + CURVED_PORT);
-            	//System.out.println("getPort: " + getPort(CURVED_PORT));
-                
+                || defaultState == SwitchState.RIGHT) {                
                 ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
                     defaultActivationTime);
                 ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
@@ -213,6 +186,40 @@ public class DefaultSwitch extends Switch {
     }
 
     @Override
+    protected void switchPortChanged(Address addr, int pChangedPort, int value) {
+        if (value == 0) {
+        } else {
+            // a port has been ACTIVATED
+            if (pChangedPort == STRAIGHT_PORT) {
+            	if(!addresses[0].isAddressSwitched())
+            		switchState = SwitchState.STRAIGHT;
+            	else 
+            		switchState = SwitchState.LEFT;
+            } else if (pChangedPort == CURVED_PORT) {
+            	if(!addresses[0].isAddressSwitched())
+            		switchState = SwitchState.LEFT;
+            	else 
+            		switchState = SwitchState.STRAIGHT;		
+            }
+        }
+    }
+
+    @Override
+    protected void switchInitialized(Address addr) {
+        ga = new GA(session);
+        this.addresses[0] = addr;
+        ga.setBus(addr.getBus());
+        ga.setAddress(addr.getAddress());
+        initialized = true;
+    }
+
+    @Override
+    protected void switchTerminated(Address addr) {
+        ga = null;
+        initialized = false;
+    }
+    
+    @Override
     public Switch clone() {
         DefaultSwitch newSwitch = new DefaultSwitch(number, desc, addresses[0]);
         newSwitch.setSession(session);
@@ -247,4 +254,5 @@ public class DefaultSwitch extends Switch {
     protected void setSession(SRCPSession session) {
         this.session = session;
     }
+
 }

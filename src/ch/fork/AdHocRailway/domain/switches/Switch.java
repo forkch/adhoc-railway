@@ -63,6 +63,10 @@ public abstract class Switch extends ControlObject implements Constants,
 
     protected abstract void toggle() throws SwitchException;
 
+    protected abstract void setDefaultState() throws SwitchException;
+    
+    protected abstract void setNonDefaultState() throws SwitchException;
+    
     protected abstract void setStraight() throws SwitchException;
 
     protected abstract void setCurvedLeft() throws SwitchException;
