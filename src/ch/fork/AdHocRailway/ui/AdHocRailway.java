@@ -661,7 +661,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 try {
 
                     for (Switch s : switchControl.getNumberToSwitch().values()) {
-                        switchControl.setStraight(s);
+                        switchControl.setDefaultState(s);
                         Thread.sleep(10);
                     }
                 } catch (ControlException e1) {

@@ -47,7 +47,7 @@ public class Router extends Thread {
         for (RouteItem ri : routeItems) {
             Switch switchToRoute = ri.getRoutedSwitch();
 
-            switch (switchToRoute.getDefaultState()) {
+            /*switch (switchToRoute.getDefaultState()) {
             case STRAIGHT:
                 sc.setStraight(switchToRoute);
                 break;
@@ -58,6 +58,8 @@ public class Router extends Thread {
                 sc.setCurvedRight(switchToRoute);
                 break;
             }
+            */
+            sc.setDefaultState(switchToRoute);
             listener.nextSwitchDerouted();
             Thread.sleep(waitTime);
         }

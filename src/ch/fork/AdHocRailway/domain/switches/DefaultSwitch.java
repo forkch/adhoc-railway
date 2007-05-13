@@ -19,7 +19,6 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.domain.switches;
 
 import ch.fork.AdHocRailway.domain.Address;
@@ -33,226 +32,196 @@ import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GA;
 
 public class DefaultSwitch extends Switch {
-    private GA  ga;
-    private int STRAIGHT_PORT = 0;
-    private int CURVED_PORT   = 1;
+	private GA ga;
 
-    public DefaultSwitch(int pNumber, String pDesc) {
-        this(pNumber, pDesc, new Address(DEFAULT_BUS, 1));
-    }
+	private int STRAIGHT_PORT = 0;
 
-    public DefaultSwitch(int pNumber, String pDesc, Address address) {
-        super(pNumber, pDesc, address);
-    }
+	private int CURVED_PORT = 1;
 
-    protected void init() throws SwitchException {
-        try {
-            ga = new GA(session);
-            if (!Preferences.getInstance().getBooleanValue(
-                PreferencesKeys.INTERFACE_6051)) {
-                ga.init(addresses[0].getBus(), addresses[0].getAddress(), "M");
-            } else {
-                ga.setAddress(addresses[0].getAddress());
-                ga.setBus(addresses[0].getBus());
-            }
-            initialized = true;
-        } catch (SRCPDeviceLockedException x1) {
-            throw new SwitchLockedException(ERR_LOCKED, x1);
-        } catch (SRCPException x) {
-            throw new SwitchException(ERR_INIT_FAILED, x);
-        }
-    }
+	public DefaultSwitch(int pNumber, String pDesc) {
+		this(pNumber, pDesc, new Address(DEFAULT_BUS, 1));
+	}
 
-    protected void term() throws SwitchException {
-        try {
-            ga.term();
-            initialized = false;
-        } catch (SRCPDeviceLockedException x1) {
-            throw new SwitchLockedException(ERR_LOCKED, x1);
-        } catch (SRCPException x) {
-            throw new SwitchException(ERR_TERM_FAILED, x);
-        }
-    }
+	public DefaultSwitch(int pNumber, String pDesc, Address address) {
+		super(pNumber, pDesc, address);
+	}
 
-    @Override
-    protected void reinit() throws SwitchException {
-        term();
-        init();
-    }
+	protected void init() throws SwitchException {
+		try {
+			ga = new GA(session);
+			if (!Preferences.getInstance().getBooleanValue(
+					PreferencesKeys.INTERFACE_6051)) {
+				ga.init(addresses[0].getBus(), addresses[0].getAddress(), "M");
+			} else {
+				ga.setAddress(addresses[0].getAddress());
+				ga.setBus(addresses[0].getBus());
+			}
+			initialized = true;
+		} catch (SRCPDeviceLockedException x1) {
+			throw new SwitchLockedException(ERR_LOCKED, x1);
+		} catch (SRCPException x) {
+			throw new SwitchException(ERR_INIT_FAILED, x);
+		}
+	}
 
-    protected void toggle() throws SwitchException {
-        try {
-            int defaultActivationTime = Preferences.getInstance().getIntValue(
-                PreferencesKeys.ACTIVATION_TIME);
-            switch (switchState) {
-            case STRAIGHT:
-            	ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
-                    defaultActivationTime);
-                ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
-                    defaultActivationTime);
-                break;
-            case RIGHT:
-            case LEFT:
-                ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
-                    defaultActivationTime);
-                ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
-                    defaultActivationTime);
-                break;
-            case UNDEF:
-                if (defaultState == SwitchState.STRAIGHT) {
-                    ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
-                        defaultActivationTime);
-                    ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
-                        defaultActivationTime);
-                } else if (defaultState == SwitchState.RIGHT
-                    || defaultState == SwitchState.LEFT) {
-                	ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
-                        defaultActivationTime);
-                    ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
-                        defaultActivationTime);
-                }
-            }
-        } catch (SRCPDeviceLockedException x1) {
-            throw new SwitchLockedException(ERR_LOCKED, x1);
-        } catch (SRCPException x) {
-            throw new SwitchException(ERR_TOGGLE_FAILED, x);
+	protected void term() throws SwitchException {
+		try {
+			ga.term();
+			initialized = false;
+		} catch (SRCPDeviceLockedException x1) {
+			throw new SwitchLockedException(ERR_LOCKED, x1);
+		} catch (SRCPException x) {
+			throw new SwitchException(ERR_TERM_FAILED, x);
+		}
+	}
 
-        }
-    }
+	@Override
+	protected void reinit() throws SwitchException {
+		term();
+		init();
+	}
+
+	protected void toggle() throws SwitchException {
+		switch (switchState) {
+		case STRAIGHT:
+			setCurvedLeft();
+			break;
+		case RIGHT:
+		case LEFT:
+			setStraight();
+			break;
+		case UNDEF:
+			setDefaultState();
+		}
+	}
 
 	@Override
 	protected void setDefaultState() throws SwitchException {
-		// TODO Auto-generated method stub
-		
+		if (defaultState == SwitchState.STRAIGHT) {
+			setStraight();
+		} else if (defaultState == SwitchState.LEFT
+				|| defaultState == SwitchState.RIGHT) {
+			setCurvedLeft();
+		}
 	}
 
 	@Override
 	protected void setNonDefaultState() throws SwitchException {
-		// TODO Auto-generated method stub
-		
+		if (defaultState == SwitchState.STRAIGHT) {
+			setCurvedLeft();
+		} else if (defaultState == SwitchState.LEFT
+				|| defaultState == SwitchState.RIGHT) {
+			setStraight();
+		}
 	}
-	
-    @Override
-    protected void setStraight() throws SwitchException {
-        try {
-            int defaultActivationTime = Preferences.getInstance().getIntValue(
-                PreferencesKeys.ACTIVATION_TIME);
-            if (defaultState == SwitchState.STRAIGHT) {
-                ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
-                    defaultActivationTime);
-                ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
-                    defaultActivationTime);
-            } else if (defaultState == SwitchState.LEFT
-                || defaultState == SwitchState.RIGHT) {                
-                ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
-                    defaultActivationTime);
-                ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
-                    defaultActivationTime);
-            }
-        } catch (SRCPDeviceLockedException x1) {
-            throw new SwitchLockedException(ERR_LOCKED, x1);
-        } catch (SRCPException e) {
-            throw new SwitchException(ERR_TOGGLE_FAILED, e);
-        }
-    }
 
-    @Override
-    protected void setCurvedLeft() throws SwitchException {
-        try {
-            int defaultActivationTime = Preferences.getInstance().getIntValue(
-                PreferencesKeys.ACTIVATION_TIME);
-            if (defaultState == SwitchState.LEFT
-                || defaultState == SwitchState.RIGHT) {
-                ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
-                    defaultActivationTime);
-                ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
-                    defaultActivationTime);
-            } else if (defaultState == SwitchState.STRAIGHT) {
-                ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
-                    defaultActivationTime);
-                ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
-                    defaultActivationTime);
-            }
-        } catch (SRCPDeviceLockedException x1) {
-            throw new SwitchLockedException(ERR_LOCKED, x1);
-        } catch (SRCPException e) {
-            throw new SwitchException(ERR_TOGGLE_FAILED, e);
-        }
-    }
+	@Override
+	protected void setStraight() throws SwitchException {
+		try {
+			int defaultActivationTime = Preferences.getInstance().getIntValue(
+					PreferencesKeys.ACTIVATION_TIME);
 
-    @Override
-    protected void setCurvedRight() throws SwitchException {
-        setCurvedLeft();
-    }
+			ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_ACTIVATE,
+					defaultActivationTime);
+			ga.set(getPort(CURVED_PORT), SWITCH_PORT_DEACTIVATE,
+					defaultActivationTime);
 
-    @Override
-    protected void switchPortChanged(Address addr, int pChangedPort, int value) {
-        if (value == 0) {
-        } else {
-            // a port has been ACTIVATED
-            if (pChangedPort == STRAIGHT_PORT) {
-            	if(!addresses[0].isAddressSwitched())
-            		switchState = SwitchState.STRAIGHT;
-            	else 
-            		switchState = SwitchState.LEFT;
-            } else if (pChangedPort == CURVED_PORT) {
-            	if(!addresses[0].isAddressSwitched())
-            		switchState = SwitchState.LEFT;
-            	else 
-            		switchState = SwitchState.STRAIGHT;		
-            }
-        }
-    }
+		} catch (SRCPDeviceLockedException x1) {
+			throw new SwitchLockedException(ERR_LOCKED, x1);
+		} catch (SRCPException e) {
+			throw new SwitchException(ERR_TOGGLE_FAILED, e);
+		}
+	}
 
-    @Override
-    protected void switchInitialized(Address addr) {
-        ga = new GA(session);
-        this.addresses[0] = addr;
-        ga.setBus(addr.getBus());
-        ga.setAddress(addr.getAddress());
-        initialized = true;
-    }
+	@Override
+	protected void setCurvedLeft() throws SwitchException {
+		try {
+			int defaultActivationTime = Preferences.getInstance().getIntValue(
+					PreferencesKeys.ACTIVATION_TIME);
+			ga.set(getPort(CURVED_PORT), SWITCH_PORT_ACTIVATE,
+					defaultActivationTime);
+			ga.set(getPort(STRAIGHT_PORT), SWITCH_PORT_DEACTIVATE,
+					defaultActivationTime);
+		} catch (SRCPDeviceLockedException x1) {
+			throw new SwitchLockedException(ERR_LOCKED, x1);
+		} catch (SRCPException e) {
+			throw new SwitchException(ERR_TOGGLE_FAILED, e);
+		}
+	}
 
-    @Override
-    protected void switchTerminated(Address addr) {
-        ga = null;
-        initialized = false;
-    }
-    
-    @Override
-    public Switch clone() {
-        DefaultSwitch newSwitch = new DefaultSwitch(number, desc, addresses[0]);
-        newSwitch.setSession(session);
-        newSwitch.setSwitchOrientation(switchOrientation);
-        newSwitch.setDefaultState(defaultState);
-        return newSwitch;
-    }
+	@Override
+	protected void setCurvedRight() throws SwitchException {
+		setCurvedLeft();
+	}
 
-    protected void setAddress(Address address) {
-        this.addresses[0] = address;
-    }
+	@Override
+	protected void switchPortChanged(Address addr, int pChangedPort, int value) {
+		if (value == 0) {
+		} else {
+			// a port has been ACTIVATED
+			if (pChangedPort == STRAIGHT_PORT) {
+				if (!addresses[0].isAddressSwitched())
+					switchState = SwitchState.STRAIGHT;
+				else
+					switchState = SwitchState.LEFT;
+			} else if (pChangedPort == CURVED_PORT) {
+				if (!addresses[0].isAddressSwitched())
+					switchState = SwitchState.LEFT;
+				else
+					switchState = SwitchState.STRAIGHT;
+			}
+		}
+	}
 
-    /**
-     * Returns the port to activate according to the addressSwitched flag.
-     * 
-     * @param wantedPort
-     *            The port to 'convert'
-     * @return The 'converted' port
-     */
-    private int getPort(int wantedPort) {
-        if (!addresses[0].isAddressSwitched()) {
-            return wantedPort;
-        } else {
-            if (wantedPort == STRAIGHT_PORT) {
-                return CURVED_PORT;
-            } else {
-                return STRAIGHT_PORT;
-            }
-        }
-    }
+	@Override
+	protected void switchInitialized(Address addr) {
+		ga = new GA(session);
+		this.addresses[0] = addr;
+		ga.setBus(addr.getBus());
+		ga.setAddress(addr.getAddress());
+		initialized = true;
+	}
 
-    protected void setSession(SRCPSession session) {
-        this.session = session;
-    }
+	@Override
+	protected void switchTerminated(Address addr) {
+		ga = null;
+		initialized = false;
+	}
+
+	@Override
+	public Switch clone() {
+		DefaultSwitch newSwitch = new DefaultSwitch(number, desc, addresses[0]);
+		newSwitch.setSession(session);
+		newSwitch.setSwitchOrientation(switchOrientation);
+		newSwitch.setDefaultState(defaultState);
+		return newSwitch;
+	}
+
+	protected void setAddress(Address address) {
+		this.addresses[0] = address;
+	}
+
+	/**
+	 * Returns the port to activate according to the addressSwitched flag.
+	 * 
+	 * @param wantedPort
+	 *            The port to 'convert'
+	 * @return The 'converted' port
+	 */
+	private int getPort(int wantedPort) {
+		if (!addresses[0].isAddressSwitched()) {
+			return wantedPort;
+		} else {
+			if (wantedPort == STRAIGHT_PORT) {
+				return CURVED_PORT;
+			} else {
+				return STRAIGHT_PORT;
+			}
+		}
+	}
+
+	protected void setSession(SRCPSession session) {
+		this.session = session;
+	}
 
 }

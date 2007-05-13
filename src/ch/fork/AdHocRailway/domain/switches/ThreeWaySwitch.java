@@ -96,6 +96,36 @@ public class ThreeWaySwitch extends Switch {
         }
     }
 
+	@Override
+	protected void setDefaultState() throws SwitchException {
+		switch1.setStraight();
+		switch2.setStraight();
+	}
+
+	@Override
+	protected void setNonDefaultState() throws SwitchException {
+		
+	}
+
+    @Override
+    protected void setStraight() throws SwitchException {
+        switch1.setStraight();
+        switch2.setStraight();
+    }
+
+    @Override
+    protected void setCurvedLeft() throws SwitchException {
+        switch1.setCurvedRight();
+        switch2.setStraight();
+    }
+
+    @Override
+    protected void setCurvedRight() throws SwitchException {
+        switch1.setStraight();
+        switch2.setCurvedRight();
+    }
+
+
     protected void switchPortChanged(Address addr, int pChangedPort, int value) {
         Switch s = addressToSwitch.get(addr);
         s.switchPortChanged(addr, pChangedPort, value);
@@ -124,24 +154,7 @@ public class ThreeWaySwitch extends Switch {
         addressToSwitch.get(addr).switchTerminated(addr);
     }
 
-    @Override
-    protected void setStraight() throws SwitchException {
-        switch1.setStraight();
-        switch2.setStraight();
-    }
-
-    @Override
-    protected void setCurvedLeft() throws SwitchException {
-        switch1.setCurvedRight();
-        switch2.setStraight();
-    }
-
-    @Override
-    protected void setCurvedRight() throws SwitchException {
-        switch1.setStraight();
-        switch2.setCurvedRight();
-    }
-
+    
     protected void setSession(SRCPSession session) {
         this.session = session;
         switch1.setSession(session);
@@ -173,5 +186,6 @@ public class ThreeWaySwitch extends Switch {
         newSwitch.setDefaultState(defaultState);
         return newSwitch;
     }
+
 
 }

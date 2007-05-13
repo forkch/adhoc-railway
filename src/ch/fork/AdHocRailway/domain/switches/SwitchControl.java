@@ -161,6 +161,24 @@ public class SwitchControl extends Control implements GAInfoListener {
 		lastChangedSwitch = aSwitch;
 	}
 
+	public void setDefaultState(Switch aSwitch) throws SwitchException {
+		checkSwitch(aSwitch);
+		initSwitch(aSwitch);
+		previousState = aSwitch.getSwitchState();
+		aSwitch.setDefaultState();
+		informListeners(aSwitch);
+		lastChangedSwitch = aSwitch;
+	}
+
+	public void setNonDefaultState(Switch aSwitch) throws SwitchException {
+		checkSwitch(aSwitch);
+		initSwitch(aSwitch);
+		previousState = aSwitch.getSwitchState();
+		aSwitch.setNonDefaultState();
+		informListeners(aSwitch);
+		lastChangedSwitch = aSwitch;
+	}
+	
 	public void setStraight(Switch aSwitch) throws SwitchException {
 		checkSwitch(aSwitch);
 		initSwitch(aSwitch);
@@ -313,6 +331,8 @@ public class SwitchControl extends Control implements GAInfoListener {
 		if (lastChangedSwitch == null) {
 			return;
 		}
+		setDefaultState(lastChangedSwitch);
+		/*
 		switch (lastChangedSwitch.getDefaultState()) {
 		case STRAIGHT:
 			setStraight(lastChangedSwitch);
@@ -327,5 +347,6 @@ public class SwitchControl extends Control implements GAInfoListener {
 			setStraight(lastChangedSwitch);
 			break;
 		}
+		*/
 	}
 }

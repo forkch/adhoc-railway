@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -26,6 +27,8 @@ import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RoutesControlPanel;
+import ch.fork.AdHocRailway.ui.routes.StaticRouteWidget;
+import ch.fork.AdHocRailway.ui.switches.StaticSwitchWidget;
 import ch.fork.AdHocRailway.ui.switches.SwitchGroupPane;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
@@ -55,8 +58,10 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private RouteControl routeControl;
 
 	public boolean routeMode;
-	public boolean changedSwitch =false;
-	public boolean changedRoute=false;
+
+	public boolean changedSwitch = false;
+
+	public boolean changedRoute = false;
 
 	public TrackControlPanel(JFrame frame) {
 		this.frame = frame;
@@ -123,7 +128,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		registerKeyboardAction(new NumberEnteredAction(), ".", KeyStroke
 				.getKeyStroke(KeyEvent.VK_PERIOD, 0), WHEN_IN_FOCUSED_WINDOW);
 		registerKeyboardAction(new SwitchingAction(), "\\", KeyStroke
-				.getKeyStroke(92,0), WHEN_IN_FOCUSED_WINDOW);
+				.getKeyStroke(92, 0), WHEN_IN_FOCUSED_WINDOW);
 		registerKeyboardAction(new NumberEnteredAction(), ".", KeyStroke
 				.getKeyStroke(110, 0), WHEN_IN_FOCUSED_WINDOW);
 		registerKeyboardAction(new SwitchingAction(), "\n", KeyStroke
@@ -134,7 +139,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		registerKeyboardAction(new SwitchingAction(), "", KeyStroke
 				.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0),
-				WHEN_IN_FOCUSED_WINDOW);	
+				WHEN_IN_FOCUSED_WINDOW);
 
 		registerKeyboardAction(new SwitchingAction(), "/", KeyStroke
 				.getKeyStroke(KeyEvent.VK_DIVIDE, 0), WHEN_IN_FOCUSED_WINDOW);
@@ -158,7 +163,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		seg2.setValue(-1);
 		seg3.setValue(-1);
 		seg3.setDisplayPeriod(false);
-		
+
 		seg1.repaint();
 		seg2.repaint();
 		seg3.repaint();
@@ -184,7 +189,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				seg1.repaint();
 				switchNumber = switchNumber - seg1Value;
 				int seg2Value = 0;
-				if(switchNumber != 0) {
+				if (switchNumber != 0) {
 					seg2Value = (switchNumber % 100) / 10;
 					seg2.setValue(seg2Value);
 				} else {
@@ -193,7 +198,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				seg2.repaint();
 				switchNumber = switchNumber - seg2Value * 10;
 				int seg3Value = 0;
-				if(switchNumber != 0) {
+				if (switchNumber != 0) {
 					seg3Value = (switchNumber % 1000) / 100;
 					seg3.setValue(seg3Value);
 				} else {
@@ -212,7 +217,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				if (enteredNumberKeys.toString().equals("")) {
 					if (changedSwitch) {
 						switchControl.previousDeviceToDefault();
-					} else if(changedRoute){
+					} else if (changedRoute) {
 						routeControl.previousDeviceToDefault();
 					}
 					changedSwitch = false;
@@ -222,20 +227,21 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				}
 				String enteredNumberAsString = enteredNumberKeys.toString();
 				int enteredNumber = Integer.parseInt(enteredNumberAsString);
-				if(routeMode) {
+				if (routeMode) {
 					handleRouteChange(e, enteredNumber);
 				} else {
 					handleSwitchChange(e, enteredNumber);
 				}
-				
-				routeMode = false;				
+
+				routeMode = false;
 			} catch (ControlException e1) {
 				resetSegmentDisplay();
 				ExceptionProcessor.getInstance().processException(e1);
 			}
 		}
 
-		private void handleSwitchChange(ActionEvent e, int enteredNumber) throws SwitchException {
+		private void handleSwitchChange(ActionEvent e, int enteredNumber)
+				throws SwitchException {
 			Switch searchedSwitch = null;
 
 			searchedSwitch = switchControl.getNumberToSwitch().get(
@@ -253,42 +259,35 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				switchControl.setCurvedRight(searchedSwitch);
 			} else if (e.getActionCommand().equals("+")) {
 				if (!(searchedSwitch instanceof ThreeWaySwitch)) {
-					switchControl.setCurvedLeft(searchedSwitch);
+					switchControl.setNonDefaultState(searchedSwitch);
 				}
 			} else if (e.getActionCommand().equals("")) {
 				if (!(searchedSwitch instanceof ThreeWaySwitch)) {
-					switchControl.setCurvedLeft(searchedSwitch);
+					switchControl.setNonDefaultState(searchedSwitch);
 				}
 			} else if (e.getActionCommand().equals("\n")) {
-				switchControl.setStraight(searchedSwitch);
+				switchControl.setDefaultState(searchedSwitch);
 			}
 			changedRoute = false;
 			changedSwitch = true;
 			resetSegmentDisplay();
-			/*
-			SwitchWidget sw = new SwitchWidget(searchedSwitch, null, true,
-					frame);
+			StaticSwitchWidget sw = new StaticSwitchWidget(searchedSwitch);
 			Component[] oldWidgets = switchesHistory.getComponents();
 			switchesHistory.removeAll();
 			switchesHistory.add(sw);
-			if (oldWidgets.length > 0
-					&& sw.getMySwitch() != ((SwitchWidget) oldWidgets[0])
-							.getMySwitch())
+			if (oldWidgets.length > 0)
 				switchesHistory.add(oldWidgets[0]);
-			if (oldWidgets.length > 1
-					&& sw.getMySwitch() != ((SwitchWidget) oldWidgets[1])
-							.getMySwitch())
+			if (oldWidgets.length > 1)
 				switchesHistory.add(oldWidgets[1]);
-				*/
 			repaint();
 			revalidate();
 		}
 
-		private void handleRouteChange(ActionEvent e, int enteredNumber) throws SwitchException {
+		private void handleRouteChange(ActionEvent e, int enteredNumber)
+				throws SwitchException {
 			Route searchedRoute = null;
 
-			searchedRoute = routeControl.getNumberToRoutes().get(
-					enteredNumber);
+			searchedRoute = routeControl.getNumberToRoutes().get(enteredNumber);
 			if (searchedRoute == null) {
 				resetSegmentDisplay();
 				return;
@@ -304,24 +303,17 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			changedRoute = true;
 			changedSwitch = false;
 			resetSegmentDisplay();
-			/*
-			RouteWidget rw = new RouteWidget(searchedRoute);
+
+			StaticRouteWidget rw = new StaticRouteWidget(searchedRoute);
 			Component[] oldWidgets = switchesHistory.getComponents();
 			switchesHistory.removeAll();
 			switchesHistory.add(rw);
-			if (oldWidgets.length > 0
-					&& oldWidgets[0] instanceof RouteWidget 
-					&& rw.getRoute() != ((RouteWidget) oldWidgets[0])
-							.getRoute())
+			if (oldWidgets.length > 0)
 				switchesHistory.add(oldWidgets[0]);
-			if (oldWidgets.length > 1
-					&& oldWidgets[0] instanceof RouteWidget 
-					&& rw.getRoute() != ((RouteWidget) oldWidgets[1])
-							.getRoute())
+			if (oldWidgets.length > 1)
 				switchesHistory.add(oldWidgets[1]);
 			repaint();
 			revalidate();
-			*/
 		}
 	}
 
@@ -354,7 +346,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		switchGroupPane.update(switchControl.getSwitchGroups());
 		routesControlPanel.update(routeControl.getRoutes());
 		revalidate();
-        repaint();
-        
+		repaint();
+
 	}
 }
