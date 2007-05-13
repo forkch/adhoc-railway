@@ -217,6 +217,12 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
 	}
 
 	@Override
+	public void undoLastChange() throws ControlException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void previousDeviceToDefault() throws ControlException {
 		// TODO Auto-generated method stub
 		

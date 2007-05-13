@@ -76,6 +76,6 @@ public abstract class Control {
         }
     }
     
+    abstract public void undoLastChange() throws ControlException;
     abstract public void previousDeviceToDefault() throws ControlException;
-
 }

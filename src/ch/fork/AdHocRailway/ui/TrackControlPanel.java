@@ -59,6 +59,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private RouteControl routeControl;
 
 	public boolean routeMode;
+	public boolean changedSwitch =false;
+	public boolean changedRoute=false;
 
 	public TrackControlPanel(JFrame frame) {
 		this.frame = frame;
@@ -169,7 +171,6 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getActionCommand() == ".") {
 				routeMode = true;
-				System.out.println("routeMode");
 			} else {
 				enteredNumberKeys.append(e.getActionCommand());
 				String switchNumberAsString = enteredNumberKeys.toString();
@@ -199,11 +200,15 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 			try {
 				if (enteredNumberKeys.toString().equals("")) {
-					if (!routeMode) {
-						switchControl.previousDeviceToDefault();
-					} else {
-						routeControl.previousDeviceToDefault();
+					if (changedSwitch) {
+						System.out.println("switch");
+						switchControl.undoLastChange();
+					} else if(changedRoute){
+						System.out.println("route");
+						routeControl.undoLastChange();
 					}
+					changedSwitch = false;
+					changedRoute = false;
 					return;
 				}
 				String enteredNumberAsString = enteredNumberKeys.toString();
@@ -214,7 +219,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 					handleSwitchChange(e, enteredNumber);
 				}
 				
-				
+				routeMode = false;				
 			} catch (ControlException e1) {
 				resetSegmentDisplay();
 				ExceptionProcessor.getInstance().processException(e1);
@@ -249,6 +254,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			} else if (e.getActionCommand().equals("\n")) {
 				switchControl.setStraight(searchedSwitch);
 			}
+			changedRoute = false;
+			changedSwitch = true;
 			resetSegmentDisplay();
 			/*
 			SwitchWidget sw = new SwitchWidget(searchedSwitch, null, true,
@@ -285,6 +292,9 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			} else if (e.getActionCommand().equals("\\")) {
 				routeControl.enableRoute(searchedRoute);
 			}
+
+			changedRoute = true;
+			changedSwitch = false;
 			resetSegmentDisplay();
 			/*
 			RouteWidget rw = new RouteWidget(searchedRoute);

@@ -321,6 +321,12 @@ public class LocomotiveControl extends Control implements GLInfoListener {
     }
 
 	@Override
+	public void undoLastChange() throws ControlException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void previousDeviceToDefault() throws ControlException {
 		// TODO Auto-generated method stub
 		

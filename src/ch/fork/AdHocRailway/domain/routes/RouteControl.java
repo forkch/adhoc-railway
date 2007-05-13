@@ -77,6 +77,8 @@ public class RouteControl extends Control {
 				PreferencesKeys.ROUTING_DELAY);
 		Router switchRouter = new Router(r, true, waitTime, listeners.get(r));
 		switchRouter.start();
+		lastChangedRoute = r;
+		lastRouteState = RouteState.ENABLED;
 	}
 
 	public void disableRoute(Route r) throws SwitchException {
@@ -85,6 +87,8 @@ public class RouteControl extends Control {
 				PreferencesKeys.ROUTING_DELAY);
 		Router switchRouter = new Router(r, false, waitTime, listeners.get(r));
 		switchRouter.start();
+		lastChangedRoute = r;
+		lastRouteState = RouteState.DISABLED;
 	}
 
 	public void addRouteChangeListener(Route r, RouteChangeListener listener) {
@@ -100,7 +104,7 @@ public class RouteControl extends Control {
 	}
 
 	@Override
-	public void previousDeviceToDefault() throws ControlException {
+	public void undoLastChange() throws ControlException {
 		if (lastChangedRoute == null)
 			return;
 		switch (lastRouteState) {
@@ -111,6 +115,15 @@ public class RouteControl extends Control {
 			enableRoute(lastChangedRoute);
 			break;
 		}
+		lastChangedRoute = null;
+		lastRouteState = null;
+	}
+
+	@Override
+	public void previousDeviceToDefault() throws ControlException {
+		if (lastChangedRoute == null)
+			return;
+		disableRoute(lastChangedRoute);
 		lastChangedRoute = null;
 		lastRouteState = null;
 	}
