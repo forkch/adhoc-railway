@@ -162,7 +162,7 @@ public class SwitchConfigurationDialog<E> extends
 				switchGroupsWorkCopy);
 		switchGroupList = new JList(switchGroupListModel);
 		switchGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
+
 		switchGroupPopupMenu = new JPopupMenu();
 		JMenuItem addItem = new JMenuItem("Add");
 		JMenuItem removeItem = new JMenuItem("Remove");
@@ -277,11 +277,12 @@ public class SwitchConfigurationDialog<E> extends
 		addSwitchButton = new JButton("Add");
 		add10SwitchesButton = new JButton("Add 10 Switches");
 		removeSwitchButton = new JButton("Remove");
+
 		addSwitchButton.addActionListener(new AddSwitchAction());
 		add10SwitchesButton.addActionListener(new Add10SwitchesAction());
 		removeSwitchButton.addActionListener(new RemoveSwitchAction());
-		JPanel buttonPanel = new JPanel(new FlowLayout());
 
+		JPanel buttonPanel = new JPanel(new FlowLayout());
 		buttonPanel.add(addSwitchButton);
 		buttonPanel.add(add10SwitchesButton);
 		buttonPanel.add(removeSwitchButton);
@@ -293,12 +294,14 @@ public class SwitchConfigurationDialog<E> extends
 	private void updateSwitchesPanel() {
 		SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
 				.getSelectedValue());
+		System.out.println(selectedSwitchGroup);
 		if (selectedSwitchGroup == null) {
-			((TitledBorder) switchesPanel.getBorder()).setTitle("Switch-Group");
+			switchesPanel.setBorder(BorderFactory
+					.createTitledBorder("Switch-Group"));
 		} else {
-			((TitledBorder) switchesPanel.getBorder())
-					.setTitle("Switch-Group '" + selectedSwitchGroup.getName()
-							+ "'");
+			switchesPanel.setBorder(BorderFactory
+					.createTitledBorder("Switch-Group '"
+							+ selectedSwitchGroup.getName() + "'"));
 		}
 		((SwitchesTableModel) switchesTableModel)
 				.setSwitchGroup(selectedSwitchGroup);

@@ -251,12 +251,12 @@ public class LocomotiveConfigurationDialog<E> extends
 		LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) (locomotiveGroupList
 				.getSelectedValue());
 		if (selectedLocomotiveGroup == null) {
-			((TitledBorder) locomotivesPanel.getBorder())
-					.setTitle("Locomotive-Group");
+			locomotivesPanel.setBorder(BorderFactory
+					.createTitledBorder("Locomotive-Group"));
 		} else {
-			((TitledBorder) locomotivesPanel.getBorder())
-					.setTitle("Locomotive-Group '"
-							+ selectedLocomotiveGroup.getName() + "'");
+			locomotivesPanel.setBorder(BorderFactory
+					.createTitledBorder("Locomotive-Group '"
+							+ selectedLocomotiveGroup.getName() + "'"));
 		}
 		((LocomotiveTableModel) locomotivesTableModel)
 				.setLocomotiveGroup(selectedLocomotiveGroup);

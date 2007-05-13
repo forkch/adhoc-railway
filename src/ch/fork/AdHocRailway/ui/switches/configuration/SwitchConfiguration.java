@@ -8,19 +8,21 @@ import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
 
 public class SwitchConfiguration {
 
-    private List<SwitchGroup>          switchGroups;
-    private Map<Integer, Switch>       switchNumberToSwitch;
-    
-    public SwitchConfiguration(List<SwitchGroup> switchGroups, Map<Integer, Switch> switchNumberToSwitch) {
-        this.switchGroups = switchGroups;
-        this.switchNumberToSwitch = switchNumberToSwitch;
-    }
+	private List<SwitchGroup> switchGroups;
 
-    public List<SwitchGroup> getSwitchGroups() {
-        return switchGroups;
-    }
+	private Map<Integer, Switch> switchNumberToSwitch;
 
-    public Map<Integer, Switch> getSwitchNumberToSwitch() {
-        return switchNumberToSwitch;
-    }
+	public SwitchConfiguration(List<SwitchGroup> switchGroups,
+			Map<Integer, Switch> switchNumberToSwitch) {
+		this.switchGroups = switchGroups;
+		this.switchNumberToSwitch = switchNumberToSwitch;
+	}
+
+	public List<SwitchGroup> getSwitchGroups() {
+		return switchGroups;
+	}
+
+	public Map<Integer, Switch> getSwitchNumberToSwitch() {
+		return switchNumberToSwitch;
+	}
 }
