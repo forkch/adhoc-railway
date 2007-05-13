@@ -2,7 +2,6 @@ package ch.fork.AdHocRailway.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -26,11 +25,8 @@ import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
 import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.routes.RoutesControlPanel;
 import ch.fork.AdHocRailway.ui.switches.SwitchGroupPane;
-import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
-import ch.fork.AdHocRailway.ui.switches.canvas.Segment7;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
@@ -158,9 +154,9 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private void resetSegmentDisplay() {
 		enteredNumberKeys = new StringBuffer();
-		seg1.setValue(0);
-		seg2.setValue(0);
-		seg3.setValue(0);
+		seg1.setValue(-1);
+		seg2.setValue(-1);
+		seg3.setValue(-1);
 		seg1.repaint();
 		seg2.repaint();
 		seg3.repaint();
@@ -183,12 +179,22 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				seg1.setValue(seg1Value);
 				seg1.repaint();
 				switchNumber = switchNumber - seg1Value;
-				int seg2Value = (switchNumber % 100) / 10;
-				seg2.setValue(seg2Value);
+				int seg2Value = 0;
+				if(switchNumber != 0) {
+					seg2Value = (switchNumber % 100) / 10;
+					seg2.setValue(seg2Value);
+				} else {
+					seg2.setValue(-1);
+				}
 				seg2.repaint();
 				switchNumber = switchNumber - seg2Value * 10;
-				int seg3Value = (switchNumber % 1000) / 100;
-				seg3.setValue(seg3Value);
+				int seg3Value = 0;
+				if(switchNumber != 0) {
+					seg3Value = (switchNumber % 1000) / 100;
+					seg3.setValue(seg3Value);
+				} else {
+					seg3.setValue(-1);
+				}
 				seg3.repaint();
 				switchNumber = switchNumber - seg3Value * 100;
 			}

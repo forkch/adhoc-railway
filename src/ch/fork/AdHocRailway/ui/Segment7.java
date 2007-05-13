@@ -20,7 +20,7 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.ui.switches.canvas;
+package ch.fork.AdHocRailway.ui;
 
 import java.awt.AWTEvent;
 import java.awt.Color;
@@ -62,11 +62,12 @@ public class Segment7 extends JPanel {
                            { 1, 0, 1, 1, 1, 1, 1 }, // Ziffer 6
                            { 1, 1, 1, 0, 0, 0, 0 }, // Ziffer 7
                            { 1, 1, 1, 1, 1, 1, 1 }, // Ziffer 8
-                           { 1, 1, 1, 1, 0, 1, 1 } // Ziffer 9
+                           { 1, 1, 1, 1, 0, 1, 1 }, // Ziffer 9
+                           { 0, 0, 0, 0, 0, 0, 1 }  // Ziffer -
                            };
 
     public Segment7() {
-        this(0);
+        this(-1);
     }
 
     public Segment7(int digit) {
@@ -107,8 +108,14 @@ public class Segment7 extends JPanel {
         } else {
             g.setColor(foreground);
         }
+        int tmpDigit;
+        if(digit == -1) {
+        	tmpDigit = 10;
+        } else {
+        	tmpDigit = digit;
+        }
         for (int i = 0; i < 7; ++i) { // alle Segmente
-            if (digits[digit][i] == 1) {
+            if (digits[tmpDigit][i] == 1) {
                 Polygon poly = new Polygon();
                 for (int j = 0; j < 6; ++j) { // alle Eckpunkte
                     poly.addPoint(dx * polysx[i][j], dy * polysy[i][j]);
@@ -129,7 +136,10 @@ public class Segment7 extends JPanel {
     }
 
     public void setValue(int value) {
-        digit = value % 10;
+    	if(value == -1)
+    		digit = -1;
+    	else 
+    		digit = value % 10;
     }
 
     protected void processComponentEvent(ComponentEvent event) {

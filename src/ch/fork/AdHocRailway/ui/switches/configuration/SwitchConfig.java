@@ -39,8 +39,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import com.sun.corba.se.impl.ior.NewObjectKeyTemplateBase;
-
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;

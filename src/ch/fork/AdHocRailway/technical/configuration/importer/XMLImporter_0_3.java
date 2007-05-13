@@ -24,7 +24,6 @@ package ch.fork.AdHocRailway.technical.configuration.importer;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.smartcardio.ATR;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
