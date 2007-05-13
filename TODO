@@ -11,3 +11,4 @@
 - Routen
 - Routen (persoehnlich)
 - Clean up domain-objects from logic
+- Switches should do a GET to determine their state after init, adapt jsrcpc

@@ -157,6 +157,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		seg1.setValue(-1);
 		seg2.setValue(-1);
 		seg3.setValue(-1);
+		seg3.setDisplayPeriod(false);
+		
 		seg1.repaint();
 		seg2.repaint();
 		seg3.repaint();
@@ -167,6 +169,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getActionCommand() == ".") {
 				routeMode = true;
+				seg3.setDisplayPeriod(true);
+				seg3.repaint();
 			} else {
 				enteredNumberKeys.append(e.getActionCommand());
 				String switchNumberAsString = enteredNumberKeys.toString();
@@ -207,14 +211,13 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			try {
 				if (enteredNumberKeys.toString().equals("")) {
 					if (changedSwitch) {
-						System.out.println("switch");
 						switchControl.undoLastChange();
 					} else if(changedRoute){
-						System.out.println("route");
 						routeControl.undoLastChange();
 					}
 					changedSwitch = false;
 					changedRoute = false;
+
 					return;
 				}
 				String enteredNumberAsString = enteredNumberKeys.toString();
@@ -241,7 +244,6 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				resetSegmentDisplay();
 				return;
 			}
-			System.out.println(searchedSwitch);
 
 			if (e.getActionCommand().equals("/")) {
 				switchControl.setCurvedLeft(searchedSwitch);

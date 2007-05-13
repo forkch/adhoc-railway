@@ -94,7 +94,13 @@ public class Route implements Comparable {
 	public int compareTo(Object o) {
 		if (o instanceof Route) {
 			Route r = (Route) o;
-			return name.compareTo(r.getName());
+			if (number < r.getNumber()) {
+                return -1;
+            } else if (number > r.getNumber()) {
+                return 1;
+            } else {
+                return 0;
+            }
 		}
 		return -1;
 	}

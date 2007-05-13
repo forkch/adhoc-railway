@@ -548,6 +548,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 daemonResetItem.setEnabled(true);
                 connectToolBarButton.setEnabled(false);
                 disconnectToolBarButton.setEnabled(true);
+                //updateGUI();
                 updateCommandHistory("Connected to server " + host
                         + " on port " + port);
             } catch (SRCPException e1) {

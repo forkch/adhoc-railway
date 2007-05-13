@@ -63,7 +63,6 @@ public class Router extends Thread {
         }
         route.setRouteState(RouteState.DISABLED);
         listener.routeChanged(route);
-        System.out.println("route disabled");
     }
 
     private void enableRoute() throws SwitchException, InterruptedException {
@@ -72,7 +71,6 @@ public class Router extends Thread {
         for (RouteItem ri : routeItems) {
             Switch switchToRoute = ri.getRoutedSwitch();
             ri.setPreviousSwitchState(switchToRoute.getSwitchState());
-            System.out.println("Switch number: " + switchToRoute.getNumber());
             switch (ri.getRoutedSwitchState()) {
             case STRAIGHT:
             	System.out.println("STRAIGHT");
@@ -92,7 +90,6 @@ public class Router extends Thread {
         }
         route.setRouteState(RouteState.ENABLED);
         listener.routeChanged(route);
-        System.out.println("route enabled");
     }
 
     public SwitchException getSwitchException() {

@@ -223,6 +223,11 @@ public class SwitchControl extends Control implements GAInfoListener {
 		 */
 		Address addr = new Address(bus, address);
 		Switch s = addressToSwitch.get(addr);
+		if (s == null) {
+			addr = new Address(bus, address);
+			addr.setAddressSwitched(true);
+			s = addressToSwitch.get(addr);
+		}
 		if (s != null) {
 			s.switchInitialized(addr);
 			informListeners(s);
