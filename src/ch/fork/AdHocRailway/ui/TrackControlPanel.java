@@ -2,7 +2,6 @@ package ch.fork.AdHocRailway.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -27,8 +26,6 @@ import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RoutesControlPanel;
-import ch.fork.AdHocRailway.ui.routes.StaticRouteWidget;
-import ch.fork.AdHocRailway.ui.switches.StaticSwitchWidget;
 import ch.fork.AdHocRailway.ui.switches.SwitchGroupPane;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
@@ -137,7 +134,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		registerKeyboardAction(new SwitchingAction(), "+", KeyStroke
 				.getKeyStroke(KeyEvent.VK_ADD, 0), WHEN_IN_FOCUSED_WINDOW);
 
-		registerKeyboardAction(new SwitchingAction(), "", KeyStroke
+		registerKeyboardAction(new SwitchingAction(), "bs", KeyStroke
 				.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0),
 				WHEN_IN_FOCUSED_WINDOW);
 
@@ -261,7 +258,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				if (!(searchedSwitch instanceof ThreeWaySwitch)) {
 					switchControl.setNonDefaultState(searchedSwitch);
 				}
-			} else if (e.getActionCommand().equals("")) {
+			} else if (e.getActionCommand().equals("bs")) {
 				if (!(searchedSwitch instanceof ThreeWaySwitch)) {
 					switchControl.setNonDefaultState(searchedSwitch);
 				}
@@ -271,6 +268,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			changedRoute = false;
 			changedSwitch = true;
 			resetSegmentDisplay();
+			/*
 			StaticSwitchWidget sw = new StaticSwitchWidget(searchedSwitch);
 			Component[] oldWidgets = switchesHistory.getComponents();
 			switchesHistory.removeAll();
@@ -281,6 +279,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				switchesHistory.add(oldWidgets[1]);
 			repaint();
 			revalidate();
+			*/
 		}
 
 		private void handleRouteChange(ActionEvent e, int enteredNumber)
@@ -303,7 +302,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			changedRoute = true;
 			changedSwitch = false;
 			resetSegmentDisplay();
-
+/*
 			StaticRouteWidget rw = new StaticRouteWidget(searchedRoute);
 			Component[] oldWidgets = switchesHistory.getComponents();
 			switchesHistory.removeAll();
@@ -314,6 +313,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				switchesHistory.add(oldWidgets[1]);
 			repaint();
 			revalidate();
+			*/
 		}
 	}
 

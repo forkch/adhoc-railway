@@ -48,11 +48,6 @@ public class ExceptionProcessor {
 		if (e.getCause() != null) {
 			exceptionMsg += "\nCause: " + e.getCause().getMessage();
 		}
-		/*
-		 * JOptionPane.showMessageDialog(parent, exceptionMsg, "Error occured",
-		 * JOptionPane.ERROR_MESSAGE, ImageTools.createImageIcon(
-		 * "icons/messagebox_critical.png", "Critical", this));
-		 */
 		errorPanel.setErrorTextIcon(exceptionMsg, ImageTools.createImageIcon("messagebox_critical.png"));
 	}
 
@@ -63,6 +58,6 @@ public class ExceptionProcessor {
         if (e.getCause() != null) {
             exceptionMsg += "\n\nCause: " + e.getCause().getMessage();
         }
-        errorPanel.setErrorTextIcon(exceptionMsg, ImageTools.createImageIcon("messagebox_critical.png"));
+        errorPanel.setErrorTextIcon(msg, ImageTools.createImageIcon("messagebox_critical.png"));
         }
 }

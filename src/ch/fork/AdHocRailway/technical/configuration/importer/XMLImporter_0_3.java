@@ -42,6 +42,7 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.NoneLocomotive;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
 import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
@@ -60,6 +61,7 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
     private Switch            actualSwitch;
     private SwitchGroup       actualSwitchGroup;
     private Route             actualRoute;
+    private RouteGroup	      actualRouteGroup;
     private RouteItem         actualRouteItem;
     private Address           actualAddress;
     private Address[]         actualAddresses;
@@ -121,10 +123,11 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
             actualAddress.setAddressSwitched(switched);
             actualAddresses[actualAddressCounter] = actualAddress;
             actualAddressCounter++;
+        } else if(qName.equals("routegroup")) {
+        	System.out.println("actual route: " + attributes.getValue("name"));
+        	actualRouteGroup = new RouteGroup(attributes.getValue("name"));
         } else if (qName.equals("route")) {
-        	String name = attributes.getValue("name");
-        	int number = Integer.parseInt(attributes.getValue("number"));
-            actualRoute = new Route(name, number);
+        	parseRoute(qName, attributes);
         } else if (qName.equals("routedswitch")) {
             parseRoutedSwitch(qName, attributes);
         } else if (qName.equals("locomotivegroup")) {
@@ -137,7 +140,13 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
         }
     }
 
-    private void parseSwitch(String qName, Attributes attributes) {
+    private void parseRoute(String qName, Attributes attributes) {
+    	String name = attributes.getValue("name");
+    	int number = Integer.parseInt(attributes.getValue("number"));
+        actualRoute = new Route(name, number);
+	}
+
+	private void parseSwitch(String qName, Attributes attributes) {
         String type = attributes.getValue("type");
         String desc = attributes.getValue("desc");
         String defaultstate = attributes.getValue("defaultstate").toLowerCase();
@@ -228,6 +237,8 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
         qName = qName.toLowerCase();
         if (qName.equals("switchgroup")) {
             switchControl.registerSwitchGroup(actualSwitchGroup);
+        } else if(qName.equals("routegroup")) {
+        	routeControl.registerRouteGroup(actualRouteGroup);
         } else if (qName.equals("routedswitch")) {
             if (actualRouteItem != null) {
                 actualRoute.addRouteItem(actualRouteItem);
@@ -235,6 +246,7 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
             actualRouteItem = null;
         } else if (qName.equals("route")) {
             routeControl.registerRoute(actualRoute);
+            actualRouteGroup.addRoute(actualRoute);
             actualRoute = null;
         } else if (qName.equals("switch")) {
             actualSwitch.setAddresses(actualAddresses);

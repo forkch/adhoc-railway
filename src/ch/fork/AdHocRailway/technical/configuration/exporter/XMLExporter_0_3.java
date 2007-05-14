@@ -29,6 +29,7 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.switches.Switch;
 import ch.fork.AdHocRailway.domain.switches.SwitchControl;
@@ -84,7 +85,17 @@ public class XMLExporter_0_3 {
 
     private static void exportRouteConfiguration() {
         sb.append("<RouteConfiguration>\n");
-        for (Route route : RouteControl.getInstance().getRoutes()) {
+        for (RouteGroup rg : RouteControl.getInstance().getRouteGroups()) {
+
+            sb.append("<RouteGroup name=\"" + rg.getName() + "\">\n");
+            exportRoutes(rg);
+            sb.append("</RouteGroup>\n");
+        }
+        sb.append("</RouteConfiguration>\n");
+    }
+    
+    private static void exportRoutes(RouteGroup rg) {
+    	for (Route route : rg.getRoutes()) {
             sb.append("<Route name=\"" + route.getName() + "\" number=\"" + route.getNumber() + "\">\n");
             for (RouteItem routeItem : route.getRouteItems()) {
                 sb.append("<RoutedSwitch switchNumber=\""
@@ -93,7 +104,6 @@ public class XMLExporter_0_3 {
             }
             sb.append("</Route>\n");
         }
-        sb.append("</RouteConfiguration>\n");
     }
 
     private static void exportLocomotiveConfiguration() {

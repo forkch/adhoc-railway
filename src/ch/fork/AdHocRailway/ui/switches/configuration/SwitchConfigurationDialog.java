@@ -344,6 +344,7 @@ public class SwitchConfigurationDialog<E> extends
 				switchGroupsWorkCopy.remove(groupToDelete);
 				switchGroupListModel.updated();
 			}
+			updateSwitchesPanel();
 		}
 	}
 

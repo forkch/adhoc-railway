@@ -24,6 +24,7 @@
     
     <xs:complexType name="RouteConfigurationType">
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        	<xs:element name="RouteGroup" type="RouteGroupType"/>
             <xs:element name="Route" type="RouteType"/>
         </xs:sequence>
     </xs:complexType>
@@ -74,6 +75,13 @@
         <xs:attribute name="bus" type="xs:integer"/>
         <xs:attribute name="address" type="xs:integer"/>
         <xs:attribute name="switched" type="xs:boolean"/>
+    </xs:complexType>
+    
+    <xs:complexType name="RouteGroupType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="Route" type="RouteType"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
     </xs:complexType>
     
     <xs:complexType name="RouteType">

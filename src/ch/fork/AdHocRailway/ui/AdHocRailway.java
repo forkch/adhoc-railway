@@ -221,8 +221,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
     private void updateGUI() {
     	hostnameLabel.setText(preferences.getStringValue("Hostname"));
-    	trackControlPanel.update();
-        locomotiveControlPanel.update(locomotiveControl.getLocomotiveGroups());
+    	updateSwitches();
+    	updateLocomotives();
     }
 
     private void updateLocomotives() {
@@ -552,7 +552,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 updateCommandHistory("Connected to server " + host
                         + " on port " + port);
             } catch (SRCPException e1) {
+            	System.out.println("here");
                 if (e1.getCause() instanceof ConnectException) {
+                	System.out.println("here");
                     ExceptionProcessor.getInstance().processException(
                             "Server not running", e1);
                 }

@@ -1,7 +1,9 @@
 package ch.fork.AdHocRailway.domain.routes;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -20,7 +22,10 @@ public class RouteControl extends Control {
 	private Map<Route, RouteChangeListener> listeners;
 
 	private SortedSet<Route> routes;
-    private Map<Integer, Route>              numberToRoutes;
+
+	private Map<Integer, Route> numberToRoutes;
+
+	private List<RouteGroup> routeGroups;
 
 	private Route lastChangedRoute;
 
@@ -32,6 +37,7 @@ public class RouteControl extends Control {
 		listeners = new HashMap<Route, RouteChangeListener>();
 		routes = new TreeSet<Route>();
 		numberToRoutes = new HashMap<Integer, Route>();
+		routeGroups = new ArrayList<RouteGroup>();
 	}
 
 	public static RouteControl getInstance() {
@@ -58,9 +64,27 @@ public class RouteControl extends Control {
 		}
 	}
 
+	public void registerRouteGroup(RouteGroup rg) {
+		routeGroups.add(rg);
+		System.out.println(routeGroups);
+	}
+
+	public void registerRouteGroups(Collection<RouteGroup> rgs) {
+		routeGroups.addAll(rgs);
+	}
+
+	public void unregisterAllRouteGroups() {
+		routeGroups.clear();
+	}
+
+	public List<RouteGroup> getRouteGroups() {
+		return routeGroups;
+	}
+
 	public void clear() {
 		routes.clear();
 		numberToRoutes.clear();
+		routeGroups.clear();
 	}
 
 	public SortedSet<Route> getRoutes() {
