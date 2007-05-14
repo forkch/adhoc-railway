@@ -110,9 +110,9 @@ public class SwitchControl extends Control implements GAInfoListener {
 	}
 
 	public void unregisterAllSwitches() {
-		for (Switch aSwitch : addressToSwitch.values()) {
+		//for (Switch aSwitch : addressToSwitch.values()) {
 			// aSwitch.term();
-		}
+		//}
 		addressToSwitch.clear();
 		numberToSwitch.clear();
 		LockControl.getInstance().unregisterAllControlObjects();

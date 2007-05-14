@@ -161,12 +161,12 @@ public class XMLImporter_0_1 extends DefaultHandler implements ContentHandler {
         String type = attributes.getValue("type");
         int bus = Integer.parseInt(attributes.getValue("bus"));
         int address = Integer.parseInt(attributes.getValue("address"));
-        if (attributes.getValue("type").equals("NoneLocomotive")) {
+        if (type.equals("NoneLocomotive")) {
             actualLocomotive = new NoneLocomotive();
-        } else if (attributes.getValue("type").equals("DeltaLocomotive")) {
+        } else if (type.equals("DeltaLocomotive")) {
             actualLocomotive = new DeltaLocomotive(name, new Address(bus,
                 address), desc);
-        } else if (attributes.getValue("type").equals("DigitalLocomotive")) {
+        } else if (type.equals("DigitalLocomotive")) {
             actualLocomotive = new DigitalLocomotive(name, new Address(bus,
                 address), desc);
         }

@@ -145,9 +145,9 @@ public class LocomotiveControl extends Control implements GLInfoListener {
      * 
      */
     public void clear() {
-        for (Locomotive l : addressToLocomotives.values()) {
+        //for (Locomotive l : addressToLocomotives.values()) {
             // l.term();
-        }
+        //}
         addressToLocomotives.clear();
         locomotiveGroups.clear();
         LockControl.getInstance().unregisterAllControlObjects();

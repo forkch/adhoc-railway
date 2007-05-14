@@ -27,10 +27,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
-import ch.fork.AdHocRailway.technical.configuration.Preferences;
-import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public class WidgetTab extends JPanel {
     private static final long       serialVersionUID = 1L;

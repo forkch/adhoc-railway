@@ -621,7 +621,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         }
 
         public void actionPerformed(ActionEvent e) {
-            SwitchProgrammer sp = new SwitchProgrammer(AdHocRailway.this,
+            new SwitchProgrammer(AdHocRailway.this,
                     session);
         }
     }

@@ -5,17 +5,14 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -283,40 +280,42 @@ public class RoutesConfigurationDialog<E> extends
 
 		JLabel routeNameLabel = new JLabel("Route name");
 		JLabel routeNumberLabel = new JLabel("Route number");
-		
+
 		routeNameField = new JTextField(15);
 		routeNameField.addFocusListener(new FocusListener() {
 
 			public void focusGained(FocusEvent arg0) {
-				
+
 			}
 
 			public void focusLost(FocusEvent arg0) {
-				Route selectedRoute = (Route) routesInGroupJList.getSelectedValue();
+				Route selectedRoute = (Route) routesInGroupJList
+						.getSelectedValue();
 				selectedRoute.setName(routeNameField.getText());
 				updateRoutesInGroupPanel();
 			}
-			
+
 		});
 		routeNumberField = new JTextField(15);
 		routeNumberField.addFocusListener(new FocusListener() {
 
 			public void focusGained(FocusEvent arg0) {
-				
+
 			}
 
 			public void focusLost(FocusEvent arg0) {
-				Route selectedRoute = (Route) routesInGroupJList.getSelectedValue();
-				selectedRoute.setNumber(Integer.parseInt(routeNumberField.getText()));
+				Route selectedRoute = (Route) routesInGroupJList
+						.getSelectedValue();
+				selectedRoute.setNumber(Integer.parseInt(routeNumberField
+						.getText()));
 				updateRoutesInGroupPanel();
 			}
-			
+
 		});
-		if(selectedRoute != null) {
+		if (selectedRoute != null) {
 			routeNumberField.setText("" + selectedRoute.getNumber());
 			routeNameField.setText(selectedRoute.getName());
 		}
-		
 
 		JPanel routeSettingsPanel = new JPanel(new SpringLayout());
 
@@ -324,11 +323,12 @@ public class RoutesConfigurationDialog<E> extends
 		routeSettingsPanel.add(routeNameField);
 		routeSettingsPanel.add(routeNumberLabel);
 		routeSettingsPanel.add(routeNumberField);
-		
-		SpringUtilities.makeCompactGrid(routeSettingsPanel, 2, 2, // rows, cols
-	            6, 6, // initX, initY
-	            6, 6); // xPad, yPad
-		
+
+		SpringUtilities.makeCompactGrid(routeSettingsPanel, 2, 2, // rows,
+																	// cols
+				6, 6, // initX, initY
+				6, 6); // xPad, yPad
+
 		routedSwitchesTableModel = new RoutedSwitchesTableModel();
 		routedSwitchesTable = new JTable(routedSwitchesTableModel);
 
@@ -373,7 +373,8 @@ public class RoutesConfigurationDialog<E> extends
 		} else {
 			routesInGroupPanel.setBorder(new TitledBorder("Route Group '"
 					+ selectedRouteGroup.getName() + "'"));
-			routesListModel.setList(new ArrayList<Route>(selectedRouteGroup.getRoutes()));
+			routesListModel.setList(new ArrayList<Route>(selectedRouteGroup
+					.getRoutes()));
 			routesInGroupJList.setSelectedIndex(0);
 		}
 		pack();
@@ -427,9 +428,10 @@ public class RoutesConfigurationDialog<E> extends
 				return;
 			}
 			int response = JOptionPane.showConfirmDialog(
-					RoutesConfigurationDialog.this, "Really remove route group '"
-							+ routeGroupToDelete.getName() + "' ?", "Remove route group",
-					JOptionPane.YES_NO_OPTION);
+					RoutesConfigurationDialog.this,
+					"Really remove route group '"
+							+ routeGroupToDelete.getName() + "' ?",
+					"Remove route group", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
 				routeGroupsWorkCopy.remove(routeGroupToDelete);
 				routeGroupListModel.updated();
@@ -576,22 +578,35 @@ public class RoutesConfigurationDialog<E> extends
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			Route routeToMove = (Route) (routesInGroupJList.getSelectedValue());
-			if (routeToMove == null) {
+			RouteGroup routeGrupToMove = (RouteGroup) (routeGroupJList.getSelectedValue());
+			if (routeGrupToMove == null) {
 				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
-						"Please select a route", "Error",
+						"Please select a route group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			/*
-			 * int oldIndex = routesWorkCopy.indexOf(routeToMove); int newIndex =
-			 * oldIndex; if (up) { if (oldIndex != 0) { newIndex = oldIndex - 1; }
-			 * else { return; } } else { if (oldIndex != routesWorkCopy.size() -
-			 * 1) { newIndex = oldIndex + 1; } else { return; } }
-			 * routesWorkCopy.remove(oldIndex); routesWorkCopy.add(newIndex,
-			 * routeToMove); routeList.setSelectedIndex(newIndex);
-			 * routesListModel.updated(); updateRouteDetailPanel();
-			 */
+
+			int oldIndex = routeGroupsWorkCopy.indexOf(routeGrupToMove);
+			int newIndex = oldIndex;
+			if (up) {
+				if (oldIndex != 0) {
+					newIndex = oldIndex - 1;
+				} else {
+					return;
+				}
+			} else {
+				if (oldIndex != routeGroupsWorkCopy.size() - 1) {
+					newIndex = oldIndex + 1;
+				} else {
+					return;
+				}
+			}
+			routeGroupsWorkCopy.remove(oldIndex);
+			routeGroupsWorkCopy.add(newIndex, routeGrupToMove);
+			routeGroupJList.setSelectedIndex(newIndex);
+			routesListModel.updated();
+			updateRouteDetailPanel();
+
 		}
 
 	}

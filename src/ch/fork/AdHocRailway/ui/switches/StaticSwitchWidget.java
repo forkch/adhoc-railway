@@ -40,7 +40,6 @@ import ch.fork.AdHocRailway.ui.switches.canvas.SwitchCanvas;
 import ch.fork.AdHocRailway.ui.switches.canvas.ThreeWaySwitchCanvas;
 
 public class StaticSwitchWidget extends JPanel {
-	private SwitchControl switchControl;
 
 	private static final long serialVersionUID = 1L;
 
@@ -48,7 +47,6 @@ public class StaticSwitchWidget extends JPanel {
 
 	private JLabel numberLabel;
 
-	private JLabel descLabel;
 	private SwitchCanvas switchCanvas;
 
 
@@ -70,7 +68,6 @@ public class StaticSwitchWidget extends JPanel {
 
 		setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
-		descLabel = new JLabel(mySwitch.getDesc());
 		numberLabel = new JLabel(Integer.toString(mySwitch.getNumber()));
 		numberLabel.setFont(new Font("Dialog", Font.BOLD, 20));
 		add(numberLabel);
