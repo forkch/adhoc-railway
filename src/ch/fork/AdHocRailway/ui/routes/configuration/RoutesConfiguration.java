@@ -1,18 +1,26 @@
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import java.util.List;
+import java.util.Map;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
+import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 
 public class RoutesConfiguration {
 
-    private List<Route> routes;
+    private Map<Integer, Route> numberToRoute;
+    private List<RouteGroup> routeGroups;
     
-    public RoutesConfiguration(List<Route> routes) {
-        this.routes = routes;
+    public RoutesConfiguration(Map<Integer, Route> numberToRoute, List<RouteGroup> routeGroups) {
+        this.numberToRoute = numberToRoute;
+        this.routeGroups = routeGroups;
     }
 
-    public List<Route> getRoutes() {
-        return routes;
-    }
+	public Map<Integer, Route> getNumberToRoute() {
+		return numberToRoute;
+	}
+
+	public List<RouteGroup> getRouteGroups() {
+		return routeGroups;
+	}
 }

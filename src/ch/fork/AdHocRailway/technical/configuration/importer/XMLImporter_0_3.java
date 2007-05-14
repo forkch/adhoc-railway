@@ -124,7 +124,6 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
             actualAddresses[actualAddressCounter] = actualAddress;
             actualAddressCounter++;
         } else if(qName.equals("routegroup")) {
-        	System.out.println("actual route: " + attributes.getValue("name"));
         	actualRouteGroup = new RouteGroup(attributes.getValue("name"));
         } else if (qName.equals("route")) {
         	parseRoute(qName, attributes);

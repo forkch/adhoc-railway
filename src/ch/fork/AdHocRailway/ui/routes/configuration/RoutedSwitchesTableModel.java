@@ -57,6 +57,7 @@ public class RoutedSwitchesTableModel extends AbstractTableModel {
 
 	public void setRoute(Route route) {
 		this.routeItems = route.getRouteItems();
+		fireTableDataChanged();
 	}
 
 	public String getColumnName(int column) {

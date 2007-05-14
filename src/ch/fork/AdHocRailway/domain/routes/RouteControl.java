@@ -66,7 +66,6 @@ public class RouteControl extends Control {
 
 	public void registerRouteGroup(RouteGroup rg) {
 		routeGroups.add(rg);
-		System.out.println(routeGroups);
 	}
 
 	public void registerRouteGroups(Collection<RouteGroup> rgs) {

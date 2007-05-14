@@ -29,19 +29,31 @@ import javax.swing.AbstractListModel;
 public class ListListModel<E> extends AbstractListModel {
     public List<E> list;
 
-    public ListListModel(List<E> list) {
+    public ListListModel() {
+    	
+    }
+	public ListListModel(List<E> list) {
         this.list = list;
     }
 
     public int getSize() {
+    	if(list == null)
+    		return 0;
         return list.size();
     }
 
     public E getElementAt(int arg0) {
+    	if(list == null) 
+    		return null;
         return list.get(arg0);
     }
 
     public void updated() {
         fireContentsChanged(this, 0, list.size() - 1);
     }
+
+    public void setList(List<E> list) {
+		this.list = list;
+		updated();
+	}
 }

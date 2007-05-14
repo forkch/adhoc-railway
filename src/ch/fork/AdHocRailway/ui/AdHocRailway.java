@@ -479,7 +479,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 RoutesConfiguration routesConfiguration = routesConfig
                         .getTempConfiguration();
                 rc.clear();
-                rc.registerRoutes(routesConfiguration.getRoutes());
+                rc.registerRoutes(routesConfiguration.getNumberToRoute().values());
+                rc.registerRouteGroups(routesConfiguration.getRouteGroups());
                 trackControlPanel.update();
                 updateCommandHistory("Routes configuration changed");
             }
