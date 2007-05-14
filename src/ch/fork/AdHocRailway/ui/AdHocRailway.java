@@ -118,6 +118,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     boolean                        fullscreen        = false;
     private SplashWindow           splash;
     private JTabbedPane            trackControl;
+	private JPanel mainPanel;
 
     public AdHocRailway() {
         this(null);
@@ -175,18 +176,13 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         setFont(new Font("Verdana", Font.PLAIN, 19));
         setLayout(new BorderLayout());
         
-        
-        trackControlPanel = new TrackControlPanel(this); 
-        locomotiveControlPanel = initLocomotiveControl();
-        statusBarPanel = initStatusBar();
-        
         initMenu();
         initToolbar();
-        JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
-        mainPanel.add(trackControlPanel, BorderLayout.CENTER);
-        mainPanel.add(locomotiveControlPanel, BorderLayout.SOUTH);
-        add(mainPanel, BorderLayout.CENTER);
+        statusBarPanel = initStatusBar();
         add(statusBarPanel, BorderLayout.SOUTH);
+        mainPanel = new JPanel();
+        add(mainPanel, BorderLayout.CENTER);
+        
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -194,6 +190,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 new ExitAction().actionPerformed(null);
             }
         });
+        updateGUI();
     }
 
     private LocomotiveControlPanel initLocomotiveControl() {
@@ -220,7 +217,16 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     private void updateGUI() {
+    	remove(mainPanel);
     	hostnameLabel.setText(preferences.getStringValue("Hostname"));
+
+        trackControlPanel = new TrackControlPanel(this); 
+        locomotiveControlPanel = initLocomotiveControl();
+
+        mainPanel = new JPanel(new BorderLayout(5, 5));
+		mainPanel.add(trackControlPanel, BorderLayout.CENTER);
+        mainPanel.add(locomotiveControlPanel, BorderLayout.SOUTH);
+        add(mainPanel, BorderLayout.CENTER);
     	updateSwitches();
     	updateLocomotives();
     }

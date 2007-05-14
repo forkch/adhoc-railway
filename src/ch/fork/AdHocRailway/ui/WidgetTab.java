@@ -6,7 +6,7 @@
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
- * version   : $Id$
+ * version   : $Id: SwitchGroupTab.java 81 2006-11-28 17:47:01Z fork_ch $
  * 
  *----------------------------------------------------------------------*/
 
@@ -20,18 +20,19 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.ui.switches;
+package ch.fork.AdHocRailway.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
-public class SwitchGroupTab extends JPanel {
+public class WidgetTab extends JPanel {
     private static final long       serialVersionUID = 1L;
     private int                     maxCols;
     private int                     currentRow;
@@ -39,11 +40,11 @@ public class SwitchGroupTab extends JPanel {
     private GridBagLayout           layout;
     private GridBagConstraints      gbc;
 
-    public SwitchGroupTab() {
+    public WidgetTab(int maxCols) {
+		
+    	this.maxCols = maxCols;
         layout = new GridBagLayout();
         setLayout(layout);
-        maxCols = Preferences.getInstance().getIntValue(
-            PreferencesKeys.SWITCH_CONTROLES);
         currentRow = 0;
         currentCol = 0;
         gbc = new GridBagConstraints();
@@ -52,15 +53,15 @@ public class SwitchGroupTab extends JPanel {
         gbc.gridy = currentCol;
     }
 
-    public void addSwitchWidget(SwitchWidget aSwitchWidget) {
-        add(aSwitchWidget);
+    public void addWidget(JPanel widget) {
+        add(widget);
         if (currentCol == maxCols) {
             currentRow++;
             currentCol = 0;
         }
         gbc.gridx = currentCol;
         gbc.gridy = currentRow;
-        layout.setConstraints(aSwitchWidget, gbc);
+        layout.setConstraints(widget, gbc);
         currentCol++;
    }
 }

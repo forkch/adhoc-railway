@@ -87,15 +87,13 @@ public class LocomotiveControlPanel extends JPanel {
     private void initGUI() {
     	setLayout(new BorderLayout());
     	setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.LEFT, 10, 0);
+        FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.CENTER, 10, 0);
         controlPanel = new JPanel(controlPanelLayout); 
 		controlPanel.setLayout(controlPanelLayout);
         controlPanel.setBorder(new TitledBorder("Trains"));
 		add(controlPanel, BorderLayout.NORTH);
         registerKeyboardAction(new LocomotiveStopAction(), "", KeyStroke
             .getKeyStroke(KeyEvent.VK_SPACE, 0), WHEN_IN_FOCUSED_WINDOW);
-        revalidate();
-        repaint();
     }
 
     public void update(Collection<LocomotiveGroup> locomotiveGroups) {
