@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.ui;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -39,7 +40,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private SwitchControl switchControl;
 
 	private RouteControl routeControl;
-	
+
 	public TrackControlPanel(JFrame frame) {
 		this.frame = frame;
 		this.preferences = Preferences.getInstance();
@@ -54,10 +55,9 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		initSwitchPanel();
 		initRoutesPanel();
-		
-		
+
 		JPanel segmentPanel = new KeyTrackControl();
-		
+
 		add(segmentPanel, BorderLayout.WEST);
 		JPanel controlPanel = new JPanel(new GridLayout(1, 2));
 		if (preferences.getBooleanValue(TABBED_TRACK)) {
@@ -86,9 +86,15 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private void initKeyboardActions() {
 		for (int i = 1; i <= 12; i++) {
+			KeyStroke stroke = KeyStroke
+					.getKeyStroke("F" + Integer.toString(i));
 			registerKeyboardAction(new SwitchGroupChangeAction(), Integer
-					.toString(i - 1), KeyStroke.getKeyStroke("F"
-					+ Integer.toString(i)), WHEN_IN_FOCUSED_WINDOW);
+					.toString(i - 1), stroke, WHEN_IN_FOCUSED_WINDOW);
+			registerKeyboardAction(new RouteGroupChangeAction(), Integer
+					.toString(i - 1), KeyStroke.getKeyStroke(stroke
+					.getKeyCode(), InputEvent.SHIFT_DOWN_MASK),
+					WHEN_IN_FOCUSED_WINDOW);
+
 		}
 	}
 
@@ -148,6 +154,16 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			int selectedSwitchGroup = Integer.parseInt(e.getActionCommand());
 			if (selectedSwitchGroup < switchControl.getSwitchGroups().size()) {
 				switchGroupsTabbedPane.setSelectedIndex(selectedSwitchGroup);
+			}
+		}
+	}
+
+	private class RouteGroupChangeAction extends AbstractAction {
+
+		public void actionPerformed(ActionEvent e) {
+			int selectedRouteGroup = Integer.parseInt(e.getActionCommand());
+			if (selectedRouteGroup < routeControl.getRouteGroups().size()) {
+				routeGroupsTabbedPane.setSelectedIndex(selectedRouteGroup);
 			}
 		}
 	}
