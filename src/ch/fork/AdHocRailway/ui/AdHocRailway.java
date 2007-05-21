@@ -61,6 +61,7 @@ import javax.swing.WindowConstants;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.locking.LockControl;
+import ch.fork.AdHocRailway.domain.locking.exception.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
 import ch.fork.AdHocRailway.domain.switches.Switch;
@@ -437,6 +438,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                     "Really exit ?", "Exit", JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,createImageIcon("messagebox_warning.png"));
             if (result == JOptionPane.YES_OPTION) {
+            	
+            	try {
+					LockControl.getInstance().releaseAllLocks();
+				} catch (LockingException e1) {
+					e1.printStackTrace();
+				}
                 System.exit(0);
             }
         }
@@ -671,7 +678,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
                     for (Switch s : switchControl.getNumberToSwitch().values()) {
                         switchControl.setDefaultState(s);
-                        Thread.sleep(10);
+                        Thread.sleep(250);
                     }
                 } catch (ControlException e1) {
                     ExceptionProcessor.getInstance().processException(e1);

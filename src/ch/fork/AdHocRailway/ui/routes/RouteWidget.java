@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.ui.routes;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -54,7 +55,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         routeStartIcon = new ImageIcon(ClassLoader
                 .getSystemResource("routes/route_start.png"));
         numberLabel = new JLabel("" +route.getNumber());
-        //numberLabel.setFont(new Font("Dialog", Font.BOLD, 30));
+        numberLabel.setFont(new Font("Dialog", Font.BOLD, 30));
 		nameLabel = new JLabel(route.getName());
         iconLabel = new JLabel(routeStopIcon);
         
@@ -136,11 +137,12 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
     }
 
     public void nextSwitchRouted() {
-
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
                 routingProgress.setValue(routingProgress.getValue() + 1);
+                RouteWidget.this.revalidate();
+                RouteWidget.this.repaint();
             }
         });
     }
@@ -151,6 +153,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
             public void run() {
                 routingProgress.setValue(routingProgress.getValue() - 1);
+                RouteWidget.this.revalidate();
+                RouteWidget.this.repaint();
             }
         });
     }

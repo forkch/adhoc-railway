@@ -98,6 +98,7 @@ public class RouteControl extends Control {
 		// System.out.println("enabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
+		System.out.println(listeners.get(r).hashCode());
 		Router switchRouter = new Router(r, true, waitTime, listeners.get(r));
 		switchRouter.start();
 		lastChangedRoute = r;

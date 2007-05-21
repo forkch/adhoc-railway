@@ -110,6 +110,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		int maxRouteCols = preferences
 				.getIntValue(PreferencesKeys.ROUTE_CONTROLES);
 		int i = 1;
+		routeControl.removeAllRouteChangeListeners();
 		for (RouteGroup routeGroup : routeControl.getRouteGroups()) {
 
 			WidgetTab routeGroupTab = new WidgetTab(maxRouteCols);
@@ -119,6 +120,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			for (Route aRoute : routeGroup.getRoutes()) {
 				RouteWidget routeWidget = new RouteWidget(aRoute);
 				routeGroupTab.addWidget(routeWidget);
+				routeControl.addRouteChangeListener(aRoute, routeWidget);
 			}
 			routeGroupsTabbedPane.add(groupScrollPane, "F" + i + ": "
 					+ routeGroup.getName());
@@ -131,6 +133,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		int maxSwitchCols = preferences
 				.getIntValue(PreferencesKeys.SWITCH_CONTROLES);
 		int i = 1;
+		switchControl.removeAllSwitchChangeListener();
 		for (SwitchGroup switchGroup : switchControl.getSwitchGroups()) {
 
 			WidgetTab switchGroupTab = new WidgetTab(maxSwitchCols);

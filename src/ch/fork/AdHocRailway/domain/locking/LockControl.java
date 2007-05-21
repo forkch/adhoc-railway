@@ -163,6 +163,16 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
 		return true;
 	}
 
+	public void releaseAllLocks() throws LockingException {
+		if(session != null) {
+		for(ControlObject co : addressToControlObject.values()) {
+			if(co.getLockedBySession() == session.getCommandChannelID()) {
+				releaseLock(co);
+			}
+		}
+		}
+	}
+	
 	public void LOCKset(double timestamp, int bus, int address,
 			String deviceGroup, int duration, int sessionID) {
 		/*

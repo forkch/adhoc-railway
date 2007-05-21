@@ -50,7 +50,7 @@ public class SwitchProgrammer extends ConfigurationDialog {
     private void initGUI() {
         JPanel mainPanel = new JPanel(new BorderLayout());
         JPanel buttonPanel = new JPanel(new GridLayout(4, 4));
-        for (int i = 1; i <= 112; i = i + 4) {
+        for (int i = 1; i <= 252; i = i + 4) {
             JButton button = new JButton("" + i);
             buttonPanel.add(button);
             button.addActionListener(new ActionListener() {
