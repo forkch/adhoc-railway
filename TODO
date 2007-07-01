@@ -1,14 +1,9 @@
-- Buttons duerfen keinen Focus erhalten (ok)
 - Clients duerfen nicht unendlich kommandos senden koennen (queue)
-- Blockieren von Lok's (ok)
-- Lok-Auswahl verbessern (ok)
-- Zuletzt geschaltete Weichen bleiben sichtbar und koennen zurueckgeschaltet werden (ok)
 - Lokauswahl speichern (pro User)
-- Drehen von Weichen-Kabel via SW (ok)
 - Sofort Stopp von Lok's (Bremsverz. ausschalten via F4)
-- Preferenzliste
-- Wenn Lok faehrt kann keine andere im Slot ausgewaehlt werden (ok)
-- Routen
-- Routen (persoehnlich)
-- Clean up domain-objects from logic
 - Switches should do a GET to determine their state after init, adapt jsrcpc
+- Queue mit zuletzt geschalteten Weichen/Routen 
+	-> Enter schaltet eine nach der anderen zurueck
+	-> Anzeigen der Queue
+- Weichenprogrammierung verbessern
+- Routenprogrammierung verbessern (Record-Modus)
