@@ -19,14 +19,16 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -38,141 +40,153 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import ch.fork.AdHocRailway.domain.locomotives.DeltaLocomotive;
-import ch.fork.AdHocRailway.domain.locomotives.DigitalLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.ui.SpringUtilities;
 
 public class LocomotiveConfig extends JDialog {
-    private Locomotive          myLocomotive;
-    private boolean             okPressed;
-    private JTextField          nameTextField;
-    private JTextField          busTextField;
-    private JTextField          addressTextField;
-    private JTextField          descTextField;
-    private JTextField          imageTextField;
-    private JComboBox           locomotiveTypeComboBox;
-    private static final String NAME = "Locomotive Config";
+	private Locomotive myLocomotive;
 
-    public LocomotiveConfig(Locomotive myLocomotive) {
-        super(new JFrame(), NAME, true);
-        this.myLocomotive = myLocomotive.clone();
-        initGUI();
-    }
+	private boolean okPressed;
 
-    public LocomotiveConfig(Frame owner, Locomotive myLocomotive) {
-        super(owner, NAME, true);
-        this.myLocomotive = myLocomotive.clone();
-        initGUI();
-    }
+	private JTextField nameTextField;
 
-    public LocomotiveConfig(JDialog owner, Locomotive myLocomotive) {
-        super(owner, NAME, true);
-        this.myLocomotive = myLocomotive.clone();
-        initGUI();
-    }
+	private JTextField busTextField;
 
-    private void initGUI() {
-        setLayout(new BorderLayout());
-        JPanel configPanel = initConfigPanel();
-        JButton okButton = new JButton("OK");
-        okButton.addActionListener(new ApplyChangesAction());
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                LocomotiveConfig.this.setVisible(false);
-            }
-        });
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-        buttonPanel.add(okButton);
-        buttonPanel.add(cancelButton);
-        add(configPanel, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
-        setLocationByPlatform(true);
-        pack();
-        setVisible(true);
-    }
+	private JTextField addressTextField;
 
-    private JPanel initConfigPanel() {
-        JPanel configPanel = new JPanel(new SpringLayout());
-        JLabel nameLabel = new JLabel("Name");
-        JLabel typeLabel = new JLabel("Type");
-        JLabel busLabel = new JLabel("Bus");
-        JLabel addressLabel = new JLabel("Address");
-        JLabel imageLabel = new JLabel("Image");
-        JLabel descLabel = new JLabel("Desc");
+	private JTextField descTextField;
 
-        nameTextField = new JTextField();
-        nameTextField.setText(myLocomotive.getName());
+	private JTextField imageTextField;
 
-        busTextField = new JTextField();
-        busTextField.setText(Integer.toString(myLocomotive.getAddress()
-            .getBus()));
+	private JComboBox locomotiveTypeComboBox;
 
-        addressTextField = new JTextField();
-        addressTextField.setText("" + myLocomotive.getAddress().getAddress());
+	private HashMap<String, LocomotiveType> locomotiveTypes;
 
+	private static final String NAME = "Locomotive Config";
 
-        imageTextField = new JTextField();
-        imageTextField.setText(myLocomotive.getImage());
+	public LocomotiveConfig(Locomotive myLocomotive) {
+		super(new JFrame(), NAME, true);
+		this.myLocomotive = myLocomotive;
+		initGUI();
+	}
 
-        descTextField = new JTextField();
-        descTextField.setText(myLocomotive.getDesc());
+	public LocomotiveConfig(Frame owner, Locomotive myLocomotive) {
+		super(owner, NAME, true);
+		this.myLocomotive = myLocomotive;
+		initGUI();
+	}
 
-        locomotiveTypeComboBox = new JComboBox();
-        locomotiveTypeComboBox.addItem("DeltaLocomotive");
-        locomotiveTypeComboBox.addItem("DigitalLocomotive");
+	public LocomotiveConfig(JDialog owner, Locomotive myLocomotive) {
+		super(owner, NAME, true);
+		this.myLocomotive = myLocomotive;
+		initGUI();
+	}
 
+	private void initGUI() {
+		setLayout(new BorderLayout());
+		JPanel configPanel = initConfigPanel();
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(new ApplyChangesAction());
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LocomotiveConfig.this.setVisible(false);
+			}
+		});
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+		buttonPanel.add(okButton);
+		buttonPanel.add(cancelButton);
+		add(configPanel, BorderLayout.NORTH);
+		add(buttonPanel, BorderLayout.SOUTH);
+		setLocationByPlatform(true);
+		setSize(new Dimension(200, 300));
+		setVisible(true);
+	}
 
-        configPanel.add(nameLabel);
-        configPanel.add(nameTextField);
-        configPanel.add(typeLabel);
-        configPanel.add(locomotiveTypeComboBox);
-        configPanel.add(busLabel);
-        configPanel.add(busTextField);
-        configPanel.add(addressLabel);
-        configPanel.add(addressTextField);
-        configPanel.add(imageLabel);
-        configPanel.add(imageTextField);
-        configPanel.add(descLabel);
-        configPanel.add(descTextField);
-        SpringUtilities.makeCompactGrid(configPanel, 6, 2, // rows, cols
-            6, 6, // initX, initY
-            6, 6); // xPad, yPad
-        return configPanel;
-    }
+	private JPanel initConfigPanel() {
+		JPanel configPanel = new JPanel(new SpringLayout());
+		JLabel nameLabel = new JLabel("Name");
+		JLabel typeLabel = new JLabel("Type");
+		JLabel busLabel = new JLabel("Bus");
+		JLabel addressLabel = new JLabel("Address");
+		JLabel imageLabel = new JLabel("Image");
+		JLabel descLabel = new JLabel("Desc");
 
-    public Locomotive getLocomotive() {
-        return myLocomotive;
-    }
+		nameTextField = new JTextField();
+		nameTextField.setText(myLocomotive.getName());
 
-    public boolean isOkPressed() {
-        return okPressed;
-    }
+		busTextField = new JTextField();
+		busTextField.setText(Integer.toString(myLocomotive.getBus()));
 
-    class ApplyChangesAction extends AbstractAction {
-        public void actionPerformed(ActionEvent e) {
-            myLocomotive.setName(nameTextField.getText());
-            Locomotive tmp = myLocomotive;
-            String value = (String) locomotiveTypeComboBox.getSelectedItem();
-            if (value.equals("DeltaLocomotive")) {
-                myLocomotive = new DeltaLocomotive(tmp.getName(), tmp
-                    .getAddress(), tmp.getDesc());
-            } else if (value.equals("DigitalLocomotive")) {
-                myLocomotive = new DigitalLocomotive(tmp.getName(), tmp
-                    .getAddress(), tmp.getDesc());
+		addressTextField = new JTextField();
+		addressTextField.setText("" + myLocomotive.getAddress());
 
-            }
-            int bus = Integer.parseInt(busTextField.getText());
-            myLocomotive.getAddress().setBus(bus);
+		imageTextField = new JTextField();
+		imageTextField.setText(myLocomotive.getImage());
 
-            int newAddress = Integer.parseInt(addressTextField.getText());
-            myLocomotive.getAddress().setAddress(newAddress);
+		descTextField = new JTextField();
+		descTextField.setText(myLocomotive.getDescription());
 
-            myLocomotive.setImage(imageTextField.getText());
-            myLocomotive.setDesc(descTextField.getText());
-            okPressed = true;
-            LocomotiveConfig.this.setVisible(false);
-        }
-    }
+		SortedSet<LocomotiveType> types = LocomotiveControl.getInstance()
+				.getLocomotiveTypes();
+		locomotiveTypeComboBox = new JComboBox();
+		locomotiveTypes = new HashMap<String, LocomotiveType>();
+		for (LocomotiveType type : types) {
+			locomotiveTypeComboBox.addItem(type.getTypeName());
+		}
+		if (myLocomotive.getLocomotiveType() != null)
+			locomotiveTypeComboBox.setSelectedItem(myLocomotive
+					.getLocomotiveType().getTypeName());
+		else 
+			locomotiveTypeComboBox.setSelectedIndex(0);
+
+		configPanel.add(nameLabel);
+		configPanel.add(nameTextField);
+		configPanel.add(typeLabel);
+		configPanel.add(locomotiveTypeComboBox);
+		configPanel.add(busLabel);
+		configPanel.add(busTextField);
+		configPanel.add(addressLabel);
+		configPanel.add(addressTextField);
+		configPanel.add(imageLabel);
+		configPanel.add(imageTextField);
+		configPanel.add(descLabel);
+		configPanel.add(descTextField);
+		SpringUtilities.makeCompactGrid(configPanel, 6, 2, // rows, cols
+				6, 6, // initX, initY
+				6, 6); // xPad, yPad
+		return configPanel;
+	}
+
+	public Locomotive getLocomotive() {
+		return myLocomotive;
+	}
+
+	public boolean isOkPressed() {
+		return okPressed;
+	}
+
+	class ApplyChangesAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			myLocomotive.setName(nameTextField.getText());
+			LocomotiveType newType = LocomotiveControl
+					.getInstance()
+					.getLocomotiveTypeByName((String)
+							locomotiveTypeComboBox.getSelectedItem());
+			myLocomotive.setLocomotiveType(newType);
+
+			int bus = Integer.parseInt(busTextField.getText());
+			myLocomotive.setBus(bus);
+
+			int newAddress = Integer.parseInt(addressTextField.getText());
+			myLocomotive.setAddress(newAddress);
+
+			myLocomotive.setImage(imageTextField.getText());
+			myLocomotive.setDescription(descTextField.getText());
+			okPressed = true;
+			LocomotiveConfig.this.setVisible(false);
+		}
+	}
 }

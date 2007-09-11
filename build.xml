@@ -4,24 +4,37 @@
   <property file="${user.home}/.ant.properties"/>
   <property file="build.properties"/>
   <!-- set global properties for this build -->
+  <property name="src.etc.dir" value="etc"/>
   <property name="src.dir" value="src"/>
+  <property name="src.java.dir" value="src"/>
+  <property name="lib.dir" value="lib"/>
   <property name="build.dir" value="build"/>
   <property name="javadoc.dir" value="javadoc"/>
   <property name="release.dir" value="release/"/>
   <property environment="env"/>
   <!-- main class for run target -->
-  <property name="main.class" value="ch.fork.AdHocRailway.ui.AdHocRailway"/>
+  <!--property name="main.class" value="ch.fork.AdHocRailway.ui.AdHocRailway"/-->
+  <property name="main.class" value="ch.fork.AdHocRailway.persistence.Test"/>
+  <!-- Useful shortcuts -->
+  <patternset id="meta.files">
+    <include name="**/*.xml"/>
+	<include name="**/*.properties"/>
+  </patternset>
 
   <!-- =================================================================== -->
   <!-- Class paths                                                         -->
   <!-- =================================================================== -->
   <path id="compile.class.path">
-    <pathelement location="lib/xercesImpl.jar"/>
-    <pathelement location="lib/jsrcpc-bin.jar"/>
+    <fileset dir="${lib.dir}">
+        <include name="**/*.jar"/>
+        <include name="**/*.zip"/>
+    </fileset>
   </path>
   <path id="run.class.path">
-    <pathelement location="${build.dir}"/>
-    <pathelement location="lib/jsrcpc-bin.jar"/>
+    <fileset dir="${lib.dir}">
+        <include name="**/*.jar"/>
+        <include name="**/*.zip"/>
+    </fileset>
   </path>
   <path id="javadoc.src.path">
     <pathelement location="./src/"/>
@@ -45,6 +58,24 @@
       </fileset>
     </copy>
   </target>
+
+  <!-- =================================================================== -->
+  <!-- Copy metadata to build classpath -->
+  <!-- =================================================================== -->
+  <target name="copymetafiles">
+    <copy todir="${build.dir}">
+      <fileset dir="${src.java.dir}">
+	    <patternset refid="meta.files"/>
+	  </fileset>
+	</copy>
+  	<!-- Copy configuration files from etc/ -->
+  	<copy todir="${build.dir}">
+  	  <fileset dir="${src.etc.dir}">
+  	    <patternset refid="meta.files"/>
+  	  </fileset>
+  	</copy>
+  </target>
+
   <!-- =================================================================== -->
   <!-- Compile: Default                                                    -->
   <!-- =================================================================== -->
@@ -58,8 +89,10 @@
   <!-- =================================================================== -->
   <!-- Run and Run-tests targets                                           -->
   <!-- =================================================================== -->
-  <target name="run" depends="init, compile" description="runs the examples" >
-    <java classname="${main.class}" fork="yes" classpathref="run.class.path"/>
+  <target name="run" depends="init, compile, copymetafiles" description="runs the examples" >
+    <java classname="${main.class}" fork="yes" classpathref="run.class.path">
+  	  <classpath path="${build.dir}"/>
+	</java>
   </target>
   <!-- =================================================================== -->
   <!-- RELEASE                                                             -->
@@ -133,4 +166,17 @@
   </target>
   <target name="clean-all" depends="clean, clean-javadoc" description="Removes all generated artifacts">
   </target>
+	<target name="dbmanager" description="Start HSQLDB manager">
+	    <java
+	        classname="org.hsqldb.util.DatabaseManagerSwing"
+	        fork="yes"
+	        classpathref="compile.class.path"
+	        failonerror="true">
+	        <arg value="-url"/>
+	        <arg value="jdbc:hsqldb:hsql://localhost/"/>
+	        <arg value="-driver"/>
+	        <arg value="org.hsqldb.jdbcDriver"/>
+	    </java>
+	</target>
+
 </project>

@@ -14,12 +14,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
-import ch.fork.AdHocRailway.domain.routes.Route;
+import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
-import ch.fork.AdHocRailway.domain.routes.RouteGroup;
-import ch.fork.AdHocRailway.domain.switches.Switch;
-import ch.fork.AdHocRailway.domain.switches.SwitchControl;
-import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
+import ch.fork.AdHocRailway.domain.routes.RouteGroupOld;
+import ch.fork.AdHocRailway.domain.turnouts.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.SwitchGroup;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
@@ -37,14 +37,14 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private JFrame frame;
 
-	private SwitchControl switchControl;
+	private TurnoutControl switchControl;
 
 	private RouteControl routeControl;
 
 	public TrackControlPanel(JFrame frame) {
 		this.frame = frame;
 		this.preferences = Preferences.getInstance();
-		this.switchControl = SwitchControl.getInstance();
+		this.switchControl = TurnoutControl.getInstance();
 		this.routeControl = RouteControl.getInstance();
 		initGUI();
 		initKeyboardActions();
@@ -111,13 +111,13 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				.getIntValue(PreferencesKeys.ROUTE_CONTROLES);
 		int i = 1;
 		routeControl.removeAllRouteChangeListeners();
-		for (RouteGroup routeGroup : routeControl.getRouteGroups()) {
+		for (RouteGroupOld routeGroup : routeControl.getRouteGroups()) {
 
 			WidgetTab routeGroupTab = new WidgetTab(maxRouteCols);
 			JScrollPane groupScrollPane = new JScrollPane(routeGroupTab);
 			groupScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 			groupScrollPane.getVerticalScrollBar().setBlockIncrement(10);
-			for (Route aRoute : routeGroup.getRoutes()) {
+			for (RouteOld aRoute : routeGroup.getRoutes()) {
 				RouteWidget routeWidget = new RouteWidget(aRoute);
 				routeGroupTab.addWidget(routeWidget);
 				routeControl.addRouteChangeListener(aRoute, routeWidget);

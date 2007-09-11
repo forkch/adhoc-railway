@@ -3,8 +3,8 @@ package ch.fork.AdHocRailway.ui.switches.configuration;
 import java.util.List;
 import java.util.Map;
 
-import ch.fork.AdHocRailway.domain.switches.Switch;
-import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
+import ch.fork.AdHocRailway.domain.turnouts.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.SwitchGroup;
 
 public class SwitchConfiguration {
 

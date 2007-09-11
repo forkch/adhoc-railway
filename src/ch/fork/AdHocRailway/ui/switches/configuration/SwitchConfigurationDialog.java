@@ -64,12 +64,12 @@ import javax.swing.table.TableModel;
 
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
-import ch.fork.AdHocRailway.domain.switches.Switch;
-import ch.fork.AdHocRailway.domain.switches.SwitchControl;
-import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
-import ch.fork.AdHocRailway.domain.switches.SwitchState;
-import ch.fork.AdHocRailway.domain.switches.Switch.SwitchOrientation;
+import ch.fork.AdHocRailway.domain.turnouts.DefaultSwitch;
+import ch.fork.AdHocRailway.domain.turnouts.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.SwitchGroup;
+import ch.fork.AdHocRailway.domain.turnouts.SwitchState;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
+import ch.fork.AdHocRailway.domain.turnouts.Switch.SwitchOrientation;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.TableResizer;
@@ -92,7 +92,7 @@ public class SwitchConfigurationDialog<E> extends
 
 	private JTable switchesTable;
 
-	private SwitchControl switchControl;
+	private TurnoutControl switchControl;
 
 	private JPanel switchGroupPanel;
 
@@ -130,7 +130,7 @@ public class SwitchConfigurationDialog<E> extends
 
 	@Override
 	public void createTempConfiguration() {
-		this.switchControl = SwitchControl.getInstance();
+		this.switchControl = TurnoutControl.getInstance();
 		this.switchNumberToSwitchWorkCopy = new HashMap<Integer, Switch>();
 		for (Switch s : switchControl.getNumberToSwitch().values()) {
 			Switch clone = s.clone();

@@ -37,14 +37,14 @@ import javax.swing.SwingUtilities;
 
 import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
-import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
-import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
-import ch.fork.AdHocRailway.domain.switches.Switch;
-import ch.fork.AdHocRailway.domain.switches.SwitchChangeListener;
-import ch.fork.AdHocRailway.domain.switches.SwitchControl;
-import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
-import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
-import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
+import ch.fork.AdHocRailway.domain.turnouts.DefaultSwitch;
+import ch.fork.AdHocRailway.domain.turnouts.DoubleCrossSwitch;
+import ch.fork.AdHocRailway.domain.turnouts.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.SwitchChangeListener;
+import ch.fork.AdHocRailway.domain.turnouts.SwitchGroup;
+import ch.fork.AdHocRailway.domain.turnouts.ThreeWaySwitch;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
+import ch.fork.AdHocRailway.domain.turnouts.exception.SwitchException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.switches.canvas.DefaultSwitchCanvas;
 import ch.fork.AdHocRailway.ui.switches.canvas.DoubleCrossSwitchCanvas;
@@ -54,7 +54,7 @@ import ch.fork.AdHocRailway.ui.switches.configuration.SwitchConfig;
 
 public class SwitchWidget extends JPanel implements SwitchChangeListener,
 		LockChangeListener {
-	private SwitchControl switchControl;
+	private TurnoutControl switchControl;
 
 	private static final long serialVersionUID = 1L;
 
@@ -78,7 +78,7 @@ public class SwitchWidget extends JPanel implements SwitchChangeListener,
 		mySwitch = aSwitch;
 		this.switchGroup = switchGroup;
 		this.frame = frame;
-		this.switchControl = SwitchControl.getInstance();
+		this.switchControl = TurnoutControl.getInstance();
 		initGUI();
 		switchControl.addSwitchChangeListener(aSwitch, this);
 	}

@@ -13,12 +13,12 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
-import ch.fork.AdHocRailway.domain.routes.Route;
+import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
-import ch.fork.AdHocRailway.domain.switches.Switch;
-import ch.fork.AdHocRailway.domain.switches.SwitchControl;
-import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
-import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
+import ch.fork.AdHocRailway.domain.turnouts.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.ThreeWaySwitch;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
+import ch.fork.AdHocRailway.domain.turnouts.exception.SwitchException;
 
 public class KeyTrackControl extends JPanel {
 
@@ -32,7 +32,7 @@ public class KeyTrackControl extends JPanel {
 
 	private JPanel switchesHistory;
 
-	private SwitchControl switchControl;
+	private TurnoutControl switchControl;
 
 	private RouteControl routeControl;
 
@@ -44,7 +44,7 @@ public class KeyTrackControl extends JPanel {
 
 	public KeyTrackControl() {
 
-		this.switchControl = SwitchControl.getInstance();
+		this.switchControl = TurnoutControl.getInstance();
 		this.routeControl = RouteControl.getInstance();
 		enteredNumberKeys = new StringBuffer();
 		initGUI();
@@ -242,7 +242,7 @@ public class KeyTrackControl extends JPanel {
 
 		private void handleRouteChange(ActionEvent e, int enteredNumber)
 				throws SwitchException {
-			Route searchedRoute = null;
+			RouteOld searchedRoute = null;
 
 			searchedRoute = routeControl.getNumberToRoutes().get(enteredNumber);
 			if (searchedRoute == null) {

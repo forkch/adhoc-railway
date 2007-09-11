@@ -30,7 +30,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import ch.fork.AdHocRailway.domain.switches.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.Switch;
 
 public class SwitchCanvas extends JPanel {
     protected Switch mySwitch;

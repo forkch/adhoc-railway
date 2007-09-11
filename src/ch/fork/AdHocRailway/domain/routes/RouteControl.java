@@ -10,8 +10,8 @@ import java.util.TreeSet;
 
 import ch.fork.AdHocRailway.domain.Control;
 import ch.fork.AdHocRailway.domain.exception.ControlException;
-import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
-import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
+import ch.fork.AdHocRailway.domain.routes.RouteOld.RouteState;
+import ch.fork.AdHocRailway.domain.turnouts.exception.SwitchException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
@@ -19,25 +19,25 @@ public class RouteControl extends Control {
 
 	private static RouteControl instance;
 
-	private Map<Route, RouteChangeListener> listeners;
+	private Map<RouteOld, RouteChangeListener> listeners;
 
-	private SortedSet<Route> routes;
+	private SortedSet<RouteOld> routes;
 
-	private Map<Integer, Route> numberToRoutes;
+	private Map<Integer, RouteOld> numberToRoutes;
 
-	private List<RouteGroup> routeGroups;
+	private List<RouteGroupOld> routeGroups;
 
-	private Route lastChangedRoute;
+	private RouteOld lastChangedRoute;
 
 	private RouteState lastRouteState;
 
 	protected String ERR_TOGGLE_FAILED = "Toggle of switch failed";
 
 	private RouteControl() {
-		listeners = new HashMap<Route, RouteChangeListener>();
-		routes = new TreeSet<Route>();
-		numberToRoutes = new HashMap<Integer, Route>();
-		routeGroups = new ArrayList<RouteGroup>();
+		listeners = new HashMap<RouteOld, RouteChangeListener>();
+		routes = new TreeSet<RouteOld>();
+		numberToRoutes = new HashMap<Integer, RouteOld>();
+		routeGroups = new ArrayList<RouteGroupOld>();
 	}
 
 	public static RouteControl getInstance() {
@@ -47,28 +47,28 @@ public class RouteControl extends Control {
 		return instance;
 	}
 
-	public void registerRoute(Route route) {
+	public void registerRoute(RouteOld route) {
 		routes.add(route);
 		numberToRoutes.put(route.getNumber(), route);
 	}
 
-	public void unregisterRoute(Route route) {
+	public void unregisterRoute(RouteOld route) {
 		routes.remove(route.getName());
 		numberToRoutes.remove(route.getNumber());
 	}
 
-	public void registerRoutes(Collection<Route> routesToRegister) {
-		for (Route route : routesToRegister) {
+	public void registerRoutes(Collection<RouteOld> routesToRegister) {
+		for (RouteOld route : routesToRegister) {
 			routes.add(route);
 			numberToRoutes.put(route.getNumber(), route);
 		}
 	}
 
-	public void registerRouteGroup(RouteGroup rg) {
+	public void registerRouteGroup(RouteGroupOld rg) {
 		routeGroups.add(rg);
 	}
 
-	public void registerRouteGroups(Collection<RouteGroup> rgs) {
+	public void registerRouteGroups(Collection<RouteGroupOld> rgs) {
 		routeGroups.addAll(rgs);
 	}
 
@@ -76,7 +76,7 @@ public class RouteControl extends Control {
 		routeGroups.clear();
 	}
 
-	public List<RouteGroup> getRouteGroups() {
+	public List<RouteGroupOld> getRouteGroups() {
 		return routeGroups;
 	}
 
@@ -86,15 +86,15 @@ public class RouteControl extends Control {
 		routeGroups.clear();
 	}
 
-	public SortedSet<Route> getRoutes() {
+	public SortedSet<RouteOld> getRoutes() {
 		return routes;
 	}
 
-	public Map<Integer, Route> getNumberToRoutes() {
+	public Map<Integer, RouteOld> getNumberToRoutes() {
 		return numberToRoutes;
 	}
 
-	public void enableRoute(Route r) throws SwitchException {
+	public void enableRoute(RouteOld r) throws SwitchException {
 		// System.out.println("enabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
@@ -105,7 +105,7 @@ public class RouteControl extends Control {
 		lastRouteState = RouteState.ENABLED;
 	}
 
-	public void disableRoute(Route r) throws SwitchException {
+	public void disableRoute(RouteOld r) throws SwitchException {
 		// System.out.println("disabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
@@ -115,7 +115,7 @@ public class RouteControl extends Control {
 		lastRouteState = RouteState.DISABLED;
 	}
 
-	public void addRouteChangeListener(Route r, RouteChangeListener listener) {
+	public void addRouteChangeListener(RouteOld r, RouteChangeListener listener) {
 		listeners.put(r, listener);
 	}
 
@@ -123,7 +123,7 @@ public class RouteControl extends Control {
 		listeners.clear();
 	}
 
-	public void removeRouteChangeListener(Route r) {
+	public void removeRouteChangeListener(RouteOld r) {
 		listeners.remove(r);
 	}
 
@@ -150,5 +150,23 @@ public class RouteControl extends Control {
 		disableRoute(lastChangedRoute);
 		lastChangedRoute = null;
 		lastRouteState = null;
+	}
+
+	@Override
+	public void commitTransaction() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void rollbackTransaction() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startTransaction() {
+		// TODO Auto-generated method stub
+		
 	}
 }

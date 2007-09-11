@@ -2,21 +2,21 @@ package ch.fork.AdHocRailway.domain.routes;
 
 import java.util.Collection;
 
-import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
-import ch.fork.AdHocRailway.domain.switches.Switch;
-import ch.fork.AdHocRailway.domain.switches.SwitchControl;
-import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
+import ch.fork.AdHocRailway.domain.routes.RouteOld.RouteState;
+import ch.fork.AdHocRailway.domain.turnouts.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
+import ch.fork.AdHocRailway.domain.turnouts.exception.SwitchException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class Router extends Thread {
 
-    private Route               route;
+    private RouteOld               route;
     private boolean             enableRoute;
     private int                 waitTime;
     private RouteChangeListener listener;
     private SwitchException     switchException;
 
-    public Router(Route route, boolean enableRoute, int waitTime,
+    public Router(RouteOld route, boolean enableRoute, int waitTime,
         RouteChangeListener listener) {
         this.route = route;
         this.enableRoute = enableRoute;
@@ -42,9 +42,9 @@ public class Router extends Thread {
     }
 
     private void disableRoute() throws SwitchException, InterruptedException {
-        Collection<RouteItem> routeItems = route.getRouteItems();
-        SwitchControl sc = SwitchControl.getInstance();
-        for (RouteItem ri : routeItems) {
+        Collection<RouteItemOld> routeItems = route.getRouteItems();
+        TurnoutControl sc = TurnoutControl.getInstance();
+        for (RouteItemOld ri : routeItems) {
             Switch switchToRoute = ri.getRoutedSwitch();
 
             /*switch (switchToRoute.getDefaultState()) {
@@ -68,9 +68,9 @@ public class Router extends Thread {
     }
 
     private void enableRoute() throws SwitchException, InterruptedException {
-        Collection<RouteItem> routeItems = route.getRouteItems();
-        SwitchControl sc = SwitchControl.getInstance();
-        for (RouteItem ri : routeItems) {
+        Collection<RouteItemOld> routeItems = route.getRouteItems();
+        TurnoutControl sc = TurnoutControl.getInstance();
+        for (RouteItemOld ri : routeItems) {
             Switch switchToRoute = ri.getRoutedSwitch();
             ri.setPreviousSwitchState(switchToRoute.getSwitchState());
             switch (ri.getRoutedSwitchState()) {

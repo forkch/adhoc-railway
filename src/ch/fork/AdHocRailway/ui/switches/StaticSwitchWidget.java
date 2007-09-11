@@ -29,10 +29,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
-import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
-import ch.fork.AdHocRailway.domain.switches.Switch;
-import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
+import ch.fork.AdHocRailway.domain.turnouts.DefaultSwitch;
+import ch.fork.AdHocRailway.domain.turnouts.DoubleCrossSwitch;
+import ch.fork.AdHocRailway.domain.turnouts.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.ThreeWaySwitch;
 import ch.fork.AdHocRailway.ui.switches.canvas.DefaultSwitchCanvas;
 import ch.fork.AdHocRailway.ui.switches.canvas.DoubleCrossSwitchCanvas;
 import ch.fork.AdHocRailway.ui.switches.canvas.SwitchCanvas;

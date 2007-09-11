@@ -96,7 +96,7 @@ public class LocomotiveControlPanel extends JPanel {
             .getKeyStroke(KeyEvent.VK_SPACE, 0), WHEN_IN_FOCUSED_WINDOW);
     }
 
-    public void update(Collection<LocomotiveGroup> locomotiveGroups) {
+    public void update() {
         LockControl lockc = LockControl.getInstance();
         locomotiveControl.removeAllLocomotiveChangeListener();
         lockc.removeAllLockChangeListener();
@@ -114,7 +114,7 @@ public class LocomotiveControlPanel extends JPanel {
             LocomotiveWidget w = new LocomotiveWidget(keyBindings[i][0],
                 keyBindings[i][1], keyBindings[i][2], frame);
             LockControl.getInstance().addLockChangeListener(w);
-            w.updateLocomotiveGroups(locomotiveGroups);
+            w.updateLocomotiveGroups();
             controlPanel.add(w);
             locomotiveWidgets.add(w);
         }
@@ -133,7 +133,7 @@ public class LocomotiveControlPanel extends JPanel {
             try {
                 for (LocomotiveWidget widget : locomotiveWidgets) {
                     Locomotive myLocomotive = widget.getMyLocomotive();
-                    LocomotiveControl.getInstance().setSpeed(myLocomotive, 0);
+                    LocomotiveControl.getInstance().setSpeed(myLocomotive, 0, null);
                     widget.updateWidget();
                     Thread.sleep(200);
                 }

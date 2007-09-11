@@ -10,11 +10,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import ch.fork.AdHocRailway.domain.routes.Route;
+import ch.fork.AdHocRailway.domain.routes.RouteOld;
 
 public class StaticRouteWidget extends JPanel {
 
-	private Route route;
+	private RouteOld route;
 
 	private JLabel nameLabel;
 
@@ -26,7 +26,7 @@ public class StaticRouteWidget extends JPanel {
 
 	private JLabel numberLabel;
 
-	public StaticRouteWidget(Route route) {
+	public StaticRouteWidget(RouteOld route) {
 		this.route = route;
 		initGUI();
 	}
@@ -65,7 +65,7 @@ public class StaticRouteWidget extends JPanel {
 		add(northPanel);
 	}
 
-	public Route getRoute() {
+	public RouteOld getRoute() {
 		return route;
 	}
 }

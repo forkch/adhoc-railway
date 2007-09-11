@@ -30,13 +30,13 @@ import javax.swing.table.AbstractTableModel;
 
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.switches.DefaultSwitch;
-import ch.fork.AdHocRailway.domain.switches.DoubleCrossSwitch;
-import ch.fork.AdHocRailway.domain.switches.Switch;
-import ch.fork.AdHocRailway.domain.switches.SwitchGroup;
-import ch.fork.AdHocRailway.domain.switches.SwitchState;
-import ch.fork.AdHocRailway.domain.switches.ThreeWaySwitch;
-import ch.fork.AdHocRailway.domain.switches.Switch.SwitchOrientation;
+import ch.fork.AdHocRailway.domain.turnouts.DefaultSwitch;
+import ch.fork.AdHocRailway.domain.turnouts.DoubleCrossSwitch;
+import ch.fork.AdHocRailway.domain.turnouts.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.SwitchGroup;
+import ch.fork.AdHocRailway.domain.turnouts.SwitchState;
+import ch.fork.AdHocRailway.domain.turnouts.ThreeWaySwitch;
+import ch.fork.AdHocRailway.domain.turnouts.Switch.SwitchOrientation;
 
 public class SwitchesTableModel extends AbstractTableModel {
     private final String[]       columnNames = { "#", "Type", "Bus", "Addr. 1",

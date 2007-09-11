@@ -17,16 +17,16 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import ch.fork.AdHocRailway.domain.routes.Route;
+import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
-import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
-import ch.fork.AdHocRailway.domain.switches.exception.SwitchException;
+import ch.fork.AdHocRailway.domain.routes.RouteOld.RouteState;
+import ch.fork.AdHocRailway.domain.turnouts.exception.SwitchException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
-    private Route        route;
+    private RouteOld        route;
     private RouteControl routeControl;
     private JLabel       nameLabel;
     private JLabel       iconLabel;
@@ -37,7 +37,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
     private MouseAction  mouseAction;
 	private JLabel numberLabel;
 
-    public RouteWidget(Route route) {
+    public RouteWidget(RouteOld route) {
         this.route = route;
         routeControl = RouteControl.getInstance();
         initGUI();
@@ -117,7 +117,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         }
     }
 
-    public void routeChanged(Route r) {
+    public void routeChanged(RouteOld r) {
         if (route.equals(r)) {
             SwingUtilities.invokeLater(new Runnable() {
 
@@ -159,7 +159,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         });
     }
 
-	public Route getRoute() {
+	public RouteOld getRoute() {
 		return route;
 	}
 }

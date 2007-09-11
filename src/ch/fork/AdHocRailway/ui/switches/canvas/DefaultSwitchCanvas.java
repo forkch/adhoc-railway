@@ -29,7 +29,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import ch.fork.AdHocRailway.domain.switches.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.Switch;
 
 public class DefaultSwitchCanvas extends SwitchCanvas {
     public DefaultSwitchCanvas(Switch mySwitch) {

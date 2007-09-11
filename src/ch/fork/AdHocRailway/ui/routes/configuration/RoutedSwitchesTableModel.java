@@ -6,15 +6,15 @@ import java.util.Set;
 
 import javax.swing.table.AbstractTableModel;
 
-import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.domain.switches.SwitchState;
+import ch.fork.AdHocRailway.domain.routes.RouteOld;
+import ch.fork.AdHocRailway.domain.routes.RouteItemOld;
+import ch.fork.AdHocRailway.domain.turnouts.SwitchState;
 
 public class RoutedSwitchesTableModel extends AbstractTableModel {
 
 	private String[] columnNames = { "Switch-Number", "Routed-State" };
 
-	private Set<RouteItem> routeItems;
+	private Set<RouteItemOld> routeItems;
 
 	public RoutedSwitchesTableModel() {
 	}
@@ -31,8 +31,8 @@ public class RoutedSwitchesTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-        List<RouteItem> routeItemsArrayList = new ArrayList<RouteItem>(routeItems);
-		RouteItem actualRouteItem = routeItemsArrayList.get(rowIndex);
+        List<RouteItemOld> routeItemsArrayList = new ArrayList<RouteItemOld>(routeItems);
+		RouteItemOld actualRouteItem = routeItemsArrayList.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return actualRouteItem.getRoutedSwitch();
@@ -43,8 +43,8 @@ public class RoutedSwitchesTableModel extends AbstractTableModel {
 	}
 
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
-        List<RouteItem> routeItemsArrayList = new ArrayList<RouteItem>(routeItems);
-		RouteItem actualRouteItem = routeItemsArrayList.get(rowIndex);
+        List<RouteItemOld> routeItemsArrayList = new ArrayList<RouteItemOld>(routeItems);
+		RouteItemOld actualRouteItem = routeItemsArrayList.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return;
@@ -55,7 +55,7 @@ public class RoutedSwitchesTableModel extends AbstractTableModel {
 		return;
 	}
 
-	public void setRoute(Route route) {
+	public void setRoute(RouteOld route) {
 		this.routeItems = route.getRouteItems();
 		fireTableDataChanged();
 	}

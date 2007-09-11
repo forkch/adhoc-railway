@@ -28,7 +28,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import ch.fork.AdHocRailway.domain.switches.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.Switch;
 
 public class ThreeWaySwitchCanvas extends SwitchCanvas {
     public ThreeWaySwitchCanvas(Switch mySwitch) {

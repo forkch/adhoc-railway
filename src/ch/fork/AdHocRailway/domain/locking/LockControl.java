@@ -32,10 +32,7 @@ import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.Control;
 import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.exception.ControlException;
-import ch.fork.AdHocRailway.domain.exception.InvalidAddressException;
-import ch.fork.AdHocRailway.domain.exception.NoSessionException;
 import ch.fork.AdHocRailway.domain.locking.exception.LockingException;
-import ch.fork.AdHocRailway.domain.locomotives.NoneLocomotive;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import de.dermoba.srcp.client.SRCPSession;
@@ -48,12 +45,12 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
 
 	private static LockControl instance = null;
 
-	private Map<Address, ControlObject> addressToControlObject;
+	private Map<Integer, ControlObject> addressToControlObject;
 
 	private List<LockChangeListener> listeners;
 
 	private LockControl() {
-		addressToControlObject = new HashMap<Address, ControlObject>();
+		addressToControlObject = new HashMap<Integer, ControlObject>();
 		listeners = new ArrayList<LockChangeListener>();
 	}
 
@@ -65,36 +62,22 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
 	}
 
 	public void registerControlObject(ControlObject object) {
-		Address[] addresses = object.getAddresses();
-		addressToControlObject.put(addresses[0], object);
-		for (int i = 1; i < addresses.length; i++) {
-			if (addresses[i] != null) {
-				addressToControlObject.put(addresses[i], object);
-			}
+		int[] addresses = object.getAddresses();
+		for (int address : addresses) {
+			addressToControlObject.put(address, object);
 		}
-		setSessionOnControlObject(object);
 	}
 
 	public void registerControlObjects(Collection<ControlObject> objects) {
 		for (ControlObject anObject : objects) {
-			Address[] addresses = anObject.getAddresses();
-			addressToControlObject.put(addresses[0], anObject);
-			for (int i = 1; i < addresses.length; i++) {
-				if (addresses[i] != null) {
-					addressToControlObject.put(addresses[i], anObject);
-				}
-			}
-			setSessionOnControlObject(anObject);
+			registerControlObject(anObject);
 		}
 	}
 
 	public void unregisterControlObject(ControlObject object) {
-		Address[] addresses = object.getAddresses();
-		addressToControlObject.remove(addresses[0]);
-		for (int i = 1; i < addresses.length; i++) {
-			if (addresses[i] != null) {
-				addressToControlObject.remove(addresses[i]);
-			}
+		int[] addresses = object.getAddresses();
+		for (int address : addresses) {
+			addressToControlObject.remove(address);
 		}
 	}
 
@@ -108,71 +91,53 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
 	}
 
 	public boolean acquireLock(ControlObject object) throws LockingException {
-		try {
-			if (object instanceof NoneLocomotive) {
-				return false;
+
+		if (object == null) return false;
+		// TODO checkControlObject(object);
+		// TODO init(object);
+		for (int address : object.getAddresses()) {
+			LOCK lock = object.getLock();
+			try {
+				lock.set(object.getDeviceGroup(), address, Preferences
+						.getInstance().getIntValue(
+								PreferencesKeys.LOCK_DURATION));
+			} catch (SRCPDeviceLockedException e) {
+				throw new LockingException(ERR_LOCKED, e);
+			} catch (SRCPException e) {
+				throw new LockingException(ERR_FAILED, e);
 			}
-			checkControlObject(object);
-			initControlObject(object);
-			for (Address address : object.getAddresses()) {
-				LOCK lock = object.getLock();
-				try {
-					lock.set(object.getDeviceGroup(), address.getAddress(),
-							Preferences.getInstance().getIntValue(
-									PreferencesKeys.LOCK_DURATION));
-				} catch (SRCPDeviceLockedException e) {
-					throw new LockingException(ERR_LOCKED, e);
-				} catch (SRCPException e) {
-					throw new LockingException(ERR_FAILED, e);
-				}
-			}
-		} catch (NoSessionException e) {
-			throw new LockingException(Constants.ERR_NOT_CONNECTED, e);
-		} catch (InvalidAddressException e) {
-			throw new LockingException(Constants.ERR_FAILED, e);
-		} catch (ControlException e) {
-			throw new LockingException(Constants.ERR_FAILED, e);
 		}
 		return true;
 	}
 
 	public boolean releaseLock(ControlObject object) throws LockingException {
-		try {
-			if (object instanceof NoneLocomotive) {
-				return false;
+
+		if (object == null) return false;
+		// TODO checkControlObject(object);
+		// TODO init(object);
+		for (int address : object.getAddresses()) {
+			LOCK lock = object.getLock();
+			try {
+				lock.term(object.getDeviceGroup(), address);
+			} catch (SRCPDeviceLockedException e) {
+				throw new LockingException(ERR_LOCKED, e);
+			} catch (SRCPException e) {
+				throw new LockingException(ERR_FAILED, e);
 			}
-			checkControlObject(object);
-			initControlObject(object);
-			for (Address address : object.getAddresses()) {
-				LOCK lock = object.getLock();
-				try {
-					lock.term(object.getDeviceGroup(), address.getAddress());
-				} catch (SRCPDeviceLockedException e) {
-					throw new LockingException(ERR_LOCKED, e);
-				} catch (SRCPException e) {
-					throw new LockingException(ERR_FAILED, e);
-				}
-			}
-		} catch (NoSessionException e) {
-			throw new LockingException(Constants.ERR_NOT_CONNECTED, e);
-		} catch (InvalidAddressException e) {
-			throw new LockingException(Constants.ERR_FAILED, e);
-		} catch (ControlException e) {
-			throw new LockingException(Constants.ERR_FAILED, e);
 		}
 		return true;
 	}
 
 	public void releaseAllLocks() throws LockingException {
-		if(session != null) {
-		for(ControlObject co : addressToControlObject.values()) {
-			if(co.getLockedBySession() == session.getCommandChannelID()) {
-				releaseLock(co);
+		if (session != null) {
+			for (ControlObject co : addressToControlObject.values()) {
+				if (co.getLockedBySession() == session.getCommandChannelID()) {
+					releaseLock(co);
+				}
 			}
 		}
-		}
 	}
-	
+
 	public void LOCKset(double timestamp, int bus, int address,
 			String deviceGroup, int duration, int sessionID) {
 		/*
@@ -229,12 +194,30 @@ public class LockControl extends Control implements LOCKInfoListener, Constants 
 	@Override
 	public void undoLastChange() throws ControlException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void previousDeviceToDefault() throws ControlException {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public void commitTransaction() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void rollbackTransaction() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void startTransaction() {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -29,7 +29,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
-import ch.fork.AdHocRailway.domain.switches.SwitchState;
+import ch.fork.AdHocRailway.domain.turnouts.SwitchState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class SwitchDefaultStateComboBoxCellRenderer implements ListCellRenderer {

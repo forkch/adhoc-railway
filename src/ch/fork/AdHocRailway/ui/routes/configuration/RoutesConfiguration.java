@@ -3,24 +3,24 @@ package ch.fork.AdHocRailway.ui.routes.configuration;
 import java.util.List;
 import java.util.Map;
 
-import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteGroup;
+import ch.fork.AdHocRailway.domain.routes.RouteOld;
+import ch.fork.AdHocRailway.domain.routes.RouteGroupOld;
 
 public class RoutesConfiguration {
 
-    private Map<Integer, Route> numberToRoute;
-    private List<RouteGroup> routeGroups;
+    private Map<Integer, RouteOld> numberToRoute;
+    private List<RouteGroupOld> routeGroups;
     
-    public RoutesConfiguration(Map<Integer, Route> numberToRoute, List<RouteGroup> routeGroups) {
+    public RoutesConfiguration(Map<Integer, RouteOld> numberToRoute, List<RouteGroupOld> routeGroups) {
         this.numberToRoute = numberToRoute;
         this.routeGroups = routeGroups;
     }
 
-	public Map<Integer, Route> getNumberToRoute() {
+	public Map<Integer, RouteOld> getNumberToRoute() {
 		return numberToRoute;
 	}
 
-	public List<RouteGroup> getRouteGroups() {
+	public List<RouteGroupOld> getRouteGroups() {
 		return routeGroups;
 	}
 }

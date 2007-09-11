@@ -32,7 +32,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.net.ConnectException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -64,13 +63,10 @@ import ch.fork.AdHocRailway.domain.locking.LockControl;
 import ch.fork.AdHocRailway.domain.locking.exception.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
-import ch.fork.AdHocRailway.domain.switches.Switch;
-import ch.fork.AdHocRailway.domain.switches.SwitchControl;
+import ch.fork.AdHocRailway.domain.turnouts.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.technical.configuration.XMLExporter;
-import ch.fork.AdHocRailway.technical.configuration.XMLImporter;
-import ch.fork.AdHocRailway.technical.configuration.exception.ConfigurationException;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfiguration;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
@@ -90,10 +86,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     private static final long      serialVersionUID  = 1L;
     private static final String    NAME              = "AdHoc-Railway";
     private SRCPSession            session;
-    private SwitchControl          switchControl     = SwitchControl
+    private TurnoutControl          switchControl     = TurnoutControl
                                                              .getInstance();
-    private LocomotiveControl      locomotiveControl = LocomotiveControl
-                                                             .getInstance();
+    private LocomotiveControl      locomotiveControl;
     private LockControl            lockControl       = LockControl
                                                              .getInstance();
     private Preferences            preferences       = Preferences
@@ -141,7 +136,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         initGUI();
 
         trackControlPanel.update();
-        locomotiveControlPanel.update(locomotiveControl.getLocomotiveGroups());
+        locomotiveControlPanel.update();
 
         initKeyboardActions();
 
@@ -149,6 +144,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
         setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
 
+        splash.nextStep("RailControl started");
         splash.nextStep("RailControl started");
         updateCommandHistory("RailControl started");
         if (preferences.getBooleanValue(AUTOCONNECT))
@@ -158,18 +154,20 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     private void loadConfiguration(String file) {
-        if (file != null) {
-            File standardFile = new File(file);
-            if (standardFile.exists()) {
-                splash.nextStep("Loading configuration from " + file + " ...");
-                OpenAction oa = new OpenAction(null);
-                oa.openFile(standardFile);
-            } else {
-                splash.nextStep("");
-            }
-        } else {
-            splash.nextStep("");
-        }
+    	locomotiveControl = LocomotiveControl
+         .getInstance();
+//    	if (file != null) {
+//            File standardFile = new File(file);
+//            if (standardFile.exists()) {
+//                splash.nextStep("Loading configuration from " + file + " ...");
+//                OpenAction oa = new OpenAction(null);
+//                oa.openFile(standardFile);
+//            } else {
+//                splash.nextStep("");
+//            }
+//        } else {
+//            splash.nextStep("");
+//        }
     }
 
     private void initGUI() {
@@ -233,7 +231,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
     }
 
     private void updateLocomotives() {
-        locomotiveControlPanel.update(locomotiveControl.getLocomotiveGroups());
+        locomotiveControlPanel.update();
     }
 
     private void updateSwitches() {
@@ -244,12 +242,14 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         if (preferences.getBooleanValue(LOGGING)) {
             updateCommandHistory("To Server: " + commandData);
         }
+        System.out.println("To Server: " + commandData.trim());
     }
 
     public void infoDataReceived(String infoData) {
         if (preferences.getBooleanValue(LOGGING)) {
             updateCommandHistory("From Server: " + infoData);
         }
+        System.out.println("From Server: " + infoData.trim());
     }
 
     public void infoDataReceived(double timestamp, int bus, String deviceGroup,
@@ -291,7 +291,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         public void actionPerformed(ActionEvent e) {
             actualFile = null;
             switchControl.clear();
-            locomotiveControl.clear();
+            //locomotiveControl.clear();
             RouteControl.getInstance().clear();
             updateGUI();
             updateCommandHistory("Created new configuration");
@@ -325,25 +325,25 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
         private void openFile(File file) {
 
-            try {
-                new XMLImporter(file.getAbsolutePath());
-
-                /*
-                 * if (recentFilesMenu.getComponentCount() > 1) {
-                 * recentFilesMenu.remove(10); } JMenuItem recentItem = new
-                 * JMenuItem(file.getPath()); recentItem.addActionListener(new
-                 * OpenAction(file)); recentFilesMenu.add(recentItem, 0);
-                 * recentFilesMenu.repaint(); recentFilesMenu.revalidate();
-                 */
-                actualFile = file;
-                // updateCommandHistory("Opened configuration: " +
-                // file.getName());
-                setTitle(AdHocRailway.NAME + " : [ "
-                        + actualFile.getAbsolutePath() + " ]");
-            } catch (ConfigurationException e) {
-                ExceptionProcessor.getInstance().processException(
-                        "Error loading file", e);
-            }
+//            try {
+//                //new XMLImporter(file.getAbsolutePath());
+//
+//                /*
+//                 * if (recentFilesMenu.getComponentCount() > 1) {
+//                 * recentFilesMenu.remove(10); } JMenuItem recentItem = new
+//                 * JMenuItem(file.getPath()); recentItem.addActionListener(new
+//                 * OpenAction(file)); recentFilesMenu.add(recentItem, 0);
+//                 * recentFilesMenu.repaint(); recentFilesMenu.revalidate();
+//                 */
+//                actualFile = file;
+//                // updateCommandHistory("Opened configuration: " +
+//                // file.getName());
+//                setTitle(AdHocRailway.NAME + " : [ "
+//                        + actualFile.getAbsolutePath() + " ]");
+//            } catch (ConfigurationException e) {
+//                ExceptionProcessor.getInstance().processException(
+//                        "Error loading file", e);
+//            }
 
         }
     }
@@ -362,27 +362,27 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 // This is where a real application would open
                 // the file.
                 FileWriter fileWriter = null;
-                try {
-                    String xmlConfig = XMLExporter
-                            .export(Constants.ACTUAL_CONFIG_VERSION);
-                    fileWriter = new FileWriter(file);
-                    fileWriter.write(xmlConfig);
-                    updateCommandHistory("Configuration saved: "
-                            + file.getName());
-                } catch (IOException e1) {
-                    ExceptionProcessor.getInstance().processException(
-                            "Error writing file", e1);
-                } catch (ConfigurationException e1) {
-                    ExceptionProcessor.getInstance().processException(
-                            "Error writing file", e1);
-                } finally {
-                    try {
-                        fileWriter.close();
-                    } catch (IOException e1) {
-                        ExceptionProcessor.getInstance().processException(
-                                "Error writing file", e1);
-                    }
-                }
+//                try {
+//                    String xmlConfig = XMLExporter
+//                            .export(Constants.ACTUAL_CONFIG_VERSION);
+//                    fileWriter = new FileWriter(file);
+//                    fileWriter.write(xmlConfig);
+//                    updateCommandHistory("Configuration saved: "
+//                            + file.getName());
+//                } catch (IOException e1) {
+//                    ExceptionProcessor.getInstance().processException(
+//                            "Error writing file", e1);
+//                } catch (ConfigurationException e1) {
+//                    ExceptionProcessor.getInstance().processException(
+//                            "Error writing file", e1);
+//                } finally {
+//                    try {
+//                        fileWriter.close();
+//                    } catch (IOException e1) {
+//                        ExceptionProcessor.getInstance().processException(
+//                                "Error writing file", e1);
+//                    }
+//                }
                 actualFile = file;
             } else {
                 updateCommandHistory("Save cancelled by user");
@@ -399,28 +399,28 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             if (actualFile != null) {
 
                 FileWriter fileWriter = null;
-                try {
-                    String xmlConfig = XMLExporter
-                            .export(Constants.ACTUAL_CONFIG_VERSION);
-                    fileWriter = new FileWriter(actualFile);
-                    fileWriter.write(xmlConfig);
-                    updateCommandHistory("Configuration saved: "
-                            + actualFile.getName());
-                } catch (ConfigurationException e1) {
-                    ExceptionProcessor.getInstance().processException(
-                            "Error writing file", e1);
-
-                } catch (IOException e1) {
-                    ExceptionProcessor.getInstance().processException(
-                            "Error writing file", e1);
-                } finally {
-                    try {
-                        fileWriter.close();
-                    } catch (IOException e1) {
-                        ExceptionProcessor.getInstance().processException(
-                                "Error writing file", e1);
-                    }
-                }
+//                try {
+//                    String xmlConfig = XMLExporter
+//                            .export(Constants.ACTUAL_CONFIG_VERSION);
+//                    fileWriter = new FileWriter(actualFile);
+//                    fileWriter.write(xmlConfig);
+//                    updateCommandHistory("Configuration saved: "
+//                            + actualFile.getName());
+//                } catch (ConfigurationException e1) {
+//                    ExceptionProcessor.getInstance().processException(
+//                            "Error writing file", e1);
+//
+//                } catch (IOException e1) {
+//                    ExceptionProcessor.getInstance().processException(
+//                            "Error writing file", e1);
+//                } finally {
+//                    try {
+//                        fileWriter.close();
+//                    } catch (IOException e1) {
+//                        ExceptionProcessor.getInstance().processException(
+//                                "Error writing file", e1);
+//                    }
+//                }
             } else {
                 SaveAsAction sa = new SaveAsAction();
                 sa.actionPerformed(e);
@@ -505,14 +505,14 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
             if (locomotiveConfigDialog.isOkPressed()) {
                 LocomotiveConfiguration locomotiveConfiguration = locomotiveConfigDialog
                         .getTempConfiguration();
-                locomotiveControl.clear();
-                System.out.println(locomotiveConfiguration
-                        .getLocomotives());
-                locomotiveControl.registerLocomotives(locomotiveConfiguration
-                        .getLocomotives());
-                locomotiveControl
-                        .registerLocomotiveGroups(locomotiveConfiguration
-                                .getLocomotiveGroups());
+//                locomotiveControl.clear();
+//                System.out.println(locomotiveConfiguration
+//                        .getLocomotives());
+//                locomotiveControl.registerLocomotives(locomotiveConfiguration
+//                        .getLocomotives());
+//                locomotiveControl
+//                        .registerLocomotiveGroups(locomotiveConfiguration
+//                                .getLocomotiveGroups());
                 updateLocomotives();
                 updateCommandHistory("Locomotive configuration changed");
             }
@@ -553,7 +553,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
                 session.getCommandChannel().addCommandDataListener(
                         AdHocRailway.this);
                 session.getInfoChannel().addInfoDataListener(AdHocRailway.this);
-                switchControl.setSession(session);
+                //switchControl.setSession(session);
                 locomotiveControl.setSession(session);
                 lockControl.setSession(session);
                 session.connect();

@@ -69,7 +69,7 @@ public abstract class ConfigurationDialog<E> extends JDialog {
             JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         mainButtonPanel.add(okButton);
-        mainButtonPanel.add(cancelButton);
+        //mainButtonPanel.add(cancelButton);
         add(mainButtonPanel, BorderLayout.SOUTH);
     }
 

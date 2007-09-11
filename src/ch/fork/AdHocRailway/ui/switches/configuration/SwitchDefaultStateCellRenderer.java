@@ -29,7 +29,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
-import ch.fork.AdHocRailway.domain.switches.SwitchState;
+import ch.fork.AdHocRailway.domain.turnouts.SwitchState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class SwitchDefaultStateCellRenderer implements TableCellRenderer {

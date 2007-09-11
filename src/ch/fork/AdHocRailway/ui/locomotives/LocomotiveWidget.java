@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.EntityTransaction;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -54,473 +55,520 @@ import javax.swing.border.EtchedBorder;
 import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
 import ch.fork.AdHocRailway.domain.locking.LockControl;
-import ch.fork.AdHocRailway.domain.locking.exception.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.NoneLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 
 public class LocomotiveWidget extends JPanel implements
-        LocomotiveChangeListener, LockChangeListener {
-    private static final long serialVersionUID = 1L;
+		LocomotiveChangeListener, LockChangeListener {
+	private static final long serialVersionUID = 1L;
 
-    private enum LocomotiveActionType {
-        ACCELERATE, DECCELERATE, TOGGLE_DIRECTION
-    };
+	private enum LocomotiveActionType {
+		ACCELERATE, DECCELERATE, TOGGLE_DIRECTION
+	};
 
-    private JComboBox                   locomotiveComboBox;
-    private JComboBox                   locomotiveGroupComboBox;
-    private JLabel                      desc;
-    private JProgressBar                speedBar;
-    private JButton                     increaseSpeed;
-    private JButton                     decreaseSpeed;
-    private JButton                     stopButton;
-    private JButton                     directionButton;
-    private LockToggleButton            lockButton;
-    private Locomotive                  myLocomotive;
-    private int                         accelerateKey, deccelerateKey,
-            toggleDirectionKey;
-    private FunctionToggleButton[]      functionToggleButtons;
-    private Color                       defaultBackground;
-    private Locomotive                  none;
-    private LocomotiveGroup             allLocomotives;
-    private LocomotiveSelectAction      locomotiveSelectAction;
-    private LocomotiveGroupSelectAction groupSelectAction;
-    private JFrame                      frame;
+	private JComboBox locomotiveComboBox;
 
-    public LocomotiveWidget(int accelerateKey, int deccelerateKey,
-            int toggleDirectionKey, JFrame frame) {
-        super();
-        this.accelerateKey = accelerateKey;
-        this.deccelerateKey = deccelerateKey;
-        this.toggleDirectionKey = toggleDirectionKey;
-        this.frame = frame;
-        initGUI();
-        initKeyboardActions();
-    }
+	private JComboBox locomotiveGroupComboBox;
 
-    private void initGUI() {
-        setLayout(new BorderLayout(10, 10));
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        setPreferredSize(new Dimension(200, 250));
-        JPanel selectionPanel = initSelectionPanel();
-        JPanel controlPanel = initControlPanel();
-        JPanel centerPanel = new JPanel(new BorderLayout());
-        desc = new JLabel(myLocomotive.getDesc(), SwingConstants.CENTER);
+	private JLabel desc;
 
-        addMouseListener(new MouseAction());
-        centerPanel.add(controlPanel, BorderLayout.CENTER);
-        centerPanel.add(desc, BorderLayout.NORTH);
-        add(centerPanel, BorderLayout.CENTER);
-        add(selectionPanel, BorderLayout.NORTH);
+	private JProgressBar speedBar;
 
-        addMouseWheelListener(new WheelControl());
+	private JButton increaseSpeed;
 
-    }
+	private JButton decreaseSpeed;
 
-    private JPanel initSelectionPanel() {
-        JPanel selectionPanel = new JPanel(new BorderLayout(5, 5));
-        locomotiveGroupComboBox = new JComboBox();
-        locomotiveGroupComboBox.setFocusable(false);
-        groupSelectAction = new LocomotiveGroupSelectAction();
-        locomotiveComboBox = new JComboBox();
-        none = new NoneLocomotive();
-        locomotiveComboBox.addItem(none);
-        locomotiveComboBox.setFocusable(false);
-        myLocomotive = none;
-        defaultBackground = locomotiveComboBox.getBackground();
-        locomotiveSelectAction = new LocomotiveSelectAction();
-        selectionPanel.add(locomotiveGroupComboBox, BorderLayout.NORTH);
-        selectionPanel.add(locomotiveComboBox, BorderLayout.SOUTH);
-        return selectionPanel;
-    }
+	private JButton stopButton;
 
-    private JPanel initControlPanel() {
-        JPanel controlPanel = new JPanel(new BorderLayout(10, 10));
-        speedBar = new JProgressBar(JProgressBar.VERTICAL);
-        speedBar.setPreferredSize(new Dimension(20, 200));
-        controlPanel.add(speedBar, BorderLayout.EAST);
-        JPanel functionsPanel = initFunctionsControl();
-        JPanel speedControlPanel = initSpeedControl();
-        controlPanel.add(functionsPanel, BorderLayout.WEST);
-        controlPanel.add(speedControlPanel, BorderLayout.CENTER);
-        return controlPanel;
-    }
+	private JButton directionButton;
 
-    private JPanel initFunctionsControl() {
-        JPanel functionsPanel = new JPanel();
-        BoxLayout bl = new BoxLayout(functionsPanel, BoxLayout.PAGE_AXIS);
-        functionsPanel.setLayout(bl);
-        Dimension size = new Dimension(60, 30);
-        Insets margin = new Insets(2, 2, 2, 2);
+	private LockToggleButton lockButton;
 
-        FunctionToggleButton functionButton = new FunctionToggleButton("Fn");
-        FunctionToggleButton f1Button = new FunctionToggleButton("F1");
-        FunctionToggleButton f2Button = new FunctionToggleButton("F2");
-        FunctionToggleButton f3Button = new FunctionToggleButton("F3");
-        FunctionToggleButton f4Button = new FunctionToggleButton("F4");
-        functionToggleButtons = new FunctionToggleButton[] { functionButton,
-                f1Button, f2Button, f3Button, f4Button };
+	private Locomotive myLocomotive;
 
-        for (int i = 0; i < functionToggleButtons.length; i++) {
-            functionToggleButtons[i].setMargin(margin);
-            functionToggleButtons[i].setMaximumSize(size);
-            functionToggleButtons[i]
-                    .addActionListener(new LocomotiveFunctionAction(i));
-            functionsPanel.add(functionToggleButtons[i]);
-        }
-        return functionsPanel;
-    }
+	private int accelerateKey, deccelerateKey, toggleDirectionKey;
 
-    private JPanel initSpeedControl() {
+	private FunctionToggleButton[] functionToggleButtons;
 
-        JPanel speedControlPanel = new JPanel();
-        BoxLayout bl = new BoxLayout(speedControlPanel, BoxLayout.PAGE_AXIS);
-        speedControlPanel.setLayout(bl);
-        Dimension size = new Dimension(60, 30);
-        Insets margin = new Insets(2, 2, 2, 2);
+	private Color defaultBackground;
 
-        increaseSpeed = new JButton("+");
-        decreaseSpeed = new JButton("-");
-        stopButton = new JButton("Stop");
-        directionButton = new JButton(createImageIcon("locomotives/forward.png"));
-        lockButton = new LockToggleButton("");
+	private Locomotive none;
+	
+	private LocomotiveControl locomotiveControl;
 
-        increaseSpeed.setMaximumSize(size);
-        decreaseSpeed.setMaximumSize(size);
-        stopButton.setMaximumSize(size);
-        directionButton.setMaximumSize(size);
-        lockButton.setMaximumSize(size);
+	private LocomotiveGroup allLocomotives;
 
-        increaseSpeed.setMargin(margin);
-        decreaseSpeed.setMargin(margin);
-        stopButton.setMargin(margin);
-        directionButton.setMargin(margin);
-        lockButton.setMargin(margin);
+	private LocomotiveSelectAction locomotiveSelectAction;
 
-        increaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
-        decreaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
-        stopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        directionButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lockButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	private LocomotiveGroupSelectAction groupSelectAction;
 
-        increaseSpeed.addActionListener(new IncreaseSpeedAction());
-        decreaseSpeed.addActionListener(new DecreaseSpeedAction());
-        stopButton.addActionListener(new StopAction());
-        directionButton.addActionListener(new ToggleDirectionAction());
-        lockButton.addActionListener(new LockAction());
+	private JFrame frame;
 
-        speedControlPanel.add(increaseSpeed);
-        speedControlPanel.add(decreaseSpeed);
-        speedControlPanel.add(stopButton);
-        speedControlPanel.add(directionButton);
-        speedControlPanel.add(lockButton);
-        return speedControlPanel;
-    }
+	public LocomotiveWidget(int accelerateKey, int deccelerateKey,
+			int toggleDirectionKey, JFrame frame) {
+		super();
+		this.accelerateKey = accelerateKey;
+		this.deccelerateKey = deccelerateKey;
+		this.toggleDirectionKey = toggleDirectionKey;
+		this.frame = frame;
+		locomotiveControl = LocomotiveControl.getInstance();
+		initGUI();
+		initKeyboardActions();
+	}
 
-    private void initKeyboardActions() {
-        registerKeyboardAction(new LocomotiveControlAction(), "accelerate",
-                KeyStroke.getKeyStroke(accelerateKey, 0),
-                WHEN_IN_FOCUSED_WINDOW);
-        registerKeyboardAction(new LocomotiveControlAction(), "deccelerate",
-                KeyStroke.getKeyStroke(deccelerateKey, 0),
-                WHEN_IN_FOCUSED_WINDOW);
-        registerKeyboardAction(new LocomotiveControlAction(),
-                "toggle_direction", KeyStroke.getKeyStroke(toggleDirectionKey,
-                        0), WHEN_IN_FOCUSED_WINDOW);
-    }
+	private void initGUI() {
+		setLayout(new BorderLayout(10, 10));
+		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+		setPreferredSize(new Dimension(200, 250));
+		JPanel selectionPanel = initSelectionPanel();
+		JPanel controlPanel = initControlPanel();
+		JPanel centerPanel = new JPanel(new BorderLayout());
+		if (myLocomotive != null) {
+			desc = new JLabel(myLocomotive.getDescription(),
+					SwingConstants.CENTER);
+		} else {
+			desc = new JLabel("", SwingConstants.CENTER);
+		}
 
-    protected void updateWidget() {
-        double speedInPercent = ((double) myLocomotive.getCurrentSpeed())
-                / ((double) myLocomotive.getDrivingSteps());
-        if (speedInPercent > 0.9) {
-            speedBar.setForeground(new Color(255, 0, 0));
-        } else if (speedInPercent > 0.7) {
-            speedBar.setForeground(new Color(255, 255, 0));
-        } else {
-            speedBar.setForeground(new Color(0, 255, 0));
-        }
-        speedBar.setMinimum(0);
-        speedBar.setMaximum(myLocomotive.getDrivingSteps());
-        speedBar.setValue(myLocomotive.getCurrentSpeed());
-        boolean functions[] = myLocomotive.getFunctions();
-        for (int i = 0; i < functions.length; i++) {
-            functionToggleButtons[i].setSelected(functions[i]);
-        }
-        switch (myLocomotive.getDirection()) {
-        case FORWARD:
-            directionButton.setIcon(createImageIcon("locomotives/forward.png"));
-            break;
-        case REVERSE:
-            directionButton.setIcon(createImageIcon("locomotives/back.png"));
-            break;
-        default:
-            directionButton.setIcon(createImageIcon("locomotives/forward.png"));
-        }
-        lockButton.setSelected(myLocomotive.isLocked());
-        if (myLocomotive.isLocked()) {
-            if (lockedByMe()) {
-                lockButton.setSelectedIcon(createImageIcon("locomotives/locked_by_me.png"));
+		addMouseListener(new MouseAction());
+		centerPanel.add(controlPanel, BorderLayout.CENTER);
+		centerPanel.add(desc, BorderLayout.NORTH);
+		add(centerPanel, BorderLayout.CENTER);
+		add(selectionPanel, BorderLayout.NORTH);
 
-            } else {
-                lockButton.setSelectedIcon(createImageIcon("locomotives/locked_by_enemy.png"));
+		addMouseWheelListener(new WheelControl());
 
-            }
-        }
-        lockButton.revalidate();
-        lockButton.repaint();
-        setPreferredSize(new Dimension(200, 250));
-    }
+	}
 
-    public void updateLocomotiveGroups(
-            Collection<LocomotiveGroup> locomotiveGroups) {
-        locomotiveComboBox.removeActionListener(locomotiveSelectAction);
-        locomotiveGroupComboBox.removeActionListener(groupSelectAction);
-        allLocomotives = new LocomotiveGroup("All");
-        for (LocomotiveGroup lg : locomotiveGroups) {
-            locomotiveGroupComboBox.addItem(lg);
-            for (Locomotive l : lg.getLocomotives()) {
-                locomotiveComboBox.addItem(l);
-            }
-        }
-        locomotiveGroupComboBox.insertItemAt(allLocomotives, 0);
-        locomotiveGroupComboBox.setSelectedItem(allLocomotives);
-        locomotiveComboBox.addActionListener(locomotiveSelectAction);
-        locomotiveGroupComboBox.addActionListener(groupSelectAction);
-    }
+	private JPanel initSelectionPanel() {
+		JPanel selectionPanel = new JPanel(new BorderLayout(5, 5));
+		locomotiveGroupComboBox = new JComboBox();
+		locomotiveGroupComboBox.setFocusable(false);
+		groupSelectAction = new LocomotiveGroupSelectAction();
+		locomotiveComboBox = new JComboBox();
+		locomotiveComboBox.setFocusable(false);
+		myLocomotive = none;
+		defaultBackground = locomotiveComboBox.getBackground();
+		locomotiveSelectAction = new LocomotiveSelectAction();
+		selectionPanel.add(locomotiveGroupComboBox, BorderLayout.NORTH);
+		selectionPanel.add(locomotiveComboBox, BorderLayout.SOUTH);
+		return selectionPanel;
+	}
 
-    public Locomotive getMyLocomotive() {
-        return myLocomotive;
-    }
+	private JPanel initControlPanel() {
+		JPanel controlPanel = new JPanel(new BorderLayout(10, 10));
+		speedBar = new JProgressBar(JProgressBar.VERTICAL);
+		speedBar.setPreferredSize(new Dimension(20, 200));
+		controlPanel.add(speedBar, BorderLayout.EAST);
+		JPanel functionsPanel = initFunctionsControl();
+		JPanel speedControlPanel = initSpeedControl();
+		controlPanel.add(functionsPanel, BorderLayout.WEST);
+		controlPanel.add(speedControlPanel, BorderLayout.CENTER);
+		return controlPanel;
+	}
 
-    public void locomotiveChanged(Locomotive changedLocomotive) {
-        if (myLocomotive.equals(changedLocomotive)) {
-            SwingUtilities.invokeLater(new LocomotiveWidgetUpdater());
-        }
-    }
+	private JPanel initFunctionsControl() {
+		JPanel functionsPanel = new JPanel();
+		BoxLayout bl = new BoxLayout(functionsPanel, BoxLayout.PAGE_AXIS);
+		functionsPanel.setLayout(bl);
+		Dimension size = new Dimension(60, 30);
+		Insets margin = new Insets(2, 2, 2, 2);
 
-    private class LocomotiveWidgetUpdater implements Runnable {
-        public void run() {
-            updateWidget();
-        }
-    }
+		FunctionToggleButton functionButton = new FunctionToggleButton("Fn");
+		FunctionToggleButton f1Button = new FunctionToggleButton("F1");
+		FunctionToggleButton f2Button = new FunctionToggleButton("F2");
+		FunctionToggleButton f3Button = new FunctionToggleButton("F3");
+		FunctionToggleButton f4Button = new FunctionToggleButton("F4");
+		functionToggleButtons = new FunctionToggleButton[] { functionButton,
+				f1Button, f2Button, f3Button, f4Button };
 
-    public void lockChanged(ControlObject changedLock) {
-        if (changedLock instanceof Locomotive) {
-            Locomotive changedLocomotive = (Locomotive) changedLock;
-            locomotiveChanged(changedLocomotive);
-        }
-    }
+		for (int i = 0; i < functionToggleButtons.length; i++) {
+			functionToggleButtons[i].setMargin(margin);
+			functionToggleButtons[i].setMaximumSize(size);
+			functionToggleButtons[i]
+					.addActionListener(new LocomotiveFunctionAction(i));
+			functionsPanel.add(functionToggleButtons[i]);
+		}
+		return functionsPanel;
+	}
 
-    private class LocomotiveFunctionAction extends AbstractAction {
-        private int function;
+	private JPanel initSpeedControl() {
 
-        public LocomotiveFunctionAction(int function) {
-            this.function = function;
-        }
+		JPanel speedControlPanel = new JPanel();
+		BoxLayout bl = new BoxLayout(speedControlPanel, BoxLayout.PAGE_AXIS);
+		speedControlPanel.setLayout(bl);
+		Dimension size = new Dimension(60, 30);
+		Insets margin = new Insets(2, 2, 2, 2);
 
-        public void actionPerformed(ActionEvent e) {
-            try {
-                boolean[] functions = myLocomotive.getFunctions();
-                functions[function] = functionToggleButtons[function]
-                        .isSelected();
-                LocomotiveControl.getInstance().setFunctions(myLocomotive,
-                        functions);
-            } catch (LocomotiveException e1) {
-                ExceptionProcessor.getInstance().processException(e1);
-            }
-            speedBar.requestFocus();
-        }
-    }
-    private class LocomotiveControlAction extends AbstractAction {
-        private LocomotiveActionType type;
-        private long                 time = 0;
+		increaseSpeed = new JButton("+");
+		decreaseSpeed = new JButton("-");
+		stopButton = new JButton("Stop");
+		directionButton = new JButton(
+				createImageIcon("locomotives/forward.png"));
+		lockButton = new LockToggleButton("");
 
-        public void actionPerformed(ActionEvent e) {
-            try {
-                if (e.getActionCommand().equals("accelerate")) {
-                	System.out.println(myLocomotive.getCurrentSpeed());
-                    LocomotiveControl.getInstance().increaseSpeed(myLocomotive);
-                } else if (e.getActionCommand().equals("deccelerate")) {
-                    LocomotiveControl.getInstance().decreaseSpeed(myLocomotive);
-                } else if (e.getActionCommand().equals("toggle_direction")) {
-                    LocomotiveControl.getInstance().toggleDirection(
-                            myLocomotive);
-                }
-                if (time == 0) {
-                    time = System.currentTimeMillis();
-                } else {
-                    time = 0;
-                }
-                SwingUtilities.invokeLater(new LocomotiveWidgetUpdater());
-            } catch (LocomotiveException e3) {
-                ExceptionProcessor.getInstance().processException(e3);
-            }
+		increaseSpeed.setMaximumSize(size);
+		decreaseSpeed.setMaximumSize(size);
+		stopButton.setMaximumSize(size);
+		directionButton.setMaximumSize(size);
+		lockButton.setMaximumSize(size);
 
-        }
-    }
-    private class LocomotiveSelectAction extends AbstractAction {
-        public void actionPerformed(ActionEvent e) {
-            if (locomotiveComboBox.getItemCount() == 0) {
-                return;
-            }
-            if (myLocomotive.getCurrentSpeed() == 0 && !lockedByMe()) {
-                locomotiveComboBox.setBackground(defaultBackground);
-                lockButton.setBackground(defaultBackground);
-                myLocomotive = (Locomotive) locomotiveComboBox
-                        .getSelectedItem();
+		increaseSpeed.setMargin(margin);
+		decreaseSpeed.setMargin(margin);
+		stopButton.setMargin(margin);
+		directionButton.setMargin(margin);
+		lockButton.setMargin(margin);
 
-                LocomotiveControl.getInstance().addLocomotiveChangeListener(
-                        myLocomotive, LocomotiveWidget.this);
+		increaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
+		decreaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
+		stopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		directionButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lockButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-                updateWidget();
-                desc.setText(myLocomotive.getDesc());
-                speedBar.requestFocus();
-            } else {
-                locomotiveComboBox.setSelectedItem(myLocomotive);
-                locomotiveComboBox.setBackground(Color.RED);
-            }
-        }
-    }
-    private class LocomotiveGroupSelectAction extends AbstractAction {
-        public void actionPerformed(ActionEvent e) {
-            LocomotiveGroup lg = (LocomotiveGroup) locomotiveGroupComboBox
-                    .getSelectedItem();
-            locomotiveComboBox.removeAllItems();
-            Locomotive none = new NoneLocomotive();
-            locomotiveComboBox.addItem(none);
-            if (lg == allLocomotives) {
-                SortedSet<Locomotive> sl = new TreeSet<Locomotive>(
-                        LocomotiveControl.getInstance().getLocomotives());
-                for (Locomotive l : sl) {
-                    locomotiveComboBox.addItem(l);
-                }
-            } else {
-                for (Locomotive l : lg.getLocomotives()) {
-                    locomotiveComboBox.addItem(l);
-                }
-            }
-            locomotiveComboBox.setSelectedIndex(0);
-            locomotiveComboBox.revalidate();
-            locomotiveComboBox.repaint();
-        }
-    }
-    private class StopAction extends AbstractAction {
-        public void actionPerformed(ActionEvent e) {
-            try {
-                LocomotiveControl.getInstance().setSpeed(myLocomotive, 0);
-                updateWidget();
-                speedBar.requestFocus();
-            } catch (LocomotiveException e3) {
-                ExceptionProcessor.getInstance().processException(e3);
-            }
-        }
-    }
-    private class ToggleDirectionAction extends AbstractAction {
-        public void actionPerformed(ActionEvent e) {
-            try {
-                LocomotiveControl.getInstance().toggleDirection(myLocomotive);
-                speedBar.requestFocus();
-                updateWidget();
-            } catch (LocomotiveException e1) {
-                ExceptionProcessor.getInstance().processException(e1);
-            }
-        }
-    }
-    private class IncreaseSpeedAction extends AbstractAction {
-        public void actionPerformed(ActionEvent e) {
-            try {
-                LocomotiveControl.getInstance().increaseSpeed(myLocomotive);
-                updateWidget();
-                speedBar.requestFocus();
-            } catch (LocomotiveException e3) {
-                ExceptionProcessor.getInstance().processException(e3);
-            }
-        }
-    }
-    private class DecreaseSpeedAction extends AbstractAction {
-        public void actionPerformed(ActionEvent e) {
-            try {
-                LocomotiveControl.getInstance().decreaseSpeed(myLocomotive);
-                updateWidget();
-                speedBar.requestFocus();
-            } catch (LocomotiveException e3) {
-                ExceptionProcessor.getInstance().processException(e3);
-            }
-        }
-    }
+		increaseSpeed.addActionListener(new IncreaseSpeedAction());
+		decreaseSpeed.addActionListener(new DecreaseSpeedAction());
+		stopButton.addActionListener(new StopAction());
+		directionButton.addActionListener(new ToggleDirectionAction());
+		lockButton.addActionListener(new LockAction());
 
-    private class LockAction extends AbstractAction {
+		speedControlPanel.add(increaseSpeed);
+		speedControlPanel.add(decreaseSpeed);
+		speedControlPanel.add(stopButton);
+		speedControlPanel.add(directionButton);
+		speedControlPanel.add(lockButton);
+		return speedControlPanel;
+	}
 
-        public void actionPerformed(ActionEvent e) {
-            LockControl lc = LockControl.getInstance();
-            try {
-                if (lockButton.isSelected()) {
-                    boolean succeeded = lc.acquireLock(myLocomotive);
-                    lockButton.setSelected(succeeded);
-                } else {
-                    if (lockedByMe()) {
-                        boolean succeeded = !lc.releaseLock(myLocomotive);
-                        lockButton.setSelected(succeeded);
-                    } else {
-                        lockButton.setSelected(true);
-                    }
-                }
-                updateWidget();
-                speedBar.requestFocus();
-            } catch (LockingException e1) {
-                lockButton.setSelected(false);
-                ExceptionProcessor.getInstance().processException(e1);
-            }
-        }
+	private void initKeyboardActions() {
+		registerKeyboardAction(new LocomotiveControlAction(), "accelerate",
+				KeyStroke.getKeyStroke(accelerateKey, 0),
+				WHEN_IN_FOCUSED_WINDOW);
+		registerKeyboardAction(new LocomotiveControlAction(), "deccelerate",
+				KeyStroke.getKeyStroke(deccelerateKey, 0),
+				WHEN_IN_FOCUSED_WINDOW);
+		registerKeyboardAction(new LocomotiveControlAction(),
+				"toggle_direction", KeyStroke.getKeyStroke(toggleDirectionKey,
+						0), WHEN_IN_FOCUSED_WINDOW);
+	}
 
-    }
+	protected void updateWidget() {
+		if (myLocomotive == null)
+			return;
+		LocomotiveControl control = locomotiveControl;
+		double speedInPercent = ((double) control.getCurrentSpeed(myLocomotive))
+				/ ((double) myLocomotive.getLocomotiveType().getDrivingSteps());
+		if (speedInPercent > 0.9) {
+			speedBar.setForeground(new Color(255, 0, 0));
+		} else if (speedInPercent > 0.7) {
+			speedBar.setForeground(new Color(255, 255, 0));
+		} else {
+			speedBar.setForeground(new Color(0, 255, 0));
+		}
+		speedBar.setMinimum(0);
+		speedBar.setMaximum(myLocomotive.getLocomotiveType().getDrivingSteps());
+		speedBar.setValue(myLocomotive.getCurrentSpeed());
+		boolean functions[] = myLocomotive.getFunctions();
+		for (int i = 0; i < functions.length; i++) {
+			functionToggleButtons[i].setSelected(functions[i]);
+		}
+		switch (myLocomotive.getDirection()) {
+		case FORWARD:
+			directionButton.setIcon(createImageIcon("locomotives/forward.png"));
+			break;
+		case REVERSE:
+			directionButton.setIcon(createImageIcon("locomotives/back.png"));
+			break;
+		default:
+			directionButton.setIcon(createImageIcon("locomotives/forward.png"));
+		}
+		// TODO
+		// lockButton.setSelected(myLocomotive.isLocked());
+		// if (myLocomotive.isLocked()) {
+		// if (lockedByMe()) {
+		// lockButton.setSelectedIcon(createImageIcon("locomotives/locked_by_me.png"));
+		//
+		// } else {
+		// lockButton.setSelectedIcon(createImageIcon("locomotives/locked_by_enemy.png"));
+		//
+		// }
+		// }
+		lockButton.revalidate();
+		lockButton.repaint();
+		setPreferredSize(new Dimension(200, 250));
+		revalidate();
+		repaint();
+	}
 
-    private class MouseAction extends MouseAdapter {
-        public void mouseClicked(MouseEvent e) {
-        	
-            if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
-                LocomotiveConfig locomotiveConfig = new LocomotiveConfig(frame,
-                        myLocomotive);
-                if (locomotiveConfig.isOkPressed()) {
-                    LocomotiveControl lc = LocomotiveControl.getInstance();
-                    lc.unregisterLocomotive(myLocomotive);
+	public void updateLocomotiveGroups() {
+		locomotiveComboBox.removeActionListener(locomotiveSelectAction);
+		locomotiveGroupComboBox.removeActionListener(groupSelectAction);
+		for (LocomotiveGroup lg : locomotiveControl.getLocomotiveGroups()) {
+			locomotiveGroupComboBox.addItem(lg);
+			for (Locomotive l : lg.getLocomotives()) {
+				locomotiveComboBox.addItem(l);
+			}
+		}
+		locomotiveGroupComboBox.setSelectedItem(allLocomotives);
+		locomotiveComboBox.addActionListener(locomotiveSelectAction);
+		locomotiveGroupComboBox.addActionListener(groupSelectAction);
+	}
 
-                    myLocomotive = locomotiveConfig.getLocomotive();
-                    lc.registerLocomotive(myLocomotive);
-                    desc.setText(myLocomotive.getDesc());
-                    locomotiveChanged(myLocomotive);
-                }
-            } else if(e.getButton() == MouseEvent.BUTTON2) {
-            	ToggleDirectionAction a = new ToggleDirectionAction();
-            	a.actionPerformed(null);
-            }
-        }
-    }
+	public Locomotive getMyLocomotive() {
+		return myLocomotive;
+	}
 
-    private class WheelControl implements MouseWheelListener {
-        public void mouseWheelMoved(MouseWheelEvent e) {
-            AbstractAction a = null;
-            switch (e.getWheelRotation()) {
-            case -1:
-                a = new IncreaseSpeedAction();
-                break;
-            case 1:
-                a = new DecreaseSpeedAction();
-                break;
-            default:
-                return;
-            }
-            a.actionPerformed(null);
-        }
-    }
+	public void locomotiveChanged(Locomotive changedLocomotive) {
+		if (myLocomotive.equals(changedLocomotive)) {
+			SwingUtilities.invokeLater(new LocomotiveWidgetUpdater());
+		}
+	}
 
-    private boolean lockedByMe() {
-        return LockControl.getInstance().getSessionID() == myLocomotive
-                .getLockedBySession();
-    }
+	private class LocomotiveWidgetUpdater implements Runnable {
+		public void run() {
+			updateWidget();
+		}
+	}
+
+	public void lockChanged(ControlObject changedLock) {
+		// TODO
+		// if (changedLock instanceof Locomotive) {
+		// Locomotive changedLocomotive = (Locomotive) changedLock;
+		// locomotiveChanged(changedLocomotive);
+		// }
+	}
+
+	private class LocomotiveFunctionAction extends AbstractAction {
+		private int function;
+
+		public LocomotiveFunctionAction(int function) {
+			this.function = function;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			if (myLocomotive == null)
+				return;
+			try {
+				boolean[] functions = myLocomotive.getFunctions();
+				functions[function] = functionToggleButtons[function]
+						.isSelected();
+				locomotiveControl.setFunctions(myLocomotive,
+						functions);
+			} catch (LocomotiveException e1) {
+				ExceptionProcessor.getInstance().processException(e1);
+			}
+			speedBar.requestFocus();
+		}
+	}
+
+	private class LocomotiveControlAction extends AbstractAction {
+
+		private long time = 0;
+
+		public void actionPerformed(ActionEvent e) {
+			if (myLocomotive == null)
+				return;
+			try {
+				if (e.getActionCommand().equals("accelerate")) {
+					locomotiveControl.increaseSpeed(myLocomotive);
+				} else if (e.getActionCommand().equals("deccelerate")) {
+					locomotiveControl.decreaseSpeed(myLocomotive);
+				} else if (e.getActionCommand().equals("toggle_direction")) {
+					locomotiveControl.toggleDirection(
+							myLocomotive);
+				}
+				if (time == 0) {
+					time = System.currentTimeMillis();
+				} else {
+					time = 0;
+				}
+				SwingUtilities.invokeLater(new LocomotiveWidgetUpdater());
+			} catch (LocomotiveException e3) {
+				ExceptionProcessor.getInstance().processException(e3);
+			}
+
+		}
+	}
+
+	private class LocomotiveSelectAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			if (locomotiveComboBox.getItemCount() == 0)
+				return;
+			System.out.println(lockedByMe());
+			//TODO LOCKED BY ME
+			if (myLocomotive == null || myLocomotive.getCurrentSpeed() == 0) {
+				locomotiveComboBox.setBackground(defaultBackground);
+				lockButton.setBackground(defaultBackground);
+				myLocomotive = (Locomotive) locomotiveComboBox
+						.getSelectedItem();
+				locomotiveControl.addLocomotiveChangeListener(
+						myLocomotive, LocomotiveWidget.this);
+
+				updateWidget();
+				System.out.println(desc);
+				desc.setText(myLocomotive.getDescription());
+				speedBar.requestFocus();
+			} else {
+				locomotiveComboBox.setSelectedItem(myLocomotive);
+				locomotiveComboBox.setBackground(Color.RED);
+			}
+		}
+	}
+
+	private class LocomotiveGroupSelectAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			LocomotiveGroup lg = (LocomotiveGroup) locomotiveGroupComboBox
+					.getSelectedItem();
+			locomotiveComboBox.removeAllItems();
+			// Locomotive none = new NoneLocomotive();
+			// locomotiveComboBox.addItem(none);
+			if (lg == allLocomotives) {
+				SortedSet<Locomotive> sl = locomotiveControl
+						.getAllLocomotives();
+				for (Locomotive l : sl) {
+					locomotiveComboBox.addItem(l);
+				}
+			} else {
+				for (Locomotive l : lg.getLocomotives()) {
+					locomotiveComboBox.addItem(l);
+				}
+			}
+			locomotiveComboBox.setSelectedIndex(0);
+			locomotiveComboBox.revalidate();
+			locomotiveComboBox.repaint();
+		}
+	}
+
+	private class StopAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			if (myLocomotive == null)
+				return;
+			try {
+				locomotiveControl.setSpeed(myLocomotive, 0, null);
+				updateWidget();
+				speedBar.requestFocus();
+			} catch (LocomotiveException e3) {
+				ExceptionProcessor.getInstance().processException(e3);
+			}
+		}
+	}
+
+	private class ToggleDirectionAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			if (myLocomotive == null)
+				return;
+			try {
+				locomotiveControl.toggleDirection(myLocomotive);
+				speedBar.requestFocus();
+				updateWidget();
+			} catch (LocomotiveException e1) {
+				ExceptionProcessor.getInstance().processException(e1);
+			}
+		}
+	}
+
+	private class IncreaseSpeedAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			if (myLocomotive == null)
+				return;
+			try {
+				locomotiveControl.increaseSpeed(myLocomotive);
+				updateWidget();
+				speedBar.requestFocus();
+			} catch (LocomotiveException e3) {
+				ExceptionProcessor.getInstance().processException(e3);
+			}
+		}
+	}
+
+	private class DecreaseSpeedAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			if (myLocomotive == null)
+				return;
+			try {
+				locomotiveControl.decreaseSpeed(myLocomotive);
+				updateWidget();
+				speedBar.requestFocus();
+			} catch (LocomotiveException e3) {
+				ExceptionProcessor.getInstance().processException(e3);
+			}
+		}
+	}
+
+	private class LockAction extends AbstractAction {
+
+		public void actionPerformed(ActionEvent e) {
+			if (myLocomotive == null)
+				return;
+			LockControl lc = LockControl.getInstance();
+			// TODO
+			if (lockButton.isSelected()) {
+				// boolean succeeded = lc.acquireLock(myLocomotive);
+				// lockButton.setSelected(succeeded);
+			} else {
+				if (lockedByMe()) {
+					// boolean succeeded = !lc.releaseLock(myLocomotive);
+					// lockButton.setSelected(succeeded);
+				} else {
+					lockButton.setSelected(true);
+				}
+			}
+			updateWidget();
+			speedBar.requestFocus();
+		}
+
+	}
+
+	private class MouseAction extends MouseAdapter {
+		public void mouseClicked(MouseEvent e) {
+			if (myLocomotive == null)
+				return;
+			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
+				LocomotiveConfig locomotiveConfig = new LocomotiveConfig(frame,
+						myLocomotive);
+				if (locomotiveConfig.isOkPressed()) {
+					System.out.println(myLocomotive.getLocomotiveType());
+					locomotiveControl.updateLocomotive(myLocomotive);
+					locomotiveChanged(myLocomotive);
+				} else {
+					locomotiveControl.refreshLocomotive(myLocomotive);
+					locomotiveChanged(myLocomotive);
+				}
+			} else if (e.getButton() == MouseEvent.BUTTON2) {
+				ToggleDirectionAction a = new ToggleDirectionAction();
+				a.actionPerformed(null);
+			}
+			updateWidget();
+		}
+	}
+
+	private class WheelControl implements MouseWheelListener {
+		public void mouseWheelMoved(MouseWheelEvent e) {
+			if (myLocomotive == null)
+				return;
+			AbstractAction a = null;
+			switch (e.getWheelRotation()) {
+			case -1:
+				a = new IncreaseSpeedAction();
+				break;
+			case 1:
+				a = new DecreaseSpeedAction();
+				break;
+			default:
+				return;
+			}
+			a.actionPerformed(null);
+		}
+	}
+
+	private boolean lockedByMe() {
+		// TODO
+		// return LockControl.getInstance().getSessionID() == myLocomotive
+		// .getLockedBySession();
+		return true;
+	}
 }

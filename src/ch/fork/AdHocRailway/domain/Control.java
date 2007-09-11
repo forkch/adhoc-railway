@@ -19,12 +19,13 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.domain;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import ch.fork.AdHocRailway.domain.exception.ControlException;
-import ch.fork.AdHocRailway.domain.exception.InvalidAddressException;
-import ch.fork.AdHocRailway.domain.exception.NoSessionException;
 import de.dermoba.srcp.client.SRCPSession;
 
 /**
@@ -36,46 +37,29 @@ import de.dermoba.srcp.client.SRCPSession;
  */
 public abstract class Control {
 
-    protected SRCPSession session = null;
+	protected SRCPSession session = null;
 
-    /** Checks the validity of the given ControlObject.
-     * 
-     * @param co The ControlObject to test
-     * @throws NoSessionException If the ControlObject has no valid SRCPSession
-     * @throws InvalidAddressException If the ControlObject has no valid Address
-     */
-    public void checkControlObject(ControlObject co) throws NoSessionException,
-        InvalidAddressException {
-        if (co.getSession() == null) {
-            throw new NoSessionException();
-        }
-        for (Address a : co.getAddresses()) {
-            if (a.getAddress() == 0) {
-                throw new InvalidAddressException();
-            }
-        }
-    }
+	protected EntityManager em;
 
-    /** Sets the active SRCPSession on the ControlObject.
-     * 
-     * @param co
-     */
-    public void setSessionOnControlObject(ControlObject co) {
-        co.setSession(session);
-    }
+	public Control() {
+		// Start EntityManagerFactory
+		EntityManagerFactory emf = Persistence
+				.createEntityManagerFactory("adhocrailway");
+		// First unit of work
+		this.em = emf.createEntityManager();
+	}
 
-    /** Initialises the ControlObject
-     * 
-     * @param object
-     * @throws ControlException If the initialization fails
-     */
-    protected void initControlObject(ControlObject object)
-        throws ControlException {
-        if (!object.isInitialized()) {
-            object.init();
-        }
-    }
-    
-    abstract public void undoLastChange() throws ControlException;
-    abstract public void previousDeviceToDefault() throws ControlException;
+	public EntityManager getEntityManager() {
+		return this.em;
+	}
+
+	abstract public void startTransaction();
+
+	abstract public void commitTransaction();
+
+	abstract public void rollbackTransaction();
+
+	abstract public void undoLastChange() throws ControlException;
+
+	abstract public void previousDeviceToDefault() throws ControlException;
 }
