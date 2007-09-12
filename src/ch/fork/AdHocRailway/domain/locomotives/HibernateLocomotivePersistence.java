@@ -9,34 +9,35 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-public class LocomotivePersistence {
-	private static LocomotivePersistence instance;
+public class HibernateLocomotivePersistence implements LocomotivePersistenceIface {
+	private static LocomotivePersistenceIface instance;
 
 	protected EntityManager em;
 
-	private LocomotivePersistence() {// Start EntityManagerFactory
+	private HibernateLocomotivePersistence() {// Start EntityManagerFactory
 		EntityManagerFactory emf = Persistence
 				.createEntityManagerFactory("adhocrailway");
 		// First unit of work
 		this.em = emf.createEntityManager();
 	}
 
-	public static LocomotivePersistence getInstance() {
+	public static LocomotivePersistenceIface getInstance() {
 		if (instance == null) {
-			instance = new LocomotivePersistence();
+			instance = new HibernateLocomotivePersistence();
 		}
 		return instance;
 	}
 	
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#preload()
+	 */
 	public void preload() {
 		getAllLocomotiveGroups();
 		getAllLocomotives();
 		getAllLocomotiveTypes();
 	}
-	/**
-	 * Get a SortedSet of Locomotives.
-	 * 
-	 * @return locomotives
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#getAllLocomotives()
 	 */
 	@SuppressWarnings("unchecked")
 	public SortedSet<Locomotive> getAllLocomotives() {
@@ -48,10 +49,8 @@ public class LocomotivePersistence {
 		return new TreeSet<Locomotive>(locs);
 	}
 
-	/**
-	 * Get a SortedSet of Locomotives.
-	 * 
-	 * @return locomotives
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#getLocomotiveByNumber(int)
 	 */
 	@SuppressWarnings("unchecked")
 	public Locomotive getLocomotiveByNumber(int number) {
@@ -64,10 +63,8 @@ public class LocomotivePersistence {
 		return loc;
 	}
 
-	/**
-	 * Get a SortedSet of Locomotives.
-	 * 
-	 * @return locomotives
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#getLocomotiveByAddress(int)
 	 */
 	@SuppressWarnings("unchecked")
 	public Locomotive getLocomotiveByAddress(int address) {
@@ -80,6 +77,9 @@ public class LocomotivePersistence {
 		return loc;
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#addLocomotive(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
+	 */
 	public void addLocomotive(Locomotive locomotive) {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
@@ -90,6 +90,9 @@ public class LocomotivePersistence {
 		t.commit();
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#deleteLocomotive(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
+	 */
 	public void deleteLocomotive(Locomotive locomotive) {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
@@ -101,6 +104,9 @@ public class LocomotivePersistence {
 		t.commit();
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#updateLocomotive(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
+	 */
 	public void updateLocomotive(Locomotive locomotive) {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
@@ -112,6 +118,9 @@ public class LocomotivePersistence {
 		t.commit();
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#refreshLocomotive(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
+	 */
 	public void refreshLocomotive(Locomotive locomotive) {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
@@ -123,6 +132,9 @@ public class LocomotivePersistence {
 		t.commit();
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#getAllLocomotiveGroups()
+	 */
 	@SuppressWarnings("unchecked")
 	public SortedSet<LocomotiveGroup> getAllLocomotiveGroups() {
 		EntityTransaction t = em.getTransaction();
@@ -133,6 +145,9 @@ public class LocomotivePersistence {
 		return new TreeSet<LocomotiveGroup>(groups);
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#addLocomotiveGroup(ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup)
+	 */
 	public void addLocomotiveGroup(LocomotiveGroup group) {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
@@ -140,6 +155,9 @@ public class LocomotivePersistence {
 		t.commit();
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#deleteLocomotiveGroup(ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup)
+	 */
 	public void deleteLocomotiveGroup(LocomotiveGroup group) {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
@@ -147,6 +165,9 @@ public class LocomotivePersistence {
 		t.commit();
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#updateLocomotiveGroup(ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup)
+	 */
 	public void updateLocomotiveGroup(LocomotiveGroup group) {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
@@ -154,6 +175,9 @@ public class LocomotivePersistence {
 		t.commit();
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#refreshLocomotiveGroup(ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup)
+	 */
 	public void refreshLocomotiveGroup(LocomotiveGroup group) {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
@@ -161,6 +185,9 @@ public class LocomotivePersistence {
 		t.commit();
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#getAllLocomotiveTypes()
+	 */
 	@SuppressWarnings("unchecked")
 	public SortedSet<LocomotiveType> getAllLocomotiveTypes() {
 		EntityTransaction t = em.getTransaction();
@@ -171,6 +198,9 @@ public class LocomotivePersistence {
 		return new TreeSet<LocomotiveType>(locomotiveTypes);
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#getLocomotiveTypeByName(java.lang.String)
+	 */
 	public LocomotiveType getLocomotiveTypeByName(String typeName) {
 		EntityTransaction t = em.getTransaction();
 		t.begin();

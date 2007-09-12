@@ -44,15 +44,15 @@ import de.dermoba.srcp.devices.GLInfoListener;
  * @author fork
  * 
  */
-public class LocomotiveControl extends Control implements GLInfoListener,
-		Constants {
+public class SRCPLocomotiveControl extends Control implements GLInfoListener,
+		Constants, LocomotiveControlface {
 
-	private static LocomotiveControl instance;
-	private LocomotivePersistence persistence = LocomotivePersistence.getInstance();
+	private static LocomotiveControlface instance;
+	private LocomotivePersistenceIface persistence = HibernateLocomotivePersistence.getInstance();
 	
 	private List<LocomotiveChangeListener> listeners;
 
-	private LocomotiveControl() {
+	private SRCPLocomotiveControl() {
 		listeners = new ArrayList<LocomotiveChangeListener>();
 	}
 
@@ -61,17 +61,15 @@ public class LocomotiveControl extends Control implements GLInfoListener,
 	 * 
 	 * @return an instance of LocomotiveControl
 	 */
-	public static LocomotiveControl getInstance() {
+	public static LocomotiveControlface getInstance() {
 		if (instance == null) {
-			instance = new LocomotiveControl();
+			instance = new SRCPLocomotiveControl();
 		}
 		return instance;
 	}
 
-	/**
-	 * Sets the SRCPSession on this Control.
-	 * 
-	 * @param session
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#setSession(de.dermoba.srcp.client.SRCPSession)
 	 */
 	public void setSession(SRCPSession session) {
 		this.session = session;
@@ -81,11 +79,8 @@ public class LocomotiveControl extends Control implements GLInfoListener,
 		session.getInfoChannel().addGLInfoListener(this);
 	}
 
-	/**
-	 * Toggles the direction of the Locomotive
-	 * 
-	 * @param locomotive
-	 * @throws LocomotiveException
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#toggleDirection(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
 	public void toggleDirection(Locomotive locomotive)
 			throws LocomotiveException {
@@ -101,16 +96,15 @@ public class LocomotiveControl extends Control implements GLInfoListener,
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#getCurrentSpeed(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
+	 */
 	public int getCurrentSpeed(Locomotive locomotive) {
 		return locomotive.getCurrentSpeed();
 	}
 
-	/**
-	 * Sets the speed of the Locomotive
-	 * 
-	 * @param locomotive
-	 * @param speed
-	 * @throws LocomotiveException
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#setSpeed(ch.fork.AdHocRailway.domain.locomotives.Locomotive, int, boolean[])
 	 */
 	public void setSpeed(Locomotive locomotive, int speed, boolean[] functions)
 			throws LocomotiveException {
@@ -152,11 +146,8 @@ public class LocomotiveControl extends Control implements GLInfoListener,
 		}
 	}
 
-	/**
-	 * Increases the speed of the Locomotive.
-	 * 
-	 * @param locomotive
-	 * @throws LocomotiveException
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#increaseSpeed(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
 	public void increaseSpeed(Locomotive locomotive) throws LocomotiveException {
 		checkLocomotive(locomotive);
@@ -167,11 +158,8 @@ public class LocomotiveControl extends Control implements GLInfoListener,
 		}
 	}
 
-	/**
-	 * Decreases the speed of the Locomotive.
-	 * 
-	 * @param locomotive
-	 * @throws LocomotiveException
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#decreaseSpeed(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
 	public void decreaseSpeed(Locomotive locomotive) throws LocomotiveException {
 		checkLocomotive(locomotive);
@@ -182,11 +170,8 @@ public class LocomotiveControl extends Control implements GLInfoListener,
 		}
 	}
 
-	/**
-	 * Increases the speed of the Locomotive by a step.
-	 * 
-	 * @param locomotive
-	 * @throws LocomotiveException
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#increaseSpeedStep(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
 	public void increaseSpeedStep(Locomotive locomotive)
 			throws LocomotiveException {
@@ -199,11 +184,8 @@ public class LocomotiveControl extends Control implements GLInfoListener,
 		}
 	}
 
-	/**
-	 * Decreases the speed of the Locomotive by a step.
-	 * 
-	 * @param locomotive
-	 * @throws LocomotiveException
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#decreaseSpeedStep(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
 	public void decreaseSpeedStep(Locomotive locomotive)
 			throws LocomotiveException {
@@ -216,12 +198,8 @@ public class LocomotiveControl extends Control implements GLInfoListener,
 		}
 	}
 
-	/**
-	 * Sets the functions of the Locomotive on or off.
-	 * 
-	 * @param locomotive
-	 * @param functions
-	 * @throws LocomotiveException
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#setFunctions(ch.fork.AdHocRailway.domain.locomotives.Locomotive, boolean[])
 	 */
 	public void setFunctions(Locomotive locomotive, boolean[] functions)
 			throws LocomotiveException {
@@ -265,11 +243,17 @@ public class LocomotiveControl extends Control implements GLInfoListener,
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#addLocomotiveChangeListener(ch.fork.AdHocRailway.domain.locomotives.Locomotive, ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener)
+	 */
 	public void addLocomotiveChangeListener(Locomotive loco,
 			LocomotiveChangeListener l) {
 		listeners.add(l);
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#removeAllLocomotiveChangeListener()
+	 */
 	public void removeAllLocomotiveChangeListener() {
 		listeners.clear();
 	}
@@ -320,12 +304,18 @@ public class LocomotiveControl extends Control implements GLInfoListener,
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#undoLastChange()
+	 */
 	@Override
 	public void undoLastChange() throws ControlException {
 		// TODO Auto-generated method stub
 
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#previousDeviceToDefault()
+	 */
 	@Override
 	public void previousDeviceToDefault() throws ControlException {
 		// TODO Auto-generated method stub
