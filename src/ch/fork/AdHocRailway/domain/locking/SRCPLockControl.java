@@ -41,22 +41,22 @@ import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.LOCK;
 import de.dermoba.srcp.devices.LOCKInfoListener;
 
-public class LockControl extends Control implements LOCKInfoListener, Constants {
+public class SRCPLockControl extends Control implements LOCKInfoListener, Constants, LockControlIface {
 
-	private static LockControl instance = null;
+	private static SRCPLockControl instance = null;
 
 	private Map<Integer, ControlObject> addressToControlObject;
 
 	private List<LockChangeListener> listeners;
 
-	private LockControl() {
+	private SRCPLockControl() {
 		addressToControlObject = new HashMap<Integer, ControlObject>();
 		listeners = new ArrayList<LockChangeListener>();
 	}
 
-	public static LockControl getInstance() {
+	public static SRCPLockControl getInstance() {
 		if (instance == null) {
-			instance = new LockControl();
+			instance = new SRCPLockControl();
 		}
 		return instance;
 	}

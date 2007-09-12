@@ -41,7 +41,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.switches.canvas.DefaultTurnoutCanvas;
@@ -138,9 +138,9 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 		private void displaySwitchConfig() {
 			TurnoutConfig switchConf = new TurnoutConfig(frame, myTurnout);
 			if (switchConf.isOkPressed()) {
-				TurnoutPersistence.getInstance().updateTurnout(myTurnout);
+				HibernateTurnoutPersistence.getInstance().updateTurnout(myTurnout);
 			} else {
-				TurnoutPersistence.getInstance().refreshTurnout(myTurnout);
+				HibernateTurnoutPersistence.getInstance().refreshTurnout(myTurnout);
 			}
 			turnoutChanged(myTurnout);
 		}

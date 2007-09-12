@@ -51,7 +51,8 @@ import javax.swing.border.EtchedBorder;
 
 import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
-import ch.fork.AdHocRailway.domain.locking.LockControl;
+import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
+import ch.fork.AdHocRailway.domain.locking.LockControlIface;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
@@ -506,7 +507,7 @@ public class LocomotiveWidget extends JPanel implements
 		public void actionPerformed(ActionEvent e) {
 			if (myLocomotive == null)
 				return;
-			LockControl lc = LockControl.getInstance();
+			LockControlIface lc = SRCPLockControl.getInstance();
 			// TODO
 			if (lockButton.isSelected()) {
 				// boolean succeeded = lc.acquireLock(myLocomotive);

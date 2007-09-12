@@ -40,7 +40,8 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutState;
 import ch.fork.AdHocRailway.ui.SpringUtilities;
@@ -59,7 +60,7 @@ public class TurnoutConfig extends JDialog {
     private JComboBox  switchDefaultStateComboBox;
     private JComboBox  switchOrientationComboBox;
     
-    private TurnoutPersistence turnoutPersitence = TurnoutPersistence.getInstance();
+    private TurnoutPersistenceIface turnoutPersitence = HibernateTurnoutPersistence.getInstance();
 
     public TurnoutConfig(Turnout myTurnout) {
         super(new JFrame(), "Turntou Config", true);

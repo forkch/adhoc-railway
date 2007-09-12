@@ -20,7 +20,8 @@ import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
@@ -40,7 +41,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private TurnoutControl turnoutControl = TurnoutControl.getInstance();
 
-	private TurnoutPersistence turnoutPersistence = TurnoutPersistence
+	private TurnoutPersistenceIface turnoutPersistence = HibernateTurnoutPersistence
 			.getInstance();
 
 	private RouteControl routeControl = RouteControl.getInstance();

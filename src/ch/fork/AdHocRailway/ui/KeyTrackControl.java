@@ -17,7 +17,8 @@ import ch.fork.AdHocRailway.domain.routes.RouteControl;
 import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
 public class KeyTrackControl extends JPanel {
@@ -34,7 +35,7 @@ public class KeyTrackControl extends JPanel {
 
 	private TurnoutControl turnoutControl = TurnoutControl.getInstance();
 
-	private TurnoutPersistence turnoutPersistence = TurnoutPersistence
+	private TurnoutPersistenceIface turnoutPersistence = HibernateTurnoutPersistence
 			.getInstance();
 
 	private RouteControl routeControl = RouteControl.getInstance();

@@ -40,13 +40,11 @@ import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GA;
-import de.dermoba.srcp.devices.GAInfoListener;
 
-public class TurnoutControl extends Control implements GAInfoListener,
-		Constants {
+public class TurnoutControl extends Control {
 	private static TurnoutControl instance;
 
-	private TurnoutPersistence persistence = TurnoutPersistence.getInstance();;
+	private TurnoutPersistenceIface persistence = HibernateTurnoutPersistence.getInstance();
 
 	private Map<Turnout, List<TurnoutChangeListener>> listeners;
 
@@ -71,11 +69,7 @@ public class TurnoutControl extends Control implements GAInfoListener,
 		for (Turnout t : persistence.getAllTurnouts()) {
 			t.setSession(session);
 		}
-		session.getInfoChannel().addGAInfoListener(this);
-	}
-
-	private boolean isThreeWay(Turnout turnout) {
-		return turnout.getTurnoutType().getTypeName().equals("ThreeWay");
+		//session.getInfoChannel().addGAInfoListener(this);
 	}
 
 	/**
@@ -89,10 +83,10 @@ public class TurnoutControl extends Control implements GAInfoListener,
 		if (!address.isSwitched()) {
 			return wantedPort;
 		} else {
-			if (wantedPort == TURNOUT_STRAIGHT_PORT) {
-				return TURNOUT_CURVED_PORT;
+			if (wantedPort == Constants.TURNOUT_STRAIGHT_PORT) {
+				return Constants.TURNOUT_CURVED_PORT;
 			} else {
-				return TURNOUT_STRAIGHT_PORT;
+				return Constants.TURNOUT_STRAIGHT_PORT;
 			}
 		}
 	}
@@ -100,7 +94,7 @@ public class TurnoutControl extends Control implements GAInfoListener,
 	public void toggle(Turnout turnout) throws TurnoutException {
 		checkSwitch(turnout);
 		initSwitch(turnout);
-		if (isThreeWay(turnout)) {
+		if (turnout.isThreeWay()) {
 			toggleThreeWay(turnout);
 		}
 		previousState = turnout.getTurnoutState();
@@ -128,7 +122,7 @@ public class TurnoutControl extends Control implements GAInfoListener,
 		checkSwitch(turnout);
 		initSwitch(turnout);
 		previousState = turnout.getTurnoutState();
-		if (isThreeWay(turnout)) {
+		if (turnout.isThreeWay()) {
 			setDefaultStateTheeWay(turnout);
 		}
 		switch (turnout.getDefaultStateEnum()) {
@@ -153,7 +147,7 @@ public class TurnoutControl extends Control implements GAInfoListener,
 		checkSwitch(turnout);
 		initSwitch(turnout);
 		previousState = turnout.getTurnoutState();
-		if (isThreeWay(turnout)) {
+		if (turnout.isThreeWay()) {
 			setNonDefaultStateTheeWay(turnout);
 		}
 		switch (turnout.getDefaultStateEnum()) {
@@ -177,7 +171,7 @@ public class TurnoutControl extends Control implements GAInfoListener,
 		checkSwitch(turnout);
 		initSwitch(turnout);
 		previousState = turnout.getTurnoutState();
-		if (isThreeWay(turnout)) {
+		if (turnout.isThreeWay()) {
 			setStraightThreeWay(turnout);
 		}
 		GA ga = turnout.getGA()[0];
@@ -186,17 +180,17 @@ public class TurnoutControl extends Control implements GAInfoListener,
 			int defaultActivationTime = Preferences.getInstance().getIntValue(
 					PreferencesKeys.ACTIVATION_TIME);
 
-			ga.set(getPort(address, TURNOUT_STRAIGHT_PORT),
-					TURNOUT_PORT_ACTIVATE, defaultActivationTime);
-			ga.set(getPort(address, TURNOUT_CURVED_PORT),
-					TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
+			ga.set(getPort(address, Constants.TURNOUT_STRAIGHT_PORT),
+					Constants.TURNOUT_PORT_ACTIVATE, defaultActivationTime);
+			ga.set(getPort(address, Constants.TURNOUT_CURVED_PORT),
+					Constants.TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
 
 			informListeners(turnout);
 			lastChangedTurnout = turnout;
 		} catch (SRCPDeviceLockedException x1) {
-			throw new SwitchLockedException(ERR_LOCKED, x1);
+			throw new SwitchLockedException(Constants.ERR_LOCKED, x1);
 		} catch (SRCPException e) {
-			throw new TurnoutException(ERR_TOGGLE_FAILED, e);
+			throw new TurnoutException(Constants.ERR_TOGGLE_FAILED, e);
 		}
 	}
 
@@ -209,7 +203,7 @@ public class TurnoutControl extends Control implements GAInfoListener,
 		checkSwitch(turnout);
 		initSwitch(turnout);
 		previousState = turnout.getTurnoutState();
-		if (isThreeWay(turnout)) {
+		if (turnout.isThreeWay()) {
 			setCurvedLeftThreeWay(turnout);
 		}
 		GA ga = turnout.getGA()[0];
@@ -217,14 +211,14 @@ public class TurnoutControl extends Control implements GAInfoListener,
 		try {
 			int defaultActivationTime = Preferences.getInstance().getIntValue(
 					PreferencesKeys.ACTIVATION_TIME);
-			ga.set(getPort(address, TURNOUT_CURVED_PORT),
-					TURNOUT_PORT_ACTIVATE, defaultActivationTime);
-			ga.set(getPort(address, TURNOUT_STRAIGHT_PORT),
-					TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
+			ga.set(getPort(address, Constants.TURNOUT_CURVED_PORT),
+					Constants.TURNOUT_PORT_ACTIVATE, defaultActivationTime);
+			ga.set(getPort(address, Constants.TURNOUT_STRAIGHT_PORT),
+					Constants.TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
 		} catch (SRCPDeviceLockedException x1) {
-			throw new SwitchLockedException(ERR_LOCKED, x1);
+			throw new SwitchLockedException(Constants.ERR_LOCKED, x1);
 		} catch (SRCPException e) {
-			throw new TurnoutException(ERR_TOGGLE_FAILED, e);
+			throw new TurnoutException(Constants.ERR_TOGGLE_FAILED, e);
 		}
 		informListeners(turnout);
 		lastChangedTurnout = turnout;
@@ -239,7 +233,7 @@ public class TurnoutControl extends Control implements GAInfoListener,
 		checkSwitch(turnout);
 		initSwitch(turnout);
 		previousState = turnout.getTurnoutState();
-		if (isThreeWay(turnout)) {
+		if (turnout.isThreeWay()) {
 			setCurvedRightThreeWay(turnout);
 		}
 		setCurvedLeft(turnout);
@@ -367,7 +361,7 @@ public class TurnoutControl extends Control implements GAInfoListener,
 				turnout.setGA(gas);
 				turnout.setInitialized(true);
 			} catch (SRCPException e) {
-				throw new TurnoutException(ERR_INIT_FAILED, e);
+				throw new TurnoutException(Constants.ERR_INIT_FAILED, e);
 			}
 		}
 	}
@@ -404,12 +398,5 @@ public class TurnoutControl extends Control implements GAInfoListener,
 			return;
 		}
 		setDefaultState(lastChangedTurnout);
-		/*
-		 * switch (lastChangedSwitch.getDefaultState()) { case STRAIGHT:
-		 * setStraight(lastChangedSwitch); break; case LEFT:
-		 * setCurvedLeft(lastChangedSwitch); break; case RIGHT:
-		 * setCurvedRight(lastChangedSwitch); break; case UNDEF:
-		 * setStraight(lastChangedSwitch); break; }
-		 */
 	}
 }

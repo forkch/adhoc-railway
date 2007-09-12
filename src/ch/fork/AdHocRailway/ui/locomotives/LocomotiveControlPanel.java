@@ -36,7 +36,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
-import ch.fork.AdHocRailway.domain.locking.LockControl;
+import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
@@ -96,7 +96,7 @@ public class LocomotiveControlPanel extends JPanel {
     }
 
     public void update() {
-        LockControl lockc = LockControl.getInstance();
+        SRCPLockControl lockc = SRCPLockControl.getInstance();
         locomotiveControl.removeAllLocomotiveChangeListener();
         lockc.removeAllLockChangeListener();
 
@@ -112,7 +112,7 @@ public class LocomotiveControlPanel extends JPanel {
             PreferencesKeys.LOCOMOTIVE_CONTROLES); i++) {
             LocomotiveWidget w = new LocomotiveWidget(keyBindings[i][0],
                 keyBindings[i][1], keyBindings[i][2], frame);
-            LockControl.getInstance().addLockChangeListener(w);
+            SRCPLockControl.getInstance().addLockChangeListener(w);
             w.updateLocomotiveGroups();
             controlPanel.add(w);
             locomotiveWidgets.add(w);

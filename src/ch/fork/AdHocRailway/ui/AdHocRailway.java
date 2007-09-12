@@ -57,7 +57,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
-import ch.fork.AdHocRailway.domain.locking.LockControl;
+import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
 import ch.fork.AdHocRailway.domain.locking.exception.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
@@ -66,7 +66,8 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
@@ -91,13 +92,13 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private TurnoutControl turnoutControl;
 
-	private TurnoutPersistence turnoutPersistence;
+	private TurnoutPersistenceIface turnoutPersistence;
 
 	private LocomotiveControlface locomotiveControl;
 
 	private LocomotivePersistenceIface locomotivePersistence;
 
-	private LockControl lockControl;
+	private SRCPLockControl lockControl;
 	
 	private RouteControl routeControl;
 
@@ -159,7 +160,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		locomotivePersistence = HibernateLocomotivePersistence.getInstance();
 		//locomotivePersistence.preload();
 		splash.nextStep("Loading Persistence Layer (Turnouts)");
-		turnoutPersistence = TurnoutPersistence.getInstance();
+		turnoutPersistence = HibernateTurnoutPersistence.getInstance();
 		//turnoutPersistence.preload();
 		splash.nextStep("Loading Persistence Layer (Routes)");
 		
@@ -170,7 +171,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		splash.nextStep("Loading Control Layer (Routes)");
 		routeControl = RouteControl.getInstance();
 		splash.nextStep("Loading Control Layer (Locks)");
-		lockControl = LockControl.getInstance();
+		lockControl = SRCPLockControl.getInstance();
 		
 		splash.nextStep("Creating GUI ...");
 		initGUI();
@@ -359,7 +360,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			if (result == JOptionPane.YES_OPTION) {
 
 				try {
-					LockControl.getInstance().releaseAllLocks();
+					SRCPLockControl.getInstance().releaseAllLocks();
 				} catch (LockingException e1) {
 					e1.printStackTrace();
 				}
