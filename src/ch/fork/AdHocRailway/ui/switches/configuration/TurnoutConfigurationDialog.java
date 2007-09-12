@@ -64,18 +64,15 @@ import javax.swing.table.TableModel;
 
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.turnouts.DefaultSwitch;
-import ch.fork.AdHocRailway.domain.turnouts.Switch;
-import ch.fork.AdHocRailway.domain.turnouts.SwitchGroup;
-import ch.fork.AdHocRailway.domain.turnouts.SwitchState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
-import ch.fork.AdHocRailway.domain.turnouts.Switch.SwitchOrientation;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.TableResizer;
 
-public class SwitchConfigurationDialog<E> extends
-		ConfigurationDialog<SwitchConfiguration> {
+import com.sun.java.util.jar.pack.Instruction.Switch;
+
+public class TurnoutConfigurationDialog<E> extends
+		ConfigurationDialog<TurnoutConfiguration> {
 	private List<SwitchGroup> switchGroupsWorkCopy;
 
 	private Map<Integer, Switch> switchNumberToSwitchWorkCopy;
@@ -106,7 +103,7 @@ public class SwitchConfigurationDialog<E> extends
 
 	private JButton removeSwitchButton;
 
-	public SwitchConfigurationDialog(JFrame owner) {
+	public TurnoutConfigurationDialog(JFrame owner) {
 		super(owner, "Switch Configuration");
 
 		initGUI();
@@ -148,8 +145,8 @@ public class SwitchConfigurationDialog<E> extends
 	}
 
 	@Override
-	public SwitchConfiguration getTempConfiguration() {
-		return new SwitchConfiguration(this.switchGroupsWorkCopy,
+	public TurnoutConfiguration getTempConfiguration() {
+		return new TurnoutConfiguration(this.switchGroupsWorkCopy,
 				this.switchNumberToSwitchWorkCopy);
 	}
 
@@ -223,13 +220,13 @@ public class SwitchConfigurationDialog<E> extends
 		switchesPanel.getActionMap().put("escapeAction", new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				cancelPressed = true;
-				SwitchConfigurationDialog.this.setVisible(false);
+				TurnoutConfigurationDialog.this.setVisible(false);
 			}
 		});
 		switchesPanel.getInsets(new Insets(5, 5, 5, 5));
 		TitledBorder title = BorderFactory.createTitledBorder("Switch-Group");
 		switchesPanel.setBorder(title);
-		switchesTableModel = new SwitchesTableModel(
+		switchesTableModel = new TurnoutTableModel(
 				switchNumberToSwitchWorkCopy);
 		switchesTable = new JTable(switchesTableModel);
 		switchesTable.setRowHeight(24);
@@ -239,23 +236,23 @@ public class SwitchConfigurationDialog<E> extends
 		switchTypeComboBox.addItem("DefaultSwitch");
 		switchTypeComboBox.addItem("DoubleCrossSwitch");
 		switchTypeComboBox.addItem("ThreeWaySwitch");
-		switchTypeComboBox.setRenderer(new SwitchTypeComboBoxCellRenderer());
+		switchTypeComboBox.setRenderer(new TurnoutTypeComboBoxCellRenderer());
 		TableColumn typeColumn = switchesTable.getColumnModel().getColumn(1);
 		typeColumn.setCellEditor(new DefaultCellEditor(switchTypeComboBox));
-		typeColumn.setCellRenderer(new SwitchTypeCellRenderer());
+		typeColumn.setCellRenderer(new TurnoutTypeCellRenderer());
 
 		// DefaultState
 		JComboBox switchDefaultStateComboBox = new JComboBox();
 		switchDefaultStateComboBox.addItem(SwitchState.STRAIGHT);
 		switchDefaultStateComboBox.addItem(SwitchState.LEFT);
 		switchDefaultStateComboBox
-				.setRenderer(new SwitchDefaultStateComboBoxCellRenderer());
+				.setRenderer(new TurnoutDefaultStateComboBoxCellRenderer());
 		TableColumn defaultStateColumn = switchesTable.getColumnModel()
 				.getColumn(7);
 		defaultStateColumn.setCellEditor(new DefaultCellEditor(
 				switchDefaultStateComboBox));
 		defaultStateColumn
-				.setCellRenderer(new SwitchDefaultStateCellRenderer());
+				.setCellRenderer(new TurnoutDefaultStateCellRenderer());
 
 		// SwitchOrientation
 		JComboBox switchOrientationComboBox = new JComboBox();
@@ -303,7 +300,7 @@ public class SwitchConfigurationDialog<E> extends
 					.createTitledBorder("Switch-Group '"
 							+ selectedSwitchGroup.getName() + "'"));
 		}
-		((SwitchesTableModel) switchesTableModel)
+		((TurnoutTableModel) switchesTableModel)
 				.setSwitchGroup(selectedSwitchGroup);
 		TableResizer.adjustColumnWidths(switchesTable, 30);
 		if (switchesTable.getRowCount() > 0) {
@@ -315,7 +312,7 @@ public class SwitchConfigurationDialog<E> extends
 	private class AddSwitchGroupAction extends AbstractAction {
 		public void actionPerformed(ActionEvent arg0) {
 			String newGroupName = JOptionPane.showInputDialog(
-					SwitchConfigurationDialog.this,
+					TurnoutConfigurationDialog.this,
 					"Enter the name of the new Switch-Group",
 					"Add Switch-Group", JOptionPane.QUESTION_MESSAGE);
 			SwitchGroup newSwitchGroup = new SwitchGroup(newGroupName);
@@ -330,13 +327,13 @@ public class SwitchConfigurationDialog<E> extends
 			SwitchGroup groupToDelete = (SwitchGroup) (switchGroupList
 					.getSelectedValue());
 			if (groupToDelete == null) {
-				JOptionPane.showMessageDialog(SwitchConfigurationDialog.this,
+				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
 						"Please select a switch group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			int response = JOptionPane.showConfirmDialog(
-					SwitchConfigurationDialog.this,
+					TurnoutConfigurationDialog.this,
 					"Really remove Switch-Group '" + groupToDelete.getName()
 							+ "' ?", "Remove Switch-Group",
 					JOptionPane.YES_NO_OPTION);
@@ -353,13 +350,13 @@ public class SwitchConfigurationDialog<E> extends
 			SwitchGroup groupToRename = (SwitchGroup) (switchGroupList
 					.getSelectedValue());
 			if (groupToRename == null) {
-				JOptionPane.showMessageDialog(SwitchConfigurationDialog.this,
+				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
 						"Please select a switch group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			String newSectionName = JOptionPane.showInputDialog(
-					SwitchConfigurationDialog.this, "Enter new name",
+					TurnoutConfigurationDialog.this, "Enter new name",
 					"Rename Switch-Group", JOptionPane.QUESTION_MESSAGE);
 			if (!newSectionName.equals("")) {
 				groupToRename.setName(newSectionName);
@@ -379,7 +376,7 @@ public class SwitchConfigurationDialog<E> extends
 			SwitchGroup groupToMove = (SwitchGroup) (switchGroupList
 					.getSelectedValue());
 			if (groupToMove == null) {
-				JOptionPane.showMessageDialog(SwitchConfigurationDialog.this,
+				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
 						"Please select a switch group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
@@ -412,7 +409,7 @@ public class SwitchConfigurationDialog<E> extends
 			SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
 					.getSelectedValue());
 			if (selectedSwitchGroup == null) {
-				JOptionPane.showMessageDialog(SwitchConfigurationDialog.this,
+				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
 						"Please select a switch group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
@@ -426,8 +423,8 @@ public class SwitchConfigurationDialog<E> extends
 				nextNumber = usedNumbers.last().intValue() + 1;
 			}
 			Switch newSwitch = new DefaultSwitch(nextNumber, "");
-			SwitchConfig switchConfig = new SwitchConfig(
-					SwitchConfigurationDialog.this, newSwitch);
+			TurnoutConfig switchConfig = new TurnoutConfig(
+					TurnoutConfigurationDialog.this, newSwitch);
 			if (switchConfig.isOkPressed()) {
 				switchNumberToSwitchWorkCopy.put(switchConfig.getSwitch()
 						.getNumber(), switchConfig.getSwitch());
@@ -443,7 +440,7 @@ public class SwitchConfigurationDialog<E> extends
 			SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
 					.getSelectedValue());
 			if (selectedSwitchGroup == null) {
-				JOptionPane.showMessageDialog(SwitchConfigurationDialog.this,
+				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
 						"Please select a switch group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
@@ -478,7 +475,7 @@ public class SwitchConfigurationDialog<E> extends
 			SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
 					.getSelectedValue());
 			if (selectedSwitchGroup == null) {
-				JOptionPane.showMessageDialog(SwitchConfigurationDialog.this,
+				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
 						"Please select a switch group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;

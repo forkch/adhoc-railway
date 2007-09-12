@@ -17,11 +17,11 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.domain.routes.RouteOld.RouteState;
-import ch.fork.AdHocRailway.domain.turnouts.exception.SwitchException;
+import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
@@ -107,7 +107,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
                     && e.getButton() == MouseEvent.BUTTON3) {
                     displayRouteConfig();
                 }
-            } catch (SwitchException e1) {
+            } catch (TurnoutException e1) {
                 ExceptionProcessor.getInstance().processException(e1);
             }
         }

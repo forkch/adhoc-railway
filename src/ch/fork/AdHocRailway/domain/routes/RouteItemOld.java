@@ -1,8 +1,8 @@
 package ch.fork.AdHocRailway.domain.routes;
 
-import ch.fork.AdHocRailway.domain.turnouts.Switch;
-import ch.fork.AdHocRailway.domain.turnouts.SwitchState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
+
+import com.sun.java.util.jar.pack.Instruction.Switch;
 
 public class RouteItemOld implements Comparable {
 

@@ -32,7 +32,7 @@ import javax.swing.SwingConstants;
 
 import ch.fork.AdHocRailway.ui.ImageTools;
 
-public class SwitchTypeComboBoxCellRenderer implements ListCellRenderer {
+public class TurnoutTypeComboBoxCellRenderer implements ListCellRenderer {
     public Component getListCellRendererComponent(JList list, Object value,
         int index, boolean isSelected, boolean cellHasFocus) {
         JLabel iconLabel = new JLabel();

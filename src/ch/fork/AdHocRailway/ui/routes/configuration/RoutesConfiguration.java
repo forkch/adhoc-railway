@@ -3,8 +3,8 @@ package ch.fork.AdHocRailway.ui.routes.configuration;
 import java.util.List;
 import java.util.Map;
 
-import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.domain.routes.RouteGroupOld;
+import ch.fork.AdHocRailway.domain.routes.RouteOld;
 
 public class RoutesConfiguration {
 

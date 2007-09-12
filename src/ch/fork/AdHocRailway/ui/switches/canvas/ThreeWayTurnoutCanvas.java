@@ -28,11 +28,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import ch.fork.AdHocRailway.domain.turnouts.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 
-public class ThreeWaySwitchCanvas extends SwitchCanvas {
-    public ThreeWaySwitchCanvas(Switch mySwitch) {
-        super(mySwitch);
+public class ThreeWayTurnoutCanvas extends TurnoutCanvas {
+    public ThreeWayTurnoutCanvas(Turnout myTurnout) {
+        super(myTurnout);
     }
 
     public void paint(Graphics g) {
@@ -42,7 +42,7 @@ public class ThreeWaySwitchCanvas extends SwitchCanvas {
         Graphics2D g3 = img.createGraphics();
         g3.drawImage(createImageIcon("switches/canvas/three_way_switch.png")
             .getImage(), 0, 0, this);
-        switch (mySwitch.getSwitchState()) {
+        switch (myTurnout.getTurnoutState()){
         case LEFT:
             g3.drawImage(createImageIcon("switches/canvas/LED_up_yellow.png")
                 .getImage(), 28, 0, this);

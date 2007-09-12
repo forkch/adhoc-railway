@@ -30,19 +30,19 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import ch.fork.AdHocRailway.domain.turnouts.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 
-public class SwitchCanvas extends JPanel {
-    protected Switch mySwitch;
+public class TurnoutCanvas extends JPanel {
+    protected Turnout myTurnout;
 
-    public SwitchCanvas(Switch mySwitch) {
-        this.mySwitch = mySwitch;
+    public TurnoutCanvas(Turnout mySwitch) {
+        this.myTurnout = mySwitch;
     }
 
     protected void rotate(Graphics g, BufferedImage img) {
         Graphics2D g2 = (Graphics2D) g;
         AffineTransform at = null;
-        switch (mySwitch.getSwitchOrientation()) {
+        switch (myTurnout.getOrientationEnum()) {
         case NORTH:
             at = AffineTransform.getRotateInstance(Math.PI / 2 * 3,
                 (56 + 1) / 2, (56 + 1) / 2);

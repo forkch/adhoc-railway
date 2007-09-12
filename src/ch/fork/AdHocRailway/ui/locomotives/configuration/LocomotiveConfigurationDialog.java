@@ -33,8 +33,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -52,19 +50,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-import com.sun.corba.se.impl.ior.iiop.JavaSerializationComponent;
-
-import ch.fork.AdHocRailway.domain.locomotives.ControledLocomotive;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistence;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.TableResizer;
@@ -72,9 +66,7 @@ import ch.fork.AdHocRailway.ui.TableResizer;
 public class LocomotiveConfigurationDialog<E> extends
 		ConfigurationDialog<LocomotiveConfiguration> {
 
-	private boolean cancelPressed = false;
-
-	private LocomotiveControl locomotiveControl;
+	private LocomotivePersistence locomotivePersistence;
 
 	private TableModel locomotivesTableModel;
 
@@ -87,11 +79,6 @@ public class LocomotiveConfigurationDialog<E> extends
 	private JPanel locomotivesPanel;
 
 	private ListListModel locomotiveGroupListModel;
-
-	private SortedSet<ControledLocomotive> locomotivesWorkCopy;
-
-	private List<LocomotiveGroup> locomotiveGroupsWorkCopy;
-
 	private JButton addLocomotiveGroupButton;
 
 	private JButton removeLocomotiveGroupButton;
@@ -104,7 +91,7 @@ public class LocomotiveConfigurationDialog<E> extends
 
 	public LocomotiveConfigurationDialog(JFrame owner) {
 		super(owner, "Locomotive Configuration");
-		locomotiveControl = LocomotiveControl.getInstance();
+		locomotivePersistence = LocomotivePersistence.getInstance();
 		initGUI();
 	}
 
@@ -157,8 +144,8 @@ public class LocomotiveConfigurationDialog<E> extends
 		locomotiveGroupPanel.setBorder(title);
 		locomotiveGroupPanel.getInsets(new Insets(5, 5, 5, 5));
 		locomotiveGroupListModel = new ListListModel<LocomotiveGroup>(
-				new ArrayList<LocomotiveGroup>(locomotiveControl
-						.getLocomotiveGroups()));
+				new ArrayList<LocomotiveGroup>(locomotivePersistence
+						.getAllLocomotiveGroups()));
 
 		locomotiveGroupList = new JList(locomotiveGroupListModel);
 		locomotiveGroupList
@@ -299,10 +286,10 @@ public class LocomotiveConfigurationDialog<E> extends
 					"Add Locomotive-Group", JOptionPane.QUESTION_MESSAGE);
 			// TODO
 			LocomotiveGroup newSection = new LocomotiveGroup(0, newGroupName);
-			locomotiveControl.addLocomotiveGroup(newSection);
+			locomotivePersistence.addLocomotiveGroup(newSection);
 			locomotiveGroupListModel = new ListListModel<LocomotiveGroup>(
-					new ArrayList<LocomotiveGroup>(locomotiveControl
-							.getLocomotiveGroups()));
+					new ArrayList<LocomotiveGroup>(locomotivePersistence
+							.getAllLocomotiveGroups()));
 
 			locomotiveGroupList.setModel(locomotiveGroupListModel);
 			locomotiveGroupList.setSelectedValue(newSection, true);
@@ -319,10 +306,10 @@ public class LocomotiveConfigurationDialog<E> extends
 							+ groupToDelete.getName() + "' ?",
 					"Remove Locomotive-Group", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
-				locomotiveControl.deleteLocomotiveGroup(groupToDelete);
+				locomotivePersistence.deleteLocomotiveGroup(groupToDelete);
 				locomotiveGroupListModel = new ListListModel<LocomotiveGroup>(
-						new ArrayList<LocomotiveGroup>(locomotiveControl
-								.getLocomotiveGroups()));
+						new ArrayList<LocomotiveGroup>(locomotivePersistence
+								.getAllLocomotiveGroups()));
 
 				locomotiveGroupList.setModel(locomotiveGroupListModel);
 			}
@@ -338,10 +325,10 @@ public class LocomotiveConfigurationDialog<E> extends
 					"Rename Locomotive-Group", JOptionPane.QUESTION_MESSAGE);
 			if (!newSectionName.equals("")) {
 				groupToRename.setName(newSectionName);
-				locomotiveControl.updateLocomotiveGroup(groupToRename);
+				locomotivePersistence.updateLocomotiveGroup(groupToRename);
 				locomotiveGroupListModel = new ListListModel<LocomotiveGroup>(
-						new ArrayList<LocomotiveGroup>(locomotiveControl
-								.getLocomotiveGroups()));
+						new ArrayList<LocomotiveGroup>(locomotivePersistence
+								.getAllLocomotiveGroups()));
 
 				locomotiveGroupList.setModel(locomotiveGroupListModel);
 			}
@@ -358,7 +345,7 @@ public class LocomotiveConfigurationDialog<E> extends
 					LocomotiveConfigurationDialog.this, newLocomotive);
 			if (locomotiveConfig.isOkPressed()) {
 
-				locomotiveControl.addLocomotive(locomotiveConfig
+				locomotivePersistence.addLocomotive(locomotiveConfig
 						.getLocomotive());
 			}
 
@@ -378,7 +365,7 @@ public class LocomotiveConfigurationDialog<E> extends
 					LocomotiveConfigurationDialog.this, locomotiveToEdit);
 			if (locomotiveConfig.isOkPressed()) {
 
-				locomotiveControl.addLocomotive(locomotiveConfig
+				locomotivePersistence.addLocomotive(locomotiveConfig
 						.getLocomotive());
 			}
 			updateLocomotivesPanel();
@@ -392,7 +379,7 @@ public class LocomotiveConfigurationDialog<E> extends
 
 			Locomotive locomotiveToRemove = ((LocomotiveTableModel) locomotivesTableModel)
 					.getLocomotiveAt(locomotivesTable.getSelectedRow());
-			locomotiveControl.deleteLocomotive(locomotiveToRemove);
+			locomotivePersistence.deleteLocomotive(locomotiveToRemove);
 			updateLocomotivesPanel();
 		}
 	}

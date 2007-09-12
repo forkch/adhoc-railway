@@ -3,10 +3,11 @@ package ch.fork.AdHocRailway.domain.routes;
 import java.util.Collection;
 
 import ch.fork.AdHocRailway.domain.routes.RouteOld.RouteState;
-import ch.fork.AdHocRailway.domain.turnouts.Switch;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
-import ch.fork.AdHocRailway.domain.turnouts.exception.SwitchException;
+import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
+
+import com.sun.java.util.jar.pack.Instruction.Switch;
 
 public class Router extends Thread {
 
@@ -14,7 +15,7 @@ public class Router extends Thread {
     private boolean             enableRoute;
     private int                 waitTime;
     private RouteChangeListener listener;
-    private SwitchException     switchException;
+    private TurnoutException     switchException;
 
     public Router(RouteOld route, boolean enableRoute, int waitTime,
         RouteChangeListener listener) {
@@ -33,7 +34,7 @@ public class Router extends Thread {
                 disableRoute();
             }
             route.setChangeingRoute(false);
-        } catch (SwitchException e) {
+        } catch (TurnoutException e) {
             this.switchException = e;
             ExceptionProcessor.getInstance().processException(e);
         } catch (InterruptedException e) {
@@ -41,7 +42,7 @@ public class Router extends Thread {
         }
     }
 
-    private void disableRoute() throws SwitchException, InterruptedException {
+    private void disableRoute() throws TurnoutException, InterruptedException {
         Collection<RouteItemOld> routeItems = route.getRouteItems();
         TurnoutControl sc = TurnoutControl.getInstance();
         for (RouteItemOld ri : routeItems) {
@@ -67,7 +68,7 @@ public class Router extends Thread {
         listener.routeChanged(route);
     }
 
-    private void enableRoute() throws SwitchException, InterruptedException {
+    private void enableRoute() throws TurnoutException, InterruptedException {
         Collection<RouteItemOld> routeItems = route.getRouteItems();
         TurnoutControl sc = TurnoutControl.getInstance();
         for (RouteItemOld ri : routeItems) {
@@ -91,7 +92,7 @@ public class Router extends Thread {
         listener.routeChanged(route);
     }
 
-    public SwitchException getSwitchException() {
+    public TurnoutException getSwitchException() {
         return switchException;
     }
 }

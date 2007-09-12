@@ -43,8 +43,8 @@ public class Preferences implements PreferencesKeys {
         setIntValue(LOCK_DURATION, 0);
         setIntValue(LOCOMOTIVE_CONTROLES, 4);
         setStringValue(KEYBOARD_LAYOUT, "Swiss German");
-        setStringValue(INTERFACE_6051, "Y");
-        setIntValue(SWITCH_CONTROLES, 5);
+        setStringValue(INTERFACE_6051, "N");
+        setIntValue(TURNOUT_CONTROLES, 5);
         setIntValue(ROUTE_CONTROLES, 5);
         setBooleanValue(LOGGING, false);
         setBooleanValue(FULLSCREEN, false);

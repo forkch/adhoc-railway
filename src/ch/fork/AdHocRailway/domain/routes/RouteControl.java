@@ -11,7 +11,7 @@ import java.util.TreeSet;
 import ch.fork.AdHocRailway.domain.Control;
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.routes.RouteOld.RouteState;
-import ch.fork.AdHocRailway.domain.turnouts.exception.SwitchException;
+import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
@@ -94,7 +94,7 @@ public class RouteControl extends Control {
 		return numberToRoutes;
 	}
 
-	public void enableRoute(RouteOld r) throws SwitchException {
+	public void enableRoute(RouteOld r) throws TurnoutException {
 		// System.out.println("enabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
@@ -105,7 +105,7 @@ public class RouteControl extends Control {
 		lastRouteState = RouteState.ENABLED;
 	}
 
-	public void disableRoute(RouteOld r) throws SwitchException {
+	public void disableRoute(RouteOld r) throws TurnoutException {
 		// System.out.println("disabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);

@@ -29,12 +29,9 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
-import ch.fork.AdHocRailway.domain.turnouts.DefaultSwitch;
-import ch.fork.AdHocRailway.domain.turnouts.DoubleCrossSwitch;
-import ch.fork.AdHocRailway.domain.turnouts.Switch;
-import ch.fork.AdHocRailway.domain.turnouts.SwitchState;
-import ch.fork.AdHocRailway.domain.turnouts.ThreeWaySwitch;
 import ch.fork.AdHocRailway.ui.ImageTools;
+
+import com.sun.java.util.jar.pack.Instruction.Switch;
 
 public class SwitchRoutedStateCellRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value,

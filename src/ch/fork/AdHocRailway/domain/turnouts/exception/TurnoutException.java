@@ -24,12 +24,12 @@ package ch.fork.AdHocRailway.domain.turnouts.exception;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 
-public class SwitchException extends ControlException {
-    public SwitchException(String msg) {
+public class TurnoutException extends ControlException {
+    public TurnoutException(String msg) {
         super(msg);
     }
 
-    public SwitchException(String msg, Exception parent) {
+    public TurnoutException(String msg, Exception parent) {
         super(msg, parent);
     }
 }

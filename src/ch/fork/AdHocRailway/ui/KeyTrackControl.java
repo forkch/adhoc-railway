@@ -13,12 +13,12 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
-import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
-import ch.fork.AdHocRailway.domain.turnouts.Switch;
-import ch.fork.AdHocRailway.domain.turnouts.ThreeWaySwitch;
+import ch.fork.AdHocRailway.domain.routes.RouteOld;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
-import ch.fork.AdHocRailway.domain.turnouts.exception.SwitchException;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
 public class KeyTrackControl extends JPanel {
 
@@ -32,9 +32,12 @@ public class KeyTrackControl extends JPanel {
 
 	private JPanel switchesHistory;
 
-	private TurnoutControl switchControl;
+	private TurnoutControl turnoutControl = TurnoutControl.getInstance();
 
-	private RouteControl routeControl;
+	private TurnoutPersistence turnoutPersistence = TurnoutPersistence
+			.getInstance();
+
+	private RouteControl routeControl = RouteControl.getInstance();
 
 	public boolean routeMode;
 
@@ -43,9 +46,6 @@ public class KeyTrackControl extends JPanel {
 	public boolean changedRoute = false;
 
 	public KeyTrackControl() {
-
-		this.switchControl = TurnoutControl.getInstance();
-		this.routeControl = RouteControl.getInstance();
 		enteredNumberKeys = new StringBuffer();
 		initGUI();
 		initKeyboardActions();
@@ -175,7 +175,7 @@ public class KeyTrackControl extends JPanel {
 			try {
 				if (enteredNumberKeys.toString().equals("")) {
 					if (changedSwitch) {
-						switchControl.previousDeviceToDefault();
+						turnoutControl.previousDeviceToDefault();
 					} else if (changedRoute) {
 						routeControl.previousDeviceToDefault();
 					}
@@ -200,48 +200,40 @@ public class KeyTrackControl extends JPanel {
 		}
 
 		private void handleSwitchChange(ActionEvent e, int enteredNumber)
-				throws SwitchException {
-			Switch searchedSwitch = null;
+				throws TurnoutException {
+			Turnout searchedTurnout = null;
 
-			searchedSwitch = switchControl.getNumberToSwitch().get(
-					enteredNumber);
-			if (searchedSwitch == null) {
+			searchedTurnout = turnoutPersistence
+					.getTurnoutByNumber(enteredNumber);
+			if (searchedTurnout == null) {
 				resetSegmentDisplay();
 				return;
 			}
 
 			if (e.getActionCommand().equals("/")) {
-				switchControl.setCurvedLeft(searchedSwitch);
+				turnoutControl.setCurvedLeft(searchedTurnout);
 			} else if (e.getActionCommand().equals("*")) {
-				switchControl.setStraight(searchedSwitch);
+				turnoutControl.setStraight(searchedTurnout);
 			} else if (e.getActionCommand().equals("-")) {
-				switchControl.setCurvedRight(searchedSwitch);
+				turnoutControl.setCurvedRight(searchedTurnout);
 			} else if (e.getActionCommand().equals("+")) {
-				if (!(searchedSwitch instanceof ThreeWaySwitch)) {
-					switchControl.setNonDefaultState(searchedSwitch);
+				if (!searchedTurnout.isThreeWay()) {
+					turnoutControl.setNonDefaultState(searchedTurnout);
 				}
 			} else if (e.getActionCommand().equals("bs")) {
-				if (!(searchedSwitch instanceof ThreeWaySwitch)) {
-					switchControl.setNonDefaultState(searchedSwitch);
+				if (!searchedTurnout.isThreeWay()) {
+					turnoutControl.setNonDefaultState(searchedTurnout);
 				}
 			} else if (e.getActionCommand().equals("\n")) {
-				switchControl.setDefaultState(searchedSwitch);
+				turnoutControl.setDefaultState(searchedTurnout);
 			}
 			changedRoute = false;
 			changedSwitch = true;
 			resetSegmentDisplay();
-			/*
-			 * StaticSwitchWidget sw = new StaticSwitchWidget(searchedSwitch);
-			 * Component[] oldWidgets = switchesHistory.getComponents();
-			 * switchesHistory.removeAll(); switchesHistory.add(sw); if
-			 * (oldWidgets.length > 0) switchesHistory.add(oldWidgets[0]); if
-			 * (oldWidgets.length > 1) switchesHistory.add(oldWidgets[1]);
-			 * repaint(); revalidate();
-			 */
 		}
 
 		private void handleRouteChange(ActionEvent e, int enteredNumber)
-				throws SwitchException {
+				throws TurnoutException {
 			RouteOld searchedRoute = null;
 
 			searchedRoute = routeControl.getNumberToRoutes().get(enteredNumber);
@@ -260,14 +252,6 @@ public class KeyTrackControl extends JPanel {
 			changedRoute = true;
 			changedSwitch = false;
 			resetSegmentDisplay();
-			/*
-			 * StaticRouteWidget rw = new StaticRouteWidget(searchedRoute);
-			 * Component[] oldWidgets = switchesHistory.getComponents();
-			 * switchesHistory.removeAll(); switchesHistory.add(rw); if
-			 * (oldWidgets.length > 0) switchesHistory.add(oldWidgets[0]); if
-			 * (oldWidgets.length > 1) switchesHistory.add(oldWidgets[1]);
-			 * repaint(); revalidate();
-			 */
 		}
 	}
 

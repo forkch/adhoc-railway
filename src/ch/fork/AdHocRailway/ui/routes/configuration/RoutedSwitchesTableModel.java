@@ -6,9 +6,8 @@ import java.util.Set;
 
 import javax.swing.table.AbstractTableModel;
 
-import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.domain.routes.RouteItemOld;
-import ch.fork.AdHocRailway.domain.turnouts.SwitchState;
+import ch.fork.AdHocRailway.domain.routes.RouteOld;
 
 public class RoutedSwitchesTableModel extends AbstractTableModel {
 

@@ -239,7 +239,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         Preferences p = Preferences.getInstance();
         locomotiveControlNumberModel.setValue(p
             .getIntValue(LOCOMOTIVE_CONTROLES));
-        switchControlNumberModel.setValue(p.getIntValue(SWITCH_CONTROLES));
+        switchControlNumberModel.setValue(p.getIntValue(TURNOUT_CONTROLES));
         routeControlNumberModel.setValue(p.getIntValue(ROUTE_CONTROLES));
         
         keyBoardLayoutComboBox.setSelectedItem(p
@@ -262,7 +262,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         Preferences p = Preferences.getInstance();
         p.setIntValue(LOCOMOTIVE_CONTROLES, locomotiveControlNumberModel
             .getNumber().intValue());
-        p.setIntValue(SWITCH_CONTROLES, switchControlNumberModel.getNumber()
+        p.setIntValue(TURNOUT_CONTROLES, switchControlNumberModel.getNumber()
             .intValue());
         p.setIntValue(ROUTE_CONTROLES, routeControlNumberModel.getNumber()
                 .intValue());

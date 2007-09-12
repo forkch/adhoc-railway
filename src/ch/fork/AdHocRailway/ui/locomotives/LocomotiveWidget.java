@@ -33,11 +33,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.Collection;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
-import javax.persistence.EntityTransaction;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -59,6 +56,7 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
@@ -99,7 +97,9 @@ public class LocomotiveWidget extends JPanel implements
 
 	private Locomotive none;
 	
-	private LocomotiveControl locomotiveControl;
+	private LocomotiveControl locomotiveControl = LocomotiveControl.getInstance();;
+	
+	private LocomotivePersistence locomotivePersistence = LocomotivePersistence.getInstance();
 
 	private LocomotiveGroup allLocomotives;
 
@@ -116,7 +116,7 @@ public class LocomotiveWidget extends JPanel implements
 		this.deccelerateKey = deccelerateKey;
 		this.toggleDirectionKey = toggleDirectionKey;
 		this.frame = frame;
-		locomotiveControl = LocomotiveControl.getInstance();
+		
 		initGUI();
 		initKeyboardActions();
 	}
@@ -307,7 +307,7 @@ public class LocomotiveWidget extends JPanel implements
 	public void updateLocomotiveGroups() {
 		locomotiveComboBox.removeActionListener(locomotiveSelectAction);
 		locomotiveGroupComboBox.removeActionListener(groupSelectAction);
-		for (LocomotiveGroup lg : locomotiveControl.getLocomotiveGroups()) {
+		for (LocomotiveGroup lg : locomotivePersistence.getAllLocomotiveGroups()) {
 			locomotiveGroupComboBox.addItem(lg);
 			for (Locomotive l : lg.getLocomotives()) {
 				locomotiveComboBox.addItem(l);
@@ -427,7 +427,7 @@ public class LocomotiveWidget extends JPanel implements
 			// Locomotive none = new NoneLocomotive();
 			// locomotiveComboBox.addItem(none);
 			if (lg == allLocomotives) {
-				SortedSet<Locomotive> sl = locomotiveControl
+				SortedSet<Locomotive> sl = locomotivePersistence
 						.getAllLocomotives();
 				for (Locomotive l : sl) {
 					locomotiveComboBox.addItem(l);
@@ -531,13 +531,11 @@ public class LocomotiveWidget extends JPanel implements
 				LocomotiveConfig locomotiveConfig = new LocomotiveConfig(frame,
 						myLocomotive);
 				if (locomotiveConfig.isOkPressed()) {
-					System.out.println(myLocomotive.getLocomotiveType());
-					locomotiveControl.updateLocomotive(myLocomotive);
-					locomotiveChanged(myLocomotive);
+					locomotivePersistence.updateLocomotive(myLocomotive);
 				} else {
-					locomotiveControl.refreshLocomotive(myLocomotive);
-					locomotiveChanged(myLocomotive);
+					locomotivePersistence.refreshLocomotive(myLocomotive);
 				}
+				locomotiveChanged(myLocomotive);
 			} else if (e.getButton() == MouseEvent.BUTTON2) {
 				ToggleDirectionAction a = new ToggleDirectionAction();
 				a.actionPerformed(null);

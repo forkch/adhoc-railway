@@ -27,9 +27,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 
 public class LocomotiveTableModel extends AbstractTableModel {
 	private final String[] columnNames = { "Name", "Type", "Bus", "Address",
@@ -92,41 +90,6 @@ public class LocomotiveTableModel extends AbstractTableModel {
 
 	public boolean isCellEditable(int row, int col) {
 		return false;
-	}
-
-	public void setValueAt(Object value, int row, int col) {
-		if (locomotiveGroup == null) {
-			return;
-		}
-		List<Locomotive> locomotivesOfGroup = new ArrayList<Locomotive>(
-				locomotiveGroup.getLocomotives());
-		Locomotive locomotiveOfThisRow = locomotivesOfGroup.get(row);
-		switch (col) {
-		case 0:
-			locomotiveOfThisRow.setName(value.toString());
-			break;
-		case 1:
-			LocomotiveType lt = LocomotiveControl.getInstance()
-					.getLocomotiveTypeByName(value.toString());
-			locomotiveOfThisRow.setLocomotiveType(lt);
-			break;
-		case 2:
-			locomotiveOfThisRow.setBus(Integer.parseInt(value.toString()));
-
-			break;
-		case 3:
-			locomotiveOfThisRow.setAddress(Integer.parseInt(value.toString()));
-
-			break;
-		case 4:
-			break;
-		case 5:
-			locomotiveOfThisRow.setDescription(value.toString());
-			break;
-		default:
-			return;
-		}
-		fireTableCellUpdated(row, col);
 	}
 
 	public void setLocomotiveGroup(LocomotiveGroup selectedLocomotiveGroup) {

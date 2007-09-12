@@ -14,38 +14,39 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
-import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
 import ch.fork.AdHocRailway.domain.routes.RouteGroupOld;
-import ch.fork.AdHocRailway.domain.turnouts.Switch;
-import ch.fork.AdHocRailway.domain.turnouts.SwitchGroup;
+import ch.fork.AdHocRailway.domain.routes.RouteOld;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistence;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
-import ch.fork.AdHocRailway.ui.switches.SwitchWidget;
+import ch.fork.AdHocRailway.ui.switches.TurnoutWidget;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private JTabbedPane routeGroupsTabbedPane;
 
-	private JTabbedPane switchGroupsTabbedPane;
+	private JTabbedPane turnoutGroupsTabbedPane;
 
-	private Preferences preferences;
+	private Preferences preferences = Preferences.getInstance();;
 
 	private JTabbedPane trackControlPane;
 
 	private JFrame frame;
 
-	private TurnoutControl switchControl;
+	private TurnoutControl turnoutControl = TurnoutControl.getInstance();
 
-	private RouteControl routeControl;
+	private TurnoutPersistence turnoutPersistence = TurnoutPersistence
+			.getInstance();
+
+	private RouteControl routeControl = RouteControl.getInstance();
 
 	public TrackControlPanel(JFrame frame) {
 		this.frame = frame;
-		this.preferences = Preferences.getInstance();
-		this.switchControl = TurnoutControl.getInstance();
-		this.routeControl = RouteControl.getInstance();
 		initGUI();
 		initKeyboardActions();
 	}
@@ -53,7 +54,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private void initGUI() {
 		setLayout(new BorderLayout(5, 5));
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		initSwitchPanel();
+		initTurnoutPanel();
 		initRoutesPanel();
 
 		JPanel segmentPanel = new KeyTrackControl();
@@ -62,21 +63,21 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		JPanel controlPanel = new JPanel(new GridLayout(1, 2));
 		if (preferences.getBooleanValue(TABBED_TRACK)) {
 			trackControlPane = new JTabbedPane();
-			trackControlPane.add("Switches", switchGroupsTabbedPane);
+			trackControlPane.add("Switches", turnoutGroupsTabbedPane);
 			trackControlPane.add("Routes", routeGroupsTabbedPane);
 			controlPanel.add(trackControlPane, BorderLayout.CENTER);
 		} else {
-			switchGroupsTabbedPane.setBorder(new TitledBorder("Switches"));
+			turnoutGroupsTabbedPane.setBorder(new TitledBorder("Switches"));
 			routeGroupsTabbedPane.setBorder(new TitledBorder("Routes"));
-			controlPanel.add(switchGroupsTabbedPane, BorderLayout.CENTER);
+			controlPanel.add(turnoutGroupsTabbedPane, BorderLayout.CENTER);
 			controlPanel.add(routeGroupsTabbedPane, BorderLayout.EAST);
 		}
 		add(controlPanel, BorderLayout.CENTER);
 	}
 
-	private void initSwitchPanel() {
-		switchGroupsTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
-		updateSwitches();
+	private void initTurnoutPanel() {
+		turnoutGroupsTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
+		updateTurnouts();
 	}
 
 	private void initRoutesPanel() {
@@ -88,7 +89,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		for (int i = 1; i <= 12; i++) {
 			KeyStroke stroke = KeyStroke
 					.getKeyStroke("F" + Integer.toString(i));
-			registerKeyboardAction(new SwitchGroupChangeAction(), Integer
+			registerKeyboardAction(new TurnoutGroupChangeAction(), Integer
 					.toString(i - 1), stroke, WHEN_IN_FOCUSED_WINDOW);
 			registerKeyboardAction(new RouteGroupChangeAction(), Integer
 					.toString(i - 1), KeyStroke.getKeyStroke(stroke
@@ -99,7 +100,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	}
 
 	public void update() {
-		updateSwitches();
+		updateTurnouts();
 		updateRoutes();
 		revalidate();
 		repaint();
@@ -128,35 +129,35 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		}
 	}
 
-	private void updateSwitches() {
-		switchGroupsTabbedPane.removeAll();
-		int maxSwitchCols = preferences
-				.getIntValue(PreferencesKeys.SWITCH_CONTROLES);
+	private void updateTurnouts() {
+		turnoutGroupsTabbedPane.removeAll();
+		int maxTurnoutCols = preferences
+				.getIntValue(PreferencesKeys.TURNOUT_CONTROLES);
 		int i = 1;
-		switchControl.removeAllSwitchChangeListener();
-		for (SwitchGroup switchGroup : switchControl.getSwitchGroups()) {
+		turnoutControl.removeAllTurnoutChangeListener();
+		for (TurnoutGroup turnoutGroup : turnoutPersistence.getAllTurnoutGroups()) {
 
-			WidgetTab switchGroupTab = new WidgetTab(maxSwitchCols);
+			WidgetTab switchGroupTab = new WidgetTab(maxTurnoutCols);
 			JScrollPane groupScrollPane = new JScrollPane(switchGroupTab);
 			groupScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 			groupScrollPane.getVerticalScrollBar().setBlockIncrement(10);
-			for (Switch aSwitch : switchGroup.getSwitches()) {
-				SwitchWidget switchWidget = new SwitchWidget(aSwitch,
-						switchGroup, frame);
+			for (Turnout turnout : turnoutGroup.getTurnouts()) {
+				TurnoutWidget switchWidget = new TurnoutWidget(turnout,
+						frame);
 				switchGroupTab.addWidget(switchWidget);
 			}
-			switchGroupsTabbedPane.add(groupScrollPane, "F" + i + ": "
-					+ switchGroup.getName());
+			turnoutGroupsTabbedPane.add(groupScrollPane, "F" + i + ": "
+					+ turnoutGroup.getName());
 			i++;
 		}
 	}
 
-	private class SwitchGroupChangeAction extends AbstractAction {
+	private class TurnoutGroupChangeAction extends AbstractAction {
 
 		public void actionPerformed(ActionEvent e) {
 			int selectedSwitchGroup = Integer.parseInt(e.getActionCommand());
-			if (selectedSwitchGroup < switchControl.getSwitchGroups().size()) {
-				switchGroupsTabbedPane.setSelectedIndex(selectedSwitchGroup);
+			if (selectedSwitchGroup < turnoutPersistence.getAllTurnoutGroups().size()) {
+				turnoutGroupsTabbedPane.setSelectedIndex(selectedSwitchGroup);
 			}
 		}
 	}

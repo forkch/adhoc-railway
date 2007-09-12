@@ -22,42 +22,41 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.Control;
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.exception.InvalidAddressException;
 import ch.fork.AdHocRailway.domain.exception.NoSessionException;
-import ch.fork.AdHocRailway.domain.locking.LockControl;
-import ch.fork.AdHocRailway.domain.turnouts.exception.SwitchException;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.exception.SwitchLockedException;
+import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import de.dermoba.srcp.client.SRCPSession;
+import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
+import de.dermoba.srcp.common.exception.SRCPException;
+import de.dermoba.srcp.devices.GA;
 import de.dermoba.srcp.devices.GAInfoListener;
 
-public class TurnoutControl extends Control implements GAInfoListener {
+public class TurnoutControl extends Control implements GAInfoListener,
+		Constants {
 	private static TurnoutControl instance;
 
-	private Map<Switch, List<SwitchChangeListener>> listeners;
+	private TurnoutPersistence persistence = TurnoutPersistence.getInstance();;
 
-	private List<SwitchGroup> switchGroups;
+	private Map<Turnout, List<TurnoutChangeListener>> listeners;
 
-	private Map<Address, Switch> addressToSwitch;
+	private Turnout lastChangedTurnout;
 
-	private Map<Integer, Switch> numberToSwitch;
-
-	private Switch lastChangedSwitch;
-
-	private SwitchState previousState;
+	private TurnoutState previousState;
 
 	private TurnoutControl() {
-		listeners = new HashMap<Switch, List<SwitchChangeListener>>();
-		addressToSwitch = new HashMap<Address, Switch>();
-		numberToSwitch = new HashMap<Integer, Switch>();
-		switchGroups = new ArrayList<SwitchGroup>();
+		listeners = new HashMap<Turnout, List<TurnoutChangeListener>>();
+		
 	}
 
 	public static TurnoutControl getInstance() {
@@ -67,143 +66,191 @@ public class TurnoutControl extends Control implements GAInfoListener {
 		return instance;
 	}
 
-	public void registerSwitch(Switch aSwitch) {
-		Address[] addresses = aSwitch.getAddresses();
-		addressToSwitch.put(addresses[0], aSwitch);
-		for (int i = 1; i < addresses.length; i++) {
-			if (addresses[i] != null) {
-				addressToSwitch.put(addresses[i], aSwitch);
-			}
-		}
-		numberToSwitch.put(aSwitch.getNumber(), aSwitch);
-		setSessionOnControlObject(aSwitch);
-		LockControl.getInstance().registerControlObject(aSwitch);
-	}
-
-	public void registerSwitches(Collection<Switch> switches) {
-		LockControl lc = LockControl.getInstance();
-		for (Switch aSwitch : switches) {
-			Address[] addresses = aSwitch.getAddresses();
-			addressToSwitch.put(addresses[0], aSwitch);
-			for (int i = 1; i < addresses.length; i++) {
-				if (addresses[i] != null) {
-					addressToSwitch.put(addresses[i], aSwitch);
-				}
-			}
-			numberToSwitch.put(aSwitch.getNumber(), aSwitch);
-			setSessionOnControlObject(aSwitch);
-			lc.registerControlObject(aSwitch);
-		}
-	}
-
-	public void unregisterSwitch(Switch aSwitch) {
-		Address[] addresses = aSwitch.getAddresses();
-		addressToSwitch.remove(addresses[0]);
-		for (int i = 1; i < addresses.length; i++) {
-			if (addresses[i] != null) {
-				addressToSwitch.remove(addresses[i]);
-			}
-			addressToSwitch.remove(addresses[i]);
-		}
-		numberToSwitch.remove(aSwitch.getNumber());
-		LockControl.getInstance().unregisterControlObject(aSwitch);
-	}
-
-	public void unregisterAllSwitches() {
-		//for (Switch aSwitch : addressToSwitch.values()) {
-			// aSwitch.term();
-		//}
-		addressToSwitch.clear();
-		numberToSwitch.clear();
-		LockControl.getInstance().unregisterAllControlObjects();
-	}
-
-	public void clear() {
-		unregisterAllSwitches();
-		unregisterAllSwitchGroups();
-	}
-
-	public Map<Integer, Switch> getNumberToSwitch() {
-		return numberToSwitch;
-	}
-
-	public void registerSwitchGroup(SwitchGroup sg) {
-		switchGroups.add(sg);
-	}
-
-	public void registerSwitchGroups(Collection<SwitchGroup> sgs) {
-		switchGroups.addAll(sgs);
-	}
-
-	public void unregisterAllSwitchGroups() {
-		switchGroups.clear();
-	}
-
-	public List<SwitchGroup> getSwitchGroups() {
-		return switchGroups;
-	}
-
 	public void setSession(SRCPSession session) {
 		this.session = session;
-		for (Switch aSwitch : addressToSwitch.values()) {
-			setSessionOnControlObject(aSwitch);
+		for (Turnout t : persistence.getAllTurnouts()) {
+			t.setSession(session);
 		}
 		session.getInfoChannel().addGAInfoListener(this);
 	}
 
-	public void toggle(Switch aSwitch) throws SwitchException {
-		checkSwitch(aSwitch);
-		initSwitch(aSwitch);
-
-		previousState = aSwitch.getSwitchState();
-		aSwitch.toggle();
-		informListeners(aSwitch);
-		lastChangedSwitch = aSwitch;
+	private boolean isThreeWay(Turnout turnout) {
+		return turnout.getTurnoutType().getTypeName().equals("ThreeWay");
 	}
 
-	public void setDefaultState(Switch aSwitch) throws SwitchException {
-		checkSwitch(aSwitch);
-		initSwitch(aSwitch);
-		previousState = aSwitch.getSwitchState();
-		aSwitch.setDefaultState();
-		informListeners(aSwitch);
-		lastChangedSwitch = aSwitch;
+	/**
+	 * Returns the port to activate according to the addressSwitched flag.
+	 * 
+	 * @param wantedPort
+	 *            The port to 'convert'
+	 * @return The 'converted' port
+	 */
+	private int getPort(TurnoutAddress address, int wantedPort) {
+		if (!address.isSwitched()) {
+			return wantedPort;
+		} else {
+			if (wantedPort == TURNOUT_STRAIGHT_PORT) {
+				return TURNOUT_CURVED_PORT;
+			} else {
+				return TURNOUT_STRAIGHT_PORT;
+			}
+		}
 	}
 
-	public void setNonDefaultState(Switch aSwitch) throws SwitchException {
-		checkSwitch(aSwitch);
-		initSwitch(aSwitch);
-		previousState = aSwitch.getSwitchState();
-		aSwitch.setNonDefaultState();
-		informListeners(aSwitch);
-		lastChangedSwitch = aSwitch;
-	}
-	
-	public void setStraight(Switch aSwitch) throws SwitchException {
-		checkSwitch(aSwitch);
-		initSwitch(aSwitch);
-		previousState = aSwitch.getSwitchState();
-		aSwitch.setStraight();
-		informListeners(aSwitch);
-		lastChangedSwitch = aSwitch;
-	}
-
-	public void setCurvedRight(Switch aSwitch) throws SwitchException {
-		checkSwitch(aSwitch);
-		initSwitch(aSwitch);
-		previousState = aSwitch.getSwitchState();
-		aSwitch.setCurvedRight();
-		informListeners(aSwitch);
-		lastChangedSwitch = aSwitch;
+	public void toggle(Turnout turnout) throws TurnoutException {
+		checkSwitch(turnout);
+		initSwitch(turnout);
+		if (isThreeWay(turnout)) {
+			toggleThreeWay(turnout);
+		}
+		previousState = turnout.getTurnoutState();
+		switch (previousState) {
+		case STRAIGHT:
+			setCurvedLeft(turnout);
+			break;
+		case RIGHT:
+		case LEFT:
+			setStraight(turnout);
+			break;
+		case UNDEF:
+			setDefaultState(turnout);
+		}
+		informListeners(turnout);
+		lastChangedTurnout = turnout;
 	}
 
-	public void setCurvedLeft(Switch aSwitch) throws SwitchException {
-		checkSwitch(aSwitch);
-		initSwitch(aSwitch);
-		previousState = aSwitch.getSwitchState();
-		aSwitch.setCurvedLeft();
-		informListeners(aSwitch);
-		lastChangedSwitch = aSwitch;
+	private void toggleThreeWay(Turnout turnout) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setDefaultState(Turnout turnout) throws TurnoutException {
+		checkSwitch(turnout);
+		initSwitch(turnout);
+		previousState = turnout.getTurnoutState();
+		if (isThreeWay(turnout)) {
+			setDefaultStateTheeWay(turnout);
+		}
+		switch (turnout.getDefaultStateEnum()) {
+		case STRAIGHT:
+			setStraight(turnout);
+			break;
+		case LEFT:
+		case RIGHT:
+			setCurvedLeft(turnout);
+			break;
+		}
+		informListeners(turnout);
+		lastChangedTurnout = turnout;
+	}
+
+	private void setDefaultStateTheeWay(Turnout turnout) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setNonDefaultState(Turnout turnout) throws TurnoutException {
+		checkSwitch(turnout);
+		initSwitch(turnout);
+		previousState = turnout.getTurnoutState();
+		if (isThreeWay(turnout)) {
+			setNonDefaultStateTheeWay(turnout);
+		}
+		switch (turnout.getDefaultStateEnum()) {
+		case STRAIGHT:
+			setCurvedLeft(turnout);
+			break;
+		case LEFT:
+		case RIGHT:
+			setStraight(turnout);
+			break;
+		}
+		informListeners(turnout);
+		lastChangedTurnout = turnout;
+	}
+
+	private void setNonDefaultStateTheeWay(Turnout turnout) {
+		// TODO Auto-generated method stub
+	}
+
+	public void setStraight(Turnout turnout) throws TurnoutException {
+		checkSwitch(turnout);
+		initSwitch(turnout);
+		previousState = turnout.getTurnoutState();
+		if (isThreeWay(turnout)) {
+			setStraightThreeWay(turnout);
+		}
+		GA ga = turnout.getGA()[0];
+		TurnoutAddress address = turnout.getTurnoutAddresses()[0];
+		try {
+			int defaultActivationTime = Preferences.getInstance().getIntValue(
+					PreferencesKeys.ACTIVATION_TIME);
+
+			ga.set(getPort(address, TURNOUT_STRAIGHT_PORT),
+					TURNOUT_PORT_ACTIVATE, defaultActivationTime);
+			ga.set(getPort(address, TURNOUT_CURVED_PORT),
+					TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
+
+			informListeners(turnout);
+			lastChangedTurnout = turnout;
+		} catch (SRCPDeviceLockedException x1) {
+			throw new SwitchLockedException(ERR_LOCKED, x1);
+		} catch (SRCPException e) {
+			throw new TurnoutException(ERR_TOGGLE_FAILED, e);
+		}
+	}
+
+	private void setStraightThreeWay(Turnout turnout) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setCurvedLeft(Turnout turnout) throws TurnoutException {
+		checkSwitch(turnout);
+		initSwitch(turnout);
+		previousState = turnout.getTurnoutState();
+		if (isThreeWay(turnout)) {
+			setCurvedLeftThreeWay(turnout);
+		}
+		GA ga = turnout.getGA()[0];
+		TurnoutAddress address = turnout.getTurnoutAddresses()[0];
+		try {
+			int defaultActivationTime = Preferences.getInstance().getIntValue(
+					PreferencesKeys.ACTIVATION_TIME);
+			ga.set(getPort(address, TURNOUT_CURVED_PORT),
+					TURNOUT_PORT_ACTIVATE, defaultActivationTime);
+			ga.set(getPort(address, TURNOUT_STRAIGHT_PORT),
+					TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
+		} catch (SRCPDeviceLockedException x1) {
+			throw new SwitchLockedException(ERR_LOCKED, x1);
+		} catch (SRCPException e) {
+			throw new TurnoutException(ERR_TOGGLE_FAILED, e);
+		}
+		informListeners(turnout);
+		lastChangedTurnout = turnout;
+	}
+
+	private void setCurvedLeftThreeWay(Turnout turnout) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setCurvedRight(Turnout turnout) throws TurnoutException {
+		checkSwitch(turnout);
+		initSwitch(turnout);
+		previousState = turnout.getTurnoutState();
+		if (isThreeWay(turnout)) {
+			setCurvedRightThreeWay(turnout);
+		}
+		setCurvedLeft(turnout);
+
+		informListeners(turnout);
+		lastChangedTurnout = turnout;
+	}
+
+	private void setCurvedRightThreeWay(Turnout turnout) {
+		// TODO Auto-generated method stub
+
 	}
 
 	public void GAset(double timestamp, int bus, int address, int port,
@@ -212,19 +259,10 @@ public class TurnoutControl extends Control implements GAInfoListener {
 		 * System.out.println("GAset(" + bus + " , " + address + " , " + port + " , " +
 		 * value + " )");
 		 */
-		Address addr = new Address(bus, address);
-		addr.setAddressSwitched(false);
-		Switch s = addressToSwitch.get(addr);
-		if (s == null) {
-			addr = new Address(bus, address);
-			addr.setAddressSwitched(true);
-			s = addressToSwitch.get(addr);
-		}
-		if (s != null) {
-			s.switchPortChanged(addr, port, value);
-			if (value != 0) {
-				informListeners(s);
-			}
+		Turnout turnout = persistence.getTurnoutByAddressBus(bus, address);
+		if (turnout != null) {
+			// TODO
+			informListeners(turnout);
 		}
 	}
 
@@ -234,16 +272,22 @@ public class TurnoutControl extends Control implements GAInfoListener {
 		 * System.out.println("GAinit(" + bus + " , " + address + " , " +
 		 * protocol + " , " + params + " )");
 		 */
-		Address addr = new Address(bus, address);
-		Switch s = addressToSwitch.get(addr);
-		if (s == null) {
-			addr = new Address(bus, address);
-			addr.setAddressSwitched(true);
-			s = addressToSwitch.get(addr);
-		}
-		if (s != null) {
-			s.switchInitialized(addr);
-			informListeners(s);
+
+		Turnout turnout = persistence.getTurnoutByAddressBus(bus, address);
+		if (turnout != null) {
+			// TODO
+			GA[] gas = new GA[turnout.getTurnoutAddresses().length];
+			int i = 0;
+			for (TurnoutAddress addr : turnout.getTurnoutAddresses()) {
+				GA ga = new GA(session);
+				ga.setBus(addr.getBus());
+				ga.setAddress(addr.getAddress());
+				gas[i] = ga;
+				i++;
+			}
+			turnout.setGA(gas);
+			turnout.setInitialized(true);
+			informListeners(turnout);
 		}
 	}
 
@@ -251,120 +295,139 @@ public class TurnoutControl extends Control implements GAInfoListener {
 		/*
 		 * System.out.println("GAterm( " + bus + " , " + address + " )");
 		 */
-		Address addr = new Address(bus, address);
-		Switch s = addressToSwitch.get(addr);
-		s.switchTerminated(addr);
-		informListeners(s);
-	}
-
-	public void addSwitchChangeListener(Switch aSwitch,
-			SwitchChangeListener listener) {
-		if (listeners.get(aSwitch) == null) {
-			listeners.put(aSwitch, new ArrayList<SwitchChangeListener>());
+		Turnout turnout = persistence.getTurnoutByAddressBus(bus, address);
+		if (turnout != null) {
+			// TODO
+			
+			turnout.setGA(null);
+			turnout.setInitialized(false);
+			informListeners(turnout);
 		}
-		listeners.get(aSwitch).add(listener);
 	}
 
-	public void removeSwitchChangeListener(Switch aSwitch) {
-		listeners.remove(aSwitch);
+	public void addSwitchChangeListener(Turnout turnout,
+			TurnoutChangeListener listener) {
+		if (listeners.get(turnout) == null) {
+			listeners.put(turnout, new ArrayList<TurnoutChangeListener>());
+		}
+		listeners.get(turnout).add(listener);
 	}
 
-	public void removeAllSwitchChangeListener() {
+	public void removeSwitchChangeListener(Turnout turnout) {
+		listeners.remove(turnout);
+	}
+
+	public void removeAllTurnoutChangeListener() {
 		listeners.clear();
 	}
 
-	private void informListeners(Switch changedSwitch) {
-		List<SwitchChangeListener> ll = listeners.get(changedSwitch);
-		for (SwitchChangeListener scl : ll)
-			scl.switchChanged(changedSwitch);
+	private void informListeners(Turnout changedTurnout) {
+		List<TurnoutChangeListener> ll = listeners.get(changedTurnout);
+		for (TurnoutChangeListener scl : ll)
+			scl.turnoutChanged(changedTurnout);
 	}
 
-	private void checkSwitch(Switch aSwitch) throws SwitchException {
+	private void checkSwitch(Turnout turnout) throws TurnoutException {
+		if (turnout == null)
+			return;
 		try {
-			checkControlObject(aSwitch);
+			if (turnout.getSession() == null) {
+				throw new NoSessionException();
+			}
+			for (TurnoutAddress addr : turnout.getTurnoutAddresses()) {
+				if (addr == null || addr.getBus() == 0
+						|| addr.getAddress() == 0)
+					throw new InvalidAddressException();
+			}
 		} catch (NoSessionException e) {
-			throw new SwitchException(Constants.ERR_NOT_CONNECTED, e);
+			throw new TurnoutException(Constants.ERR_NOT_CONNECTED, e);
 		} catch (InvalidAddressException e) {
-			throw new SwitchException(Constants.ERR_FAILED, e);
-		}
-		if (aSwitch instanceof ThreeWaySwitch
-				&& aSwitch.getAddress(1).getAddress() == 0) {
-			throw new SwitchException(Constants.ERR_FAILED,
-					new InvalidAddressException());
+			throw new TurnoutException(Constants.ERR_FAILED, e);
 		}
 	}
 
-	private void initSwitch(Switch aSwitch) throws SwitchException {
-		if (!aSwitch.isInitialized()) {
-			aSwitch.init();
+	private void initSwitch(Turnout turnout) throws TurnoutException {
+		if (!turnout.isInitialized()) {
+			try {
+				GA[] gas = new GA[turnout.getTurnoutAddresses().length];
+				int i = 0;
+				for (TurnoutAddress addr : turnout.getTurnoutAddresses()) {
+					GA ga = new GA(session);
+					if (Preferences.getInstance().getBooleanValue(
+							PreferencesKeys.INTERFACE_6051)) {
+						ga.init(addr.getBus(), addr.getAddress(),
+								Turnout.PROTOCOL);
+					} else {
+						ga.setBus(addr.getBus());
+						ga.setAddress(addr.getAddress());
+					}
+					gas[i] = ga;
+					i++;
+				}
+				turnout.setGA(gas);
+				turnout.setInitialized(true);
+			} catch (SRCPException e) {
+				throw new TurnoutException(ERR_INIT_FAILED, e);
+			}
 		}
 	}
 
 	@Override
 	public void undoLastChange() throws ControlException {
-		if (lastChangedSwitch == null) {
+		if (lastChangedTurnout == null) {
 			return;
 		}
 		switch (previousState) {
 
 		case STRAIGHT:
-			setStraight(lastChangedSwitch);
+			setStraight(lastChangedTurnout);
 			break;
 		case LEFT:
-			setCurvedLeft(lastChangedSwitch);
+			setCurvedLeft(lastChangedTurnout);
 			break;
 		case RIGHT:
-			setCurvedRight(lastChangedSwitch);
+			setCurvedRight(lastChangedTurnout);
 			break;
 		case UNDEF:
-			setStraight(lastChangedSwitch);
+			setStraight(lastChangedTurnout);
 			break;
 		}
-		informListeners(lastChangedSwitch);
+		informListeners(lastChangedTurnout);
 
-		lastChangedSwitch = null;
+		lastChangedTurnout = null;
 		previousState = null;
 	}
 
 	@Override
 	public void previousDeviceToDefault() throws ControlException {
-		if (lastChangedSwitch == null) {
+		if (lastChangedTurnout == null) {
 			return;
 		}
-		setDefaultState(lastChangedSwitch);
+		setDefaultState(lastChangedTurnout);
 		/*
-		switch (lastChangedSwitch.getDefaultState()) {
-		case STRAIGHT:
-			setStraight(lastChangedSwitch);
-			break;
-		case LEFT:
-			setCurvedLeft(lastChangedSwitch);
-			break;
-		case RIGHT:
-			setCurvedRight(lastChangedSwitch);
-			break;
-		case UNDEF:
-			setStraight(lastChangedSwitch);
-			break;
-		}
-		*/
+		 * switch (lastChangedSwitch.getDefaultState()) { case STRAIGHT:
+		 * setStraight(lastChangedSwitch); break; case LEFT:
+		 * setCurvedLeft(lastChangedSwitch); break; case RIGHT:
+		 * setCurvedRight(lastChangedSwitch); break; case UNDEF:
+		 * setStraight(lastChangedSwitch); break; }
+		 */
 	}
 
 	@Override
 	public void commitTransaction() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void rollbackTransaction() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void startTransaction() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

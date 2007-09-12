@@ -52,7 +52,8 @@ public class Locomotive extends ControlObject implements java.io.Serializable, C
 	protected static final String FORWARD_DIRECTION = "1";
 
 	protected static final String REVERSE_DIRECTION = "0";
-
+	
+	@Transient
 	protected int currentSpeed = 0;
 
 	@Transient
@@ -177,7 +178,7 @@ public class Locomotive extends ControlObject implements java.io.Serializable, C
 	}
 
 	@Transient
-	public void setSession(SRCPSession session) {
+	protected void setSession(SRCPSession session) {
 		this.session = session;
 	}
 

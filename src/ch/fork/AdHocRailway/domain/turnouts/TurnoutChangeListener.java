@@ -23,6 +23,6 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 
-public interface SwitchChangeListener {
-    public void switchChanged(Switch changedLocomotive);
+public interface TurnoutChangeListener {
+    public void turnoutChanged(Turnout changedLocomotive);
 }

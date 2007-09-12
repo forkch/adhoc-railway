@@ -39,11 +39,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
-import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
 import ch.fork.AdHocRailway.domain.routes.RouteGroupOld;
 import ch.fork.AdHocRailway.domain.routes.RouteItemOld;
-import ch.fork.AdHocRailway.domain.turnouts.SwitchState;
+import ch.fork.AdHocRailway.domain.routes.RouteOld;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.SpringUtilities;

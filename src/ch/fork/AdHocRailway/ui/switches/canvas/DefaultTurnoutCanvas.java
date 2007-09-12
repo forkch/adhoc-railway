@@ -29,11 +29,11 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import ch.fork.AdHocRailway.domain.turnouts.Switch;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 
-public class DefaultSwitchCanvas extends SwitchCanvas {
-    public DefaultSwitchCanvas(Switch mySwitch) {
-        super(mySwitch);
+public class DefaultTurnoutCanvas extends TurnoutCanvas {
+    public DefaultTurnoutCanvas(Turnout myTurnout) {
+        super(myTurnout);
     }
 
     public void paint(Graphics g) {
@@ -45,7 +45,7 @@ public class DefaultSwitchCanvas extends SwitchCanvas {
             RenderingHints.VALUE_ANTIALIAS_ON);
         g3.drawImage(createImageIcon("switches/canvas/default_switch.png")
             .getImage(), 0, 0, this);
-        switch (mySwitch.getSwitchState()) {
+        switch (myTurnout.getTurnoutState()){
         case STRAIGHT:
             g3.drawImage(createImageIcon("switches/canvas/LED_middle_yellow.png").getImage(), 28, 0, this);
             g3.drawImage(createImageIcon("switches/canvas/LED_up_white.png")

@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/switches/configuration/SwitchTypeCellRenderer.java>  -  <desc>
+ * <./ui/switches/configuration/SwitchDefaultStateCellRenderer.java>  -  <desc>
  * 
- * begin     : Wed Aug 23 16:59:05 BST 2006
+ * begin     : Wed Aug 23 16:59:26 BST 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
@@ -31,22 +31,21 @@ import javax.swing.table.TableCellRenderer;
 
 import ch.fork.AdHocRailway.ui.ImageTools;
 
-public class SwitchTypeCellRenderer implements TableCellRenderer {
-    
+public class TurnoutDefaultStateCellRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel iconLabel = new JLabel();
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        if (value.equals("DefaultSwitch")) {
+        if (table.getValueAt(row, 1).equals("ThreeWaySwitch")) {
+            iconLabel.setText("N/A");
+            return iconLabel;
+        }
+        if (value.equals(SwitchState.STRAIGHT)) {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches/default_switch_small.png"));
-        } else if (value.equals("DoubleCrossSwitch")) {
+                "switches/default_straight.png"));
+        } else {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches/double_cross_switch_small.png"));
-        } else if (value.equals("ThreeWaySwitch")) {
-            iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches"));
+                "switches/default_curved.png"));
         }
         return iconLabel;
     }

@@ -30,27 +30,22 @@ import javax.swing.table.AbstractTableModel;
 
 import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.turnouts.DefaultSwitch;
-import ch.fork.AdHocRailway.domain.turnouts.DoubleCrossSwitch;
-import ch.fork.AdHocRailway.domain.turnouts.Switch;
-import ch.fork.AdHocRailway.domain.turnouts.SwitchGroup;
-import ch.fork.AdHocRailway.domain.turnouts.SwitchState;
-import ch.fork.AdHocRailway.domain.turnouts.ThreeWaySwitch;
-import ch.fork.AdHocRailway.domain.turnouts.Switch.SwitchOrientation;
 
-public class SwitchesTableModel extends AbstractTableModel {
+import com.sun.java.util.jar.pack.Instruction.Switch;
+
+public class TurnoutTableModel extends AbstractTableModel {
     private final String[]       columnNames = { "#", "Type", "Bus", "Addr. 1",
         "Addr. 2", "Addr. 1 switched", "Addr. 2 switched", "Default State",
         "Orientation", "Desc"               };
     private SwitchGroup          switchGroup;
     private Map<Integer, Switch> switchNumberToSwitch;
 
-    public SwitchesTableModel(Map<Integer, Switch> switchNumberToSwitch) {
+    public TurnoutTableModel(Map<Integer, Switch> switchNumberToSwitch) {
         super();
         this.switchNumberToSwitch = switchNumberToSwitch;
     }
 
-    public SwitchesTableModel(SwitchGroup switchGroup) {
+    public TurnoutTableModel(SwitchGroup switchGroup) {
         super();
         this.switchGroup = switchGroup;
     }

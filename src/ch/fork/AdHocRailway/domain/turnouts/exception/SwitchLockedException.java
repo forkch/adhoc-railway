@@ -22,7 +22,7 @@
 
 package ch.fork.AdHocRailway.domain.turnouts.exception;
 
-public class SwitchLockedException extends SwitchException {
+public class SwitchLockedException extends TurnoutException {
     public SwitchLockedException(String msg) {
         super(msg);
     }
