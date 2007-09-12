@@ -53,12 +53,6 @@ public abstract class Control {
 		return this.em;
 	}
 
-	abstract public void startTransaction();
-
-	abstract public void commitTransaction();
-
-	abstract public void rollbackTransaction();
-
 	abstract public void undoLastChange() throws ControlException;
 
 	abstract public void previousDeviceToDefault() throws ControlException;

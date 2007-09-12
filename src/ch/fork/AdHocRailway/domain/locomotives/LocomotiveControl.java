@@ -330,22 +330,4 @@ public class LocomotiveControl extends Control implements GLInfoListener,
 	public void previousDeviceToDefault() throws ControlException {
 		// TODO Auto-generated method stub
 	}
-
-	@Override
-	public void commitTransaction() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void rollbackTransaction() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void startTransaction() {
-		// TODO Auto-generated method stub
-
-	}
 }

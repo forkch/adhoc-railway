@@ -412,22 +412,4 @@ public class TurnoutControl extends Control implements GAInfoListener,
 		 * setStraight(lastChangedSwitch); break; }
 		 */
 	}
-
-	@Override
-	public void commitTransaction() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void rollbackTransaction() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void startTransaction() {
-		// TODO Auto-generated method stub
-
-	}
 }
