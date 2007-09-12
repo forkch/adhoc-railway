@@ -58,7 +58,8 @@ import javax.swing.table.TableModel;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistence;
+import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.TableResizer;
@@ -66,7 +67,7 @@ import ch.fork.AdHocRailway.ui.TableResizer;
 public class LocomotiveConfigurationDialog<E> extends
 		ConfigurationDialog<LocomotiveConfiguration> {
 
-	private LocomotivePersistence locomotivePersistence;
+	private LocomotivePersistenceIface locomotivePersistence;
 
 	private TableModel locomotivesTableModel;
 
@@ -91,7 +92,7 @@ public class LocomotiveConfigurationDialog<E> extends
 
 	public LocomotiveConfigurationDialog(JFrame owner) {
 		super(owner, "Locomotive Configuration");
-		locomotivePersistence = LocomotivePersistence.getInstance();
+		locomotivePersistence = HibernateLocomotivePersistence.getInstance();
 		initGUI();
 	}
 

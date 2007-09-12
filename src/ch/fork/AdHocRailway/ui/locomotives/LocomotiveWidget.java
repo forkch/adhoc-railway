@@ -54,9 +54,11 @@ import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
 import ch.fork.AdHocRailway.domain.locking.LockControl;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
+import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistence;
+import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
@@ -97,9 +99,9 @@ public class LocomotiveWidget extends JPanel implements
 
 	private Locomotive none;
 	
-	private LocomotiveControl locomotiveControl = LocomotiveControl.getInstance();;
+	private LocomotiveControlface locomotiveControl = SRCPLocomotiveControl.getInstance();;
 	
-	private LocomotivePersistence locomotivePersistence = LocomotivePersistence.getInstance();
+	private LocomotivePersistenceIface locomotivePersistence = HibernateLocomotivePersistence.getInstance();
 
 	private LocomotiveGroup allLocomotives;
 
@@ -259,7 +261,7 @@ public class LocomotiveWidget extends JPanel implements
 	protected void updateWidget() {
 		if (myLocomotive == null)
 			return;
-		LocomotiveControl control = locomotiveControl;
+		LocomotiveControlface control = locomotiveControl;
 		double speedInPercent = ((double) control.getCurrentSpeed(myLocomotive))
 				/ ((double) myLocomotive.getLocomotiveType().getDrivingSteps());
 		if (speedInPercent > 0.9) {

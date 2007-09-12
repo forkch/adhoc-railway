@@ -41,7 +41,7 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistence;
+import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.ui.SpringUtilities;
 
@@ -127,7 +127,7 @@ public class LocomotiveConfig extends JDialog {
 		descTextField = new JTextField();
 		descTextField.setText(myLocomotive.getDescription());
 
-		SortedSet<LocomotiveType> types = LocomotivePersistence.getInstance()
+		SortedSet<LocomotiveType> types = HibernateLocomotivePersistence.getInstance()
 				.getAllLocomotiveTypes();
 		locomotiveTypeComboBox = new JComboBox();
 		for (LocomotiveType type : types) {
@@ -168,7 +168,7 @@ public class LocomotiveConfig extends JDialog {
 	class ApplyChangesAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
 			myLocomotive.setName(nameTextField.getText());
-			LocomotiveType newType = LocomotivePersistence
+			LocomotiveType newType = HibernateLocomotivePersistence
 					.getInstance()
 					.getLocomotiveTypeByName((String)
 							locomotiveTypeComboBox.getSelectedItem());

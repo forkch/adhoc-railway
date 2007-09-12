@@ -38,7 +38,8 @@ import javax.swing.border.TitledBorder;
 
 import ch.fork.AdHocRailway.domain.locking.LockControl;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
+import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -46,7 +47,7 @@ import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class LocomotiveControlPanel extends JPanel {
 
-    private LocomotiveControl      locomotiveControl;
+    private LocomotiveControlface      locomotiveControl;
     private int[][]                keyBindingsUS = new int[][] {
         { KeyEvent.VK_A, KeyEvent.VK_Z, KeyEvent.VK_Q },
         { KeyEvent.VK_S, KeyEvent.VK_X, KeyEvent.VK_W },
@@ -78,7 +79,7 @@ public class LocomotiveControlPanel extends JPanel {
         super();
         this.frame = frame;
         locomotiveWidgets = new ArrayList<LocomotiveWidget>();
-        locomotiveControl = LocomotiveControl.getInstance();
+        locomotiveControl = SRCPLocomotiveControl.getInstance();
         initGUI();
     }
 
@@ -131,7 +132,7 @@ public class LocomotiveControlPanel extends JPanel {
             try {
                 for (LocomotiveWidget widget : locomotiveWidgets) {
                     Locomotive myLocomotive = widget.getMyLocomotive();
-                    LocomotiveControl.getInstance().setSpeed(myLocomotive, 0, null);
+                    SRCPLocomotiveControl.getInstance().setSpeed(myLocomotive, 0, null);
                     widget.updateWidget();
                     Thread.sleep(200);
                 }

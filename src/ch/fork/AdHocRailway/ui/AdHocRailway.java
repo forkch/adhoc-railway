@@ -59,8 +59,10 @@ import javax.swing.WindowConstants;
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.locking.LockControl;
 import ch.fork.AdHocRailway.domain.locking.exception.LockingException;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControl;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistence;
+import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
+import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
@@ -91,9 +93,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private TurnoutPersistence turnoutPersistence;
 
-	private LocomotiveControl locomotiveControl;
+	private LocomotiveControlface locomotiveControl;
 
-	private LocomotivePersistence locomotivePersistence;
+	private LocomotivePersistenceIface locomotivePersistence;
 
 	private LockControl lockControl;
 	
@@ -154,7 +156,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		splash.nextStep("Loading Persistence Layer (Preferences)");
 		preferences = Preferences.getInstance();
 		splash.nextStep("Loading Persistence Layer (Locomotives)");
-		locomotivePersistence = LocomotivePersistence.getInstance();
+		locomotivePersistence = HibernateLocomotivePersistence.getInstance();
 		//locomotivePersistence.preload();
 		splash.nextStep("Loading Persistence Layer (Turnouts)");
 		turnoutPersistence = TurnoutPersistence.getInstance();
@@ -162,7 +164,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		splash.nextStep("Loading Persistence Layer (Routes)");
 		
 		splash.nextStep("Loading Control Layer (Locomotives)");
-		locomotiveControl = LocomotiveControl.getInstance();
+		locomotiveControl = SRCPLocomotiveControl.getInstance();
 		splash.nextStep("Loading Control Layer (Turnouts)");
 		turnoutControl = TurnoutControl.getInstance();
 		splash.nextStep("Loading Control Layer (Routes)");
