@@ -14,7 +14,7 @@
   <property environment="env"/>
   <!-- main class for run target -->
   <!--property name="main.class" value="ch.fork.AdHocRailway.ui.AdHocRailway"/-->
-  <property name="main.class" value="ch.fork.AdHocRailway.persistence.Test"/>
+  <property name="main.class" value="ch.fork.AdHocRailway.ui.AdHocRailway"/>
   <!-- Useful shortcuts -->
   <patternset id="meta.files">
     <include name="**/*.xml"/>

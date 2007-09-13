@@ -33,7 +33,6 @@ public class RouteItem implements java.io.Serializable,Comparable<RouteItem> {
 
 	private String routedState;
 
-	
 
 	public int compareTo(RouteItem o) {
 		if(this == o) return 0;
