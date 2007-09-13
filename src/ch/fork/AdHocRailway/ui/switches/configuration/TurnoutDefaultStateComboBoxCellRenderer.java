@@ -29,6 +29,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
+import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class TurnoutDefaultStateComboBoxCellRenderer implements ListCellRenderer {
@@ -37,7 +38,7 @@ public class TurnoutDefaultStateComboBoxCellRenderer implements ListCellRenderer
         JLabel iconLabel = new JLabel();
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
         //iconLabel.setPreferredSize(new Dimension(150, 38));
-        if (value.equals(SwitchState.STRAIGHT)) {
+        if (value.equals(TurnoutState.STRAIGHT)) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "switches/default_straight.png"));
         } else {

@@ -29,6 +29,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class TurnoutTypeCellRenderer implements TableCellRenderer {
@@ -38,15 +39,15 @@ public class TurnoutTypeCellRenderer implements TableCellRenderer {
         JLabel iconLabel = new JLabel();
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        if (value.equals("DefaultSwitch")) {
+        if (value == TurnoutTypes.DEFAULT) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "switches/default_switch_small.png"));
-        } else if (value.equals("DoubleCrossSwitch")) {
+        } else if (value == TurnoutTypes.DOUBLECROSS) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "switches/double_cross_switch_small.png"));
-        } else if (value.equals("ThreeWaySwitch")) {
+        } else if (value == TurnoutTypes.THREEWAY) {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches"));
+                "switches/three_way_switch_small.png"));
         }
         return iconLabel;
     }

@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -25,6 +26,7 @@ public class Locomotive extends ControlObject implements java.io.Serializable, C
 
 	// Fields
 
+	@Id @GeneratedValue
 	private int id;
 
 	private LocomotiveGroup locomotiveGroup;
@@ -183,7 +185,8 @@ public class Locomotive extends ControlObject implements java.io.Serializable, C
 	}
 
 	// Property accessors
-	@Id
+
+	@Id @GeneratedValue
 	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = true)
 	public int getId() {
 		return this.id;

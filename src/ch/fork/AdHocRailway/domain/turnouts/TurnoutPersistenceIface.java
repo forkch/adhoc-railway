@@ -3,6 +3,8 @@ package ch.fork.AdHocRailway.domain.turnouts;
 import java.util.Map;
 import java.util.SortedSet;
 
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
+
 public interface TurnoutPersistenceIface {
 
 	public abstract void preload();
@@ -40,6 +42,8 @@ public interface TurnoutPersistenceIface {
 	@SuppressWarnings("unchecked")
 	public abstract SortedSet<TurnoutType> getAllTurnoutTypes();
 
-	public abstract TurnoutType getTurnoutTypeByName(String typeName);
+	public abstract TurnoutType getTurnoutType(TurnoutTypes typeName);
+
+	public int getNextFreeTurnoutNumber();
 
 }

@@ -17,16 +17,16 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
-import ch.fork.AdHocRailway.domain.routes.RouteOld;
-import ch.fork.AdHocRailway.domain.routes.RouteOld.RouteState;
+import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
-    private RouteOld        route;
+    private Route    route;
     private RouteControl routeControl;
     private JLabel       nameLabel;
     private JLabel       iconLabel;
@@ -37,14 +37,14 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
     private MouseAction  mouseAction;
 	private JLabel numberLabel;
 
-    public RouteWidget(RouteOld route) {
-        this.route = route;
+    public RouteWidget(Route route) {
+    	this.route = route;
         routeControl = RouteControl.getInstance();
         initGUI();
         routeControl.addRouteChangeListener(route, this);
-    }
+	}
 
-    private void initGUI() {
+	private void initGUI() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
@@ -94,7 +94,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
         public void mouseClicked(MouseEvent e) {
             try {
-                if (route.isChangeingRoute())
+                if (route.isChangingRoute())
                     return;
                 if (e.getClickCount() == 1
                     && e.getButton() == MouseEvent.BUTTON1) {
@@ -117,7 +117,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         }
     }
 
-    public void routeChanged(RouteOld r) {
+    public void routeChanged(Route r) {
         if (route.equals(r)) {
             SwingUtilities.invokeLater(new Runnable() {
 
@@ -159,7 +159,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         });
     }
 
-	public RouteOld getRoute() {
+	public Route getRoute() {
 		return route;
 	}
 }

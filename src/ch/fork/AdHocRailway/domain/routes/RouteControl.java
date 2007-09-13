@@ -1,16 +1,11 @@
 package ch.fork.AdHocRailway.domain.routes;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import ch.fork.AdHocRailway.domain.Control;
 import ch.fork.AdHocRailway.domain.exception.ControlException;
-import ch.fork.AdHocRailway.domain.routes.RouteOld.RouteState;
+import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -18,26 +13,19 @@ import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 public class RouteControl extends Control {
 
 	private static RouteControl instance;
+	
+	private HibernateRoutePersistence persistence = HibernateRoutePersistence.getInstance();
 
-	private Map<RouteOld, RouteChangeListener> listeners;
-
-	private SortedSet<RouteOld> routes;
-
-	private Map<Integer, RouteOld> numberToRoutes;
-
-	private List<RouteGroupOld> routeGroups;
-
-	private RouteOld lastChangedRoute;
+	private Map<Route, RouteChangeListener> listeners;
 
 	private RouteState lastRouteState;
+	
+	private Route lastChangedRoute;
 
 	protected String ERR_TOGGLE_FAILED = "Toggle of switch failed";
 
 	private RouteControl() {
-		listeners = new HashMap<RouteOld, RouteChangeListener>();
-		routes = new TreeSet<RouteOld>();
-		numberToRoutes = new HashMap<Integer, RouteOld>();
-		routeGroups = new ArrayList<RouteGroupOld>();
+		listeners = new HashMap<Route, RouteChangeListener>();
 	}
 
 	public static RouteControl getInstance() {
@@ -47,65 +35,17 @@ public class RouteControl extends Control {
 		return instance;
 	}
 
-	public void registerRoute(RouteOld route) {
-		routes.add(route);
-		numberToRoutes.put(route.getNumber(), route);
-	}
-
-	public void unregisterRoute(RouteOld route) {
-		routes.remove(route.getName());
-		numberToRoutes.remove(route.getNumber());
-	}
-
-	public void registerRoutes(Collection<RouteOld> routesToRegister) {
-		for (RouteOld route : routesToRegister) {
-			routes.add(route);
-			numberToRoutes.put(route.getNumber(), route);
-		}
-	}
-
-	public void registerRouteGroup(RouteGroupOld rg) {
-		routeGroups.add(rg);
-	}
-
-	public void registerRouteGroups(Collection<RouteGroupOld> rgs) {
-		routeGroups.addAll(rgs);
-	}
-
-	public void unregisterAllRouteGroups() {
-		routeGroups.clear();
-	}
-
-	public List<RouteGroupOld> getRouteGroups() {
-		return routeGroups;
-	}
-
-	public void clear() {
-		routes.clear();
-		numberToRoutes.clear();
-		routeGroups.clear();
-	}
-
-	public SortedSet<RouteOld> getRoutes() {
-		return routes;
-	}
-
-	public Map<Integer, RouteOld> getNumberToRoutes() {
-		return numberToRoutes;
-	}
-
-	public void enableRoute(RouteOld r) throws TurnoutException {
+	public void enableRoute(Route r) throws TurnoutException {
 		// System.out.println("enabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
-		System.out.println(listeners.get(r).hashCode());
 		Router switchRouter = new Router(r, true, waitTime, listeners.get(r));
 		switchRouter.start();
 		lastChangedRoute = r;
 		lastRouteState = RouteState.ENABLED;
 	}
 
-	public void disableRoute(RouteOld r) throws TurnoutException {
+	public void disableRoute(Route r) throws TurnoutException {
 		// System.out.println("disabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
@@ -115,7 +55,7 @@ public class RouteControl extends Control {
 		lastRouteState = RouteState.DISABLED;
 	}
 
-	public void addRouteChangeListener(RouteOld r, RouteChangeListener listener) {
+	public void addRouteChangeListener(Route r, RouteChangeListener listener) {
 		listeners.put(r, listener);
 	}
 
@@ -123,7 +63,7 @@ public class RouteControl extends Control {
 		listeners.clear();
 	}
 
-	public void removeRouteChangeListener(RouteOld r) {
+	public void removeRouteChangeListener(Route r) {
 		listeners.remove(r);
 	}
 

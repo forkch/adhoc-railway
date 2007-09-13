@@ -1,23 +1,22 @@
 package ch.fork.AdHocRailway.domain.routes;
 
-import java.util.Collection;
+import java.util.SortedSet;
 
-import ch.fork.AdHocRailway.domain.routes.RouteOld.RouteState;
+import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
-import com.sun.java.util.jar.pack.Instruction.Switch;
-
 public class Router extends Thread {
 
-    private RouteOld               route;
+    private Route               route;
     private boolean             enableRoute;
     private int                 waitTime;
     private RouteChangeListener listener;
     private TurnoutException     switchException;
 
-    public Router(RouteOld route, boolean enableRoute, int waitTime,
+    public Router(Route route, boolean enableRoute, int waitTime,
         RouteChangeListener listener) {
         this.route = route;
         this.enableRoute = enableRoute;
@@ -43,24 +42,12 @@ public class Router extends Thread {
     }
 
     private void disableRoute() throws TurnoutException, InterruptedException {
-        Collection<RouteItemOld> routeItems = route.getRouteItems();
+        SortedSet<RouteItem> routeItems = route.getRouteItems();
         TurnoutControl sc = TurnoutControl.getInstance();
-        for (RouteItemOld ri : routeItems) {
-            Switch switchToRoute = ri.getRoutedSwitch();
+        for (RouteItem ri : routeItems) {
+            Turnout turnoutToRoute = ri.getTurnout();
 
-            /*switch (switchToRoute.getDefaultState()) {
-            case STRAIGHT:
-                sc.setStraight(switchToRoute);
-                break;
-            case LEFT:
-                sc.setCurvedLeft(switchToRoute);
-                break;
-            case RIGHT:
-                sc.setCurvedRight(switchToRoute);
-                break;
-            }
-            */
-            sc.setDefaultState(switchToRoute);
+            sc.setDefaultState(turnoutToRoute);
             listener.nextSwitchDerouted();
             Thread.sleep(waitTime);
         }
@@ -69,20 +56,19 @@ public class Router extends Thread {
     }
 
     private void enableRoute() throws TurnoutException, InterruptedException {
-        Collection<RouteItemOld> routeItems = route.getRouteItems();
+    	SortedSet<RouteItem> routeItems = route.getRouteItems();
         TurnoutControl sc = TurnoutControl.getInstance();
-        for (RouteItemOld ri : routeItems) {
-            Switch switchToRoute = ri.getRoutedSwitch();
-            ri.setPreviousSwitchState(switchToRoute.getSwitchState());
-            switch (ri.getRoutedSwitchState()) {
+        for (RouteItem ri : routeItems) {
+        	Turnout turnoutToRoute = ri.getTurnout();
+            switch (ri.getRoutedStateEnum()) {
             case STRAIGHT:
-                sc.setStraight(switchToRoute);
+                sc.setStraight(turnoutToRoute);
                 break;
             case LEFT:
-                sc.setCurvedLeft(switchToRoute);
+                sc.setCurvedLeft(turnoutToRoute);
                 break;
             case RIGHT:
-                sc.setCurvedRight(switchToRoute);
+                sc.setCurvedRight(turnoutToRoute);
                 break;
             }
             listener.nextSwitchRouted();

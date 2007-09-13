@@ -13,11 +13,12 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
+import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
+import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
-import ch.fork.AdHocRailway.domain.routes.RouteOld;
+import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
-import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
@@ -39,6 +40,9 @@ public class KeyTrackControl extends JPanel {
 			.getInstance();
 
 	private RouteControl routeControl = RouteControl.getInstance();
+
+	private HibernateRoutePersistence routePersistence = HibernateRoutePersistence
+			.getInstance();
 
 	public boolean routeMode;
 
@@ -235,9 +239,9 @@ public class KeyTrackControl extends JPanel {
 
 		private void handleRouteChange(ActionEvent e, int enteredNumber)
 				throws TurnoutException {
-			RouteOld searchedRoute = null;
+			Route searchedRoute = null;
 
-			searchedRoute = routeControl.getNumberToRoutes().get(enteredNumber);
+			searchedRoute = routePersistence.getRouteByNumber(enteredNumber);
 			if (searchedRoute == null) {
 				resetSegmentDisplay();
 				return;

@@ -14,13 +14,14 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
+import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
+import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
-import ch.fork.AdHocRailway.domain.routes.RouteGroupOld;
-import ch.fork.AdHocRailway.domain.routes.RouteOld;
+import ch.fork.AdHocRailway.domain.routes.RouteGroup;
+import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -45,6 +46,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			.getInstance();
 
 	private RouteControl routeControl = RouteControl.getInstance();
+	
+	private HibernateRoutePersistence routePersistence  = HibernateRoutePersistence.getInstance();
 
 	public TrackControlPanel(JFrame frame) {
 		this.frame = frame;
@@ -113,13 +116,13 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				.getIntValue(PreferencesKeys.ROUTE_CONTROLES);
 		int i = 1;
 		routeControl.removeAllRouteChangeListeners();
-		for (RouteGroupOld routeGroup : routeControl.getRouteGroups()) {
+		for (RouteGroup routeGroup : routePersistence.getAllRouteGroups()) {
 
 			WidgetTab routeGroupTab = new WidgetTab(maxRouteCols);
 			JScrollPane groupScrollPane = new JScrollPane(routeGroupTab);
 			groupScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 			groupScrollPane.getVerticalScrollBar().setBlockIncrement(10);
-			for (RouteOld aRoute : routeGroup.getRoutes()) {
+			for (Route aRoute : routeGroup.getRoutes()) {
 				RouteWidget routeWidget = new RouteWidget(aRoute);
 				routeGroupTab.addWidget(routeWidget);
 				routeControl.addRouteChangeListener(aRoute, routeWidget);
@@ -167,7 +170,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		public void actionPerformed(ActionEvent e) {
 			int selectedRouteGroup = Integer.parseInt(e.getActionCommand());
-			if (selectedRouteGroup < routeControl.getRouteGroups().size()) {
+			if (selectedRouteGroup < routePersistence.getAllRouteGroups().size()) {
 				routeGroupsTabbedPane.setSelectedIndex(selectedRouteGroup);
 			}
 		}

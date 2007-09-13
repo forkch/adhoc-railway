@@ -4,21 +4,16 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 
-public class HibernateLocomotivePersistence implements LocomotivePersistenceIface {
+import ch.fork.AdHocRailway.domain.HibernatePersistence;
+
+public class HibernateLocomotivePersistence extends HibernatePersistence implements LocomotivePersistenceIface {
 	private static LocomotivePersistenceIface instance;
 
-	protected EntityManager em;
 
-	private HibernateLocomotivePersistence() {// Start EntityManagerFactory
-		EntityManagerFactory emf = Persistence
-				.createEntityManagerFactory("adhocrailway");
-		// First unit of work
-		this.em = emf.createEntityManager();
+	private HibernateLocomotivePersistence() {
+		super();
 	}
 
 	public static LocomotivePersistenceIface getInstance() {
@@ -97,10 +92,6 @@ public class HibernateLocomotivePersistence implements LocomotivePersistenceIfac
 		EntityTransaction t = em.getTransaction();
 		t.begin();
 		em.remove(locomotive);
-		em.refresh(locomotive.getLocomotiveGroup());
-		t.commit();
-		t.begin();
-		em.refresh(locomotive.getLocomotiveGroup());
 		t.commit();
 	}
 

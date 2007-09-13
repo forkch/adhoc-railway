@@ -74,14 +74,4 @@ public class SwitchProgrammer extends ConfigurationDialog {
         pack();
         setVisible(true);
     }
-
-    @Override
-    public void createTempConfiguration() {
-        
-    }
-
-    @Override
-    public Object getTempConfiguration() {
-        return null;
-    }
 }

@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-public abstract class ConfigurationDialog<E> extends JDialog {
+public abstract class ConfigurationDialog extends JDialog {
 
     protected boolean okPressed;
     protected boolean cancelPressed;
@@ -24,7 +24,6 @@ public abstract class ConfigurationDialog<E> extends JDialog {
 
     public ConfigurationDialog(JFrame owner, String title) {
         super(owner, title, true);
-        createTempConfiguration();
 
         initBasicGUI();
 
@@ -32,16 +31,10 @@ public abstract class ConfigurationDialog<E> extends JDialog {
     
     public ConfigurationDialog(JDialog owner, String title) {
         super(owner, title, true);
-        createTempConfiguration();
 
         initBasicGUI();
 
     }
-
-
-    public abstract void createTempConfiguration();
-
-    public abstract E getTempConfiguration();
 
     private void initBasicGUI() {
         okButton = new JButton("OK");

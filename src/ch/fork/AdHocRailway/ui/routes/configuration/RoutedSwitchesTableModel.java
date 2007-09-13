@@ -6,14 +6,15 @@ import java.util.Set;
 
 import javax.swing.table.AbstractTableModel;
 
-import ch.fork.AdHocRailway.domain.routes.RouteItemOld;
-import ch.fork.AdHocRailway.domain.routes.RouteOld;
+import ch.fork.AdHocRailway.domain.routes.Route;
+import ch.fork.AdHocRailway.domain.routes.RouteItem;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutState;
 
 public class RoutedSwitchesTableModel extends AbstractTableModel {
 
 	private String[] columnNames = { "Switch-Number", "Routed-State" };
 
-	private Set<RouteItemOld> routeItems;
+	private Set<RouteItem> routeItems;
 
 	public RoutedSwitchesTableModel() {
 	}
@@ -30,31 +31,31 @@ public class RoutedSwitchesTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-        List<RouteItemOld> routeItemsArrayList = new ArrayList<RouteItemOld>(routeItems);
-		RouteItemOld actualRouteItem = routeItemsArrayList.get(rowIndex);
+        List<RouteItem> routeItemsArrayList = new ArrayList<RouteItem>(routeItems);
+		RouteItem actualRouteItem = routeItemsArrayList.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
-			return actualRouteItem.getRoutedSwitch();
+			return actualRouteItem.getTurnout();
 		case 1:
-			return actualRouteItem.getRoutedSwitchState();
+			return actualRouteItem.getRoutedStateEnum();
 		}
 		return null;
 	}
 
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
-        List<RouteItemOld> routeItemsArrayList = new ArrayList<RouteItemOld>(routeItems);
-		RouteItemOld actualRouteItem = routeItemsArrayList.get(rowIndex);
+        List<RouteItem> routeItemsArrayList = new ArrayList<RouteItem>(routeItems);
+		RouteItem actualRouteItem = routeItemsArrayList.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return;
 		case 1:
-			SwitchState state = (SwitchState) value;
-			actualRouteItem.setRoutedSwitchState(state);
+			TurnoutState state = (TurnoutState) value;
+			actualRouteItem.setRoutedStateEnum(state);
 		}
 		return;
 	}
 
-	public void setRoute(RouteOld route) {
+	public void setRoute(Route route) {
 		this.routeItems = route.getRouteItems();
 		fireTableDataChanged();
 	}

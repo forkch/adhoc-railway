@@ -20,7 +20,7 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.ui.switches.canvas;
+package ch.fork.AdHocRailway.ui.switches;
 
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
 

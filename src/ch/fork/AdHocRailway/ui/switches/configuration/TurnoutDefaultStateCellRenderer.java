@@ -29,6 +29,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
+import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class TurnoutDefaultStateCellRenderer implements TableCellRenderer {
@@ -36,11 +37,11 @@ public class TurnoutDefaultStateCellRenderer implements TableCellRenderer {
         boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel iconLabel = new JLabel();
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        if (table.getValueAt(row, 1).equals("ThreeWaySwitch")) {
+        if (table.getValueAt(row, 1).equals("ThreeWay")) {
             iconLabel.setText("N/A");
             return iconLabel;
         }
-        if (value.equals(SwitchState.STRAIGHT)) {
+        if (value.equals(TurnoutState.STRAIGHT)) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "switches/default_straight.png"));
         } else {

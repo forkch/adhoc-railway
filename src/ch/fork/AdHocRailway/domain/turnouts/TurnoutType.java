@@ -9,9 +9,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
@@ -21,10 +23,11 @@ import org.hibernate.annotations.SortType;
  */
 @Entity
 @Table(name = "turnout_type", catalog = "adhocrailway", uniqueConstraints = {})
-public class TurnoutType implements java.io.Serializable, Comparable<TurnoutType> {
+public class TurnoutType implements java.io.Serializable,
+		Comparable<TurnoutType> {
 
-	// Fields    
-
+	// Fields
+	@Id @GeneratedValue
 	private int id;
 
 	private String typeName;
@@ -32,10 +35,14 @@ public class TurnoutType implements java.io.Serializable, Comparable<TurnoutType
 	@Sort(type = SortType.NATURAL)
 	private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
 
+	public enum TurnoutTypes {
+		DEFAULT, DOUBLECROSS, THREEWAY, UNKNOWN
+	};
+
 	public int compareTo(TurnoutType o) {
 		return typeName.compareTo(o.getTypeName());
 	}
-	
+
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
@@ -58,7 +65,20 @@ public class TurnoutType implements java.io.Serializable, Comparable<TurnoutType
 	public String toString() {
 		return typeName;
 	}
-	
+
+	@Transient
+	public TurnoutTypes getTurnoutTypeEnum() {
+		if (typeName.toUpperCase().equals("DEFAULT"))
+			return TurnoutTypes.DEFAULT;
+		else if (typeName.toUpperCase().equals("DOUBLECROSS"))
+			return TurnoutTypes.DOUBLECROSS;
+		else if (typeName.toUpperCase().equals("THREEWAY"))
+			return TurnoutTypes.THREEWAY;
+		else 
+			return TurnoutTypes.UNKNOWN;
+
+	}
+
 	// Constructors
 
 	/** default constructor */
@@ -79,7 +99,7 @@ public class TurnoutType implements java.io.Serializable, Comparable<TurnoutType
 	}
 
 	// Property accessors
-	@Id
+	@Id @GeneratedValue
 	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = true)
 	public int getId() {
 		return this.id;
@@ -108,6 +128,5 @@ public class TurnoutType implements java.io.Serializable, Comparable<TurnoutType
 	public void setTurnouts(SortedSet<Turnout> turnouts) {
 		this.turnouts = turnouts;
 	}
-
 
 }

@@ -39,11 +39,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.ui.SpringUtilities;
 
 public class TurnoutConfig extends JDialog {
@@ -56,9 +57,9 @@ public class TurnoutConfig extends JDialog {
     private JCheckBox  switched1Checkbox;
     private JCheckBox  switched2Checkbox;
     private JTextField descTextField;
-    private JComboBox  switchTypeComboBox;
-    private JComboBox  switchDefaultStateComboBox;
-    private JComboBox  switchOrientationComboBox;
+    private JComboBox  turnoutTypeComboBox;
+    private JComboBox  turnoutDefaultStateComboBox;
+    private JComboBox  turnoutOrientationComboBox;
     
     private TurnoutPersistenceIface turnoutPersitence = HibernateTurnoutPersistence.getInstance();
 
@@ -147,16 +148,16 @@ public class TurnoutConfig extends JDialog {
         descTextField = new JTextField();
         descTextField.setText(myTurnout.getDescription());
 
-        switchTypeComboBox = new JComboBox();
-        switchTypeComboBox.addItem("DefaultSwitch");
-        switchTypeComboBox.addItem("DoubleCrossSwitch");
-        switchTypeComboBox.addItem("ThreeWaySwitch");
-        switchTypeComboBox.addActionListener(new ActionListener() {
+        turnoutTypeComboBox = new JComboBox();
+        turnoutTypeComboBox.addItem(TurnoutTypes.DEFAULT);
+        turnoutTypeComboBox.addItem(TurnoutTypes.DOUBLECROSS);
+        turnoutTypeComboBox.addItem(TurnoutTypes.THREEWAY);
+        turnoutTypeComboBox.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                String selected = ((String) switchTypeComboBox
+            	TurnoutTypes selected = ((TurnoutTypes) turnoutTypeComboBox
                     .getSelectedItem());
-                if (selected.equals("ThreeWaySwitch")) {
+                if (selected == TurnoutTypes.THREEWAY) {
                     address2Label.setEnabled(true);
                     address2TextField.setEnabled(true);
 
@@ -166,25 +167,28 @@ public class TurnoutConfig extends JDialog {
             }
 
         });
-        switchTypeComboBox.setRenderer(new TurnoutTypeComboBoxCellRenderer());
-        switchTypeComboBox.setSelectedItem(myTurnout.getTurnoutType());
-        switchDefaultStateComboBox = new JComboBox();
-        switchDefaultStateComboBox.addItem(TurnoutState.STRAIGHT);
-        switchDefaultStateComboBox.addItem(TurnoutState.LEFT);
-        switchDefaultStateComboBox
+        turnoutTypeComboBox.setRenderer(new TurnoutTypeComboBoxCellRenderer());
+        turnoutTypeComboBox.setSelectedItem(myTurnout.getTurnoutType().getTurnoutTypeEnum());
+        
+        turnoutDefaultStateComboBox = new JComboBox();
+        turnoutDefaultStateComboBox.addItem(TurnoutState.STRAIGHT);
+        turnoutDefaultStateComboBox.addItem(TurnoutState.LEFT);
+        turnoutDefaultStateComboBox
             .setRenderer(new TurnoutDefaultStateComboBoxCellRenderer());
-        switchDefaultStateComboBox.setSelectedItem(myTurnout.getDefaultState());
-        switchOrientationComboBox = new JComboBox();
-        switchOrientationComboBox.addItem(TurnoutOrientation.NORTH);
-        switchOrientationComboBox.addItem(TurnoutOrientation.EAST);
-        switchOrientationComboBox.addItem(TurnoutOrientation.SOUTH);
-        switchOrientationComboBox.addItem(TurnoutOrientation.WEST);
-        switchOrientationComboBox.setSelectedItem(myTurnout
+        turnoutDefaultStateComboBox.setSelectedItem(myTurnout.getDefaultStateEnum());
+        
+        turnoutOrientationComboBox = new JComboBox();
+        turnoutOrientationComboBox.addItem(TurnoutOrientation.NORTH);
+        turnoutOrientationComboBox.addItem(TurnoutOrientation.EAST);
+        turnoutOrientationComboBox.addItem(TurnoutOrientation.SOUTH);
+        turnoutOrientationComboBox.addItem(TurnoutOrientation.WEST);
+        turnoutOrientationComboBox.setSelectedItem(myTurnout
             .getOrientationEnum());
+        
         configPanel.add(numberLabel);
         configPanel.add(numberTextField);
         configPanel.add(typeLabel);
-        configPanel.add(switchTypeComboBox);
+        configPanel.add(turnoutTypeComboBox);
         configPanel.add(busLabel);
         configPanel.add(busTextField);
         configPanel.add(address1Label);
@@ -196,9 +200,9 @@ public class TurnoutConfig extends JDialog {
         configPanel.add(address2SwitchedLabel);
         configPanel.add(switched2Checkbox);
         configPanel.add(defaultStateLabel);
-        configPanel.add(switchDefaultStateComboBox);
+        configPanel.add(turnoutDefaultStateComboBox);
         configPanel.add(orientationLabel);
-        configPanel.add(switchOrientationComboBox);
+        configPanel.add(turnoutOrientationComboBox);
         configPanel.add(descLabel);
         configPanel.add(descTextField);
         SpringUtilities.makeCompactGrid(configPanel, 10, 2, // rows, cols
@@ -225,14 +229,14 @@ public class TurnoutConfig extends JDialog {
             if(switched2Checkbox.isEnabled())
             	newSwitched2 = switched2Checkbox.isSelected();
             
-            TurnoutState newDefaultState = (TurnoutState) switchDefaultStateComboBox
+            TurnoutState newDefaultState = (TurnoutState) turnoutDefaultStateComboBox
             .getSelectedItem();
-            TurnoutOrientation newSwitchOrientation = (TurnoutOrientation)switchOrientationComboBox.getSelectedItem();
+            TurnoutOrientation newOrientation = (TurnoutOrientation)turnoutOrientationComboBox.getSelectedItem();
             
             String newDescription = descTextField.getText();
             
-            String value = (String) switchTypeComboBox.getSelectedItem();
-            myTurnout.setTurnoutType(turnoutPersitence.getTurnoutTypeByName(value));
+            TurnoutTypes newType = (TurnoutTypes)turnoutTypeComboBox.getSelectedItem();
+            myTurnout.setTurnoutType(turnoutPersitence.getTurnoutType(newType));
 
             myTurnout.setNumber(newNumber);
             
@@ -248,7 +252,7 @@ public class TurnoutConfig extends JDialog {
 
             myTurnout.setDefaultStateEnum(newDefaultState);
             myTurnout
-                .setOrientationEnum(newSwitchOrientation);
+                .setOrientationEnum(newOrientation);
             myTurnout.setDescription(newDescription);
             okPressed = true;
             TurnoutConfig.this.setVisible(false);

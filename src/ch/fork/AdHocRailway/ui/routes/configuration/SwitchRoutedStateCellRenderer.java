@@ -29,17 +29,17 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutState;
 import ch.fork.AdHocRailway.ui.ImageTools;
-
-import com.sun.java.util.jar.pack.Instruction.Switch;
 
 public class SwitchRoutedStateCellRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel iconLabel = new JLabel();
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        Switch currentSwitch = (Switch) table.getValueAt(row, 0);
-        SwitchState routedState = (SwitchState) value;
+        Turnout currentSwitch = (Turnout) table.getValueAt(row, 0);
+        TurnoutState routedState = (TurnoutState) value;
         String stateString = "";
         switch (routedState) {
         case STRAIGHT:
@@ -50,13 +50,13 @@ public class SwitchRoutedStateCellRenderer implements TableCellRenderer {
             stateString = "curved";
             break;
         }
-        if (currentSwitch instanceof DefaultSwitch) {
+        if (currentSwitch.isDefault()) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "switches/default_switch_" + stateString + ".png"));
-        } else if (currentSwitch instanceof DoubleCrossSwitch) {
+        } else if (currentSwitch.isDoubleCross()) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "switches/double_cross_switch_" + stateString + ".png"));
-        } else if (currentSwitch instanceof ThreeWaySwitch) {
+        } else if (currentSwitch.isThreeWay()) {
             switch (routedState) {
             case STRAIGHT:
                 iconLabel.setIcon(ImageTools.createImageIcon(

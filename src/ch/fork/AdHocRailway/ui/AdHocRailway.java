@@ -59,20 +59,19 @@ import javax.swing.WindowConstants;
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
 import ch.fork.AdHocRailway.domain.locking.exception.LockingException;
-import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
+import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
 import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
-import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
-import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfiguration;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.switches.SwitchProgrammer;
 import ch.fork.AdHocRailway.ui.switches.configuration.TurnoutConfigurationDialog;
@@ -249,7 +248,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		mainPanel.add(trackControlPanel, BorderLayout.CENTER);
 		mainPanel.add(locomotiveControlPanel, BorderLayout.SOUTH);
 		add(mainPanel, BorderLayout.CENTER);
-		updateSwitches();
+		updateTurnouts();
 		updateLocomotives();
 	}
 
@@ -257,7 +256,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		locomotiveControlPanel.update();
 	}
 
-	private void updateSwitches() {
+	private void updateTurnouts() {
 		trackControlPanel.update();
 	}
 
@@ -272,7 +271,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		if (preferences.getBooleanValue(LOGGING)) {
 			updateCommandHistory("From Server: " + infoData);
 		}
-		System.out.println("From Server: " + infoData.trim());
+		//System.out.println("From Server: " + infoData.trim());
 	}
 
 	public void infoDataReceived(double timestamp, int bus, String deviceGroup,
@@ -379,8 +378,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			TurnoutConfigurationDialog switchConfigDialog = new TurnoutConfigurationDialog(
 					AdHocRailway.this);
 			if (switchConfigDialog.isOkPressed()) {
-				updateSwitches();
-				updateCommandHistory("Switch configuration changed");
+				updateTurnouts();
+				updateCommandHistory("Turnout configuration changed");
 			}
 		}
 	}
@@ -395,14 +394,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			RoutesConfigurationDialog routesConfig = new RoutesConfigurationDialog(
 					AdHocRailway.this);
 			if (routesConfig.isOkPressed()) {
-				RouteControl rc = RouteControl.getInstance();
-				RoutesConfiguration routesConfiguration = routesConfig
-						.getTempConfiguration();
-				rc.clear();
-				rc.registerRoutes(routesConfiguration.getNumberToRoute()
-						.values());
-				rc.registerRouteGroups(routesConfiguration.getRouteGroups());
-				trackControlPanel.update();
+				updateTurnouts();
 				updateCommandHistory("Routes configuration changed");
 			}
 		}

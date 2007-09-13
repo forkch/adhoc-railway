@@ -56,16 +56,16 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
+import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.TableResizer;
 
 public class LocomotiveConfigurationDialog<E> extends
-		ConfigurationDialog<LocomotiveConfiguration> {
+		ConfigurationDialog {
 
 	private LocomotivePersistenceIface locomotivePersistence;
 
@@ -109,33 +109,6 @@ public class LocomotiveConfigurationDialog<E> extends
 		setFocusTraversalPolicy(newPolicy);
 		setSize(new Dimension(700, 500));
 		setVisible(true);
-	}
-
-	@Override
-	public void createTempConfiguration() {
-		// TODO
-		// this.locomotiveControl = LocomotiveControl.getInstance();
-		// this.locomotivesWorkCopy = new TreeSet<ControledLocomotive>();
-		// for (ControledLocomotive l : locomotiveControl.getLocomotives()) {
-		// ControledLocomotive clone = l.clone();
-		// this.locomotivesWorkCopy.add(clone);
-		// }
-		// this.locomotiveGroupsWorkCopy = new ArrayList<LocomotiveGroup>();
-		// for (LocomotiveGroup lg : locomotiveControl.getLocomotiveGroups()) {
-		// LocomotiveGroup clone = lg.clone();
-		// this.locomotiveGroupsWorkCopy.add(clone);
-		// for (ControledLocomotive l : lg.getLocomotives()) {
-		// clone.addLocomotive(l);
-		// }
-		// }
-	}
-
-	@Override
-	public LocomotiveConfiguration getTempConfiguration() {
-		// TODO
-		// return new LocomotiveConfiguration(this.locomotiveGroupsWorkCopy,
-		// this.locomotivesWorkCopy);
-		return null;
 	}
 
 	private JPanel createLocomotiveGroupPanel() {
@@ -366,7 +339,7 @@ public class LocomotiveConfigurationDialog<E> extends
 					LocomotiveConfigurationDialog.this, locomotiveToEdit);
 			if (locomotiveConfig.isOkPressed()) {
 
-				locomotivePersistence.addLocomotive(locomotiveConfig
+				locomotivePersistence.updateLocomotive(locomotiveConfig
 						.getLocomotive());
 			}
 			updateLocomotivesPanel();

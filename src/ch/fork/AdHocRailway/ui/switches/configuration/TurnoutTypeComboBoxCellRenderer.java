@@ -30,6 +30,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class TurnoutTypeComboBoxCellRenderer implements ListCellRenderer {
@@ -38,13 +39,13 @@ public class TurnoutTypeComboBoxCellRenderer implements ListCellRenderer {
         JLabel iconLabel = new JLabel();
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
         iconLabel.setPreferredSize(new Dimension(56, 38));
-        if (value.equals("DefaultSwitch")) {
+        if (value == TurnoutTypes.DEFAULT) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "switches/default_switch_small.png"));
-        } else if (value.equals("DoubleCrossSwitch")) {
+        } else if (value == TurnoutTypes.DOUBLECROSS) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "switches/double_cross_switch_small.png"));
-        } else if (value.equals("ThreeWaySwitch")) {
+        } else if (value == TurnoutTypes.THREEWAY) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "switches/three_way_switch_small.png"));
         }

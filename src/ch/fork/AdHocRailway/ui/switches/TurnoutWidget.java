@@ -37,17 +37,12 @@ import javax.swing.SwingUtilities;
 
 import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
+import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
-import ch.fork.AdHocRailway.ui.switches.canvas.DefaultTurnoutCanvas;
-import ch.fork.AdHocRailway.ui.switches.canvas.DoubleCrossTurnoutCanvas;
-import ch.fork.AdHocRailway.ui.switches.canvas.ThreeWayTurnoutCanvas;
-import ch.fork.AdHocRailway.ui.switches.canvas.TurnoutCanvas;
 import ch.fork.AdHocRailway.ui.switches.configuration.TurnoutConfig;
 
 public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
@@ -79,14 +74,8 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 	}
 
 	private void initGUI() {
-		turnoutCanvas = null;
-		if (myTurnout.isDoubleCross()) {
-			turnoutCanvas = new DoubleCrossTurnoutCanvas(myTurnout);
-		} else if (myTurnout.isDefault()) {
-			turnoutCanvas = new DefaultTurnoutCanvas(myTurnout);
-		} else if (myTurnout.isThreeWay()) {
-			turnoutCanvas = new ThreeWayTurnoutCanvas(myTurnout);
-		}
+		turnoutCanvas = new TurnoutCanvas(myTurnout);
+		
 		turnoutCanvas.addMouseListener(new MouseAction());
 		addMouseListener(new MouseAction());
 

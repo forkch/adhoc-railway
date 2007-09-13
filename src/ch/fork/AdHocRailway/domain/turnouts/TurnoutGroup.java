@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -26,9 +27,12 @@ public class TurnoutGroup implements java.io.Serializable,
 
 	// Fields
 
+	@Id @GeneratedValue
 	private int id;
 
 	private String name;
+	
+	private int weight;
 
 	@Sort(type = SortType.NATURAL)
 	private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
@@ -38,7 +42,10 @@ public class TurnoutGroup implements java.io.Serializable,
 			return 0;
 		if (o == null)
 			return -1;
-		return name.compareTo(o.getName());
+		if(weight > o.getWeight()) return 1;
+		if(weight == o.getWeight()) return 0;
+		if(weight < o.getWeight()) return -1;
+		return -1;
 	}
 
 	public boolean equals(Object o) {
@@ -84,7 +91,8 @@ public class TurnoutGroup implements java.io.Serializable,
 	}
 
 	// Property accessors
-	@Id
+
+	@Id @GeneratedValue
 	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = true)
 	public int getId() {
 		return this.id;
@@ -101,6 +109,15 @@ public class TurnoutGroup implements java.io.Serializable,
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	//TODO ORDERING
+	@Column(name = "weight", unique = false, nullable = true, insertable = true, updatable = true)
+	public int getWeight() {
+		return this.weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
 	}
 
 	@Sort(type = SortType.NATURAL)

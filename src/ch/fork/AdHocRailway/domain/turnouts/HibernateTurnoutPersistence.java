@@ -5,25 +5,18 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 
-public class HibernateTurnoutPersistence implements TurnoutPersistenceIface {
+import ch.fork.AdHocRailway.domain.HibernatePersistence;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
+
+public class HibernateTurnoutPersistence extends HibernatePersistence implements TurnoutPersistenceIface {
 
 	private static TurnoutPersistenceIface instance;
 
-	protected EntityManager em;
 
-	private HibernateTurnoutPersistence() {// Start EntityManagerFactory
-		EntityManagerFactory emf = Persistence
-				.createEntityManagerFactory("adhocrailway");
-		// First unit of work
-		this.em = emf.createEntityManager();
-		for(Turnout t : getAllTurnouts()) {
-			System.out.println(t);
-		}
+	private HibernateTurnoutPersistence() {
+		super();
 	}
 
 	public static TurnoutPersistenceIface getInstance() {
@@ -73,11 +66,13 @@ public class HibernateTurnoutPersistence implements TurnoutPersistenceIface {
 	public Turnout getTurnoutByAddressBus(int bus, int address) {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
-		// Turnout turnout = (Turnout) em.createQuery(
-		// "from Turnout as turnout where turnout.number = ?1")
-		// .setParameter(1, number).getSingleResult();
+		Turnout turnout = (Turnout) em.createQuery(
+		 "from Turnout as turnout where turnout.bus1 = ?1 " +
+		 "and turnout.address1 = ?2 or turnout.address2 = ?2")
+		 .setParameter(1, bus).setParameter(2, address)
+		 .getSingleResult();
 		t.commit();
-		return null;
+		return turnout;
 	}
 
 	/* (non-Javadoc)
@@ -100,9 +95,6 @@ public class HibernateTurnoutPersistence implements TurnoutPersistenceIface {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
 		em.remove(turnout);
-		t.commit();
-		t.begin();
-		em.refresh(turnout.getTurnoutGroup());
 		t.commit();
 	}
 
@@ -170,7 +162,12 @@ public class HibernateTurnoutPersistence implements TurnoutPersistenceIface {
 	 */
 	public void addTurnoutGroup(TurnoutGroup group) {
 		EntityTransaction t = em.getTransaction();
+		int weight = 0;
+		for(TurnoutGroup tg : getAllTurnoutGroups()) {
+			weight = tg.getWeight();
+		}
 		t.begin();
+		group.setWeight(weight + 1);
 		em.persist(group);
 		t.commit();
 	}
@@ -193,7 +190,6 @@ public class HibernateTurnoutPersistence implements TurnoutPersistenceIface {
 		t.begin();
 		em.refresh(group);
 		t.commit();
-		t.begin();
 	}
 
 	/* (non-Javadoc)
@@ -222,14 +218,33 @@ public class HibernateTurnoutPersistence implements TurnoutPersistenceIface {
 	/* (non-Javadoc)
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#getTurnoutTypeByName(java.lang.String)
 	 */
-	public TurnoutType getTurnoutTypeByName(String typeName) {
+	public TurnoutType getTurnoutType(TurnoutTypes typeName) {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
+		String typeStr = "";
+		switch(typeName) {
+		case DEFAULT:
+			typeStr = "DEFAULT";
+			break;
+		case DOUBLECROSS:
+			typeStr = "DOUBLECROSS";
+			break;
+		case THREEWAY:
+			typeStr = "THREEWAY";
+			break;
+		}
 		TurnoutType turnoutType = (TurnoutType) em.createQuery(
 				"from TurnoutType as t where t.typeName = ?1").setParameter(
-				1, typeName).getSingleResult();
+				1, typeStr).getSingleResult();
 		t.commit();
 		return turnoutType;
 	}
 
+	public int getNextFreeTurnoutNumber() {
+		SortedSet<Turnout> turnouts = getAllTurnouts();
+		if(turnouts.isEmpty()) {
+			return 1;
+		}
+		return turnouts.last().getNumber() + 1;
+	}
 }

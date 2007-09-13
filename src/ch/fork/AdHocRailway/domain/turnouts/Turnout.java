@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,6 +20,7 @@ import javax.persistence.UniqueConstraint;
 
 import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GA;
 
@@ -32,6 +34,7 @@ public class Turnout extends ControlObject implements java.io.Serializable,
 
 	// Fields
 
+	@Id @GeneratedValue
 	private int id;
 
 	private TurnoutType turnoutType;
@@ -73,17 +76,18 @@ public class Turnout extends ControlObject implements java.io.Serializable,
 
 	public static final String PROTOCOL = "M";
 
-	private GA[] ga;
+	private Turnout[] subTurnouts;
+	private GA ga;
 
 	private SRCPSession session;
 
 	@Transient
-	public GA[] getGA() {
+	public GA getGA() {
 		return this.ga;
 	}
 
 	@Transient
-	protected void setGA(GA[] ga) {
+	protected void setGA(GA ga) {
 		this.ga = ga;
 	}
 
@@ -96,6 +100,126 @@ public class Turnout extends ControlObject implements java.io.Serializable,
 	protected void setSession(SRCPSession session) {
 		this.session = session;
 	}
+
+	@Override
+	@Transient
+	public String getDeviceGroup() {
+		return "GA";
+	}
+
+	@Transient
+	public TurnoutState getTurnoutState() {
+		return turnoutState;
+	}
+
+	@Transient
+	protected void setTurnoutState(TurnoutState switchState) {
+		this.turnoutState = switchState;
+	}
+
+	@Transient
+	public TurnoutState getDefaultStateEnum() {
+		if (defaultState.toUpperCase().equals("STRAIGHT")) {
+			return TurnoutState.STRAIGHT;
+		} else if (defaultState.toUpperCase().equals("LEFT")) {
+			return TurnoutState.LEFT;
+		} else if (defaultState.toUpperCase().equals("RIGHT")) {
+			return TurnoutState.RIGHT;
+		}
+		return TurnoutState.UNDEF;
+	}
+
+	public void setDefaultStateEnum(TurnoutState state) {
+		switch (state) {
+		case STRAIGHT:
+			setDefaultState("STRAIGHT");
+			break;
+		case LEFT:
+			setDefaultState("LEFT");
+			break;
+		case RIGHT:
+			setDefaultState("RIGHT");
+			break;
+		default:
+			setDefaultState("UNDEF");
+		}
+	}
+
+	public void setOrientationEnum(TurnoutOrientation orientation) {
+		switch (orientation) {
+		case NORTH:
+			setOrientation("NORTH");
+			break;
+		case SOUTH:
+			setOrientation("SOUTH");
+			break;
+		case WEST:
+			setOrientation("WEST");
+			break;
+		case EAST:
+			setOrientation("EAST");
+			break;
+		}
+	}
+
+	@Override
+	@Transient
+	public int[] getAddresses() {
+		int[] addrs = new int[] { address1, address2 };
+		return addrs;
+	}
+
+	@Transient
+	public TurnoutAddress[] getTurnoutAddresses() {
+		return new TurnoutAddress[] {
+				new TurnoutAddress(address1, bus1, address1_switched),
+				new TurnoutAddress(address2, bus2, address2_switched) };
+	}
+
+	@Transient
+	public TurnoutAddress getTurnoutAddress(int index) {
+		return getTurnoutAddresses()[index];
+	}
+
+	@Transient
+	public boolean isDefault() {
+		return this.turnoutType.getTurnoutTypeEnum() == TurnoutTypes.DEFAULT;
+	}
+
+	@Transient
+	public boolean isDoubleCross() {
+		return this.turnoutType.getTurnoutTypeEnum() == TurnoutTypes.DOUBLECROSS;
+	}
+
+	@Transient
+	public boolean isThreeWay() {
+		return this.turnoutType.getTurnoutTypeEnum() == TurnoutTypes.THREEWAY;
+	}
+
+	@Transient
+	public TurnoutOrientation getOrientationEnum() {
+		if (orientation.toUpperCase().equals("NORTH")) {
+			return TurnoutOrientation.NORTH;
+		} else if (orientation.toUpperCase().equals("SOUTH")) {
+			return TurnoutOrientation.SOUTH;
+		} else if (orientation.toUpperCase().equals("EAST")) {
+			return TurnoutOrientation.EAST;
+		} else if (orientation.toUpperCase().equals("WEST")) {
+			return TurnoutOrientation.WEST;
+		}
+		return null;
+	}
+
+	@Transient
+	protected Turnout[] getSubTurnouts() {
+		return subTurnouts;
+	}
+
+	@Transient
+	protected void setSubTurnouts(Turnout[] subTurnouts) {
+		this.subTurnouts = subTurnouts;
+	}
+
 
 	public int compareTo(Turnout o) {
 		if (this == o)
@@ -154,35 +278,8 @@ public class Turnout extends ControlObject implements java.io.Serializable,
 		buf += " Group:" + turnoutGroup.toString();
 		return buf;
 	}
-
-	@Override
-	@Transient
-	public String getDeviceGroup() {
-		return "GA";
-	}
-
-	@Transient
-	public TurnoutState getTurnoutState() {
-		return turnoutState;
-	}
-
-	@Transient
-	protected void setTurnoutState(TurnoutState switchState) {
-		this.turnoutState = switchState;
-	}
-
-	@Transient
-	public TurnoutState getDefaultStateEnum() {
-		if (defaultState.equals("STRAIGHT")) {
-			return TurnoutState.STRAIGHT;
-		} else if (defaultState.equals("LEFT")) {
-			return TurnoutState.LEFT;
-		} else if (defaultState.equals("RIGHT")) {
-			return TurnoutState.RIGHT;
-		}
-		return TurnoutState.UNDEF;
-	}
-
+	
+	// GENERATED BY HIBERNATE
 	// Constructors
 
 	/** default constructor */
@@ -230,7 +327,7 @@ public class Turnout extends ControlObject implements java.io.Serializable,
 	}
 
 	// Property accessors
-	@Id
+	@Id @GeneratedValue
 	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = true)
 	public int getId() {
 		return this.id;
@@ -269,7 +366,7 @@ public class Turnout extends ControlObject implements java.io.Serializable,
 		this.number = number;
 	}
 
-	@Column(name = "description", unique = false, nullable = false, insertable = true, updatable = true)
+	@Column(name = "description", unique = false, nullable = true, insertable = true, updatable = true)
 	public String getDescription() {
 		return this.description;
 	}
@@ -287,22 +384,6 @@ public class Turnout extends ControlObject implements java.io.Serializable,
 		this.defaultState = defaultState;
 	}
 
-	public void setDefaultStateEnum(TurnoutState state) {
-		switch (state) {
-		case STRAIGHT:
-			setDefaultState("STRAIGHT");
-			break;
-		case LEFT:
-			setDefaultState("LEFT");
-			break;
-		case RIGHT:
-			setDefaultState("RIGHT");
-			break;
-		default:
-			setDefaultState("UNDEF");
-		}
-	}
-
 	@Column(name = "orientation", unique = false, nullable = false, insertable = true, updatable = true, length = 6)
 	public String getOrientation() {
 		return this.orientation;
@@ -310,23 +391,6 @@ public class Turnout extends ControlObject implements java.io.Serializable,
 
 	public void setOrientation(String orientation) {
 		this.orientation = orientation;
-	}
-
-	public void setOrientationEnum(TurnoutOrientation orientation) {
-		switch (orientation) {
-		case NORTH:
-			setOrientation("NORTH");
-			break;
-		case SOUTH:
-			setOrientation("SOUTH");
-			break;
-		case WEST:
-			setOrientation("WEST");
-			break;
-		case EAST:
-			setOrientation("EAST");
-			break;
-		}
 	}
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, mappedBy = "turnout")
@@ -391,53 +455,4 @@ public class Turnout extends ControlObject implements java.io.Serializable,
 	public void setAddress2Switched(boolean address2_switched) {
 		this.address2_switched = address2_switched;
 	}
-
-	@Override
-	@Transient
-	public int[] getAddresses() {
-		int[] addrs = new int[] { address1, address2 };
-		return addrs;
-	}
-
-	@Transient
-	public TurnoutAddress[] getTurnoutAddresses() {
-		return new TurnoutAddress[] {
-				new TurnoutAddress(address1, bus1, address1_switched),
-				new TurnoutAddress(address2, bus2, address2_switched) };
-	}
-
-	@Transient
-	public TurnoutAddress getTurnoutAddress(int index) {
-		return getTurnoutAddresses()[index];
-	}
-
-	@Transient
-	public boolean isDefault() {
-		return this.turnoutType.getTypeName().equals("Default");
-	}
-
-	@Transient
-	public boolean isDoubleCross() {
-		return this.turnoutType.getTypeName().equals("DoubleCross");
-	}
-
-	@Transient
-	public boolean isThreeWay() {
-		return this.turnoutType.getTypeName().equals("ThreeWay");
-	}
-
-	@Transient
-	public TurnoutOrientation getOrientationEnum() {
-		if (orientation.equals("NORTH")) {
-			return TurnoutOrientation.NORTH;
-		} else if (orientation.equals("SOUTH")) {
-			return TurnoutOrientation.SOUTH;
-		} else if (orientation.equals("EAST")) {
-			return TurnoutOrientation.EAST;
-		} else if (orientation.equals("WEST")) {
-			return TurnoutOrientation.WEST;
-		}
-		return null;
-	}
-
 }

@@ -29,22 +29,16 @@ import java.awt.FlowLayout;
 import java.awt.FocusTraversalPolicy;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -54,7 +48,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -62,49 +55,50 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-import ch.fork.AdHocRailway.domain.Address;
-import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
+import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.TableResizer;
 
-import com.sun.java.util.jar.pack.Instruction.Switch;
+public class TurnoutConfigurationDialog<E> extends ConfigurationDialog {
 
-public class TurnoutConfigurationDialog<E> extends
-		ConfigurationDialog<TurnoutConfiguration> {
-	private List<SwitchGroup> switchGroupsWorkCopy;
+	private JPopupMenu turnoutGroupPopupMenu;
 
-	private Map<Integer, Switch> switchNumberToSwitchWorkCopy;
+	private JList turnoutGroupList;
 
-	private ListListModel<SwitchGroup> switchGroupListModel;
+	private ListListModel turnoutGroupListModel;
 
-	private JPopupMenu switchGroupPopupMenu;
+	private JPanel turnoutsPanel;
 
-	private JList switchGroupList;
+	private TableModel turnoutsTableModel;
 
-	private JPanel switchesPanel;
+	private JTable turnoutsTable;
 
-	private TableModel switchesTableModel;
+	private TurnoutPersistenceIface turnoutPersistence = HibernateTurnoutPersistence
+			.getInstance();
 
-	private JTable switchesTable;
+	private JPanel turnoutGroupPanel;
 
-	private TurnoutControl switchControl;
+	private JButton addTurnoutGroupButton;
 
-	private JPanel switchGroupPanel;
+	private JButton removeTurnoutGroupButton;
 
-	private JButton addSwitchGroupButton;
+	private JButton addTurnoutButton;
 
-	private JButton removeSwitchGroupButton;
+	private JButton add10TurnoutsButton;
 
-	private JButton addSwitchButton;
+	private JButton removeTurnoutButton;
 
-	private JButton add10SwitchesButton;
-
-	private JButton removeSwitchButton;
+	private JButton editTurnoutButton;
 
 	public TurnoutConfigurationDialog(JFrame owner) {
-		super(owner, "Switch Configuration");
+		super(owner, "Turnout Configuration");
 
 		initGUI();
 	}
@@ -121,71 +115,48 @@ public class TurnoutConfigurationDialog<E> extends
 		addMainComponent(mainPanel);
 		SwitchConfigurationFocusTraversalPolicy newPolicy = new SwitchConfigurationFocusTraversalPolicy();
 		setFocusTraversalPolicy(newPolicy);
-		pack();
+		setSize(new Dimension(750, 550));
 		setVisible(true);
 	}
 
-	@Override
-	public void createTempConfiguration() {
-		this.switchControl = TurnoutControl.getInstance();
-		this.switchNumberToSwitchWorkCopy = new HashMap<Integer, Switch>();
-		for (Switch s : switchControl.getNumberToSwitch().values()) {
-			Switch clone = s.clone();
-			this.switchNumberToSwitchWorkCopy.put(clone.getNumber(), clone);
-		}
-		this.switchGroupsWorkCopy = new ArrayList<SwitchGroup>();
-		for (SwitchGroup sg : switchControl.getSwitchGroups()) {
-			SwitchGroup clone = sg.clone();
-			this.switchGroupsWorkCopy.add(clone);
-			for (Switch s : sg.getSwitches()) {
-				clone.addSwitch(this.switchNumberToSwitchWorkCopy.get(s
-						.getNumber()));
-			}
-		}
-	}
-
-	@Override
-	public TurnoutConfiguration getTempConfiguration() {
-		return new TurnoutConfiguration(this.switchGroupsWorkCopy,
-				this.switchNumberToSwitchWorkCopy);
-	}
-
 	private JPanel createSwitchGroupPanel() {
-		switchGroupPanel = new JPanel(new BorderLayout());
-		TitledBorder title = BorderFactory.createTitledBorder("Switch Groups");
-		switchGroupPanel.setBorder(title);
-		switchGroupPanel.getInsets(new Insets(5, 5, 5, 5));
-		switchGroupListModel = new ListListModel<SwitchGroup>(
-				switchGroupsWorkCopy);
-		switchGroupList = new JList(switchGroupListModel);
-		switchGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		turnoutGroupPanel = new JPanel(new BorderLayout());
+		TitledBorder title = BorderFactory.createTitledBorder("Turnout Groups");
+		turnoutGroupPanel.setBorder(title);
+		turnoutGroupPanel.getInsets(new Insets(5, 5, 5, 5));
+		turnoutGroupListModel = new ListListModel<TurnoutGroup>(
+				new ArrayList<TurnoutGroup>(turnoutPersistence
+						.getAllTurnoutGroups()));
+		turnoutGroupList = new JList(turnoutGroupListModel);
+		turnoutGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		switchGroupPopupMenu = new JPopupMenu();
+		turnoutGroupPopupMenu = new JPopupMenu();
 		JMenuItem addItem = new JMenuItem("Add");
 		JMenuItem removeItem = new JMenuItem("Remove");
 		JMenuItem renameItem = new JMenuItem("Rename");
 		JMenuItem moveUpItem = new JMenuItem("Move up");
 		JMenuItem moveDownItem = new JMenuItem("Move down");
-		switchGroupPopupMenu.add(addItem);
-		switchGroupPopupMenu.add(removeItem);
-		switchGroupPopupMenu.add(renameItem);
-		switchGroupPopupMenu.add(new JSeparator());
-		switchGroupPopupMenu.add(moveUpItem);
-		switchGroupPopupMenu.add(moveDownItem);
-		addSwitchGroupButton = new JButton("Add");
-		removeSwitchGroupButton = new JButton("Remove");
+		turnoutGroupPopupMenu.add(addItem);
+		turnoutGroupPopupMenu.add(removeItem);
+		turnoutGroupPopupMenu.add(renameItem);
+		turnoutGroupPopupMenu.add(new JSeparator());
+		turnoutGroupPopupMenu.add(moveUpItem);
+		turnoutGroupPopupMenu.add(moveDownItem);
+		addTurnoutGroupButton = new JButton("Add");
+		removeTurnoutGroupButton = new JButton("Remove");
 		JPanel buttonPanel = new JPanel(new FlowLayout());
-		buttonPanel.add(addSwitchGroupButton);
-		buttonPanel.add(removeSwitchGroupButton);
-		switchGroupPanel.add(switchGroupList, BorderLayout.CENTER);
-		switchGroupPanel.add(buttonPanel, BorderLayout.SOUTH);
+		buttonPanel.add(addTurnoutGroupButton);
+		buttonPanel.add(removeTurnoutGroupButton);
+		turnoutGroupPanel.add(turnoutGroupList, BorderLayout.CENTER);
+		turnoutGroupPanel.add(buttonPanel, BorderLayout.SOUTH);
 		/* Install ActionListeners */
-		switchGroupList.addListSelectionListener(new ListSelectionListener() {
+
+		turnoutGroupList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				updateSwitchesPanel();
+				updateTurnoutsPanel();
 			}
 		});
-		switchGroupList.addMouseListener(new MouseAdapter() {
+		turnoutGroupList.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				maybeShowPopup(e);
 			}
@@ -196,40 +167,32 @@ public class TurnoutConfigurationDialog<E> extends
 
 			private void maybeShowPopup(MouseEvent e) {
 				if (e.isPopupTrigger()) {
-					switchGroupPopupMenu.show(e.getComponent(), e.getX(), e
+					turnoutGroupPopupMenu.show(e.getComponent(), e.getX(), e
 							.getY());
 				}
 			}
 		});
-		addItem.addActionListener(new AddSwitchGroupAction());
-		addSwitchGroupButton.addActionListener(new AddSwitchGroupAction());
-		removeItem.addActionListener(new RemoveSwitchGroupAction());
-		removeSwitchGroupButton
-				.addActionListener(new RemoveSwitchGroupAction());
-		renameItem.addActionListener(new RenameSwitchGroupAction());
-		moveUpItem.addActionListener(new MoveSwitchGroupAction(true));
-		moveDownItem.addActionListener(new MoveSwitchGroupAction(false));
+		addItem.addActionListener(new AddTurnoutGroupAction());
+		addTurnoutGroupButton.addActionListener(new AddTurnoutGroupAction());
+		removeItem.addActionListener(new RemoveTurnoutGroupAction());
+		removeTurnoutGroupButton
+				.addActionListener(new RemoveTurnoutGroupAction());
+		renameItem.addActionListener(new RenameTurnoutGroupAction());
+		moveUpItem.addActionListener(new MoveTurnoutGroupAction(true));
+		moveDownItem.addActionListener(new MoveTurnoutGroupAction(false));
 
-		return switchGroupPanel;
+		return turnoutGroupPanel;
 	}
 
 	private JPanel createSwitchesPanel() {
-		switchesPanel = new JPanel(new BorderLayout());
-		switchesPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "escapeAction");
-		switchesPanel.getActionMap().put("escapeAction", new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				cancelPressed = true;
-				TurnoutConfigurationDialog.this.setVisible(false);
-			}
-		});
-		switchesPanel.getInsets(new Insets(5, 5, 5, 5));
-		TitledBorder title = BorderFactory.createTitledBorder("Switch-Group");
-		switchesPanel.setBorder(title);
-		switchesTableModel = new TurnoutTableModel(
-				switchNumberToSwitchWorkCopy);
-		switchesTable = new JTable(switchesTableModel);
-		switchesTable.setRowHeight(24);
+		turnoutsPanel = new JPanel(new BorderLayout());
+
+		turnoutsPanel.getInsets(new Insets(5, 5, 5, 5));
+		TitledBorder title = BorderFactory.createTitledBorder("Turnout-Group");
+		turnoutsPanel.setBorder(title);
+		turnoutsTableModel = new TurnoutTableModel();
+		turnoutsTable = new JTable(turnoutsTableModel);
+		turnoutsTable.setRowHeight(24);
 
 		// SwitchType
 		JComboBox switchTypeComboBox = new JComboBox();
@@ -237,17 +200,17 @@ public class TurnoutConfigurationDialog<E> extends
 		switchTypeComboBox.addItem("DoubleCrossSwitch");
 		switchTypeComboBox.addItem("ThreeWaySwitch");
 		switchTypeComboBox.setRenderer(new TurnoutTypeComboBoxCellRenderer());
-		TableColumn typeColumn = switchesTable.getColumnModel().getColumn(1);
+		TableColumn typeColumn = turnoutsTable.getColumnModel().getColumn(1);
 		typeColumn.setCellEditor(new DefaultCellEditor(switchTypeComboBox));
 		typeColumn.setCellRenderer(new TurnoutTypeCellRenderer());
 
 		// DefaultState
 		JComboBox switchDefaultStateComboBox = new JComboBox();
-		switchDefaultStateComboBox.addItem(SwitchState.STRAIGHT);
-		switchDefaultStateComboBox.addItem(SwitchState.LEFT);
+		switchDefaultStateComboBox.addItem(TurnoutState.STRAIGHT);
+		switchDefaultStateComboBox.addItem(TurnoutState.LEFT);
 		switchDefaultStateComboBox
 				.setRenderer(new TurnoutDefaultStateComboBoxCellRenderer());
-		TableColumn defaultStateColumn = switchesTable.getColumnModel()
+		TableColumn defaultStateColumn = turnoutsTable.getColumnModel()
 				.getColumn(7);
 		defaultStateColumn.setCellEditor(new DefaultCellEditor(
 				switchDefaultStateComboBox));
@@ -256,236 +219,272 @@ public class TurnoutConfigurationDialog<E> extends
 
 		// SwitchOrientation
 		JComboBox switchOrientationComboBox = new JComboBox();
-		switchOrientationComboBox.addItem(SwitchOrientation.NORTH);
-		switchOrientationComboBox.addItem(SwitchOrientation.EAST);
-		switchOrientationComboBox.addItem(SwitchOrientation.SOUTH);
-		switchOrientationComboBox.addItem(SwitchOrientation.WEST);
+		switchOrientationComboBox.addItem(TurnoutOrientation.NORTH);
+		switchOrientationComboBox.addItem(TurnoutOrientation.EAST);
+		switchOrientationComboBox.addItem(TurnoutOrientation.SOUTH);
+		switchOrientationComboBox.addItem(TurnoutOrientation.WEST);
 
-		TableColumn switchOrientationColumn = switchesTable.getColumnModel()
+		TableColumn switchOrientationColumn = turnoutsTable.getColumnModel()
 				.getColumn(8);
 		switchOrientationColumn.setCellEditor(new DefaultCellEditor(
 				switchOrientationComboBox));
 
-		JScrollPane switchGroupTablePane = new JScrollPane(switchesTable);
+		JScrollPane switchGroupTablePane = new JScrollPane(turnoutsTable);
 		switchGroupTablePane.setPreferredSize(new Dimension(750, 400));
 
-		switchesPanel.add(switchGroupTablePane, BorderLayout.CENTER);
+		turnoutsPanel.add(switchGroupTablePane, BorderLayout.CENTER);
+		turnoutsTable.addMouseListener(new MouseAdapter() {
 
-		addSwitchButton = new JButton("Add");
-		add10SwitchesButton = new JButton("Add 10 Switches");
-		removeSwitchButton = new JButton("Remove");
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2
+						&& e.getButton() == MouseEvent.BUTTON1) {
+					new EditTurnoutAction().actionPerformed(null);
+				}
+			}
 
-		addSwitchButton.addActionListener(new AddSwitchAction());
-		add10SwitchesButton.addActionListener(new Add10SwitchesAction());
-		removeSwitchButton.addActionListener(new RemoveSwitchAction());
+		});
+		addTurnoutButton = new JButton("Add");
+		editTurnoutButton = new JButton("Edit");
+		add10TurnoutsButton = new JButton("Add 10 Switches");
+		removeTurnoutButton = new JButton("Remove");
+
+		addTurnoutButton.addActionListener(new AddTurnoutAction());
+		editTurnoutButton.addActionListener(new EditTurnoutAction());
+		add10TurnoutsButton.addActionListener(new Add10TurnoutsAction());
+		removeTurnoutButton.addActionListener(new RemoveTurnoutAction());
 
 		JPanel buttonPanel = new JPanel(new FlowLayout());
-		buttonPanel.add(addSwitchButton);
-		buttonPanel.add(add10SwitchesButton);
-		buttonPanel.add(removeSwitchButton);
+		buttonPanel.add(addTurnoutButton);
+		buttonPanel.add(add10TurnoutsButton);
+		buttonPanel.add(editTurnoutButton);
+		buttonPanel.add(removeTurnoutButton);
 
-		switchesPanel.add(buttonPanel, BorderLayout.SOUTH);
-		return switchesPanel;
+		turnoutsPanel.add(buttonPanel, BorderLayout.SOUTH);
+		return turnoutsPanel;
 	}
 
-	private void updateSwitchesPanel() {
-		SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
+	private void updateTurnoutsPanel() {
+		TurnoutGroup selectedTurnoutGroup = (TurnoutGroup) (turnoutGroupList
 				.getSelectedValue());
-		System.out.println(selectedSwitchGroup);
-		if (selectedSwitchGroup == null) {
-			switchesPanel.setBorder(BorderFactory
+		if (selectedTurnoutGroup == null) {
+			turnoutsPanel.setBorder(BorderFactory
 					.createTitledBorder("Switch-Group"));
 		} else {
-			switchesPanel.setBorder(BorderFactory
+			turnoutsPanel.setBorder(BorderFactory
 					.createTitledBorder("Switch-Group '"
-							+ selectedSwitchGroup.getName() + "'"));
+							+ selectedTurnoutGroup.getName() + "'"));
 		}
-		((TurnoutTableModel) switchesTableModel)
-				.setSwitchGroup(selectedSwitchGroup);
-		TableResizer.adjustColumnWidths(switchesTable, 30);
-		if (switchesTable.getRowCount() > 0) {
-			TableResizer.adjustRowHeight(switchesTable);
+		((TurnoutTableModel) turnoutsTableModel)
+				.setTurnoutGroup(selectedTurnoutGroup);
+		TableResizer.adjustColumnWidths(turnoutsTable, 30);
+		if (turnoutsTable.getRowCount() > 0) {
+			TableResizer.adjustRowHeight(turnoutsTable);
 		}
-		pack();
 	}
 
-	private class AddSwitchGroupAction extends AbstractAction {
+	private class AddTurnoutGroupAction extends AbstractAction {
 		public void actionPerformed(ActionEvent arg0) {
 			String newGroupName = JOptionPane.showInputDialog(
 					TurnoutConfigurationDialog.this,
-					"Enter the name of the new Switch-Group",
-					"Add Switch-Group", JOptionPane.QUESTION_MESSAGE);
-			SwitchGroup newSwitchGroup = new SwitchGroup(newGroupName);
-			switchGroupsWorkCopy.add(newSwitchGroup);
-			switchGroupListModel.updated();
-			switchGroupList.setSelectedValue(newSwitchGroup, true);
+					"Enter the name of the new Turnout-Group",
+					"Add Turnout-Group", JOptionPane.QUESTION_MESSAGE);
+			TurnoutGroup newTurnoutGroup = new TurnoutGroup();
+			newTurnoutGroup.setName(newGroupName);
+			turnoutPersistence.addTurnoutGroup(newTurnoutGroup);
+
+			turnoutGroupListModel = new ListListModel<TurnoutGroup>(
+					new ArrayList<TurnoutGroup>(turnoutPersistence
+							.getAllTurnoutGroups()));
+			turnoutGroupList.setModel(turnoutGroupListModel);
+			//turnoutGroupList.setSelectedValue(newTurnoutGroup, true);
 		}
 	}
 
-	private class RemoveSwitchGroupAction extends AbstractAction {
+	private class RemoveTurnoutGroupAction extends AbstractAction {
 		public void actionPerformed(ActionEvent arg0) {
-			SwitchGroup groupToDelete = (SwitchGroup) (switchGroupList
+			TurnoutGroup groupToDelete = (TurnoutGroup) (turnoutGroupList
 					.getSelectedValue());
 			if (groupToDelete == null) {
 				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
-						"Please select a switch group", "Error",
+						"Please select a Turnout-Group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			int response = JOptionPane.showConfirmDialog(
 					TurnoutConfigurationDialog.this,
-					"Really remove Switch-Group '" + groupToDelete.getName()
-							+ "' ?", "Remove Switch-Group",
+					"Really remove Turnout-Group '" + groupToDelete.getName()
+							+ "' ?", "Remove Turnout-Group",
 					JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
-				switchGroupsWorkCopy.remove(groupToDelete);
-				switchGroupListModel.updated();
+				turnoutPersistence.deleteTurnoutGroup(groupToDelete);
+				turnoutGroupListModel = new ListListModel<TurnoutGroup>(
+						new ArrayList<TurnoutGroup>(turnoutPersistence
+								.getAllTurnoutGroups()));
+				turnoutGroupList.setModel(turnoutGroupListModel);
 			}
-			updateSwitchesPanel();
 		}
 	}
 
-	private class RenameSwitchGroupAction extends AbstractAction {
+	private class RenameTurnoutGroupAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
-			SwitchGroup groupToRename = (SwitchGroup) (switchGroupList
+			TurnoutGroup groupToRename = (TurnoutGroup) (turnoutGroupList
 					.getSelectedValue());
 			if (groupToRename == null) {
 				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
-						"Please select a switch group", "Error",
+						"Please select a Turnout-Group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			String newSectionName = JOptionPane.showInputDialog(
+			String newGroupName = JOptionPane.showInputDialog(
 					TurnoutConfigurationDialog.this, "Enter new name",
-					"Rename Switch-Group", JOptionPane.QUESTION_MESSAGE);
-			if (!newSectionName.equals("")) {
-				groupToRename.setName(newSectionName);
-				switchGroupListModel.updated();
+					"Rename Turnout-Group", JOptionPane.QUESTION_MESSAGE);
+			if (!newGroupName.equals("")) {
+				groupToRename.setName(newGroupName);
+				turnoutPersistence.updateTurnoutGroup(groupToRename);
+				turnoutGroupListModel = new ListListModel<TurnoutGroup>(
+						new ArrayList<TurnoutGroup>(turnoutPersistence
+								.getAllTurnoutGroups()));
+				turnoutGroupList.setModel(turnoutGroupListModel);
 			}
 		}
 	}
 
-	private class MoveSwitchGroupAction extends AbstractAction {
+	private class MoveTurnoutGroupAction extends AbstractAction {
 		private boolean up;
 
-		public MoveSwitchGroupAction(boolean up) {
+		public MoveTurnoutGroupAction(boolean up) {
 			this.up = up;
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			SwitchGroup groupToMove = (SwitchGroup) (switchGroupList
+			TurnoutGroup groupToMove = (TurnoutGroup) (turnoutGroupList
 					.getSelectedValue());
 			if (groupToMove == null) {
 				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
-						"Please select a switch group", "Error",
+						"Please select a Turnout-Group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			int oldIndex = switchGroupsWorkCopy.indexOf(groupToMove);
-			int newIndex = oldIndex;
+			SortedSet<TurnoutGroup> allGroups = turnoutPersistence
+					.getAllTurnoutGroups();
+			int weight = 0;
+			for (TurnoutGroup tg : allGroups) {
+				tg.setWeight(weight);
+				weight++;
+			}
+			boolean changed = false;
 			if (up) {
-				if (oldIndex != 0) {
-					newIndex = oldIndex - 1;
-				} else {
-					return;
+				for (TurnoutGroup tg : allGroups) {
+					if (tg.getWeight() >= groupToMove.getWeight() - 1) {
+						if (!changed) {
+							groupToMove.setWeight(tg.getWeight());
+							changed = true;
+						}
+						tg.setWeight(tg.getWeight() + 1);
+						turnoutPersistence.updateTurnoutGroup(tg);
+					}
 				}
 			} else {
-				if (oldIndex != switchGroupsWorkCopy.size() - 1) {
-					newIndex = oldIndex + 1;
-				} else {
-					return;
+				for (TurnoutGroup tg : allGroups) {
+					if (tg.getWeight() > groupToMove.getWeight()) {
+						if (!changed) {
+							groupToMove.setWeight(tg.getWeight());
+							changed = true;
+						}
+						tg.setWeight(tg.getWeight() - 1);
+						turnoutPersistence.updateTurnoutGroup(tg);
+					}
 				}
 			}
-			switchGroupsWorkCopy.remove(oldIndex);
-			switchGroupsWorkCopy.add(newIndex, groupToMove);
-			switchGroupList.setSelectedIndex(newIndex);
-			switchGroupListModel.updated();
-			updateSwitchesPanel();
+
+			turnoutPersistence.updateTurnoutGroup(groupToMove);
+			turnoutGroupListModel = new ListListModel<TurnoutGroup>(
+					new ArrayList<TurnoutGroup>(turnoutPersistence
+							.getAllTurnoutGroups()));
+			turnoutGroupList.setModel(turnoutGroupListModel);
+
+			turnoutGroupList.setSelectedIndex(groupToMove.getWeight());
+			turnoutGroupListModel.updated();
+			updateTurnoutsPanel();
 		}
 	}
 
-	private class AddSwitchAction extends AbstractAction {
+	private class AddTurnoutAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
-			SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
+			TurnoutGroup selectedTurnoutGroup = (TurnoutGroup) (turnoutGroupList
 					.getSelectedValue());
-			if (selectedSwitchGroup == null) {
+			if (selectedTurnoutGroup == null) {
 				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
 						"Please select a switch group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			SortedSet<Integer> usedNumbers = new TreeSet<Integer>(
-					switchNumberToSwitchWorkCopy.keySet());
-			int nextNumber = 1;
-			if (usedNumbers.size() == 0) {
-				nextNumber = 1;
-			} else {
-				nextNumber = usedNumbers.last().intValue() + 1;
-			}
-			Switch newSwitch = new DefaultSwitch(nextNumber, "");
+			Turnout newTurnout = new Turnout();
+			newTurnout.setNumber(turnoutPersistence.getNextFreeTurnoutNumber());
+			newTurnout.setTurnoutGroup(selectedTurnoutGroup);
+			newTurnout.setDefaultStateEnum(TurnoutState.STRAIGHT);
+			newTurnout.setOrientationEnum(TurnoutOrientation.EAST);
+			newTurnout.setTurnoutType(turnoutPersistence
+					.getTurnoutType(TurnoutTypes.DEFAULT));
 			TurnoutConfig switchConfig = new TurnoutConfig(
-					TurnoutConfigurationDialog.this, newSwitch);
+					TurnoutConfigurationDialog.this, newTurnout);
 			if (switchConfig.isOkPressed()) {
-				switchNumberToSwitchWorkCopy.put(switchConfig.getSwitch()
-						.getNumber(), switchConfig.getSwitch());
-				selectedSwitchGroup.addSwitch(switchConfig.getSwitch());
+				turnoutPersistence.addTurnout(newTurnout);
 			}
-			newSwitch = null;
-			updateSwitchesPanel();
+			updateTurnoutsPanel();
 		}
 	}
-
-	private class Add10SwitchesAction extends AbstractAction {
+	private class EditTurnoutAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
-			SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
+			if (turnoutsTable.isEditing())
+				turnoutsTable.getCellEditor().stopCellEditing();
+
+			Turnout turnoutToEdit = ((TurnoutTableModel) turnoutsTableModel)
+					.getTurnoutAt(turnoutsTable.getSelectedRow());
+			TurnoutConfig locomotiveConfig = new TurnoutConfig(
+					TurnoutConfigurationDialog.this, turnoutToEdit);
+			if (locomotiveConfig.isOkPressed()) {
+				turnoutPersistence.updateTurnout(turnoutToEdit);
+			}
+			updateTurnoutsPanel();
+		}
+	}
+	private class Add10TurnoutsAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			TurnoutGroup selectedTurnoutGroup = (TurnoutGroup) (turnoutGroupList
 					.getSelectedValue());
-			if (selectedSwitchGroup == null) {
+			if (selectedTurnoutGroup == null) {
 				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
 						"Please select a switch group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if (selectedSwitchGroup == null) {
-				return;
-			}
-			SortedSet<Integer> usedNumbers = new TreeSet<Integer>(
-					switchNumberToSwitchWorkCopy.keySet());
-			int nextNumber = 1;
-			if (usedNumbers.size() == 0) {
-				nextNumber = 1;
-			} else {
-				nextNumber = usedNumbers.last().intValue() + 1;
-			}
+			int nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
 			for (int i = 0; i < 10; i++) {
-				Switch newSwitch = new DefaultSwitch(nextNumber, "",
-						new Address(Constants.DEFAULT_BUS, nextNumber));
-				switchNumberToSwitchWorkCopy.put(newSwitch.getNumber(),
-						newSwitch);
-				selectedSwitchGroup.addSwitch(newSwitch);
+				Turnout newTurnout = new Turnout();
+				newTurnout.setNumber(turnoutPersistence
+						.getNextFreeTurnoutNumber());
+				newTurnout.setTurnoutGroup(selectedTurnoutGroup);
+				newTurnout.setDefaultStateEnum(TurnoutState.STRAIGHT);
+				newTurnout.setOrientationEnum(TurnoutOrientation.EAST);
+				newTurnout.setTurnoutType(turnoutPersistence
+						.getTurnoutType(TurnoutTypes.DEFAULT));
+				turnoutPersistence.addTurnout(newTurnout);
 				nextNumber++;
 			}
-			updateSwitchesPanel();
+			updateTurnoutsPanel();
 		}
 	}
 
-	private class RemoveSwitchAction extends AbstractAction {
+	private class RemoveTurnoutAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
-			if (switchesTable.isEditing())
-				switchesTable.getCellEditor().stopCellEditing();
-			SwitchGroup selectedSwitchGroup = (SwitchGroup) (switchGroupList
-					.getSelectedValue());
-			if (selectedSwitchGroup == null) {
-				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
-						"Please select a switch group", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			Integer number = (Integer) switchesTable.getValueAt(switchesTable
+			if (turnoutsTable.isEditing())
+				turnoutsTable.getCellEditor().stopCellEditing();
+
+			Integer number = (Integer) turnoutsTable.getValueAt(turnoutsTable
 					.getSelectedRow(), 0);
-			selectedSwitchGroup.removeSwitch(switchNumberToSwitchWorkCopy
-					.get(number));
-			switchNumberToSwitchWorkCopy.remove(number);
-			updateSwitchesPanel();
+			turnoutPersistence.deleteTurnout(turnoutPersistence
+					.getTurnoutByNumber(number));
 		}
 	}
 
@@ -497,15 +496,15 @@ public class TurnoutConfigurationDialog<E> extends
 			if (aComponent.equals(okButton)) {
 				return cancelButton;
 			} else if (aComponent.equals(cancelButton)) {
-				return addSwitchGroupButton;
-			} else if (aComponent.equals(addSwitchGroupButton)) {
-				return removeSwitchGroupButton;
-			} else if (aComponent.equals(removeSwitchGroupButton)) {
-				return addSwitchButton;
-			} else if (aComponent.equals(addSwitchButton)) {
-				return add10SwitchesButton;
-			} else if (aComponent.equals(add10SwitchesButton)) {
-				return removeSwitchButton;
+				return addTurnoutGroupButton;
+			} else if (aComponent.equals(addTurnoutGroupButton)) {
+				return removeTurnoutGroupButton;
+			} else if (aComponent.equals(removeTurnoutGroupButton)) {
+				return addTurnoutButton;
+			} else if (aComponent.equals(addTurnoutButton)) {
+				return add10TurnoutsButton;
+			} else if (aComponent.equals(add10TurnoutsButton)) {
+				return removeTurnoutButton;
 			}
 			return okButton;
 		}
@@ -514,16 +513,16 @@ public class TurnoutConfigurationDialog<E> extends
 				Component aComponent) {
 
 			if (aComponent.equals(okButton)) {
-				return removeSwitchButton;
-			} else if (aComponent.equals(removeSwitchButton)) {
-				return add10SwitchesButton;
-			} else if (aComponent.equals(add10SwitchesButton)) {
-				return addSwitchButton;
-			} else if (aComponent.equals(addSwitchButton)) {
-				return removeSwitchGroupButton;
-			} else if (aComponent.equals(removeSwitchGroupButton)) {
-				return addSwitchGroupButton;
-			} else if (aComponent.equals(addSwitchGroupButton)) {
+				return removeTurnoutButton;
+			} else if (aComponent.equals(removeTurnoutButton)) {
+				return add10TurnoutsButton;
+			} else if (aComponent.equals(add10TurnoutsButton)) {
+				return addTurnoutButton;
+			} else if (aComponent.equals(addTurnoutButton)) {
+				return removeTurnoutGroupButton;
+			} else if (aComponent.equals(removeTurnoutGroupButton)) {
+				return addTurnoutGroupButton;
+			} else if (aComponent.equals(addTurnoutGroupButton)) {
 				return cancelButton;
 			}
 			return okButton;

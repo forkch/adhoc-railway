@@ -2,18 +2,20 @@ package ch.fork.AdHocRailway.domain.routes;
 
 // Generated 08-Aug-2007 18:10:44 by Hibernate Tools 3.2.0.beta8
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 /**
@@ -21,10 +23,10 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "route", catalog = "adhocrailway", uniqueConstraints = { @UniqueConstraint(columnNames = { "number" }) })
-public class Route implements java.io.Serializable {
+public class Route implements java.io.Serializable, Comparable<Route> {
 
 	// Fields    
-
+	@Id @GeneratedValue
 	private int id;
 
 	private RouteGroup routeGroup;
@@ -33,8 +35,68 @@ public class Route implements java.io.Serializable {
 
 	private String name;
 
-	private Set<RouteItem> routeItems = new HashSet<RouteItem>(0);
+	private SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>();
 
+	public enum RouteState {
+		ENABLED, DISABLED
+	};
+	@Transient
+	private RouteState routeState;
+
+	private boolean changingRoute;
+
+	@Transient
+	public RouteState getRouteState() {
+		return routeState;
+	}
+
+	@Transient
+	protected void setRouteState(RouteState routeState) {
+		this.routeState = routeState;
+	}
+	public int compareTo(Route o) {
+		if(this == o) return 0;
+		if(o == null) return -1;
+		if (number > o.getNumber())
+			return 1;
+		else if (number == o.getNumber())
+			return 0;
+		else
+			return -1;
+	}
+	
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		final Route l = (Route) o;
+		if (id != l.getId())
+			return false;
+		if (!name.equals(l.getName()))
+			return false;
+		if (number != l.getNumber())
+			return false;
+		if(!routeGroup.equals(l.getRouteGroup()))
+			return false;
+		if(!routeItems.equals(l.getRouteItems()))
+			return false;
+		
+		return true;
+	}
+
+	public int hashCode() {
+		return name.hashCode() + routeGroup.hashCode()
+				+ routeItems.hashCode() + number;
+	}
+	
+	public String toString() {
+		return name;
+	}
+	
+	
+	
 	// Constructors
 
 	/** default constructor */
@@ -51,7 +113,7 @@ public class Route implements java.io.Serializable {
 
 	/** full constructor */
 	public Route(int id, RouteGroup routeGroup, int number, String name,
-			Set<RouteItem> routeItems) {
+			SortedSet<RouteItem> routeItems) {
 		this.id = id;
 		this.routeGroup = routeGroup;
 		this.number = number;
@@ -60,7 +122,8 @@ public class Route implements java.io.Serializable {
 	}
 
 	// Property accessors
-	@Id
+
+	@Id @GeneratedValue
 	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = true)
 	public int getId() {
 		return this.id;
@@ -99,12 +162,21 @@ public class Route implements java.io.Serializable {
 	}
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, mappedBy = "route")
-	public Set<RouteItem> getRouteItems() {
+	public SortedSet<RouteItem> getRouteItems() {
 		return this.routeItems;
 	}
 
-	public void setRouteItems(Set<RouteItem> routeItems) {
+	public void setRouteItems(SortedSet<RouteItem> routeItems) {
 		this.routeItems = routeItems;
 	}
+
+	public void setChangeingRoute(boolean changingRoute) {
+		this.changingRoute = changingRoute;
+	}
+
+	public boolean isChangingRoute() {
+		return changingRoute;
+	}
+
 
 }
