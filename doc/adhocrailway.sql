@@ -42,7 +42,7 @@ CREATE TABLE `locomotive` (
 
 LOCK TABLES `locomotive` WRITE;
 /*!40000 ALTER TABLE `locomotive` DISABLE KEYS */;
-INSERT INTO `locomotive` VALUES (1,2,'Bernaa','Bern desc','bern.png',1,1,2),(2,1,'ascom','asocm','ascom.png',2,1,2),(3,6,'sdasdf','sdf','dsf',12,1,3),(4,6,'213','sadsadfsads','sdsaf',3,1,3),(5,6,'asdfsdf','sadf','dsaf',21,1,3),(6,6,'sdf','sadfsadf','adfsadf',4,1,2),(7,6,'sadfasfd','sdf','Sdf',23,1,3),(8,2,'asdsafd','sadfsadf','sdfsadf',5,1,3),(9,2,'sadsdfsadf','sadfsadf','ssaf',6,1,3),(10,2,'a','a','a',7,1,3),(11,2,'asdf','sdf','sdf',8,1,3),(12,2,'213','fdsgfdg','sdfdsa',9,1,3),(13,3,'asdf','sadf','sdf',10,1,3),(14,1,'sadf','dsaf','sdf',11,1,3),(15,1,'dfsdf','sdf','sdf',12,1,2);
+INSERT INTO `locomotive` VALUES (1,2,'Bernaa','Bern desc','bern.png',1,1,2),(2,1,'ascom','asocm','ascom.png',2,1,2),(3,6,'sdasdf','sdf','dsf',12,1,3),(4,6,'213','sadsadfsads','sdsaf',3,1,3),(5,6,'asdfsdf','sadf','dsaf',21,1,3),(6,6,'sdf','sadfsadf','adfsadf',4,1,2),(7,6,'sadfasfd','sdf','Sdf',23,1,3),(8,2,'asdsafd','sadfsadf','sdfsadf',5,1,3),(9,2,'sadsdfsadf','sadfsadf','ssaf',6,1,3),(10,2,'a','a','a',7,1,3),(11,2,'asdf','sdf','sdf',8,1,3),(12,2,'213','fdsgfdg','sdfdsa',9,1,3),(13,3,'asdf','sadf','sdf',10,1,3),(14,1,'sadf','dsaf','sdf',11,1,3),(15,1,'dfsdf','sdf','sdf',12,1,2),(16,7,'dfsdf','sdf','sdf',12,1,3);
 /*!40000 ALTER TABLE `locomotive` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -63,7 +63,7 @@ CREATE TABLE `locomotive_group` (
 
 LOCK TABLES `locomotive_group` WRITE;
 /*!40000 ALTER TABLE `locomotive_group` DISABLE KEYS */;
-INSERT INTO `locomotive_group` VALUES (1,'Ae 6/6'),(2,'Re 460'),(3,'asdf'),(6,'123');
+INSERT INTO `locomotive_group` VALUES (1,'Ae 6/6'),(2,'Re 460'),(3,'asdf'),(6,'123'),(7,'asdasd');
 /*!40000 ALTER TABLE `locomotive_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -124,6 +124,7 @@ DROP TABLE IF EXISTS `route_group`;
 CREATE TABLE `route_group` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
+  `weight` int(11) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -171,7 +172,7 @@ CREATE TABLE `turnout` (
   `id` int(11) NOT NULL auto_increment,
   `turnout_group_id` int(11) NOT NULL,
   `number` int(11) NOT NULL,
-  `description` varchar(255) NOT NULL,
+  `description` varchar(255) default NULL,
   `default_state` enum('STRAIGHT','LEFT','RIGHT') NOT NULL,
   `orientation` enum('NORTH','EAST','SOUTH','WEST') NOT NULL,
   `turnout_type_id` int(11) NOT NULL,
@@ -197,7 +198,7 @@ CREATE TABLE `turnout` (
 
 LOCK TABLES `turnout` WRITE;
 /*!40000 ALTER TABLE `turnout` DISABLE KEYS */;
-INSERT INTO `turnout` VALUES (1,1,2,'test2','LEFT','NORTH',1,1,2,1,1,0,1),(2,1,1,'test1','STRAIGHT','EAST',3,3,4,1,1,1,0),(3,1,3,'test3','STRAIGHT','WEST',2,5,6,1,1,0,0);
+INSERT INTO `turnout` VALUES (6,5,1,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(7,5,2,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(8,5,3,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(9,5,4,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(10,5,5,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(11,5,6,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(12,5,7,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(13,5,8,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(14,5,9,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(15,5,10,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(16,7,11,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(17,7,12,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(18,7,13,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(19,7,14,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(20,7,15,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(21,7,16,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(22,7,17,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(23,7,18,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(24,7,19,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(25,7,20,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(26,9,21,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(27,9,22,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(28,9,23,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(29,9,24,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(30,9,25,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(31,9,26,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(32,9,27,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(33,9,28,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(34,9,29,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(35,9,30,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(36,9,31,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(37,9,32,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(38,9,33,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(39,9,34,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(40,9,35,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(41,9,36,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(42,9,37,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(43,9,38,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(44,9,39,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0),(45,9,40,NULL,'STRAIGHT','EAST',6,0,0,0,0,0,0);
 /*!40000 ALTER TABLE `turnout` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -220,7 +221,6 @@ CREATE TABLE `turnout_address` (
 
 LOCK TABLES `turnout_address` WRITE;
 /*!40000 ALTER TABLE `turnout_address` DISABLE KEYS */;
-INSERT INTO `turnout_address` VALUES (1,34,1,0),(2,12,1,1);
 /*!40000 ALTER TABLE `turnout_address` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,6 +232,7 @@ DROP TABLE IF EXISTS `turnout_group`;
 CREATE TABLE `turnout_group` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
+  `weight` int(11) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -241,7 +242,7 @@ CREATE TABLE `turnout_group` (
 
 LOCK TABLES `turnout_group` WRITE;
 /*!40000 ALTER TABLE `turnout_group` DISABLE KEYS */;
-INSERT INTO `turnout_group` VALUES (1,'group2'),(2,'gruop1');
+INSERT INTO `turnout_group` VALUES (3,'gugua',1),(4,'rt',2),(5,'sdf',3),(6,'sdfsdfsdfdf',4),(7,'sdsadsdf',5),(8,'123',6),(9,'2312313123',7);
 /*!40000 ALTER TABLE `turnout_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -262,7 +263,7 @@ CREATE TABLE `turnout_type` (
 
 LOCK TABLES `turnout_type` WRITE;
 /*!40000 ALTER TABLE `turnout_type` DISABLE KEYS */;
-INSERT INTO `turnout_type` VALUES (1,'ThreeWay'),(2,'DoubleCross'),(3,'Default');
+INSERT INTO `turnout_type` VALUES (4,'THREEWAY'),(5,'DOUBLECROSS'),(6,'DEFAULT');
 /*!40000 ALTER TABLE `turnout_type` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -275,4 +276,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2007-09-12 21:57:23
+-- Dump completed on 2007-10-12 15:57:44
