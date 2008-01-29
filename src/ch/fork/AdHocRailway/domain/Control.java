@@ -21,10 +21,6 @@
 
 package ch.fork.AdHocRailway.domain;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 import de.dermoba.srcp.client.SRCPSession;
 
@@ -39,19 +35,10 @@ public abstract class Control {
 
 	protected SRCPSession session = null;
 
-	protected EntityManager em;
-
 	public Control() {
-		// Start EntityManagerFactory
-		EntityManagerFactory emf = Persistence
-				.createEntityManagerFactory("adhocrailway");
-		// First unit of work
-		this.em = emf.createEntityManager();
+		
 	}
 
-	public EntityManager getEntityManager() {
-		return this.em;
-	}
 
 	abstract public void undoLastChange() throws ControlException;
 

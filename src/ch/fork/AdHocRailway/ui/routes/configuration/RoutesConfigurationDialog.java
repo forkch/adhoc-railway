@@ -41,8 +41,10 @@ import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
+import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.SpringUtilities;
 import ch.fork.AdHocRailway.ui.TableResizer;
@@ -384,9 +386,11 @@ public class RoutesConfigurationDialog extends ConfigurationDialog {
 			RouteGroup newRouteGroup = new RouteGroup();
 			newRouteGroup.setName(newRouteGroupName);
 			routePersistence.addRouteGroup(newRouteGroup);
+			routeGroupListModel.setList(new ArrayList<RouteGroup>(routePersistence.getAllRouteGroups()));
 			routeGroupListModel.updated();
 			routeGroupJList.setSelectedValue(newRouteGroup, true);
 			updateRoutesInGroupPanel();
+			updateRouteDetailPanel();
 		}
 
 	}
@@ -456,8 +460,8 @@ public class RoutesConfigurationDialog extends ConfigurationDialog {
 			newRoute.setRouteGroup(selectedRouteGroup);
 			routePersistence.addRoute(newRoute);
 			routesInGroupJList.setSelectedValue(newRoute, true);
-			updateRouteDetailPanel();
 			updateRoutesInGroupPanel();
+			updateRouteDetailPanel();
 		}
 
 	}
@@ -524,15 +528,24 @@ public class RoutesConfigurationDialog extends ConfigurationDialog {
 					RoutesConfigurationDialog.this,
 					"Enter the number of the Switch", "Add switch to route",
 					JOptionPane.QUESTION_MESSAGE);
-			Turnout turnout = turnoutPersistence.getTurnoutByNumber(Integer
-					.parseInt(switchNumberAsString));
-			RouteItem i = new RouteItem();
-			i.setRoute(selectedRoute);
-			i.setRoutedStateEnum(TurnoutState.STRAIGHT);
-			i.setTurnout(turnout);
-			routePersistence.addRouteItem(i);
+			Turnout turnout;
+			try {
+				turnout = turnoutPersistence.getTurnoutByNumber(Integer
+						.parseInt(switchNumberAsString));
 
-			updateRouteDetailPanel();
+				RouteItem i = new RouteItem();
+				i.setRoute(selectedRoute);
+				i.setRoutedStateEnum(TurnoutState.STRAIGHT);
+				i.setTurnout(turnout);
+				routePersistence.addRouteItem(i);
+
+				updateRouteDetailPanel();
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (TurnoutException e1) {
+				ExceptionProcessor.getInstance().processExceptionDialog(e1);
+			}
 		}
 
 	}
@@ -540,7 +553,7 @@ public class RoutesConfigurationDialog extends ConfigurationDialog {
 	private class RemoveSwitchFromRouteAction extends AbstractAction {
 
 		public void actionPerformed(ActionEvent e) {
-
+			
 		}
 
 	}

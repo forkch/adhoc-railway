@@ -4,15 +4,16 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
+import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
 public interface TurnoutPersistenceIface {
 
-	public abstract void preload();
+	public abstract void preload() throws TurnoutException;
 
 	@SuppressWarnings("unchecked")
 	public abstract SortedSet<Turnout> getAllTurnouts();
 
-	public abstract Turnout getTurnoutByNumber(int number);
+	public abstract Turnout getTurnoutByNumber(int number) throws TurnoutException;
 
 	public abstract Turnout getTurnoutByAddressBus(int bus, int address);
 
@@ -33,7 +34,7 @@ public interface TurnoutPersistenceIface {
 
 	public abstract void addTurnoutGroup(TurnoutGroup group);
 
-	public abstract void deleteTurnoutGroup(TurnoutGroup group);
+	public abstract void deleteTurnoutGroup(TurnoutGroup group) throws TurnoutException;
 
 	public abstract void refreshTurnoutGroup(TurnoutGroup group);
 
@@ -45,5 +46,7 @@ public interface TurnoutPersistenceIface {
 	public abstract TurnoutType getTurnoutType(TurnoutTypes typeName);
 
 	public int getNextFreeTurnoutNumber();
+
+	public void removeTurnoutFromGroup(TurnoutGroup group, Turnout turnout);
 
 }

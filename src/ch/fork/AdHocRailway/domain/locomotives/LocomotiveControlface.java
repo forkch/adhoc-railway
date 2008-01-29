@@ -1,17 +1,10 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
+import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotive.Direction;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
-import de.dermoba.srcp.client.SRCPSession;
 
 public interface LocomotiveControlface {
-
-	/**
-	 * Sets the SRCPSession on this Control.
-	 * 
-	 * @param session
-	 */
-	public abstract void setSession(SRCPSession session);
 
 	/**
 	 * Toggles the direction of the Locomotive
@@ -22,6 +15,8 @@ public interface LocomotiveControlface {
 	public abstract void toggleDirection(Locomotive locomotive)
 			throws LocomotiveException;
 
+	public abstract Direction getDirection(Locomotive locomotive);
+	
 	public abstract int getCurrentSpeed(Locomotive locomotive);
 
 	/**
@@ -80,6 +75,8 @@ public interface LocomotiveControlface {
 	public abstract void setFunctions(Locomotive locomotive, boolean[] functions)
 			throws LocomotiveException;
 
+	public boolean[] getFunctions(Locomotive locomotive);
+
 	public abstract void addLocomotiveChangeListener(Locomotive loco,
 			LocomotiveChangeListener l);
 
@@ -88,5 +85,8 @@ public interface LocomotiveControlface {
 	public abstract void undoLastChange() throws ControlException;
 
 	public abstract void previousDeviceToDefault() throws ControlException;
+
+	public void update();
+
 
 }

@@ -132,6 +132,8 @@ public class LocomotiveControlPanel extends JPanel {
             try {
                 for (LocomotiveWidget widget : locomotiveWidgets) {
                     Locomotive myLocomotive = widget.getMyLocomotive();
+                    if(myLocomotive == null)
+                    	continue;
                     SRCPLocomotiveControl.getInstance().setSpeed(myLocomotive, 0, null);
                     widget.updateWidget();
                     Thread.sleep(200);

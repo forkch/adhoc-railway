@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -15,14 +14,15 @@ import javax.swing.KeyStroke;
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
+import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
-public class KeyTrackControl extends JPanel {
+public class KeyTrackControl extends SimpleInternalFrame {
 
 	private Segment7 seg1;
 
@@ -34,12 +34,12 @@ public class KeyTrackControl extends JPanel {
 
 	private JPanel switchesHistory;
 
-	private TurnoutControl turnoutControl = TurnoutControl.getInstance();
+	private SRCPTurnoutControl turnoutControl = SRCPTurnoutControl.getInstance();
 
 	private TurnoutPersistenceIface turnoutPersistence = HibernateTurnoutPersistence
 			.getInstance();
 
-	private RouteControl routeControl = RouteControl.getInstance();
+	private RouteControlIface routeControl = SRCPRouteControl.getInstance();
 
 	private HibernateRoutePersistence routePersistence = HibernateRoutePersistence
 			.getInstance();
@@ -51,6 +51,7 @@ public class KeyTrackControl extends JPanel {
 	public boolean changedRoute = false;
 
 	public KeyTrackControl() {
+		super("Track Control / History");
 		enteredNumberKeys = new StringBuffer();
 		initGUI();
 		initKeyboardActions();
@@ -66,7 +67,7 @@ public class KeyTrackControl extends JPanel {
 
 		add(segmentPanelNorth, BorderLayout.NORTH);
 		add(sh1, BorderLayout.CENTER);
-		setBorder(BorderFactory.createTitledBorder("Track Control / History"));
+		//setBorder(BorderFactory.createTitledBorder("Track Control / History"));
 	}
 
 	private JPanel initSegmentPanel() {

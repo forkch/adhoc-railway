@@ -6,13 +6,22 @@ import javax.persistence.Persistence;
 
 public abstract class HibernatePersistence {
 
-	protected EntityManager em;
-
+	protected static EntityManagerFactory emf;
+	protected static EntityManager em;
+	
 	public HibernatePersistence() {
-		EntityManagerFactory emf = Persistence
-				.createEntityManagerFactory("adhocrailway");
-		// First unit of work
-		this.em = emf.createEntityManager();
 
+	}
+
+	public static EntityManager getEntityManager() {
+		// Start EntityManagerFactory
+		if (emf == null)
+			emf = Persistence.createEntityManagerFactory("adhocrailway");
+		// First unit of work
+		if(em == null) {
+			em = emf.createEntityManager();
+			em.getTransaction().begin();
+		}
+		return em;
 	}
 }

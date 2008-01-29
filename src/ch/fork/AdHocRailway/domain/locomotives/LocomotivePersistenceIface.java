@@ -28,7 +28,7 @@ public interface LocomotivePersistenceIface {
 	 * @return locomotives
 	 */
 	@SuppressWarnings("unchecked")
-	public abstract Locomotive getLocomotiveByAddress(int address);
+	public abstract Locomotive getLocomotiveByBusAddress(int bus, int address);
 
 	public abstract void addLocomotive(Locomotive locomotive);
 

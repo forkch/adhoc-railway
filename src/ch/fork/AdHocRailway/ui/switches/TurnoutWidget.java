@@ -38,16 +38,18 @@ import javax.swing.SwingUtilities;
 import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.switches.configuration.TurnoutConfig;
 
 public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 		LockChangeListener {
-	private TurnoutControl switchControl;
+	private TurnoutControlIface turnoutControl;
 
 	private static final long serialVersionUID = 1L;
 
@@ -64,13 +66,15 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 	private GridBagConstraints turnoutWidgetConstraints;
 
 	private JFrame frame;
+	
+	private TurnoutState actualTurnoutState = TurnoutState.UNDEF;
 
 	public TurnoutWidget(Turnout turnout, JFrame frame) {
 		myTurnout = turnout;
 		this.frame = frame;
-		this.switchControl = TurnoutControl.getInstance();
+		this.turnoutControl = SRCPTurnoutControl.getInstance();
 		initGUI();
-		switchControl.addSwitchChangeListener(turnout, this);
+		turnoutControl.addTurnoutChangeListener(turnout, this);
 	}
 
 	private void initGUI() {
@@ -103,10 +107,11 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 	}
 
 	public void lockChanged(ControlObject changedLock) {
-		if (changedLock instanceof Turnout) {
-			Turnout changedSwitch = (Turnout) changedLock;
-			turnoutChanged(changedSwitch);
-		}
+		//TODO reimplement
+		//		if (changedLock instanceof Turnout) {
+//			Turnout changedSwitch = (Turnout) changedLock;
+//			turnoutChanged(changedSwitch);
+//		}
 	}
 
 	private class MouseAction extends MouseAdapter {
@@ -114,7 +119,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 			try {
 				if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON1) {
-					switchControl.toggle(myTurnout);
+					turnoutControl.toggle(myTurnout);
 				} else if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON3) {
 					displaySwitchConfig();
@@ -125,13 +130,15 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 		}
 
 		private void displaySwitchConfig() {
+			turnoutControl.removeSwitchChangeListener(myTurnout);
 			TurnoutConfig switchConf = new TurnoutConfig(frame, myTurnout);
+			turnoutControl.addTurnoutChangeListener(myTurnout, TurnoutWidget.this);
 			if (switchConf.isOkPressed()) {
 				HibernateTurnoutPersistence.getInstance().updateTurnout(myTurnout);
 			} else {
 				HibernateTurnoutPersistence.getInstance().refreshTurnout(myTurnout);
 			}
-			turnoutChanged(myTurnout);
+			turnoutChanged(myTurnout, actualTurnoutState);
 		}
 	}
 
@@ -139,12 +146,14 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 		return myTurnout;
 	}
 
-	public void turnoutChanged(Turnout changedTurnout) {
+	public void turnoutChanged(Turnout changedTurnout, TurnoutState newState) {
 		if (myTurnout.equals(changedTurnout)) {
+			actualTurnoutState = newState;
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					numberLabel.setText(Integer.toString(myTurnout.getNumber()));
 					descLabel.setText(myTurnout.getDescription());
+					turnoutCanvas.setTurnoutState(actualTurnoutState);
 					TurnoutWidget.this.revalidate();
 					TurnoutWidget.this.repaint();
 				}

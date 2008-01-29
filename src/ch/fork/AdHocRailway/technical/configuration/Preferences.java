@@ -46,7 +46,7 @@ public class Preferences implements PreferencesKeys {
         setStringValue(INTERFACE_6051, "N");
         setIntValue(TURNOUT_CONTROLES, 5);
         setIntValue(ROUTE_CONTROLES, 5);
-        setBooleanValue(LOGGING, false);
+        setBooleanValue(LOGGING, true);
         setBooleanValue(FULLSCREEN, false);
         setBooleanValue(AUTOCONNECT, false);
         setBooleanValue(TABBED_TRACK, true);

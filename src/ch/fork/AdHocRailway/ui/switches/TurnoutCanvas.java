@@ -33,9 +33,11 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 
 public class TurnoutCanvas extends JPanel {
     protected Turnout myTurnout;
+    protected TurnoutState turnoutState = TurnoutState.UNDEF;
 
     public TurnoutCanvas(Turnout mySwitch) {
         this.myTurnout = mySwitch;
@@ -84,7 +86,7 @@ public class TurnoutCanvas extends JPanel {
         Graphics2D g3 = img.createGraphics();
         g3.drawImage(createImageIcon("switches/canvas/default_switch.png")
             .getImage(), 0, 0, this);
-        switch (myTurnout.getTurnoutState()){
+        switch (turnoutState){
         case STRAIGHT:
             g3.drawImage(createImageIcon("switches/canvas/LED_middle_yellow.png").getImage(), 28, 0, this);
             g3.drawImage(createImageIcon("switches/canvas/LED_up_white.png")
@@ -117,7 +119,7 @@ public class TurnoutCanvas extends JPanel {
         Graphics2D g3 = img.createGraphics();
         g3.drawImage(createImageIcon("switches/canvas/double_cross_switch.png")
                 .getImage(), 0, 0, this);
-        switch (myTurnout.getTurnoutState()) {
+        switch (turnoutState) {
         case STRAIGHT:
             g3.drawImage(createImageIcon("switches/canvas/LED_up_yellow.png").getImage(),
                     0, 17, this);
@@ -159,7 +161,7 @@ public class TurnoutCanvas extends JPanel {
         Graphics2D g3 = img.createGraphics();
         g3.drawImage(createImageIcon("switches/canvas/three_way_switch.png")
             .getImage(), 0, 0, this);
-        switch (myTurnout.getTurnoutState()){
+        switch (turnoutState){
         case LEFT:
             g3.drawImage(createImageIcon("switches/canvas/LED_up_yellow.png")
                 .getImage(), 28, 0, this);
@@ -220,4 +222,8 @@ public class TurnoutCanvas extends JPanel {
     public boolean isFocusTraversable() {
         return true;
     }
+
+	public void setTurnoutState(TurnoutState turnoutState) {
+		this.turnoutState = turnoutState;
+	}
 }

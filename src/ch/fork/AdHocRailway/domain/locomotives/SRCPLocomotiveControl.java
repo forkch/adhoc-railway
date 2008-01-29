@@ -22,14 +22,18 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.Control;
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.exception.InvalidAddressException;
 import ch.fork.AdHocRailway.domain.exception.NoSessionException;
-import ch.fork.AdHocRailway.domain.locomotives.Locomotive.Direction;
+import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotive.Direction;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveLockedException;
 import de.dermoba.srcp.client.SRCPSession;
@@ -46,14 +50,28 @@ import de.dermoba.srcp.devices.GLInfoListener;
  */
 public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 		Constants, LocomotiveControlface {
+	private static Logger logger = Logger.getLogger(SRCPLocomotiveControl.class);
 
 	private static LocomotiveControlface instance;
-	private LocomotivePersistenceIface persistence = HibernateLocomotivePersistence.getInstance();
+	LocomotivePersistenceIface persistence = HibernateLocomotivePersistence.getInstance();
 	
 	private List<LocomotiveChangeListener> listeners;
 
+	Map<Locomotive, SRCPLocomotive> srcpLocomotives;
+	
 	private SRCPLocomotiveControl() {
 		listeners = new ArrayList<LocomotiveChangeListener>();
+		srcpLocomotives = new HashMap<Locomotive, SRCPLocomotive>();
+		update();
+	}
+	
+	public void update() {
+		srcpLocomotives.clear();
+		for (Locomotive l : persistence.getAllLocomotives()) {
+			SRCPLocomotive sLocomotive = new SRCPLocomotive(l);
+			srcpLocomotives.put(l,sLocomotive);
+			sLocomotive.setSession(session);
+		}
 	}
 
 	/**
@@ -73,7 +91,7 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 	 */
 	public void setSession(SRCPSession session) {
 		this.session = session;
-		for (Locomotive l : persistence.getAllLocomotives()) {
+		for (SRCPLocomotive l : srcpLocomotives.values()) {
 			l.setSession(session);
 		}
 		session.getInfoChannel().addGLInfoListener(this);
@@ -86,21 +104,27 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 			throws LocomotiveException {
 		checkLocomotive(locomotive);
 		initLocomotive(locomotive);
-		switch (locomotive.direction) {
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
+		switch (sLocomotive.direction) {
 		case FORWARD:
-			locomotive.setDirection(Direction.REVERSE);
+			sLocomotive.setDirection(Direction.REVERSE);
 			break;
 		case REVERSE:
-			locomotive.setDirection(Direction.FORWARD);
+			sLocomotive.setDirection(Direction.FORWARD);
 			break;
 		}
 	}
 
+	public Direction getDirection(Locomotive locomotive) {
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
+		return sLocomotive.getDirection();
+	}
+	
 	/* (non-Javadoc)
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#getCurrentSpeed(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
 	public int getCurrentSpeed(Locomotive locomotive) {
-		return locomotive.getCurrentSpeed();
+		return srcpLocomotives.get(locomotive).getCurrentSpeed();
 	}
 
 	/* (non-Javadoc)
@@ -111,32 +135,33 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 
 		checkLocomotive(locomotive);
 		initLocomotive(locomotive);
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
 		try {
 			if (functions == null) {
-				functions = locomotive.getFunctions();
+				functions = sLocomotive.getFunctions();
 			}
 			LocomotiveType lt = locomotive.getLocomotiveType();
 			int drivingSteps = lt.getDrivingSteps();
 			if (speed < 0 || speed > drivingSteps) {
 				return;
 			}
-			GL gl = locomotive.getGL();
-			switch (locomotive.direction) {
+			GL gl = sLocomotive.getGL();
+			switch (sLocomotive.direction) {
 			case FORWARD:
-				gl.set(Locomotive.FORWARD_DIRECTION, speed, drivingSteps,
+				gl.set(SRCPLocomotive.FORWARD_DIRECTION, speed, drivingSteps,
 						functions);
 				break;
 			case REVERSE:
-				gl.set(Locomotive.REVERSE_DIRECTION, speed, drivingSteps,
+				gl.set(SRCPLocomotive.REVERSE_DIRECTION, speed, drivingSteps,
 						functions);
 				break;
 			case UNDEF:
-				gl.set(Locomotive.FORWARD_DIRECTION, speed, drivingSteps,
+				gl.set(SRCPLocomotive.FORWARD_DIRECTION, speed, drivingSteps,
 						functions);
-				locomotive.setDirection(Direction.FORWARD);
+				sLocomotive.setDirection(Direction.FORWARD);
 				break;
 			}
-			locomotive.setCurrentSpeed(speed);
+			sLocomotive.setCurrentSpeed(speed);
 		} catch (SRCPException x) {
 			if (x instanceof SRCPDeviceLockedException) {
 				throw new LocomotiveLockedException(ERR_LOCKED);
@@ -152,9 +177,10 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 	public void increaseSpeed(Locomotive locomotive) throws LocomotiveException {
 		checkLocomotive(locomotive);
 		initLocomotive(locomotive);
-		int newSpeed = locomotive.getCurrentSpeed() + 1;
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
+		int newSpeed = sLocomotive.getCurrentSpeed() + 1;
 		if (newSpeed <= locomotive.getLocomotiveType().getDrivingSteps()) {
-			setSpeed(locomotive, newSpeed, locomotive.getFunctions());
+			setSpeed(locomotive, newSpeed, sLocomotive.getFunctions());
 		}
 	}
 
@@ -164,9 +190,10 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 	public void decreaseSpeed(Locomotive locomotive) throws LocomotiveException {
 		checkLocomotive(locomotive);
 		initLocomotive(locomotive);
-		int newSpeed = locomotive.getCurrentSpeed() - 1;
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
+		int newSpeed = sLocomotive.getCurrentSpeed() - 1;
 		if (newSpeed <= locomotive.getLocomotiveType().getDrivingSteps()) {
-			setSpeed(locomotive, newSpeed, locomotive.getFunctions());
+			setSpeed(locomotive, newSpeed, sLocomotive.getFunctions());
 		}
 	}
 
@@ -177,10 +204,11 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 			throws LocomotiveException {
 		checkLocomotive(locomotive);
 		initLocomotive(locomotive);
-		int newSpeed = locomotive.getCurrentSpeed()
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
+		int newSpeed = sLocomotive.getCurrentSpeed()
 				+ locomotive.getLocomotiveType().getStepping();
 		if (newSpeed <= locomotive.getLocomotiveType().getDrivingSteps()) {
-			setSpeed(locomotive, newSpeed, locomotive.getFunctions());
+			setSpeed(locomotive, newSpeed, sLocomotive.getFunctions());
 		}
 	}
 
@@ -191,10 +219,11 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 			throws LocomotiveException {
 		checkLocomotive(locomotive);
 		initLocomotive(locomotive);
-		int newSpeed = locomotive.getCurrentSpeed()
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
+		int newSpeed = sLocomotive.getCurrentSpeed()
 				- locomotive.getLocomotiveType().getStepping();
 		if (newSpeed <= locomotive.getLocomotiveType().getDrivingSteps()) {
-			setSpeed(locomotive, newSpeed, locomotive.getFunctions());
+			setSpeed(locomotive, newSpeed, sLocomotive.getFunctions());
 		}
 	}
 
@@ -205,41 +234,51 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 			throws LocomotiveException {
 		checkLocomotive(locomotive);
 		initLocomotive(locomotive);
-		setSpeed(locomotive, locomotive.getCurrentSpeed(), functions);
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
+		setSpeed(locomotive, sLocomotive.getCurrentSpeed(), functions);
+	}
+
+
+	public boolean[] getFunctions(Locomotive locomotive) {
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
+		return sLocomotive.getFunctions();
 	}
 
 	public void GLinit(double timestamp, int bus, int address, String protocol,
 			String[] params) {
-		Locomotive locomotive = persistence.getLocomotiveByAddress(address);
+		Locomotive locomotive = persistence.getLocomotiveByBusAddress(bus, address);
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
 		if (locomotive != null) {
 			GL gl = new GL(session);
 			gl.setBus(locomotive.getBus());
 			gl.setAddress(locomotive.getAddress());
-			locomotive.setGL(gl);
-			locomotive.setInitialized(true);
+			sLocomotive.setGL(gl);
+			sLocomotive.setInitialized(true);
 			informListeners(locomotive);
 		}
 	}
 
 	public void GLset(double timestamp, int bus, int address, String drivemode,
 			int v, int vMax, boolean[] functions) {
-		Locomotive locomotive = persistence.getLocomotiveByAddress(address);
+		Locomotive locomotive = persistence.getLocomotiveByBusAddress(bus, address);
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
 		if (locomotive != null) {
-			if (drivemode.equals(Locomotive.FORWARD_DIRECTION)) {
-				locomotive.setDirection(Direction.FORWARD);
-			} else if (drivemode.equals(Locomotive.REVERSE_DIRECTION)) {
-				locomotive.setDirection(Direction.REVERSE);
+			if (drivemode.equals(SRCPLocomotive.FORWARD_DIRECTION)) {
+				sLocomotive.setDirection(Direction.FORWARD);
+			} else if (drivemode.equals(SRCPLocomotive.REVERSE_DIRECTION)) {
+				sLocomotive.setDirection(Direction.REVERSE);
 			}
-			locomotive.setCurrentSpeed(v);
-			locomotive.setFunctions(functions);
+			sLocomotive.setCurrentSpeed(v);
+			sLocomotive.setFunctions(functions);
 		}
 	}
 
 	public void GLterm(double timestamp, int bus, int address) {
-		Locomotive locomotive = persistence.getLocomotiveByAddress(address);
+		Locomotive locomotive = persistence.getLocomotiveByBusAddress(bus, address);
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
 		if (locomotive != null) {
-			locomotive.setGL(null);
-			locomotive.setInitialized(false);
+			sLocomotive.setGL(null);
+			sLocomotive.setInitialized(false);
 		}
 	}
 
@@ -268,8 +307,9 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 			throws LocomotiveException {
 		if (locomotive == null)
 			return;
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
 		try {
-			if (locomotive.getSession() == null) {
+			if (sLocomotive.getSession() == null) {
 				throw new NoSessionException();
 			}
 			if (locomotive.getAddress() == 0) {
@@ -284,7 +324,8 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 
 	private void initLocomotive(Locomotive locomotive)
 			throws LocomotiveException {
-		if (!locomotive.isInitialized()) {
+		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
+		if (!sLocomotive.isInitialized()) {
 			try {
 				GL gl = new GL(session);
 				LocomotiveType lt = locomotive.getLocomotiveType();
@@ -294,8 +335,8 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 				params[2] = Integer.toString(lt.getFunctionCount());
 				gl.init(locomotive.getBus(), locomotive.getAddress(),
 						LocomotiveType.PROTOCOL, params);
-				locomotive.setInitialized(true);
-				locomotive.setGL(gl);
+				sLocomotive.setInitialized(true);
+				sLocomotive.setGL(gl);
 			} catch (SRCPDeviceLockedException x1) {
 				throw new LocomotiveLockedException(ERR_LOCKED, x1);
 			} catch (SRCPException x) {
@@ -320,4 +361,5 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 	public void previousDeviceToDefault() throws ControlException {
 		// TODO Auto-generated method stub
 	}
+
 }

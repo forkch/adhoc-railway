@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
@@ -28,132 +29,132 @@ public class HibernateRoutePersistence extends HibernatePersistence {
 
 	@SuppressWarnings("unchecked")
 	public SortedSet<Route> getAllRoutes() {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		List<Route> routes = em.createQuery("from Route").getResultList();
-		t.commit();
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 		return new TreeSet<Route>(routes);
 	}
 
 	@SuppressWarnings("unchecked")
 	public Route getRouteByNumber(int number) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		Route route = (Route) em.createQuery(
 				"from Route as l where l.number = ?1").setParameter(1, number)
 				.getSingleResult();
-		t.commit();
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 		return route;
 	}
 
 	public void addRoute(Route route) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		em.persist(route);
-		t.commit();
-		t.begin();
 		em.refresh(route.getRouteGroup());
-		t.commit();
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
 
 	public void deleteRoute(Route route) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		em.remove(route);
-		t.commit();
+		em.refresh(route.getRouteGroup());
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
 
 	public void updateRoute(Route route) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		em.merge(route);
+		em.refresh(route);
 		em.refresh(route.getRouteGroup());
-		t.commit();
-		t.begin();
-		em.refresh(route.getRouteGroup());
-		t.commit();
+		em.refresh(route.getRouteItems());
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
 
 	public void refreshRoute(Route route) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		em.refresh(route);
 		em.refresh(route.getRouteGroup());
-		t.commit();
-		t.begin();
 		em.refresh(route.getRouteGroup());
-		t.commit();
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
 
 	@SuppressWarnings("unchecked")
 	public SortedSet<RouteGroup> getAllRouteGroups() {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		List<RouteGroup> routeGroups = em.createQuery("from RouteGroup")
 				.getResultList();
-		t.commit();
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 		return new TreeSet<RouteGroup>(routeGroups);
 	}
 
 	public void addRouteGroup(RouteGroup routeGroup) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		em.persist(routeGroup);
-		t.commit();
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
 
 	public void deleteRouteGroup(RouteGroup routeGroup) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		em.remove(routeGroup);
-		t.commit();
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
 
 	public void updateRouteGroup(RouteGroup routeGroup) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		em.merge(routeGroup);
-		t.commit();
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
 
 	public void refreshRouteGroup(RouteGroup routeGroup) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		em.refresh(routeGroup);
-		t.commit();
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
-	
+
 	public void addRouteItem(RouteItem item) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		em.persist(item);
-		t.commit();
+		em.refresh(item.getRoute());
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
 
 	public void deleteRouteItem(RouteItem item) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		em.remove(item);
-		t.commit();
+		em.refresh(item.getRoute());
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
 
 	public void updateRouteItem(RouteItem item) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		em.merge(item);
-		t.commit();
+		em.refresh(item.getRoute());
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
 
 	public void refreshRouteItem(RouteItem item) {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
+		EntityManager em = getEntityManager();
 		em.refresh(item);
-		t.commit();
+		em.refresh(item.getRoute());
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
 
 	public int getNextFreeRouteNumber() {
 		SortedSet<Route> turnouts = getAllRoutes();
-		if(turnouts.isEmpty()) {
+		if (turnouts.isEmpty()) {
 			return 1;
 		}
 		return turnouts.last().getNumber() + 1;

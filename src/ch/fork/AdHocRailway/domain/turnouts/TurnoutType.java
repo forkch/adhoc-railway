@@ -44,17 +44,7 @@ public class TurnoutType implements java.io.Serializable,
 	}
 
 	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-
-		TurnoutType t = (TurnoutType) o;
-
-		if (id != t.getId())
-			return false;
-		if (!typeName.equals(t.getTypeName()))
-			return false;
+		
 		return true;
 	}
 
@@ -119,7 +109,7 @@ public class TurnoutType implements java.io.Serializable,
 	}
 
 	@Sort(type = SortType.NATURAL)
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, mappedBy = "turnoutType")
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "turnoutType")
 	public SortedSet<Turnout> getTurnouts() {
 		return this.turnouts;
 	}

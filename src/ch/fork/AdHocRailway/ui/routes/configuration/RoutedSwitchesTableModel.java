@@ -8,7 +8,7 @@ import javax.swing.table.AbstractTableModel;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 
 public class RoutedSwitchesTableModel extends AbstractTableModel {
 
@@ -56,6 +56,7 @@ public class RoutedSwitchesTableModel extends AbstractTableModel {
 	}
 
 	public void setRoute(Route route) {
+		if(route.getRouteItems() != null) 
 		this.routeItems = route.getRouteItems();
 		fireTableDataChanged();
 	}

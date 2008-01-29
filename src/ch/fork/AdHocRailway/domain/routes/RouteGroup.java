@@ -31,7 +31,6 @@ public class RouteGroup implements java.io.Serializable, Comparable<RouteGroup> 
 
 	private String name;
 
-	private int weight;
 
 	@Sort(type = SortType.NATURAL)
 	private SortedSet<Route> routes = new TreeSet<Route>();
@@ -39,10 +38,11 @@ public class RouteGroup implements java.io.Serializable, Comparable<RouteGroup> 
 	public int compareTo(RouteGroup o) {
 		if(this == o) return 0;
 		if(o == null) return -1;
-		if(weight > o.getWeight()) return 1;
-		if(weight == o.getWeight()) return 0;
-		if(weight < o.getWeight()) return -1;
-		return -1;
+//		if(weight > o.getWeight()) return 1;
+//		if(weight == o.getWeight()) return 0;
+//		if(weight < o.getWeight()) return -1;
+//		return -1;
+		return name.compareTo(o.getName());
 	}
 	
 	public boolean equals(Object o) {
@@ -56,13 +56,11 @@ public class RouteGroup implements java.io.Serializable, Comparable<RouteGroup> 
 			return false;
 		if (!name.equals(l.getName()))
 			return false;
-		if (weight != l.getWeight())
-			return false;
 		return true;
 	}
 
 	public int hashCode() {
-		return name.hashCode() + weight;
+		return name.hashCode();
 	}
 	
 	public String toString() {
@@ -98,15 +96,6 @@ public class RouteGroup implements java.io.Serializable, Comparable<RouteGroup> 
 
 	public void setId(int id) {
 		this.id = id;
-	}
-//	TODO ORDERING
-	@Column(name = "weight", unique = false, nullable = true, insertable = true, updatable = true)
-	public int getWeight() {
-		return this.weight;
-	}
-
-	public void setWeight(int weight) {
-		this.weight = weight;
 	}
 	@Column(name = "name", unique = false, nullable = false, insertable = true, updatable = true)
 	public String getName() {

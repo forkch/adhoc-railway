@@ -95,10 +95,12 @@ public class LocomotiveWidget extends JPanel implements
 	private Color defaultBackground;
 
 	private Locomotive none;
-	
-	private LocomotiveControlface locomotiveControl = SRCPLocomotiveControl.getInstance();;
-	
-	private LocomotivePersistenceIface locomotivePersistence = HibernateLocomotivePersistence.getInstance();
+
+	private LocomotiveControlface locomotiveControl = SRCPLocomotiveControl
+			.getInstance();;
+
+	private LocomotivePersistenceIface locomotivePersistence = HibernateLocomotivePersistence
+			.getInstance();
 
 	private LocomotiveGroup allLocomotives;
 
@@ -115,7 +117,7 @@ public class LocomotiveWidget extends JPanel implements
 		this.deccelerateKey = deccelerateKey;
 		this.toggleDirectionKey = toggleDirectionKey;
 		this.frame = frame;
-		
+
 		initGUI();
 		initKeyboardActions();
 	}
@@ -270,12 +272,12 @@ public class LocomotiveWidget extends JPanel implements
 		}
 		speedBar.setMinimum(0);
 		speedBar.setMaximum(myLocomotive.getLocomotiveType().getDrivingSteps());
-		speedBar.setValue(myLocomotive.getCurrentSpeed());
-		boolean functions[] = myLocomotive.getFunctions();
+		speedBar.setValue(locomotiveControl.getCurrentSpeed(myLocomotive));
+		boolean functions[] = locomotiveControl.getFunctions(myLocomotive);
 		for (int i = 0; i < functions.length; i++) {
 			functionToggleButtons[i].setSelected(functions[i]);
 		}
-		switch (myLocomotive.getDirection()) {
+		switch (locomotiveControl.getDirection(myLocomotive)) {
 		case FORWARD:
 			directionButton.setIcon(createImageIcon("locomotives/forward.png"));
 			break;
@@ -306,13 +308,20 @@ public class LocomotiveWidget extends JPanel implements
 	public void updateLocomotiveGroups() {
 		locomotiveComboBox.removeActionListener(locomotiveSelectAction);
 		locomotiveGroupComboBox.removeActionListener(groupSelectAction);
-		for (LocomotiveGroup lg : locomotivePersistence.getAllLocomotiveGroups()) {
+		for (LocomotiveGroup lg : locomotivePersistence
+				.getAllLocomotiveGroups()) {
 			locomotiveGroupComboBox.addItem(lg);
 			for (Locomotive l : lg.getLocomotives()) {
 				locomotiveComboBox.addItem(l);
 			}
 		}
-		locomotiveGroupComboBox.setSelectedItem(allLocomotives);
+
+		locomotiveGroupComboBox.setSelectedIndex(-1);
+		if (myLocomotive != null)
+			locomotiveComboBox.setSelectedItem(myLocomotive);
+		else
+			locomotiveComboBox.setSelectedIndex(-1);
+
 		locomotiveComboBox.addActionListener(locomotiveSelectAction);
 		locomotiveGroupComboBox.addActionListener(groupSelectAction);
 	}
@@ -352,11 +361,11 @@ public class LocomotiveWidget extends JPanel implements
 			if (myLocomotive == null)
 				return;
 			try {
-				boolean[] functions = myLocomotive.getFunctions();
+				boolean[] functions = locomotiveControl
+						.getFunctions(myLocomotive);
 				functions[function] = functionToggleButtons[function]
 						.isSelected();
-				locomotiveControl.setFunctions(myLocomotive,
-						functions);
+				locomotiveControl.setFunctions(myLocomotive, functions);
 			} catch (LocomotiveException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
 			}
@@ -377,8 +386,7 @@ public class LocomotiveWidget extends JPanel implements
 				} else if (e.getActionCommand().equals("deccelerate")) {
 					locomotiveControl.decreaseSpeed(myLocomotive);
 				} else if (e.getActionCommand().equals("toggle_direction")) {
-					locomotiveControl.toggleDirection(
-							myLocomotive);
+					locomotiveControl.toggleDirection(myLocomotive);
 				}
 				if (time == 0) {
 					time = System.currentTimeMillis();
@@ -395,36 +403,36 @@ public class LocomotiveWidget extends JPanel implements
 
 	private class LocomotiveSelectAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
-			if (locomotiveComboBox.getItemCount() == 0)
+			if (locomotiveComboBox.getItemCount() == 0
+					|| locomotiveComboBox.getSelectedIndex() == -1)
 				return;
-			System.out.println(lockedByMe());
-			//TODO LOCKED BY ME
-			if (myLocomotive == null || myLocomotive.getCurrentSpeed() == 0) {
+			// TODO LOCKED BY ME
+			if (myLocomotive == null
+					|| locomotiveControl.getCurrentSpeed(myLocomotive) == 0) {
 				locomotiveComboBox.setBackground(defaultBackground);
 				lockButton.setBackground(defaultBackground);
 				myLocomotive = (Locomotive) locomotiveComboBox
 						.getSelectedItem();
-				locomotiveControl.addLocomotiveChangeListener(
-						myLocomotive, LocomotiveWidget.this);
+				locomotiveControl.addLocomotiveChangeListener(myLocomotive,
+						LocomotiveWidget.this);
 
 				updateWidget();
-				System.out.println(desc);
 				desc.setText(myLocomotive.getDescription());
 				speedBar.requestFocus();
 			} else {
-				locomotiveComboBox.setSelectedItem(myLocomotive);
+				locomotiveGroupComboBox.setSelectedItem(myLocomotive.getLocomotiveGroup());
 				locomotiveComboBox.setBackground(Color.RED);
+				locomotiveComboBox.setSelectedItem(myLocomotive);
 			}
 		}
 	}
 
 	private class LocomotiveGroupSelectAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
+			System.out.println("LocomotiveGroupSelectAction");
 			LocomotiveGroup lg = (LocomotiveGroup) locomotiveGroupComboBox
 					.getSelectedItem();
 			locomotiveComboBox.removeAllItems();
-			// Locomotive none = new NoneLocomotive();
-			// locomotiveComboBox.addItem(none);
 			if (lg == allLocomotives) {
 				SortedSet<Locomotive> sl = locomotivePersistence
 						.getAllLocomotives();
@@ -436,7 +444,7 @@ public class LocomotiveWidget extends JPanel implements
 					locomotiveComboBox.addItem(l);
 				}
 			}
-			locomotiveComboBox.setSelectedIndex(0);
+			locomotiveComboBox.setSelectedIndex(-1);
 			locomotiveComboBox.revalidate();
 			locomotiveComboBox.repaint();
 		}

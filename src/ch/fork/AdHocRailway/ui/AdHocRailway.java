@@ -54,7 +54,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+
+import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
@@ -63,10 +66,12 @@ import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
-import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
+import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -75,6 +80,9 @@ import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfiguration
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.switches.SwitchProgrammer;
 import ch.fork.AdHocRailway.ui.switches.configuration.TurnoutConfigurationDialog;
+
+import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
+
 import de.dermoba.srcp.client.CommandDataListener;
 import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
@@ -82,14 +90,15 @@ import de.dermoba.srcp.common.exception.SRCPException;
 
 public class AdHocRailway extends JFrame implements CommandDataListener,
 		InfoDataListener, PreferencesKeys {
-
+	private static Logger logger = Logger.getLogger(AdHocRailway.class);
 	private static final long serialVersionUID = 1L;
-
+	private static AdHocRailway instance;
+	
 	private static final String NAME = "AdHoc-Railway";
 
 	private SRCPSession session;
 
-	private TurnoutControl turnoutControl;
+	private TurnoutControlIface turnoutControl;
 
 	private TurnoutPersistenceIface turnoutPersistence;
 
@@ -99,7 +108,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private SRCPLockControl lockControl;
 	
-	private RouteControl routeControl;
+	private RouteControlIface routeControl;
 
 	private Preferences preferences;
 
@@ -157,18 +166,17 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		preferences = Preferences.getInstance();
 		splash.nextStep("Loading Persistence Layer (Locomotives)");
 		locomotivePersistence = HibernateLocomotivePersistence.getInstance();
-		//locomotivePersistence.preload();
 		splash.nextStep("Loading Persistence Layer (Turnouts)");
 		turnoutPersistence = HibernateTurnoutPersistence.getInstance();
-		//turnoutPersistence.preload();
+		
 		splash.nextStep("Loading Persistence Layer (Routes)");
 		
 		splash.nextStep("Loading Control Layer (Locomotives)");
 		locomotiveControl = SRCPLocomotiveControl.getInstance();
 		splash.nextStep("Loading Control Layer (Turnouts)");
-		turnoutControl = TurnoutControl.getInstance();
+		turnoutControl = SRCPTurnoutControl.getInstance();
 		splash.nextStep("Loading Control Layer (Routes)");
-		routeControl = RouteControl.getInstance();
+		routeControl = SRCPRouteControl.getInstance();
 		splash.nextStep("Loading Control Layer (Locks)");
 		lockControl = SRCPLockControl.getInstance();
 		
@@ -180,16 +188,21 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		initKeyboardActions();
 
-		// setSize(1000, 700);
+		setSize(1000, 700);
 
-		setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
+		//setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
 
 		splash.nextStep("RailControl started");
 		updateCommandHistory("RailControl started");
 		if (preferences.getBooleanValue(AUTOCONNECT))
 			new ConnectAction().actionPerformed(null);
 		// pack();
+		instance = this;
 		setVisible(true);
+	}
+	
+	public static AdHocRailway getInstance() {
+		return instance;
 	}
 
 	private void initGUI() {
@@ -253,10 +266,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	}
 
 	private void updateLocomotives() {
+		locomotiveControl.update();
 		locomotiveControlPanel.update();
 	}
 
 	private void updateTurnouts() {
+		turnoutControl.update();
 		trackControlPanel.update();
 	}
 
@@ -264,14 +279,14 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		if (preferences.getBooleanValue(LOGGING)) {
 			updateCommandHistory("To Server: " + commandData);
 		}
-		System.out.println("To Server: " + commandData.trim());
+		logger.info("To Server: " + commandData.trim());
 	}
 
 	public void infoDataReceived(String infoData) {
 		if (preferences.getBooleanValue(LOGGING)) {
 			updateCommandHistory("From Server: " + infoData);
 		}
-		//System.out.println("From Server: " + infoData.trim());
+		logger.info("From Server: " + infoData.trim());
 	}
 
 	public void infoDataReceived(double timestamp, int bus, String deviceGroup,
@@ -451,8 +466,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				session.getCommandChannel().addCommandDataListener(
 						AdHocRailway.this);
 				session.getInfoChannel().addInfoDataListener(AdHocRailway.this);
-				turnoutControl.setSession(session);
-				locomotiveControl.setSession(session);
+				((SRCPTurnoutControl)turnoutControl).setSession(session);
+				((SRCPLocomotiveControl)locomotiveControl).setSession(session);
 				lockControl.setSession(session);
 				session.connect();
 				daemonConnectItem.setEnabled(false);
@@ -464,9 +479,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				updateCommandHistory("Connected to server " + host
 						+ " on port " + port);
 			} catch (SRCPException e1) {
-				System.out.println("here");
 				if (e1.getCause() instanceof ConnectException) {
-					System.out.println("here");
 					ExceptionProcessor.getInstance().processException(
 							"Server not running", e1);
 				}
@@ -486,8 +499,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				int port = preferences.getIntValue(PORT);
 				session.disconnect();
 				session = null;
-				turnoutControl.setSession(null);
-				locomotiveControl.setSession(null);
+				((SRCPTurnoutControl)turnoutControl).setSession(null);
+				((SRCPLocomotiveControl)locomotiveControl).setSession(null);
 				lockControl.setSession(null);
 				daemonConnectItem.setEnabled(true);
 				daemonDisconnectItem.setEnabled(false);
@@ -796,7 +809,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	}
 
 	public static void main(String[] args) {
-
+		try {
+			   UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
+			} catch (Exception e) {}
 		if (args.length == 1) {
 			new AdHocRailway(args[0]);
 		} else {

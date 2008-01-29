@@ -53,27 +53,47 @@ public class LocomotiveType implements java.io.Serializable,
 		return typeName.compareTo(o.getTypeName());
 	}
 
-	public boolean equals(Object o) {
-		if (this == o)
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + drivingSteps;
+		result = prime * result + functionCount;
+		result = prime * result + id;
+		result = prime * result + stepping;
+		result = prime * result
+				+ ((typeName == null) ? 0 : typeName.hashCode());
+		return result;
+	}
+
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
 			return true;
-		if (o == null || getClass() != o.getClass())
+		if (obj == null)
 			return false;
-
-		LocomotiveType t = (LocomotiveType) o;
-
-		if (!typeName.equals(t.getTypeName()))
+		if (getClass() != obj.getClass())
 			return false;
-		if (drivingSteps != t.getDrivingSteps())
+		final LocomotiveType other = (LocomotiveType) obj;
+		if (drivingSteps != other.drivingSteps)
 			return false;
-		if (functionCount != t.getFunctionCount())
+		if (functionCount != other.functionCount)
+			return false;
+		if (id != other.id)
+			return false;
+		if (stepping != other.stepping)
+			return false;
+		if (typeName == null) {
+			if (other.typeName != null)
+				return false;
+		} else if (!typeName.equals(other.typeName))
 			return false;
 		return true;
 	}
 
-	public int hashCode() {
-		return this.getTypeName().hashCode() + this.getDrivingSteps()
-				+ this.getFunctionCount();
-	}
+
 
 	public String toString() {
 		return this.getTypeName();

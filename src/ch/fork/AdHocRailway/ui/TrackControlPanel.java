@@ -16,17 +16,21 @@ import javax.swing.border.TitledBorder;
 
 import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
+import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.switches.TurnoutWidget;
+
+import com.jgoodies.looks.Options;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
@@ -40,12 +44,12 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private JFrame frame;
 
-	private TurnoutControl turnoutControl = TurnoutControl.getInstance();
+	private TurnoutControlIface turnoutControl = SRCPTurnoutControl.getInstance();
 
 	private TurnoutPersistenceIface turnoutPersistence = HibernateTurnoutPersistence
 			.getInstance();
 
-	private RouteControl routeControl = RouteControl.getInstance();
+	private RouteControlIface routeControl = SRCPRouteControl.getInstance();
 	
 	private HibernateRoutePersistence routePersistence  = HibernateRoutePersistence.getInstance();
 
@@ -67,6 +71,11 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		JPanel controlPanel = new JPanel(new GridLayout(1, 2));
 		if (preferences.getBooleanValue(TABBED_TRACK)) {
 			trackControlPane = new JTabbedPane();
+			trackControlPane.putClientProperty(
+				    Options.NO_CONTENT_BORDER_KEY, 
+				    Boolean.TRUE);
+			trackControlPane.putClientProperty(Options.EMBEDDED_TABS_KEY, Boolean.TRUE);
+
 			trackControlPane.add("Switches", turnoutGroupsTabbedPane);
 			trackControlPane.add("Routes", routeGroupsTabbedPane);
 			controlPanel.add(trackControlPane, BorderLayout.CENTER);
@@ -81,11 +90,23 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private void initTurnoutPanel() {
 		turnoutGroupsTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
+
+		turnoutGroupsTabbedPane.putClientProperty(
+			    Options.NO_CONTENT_BORDER_KEY, 
+			    Boolean.TRUE);
+		turnoutGroupsTabbedPane.putClientProperty(Options.EMBEDDED_TABS_KEY, Boolean.TRUE);
+
 		updateTurnouts();
 	}
 
 	private void initRoutesPanel() {
 		routeGroupsTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
+
+		routeGroupsTabbedPane.putClientProperty(
+			    Options.NO_CONTENT_BORDER_KEY, 
+			    Boolean.TRUE);
+		routeGroupsTabbedPane.putClientProperty(Options.EMBEDDED_TABS_KEY, Boolean.TRUE);
+
 		updateRoutes();
 	}
 

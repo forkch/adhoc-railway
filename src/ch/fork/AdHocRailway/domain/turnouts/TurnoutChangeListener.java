@@ -22,7 +22,9 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
+
 
 public interface TurnoutChangeListener {
-    public void turnoutChanged(Turnout changedLocomotive);
+    public void turnoutChanged(Turnout changedTurnout, TurnoutState newState);
 }

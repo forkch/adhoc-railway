@@ -32,7 +32,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -55,14 +54,18 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
+import com.mysql.jdbc.jdbc2.optional.SuspendableXAConnection;
+
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
-import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
+import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
+import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ListListModel;
 import ch.fork.AdHocRailway.ui.TableResizer;
 
@@ -296,7 +299,7 @@ public class TurnoutConfigurationDialog<E> extends ConfigurationDialog {
 					new ArrayList<TurnoutGroup>(turnoutPersistence
 							.getAllTurnoutGroups()));
 			turnoutGroupList.setModel(turnoutGroupListModel);
-			//turnoutGroupList.setSelectedValue(newTurnoutGroup, true);
+			// turnoutGroupList.setSelectedValue(newTurnoutGroup, true);
 		}
 	}
 
@@ -316,11 +319,15 @@ public class TurnoutConfigurationDialog<E> extends ConfigurationDialog {
 							+ "' ?", "Remove Turnout-Group",
 					JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
-				turnoutPersistence.deleteTurnoutGroup(groupToDelete);
-				turnoutGroupListModel = new ListListModel<TurnoutGroup>(
-						new ArrayList<TurnoutGroup>(turnoutPersistence
-								.getAllTurnoutGroups()));
-				turnoutGroupList.setModel(turnoutGroupListModel);
+				try {
+					turnoutPersistence.deleteTurnoutGroup(groupToDelete);
+					turnoutGroupListModel = new ListListModel<TurnoutGroup>(
+							new ArrayList<TurnoutGroup>(turnoutPersistence
+									.getAllTurnoutGroups()));
+					turnoutGroupList.setModel(turnoutGroupListModel);
+				} catch (TurnoutException e) {
+					ExceptionProcessor.getInstance().processExceptionDialog(e);
+				}
 			}
 		}
 	}
@@ -357,55 +364,55 @@ public class TurnoutConfigurationDialog<E> extends ConfigurationDialog {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			TurnoutGroup groupToMove = (TurnoutGroup) (turnoutGroupList
-					.getSelectedValue());
-			if (groupToMove == null) {
-				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
-						"Please select a Turnout-Group", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			SortedSet<TurnoutGroup> allGroups = turnoutPersistence
-					.getAllTurnoutGroups();
-			int weight = 0;
-			for (TurnoutGroup tg : allGroups) {
-				tg.setWeight(weight);
-				weight++;
-			}
-			boolean changed = false;
-			if (up) {
-				for (TurnoutGroup tg : allGroups) {
-					if (tg.getWeight() >= groupToMove.getWeight() - 1) {
-						if (!changed) {
-							groupToMove.setWeight(tg.getWeight());
-							changed = true;
-						}
-						tg.setWeight(tg.getWeight() + 1);
-						turnoutPersistence.updateTurnoutGroup(tg);
-					}
-				}
-			} else {
-				for (TurnoutGroup tg : allGroups) {
-					if (tg.getWeight() > groupToMove.getWeight()) {
-						if (!changed) {
-							groupToMove.setWeight(tg.getWeight());
-							changed = true;
-						}
-						tg.setWeight(tg.getWeight() - 1);
-						turnoutPersistence.updateTurnoutGroup(tg);
-					}
-				}
-			}
-
-			turnoutPersistence.updateTurnoutGroup(groupToMove);
-			turnoutGroupListModel = new ListListModel<TurnoutGroup>(
-					new ArrayList<TurnoutGroup>(turnoutPersistence
-							.getAllTurnoutGroups()));
-			turnoutGroupList.setModel(turnoutGroupListModel);
-
-			turnoutGroupList.setSelectedIndex(groupToMove.getWeight());
-			turnoutGroupListModel.updated();
-			updateTurnoutsPanel();
+			// TurnoutGroup groupToMove = (TurnoutGroup) (turnoutGroupList
+			// .getSelectedValue());
+			// if (groupToMove == null) {
+			// JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
+			// "Please select a Turnout-Group", "Error",
+			// JOptionPane.ERROR_MESSAGE);
+			// return;
+			// }
+			// SortedSet<TurnoutGroup> allGroups = turnoutPersistence
+			// .getAllTurnoutGroups();
+			// int weight = 0;
+			// for (TurnoutGroup tg : allGroups) {
+			// tg.setWeight(weight);
+			// weight++;
+			// }
+			// boolean changed = false;
+			// if (up) {
+			// for (TurnoutGroup tg : allGroups) {
+			// if (tg.getWeight() >= groupToMove.getWeight() - 1) {
+			// if (!changed) {
+			// groupToMove.setWeight(tg.getWeight());
+			// changed = true;
+			// }
+			// tg.setWeight(tg.getWeight() + 1);
+			// turnoutPersistence.updateTurnoutGroup(tg);
+			// }
+			// }
+			// } else {
+			// for (TurnoutGroup tg : allGroups) {
+			// if (tg.getWeight() > groupToMove.getWeight()) {
+			// if (!changed) {
+			// groupToMove.setWeight(tg.getWeight());
+			// changed = true;
+			// }
+			// tg.setWeight(tg.getWeight() - 1);
+			// turnoutPersistence.updateTurnoutGroup(tg);
+			// }
+			// }
+			// }
+			//
+			// turnoutPersistence.updateTurnoutGroup(groupToMove);
+			// turnoutGroupListModel = new ListListModel<TurnoutGroup>(
+			// new ArrayList<TurnoutGroup>(turnoutPersistence
+			// .getAllTurnoutGroups()));
+			// turnoutGroupList.setModel(turnoutGroupListModel);
+			//
+			// turnoutGroupList.setSelectedIndex(groupToMove.getWeight());
+			// turnoutGroupListModel.updated();
+			// updateTurnoutsPanel();
 		}
 	}
 
@@ -481,10 +488,27 @@ public class TurnoutConfigurationDialog<E> extends ConfigurationDialog {
 			if (turnoutsTable.isEditing())
 				turnoutsTable.getCellEditor().stopCellEditing();
 
-			Integer number = (Integer) turnoutsTable.getValueAt(turnoutsTable
-					.getSelectedRow(), 0);
-			turnoutPersistence.deleteTurnout(turnoutPersistence
-					.getTurnoutByNumber(number));
+			TurnoutGroup selectedTurnoutGroup = (TurnoutGroup) (turnoutGroupList
+					.getSelectedValue());
+			int[] rows = turnoutsTable.getSelectedRows();
+			int[] numbers = new int[rows.length]; 
+			int i = 0;
+			for (int row : rows) {
+				numbers[i] = (Integer) turnoutsTable.getValueAt(row, 0);
+				i++;
+			}
+			try {
+				for (int number : numbers) {
+					turnoutPersistence.removeTurnoutFromGroup(
+							selectedTurnoutGroup, turnoutPersistence
+									.getTurnoutByNumber(number));
+				}
+
+			} catch (TurnoutException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			updateTurnoutsPanel();
 		}
 	}
 

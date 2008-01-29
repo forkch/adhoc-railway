@@ -22,7 +22,7 @@ import de.dermoba.srcp.devices.GL;
  */
 @Entity
 @Table(name = "locomotive", catalog = "adhocrailway", uniqueConstraints = {})
-public class Locomotive extends ControlObject implements java.io.Serializable, Comparable<Locomotive> {
+public class Locomotive implements java.io.Serializable, Comparable<Locomotive> {
 
 	// Fields
 
@@ -43,67 +43,14 @@ public class Locomotive extends ControlObject implements java.io.Serializable, C
 
 	private int bus;
 
-	public enum Direction {
-		FORWARD, REVERSE, UNDEF
-	};
-
-	@Transient
-	protected Direction direction = Direction.UNDEF;
-
-
-	protected static final String FORWARD_DIRECTION = "1";
-
-	protected static final String REVERSE_DIRECTION = "0";
 	
-	@Transient
-	protected int currentSpeed = 0;
-
-	@Transient
-	private GL gl;
-
-	@Transient
-	private SRCPSession session;
-
-	protected boolean[] functions = new boolean[] { false, false, false, false, false };
-
-	protected String[] params;
 
 	public int compareTo(Locomotive o) {
 		if(this == o) return 0;
 		if(o == null) return -1;
-		return name.compareTo(o.getName());
+		return getName().compareTo(o.getName());
 	}
 	
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-
-		final Locomotive l = (Locomotive) o;
-		if (id != l.getId())
-			return false;
-		if (!name.equals(l.getName()))
-			return false;
-		if (!locomotiveGroup.equals(l.getLocomotiveGroup()))
-			return false;
-		if (!locomotiveType.equals(l.getLocomotiveType()))
-			return false;
-		if (!description.equals(l.getDescription()))
-			return false;
-		if (!image.equals(l.getImage()))
-			return false;
-		if (address != l.getAddress())
-			return false;
-		if (bus != l.getBus())
-			return false;
-		return true;
-	}
-
-	public int hashCode() {
-		return name.hashCode() + locomotiveGroup.hashCode()
-				+ locomotiveType.hashCode() + address + bus;
-	}
 	
 	public String toString() {
 		return name;
@@ -130,59 +77,6 @@ public class Locomotive extends ControlObject implements java.io.Serializable, C
         
 	}
 
-	@Transient
-	public int getCurrentSpeed() {
-		return currentSpeed;
-	}
-
-	@Transient
-	protected void setCurrentSpeed(int currentSpeed) {
-		this.currentSpeed = currentSpeed;
-	}
-	
-	@Transient
-	public Direction getDirection() {
-		return direction;
-	}
-	@Transient
-	protected void setDirection(Direction direction) {
-		this.direction = direction;
-	}
-
-	@Transient
-	public boolean[] getFunctions() {
-		return functions;
-	}
-	
-	@Transient
-	public void setFunctions(boolean[] functions) {
-		this.functions = functions;
-	}
-
-	@Transient
-	public String getDeviceGroup() {
-		return "GL";
-	}
-
-	@Transient
-	public GL getGL() {
-		return this.gl;
-	}
-
-	@Transient
-	protected void setGL(GL gl) {
-		this.gl = gl;
-	}
-
-	@Transient
-	public SRCPSession getSession() {
-		return this.session;
-	}
-
-	@Transient
-	protected void setSession(SRCPSession session) {
-		this.session = session;
-	}
 
 	// Property accessors
 
@@ -265,4 +159,69 @@ public class Locomotive extends ControlObject implements java.io.Serializable, C
 	public int[] getAddresses() {
 		return new int[] {address};
 	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + address;
+		result = prime * result + bus;
+		result = prime * result
+				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((image == null) ? 0 : image.hashCode());
+		result = prime * result
+				+ ((locomotiveGroup == null) ? 0 : locomotiveGroup.hashCode());
+		result = prime * result
+				+ ((locomotiveType == null) ? 0 : locomotiveType.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Locomotive other = (Locomotive) obj;
+		if (address != other.address)
+			return false;
+		if (bus != other.bus)
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (id != other.id)
+			return false;
+		if (image == null) {
+			if (other.image != null)
+				return false;
+		} else if (!image.equals(other.image))
+			return false;
+		if (locomotiveGroup == null) {
+			if (other.locomotiveGroup != null)
+				return false;
+		} else if (!locomotiveGroup.equals(other.locomotiveGroup))
+			return false;
+		if (locomotiveType == null) {
+			if (other.locomotiveType != null)
+				return false;
+		} else if (!locomotiveType.equals(other.locomotiveType))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+	
+	
 }

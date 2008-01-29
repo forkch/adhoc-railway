@@ -32,8 +32,6 @@ public class TurnoutGroup implements java.io.Serializable,
 
 	private String name;
 	
-	private int weight;
-
 	@Sort(type = SortType.NATURAL)
 	private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
 
@@ -42,30 +40,39 @@ public class TurnoutGroup implements java.io.Serializable,
 			return 0;
 		if (o == null)
 			return -1;
-		if(weight > o.getWeight()) return 1;
-		if(weight == o.getWeight()) return 0;
-		if(weight < o.getWeight()) return -1;
-		return -1;
+//		if(weight > o.getWeight()) return 1;
+//		if(weight == o.getWeight()) return 0;
+//		if(weight < o.getWeight()) return -1;
+//		return -1;
+		return name.compareTo(o.getName());
 	}
 
-	public boolean equals(Object o) {
-		if (this == o)
+
+	@Override
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + id;
+		result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
 			return true;
-		if (o == null || getClass() != o.getClass())
+		if (obj == null)
 			return false;
-
-		TurnoutGroup t = (TurnoutGroup) o;
-
-		if (id != t.getId())
-			return false;
-		if (!name.equals(t.getName()))
+		final TurnoutGroup other = (TurnoutGroup) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}
 
-	public int hashCode() {
-		return id + name.hashCode();
-	}
 
 	public String toString() {
 		return name;
@@ -109,15 +116,6 @@ public class TurnoutGroup implements java.io.Serializable,
 
 	public void setName(String name) {
 		this.name = name;
-	}
-	//TODO ORDERING
-	@Column(name = "weight", unique = false, nullable = true, insertable = true, updatable = true)
-	public int getWeight() {
-		return this.weight;
-	}
-
-	public void setWeight(int weight) {
-		this.weight = weight;
 	}
 
 	@Sort(type = SortType.NATURAL)

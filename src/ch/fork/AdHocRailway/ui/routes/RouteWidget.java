@@ -19,7 +19,8 @@ import javax.swing.SwingUtilities;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
-import ch.fork.AdHocRailway.domain.routes.RouteControl;
+import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
+import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
 import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
@@ -27,7 +28,7 @@ import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
     private Route    route;
-    private RouteControl routeControl;
+    private RouteControlIface routeControl;
     private JLabel       nameLabel;
     private JLabel       iconLabel;
     private Icon         routeStopIcon;
@@ -39,7 +40,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
     public RouteWidget(Route route) {
     	this.route = route;
-        routeControl = RouteControl.getInstance();
+        routeControl = SRCPRouteControl.getInstance();
         initGUI();
         routeControl.addRouteChangeListener(route, this);
 	}

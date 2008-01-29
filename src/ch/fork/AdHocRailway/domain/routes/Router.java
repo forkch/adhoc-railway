@@ -3,8 +3,9 @@ package ch.fork.AdHocRailway.domain.routes;
 import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutControl;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
@@ -43,7 +44,7 @@ public class Router extends Thread {
 
     private void disableRoute() throws TurnoutException, InterruptedException {
         SortedSet<RouteItem> routeItems = route.getRouteItems();
-        TurnoutControl sc = TurnoutControl.getInstance();
+        TurnoutControlIface sc = SRCPTurnoutControl.getInstance();
         for (RouteItem ri : routeItems) {
             Turnout turnoutToRoute = ri.getTurnout();
 
@@ -57,7 +58,7 @@ public class Router extends Thread {
 
     private void enableRoute() throws TurnoutException, InterruptedException {
     	SortedSet<RouteItem> routeItems = route.getRouteItems();
-        TurnoutControl sc = TurnoutControl.getInstance();
+        TurnoutControlIface sc = SRCPTurnoutControl.getInstance();
         for (RouteItem ri : routeItems) {
         	Turnout turnoutToRoute = ri.getTurnout();
             switch (ri.getRoutedStateEnum()) {
