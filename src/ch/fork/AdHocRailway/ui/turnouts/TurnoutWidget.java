@@ -19,7 +19,7 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.ui.switches;
+package ch.fork.AdHocRailway.ui.turnouts;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -45,7 +45,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
-import ch.fork.AdHocRailway.ui.switches.configuration.TurnoutConfig;
+import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 
 public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 		LockChangeListener {
@@ -135,8 +135,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 			turnoutControl.addTurnoutChangeListener(myTurnout, TurnoutWidget.this);
 			if (switchConf.isOkPressed()) {
 				HibernateTurnoutPersistence.getInstance().updateTurnout(myTurnout);
-			} else {
-				HibernateTurnoutPersistence.getInstance().refreshTurnout(myTurnout);
 			}
 			turnoutChanged(myTurnout, actualTurnoutState);
 		}

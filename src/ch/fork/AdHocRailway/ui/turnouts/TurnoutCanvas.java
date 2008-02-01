@@ -20,7 +20,7 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.ui.switches;
+package ch.fork.AdHocRailway.ui.turnouts;
 
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
 

@@ -2,6 +2,8 @@ package ch.fork.AdHocRailway.domain.locomotives;
 
 import java.util.SortedSet;
 
+import com.jgoodies.binding.list.ArrayListModel;
+
 public interface LocomotivePersistenceIface {
 
 	public abstract void preload();
@@ -12,7 +14,7 @@ public interface LocomotivePersistenceIface {
 	 * @return locomotives
 	 */
 	@SuppressWarnings("unchecked")
-	public abstract SortedSet<Locomotive> getAllLocomotives();
+	public abstract ArrayListModel<Locomotive> getAllLocomotives();
 
 	/**
 	 * Get a SortedSet of Locomotives.
@@ -36,10 +38,9 @@ public interface LocomotivePersistenceIface {
 
 	public abstract void updateLocomotive(Locomotive locomotive);
 
-	public abstract void refreshLocomotive(Locomotive locomotive);
 
 	@SuppressWarnings("unchecked")
-	public abstract SortedSet<LocomotiveGroup> getAllLocomotiveGroups();
+	public abstract ArrayListModel<LocomotiveGroup> getAllLocomotiveGroups();
 
 	public abstract void addLocomotiveGroup(LocomotiveGroup group);
 
@@ -47,7 +48,6 @@ public interface LocomotivePersistenceIface {
 
 	public abstract void updateLocomotiveGroup(LocomotiveGroup group);
 
-	public abstract void refreshLocomotiveGroup(LocomotiveGroup group);
 
 	@SuppressWarnings("unchecked")
 	public abstract SortedSet<LocomotiveType> getAllLocomotiveTypes();

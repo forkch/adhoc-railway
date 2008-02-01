@@ -25,11 +25,24 @@ package ch.fork.AdHocRailway.domain.turnouts.exception;
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 
 public class TurnoutException extends ControlException {
-    public TurnoutException(String msg) {
+
+	public TurnoutException() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public TurnoutException(String msg) {
         super(msg);
     }
 
-    public TurnoutException(String msg, Exception parent) {
-        super(msg, parent);
-    }
+
+	public TurnoutException(Throwable cause) {
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public TurnoutException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
 }

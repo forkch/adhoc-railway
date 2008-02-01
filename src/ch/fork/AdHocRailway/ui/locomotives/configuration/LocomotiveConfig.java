@@ -21,39 +21,43 @@
 
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.SortedSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
 
-import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.ui.SpringUtilities;
+import ch.fork.AdHocRailway.ui.AdHocRailway;
+import ch.fork.AdHocRailway.ui.TutorialUtils;
+
+import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.SpinnerAdapterFactory;
+import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.binding.value.ValueModel;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 public class LocomotiveConfig extends JDialog {
-	private Locomotive myLocomotive;
-
 	private boolean okPressed;
 
 	private JTextField nameTextField;
 
-	private JTextField busTextField;
+	private JSpinner busTextField;
 
-	private JTextField addressTextField;
+	private JSpinner addressTextField;
 
 	private JTextField descTextField;
 
@@ -61,103 +65,120 @@ public class LocomotiveConfig extends JDialog {
 
 	private JComboBox locomotiveTypeComboBox;
 
-	private static final String NAME = "Locomotive Config";
+	private PresentationModel<Locomotive> presentationModel;
+	
+	private LocomotivePersistenceIface locomotivePersistence;
 
-	public LocomotiveConfig(Locomotive myLocomotive) {
-		super(new JFrame(), NAME, true);
-		this.myLocomotive = myLocomotive;
-		initGUI();
-	}
+	private JButton okButton;
 
 	public LocomotiveConfig(Frame owner, Locomotive myLocomotive) {
-		super(owner, NAME, true);
-		this.myLocomotive = myLocomotive;
+		super(owner, "Locomotive Config", true);
+		this.presentationModel = new PresentationModel<Locomotive>(myLocomotive);
 		initGUI();
 	}
 
 	public LocomotiveConfig(JDialog owner, Locomotive myLocomotive) {
-		super(owner, NAME, true);
-		this.myLocomotive = myLocomotive;
+		super(owner, "Locomotive Config", true);
+		this.presentationModel = new PresentationModel<Locomotive>(myLocomotive);
+		initGUI();
+	}
+	public LocomotiveConfig(JDialog owner, PresentationModel<Locomotive> presentationModel) {
+		super(owner, "Locomotive Config", true);
+		this.presentationModel = presentationModel;
 		initGUI();
 	}
 
 	private void initGUI() {
-		setLayout(new BorderLayout());
-		JPanel configPanel = initConfigPanel();
-		JButton okButton = new JButton("OK");
-		okButton.addActionListener(new ApplyChangesAction());
-		JButton cancelButton = new JButton("Cancel");
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				LocomotiveConfig.this.setVisible(false);
-			}
-		});
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-		buttonPanel.add(okButton);
-		buttonPanel.add(cancelButton);
-		add(configPanel, BorderLayout.NORTH);
-		add(buttonPanel, BorderLayout.SOUTH);
-		setLocationByPlatform(true);
-		setSize(new Dimension(200, 300));
+		buildPanel();
+		pack();
+		TutorialUtils.locateOnOpticalScreenCenter(this);
 		setVisible(true);
 	}
 
-	private JPanel initConfigPanel() {
-		JPanel configPanel = new JPanel(new SpringLayout());
-		JLabel nameLabel = new JLabel("Name");
-		JLabel typeLabel = new JLabel("Type");
-		JLabel busLabel = new JLabel("Bus");
-		JLabel addressLabel = new JLabel("Address");
-		JLabel imageLabel = new JLabel("Image");
-		JLabel descLabel = new JLabel("Desc");
+	private void initComponents() {
 
-		nameTextField = new JTextField();
-		nameTextField.setText(myLocomotive.getName());
 
-		busTextField = new JTextField();
-		busTextField.setText(Integer.toString(myLocomotive.getBus()));
+		nameTextField = BasicComponentFactory.createTextField(presentationModel
+				.getModel(Locomotive.PROPERTYNAME_DESCRIPTION));
+		nameTextField.setColumns(10);
 
-		addressTextField = new JTextField();
-		addressTextField.setText("" + myLocomotive.getAddress());
+		descTextField = BasicComponentFactory.createTextField(presentationModel
+				.getModel(Locomotive.PROPERTYNAME_NAME));
+		descTextField.setColumns(10);
 
-		imageTextField = new JTextField();
-		imageTextField.setText(myLocomotive.getImage());
+		imageTextField = BasicComponentFactory.createTextField(presentationModel
+				.getModel(Locomotive.PROPERTYNAME_IMAGE));
+		imageTextField.setColumns(10);
 
-		descTextField = new JTextField();
-		descTextField.setText(myLocomotive.getDescription());
+		busTextField = new JSpinner();
+		busTextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
+				presentationModel.getModel(Locomotive.PROPERTYNAME_BUS), 1, // defaultValue
+				0, // minValue
+				100, // maxValue
+				1)); // step
 
-		SortedSet<LocomotiveType> types = HibernateLocomotivePersistence.getInstance()
-				.getAllLocomotiveTypes();
-		locomotiveTypeComboBox = new JComboBox();
-		for (LocomotiveType type : types) {
-			locomotiveTypeComboBox.addItem(type.getTypeName());
-		}
-		if (myLocomotive.getLocomotiveType() != null)
-			locomotiveTypeComboBox.setSelectedItem(myLocomotive
-					.getLocomotiveType().getTypeName());
-		else 
-			locomotiveTypeComboBox.setSelectedIndex(0);
+		addressTextField = new JSpinner();
+		addressTextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
+				presentationModel.getModel(Locomotive.PROPERTYNAME_ADDRESS), 1, // defaultValue
+				0, // minValue
+				324, // maxValue
+				1)); // step
 
-		configPanel.add(nameLabel);
-		configPanel.add(nameTextField);
-		configPanel.add(typeLabel);
-		configPanel.add(locomotiveTypeComboBox);
-		configPanel.add(busLabel);
-		configPanel.add(busTextField);
-		configPanel.add(addressLabel);
-		configPanel.add(addressTextField);
-		configPanel.add(imageLabel);
-		configPanel.add(imageTextField);
-		configPanel.add(descLabel);
-		configPanel.add(descTextField);
-		SpringUtilities.makeCompactGrid(configPanel, 6, 2, // rows, cols
-				6, 6, // initX, initY
-				6, 6); // xPad, yPad
-		return configPanel;
+		
+		locomotivePersistence = AdHocRailway.getInstance().getLocomotivePersistence();
+		List<LocomotiveType> locomotiveTypes = new ArrayList<LocomotiveType>(locomotivePersistence.getAllLocomotiveTypes());
+
+		ValueModel locomotiveTypeModel = presentationModel
+				.getModel(Locomotive.PROPERTYNAME_LOCOMOTIVE_TYPE);
+		locomotiveTypeComboBox = BasicComponentFactory
+				.createComboBox(new SelectionInList<LocomotiveType>(locomotiveTypes,
+						locomotiveTypeModel));
+		
+		okButton = new JButton(new ApplyChangesAction());
 	}
 
-	public Locomotive getLocomotive() {
-		return myLocomotive;
+	private void buildPanel() {
+		initComponents();
+
+		FormLayout layout = new FormLayout(
+				"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow",
+				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 10dlu,p:grow, 3dlu");
+		layout.setColumnGroups(new int[][] { { 1, 5 }, { 3, 7 } });
+		layout.setRowGroups(new int[][] {{3,5,7,9}});
+		
+		PanelBuilder builder = new PanelBuilder(layout);
+		builder.setDefaultDialogBorder();
+		CellConstraints cc = new CellConstraints();
+
+		builder.addSeparator("General", cc.xyw(1, 1, 3));
+
+		builder.addLabel("Name", cc.xy(1, 3));
+		builder.add(nameTextField, cc.xy(3, 3));
+
+		builder.addLabel("Description", cc.xy(1, 5));
+		builder.add(descTextField, cc.xy(3, 5));
+
+		builder.addLabel("Image", cc.xy(1, 7));
+		builder.add(imageTextField, cc.xy(3, 7));
+
+		builder.addLabel("Type", cc.xy(1, 9));
+		builder.add(locomotiveTypeComboBox, cc.xy(3, 9));
+
+		builder.addSeparator("Interface", cc.xyw(5, 1, 3));
+		
+		builder.addLabel("Bus", cc.xy(5, 3));
+		builder.add(busTextField, cc.xy(7, 3));
+
+		builder.addLabel("Address", cc.xy(5, 5));
+		builder.add(addressTextField, cc.xy(7, 5));
+
+		builder.add(buildButtonBar(), cc.xyw(1, 11, 7));
+
+		add(builder.getPanel());
+	}
+
+	private JComponent buildButtonBar() {
+		return ButtonBarFactory.buildRightAlignedBar(okButton);
 	}
 
 	public boolean isOkPressed() {
@@ -165,22 +186,12 @@ public class LocomotiveConfig extends JDialog {
 	}
 
 	class ApplyChangesAction extends AbstractAction {
+		
+		public ApplyChangesAction() {
+			super("OK");
+		}
+		
 		public void actionPerformed(ActionEvent e) {
-			myLocomotive.setName(nameTextField.getText());
-			LocomotiveType newType = HibernateLocomotivePersistence
-					.getInstance()
-					.getLocomotiveTypeByName((String)
-							locomotiveTypeComboBox.getSelectedItem());
-			myLocomotive.setLocomotiveType(newType);
-
-			int bus = Integer.parseInt(busTextField.getText());
-			myLocomotive.setBus(bus);
-
-			int newAddress = Integer.parseInt(addressTextField.getText());
-			myLocomotive.setAddress(newAddress);
-
-			myLocomotive.setImage(imageTextField.getText());
-			myLocomotive.setDescription(descTextField.getText());
 			okPressed = true;
 			LocomotiveConfig.this.setVisible(false);
 		}

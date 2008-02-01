@@ -17,6 +17,7 @@ import javax.swing.border.TitledBorder;
 import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
+import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
@@ -28,7 +29,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
-import ch.fork.AdHocRailway.ui.switches.TurnoutWidget;
+import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 
 import com.jgoodies.looks.Options;
 
@@ -51,7 +52,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private RouteControlIface routeControl = SRCPRouteControl.getInstance();
 	
-	private HibernateRoutePersistence routePersistence  = HibernateRoutePersistence.getInstance();
+	private RoutePersistenceIface routePersistence  = HibernateRoutePersistence.getInstance();
 
 	public TrackControlPanel(JFrame frame) {
 		this.frame = frame;

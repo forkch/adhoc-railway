@@ -9,17 +9,25 @@ import java.util.TreeSet;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import com.jgoodies.binding.list.ArrayListModel;
+import com.sun.org.apache.bcel.internal.generic.LLOAD;
+
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
+import ch.fork.AdHocRailway.domain.LookupAddress;
 
 public class HibernateLocomotivePersistence extends HibernatePersistence
 		implements LocomotivePersistenceIface {
 	private static LocomotivePersistenceIface instance;
 
-	private Map<int[], Locomotive> locomotiveCache;
+	private ArrayListModel<LocomotiveGroup> locomotiveGroupCache;
+	private ArrayListModel<Locomotive> locomotiveCache;
+	private Map<LookupAddress, Locomotive> addressLocomotiveCache;
 
 	private HibernateLocomotivePersistence() {
 		super();
-		this.locomotiveCache = new HashMap<int[], Locomotive>();
+		this.locomotiveCache = new ArrayListModel<Locomotive>();
+		this.locomotiveGroupCache = new ArrayListModel<LocomotiveGroup>();
+		this.addressLocomotiveCache = new HashMap<LookupAddress, Locomotive>();
 	}
 
 	public static LocomotivePersistenceIface getInstance() {
@@ -29,10 +37,20 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		return instance;
 	}
 
-	private void updateCache() {
+	private void updateLocomotiveCache() {
+		addressLocomotiveCache.clear();
 		locomotiveCache.clear();
-		for (Locomotive l : getAllLocomotivesDB()) {
-			locomotiveCache.put(new int[] { l.getBus(), l.getAddress() }, l);
+		for (Locomotive locomotive : getAllLocomotivesDB()) {
+			addressLocomotiveCache.put(new LookupAddress(locomotive.getBus(),
+					locomotive.getAddress(), 0, 0), locomotive);
+			locomotiveCache.add(locomotive);
+		}
+	}
+
+	private void updateLocomotiveGroupCache() {
+		locomotiveGroupCache.clear();
+		for (LocomotiveGroup group : getAllLocomotiveGroupsDB()) {
+			locomotiveGroupCache.add(group);
 		}
 	}
 
@@ -53,13 +71,13 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#getAllLocomotives()
 	 */
 
-	public SortedSet<Locomotive> getAllLocomotives() {
-		if(locomotiveCache.size() == 0) {
-			updateCache();
+	public ArrayListModel<Locomotive> getAllLocomotives() {
+		if (locomotiveCache.isEmpty()) {
+			updateLocomotiveCache();
 		}
-		return new TreeSet<Locomotive>(locomotiveCache.values());
+		return locomotiveCache;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private SortedSet<Locomotive> getAllLocomotivesDB() {
 		EntityManager em = getEntityManager();
@@ -113,7 +131,11 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		em.refresh(locomotive.getLocomotiveGroup());
 		em.getTransaction().commit();
 		em.getTransaction().begin();
-		updateCache();
+
+		// locomotiveCache.add(locomotive);
+		// addressLocomotiveCache.put(new LookupAddress( locomotive.getBus(),
+		// locomotive.getAddress(),0,0 ), locomotive);
+		updateLocomotiveCache();
 	}
 
 	/*
@@ -123,10 +145,22 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	 */
 	public void deleteLocomotive(Locomotive locomotive) {
 		EntityManager em = getEntityManager();
+
+		LocomotiveGroup group = locomotive.getLocomotiveGroup();
+		group.getLocomotives().remove(locomotive);
+
+		LocomotiveType type = locomotive.getLocomotiveType();
+		type.getLocomotives().remove(locomotive);
+
 		em.remove(locomotive);
 		em.getTransaction().commit();
 		em.getTransaction().begin();
-		updateCache();
+
+		// locomotiveCache.remove(locomotive);
+		// addressLocomotiveCache.remove(new LookupAddress( locomotive.getBus(),
+		// locomotive.getAddress(),0,0 ));
+
+		updateLocomotiveCache();
 	}
 
 	/*
@@ -137,26 +171,15 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	public void updateLocomotive(Locomotive locomotive) {
 		EntityManager em = getEntityManager();
 		em.merge(locomotive);
-		em.refresh(locomotive.getLocomotiveGroup());
-		em.refresh(locomotive.getLocomotiveGroup());
 		em.getTransaction().commit();
 		em.getTransaction().begin();
-		updateCache();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#refreshLocomotive(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
-	 */
-	public void refreshLocomotive(Locomotive locomotive) {
-		EntityManager em = getEntityManager();
-		em.refresh(locomotive);
-		em.refresh(locomotive.getLocomotiveGroup());
-		em.refresh(locomotive.getLocomotiveGroup());
-		em.getTransaction().commit();
-		em.getTransaction().begin();
-		updateCache();
+	public ArrayListModel<LocomotiveGroup> getAllLocomotiveGroups() {
+		if (locomotiveGroupCache.isEmpty()) {
+			updateLocomotiveGroupCache();
+		}
+		return locomotiveGroupCache;
 	}
 
 	/*
@@ -165,7 +188,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#getAllLocomotiveGroups()
 	 */
 	@SuppressWarnings("unchecked")
-	public SortedSet<LocomotiveGroup> getAllLocomotiveGroups() {
+	public SortedSet<LocomotiveGroup> getAllLocomotiveGroupsDB() {
 		EntityManager em = getEntityManager();
 		List<LocomotiveGroup> groups = em.createQuery("from LocomotiveGroup")
 				.getResultList();
@@ -184,6 +207,8 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		em.persist(group);
 		em.getTransaction().commit();
 		em.getTransaction().begin();
+		// locomotiveGroupCache.add(group);
+		updateLocomotiveGroupCache();
 	}
 
 	/*
@@ -196,6 +221,8 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		em.remove(group);
 		em.getTransaction().commit();
 		em.getTransaction().begin();
+		// locomotiveGroupCache.remove(group);
+		updateLocomotiveGroupCache();
 	}
 
 	/*
@@ -206,18 +233,6 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	public void updateLocomotiveGroup(LocomotiveGroup group) {
 		EntityManager em = getEntityManager();
 		em.merge(group);
-		em.getTransaction().commit();
-		em.getTransaction().begin();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#refreshLocomotiveGroup(ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup)
-	 */
-	public void refreshLocomotiveGroup(LocomotiveGroup group) {
-		EntityManager em = getEntityManager();
-		em.refresh(group);
 		em.getTransaction().commit();
 		em.getTransaction().begin();
 	}

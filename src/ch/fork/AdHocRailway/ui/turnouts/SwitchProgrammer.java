@@ -20,7 +20,7 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.ui.switches;
+package ch.fork.AdHocRailway.ui.turnouts;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;

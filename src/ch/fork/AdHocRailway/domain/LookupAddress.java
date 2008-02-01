@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.domain.turnouts;
+package ch.fork.AdHocRailway.domain;
 
 public class LookupAddress {
 	private int bus1;

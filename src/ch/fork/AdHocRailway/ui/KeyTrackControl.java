@@ -15,6 +15,7 @@ import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
+import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
@@ -41,7 +42,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 	private RouteControlIface routeControl = SRCPRouteControl.getInstance();
 
-	private HibernateRoutePersistence routePersistence = HibernateRoutePersistence
+	private RoutePersistenceIface routePersistence = HibernateRoutePersistence
 			.getInstance();
 
 	public boolean routeMode;

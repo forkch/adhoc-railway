@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.jgoodies.binding.beans.Model;
+
 import ch.fork.AdHocRailway.domain.ControlObject;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GL;
@@ -22,7 +24,7 @@ import de.dermoba.srcp.devices.GL;
  */
 @Entity
 @Table(name = "locomotive", catalog = "adhocrailway", uniqueConstraints = {})
-public class Locomotive implements java.io.Serializable, Comparable<Locomotive> {
+public class Locomotive extends Model implements java.io.Serializable, Comparable<Locomotive> {
 
 	// Fields
 
@@ -43,7 +45,14 @@ public class Locomotive implements java.io.Serializable, Comparable<Locomotive> 
 
 	private int bus;
 
-	
+	public static final String PROPERTYNAME_ID = "id";
+	public static final String PROPERTYNAME_LOCOMOTIVE_GROUP = "locomotiveGroup";
+	public static final String PROPERTYNAME_LOCOMOTIVE_TYPE = "locomotiveType";
+	public static final String PROPERTYNAME_NAME = "name";
+	public static final String PROPERTYNAME_DESCRIPTION = "description";
+	public static final String PROPERTYNAME_IMAGE = "image";
+	public static final String PROPERTYNAME_ADDRESS = "address";
+	public static final String PROPERTYNAME_BUS = "bus";
 
 	public int compareTo(Locomotive o) {
 		if(this == o) return 0;
@@ -87,7 +96,9 @@ public class Locomotive implements java.io.Serializable, Comparable<Locomotive> 
 	}
 
 	public void setId(int id) {
+		int old = this.id;
 		this.id = id;
+		firePropertyChange(PROPERTYNAME_ID, old, id);
 	}
 
 	@ManyToOne(cascade= { CascadeType.ALL }, fetch = FetchType.EAGER)
@@ -97,7 +108,9 @@ public class Locomotive implements java.io.Serializable, Comparable<Locomotive> 
 	}
 
 	public void setLocomotiveGroup(LocomotiveGroup locomotiveGroup) {
+		LocomotiveGroup old = this.locomotiveGroup;
 		this.locomotiveGroup = locomotiveGroup;
+		firePropertyChange(PROPERTYNAME_LOCOMOTIVE_GROUP, old, locomotiveGroup);
 	}
 
 	@ManyToOne(cascade= { CascadeType.ALL }, fetch = FetchType.EAGER)
@@ -107,7 +120,9 @@ public class Locomotive implements java.io.Serializable, Comparable<Locomotive> 
 	}
 
 	public void setLocomotiveType(LocomotiveType locomotiveType) {
+		LocomotiveType old = this.locomotiveType;
 		this.locomotiveType = locomotiveType;
+		firePropertyChange(PROPERTYNAME_LOCOMOTIVE_TYPE, old, locomotiveType);
 	}
 
 	@Column(name = "name", unique = false, nullable = false, insertable = true, updatable = true)
@@ -116,25 +131,31 @@ public class Locomotive implements java.io.Serializable, Comparable<Locomotive> 
 	}
 
 	public void setName(String name) {
+		String old = this.name;
 		this.name = name;
+		firePropertyChange(PROPERTYNAME_NAME, old, name);
 	}
 
-	@Column(name = "description", unique = false, nullable = false, insertable = true, updatable = true)
+	@Column(name = "description", unique = false, nullable = true, insertable = true, updatable = true)
 	public String getDescription() {
 		return this.description;
 	}
 
 	public void setDescription(String description) {
+		String old = this.description;
 		this.description = description;
+		firePropertyChange(PROPERTYNAME_DESCRIPTION, old, description);
 	}
 
-	@Column(name = "image", unique = false, nullable = false, insertable = true, updatable = true)
+	@Column(name = "image", unique = false, nullable = true, insertable = true, updatable = true)
 	public String getImage() {
 		return this.image;
 	}
 
 	public void setImage(String image) {
+		String old = this.image;
 		this.image = image;
+		firePropertyChange(PROPERTYNAME_IMAGE, old, image);
 	}
 
 	@Column(name = "address", unique = false, nullable = false, insertable = true, updatable = true)
@@ -143,7 +164,9 @@ public class Locomotive implements java.io.Serializable, Comparable<Locomotive> 
 	}
 
 	public void setAddress(int address) {
+		int old = this.address;
 		this.address = address;
+		firePropertyChange(PROPERTYNAME_ADDRESS, old, address);
 	}
 
 	@Column(name = "bus", unique = false, nullable = false, insertable = true, updatable = true)
@@ -152,7 +175,9 @@ public class Locomotive implements java.io.Serializable, Comparable<Locomotive> 
 	}
 
 	public void setBus(int bus) {
+		int old = this.bus;
 		this.bus = bus;
+		firePropertyChange(PROPERTYNAME_BUS, old, bus);
 	}
 
 	@Transient

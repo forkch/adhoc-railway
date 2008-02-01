@@ -20,7 +20,7 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.ui.routes.configuration;
+package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import java.awt.Component;
 
@@ -29,48 +29,24 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
-import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
-public class SwitchRoutedStateCellRenderer implements TableCellRenderer {
+public class TurnoutDefaultStateCellRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel iconLabel = new JLabel();
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        Turnout currentSwitch = (Turnout) table.getValueAt(row, 0);
-        TurnoutState routedState = (TurnoutState) value;
-        String stateString = "";
-        switch (routedState) {
-        case STRAIGHT:
-            stateString = "straight";
-            break;
-        case LEFT:
-        case RIGHT:
-            stateString = "curved";
-            break;
+        if (table.getValueAt(row, 1).equals("ThreeWay")) {
+            iconLabel.setText("N/A");
+            return iconLabel;
         }
-        if (currentSwitch.isDefault()) {
+        if (value.equals(TurnoutState.STRAIGHT)) {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches/default_switch_" + stateString + ".png"));
-        } else if (currentSwitch.isDoubleCross()) {
+                "switches/default_straight.png"));
+        } else {
             iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches/double_cross_switch_" + stateString + ".png"));
-        } else if (currentSwitch.isThreeWay()) {
-            switch (routedState) {
-            case STRAIGHT:
-                iconLabel.setIcon(ImageTools.createImageIcon(
-                    "switches/three_way_switch_straight.png"));
-                break;
-            case LEFT:
-                iconLabel.setIcon(ImageTools.createImageIcon(
-                    "switches/three_way_switch_left.png"));
-                break;
-            case RIGHT:
-                iconLabel.setIcon(ImageTools.createImageIcon(
-                    "switches/three_way_switch_right.png"));
-                break;
-            }
+                "switches/default_curved.png"));
         }
         return iconLabel;
     }

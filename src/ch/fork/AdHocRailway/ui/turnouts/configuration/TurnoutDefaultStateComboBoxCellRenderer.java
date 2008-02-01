@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/switches/configuration/SwitchDefaultStateCellRenderer.java>  -  <desc>
+ * <./ui/switches/configuration/SwitchDefaultStateComboBoxCellRenderer.java>  -  <desc>
  * 
- * begin     : Wed Aug 23 16:59:26 BST 2006
+ * begin     : Wed Aug 23 16:59:18 BST 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
@@ -20,27 +20,26 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.ui.switches.configuration;
+package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import java.awt.Component;
 
 import javax.swing.JLabel;
-import javax.swing.JTable;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
-import javax.swing.table.TableCellRenderer;
 
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
-public class TurnoutDefaultStateCellRenderer implements TableCellRenderer {
-    public Component getTableCellRendererComponent(JTable table, Object value,
-        boolean isSelected, boolean hasFocus, int row, int column) {
+public class TurnoutDefaultStateComboBoxCellRenderer implements ListCellRenderer {
+    public Component getListCellRendererComponent(JList list, Object value,
+        int index, boolean isSelected, boolean cellHasFocus) {
         JLabel iconLabel = new JLabel();
-        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        if (table.getValueAt(row, 1).equals("ThreeWay")) {
-            iconLabel.setText("N/A");
-            return iconLabel;
+        if(value == null) {
+        	return iconLabel;
         }
+        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
         if (value.equals(TurnoutState.STRAIGHT)) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "switches/default_straight.png"));

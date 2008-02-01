@@ -78,8 +78,8 @@ import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
-import ch.fork.AdHocRailway.ui.switches.SwitchProgrammer;
-import ch.fork.AdHocRailway.ui.switches.configuration.TurnoutConfigurationDialog;
+import ch.fork.AdHocRailway.ui.turnouts.SwitchProgrammer;
+import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
 
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 
@@ -817,5 +817,33 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		} else {
 			new AdHocRailway();
 		}
+	}
+
+	public LocomotiveControlface getLocomotiveControl() {
+		return locomotiveControl;
+	}
+
+	public void setLocomotiveControl(LocomotiveControlface locomotiveControl) {
+		this.locomotiveControl = locomotiveControl;
+	}
+
+	public TurnoutControlIface getTurnoutControl() {
+		return turnoutControl;
+	}
+
+	public TurnoutPersistenceIface getTurnoutPersistence() {
+		return turnoutPersistence;
+	}
+
+	public LocomotivePersistenceIface getLocomotivePersistence() {
+		return locomotivePersistence;
+	}
+
+	public RouteControlIface getRouteControl() {
+		return routeControl;
+	}
+
+	public Preferences getPreferences() {
+		return preferences;
 	}
 }

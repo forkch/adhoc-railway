@@ -29,6 +29,8 @@
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/looks-2.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="lib/binding-2.0.2.jar" sourcepath="/home/fork/devel/AdHoc-Railway/lib/binding-2.0.2/src"/>
+	<classpathentry kind="lib" path="lib/forms-1.1.0.jar" sourcepath="/home/fork/devel/AdHoc-Railway/lib/forms-1.1.0/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

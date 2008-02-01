@@ -14,7 +14,7 @@ public class RouteControl extends Control {
 
 	private static RouteControl instance;
 	
-	private HibernateRoutePersistence persistence = HibernateRoutePersistence.getInstance();
+	private RoutePersistenceIface persistence = HibernateRoutePersistence.getInstance();
 
 	private Map<Route, RouteChangeListener> listeners;
 

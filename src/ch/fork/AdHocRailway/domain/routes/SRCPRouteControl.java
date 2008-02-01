@@ -16,7 +16,7 @@ public class SRCPRouteControl extends Control implements RouteControlIface {
 	private static Logger logger = Logger.getLogger(SRCPRouteControl.class);
 	private static RouteControlIface instance;
 	
-	private HibernateRoutePersistence persistence = HibernateRoutePersistence.getInstance();
+	private RoutePersistenceIface persistence = HibernateRoutePersistence.getInstance();
 
 	private Map<Route, RouteChangeListener> listeners;
 

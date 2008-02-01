@@ -49,6 +49,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
+import com.jgoodies.binding.list.ArrayListModel;
+
 import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
 import ch.fork.AdHocRailway.domain.locking.LockControlIface;
@@ -434,7 +436,7 @@ public class LocomotiveWidget extends JPanel implements
 					.getSelectedItem();
 			locomotiveComboBox.removeAllItems();
 			if (lg == allLocomotives) {
-				SortedSet<Locomotive> sl = locomotivePersistence
+				ArrayListModel<Locomotive> sl = locomotivePersistence
 						.getAllLocomotives();
 				for (Locomotive l : sl) {
 					locomotiveComboBox.addItem(l);
@@ -539,8 +541,6 @@ public class LocomotiveWidget extends JPanel implements
 						myLocomotive);
 				if (locomotiveConfig.isOkPressed()) {
 					locomotivePersistence.updateLocomotive(myLocomotive);
-				} else {
-					locomotivePersistence.refreshLocomotive(myLocomotive);
 				}
 				locomotiveChanged(myLocomotive);
 			} else if (e.getButton() == MouseEvent.BUTTON2) {

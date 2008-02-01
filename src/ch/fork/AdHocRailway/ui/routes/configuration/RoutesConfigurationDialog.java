@@ -1,35 +1,24 @@
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
+import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.SpringLayout;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
@@ -38,56 +27,59 @@ import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
+import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
+import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
-import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
-import ch.fork.AdHocRailway.ui.ListListModel;
-import ch.fork.AdHocRailway.ui.SpringUtilities;
-import ch.fork.AdHocRailway.ui.TableResizer;
+import ch.fork.AdHocRailway.ui.TutorialUtils;
 
-public class RoutesConfigurationDialog extends ConfigurationDialog {
-	private HibernateRoutePersistence routePersistence = HibernateRoutePersistence
+import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.adapter.AbstractTableAdapter;
+import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
+import com.jgoodies.binding.adapter.SpinnerAdapterFactory;
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
+public class RoutesConfigurationDialog extends JDialog {
+	private RoutePersistenceIface routePersistence = HibernateRoutePersistence
 			.getInstance();
 	private TurnoutPersistenceIface turnoutPersistence = HibernateTurnoutPersistence
 			.getInstance();
 
-	private ListListModel routesListModel;
-
-	private JList routesInGroupJList;
-
-	private JButton addRouteButton;
-
-	private JButton removeRouteButton;
-
-	private JPopupMenu routesPopupMenu;
-
-	private RoutedSwitchesTableModel routedSwitchesTableModel;
-
-	private JPanel routeDetailPanel;
-
-	private JTable routedSwitchesTable;
-
-	private JTextField routeNumberField;
-
-	private JPanel routeGroupsPanel;
-
-	private ListListModel<RouteGroup> routeGroupListModel;
-
-	private JList routeGroupJList;
-
-	private JPopupMenu routeGroupPopupMenu;
+	private JList routeGroupList;
 
 	private JButton addRouteGroupButton;
 
 	private JButton removeRouteGroupButton;
 
-	private JPanel routesInGroupPanel;
+	private JList routesList;
+
+	private JButton addRouteButton;
+
+	private JButton removeRouteButton;
+
+	private JTable routeItemTable;
+
+	private JSpinner routeNumberField;
 
 	private JTextField routeNameField;
+	private SelectionInList<RouteGroup> routeGroupModel;
+	private JButton okButton;
+	protected boolean okPressed;
+	private SelectionInList<Route> routesModel;
+	private PresentationModel<Route> routeModel;
+	private SelectionInList<RouteItem> routeItemModel;
+	private JButton addRouteItemButton;
+	private JButton removeRouteItemButton;
 
 	public RoutesConfigurationDialog(JFrame parent) {
 		super(parent, "Edit Routes");
@@ -95,382 +87,337 @@ public class RoutesConfigurationDialog extends ConfigurationDialog {
 	}
 
 	private void initGUI() {
-		createRouteGroupsPanel();
-		createRoutesInGroupPanel();
-		createRouteDetailPanel();
-		JPanel routeSelectionPanel = new JPanel(new GridLayout(1, 2));
-		routeSelectionPanel.add(routeGroupsPanel);
-		routeSelectionPanel.add(routesInGroupPanel);
-		JPanel mainPanel = new JPanel(new BorderLayout());
-		mainPanel.add(routeSelectionPanel, BorderLayout.WEST);
-		mainPanel.add(routeDetailPanel, BorderLayout.CENTER);
-
-		addMainComponent(mainPanel);
+		buildPanel();
 		pack();
+		TutorialUtils.locateOnOpticalScreenCenter(this);
 		setVisible(true);
 	}
 
-	private void createRouteGroupsPanel() {
-		routeGroupsPanel = new JPanel(new BorderLayout());
-		TitledBorder title = BorderFactory.createTitledBorder("Route Groups");
-		routeGroupsPanel.setBorder(title);
-		routeGroupsPanel.getInsets(new Insets(5, 5, 5, 5));
-		routeGroupListModel = new ListListModel<RouteGroup>(
-				new ArrayList<RouteGroup>(routePersistence.getAllRouteGroups()));
-		routeGroupJList = new JList(routeGroupListModel);
-		routeGroupJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	private void buildPanel() {
+		initComponents();
+		initEventHandling();
 
-		routeGroupPopupMenu = new JPopupMenu();
-		JMenuItem addItem = new JMenuItem("Add");
-		JMenuItem removeItem = new JMenuItem("Remove");
-		JMenuItem renameItem = new JMenuItem("Rename");
-		JMenuItem moveUpItem = new JMenuItem("Move up");
-		JMenuItem moveDownItem = new JMenuItem("Move down");
-		routeGroupPopupMenu.add(addItem);
-		routeGroupPopupMenu.add(removeItem);
-		routeGroupPopupMenu.add(renameItem);
-		routeGroupPopupMenu.add(new JSeparator());
-		routeGroupPopupMenu.add(moveUpItem);
-		routeGroupPopupMenu.add(moveDownItem);
-		addRouteGroupButton = new JButton("Add");
-		removeRouteGroupButton = new JButton("Remove");
-		JPanel buttonPanel = new JPanel(new FlowLayout());
-		buttonPanel.add(addRouteGroupButton);
-		buttonPanel.add(removeRouteGroupButton);
-		routeGroupsPanel.add(routeGroupJList, BorderLayout.CENTER);
-		routeGroupsPanel.add(buttonPanel, BorderLayout.SOUTH);
-		/* Install ActionListeners */
-		routeGroupJList.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				updateRoutesInGroupPanel();
-			}
+		FormLayout layout = new FormLayout(
+				"pref, 10dlu, pref, 10dlu, right:pref, 3dlu, pref:grow",
+				"pref:grow, 3dlu, pref:grow, 3dlu, pref:grow, 3dlu, pref:grow, 3dlu, pref:grow, 3dlu, pref:grow");
+		PanelBuilder builder = new PanelBuilder(layout);
+		layout.setColumnGroups(new int[][] { { 1, 3 } });
+		builder.setDefaultDialogBorder();
+		CellConstraints cc = new CellConstraints();
 
-		});
-		routeGroupJList.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				maybeShowPopup(e);
-			}
+		builder.addSeparator("Route Groups", cc.xyw(1, 1, 1));
 
-			public void mouseReleased(MouseEvent e) {
-				maybeShowPopup(e);
-			}
+		builder.add(new JScrollPane(routeGroupList), cc.xywh(1, 3, 1, 5));
+		builder.add(buildRouteGroupButtonBar(), cc.xy(1, 9));
 
-			private void maybeShowPopup(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					routeGroupPopupMenu.show(e.getComponent(), e.getX(), e
-							.getY());
-				}
-			}
-		});
-		addItem.addActionListener(new AddRouteGroupAction());
-		addRouteGroupButton.addActionListener(new AddRouteGroupAction());
-		removeItem.addActionListener(new RemoveRouteGroupAction());
-		removeRouteGroupButton.addActionListener(new RemoveRouteGroupAction());
-		renameItem.addActionListener(new RenameRouteGroupAction());
-		moveUpItem.addActionListener(new MoveRouteGroupAction(true));
-		moveDownItem.addActionListener(new MoveRouteGroupAction(false));
+		builder.addSeparator("Routes", cc.xyw(3, 1, 1));
+		builder.add(new JScrollPane(routesList), cc.xywh(3, 3, 1, 5));
+		builder.add(buildRouteButtonBar(), cc.xy(3, 9));
 
+		builder.addSeparator("Route", cc.xyw(5, 1, 3));
+
+		builder.addLabel("Route Number", cc.xy(5, 3));
+		builder.add(routeNumberField, cc.xy(7, 3));
+
+		builder.addLabel("Route Name", cc.xy(5, 5));
+		builder.add(routeNameField, cc.xy(7, 5));
+		builder.add(new JScrollPane(routeItemTable), cc.xyw(5, 7, 3));
+		builder.add(buildRouteItemButtonBar(), cc.xyw(5, 9, 3));
+
+		builder.add(buildMainButtonBar(), cc.xyw(1, 11, 7));
+
+		add(builder.getPanel());
+		// add(new FormDebugPanel(layout));
 	}
 
-	private void createRoutesInGroupPanel() {
-		routesInGroupPanel = new JPanel(new BorderLayout());
-		TitledBorder title = BorderFactory
-				.createTitledBorder("Routes in Group xyz");
-		routesInGroupPanel.setBorder(title);
-		routesInGroupPanel.getInsets(new Insets(5, 5, 5, 5));
-
-		routesListModel = new ListListModel<Route>();
-		routesInGroupJList = new JList(routesListModel);
-		routesInGroupJList
-				.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-		routesPopupMenu = new JPopupMenu();
-		JMenuItem addItem = new JMenuItem("Add");
-		JMenuItem removeItem = new JMenuItem("Remove");
-		JMenuItem renameItem = new JMenuItem("Rename");
-		JMenuItem moveUpItem = new JMenuItem("Move up");
-		JMenuItem moveDownItem = new JMenuItem("Move down");
-
-		routesPopupMenu.add(addItem);
-		routesPopupMenu.add(removeItem);
-		routesPopupMenu.add(renameItem);
-		routesPopupMenu.add(new JSeparator());
-		routesPopupMenu.add(moveUpItem);
-		routesPopupMenu.add(moveDownItem);
-
-		addRouteButton = new JButton("Add");
-		removeRouteButton = new JButton("Remove");
-
-		JPanel buttonPanel = new JPanel(new FlowLayout());
-		buttonPanel.add(addRouteButton);
-		buttonPanel.add(removeRouteButton);
-
-		routesInGroupPanel.add(routesInGroupJList, BorderLayout.CENTER);
-		routesInGroupPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-		/* Install ActionListeners */
-		routesInGroupJList
-				.addListSelectionListener(new ListSelectionListener() {
-					public void valueChanged(ListSelectionEvent e) {
-						updateRouteDetailPanel();
-					}
-
-				});
-		routesInGroupJList.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				maybeShowPopup(e);
-			}
-
-			public void mouseReleased(MouseEvent e) {
-				maybeShowPopup(e);
-			}
-
-			private void maybeShowPopup(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					routesPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-				}
-			}
-		});
-		AddRouteAction addAction = new AddRouteAction();
-		RemoveRouteAction removeAction = new RemoveRouteAction();
-		RenameRouteAction renameAction = new RenameRouteAction();
-
-		addItem.addActionListener(addAction);
-		addRouteButton.addActionListener(addAction);
-
-		removeItem.addActionListener(removeAction);
-		removeRouteButton.addActionListener(removeAction);
-
-		renameItem.addActionListener(renameAction);
-
+	private Component buildRouteGroupButtonBar() {
+		return ButtonBarFactory.buildCenteredBar(addRouteGroupButton,
+				removeRouteGroupButton);
 	}
 
-	private void createRouteDetailPanel() {
+	private Component buildRouteButtonBar() {
+		return ButtonBarFactory.buildCenteredBar(addRouteButton,
+				removeRouteButton);
+	}
 
-		Route selectedRoute = (Route) routesInGroupJList.getSelectedValue();
+	private Component buildRouteItemButtonBar() {
+		return ButtonBarFactory.buildCenteredBar(addRouteItemButton,
+				removeRouteItemButton);
+	}
 
-		routeDetailPanel = new JPanel(new BorderLayout());
-		TitledBorder title = BorderFactory.createTitledBorder("Route");
-		routeDetailPanel.setBorder(title);
-		routeDetailPanel.getInsets(new Insets(5, 5, 5, 5));
+	private Component buildMainButtonBar() {
+		return ButtonBarFactory.buildRightAlignedBar(okButton);
+	}
 
-		JLabel routeNameLabel = new JLabel("Route name");
-		JLabel routeNumberLabel = new JLabel("Route number");
+	private void initComponents() {
+		ArrayListModel<RouteGroup> routeGroups = routePersistence
+				.getAllRouteGroups();
+		routeGroupModel = new SelectionInList<RouteGroup>(
+				(ListModel) routeGroups);
 
-		routeNameField = new JTextField(15);
-		routeNameField.addFocusListener(new FocusListener() {
+		routeGroupList = BasicComponentFactory.createList(routeGroupModel);
+		routeGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		routeGroupList.setCellRenderer(new RouteGroupListCellRenderer());
 
-			public void focusGained(FocusEvent arg0) {
+		addRouteGroupButton = new JButton(new AddRouteGroupAction());
+		removeRouteGroupButton = new JButton(new RemoveRouteGroupAction());
 
-			}
+		routesModel = new SelectionInList<Route>();
+		routesList = new JList();
+		routesList.setModel(routesModel);
+		routesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		routesList.setCellRenderer(new RouteListCellRenderer());
 
-			public void focusLost(FocusEvent arg0) {
-				Route selectedRoute = (Route) routesInGroupJList
-						.getSelectedValue();
-				selectedRoute.setName(routeNameField.getText());
-				updateRoutesInGroupPanel();
-			}
+		addRouteButton = new JButton(new AddRouteAction());
+		removeRouteButton = new JButton(new RemoveRouteAction());
 
-		});
-		routeNumberField = new JTextField(15);
-		routeNumberField.addFocusListener(new FocusListener() {
+		routeModel = new PresentationModel<Route>(routesModel);
 
-			public void focusGained(FocusEvent arg0) {
+		routeNumberField = new JSpinner();
+		routeNumberField.setModel(SpinnerAdapterFactory.createNumberAdapter(
+				routeModel.getModel(Route.PROPERTYNAME_NUMBER), 1, // defaultValue
+				0, // minValue
+				1000, // maxValue
+				1)); // step
 
-			}
+		routeNameField = BasicComponentFactory.createTextField(routeModel
+				.getModel(Route.PROPERTYNAME_NAME));
+		routeNameField.setColumns(5);
 
-			public void focusLost(FocusEvent arg0) {
-				Route selectedRoute = (Route) routesInGroupJList
-						.getSelectedValue();
-				selectedRoute.setNumber(Integer.parseInt(routeNumberField
-						.getText()));
-				updateRoutesInGroupPanel();
-			}
+		routeItemModel = new SelectionInList<RouteItem>();
+		routeItemTable = new JTable();
+		routeItemTable.setModel(new RouteItemTableModel(routeItemModel));
+		routeItemTable.setRowHeight(30);
+		routeItemTable.setSelectionModel(new SingleListSelectionAdapter(
+				routeItemModel.getSelectionIndexHolder()));
 
-		});
-		if (selectedRoute != null) {
-			routeNumberField.setText("" + selectedRoute.getNumber());
-			routeNameField.setText(selectedRoute.getName());
-		}
-
-		JPanel routeSettingsPanel = new JPanel(new SpringLayout());
-
-		routeSettingsPanel.add(routeNameLabel);
-		routeSettingsPanel.add(routeNameField);
-		routeSettingsPanel.add(routeNumberLabel);
-		routeSettingsPanel.add(routeNumberField);
-
-		SpringUtilities.makeCompactGrid(routeSettingsPanel, 2, 2, // rows,
-				// cols
-				6, 6, // initX, initY
-				6, 6); // xPad, yPad
-
-		routedSwitchesTableModel = new RoutedSwitchesTableModel();
-		routedSwitchesTable = new JTable(routedSwitchesTableModel);
-
-		routedSwitchesTable.setRowHeight(24);
-		JScrollPane tableScrollPane = new JScrollPane(routedSwitchesTable);
-
-		routeDetailPanel.add(routeSettingsPanel, BorderLayout.NORTH);
-		routeDetailPanel.add(tableScrollPane, BorderLayout.CENTER);
-
-		TableColumn stateColumn = routedSwitchesTable.getColumnModel()
+		TableColumn routedStateColumn = routeItemTable.getColumnModel()
 				.getColumn(1);
+		routedStateColumn.setCellRenderer(new RoutedTurnoutStateCellRenderer());
 
-		JComboBox switchStateRoutedComboBox = new JComboBox();
-		switchStateRoutedComboBox.addItem(TurnoutState.STRAIGHT);
-		switchStateRoutedComboBox.addItem(TurnoutState.LEFT);
-		switchStateRoutedComboBox.addItem(TurnoutState.RIGHT);
-		switchStateRoutedComboBox
-				.setRenderer(new SwitchRoutedStateComboBoxCellRenderer());
-		stateColumn.setCellEditor(new DefaultCellEditor(
-				switchStateRoutedComboBox));
-		stateColumn.setCellRenderer(new SwitchRoutedStateCellRenderer());
+		addRouteItemButton = new JButton(new AddRouteItemAction());
+		removeRouteItemButton = new JButton(new RemoveRouteItemAction());
 
-		JButton addSwitchButton = new JButton("Add switch to route...");
-		JButton removeSwitchButton = new JButton("Remove switch from route");
-		addSwitchButton.addActionListener(new AddSwitchToRouteAction());
-		removeSwitchButton.addActionListener(new RemoveSwitchFromRouteAction());
-		JPanel buttonPanel = new JPanel(new FlowLayout());
+		okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				okPressed = true;
+				setVisible(false);
+			}
 
-		buttonPanel.add(addSwitchButton);
-		buttonPanel.add(removeSwitchButton);
-
-		routeDetailPanel.add(buttonPanel, BorderLayout.SOUTH);
-
+		});
 	}
 
-	private void updateRoutesInGroupPanel() {
-		RouteGroup selectedRouteGroup = (RouteGroup) (routeGroupJList
-				.getSelectedValue());
-		if (selectedRouteGroup == null) {
-			routesInGroupJList.setModel(null);
-			routesInGroupPanel.setBorder(new TitledBorder("Route Group"));
-		} else {
-			routesInGroupPanel.setBorder(new TitledBorder("Route Group '"
-					+ selectedRouteGroup.getName() + "'"));
-			routesListModel.setList(new ArrayList<Route>(selectedRouteGroup
-					.getRoutes()));
-			routesInGroupJList.setSelectedIndex(0);
-		}
-		pack();
+	private void initEventHandling() {
+		routeGroupList
+				.addListSelectionListener(new RouteGroupSelectionHandler());
+
+		routesList.addListSelectionListener(new RouteSelectionHandler());
 	}
 
-	private void updateRouteDetailPanel() {
-		Route selectedRoute = (Route) (routesInGroupJList.getSelectedValue());
-		if (selectedRoute == null) {
-			((TitledBorder) routeDetailPanel.getBorder()).setTitle("Route");
-			routeNumberField.setText("");
-		} else {
-			((TitledBorder) routeDetailPanel.getBorder()).setTitle("Route '"
-					+ selectedRoute.getName() + "'");
-			routeNumberField.setText("" + selectedRoute.getNumber());
-			routeNameField.setText(selectedRoute.getName());
+	/**
+	 * Sets the selected RouteGroup as bean in the details model.
+	 */
+	private final class RouteGroupSelectionHandler implements
+			ListSelectionListener {
+
+		public void valueChanged(ListSelectionEvent e) {
+			if (e.getValueIsAdjusting())
+				return;
+			if (routeGroupList.getSelectedIndex() == -1)
+				routeGroupList.setSelectedIndex(0);
+			RouteGroup selectedGroup = (RouteGroup) routeGroupList
+					.getSelectedValue();
+			List<Route> routes = new ArrayList<Route>(selectedGroup.getRoutes());
+			routesModel.setList(routes);
 		}
-		((RoutedSwitchesTableModel) routedSwitchesTableModel)
-				.setRoute(selectedRoute);
-		TableResizer.adjustColumnWidths(routedSwitchesTable, 30);
-		if (routedSwitchesTable.getRowCount() > 0) {
-			TableResizer.adjustRowHeight(routedSwitchesTable);
+	}
+
+	/**
+	 * Sets the selected Route as bean in the details model.
+	 */
+	private final class RouteSelectionHandler implements ListSelectionListener {
+
+		public void valueChanged(ListSelectionEvent e) {
+			if (e.getValueIsAdjusting())
+				return;
+			if (routesList.getSelectedIndex() == -1)
+				routesList.setSelectedIndex(0);
+			Route selectedRoute = (Route) routesList.getSelectedValue();
+			if (selectedRoute == null)
+				return;
+			List<RouteItem> routeItems = new ArrayList<RouteItem>(selectedRoute
+					.getRouteItems());
+			routeModel.setBean(selectedRoute);
+			routeItemModel.setList(routeItems);
 		}
-		pack();
+	}
+
+	/**
+	 * Used to renders RouteGroups in JLists and JComboBoxes. If the combo box
+	 * selection is null, an empty text <code>""</code> is rendered.
+	 */
+	private static final class RouteGroupListCellRenderer extends
+			DefaultListCellRenderer {
+
+		@Override
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
+			Component component = super.getListCellRendererComponent(list,
+					value, index, isSelected, cellHasFocus);
+
+			RouteGroup group = (RouteGroup) value;
+			setText(group == null ? "" : (" " + group.getName()));
+			return component;
+		}
+	}
+
+	/**
+	 * Used to renders Route in JLists and JComboBoxes. If the combo box
+	 * selection is null, an empty text <code>""</code> is rendered.
+	 */
+	private static final class RouteListCellRenderer extends
+			DefaultListCellRenderer {
+
+		@Override
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
+			Component component = super.getListCellRendererComponent(list,
+					value, index, isSelected, cellHasFocus);
+
+			Route route = (Route) value;
+			setText(route == null ? "" : (" " + route.getName()));
+			return component;
+		}
+	}
+
+	// TableModel *************************************************************
+
+	/**
+	 * Describes how to present an Album in a JTable.
+	 */
+	private static final class RouteItemTableModel extends
+			AbstractTableAdapter<RouteItem> {
+
+		private static final String[] COLUMNS = { "Turnout Number",
+				"Routed Turnout State" };
+
+		private RouteItemTableModel(ListModel listModel) {
+			super(listModel, COLUMNS);
+		}
+
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			RouteItem routeItem = getRow(rowIndex);
+			switch (columnIndex) {
+			case 0:
+				return routeItem.getTurnout().getNumber();
+			case 1:
+				return routeItem.getRoutedStateEnum();
+			default:
+				throw new IllegalStateException("Unknown column");
+			}
+		}
+
 	}
 
 	private class AddRouteGroupAction extends AbstractAction {
+
+		public AddRouteGroupAction() {
+			super("Add Group");
+		}
 
 		public void actionPerformed(ActionEvent e) {
 			String newRouteGroupName = JOptionPane.showInputDialog(
 					RoutesConfigurationDialog.this,
 					"Enter the name of the new route group", "Add route group",
 					JOptionPane.QUESTION_MESSAGE);
+
 			RouteGroup newRouteGroup = new RouteGroup();
 			newRouteGroup.setName(newRouteGroupName);
 			routePersistence.addRouteGroup(newRouteGroup);
-			routeGroupListModel.setList(new ArrayList<RouteGroup>(routePersistence.getAllRouteGroups()));
-			routeGroupListModel.updated();
-			routeGroupJList.setSelectedValue(newRouteGroup, true);
-			updateRoutesInGroupPanel();
-			updateRouteDetailPanel();
+
 		}
 
 	}
 
 	private class RemoveRouteGroupAction extends AbstractAction {
 
+		public RemoveRouteGroupAction() {
+			super("Remove Group");
+		}
+
 		public void actionPerformed(ActionEvent e) {
-			RouteGroup routeGroupToDelete = (RouteGroup) (routeGroupJList
+			RouteGroup routeGroupToDelete = (RouteGroup) (routeGroupList
 					.getSelectedValue());
 			if (routeGroupToDelete == null) {
 				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
-						"Please select a route group", "Error",
+						"Please select a Route-Group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			int response = JOptionPane.showConfirmDialog(
 					RoutesConfigurationDialog.this,
-					"Really remove route group '"
+					"Really remove Route-Group '"
 							+ routeGroupToDelete.getName() + "' ?",
-					"Remove route group", JOptionPane.YES_NO_OPTION);
+					"Remove Route-Group", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
-				routePersistence.deleteRouteGroup(routeGroupToDelete);
-				routeGroupListModel.updated();
+				try {
+					routePersistence.deleteRouteGroup(routeGroupToDelete);
+				} catch (RoutePersistenceException e1) {
+					ExceptionProcessor.getInstance().processException(e1);
+				}
 			}
 		}
 
 	}
 
-	private class RenameRouteGroupAction extends AbstractAction {
-
-		public void actionPerformed(ActionEvent e) {
-			RouteGroup routeGroupToRename = (RouteGroup) (routeGroupJList
-					.getSelectedValue());
-			if (routeGroupToRename == null) {
-				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
-						"Please select a route group", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			String newSectionName = JOptionPane.showInputDialog(
-					RoutesConfigurationDialog.this, "Enter new name",
-					"Rename route group", JOptionPane.QUESTION_MESSAGE);
-			if (!newSectionName.equals("")) {
-				routeGroupToRename.setName(newSectionName);
-				routePersistence.updateRouteGroup(routeGroupToRename);
-				routeGroupListModel.updated();
-			}
-			updateRoutesInGroupPanel();
-		}
-
+	public boolean isOkPressed() {
+		return okPressed;
 	}
 
 	private class AddRouteAction extends AbstractAction {
+
+		public AddRouteAction() {
+			super("Add Route");
+		}
 
 		public void actionPerformed(ActionEvent e) {
 			String newRouteName = JOptionPane.showInputDialog(
 					RoutesConfigurationDialog.this,
 					"Enter the name of the new Route", "Add Route",
 					JOptionPane.QUESTION_MESSAGE);
+
 			int nextNumber = routePersistence.getNextFreeRouteNumber();
+
 			Route newRoute = new Route();
 			newRoute.setName(newRouteName);
 			newRoute.setNumber(nextNumber);
-			RouteGroup selectedRouteGroup = (RouteGroup) (routeGroupJList
+			RouteGroup selectedRouteGroup = (RouteGroup) (routeGroupList
 					.getSelectedValue());
 
 			newRoute.setRouteGroup(selectedRouteGroup);
-			routePersistence.addRoute(newRoute);
-			routesInGroupJList.setSelectedValue(newRoute, true);
-			updateRoutesInGroupPanel();
-			updateRouteDetailPanel();
-		}
+			try {
+				routePersistence.addRoute(newRoute);
+				List<Route> routes = new ArrayList<Route>(selectedRouteGroup
+						.getRoutes());
+				routesModel.setList(routes);
+			} catch (RoutePersistenceException e1) {
+				ExceptionProcessor.getInstance().processException(e1);
+			}
 
+		}
 	}
 
 	private class RemoveRouteAction extends AbstractAction {
 
+		public RemoveRouteAction() {
+			super("Remove Route");
+		}
+
 		public void actionPerformed(ActionEvent e) {
-			Route routeToDelete = (Route) (routesInGroupJList
+			RouteGroup selectedRouteGroup = (RouteGroup) (routeGroupList
 					.getSelectedValue());
+			Route routeToDelete = (Route) (routesList.getSelectedValue());
 			if (routeToDelete == null) {
 				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
 						"Please select a route", "Error",
@@ -482,42 +429,26 @@ public class RoutesConfigurationDialog extends ConfigurationDialog {
 							+ routeToDelete.getName() + "' ?", "Remove Route",
 					JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
-				routePersistence.deleteRoute(routeToDelete);
+				try {
+					routePersistence.deleteRoute(routeToDelete);
+					List<Route> routes = new ArrayList<Route>(
+							selectedRouteGroup.getRoutes());
+					routesModel.setList(routes);
+				} catch (RoutePersistenceException e1) {
+					ExceptionProcessor.getInstance().processException(e1);
+				}
 			}
-			updateRoutesInGroupPanel();
 		}
-
 	}
 
-	private class RenameRouteAction extends AbstractAction {
+	private class AddRouteItemAction extends AbstractAction {
 
-		public void actionPerformed(ActionEvent e) {
-			Route routeToRename = (Route) (routesInGroupJList
-					.getSelectedValue());
-			if (routeToRename == null) {
-				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
-						"Please select a route", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			String newSectionName = JOptionPane.showInputDialog(
-					RoutesConfigurationDialog.this, "Enter new name",
-					"Rename Switch-Group", JOptionPane.QUESTION_MESSAGE);
-			if (!newSectionName.equals("")) {
-				routeToRename.setName(newSectionName);
-				routePersistence.updateRoute(routeToRename);
-			}
-			updateRoutesInGroupPanel();
-			updateRouteDetailPanel();
+		public AddRouteItemAction() {
+			super("Add Turnout");
 		}
 
-	}
-
-	private class AddSwitchToRouteAction extends AbstractAction {
-
 		public void actionPerformed(ActionEvent e) {
-			Route selectedRoute = (Route) (routesInGroupJList
-					.getSelectedValue());
+			Route selectedRoute = (Route) (routesList.getSelectedValue());
 			if (selectedRoute == null) {
 				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
 						"Please select a route", "Error",
@@ -526,7 +457,7 @@ public class RoutesConfigurationDialog extends ConfigurationDialog {
 			}
 			String switchNumberAsString = JOptionPane.showInputDialog(
 					RoutesConfigurationDialog.this,
-					"Enter the number of the Switch", "Add switch to route",
+					"Enter the number of the Switch", "Add switch	 to route",
 					JOptionPane.QUESTION_MESSAGE);
 			Turnout turnout;
 			try {
@@ -537,37 +468,39 @@ public class RoutesConfigurationDialog extends ConfigurationDialog {
 				i.setRoute(selectedRoute);
 				i.setRoutedStateEnum(TurnoutState.STRAIGHT);
 				i.setTurnout(turnout);
-				routePersistence.addRouteItem(i);
 
-				updateRouteDetailPanel();
+				try {
+					routePersistence.addRouteItem(i);
+					List<RouteItem> routeItems = new ArrayList<RouteItem>(
+							selectedRoute.getRouteItems());
+					routeItemModel.setList(routeItems);
+				} catch (RoutePersistenceException e1) {
+					e1.printStackTrace();
+				}
 			} catch (NumberFormatException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			} catch (TurnoutException e1) {
 				ExceptionProcessor.getInstance().processExceptionDialog(e1);
 			}
 		}
-
 	}
 
-	private class RemoveSwitchFromRouteAction extends AbstractAction {
+	private class RemoveRouteItemAction extends AbstractAction {
 
-		public void actionPerformed(ActionEvent e) {
-			
-		}
-
-	}
-
-	private class MoveRouteGroupAction extends AbstractAction {
-
-		public MoveRouteGroupAction(boolean up) {
-
+		public RemoveRouteItemAction() {
+			super("Remove Turnout");
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			Route selectedRoute = (Route) (routesList.getSelectedValue());
+			RouteItem routeItem = routeItemModel.getSelection();
+			if (routeItem == null)
+				return;
 
+			routePersistence.deleteRouteItem(routeItem);
+			List<RouteItem> routeItems = new ArrayList<RouteItem>(selectedRoute
+					.getRouteItems());
+			routeItemModel.setList(routeItems);
 		}
-
 	}
-
 }

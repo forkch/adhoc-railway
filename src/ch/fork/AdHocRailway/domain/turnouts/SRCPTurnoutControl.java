@@ -160,9 +160,9 @@ public class SRCPTurnoutControl extends Control implements TurnoutControlIface, 
 	}
 
 	public void setDefaultState(Turnout turnout) throws TurnoutException {
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
 		checkTurnout(turnout);
 		initTurnout(turnout);
+		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
 		previousState = sTurnout.getTurnoutState();
 		if (turnout.isThreeWay()) {
 			setDefaultStateTheeWay(turnout);
