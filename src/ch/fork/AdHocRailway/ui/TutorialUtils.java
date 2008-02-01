@@ -32,17 +32,6 @@ package ch.fork.AdHocRailway.ui;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.ref.WeakReference;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.swing.*;
-import javax.swing.table.TableModel;
-
-import com.jgoodies.binding.adapter.AbstractTableAdapter;
 
 
 /**

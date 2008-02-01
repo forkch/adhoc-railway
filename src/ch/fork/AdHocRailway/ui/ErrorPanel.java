@@ -15,6 +15,7 @@ public class ErrorPanel extends JPanel {
 
 	private JTextArea errorTextArea;
 	private JLabel iconLabel;
+	private Color defaultColor;
 
 	public ErrorPanel() {
 		initGUI();
@@ -26,8 +27,7 @@ public class ErrorPanel extends JPanel {
 		errorTextArea = new JTextArea(2,30);
 		errorTextArea.setEditable(false);
 		errorTextArea.setForeground(Color.BLACK);
-		errorTextArea.setBackground(new Color(238,238,238));
-		
+		defaultColor = errorTextArea.getBackground();
 		errorTextArea.setFont(new Font("Dialog", Font.BOLD, 12));
 		
 		iconLabel = new JLabel("");
@@ -55,7 +55,7 @@ public class ErrorPanel extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
-				errorTextArea.setBackground(new Color(238,238,238));
+				errorTextArea.setBackground(defaultColor);
 				errorTextArea.setText("");
 				iconLabel.setIcon(null);
 			}

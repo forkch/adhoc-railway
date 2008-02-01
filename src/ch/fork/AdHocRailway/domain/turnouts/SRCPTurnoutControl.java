@@ -45,7 +45,8 @@ import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GA;
 import de.dermoba.srcp.devices.GAInfoListener;
 
-public class SRCPTurnoutControl extends Control implements TurnoutControlIface, GAInfoListener {
+public class SRCPTurnoutControl extends Control implements TurnoutControlIface,
+		GAInfoListener {
 	private static Logger logger = Logger.getLogger(SRCPTurnoutControl.class);
 	private static SRCPTurnoutControl instance;
 
@@ -344,12 +345,12 @@ public class SRCPTurnoutControl extends Control implements TurnoutControlIface, 
 		logger.debug("GAset(" + bus + " , " + address + " , " + port + " , "
 				+ value + " )");
 		Turnout turnout = persistence.getTurnoutByAddressBus(bus, address);
-		if(turnout == null) {
-			//TODO
+		if (turnout == null) {
+			// TODO
 			return;
 		}
 		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		if (value == 0 ) {
+		if (value == 0) {
 			// ignore deactivation
 			return;
 		}
@@ -479,7 +480,9 @@ public class SRCPTurnoutControl extends Control implements TurnoutControlIface, 
 
 		if (turnout.getBus1() == 0 || turnout.getAddress1() == 0)
 			throw new TurnoutException(Constants.ERR_FAILED,
-					new InvalidAddressException());
+					new InvalidAddressException("Turnout "
+							+ turnout.getNumber()
+							+ " has an invalid address or bus"));
 
 	}
 
@@ -517,6 +520,7 @@ public class SRCPTurnoutControl extends Control implements TurnoutControlIface, 
 		Turnout turnout2 = new Turnout();
 		SRCPTurnout sTurnout1 = new SRCPTurnout(turnout1);
 		SRCPTurnout sTurnout2 = new SRCPTurnout(turnout2);
+		turnout1.setNumber(turnout.getNumber());
 		turnout1.setBus1(turnout.getBus1());
 		turnout1.setAddress1(turnout.getAddress1());
 		turnout1.setAddress1Switched(turnout.isAddress1Switched());
@@ -525,6 +529,7 @@ public class SRCPTurnoutControl extends Control implements TurnoutControlIface, 
 		turnout1.setTurnoutGroup(turnout.getTurnoutGroup());
 		sTurnout1.setSession(sTurnout.getSession());
 
+		turnout2.setNumber(turnout.getNumber());
 		turnout2.setBus1(turnout.getBus2());
 		turnout2.setAddress1(turnout.getAddress2());
 		turnout2.setAddress1Switched(turnout.isAddress2Switched());

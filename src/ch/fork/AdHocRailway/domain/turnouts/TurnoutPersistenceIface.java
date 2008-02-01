@@ -23,7 +23,7 @@ public interface TurnoutPersistenceIface {
 
 	public abstract void deleteTurnout(Turnout turnout);
 
-	public abstract void updateTurnout(Turnout turnout);
+	public abstract void updateTurnout(Turnout turnout) throws TurnoutPersistenceException;
 
 	public abstract Map<Integer, Turnout> getNumberToTurnout();
 

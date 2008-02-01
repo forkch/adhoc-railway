@@ -10,6 +10,7 @@ import java.util.TreeSet;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
+import javax.persistence.RollbackException;
 
 import org.apache.log4j.Logger;
 
@@ -164,26 +165,27 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 	 */
 	public void addTurnout(Turnout turnout) throws TurnoutPersistenceException {
 		EntityManager em = getEntityManager();
-		if(turnout.getTurnoutGroup() == null) {
-			throw new TurnoutPersistenceException("Turnout has no associated Group");
+		if (turnout.getTurnoutGroup() == null) {
+			throw new TurnoutPersistenceException(
+					"Turnout has no associated Group");
 		}
 		turnout.getTurnoutGroup().getTurnouts().add(turnout);
 		em.persist(turnout);
 
-		em.getTransaction().commit();		
+		em.getTransaction().commit();
 		em.getTransaction().begin();
-		
-//		turnoutCache.add(turnout);
-//		addressTurnoutCache.put(new LookupAddress(turnout.getBus1(), turnout
-//				.getAddress1(), turnout.getBus2(), turnout.getAddress2()),
-//				turnout);
-//		if (turnout.isThreeWay()) {
-//			addressThreewayCache.put(new LookupAddress(turnout.getBus1(),
-//					turnout.getAddress1(), 0, 0), turnout);
-//			addressThreewayCache.put(new LookupAddress(0, 0, turnout.getBus2(),
-//					turnout.getAddress2()), turnout);
-//		}
-		
+
+		// turnoutCache.add(turnout);
+		// addressTurnoutCache.put(new LookupAddress(turnout.getBus1(), turnout
+		// .getAddress1(), turnout.getBus2(), turnout.getAddress2()),
+		// turnout);
+		// if (turnout.isThreeWay()) {
+		// addressThreewayCache.put(new LookupAddress(turnout.getBus1(),
+		// turnout.getAddress1(), 0, 0), turnout);
+		// addressThreewayCache.put(new LookupAddress(0, 0, turnout.getBus2(),
+		// turnout.getAddress2()), turnout);
+		// }
+
 		updateTurnoutCache();
 	}
 
@@ -193,7 +195,7 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#deleteTurnout(ch.fork.AdHocRailway.domain.turnouts.Turnout)
 	 */
 	public void deleteTurnout(Turnout turnout) {
-		
+
 		EntityManager em = getEntityManager();
 
 		TurnoutGroup group = turnout.getTurnoutGroup();
@@ -214,16 +216,17 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 
 		em.getTransaction().commit();
 		em.getTransaction().begin();
-		
-//		turnoutCache.remove(turnout);
-//		addressTurnoutCache.remove(new LookupAddress(turnout.getBus1(), turnout
-//				.getAddress1(), turnout.getBus2(), turnout.getAddress2()));
-//		if (turnout.isThreeWay()) {
-//			addressThreewayCache.remove(new LookupAddress(turnout.getBus1(),
-//					turnout.getAddress1(), 0, 0));
-//			addressThreewayCache.remove(new LookupAddress(0, 0, turnout
-//					.getBus2(), turnout.getAddress2()));
-//		}
+
+		// turnoutCache.remove(turnout);
+		// addressTurnoutCache.remove(new LookupAddress(turnout.getBus1(),
+		// turnout
+		// .getAddress1(), turnout.getBus2(), turnout.getAddress2()));
+		// if (turnout.isThreeWay()) {
+		// addressThreewayCache.remove(new LookupAddress(turnout.getBus1(),
+		// turnout.getAddress1(), 0, 0));
+		// addressThreewayCache.remove(new LookupAddress(0, 0, turnout
+		// .getBus2(), turnout.getAddress2()));
+		// }
 
 		updateTurnoutCache();
 	}
@@ -233,11 +236,17 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#updateTurnout(ch.fork.AdHocRailway.domain.turnouts.Turnout)
 	 */
-	public void updateTurnout(Turnout turnout) {
+	public void updateTurnout(Turnout turnout)
+			throws TurnoutPersistenceException {
 		logger.debug("updateTurnout()");
 		EntityManager em = getEntityManager();
 		em.merge(turnout);
-		em.getTransaction().commit();
+		try {
+			em.getTransaction().commit();
+		} catch (RollbackException ex) {
+			em.getTransaction().begin();
+			throw new TurnoutPersistenceException("Duplicate Number");
+		}
 		em.getTransaction().begin();
 	}
 
@@ -300,7 +309,7 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 		em.getTransaction().commit();
 		em.getTransaction().begin();
 		updateTurnoutGroupCache();
-		//this.turnoutGroupCache.add(group);
+		// this.turnoutGroupCache.add(group);
 	}
 
 	/*
@@ -308,7 +317,8 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#deleteTurnoutGroup(ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup)
 	 */
-	public void deleteTurnoutGroup(TurnoutGroup group) throws TurnoutPersistenceException {
+	public void deleteTurnoutGroup(TurnoutGroup group)
+			throws TurnoutPersistenceException {
 		EntityManager em = getEntityManager();
 		if (!group.getTurnouts().isEmpty()) {
 			throw new TurnoutPersistenceException(
@@ -318,7 +328,7 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 		em.getTransaction().commit();
 		em.getTransaction().begin();
 		updateTurnoutGroupCache();
-		//this.turnoutGroupCache.remove(group);
+		// this.turnoutGroupCache.remove(group);
 	}
 
 	/*

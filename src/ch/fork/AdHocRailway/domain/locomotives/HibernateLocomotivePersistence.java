@@ -7,13 +7,11 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
-import com.jgoodies.binding.list.ArrayListModel;
-import com.sun.org.apache.bcel.internal.generic.LLOAD;
 
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
 import ch.fork.AdHocRailway.domain.LookupAddress;
+
+import com.jgoodies.binding.list.ArrayListModel;
 
 public class HibernateLocomotivePersistence extends HibernatePersistence
 		implements LocomotivePersistenceIface {

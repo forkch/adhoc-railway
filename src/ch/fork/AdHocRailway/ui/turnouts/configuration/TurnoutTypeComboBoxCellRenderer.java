@@ -6,7 +6,7 @@
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
- * version   : $Id$
+ * version   : $Id:TurnoutTypeComboBoxCellRenderer.java 130 2008-02-01 20:23:34Z fork_ch $
  * 
  *----------------------------------------------------------------------*/
 
@@ -23,7 +23,6 @@
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import java.awt.Component;
-import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import javax.swing.JList;

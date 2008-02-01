@@ -31,10 +31,8 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.border.TitledBorder;
 
 import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
@@ -43,6 +41,7 @@ import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class LocomotiveControlPanel extends JPanel {
@@ -72,12 +71,10 @@ public class LocomotiveControlPanel extends JPanel {
         { KeyEvent.VK_COLON, KeyEvent.VK_MINUS, KeyEvent.VK_P } };
     private int[][]                keyBindings   = keyBindingsDE;
     private List<LocomotiveWidget> locomotiveWidgets;
-    private JFrame                 frame;
 	private JPanel controlPanel;
 
-    public LocomotiveControlPanel(JFrame frame) {
+    public LocomotiveControlPanel() {
         super();
-        this.frame = frame;
         locomotiveWidgets = new ArrayList<LocomotiveWidget>();
         locomotiveControl = SRCPLocomotiveControl.getInstance();
         initGUI();
@@ -85,11 +82,10 @@ public class LocomotiveControlPanel extends JPanel {
 
     private void initGUI() {
     	setLayout(new BorderLayout());
-    	setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    	setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.CENTER, 10, 0);
         controlPanel = new JPanel(controlPanelLayout); 
 		controlPanel.setLayout(controlPanelLayout);
-        controlPanel.setBorder(new TitledBorder("Trains"));
 		add(controlPanel, BorderLayout.NORTH);
         registerKeyboardAction(new LocomotiveStopAction(), "", KeyStroke
             .getKeyStroke(KeyEvent.VK_SPACE, 0), WHEN_IN_FOCUSED_WINDOW);
@@ -111,7 +107,7 @@ public class LocomotiveControlPanel extends JPanel {
         for (int i = 0; i < Preferences.getInstance().getIntValue(
             PreferencesKeys.LOCOMOTIVE_CONTROLES); i++) {
             LocomotiveWidget w = new LocomotiveWidget(keyBindings[i][0],
-                keyBindings[i][1], keyBindings[i][2], frame);
+                keyBindings[i][1], keyBindings[i][2], AdHocRailway.getInstance());
             SRCPLockControl.getInstance().addLockChangeListener(w);
             w.updateLocomotiveGroups();
             controlPanel.add(w);

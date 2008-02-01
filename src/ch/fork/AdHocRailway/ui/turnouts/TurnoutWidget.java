@@ -37,7 +37,6 @@ import javax.swing.SwingUtilities;
 
 import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
-import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
@@ -133,9 +132,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 			turnoutControl.removeSwitchChangeListener(myTurnout);
 			TurnoutConfig switchConf = new TurnoutConfig(frame, myTurnout);
 			turnoutControl.addTurnoutChangeListener(myTurnout, TurnoutWidget.this);
-			if (switchConf.isOkPressed()) {
-				HibernateTurnoutPersistence.getInstance().updateTurnout(myTurnout);
-			}
+			
 			turnoutChanged(myTurnout, actualTurnoutState);
 		}
 	}

@@ -6,7 +6,7 @@
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
- * version   : $Id$
+ * version   : $Id:TurnoutConfigurationDialog.java 130 2008-02-01 20:23:34Z fork_ch $
  * 
  *----------------------------------------------------------------------*/
 
@@ -53,7 +53,6 @@ import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
-import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.TableResizer;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
@@ -71,7 +70,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class TurnoutConfigurationDialog extends JDialog {
 
-    private boolean okPressed;
+	private boolean okPressed;
 
 	private JList turnoutGroupList;
 
@@ -177,15 +176,15 @@ public class TurnoutConfigurationDialog extends JDialog {
 
 		addTurnoutButton = new JButton(new AddTurnoutAction());
 		removeTurnoutButton = new JButton(new RemoveTurnoutAction());
-		
-		okButton = new JButton("OK");
-        okButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-                okPressed = true;
-                setVisible(false);
-            }
 
-        });
+		okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				okPressed = true;
+				setVisible(false);
+			}
+
+		});
 	}
 
 	// TableModel *************************************************************
@@ -264,7 +263,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 				turnoutGroupList.setSelectedIndex(0);
 			TurnoutGroup selectedGroup = (TurnoutGroup) turnoutGroupList
 					.getSelectedValue();
-			if(selectedGroup == null) 
+			if (selectedGroup == null)
 				return;
 			List<Turnout> turnouts = new ArrayList<Turnout>(selectedGroup
 					.getTurnouts());
@@ -361,18 +360,9 @@ public class TurnoutConfigurationDialog extends JDialog {
 			TurnoutConfig switchConfig = new TurnoutConfig(
 					TurnoutConfigurationDialog.this, newTurnout);
 			if (switchConfig.isOkPressed()) {
-
-				selectedTurnoutGroup.getTurnouts().add(newTurnout);
-
-				try {
-					turnoutPersistence.addTurnout(newTurnout);
-					List<Turnout> turnouts = new ArrayList<Turnout>(
-							selectedTurnoutGroup.getTurnouts());
-					turnoutModel.setList(turnouts);
-				} catch (TurnoutPersistenceException e1) {
-					ExceptionProcessor.getInstance().processException(e1);
-				}
-
+				List<Turnout> turnouts = new ArrayList<Turnout>(
+						selectedTurnoutGroup.getTurnouts());
+				turnoutModel.setList(turnouts);
 			}
 		}
 	}
@@ -455,11 +445,9 @@ public class TurnoutConfigurationDialog extends JDialog {
 				return;
 			TurnoutConfig turnoutConfig = new TurnoutConfig(
 					TurnoutConfigurationDialog.this, model);
-			if (turnoutConfig.isOkPressed()) {
-				turnoutPersistence.updateTurnout(model.getBean());
-			}
 		}
 	}
+
 	public boolean isOkPressed() {
 		return okPressed;
 	}

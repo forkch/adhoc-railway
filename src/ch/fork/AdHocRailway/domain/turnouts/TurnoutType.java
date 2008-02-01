@@ -17,7 +17,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
-import org.hibernate.dialect.FirebirdDialect;
 
 import com.jgoodies.binding.beans.Model;
 

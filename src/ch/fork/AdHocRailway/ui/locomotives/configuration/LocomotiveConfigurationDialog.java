@@ -61,7 +61,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class LocomotiveConfigurationDialog<E> extends ConfigurationDialog {
+public class LocomotiveConfigurationDialog extends ConfigurationDialog {
 
 	private LocomotivePersistenceIface locomotivePersistence;
 

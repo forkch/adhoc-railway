@@ -33,7 +33,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -47,9 +46,6 @@ import javax.swing.JProgressBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EtchedBorder;
-
-import com.jgoodies.binding.list.ArrayListModel;
 
 import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
@@ -65,6 +61,8 @@ import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
+
+import com.jgoodies.binding.list.ArrayListModel;
 
 public class LocomotiveWidget extends JPanel implements
 		LocomotiveChangeListener, LockChangeListener {
@@ -126,7 +124,7 @@ public class LocomotiveWidget extends JPanel implements
 
 	private void initGUI() {
 		setLayout(new BorderLayout(10, 10));
-		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+		setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
 		setPreferredSize(new Dimension(200, 250));
 		JPanel selectionPanel = initSelectionPanel();
 		JPanel controlPanel = initControlPanel();

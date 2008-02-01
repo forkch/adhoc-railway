@@ -6,7 +6,7 @@
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
- * version   : $Id$
+ * version   : $Id:TurnoutConfig.java 130 2008-02-01 20:23:34Z fork_ch $
  * 
  *----------------------------------------------------------------------*/
 
@@ -37,10 +37,12 @@ import javax.swing.JTextField;
 
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
+import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
 
 import com.jgoodies.binding.PresentationModel;
@@ -55,6 +57,8 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class TurnoutConfig extends JDialog {
 	private boolean okPressed;
+	private boolean cancelPressed;
+	private boolean visible;
 	private JSpinner numberTextField;
 	private JTextField descTextField;
 	private JSpinner bus1TextField;
@@ -69,23 +73,35 @@ public class TurnoutConfig extends JDialog {
 
 	private TurnoutPersistenceIface turnoutPersistence = HibernateTurnoutPersistence
 			.getInstance();
-	
+
 	private PresentationModel<Turnout> presentationModel;
 	private JButton okButton;
+	private JButton cancelButton;
 
 	public TurnoutConfig(Frame owner, Turnout myTurnout) {
-		super(owner, "Turnout Config", true);
-		this.presentationModel = new PresentationModel<Turnout>(myTurnout);
-		initGUI();
+		this(owner, myTurnout, true);
 	}
 
 	public TurnoutConfig(JDialog owner, Turnout myTurnout) {
+		this(owner, new PresentationModel<Turnout>(myTurnout), true);
+	}
+
+	public TurnoutConfig(JDialog owner,
+			PresentationModel<Turnout> presentationModel) {
+		this(owner, presentationModel, true);
+	}
+
+	public TurnoutConfig(Frame owner, Turnout myTurnout, boolean visible) {
 		super(owner, "Turnout Config", true);
+		this.visible = visible;
 		this.presentationModel = new PresentationModel<Turnout>(myTurnout);
 		initGUI();
 	}
-	public TurnoutConfig(JDialog owner, PresentationModel<Turnout> presentationModel) {
+
+	public TurnoutConfig(JDialog owner,
+			PresentationModel<Turnout> presentationModel, boolean visible) {
 		super(owner, "Turnout Config", true);
+		this.visible = visible;
 		this.presentationModel = presentationModel;
 		initGUI();
 	}
@@ -94,7 +110,7 @@ public class TurnoutConfig extends JDialog {
 		buildPanel();
 		pack();
 		TutorialUtils.locateOnOpticalScreenCenter(this);
-		setVisible(true);
+		setVisible(visible);
 	}
 
 	private void initComponents() {
@@ -146,9 +162,8 @@ public class TurnoutConfig extends JDialog {
 						.getModel(Turnout.PROPERTYNAME_ADDRESS2_SWITCHED),
 				"Inverted");
 
-		
-		List<TurnoutType> turnoutTypes = new ArrayList<TurnoutType>(turnoutPersistence
-				.getAllTurnoutTypes());
+		List<TurnoutType> turnoutTypes = new ArrayList<TurnoutType>(
+				turnoutPersistence.getAllTurnoutTypes());
 
 		ValueModel turnoutTypeModel = presentationModel
 				.getModel(Turnout.PROPERTYNAME_TURNOUT_TYPE);
@@ -173,6 +188,7 @@ public class TurnoutConfig extends JDialog {
 						TurnoutOrientation.values(), orientationModel));
 
 		okButton = new JButton(new ApplyChangesAction());
+		cancelButton = new JButton(new CancelAction());
 	}
 
 	private void buildPanel() {
@@ -182,8 +198,8 @@ public class TurnoutConfig extends JDialog {
 				"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow, 3dlu,pref:grow",
 				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu, p:grow, 3dlu, p:grow, 10dlu,p:grow, 3dlu");
 		layout.setColumnGroups(new int[][] { { 1, 5 }, { 3, 7 } });
-		layout.setRowGroups(new int[][] {{3,5,7,9,11}});
-		
+		layout.setRowGroups(new int[][] { { 3, 5, 7, 9, 11 } });
+
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
@@ -228,7 +244,7 @@ public class TurnoutConfig extends JDialog {
 	}
 
 	private JComponent buildButtonBar() {
-		return ButtonBarFactory.buildRightAlignedBar(okButton);
+		return ButtonBarFactory.buildRightAlignedBar(okButton, cancelButton);
 	}
 
 	public boolean isOkPressed() {
@@ -242,8 +258,39 @@ public class TurnoutConfig extends JDialog {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			okPressed = true;
+
+			try {
+				if (presentationModel.getBean().getId() == 0) {
+					HibernateTurnoutPersistence.getInstance().addTurnout(
+							presentationModel.getBean());
+				} else {
+					HibernateTurnoutPersistence.getInstance().updateTurnout(
+							presentationModel.getBean());
+				}
+				okPressed = true;
+				TurnoutConfig.this.setVisible(false);
+			} catch (TurnoutPersistenceException e1) {
+				ExceptionProcessor.getInstance().processException(e1);
+			}
+
+		}
+	}
+
+	class CancelAction extends AbstractAction {
+
+		public CancelAction() {
+			super("Cancel");
+		}
+
+		public void actionPerformed(ActionEvent e) {
+
+			okPressed = false;
+			cancelPressed = true;
 			TurnoutConfig.this.setVisible(false);
 		}
+	}
+
+	public boolean isCancelPressed() {
+		return cancelPressed;
 	}
 }

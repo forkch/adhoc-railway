@@ -1,7 +1,5 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
-import javax.persistence.Transient;
-
 import ch.fork.AdHocRailway.domain.ControlObject;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GL;
