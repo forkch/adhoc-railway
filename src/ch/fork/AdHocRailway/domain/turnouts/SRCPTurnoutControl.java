@@ -444,8 +444,12 @@ public class SRCPTurnoutControl extends Control implements TurnoutControlIface,
 		listeners.get(turnout).add(listener);
 	}
 
-	public void removeSwitchChangeListener(Turnout turnout) {
+	public void removeTurnoutChangeListener(Turnout turnout) {
 		listeners.remove(turnout);
+	}
+	
+	public void removeTurnoutChangeListener(TurnoutChangeListener listener) {
+		listeners.keySet().remove(listener);
 	}
 
 	public void removeAllTurnoutChangeListener() {
@@ -466,9 +470,14 @@ public class SRCPTurnoutControl extends Control implements TurnoutControlIface,
 	}
 
 	private void checkTurnout(Turnout turnout) throws TurnoutException {
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		if (turnout == null || sTurnout == null)
+		if (turnout == null) {
 			return;
+		}
+		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		if (sTurnout == null) {
+			srcpTurnouts.put(turnout, new SRCPTurnout(turnout));
+			sTurnout = srcpTurnouts.get(turnout);
+		}
 		if (sTurnout.getSession() == null && session != null) {
 			sTurnout.setSession(session);
 			return;

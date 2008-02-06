@@ -21,10 +21,14 @@
 
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -35,6 +39,7 @@ import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
+import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
@@ -44,6 +49,8 @@ import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
+import ch.fork.AdHocRailway.ui.UIConstants;
+import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -55,7 +62,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class TurnoutConfig extends JDialog {
+public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	private boolean okPressed;
 	private boolean cancelPressed;
 	private boolean visible;
@@ -70,6 +77,7 @@ public class TurnoutConfig extends JDialog {
 	private JComboBox turnoutTypeComboBox;
 	private JComboBox turnoutDefaultStateComboBox;
 	private JComboBox turnoutOrientationComboBox;
+	private Set<Integer> usedTurnoutNumbers;
 
 	private TurnoutPersistenceIface turnoutPersistence = HibernateTurnoutPersistence
 			.getInstance();
@@ -77,6 +85,8 @@ public class TurnoutConfig extends JDialog {
 	private PresentationModel<Turnout> presentationModel;
 	private JButton okButton;
 	private JButton cancelButton;
+	private TurnoutWidget testTurnoutWidget;
+	private PanelBuilder builder;
 
 	public TurnoutConfig(Frame owner, Turnout myTurnout) {
 		this(owner, myTurnout, true);
@@ -107,6 +117,10 @@ public class TurnoutConfig extends JDialog {
 	}
 
 	private void initGUI() {
+		usedTurnoutNumbers = turnoutPersistence.getUsedTurnoutNumbers();
+		System.out.println(usedTurnoutNumbers);
+		usedTurnoutNumbers.remove(presentationModel.getBean().getNumber());
+		System.out.println(usedTurnoutNumbers);
 		buildPanel();
 		pack();
 		TutorialUtils.locateOnOpticalScreenCenter(this);
@@ -187,6 +201,12 @@ public class TurnoutConfig extends JDialog {
 				.createComboBox(new SelectionInList<TurnoutOrientation>(
 						TurnoutOrientation.values(), orientationModel));
 
+		testTurnoutWidget = new TurnoutWidget(presentationModel.getBean(), true);
+		if (!isTurnoutReadyToTest(presentationModel.getBean()))
+			testTurnoutWidget.setEnabled(false);
+
+		presentationModel.getBean().addPropertyChangeListener(this);
+		validate(presentationModel.getBean());
 		okButton = new JButton(new ApplyChangesAction());
 		cancelButton = new JButton(new CancelAction());
 	}
@@ -195,12 +215,12 @@ public class TurnoutConfig extends JDialog {
 		initComponents();
 
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow, 3dlu,pref:grow",
+				"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow, 3dlu,pref:grow, 30dlu, pref",
 				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu, p:grow, 3dlu, p:grow, 10dlu,p:grow, 3dlu");
 		layout.setColumnGroups(new int[][] { { 1, 5 }, { 3, 7 } });
 		layout.setRowGroups(new int[][] { { 3, 5, 7, 9, 11 } });
 
-		PanelBuilder builder = new PanelBuilder(layout);
+		builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
 
@@ -238,13 +258,136 @@ public class TurnoutConfig extends JDialog {
 
 		builder.add(switched2Checkbox, cc.xy(9, 9));
 
-		builder.add(buildButtonBar(), cc.xyw(1, 13, 9));
+		builder.addSeparator("Test", cc.xy(11, 1));
+		builder.add(testTurnoutWidget, cc.xywh(11, 3, 1, 9));
+
+		builder.add(buildButtonBar(), cc.xyw(1, 13, 11));
 
 		add(builder.getPanel());
 	}
 
 	private JComponent buildButtonBar() {
 		return ButtonBarFactory.buildRightAlignedBar(okButton, cancelButton);
+	}
+
+	public void propertyChange(PropertyChangeEvent evt) {
+		Turnout turnout = presentationModel.getBean();
+		if (!validate(turnout))
+			return;
+		if (!isTurnoutReadyToTest(turnout)) {
+			testTurnoutWidget.setEnabled(false);
+			return;
+		}
+		testTurnoutWidget.setEnabled(true);
+		repaint();
+	}
+
+	private boolean validate(Turnout turnout) {
+		System.out.println("validate");
+		boolean validate = true;
+		System.out.println(usedTurnoutNumbers);
+		if (turnout.getNumber() == 0
+				|| usedTurnoutNumbers.contains(turnout.getNumber())) {
+			setSpinnerColor(numberTextField, UIConstants.ERROR_COLOR);
+			validate = false;
+		} else {
+			setSpinnerColor(numberTextField,
+					UIConstants.DEFAULT_TEXTFIELD_COLOR);
+		}
+		boolean bus1Valid = true;
+		if (turnout.getBus1() == 0) {
+			setSpinnerColor(bus1TextField, UIConstants.ERROR_COLOR);
+			validate = false;
+			bus1Valid = false;
+		} else {
+			setSpinnerColor(bus1TextField, UIConstants.DEFAULT_TEXTFIELD_COLOR);
+		}
+
+		boolean address1Valid = true;
+		if (turnout.getAddress1() == 0
+				|| turnout.getAddress1() > Constants.MAX_MM_TURNOUT_ADDRESS) {
+			setSpinnerColor(address1TextField, UIConstants.ERROR_COLOR);
+			validate = false;
+			address1Valid = false;
+		} else {
+			setSpinnerColor(address1TextField,
+					UIConstants.DEFAULT_TEXTFIELD_COLOR);
+		}
+
+		int bus1 = ((Integer) bus1TextField.getValue()).intValue();
+		int address1 = ((Integer) address1TextField.getValue()).intValue();
+		Turnout aTurnout1 = turnoutPersistence.getTurnoutByAddressBus(bus1,
+				address1);
+		if (bus1Valid && address1Valid) {
+			if (aTurnout1 != null && !aTurnout1.equals(turnout)) {
+				setSpinnerColor(bus1TextField, UIConstants.WARN_COLOR);
+				setSpinnerColor(address1TextField, UIConstants.WARN_COLOR);
+			} else {
+				setSpinnerColor(bus1TextField,
+						UIConstants.DEFAULT_TEXTFIELD_COLOR);
+				setSpinnerColor(address1TextField,
+						UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			}
+		}
+
+		if (turnout.isThreeWay()) {
+			boolean bus2Valid = true;
+			if (turnout.getBus2() == 0) {
+				setSpinnerColor(bus2TextField, UIConstants.ERROR_COLOR);
+				validate = false;
+				bus2Valid = false;
+			} else {
+				setSpinnerColor(bus2TextField,
+						UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			}
+			boolean address2Valid = true;
+			if (turnout.getAddress2() == 0
+					|| turnout.getAddress2() > Constants.MAX_MM_TURNOUT_ADDRESS) {
+				setSpinnerColor(address2TextField, UIConstants.ERROR_COLOR);
+				validate = false;
+				address2Valid = false;
+			} else {
+				setSpinnerColor(address2TextField,
+						UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			}
+			if (bus2Valid && address2Valid) {
+				int bus2 = ((Integer) bus2TextField.getValue()).intValue();
+				int address2 = ((Integer) address2TextField.getValue())
+						.intValue();
+				Turnout aTurnout2 = turnoutPersistence.getTurnoutByAddressBus(
+						bus2, address2);
+				if (aTurnout2 != null && !aTurnout2.equals(turnout)) {
+					setSpinnerColor(bus2TextField, UIConstants.WARN_COLOR);
+					setSpinnerColor(address2TextField, UIConstants.WARN_COLOR);
+				} else {
+					setSpinnerColor(bus2TextField,
+							UIConstants.DEFAULT_TEXTFIELD_COLOR);
+					setSpinnerColor(address2TextField,
+							UIConstants.DEFAULT_TEXTFIELD_COLOR);
+				}
+			}
+		}
+		//builder.getPanel().repaint();
+		return validate;
+	}
+
+	private void setSpinnerColor(JSpinner spinner, Color color) {
+		JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner
+				.getEditor();
+		editor.getTextField().setBackground(color);
+	}
+
+	private boolean isTurnoutReadyToTest(Turnout turnout) {
+		if (turnout.getAddress1() == 0 || turnout.getBus1() == 0) {
+			return false;
+		}
+		if (turnout.isThreeWay()) {
+			if (turnout.getAddress2() == 0 || turnout.getBus2() == 0) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public boolean isOkPressed() {
@@ -260,14 +403,16 @@ public class TurnoutConfig extends JDialog {
 		public void actionPerformed(ActionEvent e) {
 
 			try {
-				if (presentationModel.getBean().getId() == 0) {
+				Turnout turnout = presentationModel.getBean();
+				if (turnout.getId() == 0) {
 					HibernateTurnoutPersistence.getInstance().addTurnout(
-							presentationModel.getBean());
+							turnout);
 				} else {
 					HibernateTurnoutPersistence.getInstance().updateTurnout(
-							presentationModel.getBean());
+							turnout);
 				}
 				okPressed = true;
+				turnout.removePropertyChangeListener(TurnoutConfig.this);
 				TurnoutConfig.this.setVisible(false);
 			} catch (TurnoutPersistenceException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
@@ -284,6 +429,8 @@ public class TurnoutConfig extends JDialog {
 
 		public void actionPerformed(ActionEvent e) {
 
+			Turnout turnout = presentationModel.getBean();
+			turnout.removePropertyChangeListener(TurnoutConfig.this);
 			okPressed = false;
 			cancelPressed = true;
 			TurnoutConfig.this.setVisible(false);
@@ -293,4 +440,5 @@ public class TurnoutConfig extends JDialog {
 	public boolean isCancelPressed() {
 		return cancelPressed;
 	}
+
 }

@@ -221,7 +221,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			groupScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 			groupScrollPane.getVerticalScrollBar().setBlockIncrement(10);
 			for (Turnout turnout : turnoutGroup.getTurnouts()) {
-				TurnoutWidget switchWidget = new TurnoutWidget(turnout, AdHocRailway.getInstance());
+				TurnoutWidget switchWidget = new TurnoutWidget(turnout);
 				switchGroupTab.addWidget(switchWidget);
 			}
 			turnoutGroupsTabbedPane.add(groupScrollPane, "F" + i + ": "
@@ -306,7 +306,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				config = new TurnoutConfig(AdHocRailway.getInstance(),
 						newTurnout);
 			} while (!config.isCancelPressed());
-			updateTurnouts();
+			update();
 			turnoutGroupsTabbedPane.setSelectedIndex(selectedGroupPane);
 		}
 	}
@@ -314,7 +314,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private class TurnoutProgrammerAction extends AbstractAction {
 
 		public TurnoutProgrammerAction() {
-			super("SwitchProgrammer", createImageIcon("switch_programmer.png"));
+			super("Turnout Decoder Programmer", createImageIcon("switch_programmer.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {

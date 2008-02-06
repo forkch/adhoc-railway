@@ -8,8 +8,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.NoResultException;
 import javax.persistence.RollbackException;
 
 import org.apache.log4j.Logger;
@@ -25,7 +23,7 @@ import com.jgoodies.binding.list.ArrayListModel;
 
 public class HibernateTurnoutPersistence extends HibernatePersistence implements
 		TurnoutPersistenceIface {
-	private static Logger logger = Logger
+	static Logger logger = Logger
 			.getLogger(HibernateTurnoutPersistence.class);
 	private static TurnoutPersistenceIface instance;
 
@@ -33,6 +31,7 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 	private Map<LookupAddress, Turnout> addressThreewayCache;
 	private ArrayListModel<Turnout> turnoutCache;
 	private ArrayListModel<TurnoutGroup> turnoutGroupCache;
+	private Map<Integer, Turnout> numberToTurnoutCache;
 
 	private HibernateTurnoutPersistence() {
 		super();
@@ -40,6 +39,7 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 		this.addressThreewayCache = new HashMap<LookupAddress, Turnout>();
 		this.turnoutCache = new ArrayListModel<Turnout>();
 		this.turnoutGroupCache = new ArrayListModel<TurnoutGroup>();
+		this.numberToTurnoutCache = new HashMap<Integer, Turnout>();
 	}
 
 	public static TurnoutPersistenceIface getInstance() {
@@ -51,9 +51,13 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 
 	private void updateTurnoutCache() {
 		addressTurnoutCache.clear();
+		numberToTurnoutCache.clear();
 		turnoutCache.clear();
 		SortedSet<Turnout> turnouts = getAllTurnoutsDB();
-		turnoutCache.addAll(turnouts);
+		for (Turnout t : turnouts) {
+			turnoutCache.add(t);
+			numberToTurnoutCache.put(t.getNumber(), t);
+		}
 
 		for (Turnout t : turnouts) {
 			addressTurnoutCache.put(new LookupAddress(t.getBus1(), t
@@ -115,20 +119,7 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 	 */
 	public Turnout getTurnoutByNumber(int number) throws TurnoutException {
 		logger.debug("getTurnoutByNumber()");
-		EntityManager em = getEntityManager();
-		Turnout turnout;
-		try {
-			turnout = (Turnout) em.createQuery(
-					"from Turnout as turnout where turnout.number = ?1")
-					.setParameter(1, number).getSingleResult();
-			em.getTransaction().commit();
-			em.getTransaction().begin();
-		} catch (EntityNotFoundException e) {
-			throw new TurnoutException("Turnout not found", e);
-		} catch (NoResultException e) {
-			throw new TurnoutException("Turnout not found", e);
-		}
-		return turnout;
+		return numberToTurnoutCache.get(number);
 	}
 
 	/*
@@ -175,17 +166,6 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 		em.getTransaction().commit();
 		em.getTransaction().begin();
 
-		// turnoutCache.add(turnout);
-		// addressTurnoutCache.put(new LookupAddress(turnout.getBus1(), turnout
-		// .getAddress1(), turnout.getBus2(), turnout.getAddress2()),
-		// turnout);
-		// if (turnout.isThreeWay()) {
-		// addressThreewayCache.put(new LookupAddress(turnout.getBus1(),
-		// turnout.getAddress1(), 0, 0), turnout);
-		// addressThreewayCache.put(new LookupAddress(0, 0, turnout.getBus2(),
-		// turnout.getAddress2()), turnout);
-		// }
-
 		updateTurnoutCache();
 	}
 
@@ -216,18 +196,6 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 
 		em.getTransaction().commit();
 		em.getTransaction().begin();
-
-		// turnoutCache.remove(turnout);
-		// addressTurnoutCache.remove(new LookupAddress(turnout.getBus1(),
-		// turnout
-		// .getAddress1(), turnout.getBus2(), turnout.getAddress2()));
-		// if (turnout.isThreeWay()) {
-		// addressThreewayCache.remove(new LookupAddress(turnout.getBus1(),
-		// turnout.getAddress1(), 0, 0));
-		// addressThreewayCache.remove(new LookupAddress(0, 0, turnout
-		// .getBus2(), turnout.getAddress2()));
-		// }
-
 		updateTurnoutCache();
 	}
 
@@ -248,15 +216,6 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 			throw new TurnoutPersistenceException("Duplicate Number");
 		}
 		em.getTransaction().begin();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#getNumberToTurnout()
-	 */
-	public Map<Integer, Turnout> getNumberToTurnout() {
-		return null;
 	}
 
 	public ArrayListModel<TurnoutGroup> getAllTurnoutGroups() {
@@ -394,5 +353,10 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 			return 1;
 		}
 		return turnouts.last().getNumber() + 1;
+	}
+
+	public Set<Integer> getUsedTurnoutNumbers() {
+		logger.debug("getUsedTurnoutNumbers()");
+		return numberToTurnoutCache.keySet();
 	}
 }

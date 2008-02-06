@@ -40,13 +40,13 @@ public class ErrorPanel extends JPanel {
 
 	public void setErrorTextIcon(String text, Icon icon) {
 		iconLabel.setIcon(icon);
-		iconLabel.setBackground(Color.RED);
+		iconLabel.setBackground(new Color(255,177,177));
 		setErrorText(text);
 		
 	}
 	public void setErrorText(String text) {
 		errorTextArea.setText(text);
-		errorTextArea.setBackground(Color.RED);
+		errorTextArea.setBackground(new Color(255,177,177));
 		revalidate();
 		repaint();
 	}

@@ -27,15 +27,16 @@ public class Router extends Thread {
 
     public void run() {
         try {
-            route.setChangeingRoute(true);
+            route.setChangingRoute(true);
             if (enableRoute) {
                 enableRoute();
             } else {
                 disableRoute();
             }
-            route.setChangeingRoute(false);
+            route.setChangingRoute(false);
         } catch (TurnoutException e) {
             this.switchException = e;
+            route.setChangingRoute(false);
             ExceptionProcessor.getInstance().processException(e);
         } catch (InterruptedException e) {
             e.printStackTrace();

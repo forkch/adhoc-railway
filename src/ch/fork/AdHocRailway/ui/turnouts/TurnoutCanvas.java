@@ -36,19 +36,19 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 
 public class TurnoutCanvas extends JPanel {
-    protected Turnout myTurnout;
+    protected Turnout turnout;
     protected TurnoutState turnoutState = TurnoutState.UNDEF;
 
-    public TurnoutCanvas(Turnout mySwitch) {
-        this.myTurnout = mySwitch;
+    public TurnoutCanvas(Turnout turnout) {
+        this.turnout = turnout;
     }
     
     public void paint(Graphics g) {
-    	if (myTurnout.isDoubleCross()) {
+    	if (turnout.isDoubleCross()) {
 			paintDoubleCross(g);
-		} else if (myTurnout.isDefault()) {
+		} else if (turnout.isDefault()) {
 			paintDefault(g);
-		} else if (myTurnout.isThreeWay()) {
+		} else if (turnout.isThreeWay()) {
 			paintThreeway(g);
 		}
     }
@@ -56,7 +56,7 @@ public class TurnoutCanvas extends JPanel {
     protected void rotate(Graphics g, BufferedImage img) {
         Graphics2D g2 = (Graphics2D) g;
         AffineTransform at = null;
-        switch (myTurnout.getOrientationEnum()) {
+        switch (turnout.getOrientationEnum()) {
         case NORTH:
             at = AffineTransform.getRotateInstance(Math.PI / 2 * 3,
                 (56 + 1) / 2, (56 + 1) / 2);

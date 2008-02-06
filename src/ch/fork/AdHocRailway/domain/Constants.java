@@ -57,5 +57,7 @@ public interface Constants {
 	public final static int TURNOUT_CURVED_PORT = 1;
 
 	public String ERR_TOGGLE_FAILED = "Toggle of switch failed";
+	
+	public final static int MAX_MM_TURNOUT_ADDRESS = 324;
 
 }

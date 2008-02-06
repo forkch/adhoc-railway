@@ -198,7 +198,7 @@ public class Route extends Model implements java.io.Serializable,
 	}
 
 	@Transient
-	public void setChangeingRoute(boolean changingRoute) {
+	public void setChangingRoute(boolean changingRoute) {
 		this.changingRoute = changingRoute;
 	}
 

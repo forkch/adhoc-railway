@@ -54,6 +54,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
+import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.TableResizer;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
 
@@ -132,7 +133,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 	}
 
 	private Component buildTurnoutButtonBar() {
-		return ButtonBarFactory.buildCenteredBar(addTurnoutButton,
+		return ButtonBarFactory.buildLeftAlignedBar(addTurnoutButton,
 				removeTurnoutButton);
 	}
 
@@ -293,7 +294,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 
 	private class AddTurnoutGroupAction extends AbstractAction {
 		public AddTurnoutGroupAction() {
-			super("Add Group");
+			super("Add Group", ImageTools.createImageIcon("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -309,7 +310,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 
 	private class RemoveTurnoutGroupAction extends AbstractAction {
 		public RemoveTurnoutGroupAction() {
-			super("Remove Group");
+			super("Remove Group", ImageTools.createImageIcon("remove.png"));
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -338,7 +339,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 
 	private class AddTurnoutAction extends AbstractAction {
 		public AddTurnoutAction() {
-			super("Add");
+			super("Add", ImageTools.createImageIcon("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -403,7 +404,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 	private class RemoveTurnoutAction extends AbstractAction {
 
 		public RemoveTurnoutAction() {
-			super("Remove");
+			super("Remove", ImageTools.createImageIcon("remove.png"));
 			;
 		}
 

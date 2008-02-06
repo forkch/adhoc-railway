@@ -20,8 +20,10 @@ public interface TurnoutControlIface {
 
 	public void addTurnoutChangeListener(Turnout turnout, TurnoutChangeListener listener);
 
-	public void removeSwitchChangeListener(Turnout turnout);
+	public void removeTurnoutChangeListener(Turnout turnout);
 
 	public void removeAllTurnoutChangeListener();
+
+	public void removeTurnoutChangeListener(TurnoutChangeListener listener);
 
 }

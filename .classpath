@@ -4,9 +4,7 @@
 	<classpathentry kind="src" path="etc"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jsrcpc"/>
-	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/jsrcpc-bin.jar"/>
-	<classpathentry kind="lib" path="lib/antlr-2.7.6.jar"/>
 	<classpathentry kind="lib" path="lib/asm-attrs.jar"/>
 	<classpathentry kind="lib" path="lib/asm.jar"/>
 	<classpathentry kind="lib" path="lib/c3p0-0.9.1.jar"/>
@@ -31,7 +29,7 @@
 	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
 	<classpathentry kind="lib" path="lib/binding-2.0.2.jar" sourcepath="/home/fork/devel/AdHoc-Railway/lib/binding-2.0.2/src"/>
 	<classpathentry kind="lib" path="lib/forms-1.1.0.jar" sourcepath="/home/fork/devel/AdHoc-Railway/lib/forms-1.1.0/src"/>
-	<classpathentry kind="lib" path="lib/validation-2.0.0/validation-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-2.7.6.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

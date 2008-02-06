@@ -68,6 +68,7 @@ public class SRCPRouteControl extends Control implements RouteControlIface {
 	 */
 	public void addRouteChangeListener(Route r, RouteChangeListener listener) {
 		listeners.put(r, listener);
+		System.out.println(listeners);
 	}
 
 	/* (non-Javadoc)

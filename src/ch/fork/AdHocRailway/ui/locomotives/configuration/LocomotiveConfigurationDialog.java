@@ -23,6 +23,7 @@ package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -46,7 +48,7 @@ import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
-import ch.fork.AdHocRailway.ui.ConfigurationDialog;
+import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.TableResizer;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
 
@@ -61,8 +63,10 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class LocomotiveConfigurationDialog extends ConfigurationDialog {
+public class LocomotiveConfigurationDialog extends JDialog {
 
+	private boolean okPressed;
+	
 	private LocomotivePersistenceIface locomotivePersistence;
 
 	private TableModel locomotivesTableModel;
@@ -82,6 +86,8 @@ public class LocomotiveConfigurationDialog extends ConfigurationDialog {
 	private JButton removeGroupButton;
 
 	private SelectionInList<Locomotive> locomotiveModel;
+
+	private JButton okButton;
 
 	public LocomotiveConfigurationDialog(JFrame owner) {
 		super(owner, "Locomotive Configuration");
@@ -116,6 +122,7 @@ public class LocomotiveConfigurationDialog extends ConfigurationDialog {
 		builder.add(new JScrollPane(locomotivesTable), cc.xy(3, 3));
 		builder.add(buildLocomotiveButtonBar(), cc.xy(3, 5));
 
+		builder.add(buildMainButtonBar(), cc.xyw(1, 7, 3));
 		add(builder.getPanel());
 
 	}
@@ -128,6 +135,10 @@ public class LocomotiveConfigurationDialog extends ConfigurationDialog {
 	private Component buildGroupButtonBar() {
 		return ButtonBarFactory.buildRightAlignedBar(addGroupButton,
 				removeGroupButton);
+	}
+
+	private Component buildMainButtonBar() {
+		return ButtonBarFactory.buildRightAlignedBar(okButton);
 	}
 
 	private void initComponents() {
@@ -153,6 +164,15 @@ public class LocomotiveConfigurationDialog extends ConfigurationDialog {
 
 		addLocomotiveButton = new JButton(new AddLocomotiveAction());
 		removeLocomotiveButton = new JButton(new RemoveLocomotiveAction());
+		
+		okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				okPressed = true;
+				setVisible(false);
+			}
+
+		});
 	}
 
 	private void initEventHandling() {
@@ -249,7 +269,7 @@ public class LocomotiveConfigurationDialog extends ConfigurationDialog {
 	private class AddLocomotiveGroupAction extends AbstractAction {
 
 		public AddLocomotiveGroupAction() {
-			super("Add");
+			super("Add", ImageTools.createImageIcon("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -264,7 +284,7 @@ public class LocomotiveConfigurationDialog extends ConfigurationDialog {
 
 	private class RemoveLocomotiveGroupAction extends AbstractAction {
 		public RemoveLocomotiveGroupAction() {
-			super("Remove");
+			super("Remove", ImageTools.createImageIcon("remove.png"));
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -280,29 +300,9 @@ public class LocomotiveConfigurationDialog extends ConfigurationDialog {
 			}
 		}
 	}
-
-	// private class RenameLocomotiveGroupAction extends AbstractAction {
-	// public void actionPerformed(ActionEvent e) {
-	// LocomotiveGroup groupToRename = (LocomotiveGroup) (locomotiveGroupList
-	// .getSelectedValue());
-	// String newSectionName = JOptionPane.showInputDialog(
-	// LocomotiveConfigurationDialog.this, "Enter new name",
-	// "Rename Locomotive-Group", JOptionPane.QUESTION_MESSAGE);
-	// if (!newSectionName.equals("")) {
-	// groupToRename.setName(newSectionName);
-	// locomotivePersistence.updateLocomotiveGroup(groupToRename);
-	// locomotiveGroupListModel = new ListListModel<LocomotiveGroup>(
-	// new ArrayList<LocomotiveGroup>(locomotivePersistence
-	// .getAllLocomotiveGroups()));
-	//
-	// locomotiveGroupList.setModel(locomotiveGroupListModel);
-	// }
-	// }
-	// }
-
 	private class AddLocomotiveAction extends AbstractAction {
 		public AddLocomotiveAction() {
-			super("Add");
+			super("Add", ImageTools.createImageIcon("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -341,7 +341,7 @@ public class LocomotiveConfigurationDialog extends ConfigurationDialog {
 
 	private class RemoveLocomotiveAction extends AbstractAction {
 		public RemoveLocomotiveAction() {
-			super("Remove");
+			super("Remove", ImageTools.createImageIcon("remove.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -356,5 +356,8 @@ public class LocomotiveConfigurationDialog extends ConfigurationDialog {
 					selectedLocomotiveGroup.getLocomotives());
 			locomotiveModel.setList(locomotives);
 		}
+	}
+	public boolean isOkPressed() {
+		return okPressed;
 	}
 }

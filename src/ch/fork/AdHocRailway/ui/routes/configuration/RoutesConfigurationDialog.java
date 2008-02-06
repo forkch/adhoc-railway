@@ -3,20 +3,25 @@ package ch.fork.AdHocRailway.ui.routes.configuration;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -35,6 +40,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
+import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
 
 import com.jgoodies.binding.PresentationModel;
@@ -80,6 +86,9 @@ public class RoutesConfigurationDialog extends JDialog {
 	private SelectionInList<RouteItem> routeItemModel;
 	private JButton addRouteItemButton;
 	private JButton removeRouteItemButton;
+	private JButton recordRouteButton;
+	public StringBuffer enteredNumberKeys;
+	private PanelBuilder builder;
 
 	public RoutesConfigurationDialog(JFrame parent) {
 		super(parent, "Edit Routes");
@@ -100,7 +109,7 @@ public class RoutesConfigurationDialog extends JDialog {
 		FormLayout layout = new FormLayout(
 				"pref, 10dlu, pref, 10dlu, right:pref, 3dlu, pref:grow",
 				"pref:grow, 3dlu, pref:grow, 3dlu, pref:grow, 3dlu, pref:grow, 3dlu, pref:grow, 3dlu, pref:grow");
-		PanelBuilder builder = new PanelBuilder(layout);
+		builder = new PanelBuilder(layout);
 		layout.setColumnGroups(new int[][] { { 1, 3 } });
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
@@ -131,7 +140,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	}
 
 	private Component buildRouteGroupButtonBar() {
-		return ButtonBarFactory.buildCenteredBar(addRouteGroupButton,
+		return ButtonBarFactory.buildLeftAlignedBar(addRouteGroupButton,
 				removeRouteGroupButton);
 	}
 
@@ -141,8 +150,8 @@ public class RoutesConfigurationDialog extends JDialog {
 	}
 
 	private Component buildRouteItemButtonBar() {
-		return ButtonBarFactory.buildCenteredBar(addRouteItemButton,
-				removeRouteItemButton);
+		return ButtonBarFactory.buildRightAlignedBar(addRouteItemButton,
+				recordRouteButton, removeRouteItemButton);
 	}
 
 	private Component buildMainButtonBar() {
@@ -196,6 +205,7 @@ public class RoutesConfigurationDialog extends JDialog {
 		routedStateColumn.setCellRenderer(new RoutedTurnoutStateCellRenderer());
 
 		addRouteItemButton = new JButton(new AddRouteItemAction());
+		recordRouteButton = new JButton(new RecordRouteAction());
 		removeRouteItemButton = new JButton(new RemoveRouteItemAction());
 
 		okButton = new JButton("OK");
@@ -228,6 +238,9 @@ public class RoutesConfigurationDialog extends JDialog {
 				routeGroupList.setSelectedIndex(0);
 			RouteGroup selectedGroup = (RouteGroup) routeGroupList
 					.getSelectedValue();
+			if (selectedGroup == null)
+				return;
+			routesList.setSelectedIndex(-1);
 			List<Route> routes = new ArrayList<Route>(selectedGroup.getRoutes());
 			routesModel.setList(routes);
 		}
@@ -323,7 +336,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	private class AddRouteGroupAction extends AbstractAction {
 
 		public AddRouteGroupAction() {
-			super("Add Group");
+			super("Add Group", ImageTools.createImageIcon("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -343,7 +356,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	private class RemoveRouteGroupAction extends AbstractAction {
 
 		public RemoveRouteGroupAction() {
-			super("Remove Group");
+			super("Remove Group", ImageTools.createImageIcon("remove.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -378,7 +391,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	private class AddRouteAction extends AbstractAction {
 
 		public AddRouteAction() {
-			super("Add Route");
+			super("Add Route", ImageTools.createImageIcon("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -411,7 +424,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	private class RemoveRouteAction extends AbstractAction {
 
 		public RemoveRouteAction() {
-			super("Remove Route");
+			super("Remove Route", ImageTools.createImageIcon("remove.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -444,7 +457,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	private class AddRouteItemAction extends AbstractAction {
 
 		public AddRouteItemAction() {
-			super("Add Turnout");
+			super("Add Turnout", ImageTools.createImageIcon("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -455,40 +468,168 @@ public class RoutesConfigurationDialog extends JDialog {
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			String switchNumberAsString = JOptionPane.showInputDialog(
-					RoutesConfigurationDialog.this,
-					"Enter the number of the Switch", "Add switch	 to route",
-					JOptionPane.QUESTION_MESSAGE);
+
+		}
+	}
+
+	private class RecordRouteAction extends AbstractAction {
+
+		private boolean recording;
+
+		public RecordRouteAction() {
+			super("Record", ImageTools.createImageIcon("record.png"));
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			if (!recording) {
+				Route selectedRoute = (Route) (routesList.getSelectedValue());
+				if (selectedRoute == null) {
+					JOptionPane.showMessageDialog(
+							RoutesConfigurationDialog.this,
+							"Please select a route", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				initKeyboardActions(selectedRoute);
+				recording = true;
+			} else {
+				recording = false;
+			}
+		}
+
+		private void initKeyboardActions(Route route) {
+			enteredNumberKeys = new StringBuffer();
+			JPanel p = builder.getPanel();
+			for (int i = 0; i <= 10; i++) {
+				p.registerKeyboardAction(new NumberEnteredAction(), Integer
+						.toString(i), KeyStroke.getKeyStroke(Integer
+						.toString(i)), JComponent.WHEN_IN_FOCUSED_WINDOW);
+				p.registerKeyboardAction(new NumberEnteredAction(), Integer
+						.toString(i), KeyStroke.getKeyStroke("NUMPAD"
+						+ Integer.toString(i)),
+						JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+			}
+
+			p.registerKeyboardAction(new SwitchingAction(route), "\\",
+					KeyStroke.getKeyStroke(92, 0),
+					JComponent.WHEN_IN_FOCUSED_WINDOW);
+			p.registerKeyboardAction(new SwitchingAction(route), "\n",
+					KeyStroke.getKeyStroke("ENTER"),
+					JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+			p.registerKeyboardAction(new SwitchingAction(route), "+", KeyStroke
+					.getKeyStroke(KeyEvent.VK_ADD, 0),
+					JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+			p.registerKeyboardAction(new SwitchingAction(route), "bs",
+					KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0),
+					JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+			p.registerKeyboardAction(new SwitchingAction(route), "/", KeyStroke
+					.getKeyStroke(KeyEvent.VK_DIVIDE, 0),
+					JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+			p.registerKeyboardAction(new SwitchingAction(route), "*", KeyStroke
+					.getKeyStroke(KeyEvent.VK_MULTIPLY, 0),
+					JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+			p.registerKeyboardAction(new SwitchingAction(route), "-", KeyStroke
+					.getKeyStroke(KeyEvent.VK_SUBTRACT, 0),
+					JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+		}
+	}
+
+	private class SwitchingAction extends AbstractAction {
+		private Route route;
+
+		public SwitchingAction(Route route) {
+			this.route = route;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+
+			String enteredNumberAsString = enteredNumberKeys.toString();
+			int enteredNumber = Integer.parseInt(enteredNumberAsString);
 			Turnout turnout;
 			try {
-				turnout = turnoutPersistence.getTurnoutByNumber(Integer
-						.parseInt(switchNumberAsString));
-
+				turnout = turnoutPersistence.getTurnoutByNumber(enteredNumber);
+				TurnoutState routedState = null;
+				if (e.getActionCommand().equals("/")) {
+					// ThreeWay LEFT
+					routedState = TurnoutState.LEFT;
+				} else if (e.getActionCommand().equals("*")) {
+					// ThreeWay STRAIGHT
+					routedState = TurnoutState.STRAIGHT;
+				} else if (e.getActionCommand().equals("-")) {
+					// ThreeWay RIGHT
+					routedState = TurnoutState.RIGHT;
+				} else if (e.getActionCommand().equals("+")
+						|| e.getActionCommand().equals("bs")) {
+					// CURVED
+					if (!turnout.isThreeWay()) {
+						switch (turnout.getDefaultStateEnum()) {
+						case STRAIGHT:
+							routedState = TurnoutState.LEFT;
+							break;
+						case LEFT:
+							routedState = TurnoutState.STRAIGHT;
+							break;
+						}
+					}
+				} else if (e.getActionCommand().equals("\n")) {
+					// STRIAHT
+					routedState = turnout.getDefaultStateEnum();
+				}
+				
+				RouteItem itemToRemove = null;
+				SortedSet<RouteItem> itemsOfRoute = route.getRouteItems();
+				for(RouteItem item : itemsOfRoute) {
+					if(item.getTurnout().equals(turnout)) {
+						itemToRemove = item;
+						break;
+					}
+				}
+				if(itemToRemove != null) {
+					routePersistence.deleteRouteItem(itemToRemove);
+				}
 				RouteItem i = new RouteItem();
-				i.setRoute(selectedRoute);
-				i.setRoutedStateEnum(TurnoutState.STRAIGHT);
+				i.setRoute(route);
+				i.setRoutedStateEnum(routedState);
 				i.setTurnout(turnout);
 
 				try {
 					routePersistence.addRouteItem(i);
-					List<RouteItem> routeItems = new ArrayList<RouteItem>(
-							selectedRoute.getRouteItems());
+					List<RouteItem> routeItems = new ArrayList<RouteItem>(route
+							.getRouteItems());
 					routeItemModel.setList(routeItems);
 				} catch (RoutePersistenceException e1) {
 					e1.printStackTrace();
 				}
+				enteredNumberKeys = new StringBuffer();
 			} catch (NumberFormatException e1) {
 				e1.printStackTrace();
 			} catch (TurnoutException e1) {
 				ExceptionProcessor.getInstance().processExceptionDialog(e1);
+				enteredNumberKeys = new StringBuffer();
 			}
+		}
+	}
+
+	private class NumberEnteredAction extends AbstractAction {
+
+		public void actionPerformed(ActionEvent e) {
+
+			enteredNumberKeys.append(e.getActionCommand());
+
 		}
 	}
 
 	private class RemoveRouteItemAction extends AbstractAction {
 
 		public RemoveRouteItemAction() {
-			super("Remove Turnout");
+			super("Remove Turnout", ImageTools.createImageIcon("remove.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {

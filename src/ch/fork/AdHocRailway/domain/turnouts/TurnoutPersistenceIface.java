@@ -1,12 +1,12 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
-
-import com.jgoodies.binding.list.ArrayListModel;
 
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
+
+import com.jgoodies.binding.list.ArrayListModel;
 
 public interface TurnoutPersistenceIface {
 
@@ -25,8 +25,6 @@ public interface TurnoutPersistenceIface {
 
 	public abstract void updateTurnout(Turnout turnout) throws TurnoutPersistenceException;
 
-	public abstract Map<Integer, Turnout> getNumberToTurnout();
-
 	public abstract ArrayListModel<TurnoutGroup> getAllTurnoutGroups();
 
 	public abstract TurnoutGroup getTurnoutGroupByName(String name);
@@ -42,4 +40,6 @@ public interface TurnoutPersistenceIface {
 	public abstract TurnoutType getTurnoutType(TurnoutTypes typeName);
 
 	public int getNextFreeTurnoutNumber();
+
+	public Set<Integer> getUsedTurnoutNumbers();
 }
