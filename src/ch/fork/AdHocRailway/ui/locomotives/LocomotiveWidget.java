@@ -51,7 +51,6 @@ import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
 import ch.fork.AdHocRailway.domain.locking.LockControlIface;
 import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
-import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
@@ -59,6 +58,7 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
+import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 
@@ -99,8 +99,7 @@ public class LocomotiveWidget extends JPanel implements
 	private LocomotiveControlface locomotiveControl = SRCPLocomotiveControl
 			.getInstance();;
 
-	private LocomotivePersistenceIface locomotivePersistence = HibernateLocomotivePersistence
-			.getInstance();
+	private LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance().getLocomotivePersistence();
 
 	private LocomotiveGroup allLocomotives;
 

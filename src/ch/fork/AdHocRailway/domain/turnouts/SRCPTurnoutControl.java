@@ -50,8 +50,7 @@ public class SRCPTurnoutControl extends Control implements TurnoutControlIface,
 	private static Logger logger = Logger.getLogger(SRCPTurnoutControl.class);
 	private static SRCPTurnoutControl instance;
 
-	TurnoutPersistenceIface persistence = HibernateTurnoutPersistence
-			.getInstance();
+	TurnoutPersistenceIface persistence;
 
 	Map<Turnout, List<TurnoutChangeListener>> listeners;
 
@@ -63,7 +62,6 @@ public class SRCPTurnoutControl extends Control implements TurnoutControlIface,
 	private SRCPTurnoutControl() {
 		listeners = new HashMap<Turnout, List<TurnoutChangeListener>>();
 		srcpTurnouts = new HashMap<Turnout, SRCPTurnout>();
-		update();
 	}
 
 	public static SRCPTurnoutControl getInstance() {
@@ -587,5 +585,10 @@ public class SRCPTurnoutControl extends Control implements TurnoutControlIface,
 			return;
 		}
 		setDefaultState(lastChangedTurnout);
+	}
+
+	public void setTurnoutPersistence(TurnoutPersistenceIface persistence) {
+		this.persistence = persistence;
+		
 	}
 }

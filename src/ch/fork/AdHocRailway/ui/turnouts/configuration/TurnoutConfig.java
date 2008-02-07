@@ -40,13 +40,13 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
 import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
+import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
 import ch.fork.AdHocRailway.ui.UIConstants;
@@ -79,8 +79,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	private JComboBox turnoutOrientationComboBox;
 	private Set<Integer> usedTurnoutNumbers;
 
-	private TurnoutPersistenceIface turnoutPersistence = HibernateTurnoutPersistence
-			.getInstance();
+	private TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance().getTurnoutPersistence();
 
 	private PresentationModel<Turnout> presentationModel;
 	private JButton okButton;
@@ -405,10 +404,10 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 			try {
 				Turnout turnout = presentationModel.getBean();
 				if (turnout.getId() == 0) {
-					HibernateTurnoutPersistence.getInstance().addTurnout(
+					turnoutPersistence.addTurnout(
 							turnout);
 				} else {
-					HibernateTurnoutPersistence.getInstance().updateTurnout(
+					turnoutPersistence.updateTurnout(
 							turnout);
 				}
 				okPressed = true;

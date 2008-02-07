@@ -20,4 +20,7 @@ public interface RouteControlIface {
 
 	public abstract void previousDeviceToDefault() throws ControlException;
 
+	public abstract void setRoutePersistence(
+			RoutePersistenceIface routePersistence);
+
 }

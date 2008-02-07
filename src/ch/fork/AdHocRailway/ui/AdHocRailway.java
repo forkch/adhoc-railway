@@ -30,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.net.ConnectException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,6 +41,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -62,16 +64,21 @@ import ch.fork.AdHocRailway.domain.locking.exception.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
+import ch.fork.AdHocRailway.domain.locomotives.MemoryLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
 import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
+import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.MemoryTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.technical.configuration.importer.XMLImporter;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
@@ -142,7 +149,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private JPanel mainPanel;
 	private JPanel toolbarPanel;
-	private Object	routePersistence;
+	public File file;
+	private RoutePersistenceIface routePersistence;
 
 	public AdHocRailway() {
 		this(null);
@@ -152,7 +160,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		super(NAME);
 
 		instance = this;
-		splash = new SplashWindow(createImageIcon("splash.png"), this, 500, 10);
+		splash = new SplashWindow(createImageIcon("splash.png"), this, 500, 11);
 		setIconImage(createImageIcon("RailControl.png").getImage());
 
 		splash.nextStep("Loading Persistence Layer (Preferences)");
@@ -161,19 +169,27 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		locomotivePersistence = HibernateLocomotivePersistence.getInstance();
 		splash.nextStep("Loading Persistence Layer (Turnouts)");
 		turnoutPersistence = HibernateTurnoutPersistence.getInstance();
+		splash.nextStep("Loading Persistence Layer (Routes)");
+		routePersistence = HibernateRoutePersistence.getInstance();
 
 		splash.nextStep("Loading Persistence Layer (Routes)");
 		routePersistence = HibernateRoutePersistence.getInstance();
 
 		splash.nextStep("Loading Control Layer (Locomotives)");
 		locomotiveControl = SRCPLocomotiveControl.getInstance();
+		locomotiveControl.setLocomotivePersistence(locomotivePersistence);
 		splash.nextStep("Loading Control Layer (Turnouts)");
 		turnoutControl = SRCPTurnoutControl.getInstance();
+		turnoutControl.setTurnoutPersistence(turnoutPersistence);
 		splash.nextStep("Loading Control Layer (Routes)");
 		routeControl = SRCPRouteControl.getInstance();
+		routeControl.setRoutePersistence(routePersistence);
+
 		splash.nextStep("Loading Control Layer (Locks)");
 		lockControl = SRCPLockControl.getInstance();
 
+		// locomotiveControl.update();
+		// turnoutControl.update();
 		splash.nextStep("Creating GUI ...");
 		initGUI();
 
@@ -304,6 +320,77 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 	}
 
+	private class OpenAction extends AbstractAction {
+
+		public OpenAction() {
+			super("Open", createImageIcon("fileopen.png"));
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser fileChooser = new JFileChooser(new File("."));
+			int returnVal = fileChooser.showOpenDialog(AdHocRailway.this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				file = fileChooser.getSelectedFile();
+				openFile(file);
+			} else {
+				updateCommandHistory("Open command cancelled by user");
+			}
+
+		}
+
+		private void openFile(File file) {
+			try {
+				new XMLImporter(file.getAbsolutePath());
+			} catch (ConfigurationException e) {
+			}
+
+			hostnameLabel.setText(Preferences.getInstance().getStringValue(
+					PreferencesKeys.HOSTNAME));
+			turnoutPersistence = MemoryTurnoutPersistence.getInstance();
+			turnoutControl.setTurnoutPersistence(turnoutPersistence);
+			locomotivePersistence = MemoryLocomotivePersistence.getInstance();
+			locomotiveControl.setLocomotivePersistence(locomotivePersistence);
+			updateGUI();
+
+		}
+	}
+
+	private class ExportToDatabaseAction extends AbstractAction {
+
+		public ExportToDatabaseAction() {
+			super("Export to Database");
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
+					"All data in the database will be deleted prior to the export.\n"
+							+ "Do you really want to proceed ?",
+					"Export to database", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					createImageIcon("messagebox_warning.png"));
+			if (result == JOptionPane.YES_OPTION) {
+				try {
+					new XMLImporter(file.getAbsolutePath(),
+							HibernateTurnoutPersistence.getInstance(),
+							HibernateLocomotivePersistence.getInstance(), HibernateRoutePersistence.getInstance());
+				} catch (ConfigurationException e1) {
+				}
+
+				hostnameLabel.setText(Preferences.getInstance().getStringValue(
+						PreferencesKeys.HOSTNAME));
+				turnoutPersistence = HibernateTurnoutPersistence.getInstance();
+				turnoutControl.setTurnoutPersistence(turnoutPersistence);
+				locomotivePersistence = HibernateLocomotivePersistence
+						.getInstance();
+				locomotiveControl
+						.setLocomotivePersistence(locomotivePersistence);
+				routePersistence = HibernateRoutePersistence.getInstance();
+				routeControl.setRoutePersistence(routePersistence);
+				updateGUI();
+			}
+		}
+	}
+
 	private class ExitAction extends AbstractAction {
 
 		public ExitAction() {
@@ -412,7 +499,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				session.getInfoChannel().addInfoDataListener(AdHocRailway.this);
 				((SRCPTurnoutControl) turnoutControl).setSession(session);
 				((SRCPLocomotiveControl) locomotiveControl).setSession(session);
-				//((SRCPRouteControl) routeControl).setSession(session);
+				// ((SRCPRouteControl) routeControl).setSession(session);
 				lockControl.setSession(session);
 				session.connect();
 				daemonConnectItem.setEnabled(false);
@@ -517,12 +604,23 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		/* FILE */
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
+		JMenuItem openItem = new JMenuItem(new OpenAction());
+		openItem.setMnemonic(KeyEvent.VK_O);
+		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
+				ActionEvent.CTRL_MASK));
+		JMenuItem exportToDatavaseItem = new JMenuItem(
+				new ExportToDatabaseAction());
+		exportToDatavaseItem.setMnemonic(KeyEvent.VK_O);
+		exportToDatavaseItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 
 		JMenuItem exitItem = new JMenuItem(new ExitAction());
 		exitItem.setMnemonic(KeyEvent.VK_X);
 		exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
 				ActionEvent.CTRL_MASK));
 
+		fileMenu.add(openItem);
+		fileMenu.add(exportToDatavaseItem);
 		fileMenu.add(new JSeparator());
 		fileMenu.add(exitItem);
 
@@ -592,6 +690,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		/* FILE */
 		JToolBar fileTooBar = new JToolBar();
 		JButton exitToolBarButton = new SmallToolbarButton(new ExitAction());
+
+		JButton openToolBarButton = new SmallToolbarButton(new OpenAction());
+		fileTooBar.add(openToolBarButton);
 		fileTooBar.add(exitToolBarButton);
 
 		/* DIGITAL */
@@ -706,5 +807,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	public SRCPSession getSession() {
 		return session;
+	}
+
+	public RoutePersistenceIface getRoutePersistence() {
+		return routePersistence;
 	}
 }

@@ -4,6 +4,7 @@ import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
 public interface TurnoutControlIface {
 
+	public void setTurnoutPersistence(TurnoutPersistenceIface persistence);
 	public void update();
 
 	public void toggle(Turnout turnout) throws TurnoutException;

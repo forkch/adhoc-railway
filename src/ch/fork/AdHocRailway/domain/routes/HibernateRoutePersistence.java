@@ -40,11 +40,39 @@ public class HibernateRoutePersistence extends HibernatePersistence implements
 	private void updateRouteItemCache() {
 		routeItemCache.clear();
 	}
+	
 	private void updateRouteGroupCache() {
 		routeGroupCache.clear();
 		for(RouteGroup rg : getAllRouteGroupsDB()) {
 			routeGroupCache.add(rg);
 		}
+	}
+	
+	public void clear() throws RoutePersistenceException {
+		logger.debug("clear()");
+//		List<Route> tempRouteCache = new ArrayList<Route>(getAllRoutesDB());
+//		for(Route r : tempRouteCache) {
+//			deleteRoute(r);
+//		}
+//		List<RouteGroup> tempRouteGroupCache = new ArrayList<RouteGroup>(getAllRouteGroupsDB());
+//		for(RouteGroup group : tempRouteGroupCache) {
+//			deleteRouteGroup(group);
+//		}
+//		List<RouteItem> tempRouteItemCache = new ArrayList<RouteItem>();
+//		for(RouteItem ri : tempRouteItemCache) {
+//			deleteRouteItem(ri);
+//		}
+
+		EntityManager em = getEntityManager();
+		em.createNativeQuery("TRUNCATE TABLE route_item").executeUpdate();
+		em.createNativeQuery("TRUNCATE TABLE route").executeUpdate();
+		em.createNativeQuery("TRUNCATE TABLE route_group").executeUpdate();
+		routeCache.clear();
+		routeItemCache.clear();
+		routeGroupCache.clear();
+		em.getTransaction().commit();
+		HibernatePersistence.em = emf.createEntityManager();
+		HibernatePersistence.em.getTransaction().begin();
 	}
 
 

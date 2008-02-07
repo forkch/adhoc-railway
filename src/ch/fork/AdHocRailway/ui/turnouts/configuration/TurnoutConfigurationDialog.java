@@ -44,7 +44,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
-import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
@@ -53,6 +52,7 @@ import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
+import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.TableResizer;
@@ -79,8 +79,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 
 	private SelectionInList<Turnout> turnoutModel;
 
-	private TurnoutPersistenceIface turnoutPersistence = HibernateTurnoutPersistence
-			.getInstance();
+	private TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance().getTurnoutPersistence();
 
 	private JButton addGroupButton;
 
@@ -96,7 +95,6 @@ public class TurnoutConfigurationDialog extends JDialog {
 
 	public TurnoutConfigurationDialog(JFrame owner) {
 		super(owner, "Turnout Configuration");
-
 		initGUI();
 	}
 

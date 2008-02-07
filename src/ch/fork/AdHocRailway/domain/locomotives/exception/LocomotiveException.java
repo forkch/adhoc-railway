@@ -25,11 +25,23 @@ package ch.fork.AdHocRailway.domain.locomotives.exception;
 import ch.fork.AdHocRailway.domain.exception.ControlException;
 
 public class LocomotiveException extends ControlException {
-    public LocomotiveException(String msg) {
-        super(msg);
-    }
 
-    public LocomotiveException(String msg, Exception parent) {
-        super(msg, parent);
-    }
+	public LocomotiveException() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public LocomotiveException(String message) {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
+
+	public LocomotiveException(Throwable cause) {
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
+
+	public LocomotiveException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
 }

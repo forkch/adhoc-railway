@@ -4,18 +4,14 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
-import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
 public interface TurnoutPersistenceIface {
 
-	public abstract void preload() throws TurnoutException;
-
-	@SuppressWarnings("unchecked")
 	public abstract ArrayListModel<Turnout> getAllTurnouts();
 
-	public abstract Turnout getTurnoutByNumber(int number);
+	public abstract Turnout getTurnoutByNumber(int number) throws TurnoutPersistenceException;
 
 	public abstract Turnout getTurnoutByAddressBus(int bus, int address);
 
@@ -38,8 +34,14 @@ public interface TurnoutPersistenceIface {
 	public abstract SortedSet<TurnoutType> getAllTurnoutTypes();
 
 	public abstract TurnoutType getTurnoutType(TurnoutTypes typeName);
+	
+	public abstract void addTurnoutType(TurnoutType type);
+	
+	public abstract void deleteTurnoutType(TurnoutType type) throws TurnoutPersistenceException;
 
 	public int getNextFreeTurnoutNumber();
 
 	public Set<Integer> getUsedTurnoutNumbers();
+
+	public abstract void clear() throws TurnoutPersistenceException;
 }

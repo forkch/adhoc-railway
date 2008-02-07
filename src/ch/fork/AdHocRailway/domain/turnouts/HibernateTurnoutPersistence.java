@@ -8,6 +8,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.RollbackException;
 
 import org.apache.log4j.Logger;
@@ -17,16 +18,14 @@ import ch.fork.AdHocRailway.domain.LookupAddress;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
-import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
-public class HibernateTurnoutPersistence
-		extends HibernatePersistence implements TurnoutPersistenceIface {
-	static Logger							logger	=
-															Logger
-																	.getLogger(HibernateTurnoutPersistence.class);
-	private static TurnoutPersistenceIface	instance;
+
+public class HibernateTurnoutPersistence extends HibernatePersistence implements
+		TurnoutPersistenceIface {
+	static Logger logger = Logger.getLogger(HibernateTurnoutPersistence.class);
+	private static TurnoutPersistenceIface instance;
 
 	private Map<LookupAddress, Turnout>		addressTurnoutCache;
 	private Map<LookupAddress, Turnout>		addressThreewayCache;
@@ -41,6 +40,25 @@ public class HibernateTurnoutPersistence
 		this.turnoutCache = new ArrayListModel<Turnout>();
 		this.turnoutGroupCache = new ArrayListModel<TurnoutGroup>();
 		this.numberToTurnoutCache = new HashMap<Integer, Turnout>();
+
+		try {
+			getTurnoutType(TurnoutTypes.DEFAULT);
+		} catch (NoResultException ex) {
+			TurnoutType defaultType = new TurnoutType(0, "DEFAULT");
+			addTurnoutType(defaultType);
+		}
+		try {
+			getTurnoutType(TurnoutTypes.DOUBLECROSS);
+		} catch (NoResultException ex) {
+			TurnoutType doublecrossType = new TurnoutType(0, "DOUBLECROSS");
+			addTurnoutType(doublecrossType);
+		}
+		try {
+			getTurnoutType(TurnoutTypes.THREEWAY);
+		} catch (NoResultException ex) {
+			TurnoutType threewayType = new TurnoutType(0, "THREEWAY");
+			addTurnoutType(threewayType);
+		}
 	}
 
 	public static TurnoutPersistenceIface getInstance() {
@@ -52,6 +70,7 @@ public class HibernateTurnoutPersistence
 
 	private void updateTurnoutCache() {
 		addressTurnoutCache.clear();
+		addressThreewayCache.clear();
 		numberToTurnoutCache.clear();
 		turnoutCache.clear();
 		SortedSet<Turnout> turnouts = getAllTurnoutsDB();
@@ -78,15 +97,34 @@ public class HibernateTurnoutPersistence
 		turnoutGroupCache.addAll(getAllTurnoutGroupsDB());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#preload()
-	 */
-	public void preload() throws TurnoutException {
-		getAllTurnoutGroupsDB();
-		getAllTurnoutGroupsDB();
-		getAllTurnoutTypes();
+	public void clear() throws TurnoutPersistenceException {
+		logger.debug("clear()");
+//		List<Turnout> tempTurnoutCache = new ArrayList<Turnout>(getAllTurnoutsDB());
+//		for (Turnout t : tempTurnoutCache) {
+//			deleteTurnout(t);
+//		}
+//		List<TurnoutGroup> tempTurnoutGroupCache = new ArrayList<TurnoutGroup>(
+//				getAllTurnoutGroupsDB());
+//		for (TurnoutGroup group : tempTurnoutGroupCache) {
+//			deleteTurnoutGroup(group);
+//		}
+//		List<TurnoutType> tempTurnoutTypeCache = new ArrayList<TurnoutType>(
+//				getAllTurnoutTypes());
+//		for (TurnoutType type : tempTurnoutTypeCache) {
+//			deleteTurnoutType(type);
+//		}
+		EntityManager em = getEntityManager();
+		em.createNativeQuery("TRUNCATE TABLE turnout").executeUpdate();
+		em.createNativeQuery("TRUNCATE TABLE turnout_type").executeUpdate();
+		em.createNativeQuery("TRUNCATE TABLE turnout_group").executeUpdate();
+		turnoutGroupCache.clear();
+		addressTurnoutCache.clear();
+		addressThreewayCache.clear();
+		numberToTurnoutCache.clear();
+		turnoutCache.clear();
+		em.getTransaction().commit();
+		HibernatePersistence.em = emf.createEntityManager();
+		HibernatePersistence.em.getTransaction().begin();
 	}
 
 	/*
@@ -96,6 +134,7 @@ public class HibernateTurnoutPersistence
 	 */
 	public ArrayListModel<Turnout> getAllTurnouts()
 			 {
+		logger.debug("getAllTurnouts()");
 		if (addressTurnoutCache.size() == 0) {
 			updateTurnoutCache();
 		}
@@ -104,7 +143,7 @@ public class HibernateTurnoutPersistence
 
 	@SuppressWarnings("unchecked")
 	private SortedSet<Turnout> getAllTurnoutsDB() {
-		logger.debug("getAllTurnout()");
+		logger.debug("getAllTurnoutsDB()");
 		EntityManager em = getEntityManager();
 		List<Turnout> turnouts = em.createQuery("from Turnout").getResultList();
 
@@ -157,6 +196,7 @@ public class HibernateTurnoutPersistence
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#addTurnout(ch.fork.AdHocRailway.domain.turnouts.Turnout)
 	 */
 	public void addTurnout(Turnout turnout) throws TurnoutPersistenceException {
+		logger.debug("addTurnout()");
 		EntityManager em = getEntityManager();
 		if (turnout.getTurnoutGroup() == null) {
 			throw new TurnoutPersistenceException(
@@ -183,7 +223,7 @@ public class HibernateTurnoutPersistence
 	 */
 	public void deleteTurnout(Turnout turnout)
 			throws TurnoutPersistenceException {
-
+		logger.debug("deleteTurnout()");
 		EntityManager em = getEntityManager();
 
 		TurnoutGroup group = turnout.getTurnoutGroup();
@@ -283,6 +323,7 @@ public class HibernateTurnoutPersistence
 	 */
 	public void addTurnoutGroup(TurnoutGroup group)
 			throws TurnoutPersistenceException {
+		logger.debug("addTurnoutGroup()");
 		EntityManager em = getEntityManager();
 		em.persist(group);
 		try {
@@ -302,10 +343,11 @@ public class HibernateTurnoutPersistence
 	 */
 	public void deleteTurnoutGroup(TurnoutGroup group)
 			throws TurnoutPersistenceException {
+		logger.debug("deleteTurnoutGroup()");
 		EntityManager em = getEntityManager();
 		if (!group.getTurnouts().isEmpty()) {
 			throw new TurnoutPersistenceException(
-					"Cannot delete turnout group with assiciated turnouts");
+					"Cannot delete turnout group with associated turnouts");
 		}
 		em.remove(group);
 		try {
@@ -326,6 +368,7 @@ public class HibernateTurnoutPersistence
 	 */
 	public void updateTurnoutGroup(TurnoutGroup group)
 			throws TurnoutPersistenceException {
+		logger.debug("updateTurnoutGroup()");
 		EntityManager em = getEntityManager();
 		em.merge(group);
 		try {
@@ -400,5 +443,27 @@ public class HibernateTurnoutPersistence
 	public Set<Integer> getUsedTurnoutNumbers() {
 		logger.debug("getUsedTurnoutNumbers()");
 		return numberToTurnoutCache.keySet();
+	}
+
+	public void addTurnoutType(TurnoutType type) {
+		logger.debug("addTurnoutType()");
+		EntityManager em = getEntityManager();
+		em.persist(type);
+		em.getTransaction().commit();
+		em.getTransaction().begin();
+	}
+
+	public void deleteTurnoutType(TurnoutType type)
+			throws TurnoutPersistenceException {
+		logger.debug("deleteTurnoutType()");
+		EntityManager em = getEntityManager();
+		if (!type.getTurnouts().isEmpty()) {
+			throw new TurnoutPersistenceException(
+					"Cannot delete turnout type with associated turnouts");
+		}
+		em.remove(type);
+		em.getTransaction().commit();
+		em.getTransaction().begin();
+		updateTurnoutGroupCache();
 	}
 }

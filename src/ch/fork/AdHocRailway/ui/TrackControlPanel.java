@@ -28,7 +28,6 @@ import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
-import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
@@ -59,8 +58,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private TurnoutControlIface turnoutControl = SRCPTurnoutControl
 			.getInstance();
 
-	private TurnoutPersistenceIface turnoutPersistence = HibernateTurnoutPersistence
-			.getInstance();
+	private TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance().getTurnoutPersistence();
 
 	private RouteControlIface routeControl = SRCPRouteControl.getInstance();
 
@@ -176,6 +174,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	}
 
 	public void update() {
+		turnoutPersistence = AdHocRailway.getInstance().getTurnoutPersistence();
+		routePersistence = AdHocRailway.getInstance().getRoutePersistence();
 		updateTurnouts();
 		updateRoutes();
 		revalidate();

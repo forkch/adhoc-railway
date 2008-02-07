@@ -44,10 +44,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 
-import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
+import ch.fork.AdHocRailway.ui.AdHocRailway;
+import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.TableResizer;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
@@ -91,7 +93,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 	public LocomotiveConfigurationDialog(JFrame owner) {
 		super(owner, "Locomotive Configuration");
-		locomotivePersistence = HibernateLocomotivePersistence.getInstance();
+		locomotivePersistence = AdHocRailway.getInstance().getLocomotivePersistence();
 		initGUI();
 	}
 
@@ -296,7 +298,11 @@ public class LocomotiveConfigurationDialog extends JDialog {
 							+ groupToDelete.getName() + "' ?",
 					"Remove Locomotive-Group", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
-				locomotivePersistence.deleteLocomotiveGroup(groupToDelete);
+				try {
+					locomotivePersistence.deleteLocomotiveGroup(groupToDelete);
+				} catch (LocomotivePersistenceException e) {
+					ExceptionProcessor.getInstance().processException(e);
+				}
 			}
 		}
 	}

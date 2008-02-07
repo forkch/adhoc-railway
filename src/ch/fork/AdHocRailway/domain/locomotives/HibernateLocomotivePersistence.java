@@ -7,6 +7,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+
+import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
 import ch.fork.AdHocRailway.domain.LookupAddress;
@@ -15,7 +18,8 @@ import com.jgoodies.binding.list.ArrayListModel;
 
 public class HibernateLocomotivePersistence extends HibernatePersistence
 		implements LocomotivePersistenceIface {
-	private static LocomotivePersistenceIface instance;
+	private static HibernateLocomotivePersistence instance;
+	private static Logger logger = Logger.getLogger(HibernateLocomotivePersistence.class);
 
 	private ArrayListModel<LocomotiveGroup> locomotiveGroupCache;
 	private ArrayListModel<Locomotive> locomotiveCache;
@@ -26,6 +30,27 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		this.locomotiveCache = new ArrayListModel<Locomotive>();
 		this.locomotiveGroupCache = new ArrayListModel<LocomotiveGroup>();
 		this.addressLocomotiveCache = new HashMap<LookupAddress, Locomotive>();
+
+		try {
+			getLocomotiveTypeByName("DELTA");
+		} catch (NoResultException ex) {
+			System.out.println("HERE");
+			LocomotiveType deltaType = new LocomotiveType(0, "DELTA");
+			deltaType.setDrivingSteps(14);
+			deltaType.setStepping(4);
+			deltaType.setFunctionCount(4);
+			addLocomotiveType(deltaType);
+		}
+		try {
+			getLocomotiveTypeByName("DIGITAL");
+		} catch (NoResultException ex) {
+			System.out.println("HERE");
+			LocomotiveType digitalType = new LocomotiveType(0, "DIGITAL");
+			digitalType.setDrivingSteps(28);
+			digitalType.setStepping(2);
+			digitalType.setFunctionCount(5);
+			addLocomotiveType(digitalType);
+		}
 	}
 
 	public static LocomotivePersistenceIface getInstance() {
@@ -52,17 +77,35 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#preload()
-	 */
-	public void preload() {
-		getAllLocomotives();
-		getAllLocomotiveGroups();
-		getAllLocomotiveTypes();
+	public void clear() throws LocomotivePersistenceException {
+		logger.debug("clear()");
+//		List<Locomotive> tempLocomotiveCache = new ArrayList<Locomotive>(
+//				getAllLocomotivesDB());
+//		for (Locomotive l : tempLocomotiveCache) {
+//			deleteLocomotive(l);
+//		}
+//		List<LocomotiveGroup> tempLocomotiveGroupCache = new ArrayList<LocomotiveGroup>(
+//				getAllLocomotiveGroupsDB());
+//		for (LocomotiveGroup group : tempLocomotiveGroupCache) {
+//			deleteLocomotiveGroup(group);
+//		}
+//		List<LocomotiveType> tempTurnoutTypeCache = new ArrayList<LocomotiveType>(
+//				getAllLocomotiveTypes());
+//		for (LocomotiveType type : tempTurnoutTypeCache) {
+//			deleteLocomotiveType(type);
+//		}
+		EntityManager em = getEntityManager();
+		em.createNativeQuery("TRUNCATE TABLE locomotive").executeUpdate();
+		em.createNativeQuery("TRUNCATE TABLE locomotive_type").executeUpdate();
+		em.createNativeQuery("TRUNCATE TABLE locomotive_group").executeUpdate();
+		addressLocomotiveCache.clear();
+		locomotiveCache.clear();
+		locomotiveGroupCache.clear();
+		em.getTransaction().commit();
+		HibernatePersistence.em = emf.createEntityManager();
+		HibernatePersistence.em.getTransaction().begin();
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -70,6 +113,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	 */
 
 	public ArrayListModel<Locomotive> getAllLocomotives() {
+		logger.debug("getAllLocomotives()");
 		if (locomotiveCache.isEmpty()) {
 			updateLocomotiveCache();
 		}
@@ -89,26 +133,11 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#getLocomotiveByNumber(int)
-	 */
-	@SuppressWarnings("unchecked")
-	public Locomotive getLocomotiveByNumber(int number) {
-		EntityManager em = getEntityManager();
-		Locomotive loc = (Locomotive) em.createQuery(
-				"from Locomotive as l where l.number = ?1").setParameter(1,
-				number).getSingleResult();
-		em.getTransaction().commit();
-		em.getTransaction().begin();
-		return loc;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#getLocomotiveByAddress(int)
 	 */
 	@SuppressWarnings("unchecked")
 	public Locomotive getLocomotiveByBusAddress(int bus, int address) {
+		logger.debug("getLocomotiveByBusAddress()");
 		EntityManager em = getEntityManager();
 		Locomotive loc = (Locomotive) em.createQuery(
 				"from Locomotive as l where l.address = ?1").setParameter(1,
@@ -124,6 +153,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#addLocomotive(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
 	public void addLocomotive(Locomotive locomotive) {
+		logger.debug("addLocomotive()");
 		EntityManager em = getEntityManager();
 		em.persist(locomotive);
 		em.refresh(locomotive.getLocomotiveGroup());
@@ -142,6 +172,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#deleteLocomotive(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
 	public void deleteLocomotive(Locomotive locomotive) {
+		logger.debug("deleteLocomotive()");
 		EntityManager em = getEntityManager();
 
 		LocomotiveGroup group = locomotive.getLocomotiveGroup();
@@ -167,6 +198,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#updateLocomotive(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
 	public void updateLocomotive(Locomotive locomotive) {
+		logger.debug("updateLocomotive()");
 		EntityManager em = getEntityManager();
 		em.merge(locomotive);
 		em.getTransaction().commit();
@@ -174,19 +206,16 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	}
 
 	public ArrayListModel<LocomotiveGroup> getAllLocomotiveGroups() {
+		logger.debug("getAllLocomotiveGroups()");
 		if (locomotiveGroupCache.isEmpty()) {
 			updateLocomotiveGroupCache();
 		}
 		return locomotiveGroupCache;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#getAllLocomotiveGroups()
-	 */
+	
 	@SuppressWarnings("unchecked")
-	public SortedSet<LocomotiveGroup> getAllLocomotiveGroupsDB() {
+	private SortedSet<LocomotiveGroup> getAllLocomotiveGroupsDB() {
+		logger.debug("getAllLocomotiveGroupsDB()");
 		EntityManager em = getEntityManager();
 		List<LocomotiveGroup> groups = em.createQuery("from LocomotiveGroup")
 				.getResultList();
@@ -201,6 +230,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#addLocomotiveGroup(ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup)
 	 */
 	public void addLocomotiveGroup(LocomotiveGroup group) {
+		logger.debug("addLocomotiveGroup()");
 		EntityManager em = getEntityManager();
 		em.persist(group);
 		em.getTransaction().commit();
@@ -214,8 +244,14 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#deleteLocomotiveGroup(ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup)
 	 */
-	public void deleteLocomotiveGroup(LocomotiveGroup group) {
+	public void deleteLocomotiveGroup(LocomotiveGroup group)
+			throws LocomotivePersistenceException {
+		logger.debug("deleteLocomotiveGroup()");
 		EntityManager em = getEntityManager();
+		if (!group.getLocomotives().isEmpty()) {
+			throw new LocomotivePersistenceException(
+					"Cannot delete locomotive group with associated locomotives");
+		}
 		em.remove(group);
 		em.getTransaction().commit();
 		em.getTransaction().begin();
@@ -229,6 +265,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#updateLocomotiveGroup(ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup)
 	 */
 	public void updateLocomotiveGroup(LocomotiveGroup group) {
+		logger.debug("updateLocomotiveGroup()");
 		EntityManager em = getEntityManager();
 		em.merge(group);
 		em.getTransaction().commit();
@@ -242,6 +279,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	 */
 	@SuppressWarnings("unchecked")
 	public SortedSet<LocomotiveType> getAllLocomotiveTypes() {
+		logger.debug("getAllLocomotiveTypes()");
 		EntityManager em = getEntityManager();
 		List<LocomotiveType> locomotiveTypes = em.createQuery(
 				"from LocomotiveType").getResultList();
@@ -256,6 +294,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#getLocomotiveTypeByName(java.lang.String)
 	 */
 	public LocomotiveType getLocomotiveTypeByName(String typeName) {
+		logger.debug("getLocomotiveTypeByName()");
 		EntityManager em = getEntityManager();
 		LocomotiveType locomotiveTypes = (LocomotiveType) em.createQuery(
 				"from LocomotiveType as t where t.typeName = ?1").setParameter(
@@ -263,5 +302,26 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		em.getTransaction().commit();
 		em.getTransaction().begin();
 		return locomotiveTypes;
+	}
+
+	public void addLocomotiveType(LocomotiveType type) {
+		logger.debug("addLocomotiveType()");
+		EntityManager em = getEntityManager();
+		em.persist(type);
+		em.getTransaction().commit();
+		em.getTransaction().begin();
+	}
+
+	public void deleteLocomotiveType(LocomotiveType type)
+			throws LocomotivePersistenceException {
+		logger.debug("deleteLocomotiveType()");
+		EntityManager em = getEntityManager();
+		if (!type.getLocomotives().isEmpty()) {
+			throw new LocomotivePersistenceException(
+					"Cannot delete locomotive type with associated locomotives");
+		}
+		em.remove(type);
+		em.getTransaction().commit();
+		em.getTransaction().begin();
 	}
 }

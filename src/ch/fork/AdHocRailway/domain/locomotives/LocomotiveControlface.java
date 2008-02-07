@@ -6,6 +6,7 @@ import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 
 public interface LocomotiveControlface {
 
+	public abstract void setLocomotivePersistence(LocomotivePersistenceIface persistence);
 	/**
 	 * Toggles the direction of the Locomotive
 	 * 

@@ -53,7 +53,7 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 	private static Logger logger = Logger.getLogger(SRCPLocomotiveControl.class);
 
 	private static LocomotiveControlface instance;
-	LocomotivePersistenceIface persistence = HibernateLocomotivePersistence.getInstance();
+	LocomotivePersistenceIface persistence;
 	
 	private List<LocomotiveChangeListener> listeners;
 
@@ -62,7 +62,6 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 	private SRCPLocomotiveControl() {
 		listeners = new ArrayList<LocomotiveChangeListener>();
 		srcpLocomotives = new HashMap<Locomotive, SRCPLocomotive>();
-		update();
 	}
 	
 	public void update() {
@@ -360,6 +359,10 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 	@Override
 	public void previousDeviceToDefault() throws ControlException {
 		// TODO Auto-generated method stub
+	}
+
+	public void setLocomotivePersistence(LocomotivePersistenceIface persistence) {
+		this.persistence = persistence;
 	}
 
 }
