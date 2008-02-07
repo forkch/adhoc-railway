@@ -15,13 +15,13 @@ public interface TurnoutPersistenceIface {
 	@SuppressWarnings("unchecked")
 	public abstract ArrayListModel<Turnout> getAllTurnouts();
 
-	public abstract Turnout getTurnoutByNumber(int number) throws TurnoutException;
+	public abstract Turnout getTurnoutByNumber(int number);
 
 	public abstract Turnout getTurnoutByAddressBus(int bus, int address);
 
 	public abstract void addTurnout(Turnout turnout) throws TurnoutPersistenceException;
 
-	public abstract void deleteTurnout(Turnout turnout);
+	public abstract void deleteTurnout(Turnout turnout) throws TurnoutPersistenceException;
 
 	public abstract void updateTurnout(Turnout turnout) throws TurnoutPersistenceException;
 
@@ -29,11 +29,11 @@ public interface TurnoutPersistenceIface {
 
 	public abstract TurnoutGroup getTurnoutGroupByName(String name);
 
-	public abstract void addTurnoutGroup(TurnoutGroup group);
+	public abstract void addTurnoutGroup(TurnoutGroup group) throws TurnoutPersistenceException;
 
 	public abstract void deleteTurnoutGroup(TurnoutGroup group) throws TurnoutPersistenceException;
 
-	public abstract void updateTurnoutGroup(TurnoutGroup group);
+	public abstract void updateTurnoutGroup(TurnoutGroup group) throws TurnoutPersistenceException;
 
 	public abstract SortedSet<TurnoutType> getAllTurnoutTypes();
 

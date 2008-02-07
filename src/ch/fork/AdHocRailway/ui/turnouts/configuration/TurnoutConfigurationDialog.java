@@ -304,7 +304,11 @@ public class TurnoutConfigurationDialog extends JDialog {
 					"Add Turnout-Group", JOptionPane.QUESTION_MESSAGE);
 			TurnoutGroup newTurnoutGroup = new TurnoutGroup();
 			newTurnoutGroup.setName(newGroupName);
-			turnoutPersistence.addTurnoutGroup(newTurnoutGroup);
+			try {
+				turnoutPersistence.addTurnoutGroup(newTurnoutGroup);
+			} catch (TurnoutPersistenceException e) {
+				ExceptionProcessor.getInstance().processException(e);
+			}
 		}
 	}
 

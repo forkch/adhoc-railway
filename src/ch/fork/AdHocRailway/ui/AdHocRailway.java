@@ -63,6 +63,7 @@ import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
+import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
@@ -107,7 +108,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private Preferences preferences;
 
-	// GUI-Components
 	private TrackControlPanel trackControlPanel;
 
 	private LocomotiveControlPanel locomotiveControlPanel;
@@ -142,6 +142,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private JPanel mainPanel;
 	private JPanel toolbarPanel;
+	private Object	routePersistence;
 
 	public AdHocRailway() {
 		this(null);
@@ -162,6 +163,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		turnoutPersistence = HibernateTurnoutPersistence.getInstance();
 
 		splash.nextStep("Loading Persistence Layer (Routes)");
+		routePersistence = HibernateRoutePersistence.getInstance();
 
 		splash.nextStep("Loading Control Layer (Locomotives)");
 		locomotiveControl = SRCPLocomotiveControl.getInstance();
