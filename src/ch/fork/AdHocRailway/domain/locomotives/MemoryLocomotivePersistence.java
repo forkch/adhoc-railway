@@ -10,13 +10,13 @@ import ch.fork.AdHocRailway.domain.LookupAddress;
 import com.jgoodies.binding.list.ArrayListModel;
 
 public class MemoryLocomotivePersistence implements LocomotivePersistenceIface {
-	private static MemoryLocomotivePersistence instance;
+	private static MemoryLocomotivePersistence	instance;
 
-	private ArrayListModel<LocomotiveGroup> locomotiveGroupCache;
-	private ArrayListModel<Locomotive> locomotiveCache;
-	private Map<LookupAddress, Locomotive> addressLocomotiveCache;
+	private ArrayListModel<LocomotiveGroup>		locomotiveGroupCache;
+	private ArrayListModel<Locomotive>			locomotiveCache;
+	private Map<LookupAddress, Locomotive>		addressLocomotiveCache;
 
-	private Map<String, LocomotiveType> locomotiveTypes;
+	private Map<String, LocomotiveType>			locomotiveTypes;
 
 	private MemoryLocomotivePersistence() {
 		super();
@@ -25,6 +25,22 @@ public class MemoryLocomotivePersistence implements LocomotivePersistenceIface {
 		this.addressLocomotiveCache = new HashMap<LookupAddress, Locomotive>();
 
 		locomotiveTypes = new HashMap<String, LocomotiveType>();
+
+		if (getLocomotiveTypeByName("DELTA") == null) {
+			LocomotiveType deltaType = new LocomotiveType(0, "DELTA");
+			deltaType.setDrivingSteps(14);
+			deltaType.setStepping(4);
+			deltaType.setFunctionCount(4);
+			addLocomotiveType(deltaType);
+		}
+
+		if (getLocomotiveTypeByName("DIGITAL") == null) {
+			LocomotiveType digitalType = new LocomotiveType(0, "DIGITAL");
+			digitalType.setDrivingSteps(28);
+			digitalType.setStepping(2);
+			digitalType.setFunctionCount(5);
+			addLocomotiveType(digitalType);
+		}
 
 	}
 
@@ -119,7 +135,8 @@ public class MemoryLocomotivePersistence implements LocomotivePersistenceIface {
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#deleteLocomotiveGroup(ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup)
 	 */
-	public void deleteLocomotiveGroup(LocomotiveGroup group) throws LocomotivePersistenceException {
+	public void deleteLocomotiveGroup(LocomotiveGroup group)
+			throws LocomotivePersistenceException {
 		if (!group.getLocomotives().isEmpty()) {
 			throw new LocomotivePersistenceException(
 					"Cannot delete locomotive group with associated locomotives");

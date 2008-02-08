@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.NoResultException;
+
 import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.LookupAddress;
@@ -16,18 +18,18 @@ import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
-public class MemoryTurnoutPersistence implements
-		TurnoutPersistenceIface {
-	static Logger logger = Logger
-			.getLogger(MemoryTurnoutPersistence.class);
-	private static MemoryTurnoutPersistence instance;
+public class MemoryTurnoutPersistence implements TurnoutPersistenceIface {
+	static Logger							logger	=
+															Logger
+																	.getLogger(MemoryTurnoutPersistence.class);
+	private static MemoryTurnoutPersistence	instance;
 
-	private Map<LookupAddress, Turnout> addressTurnoutCache;
-	private Map<LookupAddress, Turnout> addressThreewayCache;
-	private ArrayListModel<Turnout> turnoutCache;
-	private ArrayListModel<TurnoutGroup> turnoutGroupCache;
-	private Map<Integer, Turnout> numberToTurnoutCache;
-	private Map<String, TurnoutType> turnoutTypes;
+	private Map<LookupAddress, Turnout>		addressTurnoutCache;
+	private Map<LookupAddress, Turnout>		addressThreewayCache;
+	private ArrayListModel<Turnout>			turnoutCache;
+	private ArrayListModel<TurnoutGroup>	turnoutGroupCache;
+	private Map<Integer, Turnout>			numberToTurnoutCache;
+	private Map<String, TurnoutType>		turnoutTypes;
 
 	private MemoryTurnoutPersistence() {
 		super();
@@ -36,9 +38,20 @@ public class MemoryTurnoutPersistence implements
 		this.turnoutCache = new ArrayListModel<Turnout>();
 		this.turnoutGroupCache = new ArrayListModel<TurnoutGroup>();
 		this.numberToTurnoutCache = new HashMap<Integer, Turnout>();
-		
+
 		this.turnoutTypes = new HashMap<String, TurnoutType>();
-		
+		if (getTurnoutType(TurnoutTypes.DEFAULT) == null) {
+			TurnoutType defaultType = new TurnoutType(0, "DEFAULT");
+			addTurnoutType(defaultType);
+		}
+		if (getTurnoutType(TurnoutTypes.DOUBLECROSS) == null) {
+			TurnoutType doublecrossType = new TurnoutType(0, "DOUBLECROSS");
+			addTurnoutType(doublecrossType);
+		}
+		if (getTurnoutType(TurnoutTypes.THREEWAY) == null) {
+			TurnoutType threewayType = new TurnoutType(0, "THREEWAY");
+			addTurnoutType(threewayType);
+		}
 	}
 
 	public static MemoryTurnoutPersistence getInstance() {
@@ -47,7 +60,7 @@ public class MemoryTurnoutPersistence implements
 		}
 		return instance;
 	}
-	
+
 	public void clear() {
 		this.addressTurnoutCache.clear();
 		this.addressThreewayCache.clear();
@@ -56,7 +69,6 @@ public class MemoryTurnoutPersistence implements
 		this.numberToTurnoutCache.clear();
 		this.turnoutTypes.clear();
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -80,7 +92,8 @@ public class MemoryTurnoutPersistence implements
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#getTurnoutByNumber(int)
 	 */
-	public Turnout getTurnoutByNumber(int number) throws TurnoutPersistenceException{
+	public Turnout getTurnoutByNumber(int number)
+			throws TurnoutPersistenceException {
 		logger.debug("getTurnoutByNumber()");
 		return numberToTurnoutCache.get(number);
 	}
@@ -118,21 +131,22 @@ public class MemoryTurnoutPersistence implements
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#addTurnout(ch.fork.AdHocRailway.domain.turnouts.Turnout)
 	 */
 	public void addTurnout(Turnout turnout) throws TurnoutPersistenceException {
-		
+
 		if (turnout.getTurnoutGroup() == null) {
 			throw new TurnoutPersistenceException(
 					"Turnout has no associated Group");
 		}
 		turnout.getTurnoutGroup().getTurnouts().add(turnout);
-		
+
 		addressTurnoutCache.put(new LookupAddress(turnout.getBus1(), turnout
-				.getAddress1(), turnout.getBus2(), turnout.getAddress2()), turnout);
+				.getAddress1(), turnout.getBus2(), turnout.getAddress2()),
+				turnout);
 		turnoutCache.add(turnout);
 		if (turnout.isThreeWay()) {
-			addressThreewayCache.put(new LookupAddress(turnout.getBus1(), turnout
-					.getAddress1(), 0, 0), turnout);
-			addressThreewayCache.put(new LookupAddress(0, 0, turnout.getBus2(), turnout
-					.getAddress2()), turnout);
+			addressThreewayCache.put(new LookupAddress(turnout.getBus1(),
+					turnout.getAddress1(), 0, 0), turnout);
+			addressThreewayCache.put(new LookupAddress(0, 0, turnout.getBus2(),
+					turnout.getAddress2()), turnout);
 		}
 	}
 
@@ -142,7 +156,6 @@ public class MemoryTurnoutPersistence implements
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#deleteTurnout(ch.fork.AdHocRailway.domain.turnouts.Turnout)
 	 */
 	public void deleteTurnout(Turnout turnout) {
-
 
 		TurnoutGroup group = turnout.getTurnoutGroup();
 		group.getTurnouts().remove(turnout);
@@ -186,9 +199,9 @@ public class MemoryTurnoutPersistence implements
 	 */
 	public TurnoutGroup getTurnoutGroupByName(String name) {
 		logger.debug("getTurnoutGroupByName()");
-		
-		for(TurnoutGroup group : turnoutGroupCache) {
-			if(group.getName().equals(name))
+
+		for (TurnoutGroup group : turnoutGroupCache) {
+			if (group.getName().equals(name))
 				return group;
 		}
 		return null;
@@ -260,8 +273,8 @@ public class MemoryTurnoutPersistence implements
 			typeStr = "THREEWAY";
 			break;
 		}
-		for(TurnoutType type : turnoutTypes.values()) {
-			if(type.getTypeName().equals(typeStr))
+		for (TurnoutType type : turnoutTypes.values()) {
+			if (type.getTypeName().equals(typeStr))
 				return type;
 		}
 		return null;
@@ -292,6 +305,6 @@ public class MemoryTurnoutPersistence implements
 					"Cannot delete turnout type with associated turnouts");
 		}
 		turnoutTypes.values().remove(type);
-		
+
 	}
 }

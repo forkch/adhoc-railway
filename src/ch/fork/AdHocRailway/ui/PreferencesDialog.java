@@ -19,270 +19,320 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.ui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SpringLayout;
 
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
-public class PreferencesDialog extends JDialog implements PreferencesKeys {
-    private JSpinner           defaultActivationTime;
-    private JSpinner           defaultRoutingDelay;
-    private JSpinner           defaultLockDuration;
-    private SpinnerNumberModel defaultActivationTimeModel;
-    private SpinnerNumberModel defaultRoutingDelayModel;
-    private SpinnerNumberModel defaultLockDurationModel;
-    private JSpinner           locomotiveControlNumber;
-    private JSpinner           switchControlNumber;
-    private JSpinner           routeControlNumber;
-    private SpinnerNumberModel locomotiveControlNumberModel;
-    private SpinnerNumberModel switchControlNumberModel;
-    private JTextField         hostnameTextField;
-    private JTextField         portnumberTextField;
-    private JTabbedPane        preferencesPane;
-    private JComboBox          keyBoardLayoutComboBox;
-    private JCheckBox          interface6051;
-    private JCheckBox          writeLog;
-    private JCheckBox          fullscreen;
-    private JCheckBox          tabbedTrackCheckBox;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
-    private boolean            okPressed;
-    private boolean            cancelPressed;
-    private JCheckBox          autoconnectCheckBox;
-	private SpinnerNumberModel routeControlNumberModel;
+public class PreferencesDialog
+		extends JDialog implements PreferencesKeys {
+	private JSpinner			defaultActivationTime;
+	private JSpinner			defaultRoutingDelay;
+	private JSpinner			defaultLockDuration;
+	private SpinnerNumberModel	defaultActivationTimeModel;
+	private SpinnerNumberModel	defaultRoutingDelayModel;
+	private SpinnerNumberModel	defaultLockDurationModel;
+	private JSpinner			locomotiveControlNumber;
+	private JSpinner			switchControlNumber;
+	private JSpinner			routeControlNumber;
+	private SpinnerNumberModel	locomotiveControlNumberModel;
+	private SpinnerNumberModel	switchControlNumberModel;
+	private JTextField			hostnameTextField;
+	private JTextField			portnumberTextField;
+	private JComboBox			keyBoardLayoutComboBox;
+	private JCheckBox			interface6051;
+	private JCheckBox			writeLog;
+	private JCheckBox			fullscreen;
+	private JCheckBox			tabbedTrackCheckBox;
 
-    public PreferencesDialog(JFrame owner) {
-        super(owner, "Preferences", true);
-        initGUI();
-    }
+	private boolean				okPressed;
+	private boolean				cancelPressed;
+	private JCheckBox			autoconnectCheckBox;
+	private SpinnerNumberModel	routeControlNumberModel;
+	private JTextField	databaseHostField;
+	private JTextField	databaseNameField;
+	private JTextField	databaseUserField;
+	private JTextField	databasePasswordField;
 
-    private void initGUI() {
-        preferencesPane = new JTabbedPane();
-        preferencesPane.add(createGUISettingsTab(), "General Settings");
-        preferencesPane.add(createDigitalDataTab(), "Digital Data");
-        preferencesPane.add(createServerTab(), "Server");
-        add(preferencesPane, BorderLayout.NORTH);
-        JButton okButton = new JButton("OK");
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                okPressed = true;
-                PreferencesDialog.this.setVisible(false);
-            }
-        });
-        JButton cancelButton = new JButton("Cancel");
-        cancelPressed = false;
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                cancelPressed = true;
-                PreferencesDialog.this.setVisible(false);
-            }
-        });
-        JPanel mainButtonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-        mainButtonPanel.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                cancelPressed = true;
-                PreferencesDialog.this.setVisible(false);
-            }
-        }, "", KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-            JComponent.WHEN_IN_FOCUSED_WINDOW);
+	public PreferencesDialog(JFrame owner) {
+		super(owner, "Preferences", true);
+		initGUI();
+	}
 
-        mainButtonPanel.add(okButton);
-        mainButtonPanel.add(cancelButton);
-        add(mainButtonPanel, BorderLayout.SOUTH);
-        loadPreferences();
-        pack();
-        setVisible(true);
-        savePreferences();
-    }
+	private void initGUI() {
 
-    private JPanel createGUISettingsTab() {
-        JPanel guiSettingsTab = new JPanel(new SpringLayout());
-        JLabel locomotiveControlNumberLabel = new JLabel(
-            "Number of Locomotive Controls:");
-        locomotiveControlNumberModel = new SpinnerNumberModel(5, 1, 10, 1);
-        locomotiveControlNumber = new JSpinner(locomotiveControlNumberModel);
-        JLabel switchControlNumberLabel = new JLabel(
-            "Number of Switch Controls per row:");
-        switchControlNumberModel = new SpinnerNumberModel(7, 1, 10, 1);
-        switchControlNumber = new JSpinner(switchControlNumberModel);
-    
-        JLabel routeControlNumberLabel = new JLabel(
-        "Number of Route Controls per row:");
-        routeControlNumberModel = new SpinnerNumberModel(7, 1, 10, 1);
-        routeControlNumber = new JSpinner(routeControlNumberModel);
+		FormLayout layout =
+				new FormLayout("5dlu, pref, 10dlu, pref, 5dlu",
+						"5dlu, pref, 3dlu, top:pref,3dlu, pref, 3dlu, top:pref, 3dlu, pref, 5dlu");
+      
+		layout.setColumnGroups(new int[][]{{2, 4}});
+		
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc = new CellConstraints();
 
-        JLabel keyBoardLayoutLabel = new JLabel("Keyboard-Layout");
-        keyBoardLayoutComboBox = new JComboBox();
-        keyBoardLayoutComboBox.addItem("Swiss German");
-        keyBoardLayoutComboBox.addItem("English");
+		builder.addSeparator("General", cc.xy(2, 2));
+		builder.add(createGUISettingsTab(), cc.xy(2, 4));
 
-        writeLog = new JCheckBox();
-        JLabel writeLogLabel = new JLabel("Write Log");
-        fullscreen = new JCheckBox();
-        JLabel fullscreenLabel = new JLabel("Fullscreen");
-        tabbedTrackCheckBox = new JCheckBox();
-        JLabel tabbedTrackLabel = new JLabel("Tabbed Track-Control");
+		builder.addSeparator("Digital", cc.xy(4, 2));
+		builder.add(createDigitalDataTab(), cc.xy(4, 4));
 
-        guiSettingsTab.add(locomotiveControlNumberLabel);
-        guiSettingsTab.add(locomotiveControlNumber);
-        guiSettingsTab.add(switchControlNumberLabel);
-        guiSettingsTab.add(switchControlNumber);
-        guiSettingsTab.add(routeControlNumberLabel);
-        guiSettingsTab.add(routeControlNumber);
-        guiSettingsTab.add(keyBoardLayoutLabel);
-        guiSettingsTab.add(keyBoardLayoutComboBox);
-        guiSettingsTab.add(writeLogLabel);
-        guiSettingsTab.add(writeLog);
-        guiSettingsTab.add(fullscreenLabel);
-        guiSettingsTab.add(fullscreen);
-        guiSettingsTab.add(tabbedTrackLabel);
-        guiSettingsTab.add(tabbedTrackCheckBox);
-        SpringUtilities.makeCompactGrid(guiSettingsTab, 7, 2, // rows, cols
-            6, 6, // initX, initY
-            6, 6); // xPad, yPad
+		builder.addSeparator("SRCP-Server", cc.xy(2, 6));
+		builder.add(createServerTab(), cc.xy(2, 8));
+		
+		builder.addSeparator("Database", cc.xy(4, 6));
+		builder.add(createDatabaseTab(), cc.xy(4, 8));
 
-        JPanel north = new JPanel(new BorderLayout());
-        north.add(guiSettingsTab, BorderLayout.NORTH);
-        return north;
-    }
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				okPressed = true;
+				PreferencesDialog.this.setVisible(false);
+			}
+		});
+		JButton cancelButton = new JButton("Cancel");
+		cancelPressed = false;
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cancelPressed = true;
+				PreferencesDialog.this.setVisible(false);
+			}
+		});
+		builder.add(ButtonBarFactory.buildRightAlignedBar(okButton,
+				cancelButton), cc.xyw(2, 10, 3));
 
-    private JPanel createDigitalDataTab() {
-        JPanel digitalDataTab = new JPanel(new SpringLayout());
+		add(builder.getPanel());
+		loadPreferences();
+		pack();
+		TutorialUtils.locateOnOpticalScreenCenter(this);
+		setVisible(true);
+		savePreferences();
+	}
 
-        JLabel defaultActivationTimeLabel = new JLabel(
-            "Default activation time for solenoids [ms]:");
-        defaultActivationTimeModel = new SpinnerNumberModel(50, 50, 1000, 10);
-        defaultActivationTime = new JSpinner(defaultActivationTimeModel);
+	private JPanel createGUISettingsTab() {
+		locomotiveControlNumberModel = new SpinnerNumberModel(5, 1, 10, 1);
+		locomotiveControlNumber = new JSpinner(locomotiveControlNumberModel);
 
-        JLabel defaultRoutingDelayLabel = new JLabel(
-            "Default routing delay for solenoids [ms]:");
-        defaultRoutingDelayModel = new SpinnerNumberModel(250, 100, 1000, 10);
-        defaultRoutingDelay = new JSpinner(defaultRoutingDelayModel);
+		switchControlNumberModel = new SpinnerNumberModel(7, 1, 10, 1);
+		switchControlNumber = new JSpinner(switchControlNumberModel);
 
-        JLabel defaultLockDurationLabel = new JLabel(
-            "Default Lock time (0 means forever) [s]:");
-        defaultLockDurationModel = new SpinnerNumberModel(0, 0, 60, 1);
-        defaultLockDuration = new JSpinner(defaultLockDurationModel);
+		routeControlNumberModel = new SpinnerNumberModel(7, 1, 10, 1);
+		routeControlNumber = new JSpinner(routeControlNumberModel);
 
-        interface6051 = new JCheckBox();
-        JLabel interface6051Label = new JLabel("Interface 6051 attached");
+		keyBoardLayoutComboBox = new JComboBox();
+		keyBoardLayoutComboBox.addItem("Swiss German");
+		keyBoardLayoutComboBox.addItem("English");
 
+		writeLog = new JCheckBox();
+		fullscreen = new JCheckBox();
+		tabbedTrackCheckBox = new JCheckBox();
 
-        digitalDataTab.add(defaultActivationTimeLabel);
-        digitalDataTab.add(defaultActivationTime);
-        digitalDataTab.add(defaultRoutingDelayLabel);
-        digitalDataTab.add(defaultRoutingDelay);
-        digitalDataTab.add(defaultLockDurationLabel);
-        digitalDataTab.add(defaultLockDuration);
-        digitalDataTab.add(interface6051Label);
-        digitalDataTab.add(interface6051);
-        SpringUtilities.makeCompactGrid(digitalDataTab, 4, 2, // rows, cols
-            6, 6, // initX, initY
-            6, 6); // xPad, yPad
-        JPanel north = new JPanel(new BorderLayout());
-        north.add(digitalDataTab, BorderLayout.NORTH);
-        return north;
-    }
+		FormLayout layout =
+				new FormLayout(
+						"right:pref, 3dlu, fill:pref",
+						"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc = new CellConstraints();
 
-    private JPanel createServerTab() {
-        JPanel serverTab = new JPanel(new SpringLayout());
-        JLabel hostnameLabel = new JLabel("Hostname (Name or IP):");
-        hostnameTextField = new JTextField();
-        serverTab.add(hostnameLabel);
-        serverTab.add(hostnameTextField);
-        JLabel portnumberLabel = new JLabel("Portnumber (e.g. 12345):");
-        portnumberTextField = new JTextField("12345", 15);
-        serverTab.add(portnumberLabel);
-        serverTab.add(portnumberTextField);
-        JLabel autoconnectLabel = new JLabel("Autoconnect:");
-        autoconnectCheckBox = new JCheckBox();
-        serverTab.add(autoconnectLabel);
-        serverTab.add(autoconnectCheckBox);
-        SpringUtilities.makeCompactGrid(serverTab, 3, 2, // rows, cols
-            6, 6, // initX, initY
-            6, 6); // xPad, yPad
-        JPanel north = new JPanel(new BorderLayout());
-        north.add(serverTab, BorderLayout.NORTH);
-        return north;
-    }
+		builder.addLabel("Locomotive Controls", cc.xy(1, 1));
+		builder.add(locomotiveControlNumber, cc.xy(3, 1));
 
-    public boolean isCancelPressed() {
-        return cancelPressed;
-    }
+		builder.addLabel("Turnout Controls per row", cc.xy(1, 3));
+		builder.add(switchControlNumber, cc.xy(3, 3));
 
-    public boolean isOkPressed() {
-        return okPressed;
-    }
+		builder.addLabel("Route Controls per row", cc.xy(1, 5));
+		builder.add(routeControlNumber, cc.xy(3, 5));
 
-    private void loadPreferences() {
-        Preferences p = Preferences.getInstance();
-        locomotiveControlNumberModel.setValue(p
-            .getIntValue(LOCOMOTIVE_CONTROLES));
-        switchControlNumberModel.setValue(p.getIntValue(TURNOUT_CONTROLES));
-        routeControlNumberModel.setValue(p.getIntValue(ROUTE_CONTROLES));
-        
-        keyBoardLayoutComboBox.setSelectedItem(p
-            .getStringValue(KEYBOARD_LAYOUT));
+		builder.addLabel("Keyboard-Layout", cc.xy(1, 7));
+		builder.add(keyBoardLayoutComboBox, cc.xy(3, 7));
 
-        defaultActivationTimeModel.setValue(p.getIntValue(ACTIVATION_TIME));
-        defaultRoutingDelayModel.setValue(p.getIntValue(ROUTING_DELAY));
-        defaultLockDurationModel.setValue(p.getIntValue(LOCK_DURATION));
+		builder.addLabel("Write Log", cc.xy(1, 9));
+		builder.add(writeLog, cc.xy(3, 9));
 
-        interface6051.setSelected(p.getBooleanValue(INTERFACE_6051));
-        writeLog.setSelected(p.getBooleanValue(LOGGING));
-        fullscreen.setSelected(p.getBooleanValue(FULLSCREEN));
-        tabbedTrackCheckBox.setSelected(p.getBooleanValue(TABBED_TRACK));
-        hostnameTextField.setText(p.getStringValue(HOSTNAME));
-        portnumberTextField.setText(Integer.toString(p.getIntValue(PORT)));
-        autoconnectCheckBox.setSelected(p.getBooleanValue(AUTOCONNECT));
-    }
+		builder.addLabel("Fullscreen", cc.xy(1, 11));
+		builder.add(fullscreen, cc.xy(3, 11));
 
-    public void savePreferences() {
-        Preferences p = Preferences.getInstance();
-        p.setIntValue(LOCOMOTIVE_CONTROLES, locomotiveControlNumberModel
-            .getNumber().intValue());
-        p.setIntValue(TURNOUT_CONTROLES, switchControlNumberModel.getNumber()
-            .intValue());
-        p.setIntValue(ROUTE_CONTROLES, routeControlNumberModel.getNumber()
-                .intValue());
-        p.setStringValue(KEYBOARD_LAYOUT, keyBoardLayoutComboBox
-            .getSelectedItem().toString());
+		builder.addLabel("Tabbed Track-Control", cc.xy(1, 13));
+		builder.add(tabbedTrackCheckBox, cc.xy(3, 13));
 
-        p.setIntValue(ACTIVATION_TIME, defaultActivationTimeModel.getNumber()
-            .intValue());
-        p.setIntValue(ROUTING_DELAY, defaultRoutingDelayModel.getNumber()
-            .intValue());
-        p.setIntValue(LOCK_DURATION, defaultLockDurationModel.getNumber()
-            .intValue());
-        p.setBooleanValue(INTERFACE_6051, interface6051.isSelected());
-        p.setBooleanValue(LOGGING, writeLog.isSelected());
-        p.setBooleanValue(FULLSCREEN, fullscreen.isSelected());
-        p.setBooleanValue(TABBED_TRACK, tabbedTrackCheckBox.isSelected());
+		return builder.getPanel();
+	}
 
-        p.setStringValue(HOSTNAME, (String) hostnameTextField.getText());
-        p.setIntValue(PORT, Integer.parseInt(portnumberTextField.getText()));
-        p.setBooleanValue(AUTOCONNECT, autoconnectCheckBox.isSelected());
-    }
+	private JPanel createDigitalDataTab() {
+		defaultActivationTimeModel = new SpinnerNumberModel(50, 50, 1000, 10);
+		defaultActivationTime = new JSpinner(defaultActivationTimeModel);
+
+		defaultRoutingDelayModel = new SpinnerNumberModel(250, 100, 1000, 10);
+		defaultRoutingDelay = new JSpinner(defaultRoutingDelayModel);
+
+		defaultLockDurationModel = new SpinnerNumberModel(0, 0, 60, 1);
+		defaultLockDuration = new JSpinner(defaultLockDurationModel);
+
+		interface6051 = new JCheckBox();
+
+		FormLayout layout =
+				new FormLayout("right:pref, 3dlu, fill:pref",
+						"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc = new CellConstraints();
+		builder.addLabel("Solenoid activation time [ms]", cc.xy(1,
+				1));
+		builder.add(defaultActivationTime, cc.xy(3, 1));
+
+		builder.addLabel("Routing delay [ms]", cc
+				.xy(1, 3));
+		builder.add(defaultRoutingDelay, cc.xy(3, 3));
+
+		builder
+				.addLabel("Lock time (0 means forever) [s]", cc
+						.xy(1, 5));
+		builder.add(defaultLockDuration, cc.xy(3, 5));
+
+		builder.addLabel("Interface 6051 attached", cc.xy(1, 7));
+		builder.add(interface6051, cc.xy(3, 7));
+
+		return builder.getPanel();
+	}
+
+	private JPanel createServerTab() {
+
+		hostnameTextField = new JTextField();
+
+		portnumberTextField = new JTextField("12345", 15);
+
+		autoconnectCheckBox = new JCheckBox();
+		
+		FormLayout layout =
+				new FormLayout("right:pref, 3dlu, fill:pref",
+						"pref, 3dlu, pref, 3dlu, pref, 3dlu");
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc = new CellConstraints();
+		builder.addLabel("Hostname (Name or IP)", cc.xy(1, 1));
+		builder.add(hostnameTextField, cc.xy(3, 1));
+
+		builder.addLabel("Portnumber (e.g. 12345)", cc.xy(1, 3));
+		builder.add(portnumberTextField, cc.xy(3, 3));
+
+		builder.addLabel("Autoconnect", cc.xy(1, 5));
+		builder.add(autoconnectCheckBox, cc.xy(3, 5));
+
+		return builder.getPanel();
+	}
+
+	private JPanel createDatabaseTab() {
+
+		databaseHostField = new JTextField();
+
+		databaseNameField = new JTextField();
+		
+		databaseUserField = new JTextField();
+		
+		databasePasswordField = new JPasswordField();
+
+		
+		FormLayout layout =
+				new FormLayout("right:pref, 3dlu, fill:pref",
+						"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc = new CellConstraints();
+		builder.addLabel("Host", cc.xy(1, 1));
+		builder.add(databaseHostField, cc.xy(3, 1));
+
+		builder.addLabel("Database", cc.xy(1, 3));
+		builder.add(databaseNameField, cc.xy(3, 3));
+
+		builder.addLabel("User", cc.xy(1, 5));
+		builder.add(databaseUserField, cc.xy(3, 5));
+		
+		builder.addLabel("Password", cc.xy(1, 7));
+		builder.add(databasePasswordField, cc.xy(3, 7));
+
+		return builder.getPanel();
+	}
+
+	public boolean isCancelPressed() {
+		return cancelPressed;
+	}
+
+	public boolean isOkPressed() {
+		return okPressed;
+	}
+
+	private void loadPreferences() {
+		Preferences p = Preferences.getInstance();
+		locomotiveControlNumberModel.setValue(p
+				.getIntValue(LOCOMOTIVE_CONTROLES));
+		switchControlNumberModel.setValue(p.getIntValue(TURNOUT_CONTROLES));
+		routeControlNumberModel.setValue(p.getIntValue(ROUTE_CONTROLES));
+		keyBoardLayoutComboBox.setSelectedItem(p
+				.getStringValue(KEYBOARD_LAYOUT));
+		writeLog.setSelected(p.getBooleanValue(LOGGING));
+		fullscreen.setSelected(p.getBooleanValue(FULLSCREEN));
+		tabbedTrackCheckBox.setSelected(p.getBooleanValue(TABBED_TRACK));
+
+		defaultActivationTimeModel.setValue(p.getIntValue(ACTIVATION_TIME));
+		defaultRoutingDelayModel.setValue(p.getIntValue(ROUTING_DELAY));
+		defaultLockDurationModel.setValue(p.getIntValue(LOCK_DURATION));
+		interface6051.setSelected(p.getBooleanValue(INTERFACE_6051));
+		
+		hostnameTextField.setText(p.getStringValue(HOSTNAME));
+		portnumberTextField.setText(Integer.toString(p.getIntValue(PORT)));
+		autoconnectCheckBox.setSelected(p.getBooleanValue(AUTOCONNECT));
+		
+		databaseHostField.setText(p.getStringValue(DATABASE_HOST));
+		databaseNameField.setText(p.getStringValue(DATABASE_NAME));
+		databaseUserField.setText(p.getStringValue(DATABASE_USER));
+		databasePasswordField.setText(p.getStringValue(DATABASE_PWD));
+	}
+
+	public void savePreferences() {
+		Preferences p = Preferences.getInstance();
+		p.setIntValue(LOCOMOTIVE_CONTROLES, locomotiveControlNumberModel
+				.getNumber().intValue());
+		p.setIntValue(TURNOUT_CONTROLES, switchControlNumberModel.getNumber()
+				.intValue());
+		p.setIntValue(ROUTE_CONTROLES, routeControlNumberModel.getNumber()
+				.intValue());
+		p.setStringValue(KEYBOARD_LAYOUT, keyBoardLayoutComboBox
+				.getSelectedItem().toString());
+		p.setBooleanValue(LOGGING, writeLog.isSelected());
+		p.setBooleanValue(FULLSCREEN, fullscreen.isSelected());
+		p.setBooleanValue(TABBED_TRACK, tabbedTrackCheckBox.isSelected());
+
+		p.setIntValue(ACTIVATION_TIME, defaultActivationTimeModel.getNumber()
+				.intValue());
+		p.setIntValue(ROUTING_DELAY, defaultRoutingDelayModel.getNumber()
+				.intValue());
+		p.setIntValue(LOCK_DURATION, defaultLockDurationModel.getNumber()
+				.intValue());
+		p.setBooleanValue(INTERFACE_6051, interface6051.isSelected());
+
+		p.setStringValue(HOSTNAME, (String) hostnameTextField.getText());
+		p.setIntValue(PORT, Integer.parseInt(portnumberTextField.getText()));
+		p.setBooleanValue(AUTOCONNECT, autoconnectCheckBox.isSelected());
+		
+		p.setStringValue(DATABASE_HOST, (String) databaseNameField.getText());
+		p.setStringValue(DATABASE_NAME, (String) databaseNameField.getText());
+		p.setStringValue(DATABASE_USER, (String) databaseUserField.getText());
+		p.setStringValue(DATABASE_PWD, (String) databasePasswordField.getText());
+	}
 
 }

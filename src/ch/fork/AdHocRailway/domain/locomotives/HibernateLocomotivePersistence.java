@@ -34,7 +34,6 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		try {
 			getLocomotiveTypeByName("DELTA");
 		} catch (NoResultException ex) {
-			System.out.println("HERE");
 			LocomotiveType deltaType = new LocomotiveType(0, "DELTA");
 			deltaType.setDrivingSteps(14);
 			deltaType.setStepping(4);
@@ -44,7 +43,6 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		try {
 			getLocomotiveTypeByName("DIGITAL");
 		} catch (NoResultException ex) {
-			System.out.println("HERE");
 			LocomotiveType digitalType = new LocomotiveType(0, "DIGITAL");
 			digitalType.setDrivingSteps(28);
 			digitalType.setStepping(2);
