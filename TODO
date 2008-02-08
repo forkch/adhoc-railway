@@ -1,9 +1,6 @@
 - Clients duerfen nicht unendlich kommandos senden koennen (queue)
-- Lokauswahl speichern (pro User)
 - Sofort Stopp von Lok's (Bremsverz. ausschalten via F4)
 - Switches should do a GET to determine their state after init, adapt jsrcpc
-- Queue mit zuletzt geschalteten Weichen/Routen 
+- Stack mit zuletzt geschalteten Weichen/Routen 
 	-> Enter schaltet eine nach der anderen zurueck
-	-> Anzeigen der Queue
-- Weichenprogrammierung verbessern
-- Routenprogrammierung verbessern (Record-Modus)
+	-> Anzeigen der Stack

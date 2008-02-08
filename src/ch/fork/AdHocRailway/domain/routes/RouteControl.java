@@ -9,12 +9,13 @@ import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.AdHocRailway;
 
 public class RouteControl extends Control {
 
 	private static RouteControl instance;
 	
-	private RoutePersistenceIface persistence = HibernateRoutePersistence.getInstance();
+	private RoutePersistenceIface persistence = AdHocRailway.getInstance().getRoutePersistence();
 
 	private Map<Route, RouteChangeListener> listeners;
 

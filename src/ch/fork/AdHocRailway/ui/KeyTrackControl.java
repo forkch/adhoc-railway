@@ -43,13 +43,11 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 	private SRCPTurnoutControl turnoutControl = SRCPTurnoutControl.getInstance();
 
-	private TurnoutPersistenceIface turnoutPersistence = HibernateTurnoutPersistence
-			.getInstance();
+	private TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance().getTurnoutPersistence();
 
 	private RouteControlIface routeControl = SRCPRouteControl.getInstance();
 
-	private RoutePersistenceIface routePersistence = HibernateRoutePersistence
-			.getInstance();
+	private RoutePersistenceIface routePersistence = AdHocRailway.getInstance().getRoutePersistence();
 
 	public boolean routeMode;
 

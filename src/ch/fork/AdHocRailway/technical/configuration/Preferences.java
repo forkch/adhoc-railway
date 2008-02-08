@@ -50,6 +50,11 @@ public class Preferences implements PreferencesKeys {
         setBooleanValue(FULLSCREEN, false);
         setBooleanValue(AUTOCONNECT, false);
         setBooleanValue(TABBED_TRACK, true);
+        setBooleanValue(USE_DATABASE, false);
+        setStringValue(DATABASE_HOST, "localhost");
+        setStringValue(DATABASE_NAME, "adhocrailway");
+        setStringValue(DATABASE_USER, "adhocrailway");
+        setStringValue(DATABASE_PWD, "adhocrailway");
     }
 
     public static Preferences getInstance() {

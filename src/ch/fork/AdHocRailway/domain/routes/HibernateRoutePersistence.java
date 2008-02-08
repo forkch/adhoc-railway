@@ -30,6 +30,13 @@ public class HibernateRoutePersistence extends HibernatePersistence implements
 		this.routeItemCache = new ArrayListModel<RouteItem>();
 	}
 
+
+	public static RoutePersistenceIface getInstance() {
+		if (instance == null) {
+			instance = new HibernateRoutePersistence();
+		}
+		return instance;
+	}
 	private void updateRouteCache() {
 		routeCache.clear();
 		for(Route r : getAllRoutesDB()) {
@@ -74,14 +81,7 @@ public class HibernateRoutePersistence extends HibernatePersistence implements
 		HibernatePersistence.em = emf.createEntityManager();
 		HibernatePersistence.em.getTransaction().begin();
 	}
-
-
-	public static RoutePersistenceIface getInstance() {
-		if (instance == null) {
-			instance = new HibernateRoutePersistence();
-		}
-		return instance;
-	}
+	
 
 	/*
 	 * (non-Javadoc)

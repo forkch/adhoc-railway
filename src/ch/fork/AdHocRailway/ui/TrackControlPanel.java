@@ -62,8 +62,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private RouteControlIface routeControl = SRCPRouteControl.getInstance();
 
-	private RoutePersistenceIface routePersistence = HibernateRoutePersistence
-			.getInstance();
+	private RoutePersistenceIface routePersistence = AdHocRailway.getInstance().getRoutePersistence();
 
 	private Map<Integer, TurnoutGroup> indexToTurnoutGroup;
 
