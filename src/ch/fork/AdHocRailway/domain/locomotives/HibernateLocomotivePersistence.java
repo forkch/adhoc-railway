@@ -79,21 +79,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 
 	public void clear() throws LocomotivePersistenceException {
 		logger.debug("clear()");
-//		List<Locomotive> tempLocomotiveCache = new ArrayList<Locomotive>(
-//				getAllLocomotivesDB());
-//		for (Locomotive l : tempLocomotiveCache) {
-//			deleteLocomotive(l);
-//		}
-//		List<LocomotiveGroup> tempLocomotiveGroupCache = new ArrayList<LocomotiveGroup>(
-//				getAllLocomotiveGroupsDB());
-//		for (LocomotiveGroup group : tempLocomotiveGroupCache) {
-//			deleteLocomotiveGroup(group);
-//		}
-//		List<LocomotiveType> tempTurnoutTypeCache = new ArrayList<LocomotiveType>(
-//				getAllLocomotiveTypes());
-//		for (LocomotiveType type : tempTurnoutTypeCache) {
-//			deleteLocomotiveType(type);
-//		}
+		
 		EntityManager em = getEntityManager();
 		em.createNativeQuery("TRUNCATE TABLE locomotive").executeUpdate();
 		em.createNativeQuery("TRUNCATE TABLE locomotive_type").executeUpdate();
@@ -102,8 +88,8 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		locomotiveCache.clear();
 		locomotiveGroupCache.clear();
 		em.getTransaction().commit();
-		HibernatePersistence.em = emf.createEntityManager();
-		HibernatePersistence.em.getTransaction().begin();
+		super.em = emf.createEntityManager();
+		super.em.getTransaction().begin();
 	}
 	
 	/*

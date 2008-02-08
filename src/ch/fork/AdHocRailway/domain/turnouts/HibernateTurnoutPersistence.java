@@ -99,20 +99,6 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 
 	public void clear() throws TurnoutPersistenceException {
 		logger.debug("clear()");
-//		List<Turnout> tempTurnoutCache = new ArrayList<Turnout>(getAllTurnoutsDB());
-//		for (Turnout t : tempTurnoutCache) {
-//			deleteTurnout(t);
-//		}
-//		List<TurnoutGroup> tempTurnoutGroupCache = new ArrayList<TurnoutGroup>(
-//				getAllTurnoutGroupsDB());
-//		for (TurnoutGroup group : tempTurnoutGroupCache) {
-//			deleteTurnoutGroup(group);
-//		}
-//		List<TurnoutType> tempTurnoutTypeCache = new ArrayList<TurnoutType>(
-//				getAllTurnoutTypes());
-//		for (TurnoutType type : tempTurnoutTypeCache) {
-//			deleteTurnoutType(type);
-//		}
 		EntityManager em = getEntityManager();
 		em.createNativeQuery("TRUNCATE TABLE turnout").executeUpdate();
 		em.createNativeQuery("TRUNCATE TABLE turnout_type").executeUpdate();
@@ -123,8 +109,8 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 		numberToTurnoutCache.clear();
 		turnoutCache.clear();
 		em.getTransaction().commit();
-		HibernatePersistence.em = emf.createEntityManager();
-		HibernatePersistence.em.getTransaction().begin();
+		super.em = emf.createEntityManager();
+		super.em.getTransaction().begin();
 	}
 
 	/*
