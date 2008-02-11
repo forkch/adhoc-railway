@@ -204,7 +204,8 @@ public class TrackControlPanel
 			JScrollPane groupScrollPane = new JScrollPane(routeGroupTab,
 					JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			
+
+			groupScrollPane.setBorder(BorderFactory.createEmptyBorder());
 			groupScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 			groupScrollPane.getVerticalScrollBar().setBlockIncrement(10);
 			for (Route aRoute : routeGroup.getRoutes()) {
@@ -231,16 +232,20 @@ public class TrackControlPanel
 			indexToTurnoutGroup.put(i - 1, turnoutGroup);
 			WidgetTab switchGroupTab = new WidgetTab(maxTurnoutCols);
 			JScrollPane groupScrollPane =
-					new JScrollPane(switchGroupTab);
+					new JScrollPane(switchGroupTab,
+							JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+							JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			groupScrollPane.setBorder(BorderFactory.createEmptyBorder());
 			groupScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 			groupScrollPane.getVerticalScrollBar().setBlockIncrement(10);
+			
+			turnoutGroupsTabbedPane.add(groupScrollPane, "F" + i + ": "
+					+ turnoutGroup.getName());
+
 			for (Turnout turnout : turnoutGroup.getTurnouts()) {
 				TurnoutWidget switchWidget = new TurnoutWidget(turnout);
 				switchGroupTab.addWidget(switchWidget);
 			}
-			turnoutGroupsTabbedPane.add(groupScrollPane, "F" + i + ": "
-					+ turnoutGroup.getName());
-			switchGroupTab.setPreferredSize(groupScrollPane.getSize());
 			i++;
 		}
 	}

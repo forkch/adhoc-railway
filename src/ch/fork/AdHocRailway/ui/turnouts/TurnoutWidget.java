@@ -111,10 +111,11 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 		turnoutWidgetLayout.setConstraints(numberLabel,
 				turnoutWidgetConstraints);
 		add(numberLabel);
-		turnoutWidgetConstraints.gridx = 1;
-		descLabel = new JLabel(turnout.getDescription());
-		turnoutWidgetLayout.setConstraints(descLabel, turnoutWidgetConstraints);
-		add(descLabel);
+//		turnoutWidgetConstraints.gridx = 1;
+//		descLabel = new JLabel(turnout.getDescription());
+//		turnoutWidgetLayout.setConstraints(descLabel, turnoutWidgetConstraints);
+//		add(descLabel);
+		
 		turnoutWidgetConstraints.gridx = 0;
 		turnoutWidgetConstraints.gridy = 1;
 		turnoutWidgetConstraints.gridwidth = 2;
