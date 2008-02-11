@@ -309,12 +309,17 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 					UIConstants.DEFAULT_TEXTFIELD_COLOR);
 		}
 
-		int bus1 = ((Integer) bus1TextField.getValue()).intValue();
-		int address1 = ((Integer) address1TextField.getValue()).intValue();
-		Turnout aTurnout1 = turnoutPersistence.getTurnoutByAddressBus(bus1,
-				address1);
 		if (bus1Valid && address1Valid) {
-			if (aTurnout1 != null && !aTurnout1.equals(turnout)) {
+
+			int bus1 = ((Integer) bus1TextField.getValue()).intValue();
+			int address1 = ((Integer) address1TextField.getValue()).intValue();
+			boolean unique1 = true;
+			for (Turnout t : turnoutPersistence.getAllTurnouts()) {
+				if (t.getBus1() == bus1 && t.getAddress1() == address1
+						&& !t.equals(turnout))
+					unique1 = false;
+			}
+			if (!unique1) {
 				setSpinnerColor(bus1TextField, UIConstants.WARN_COLOR);
 				setSpinnerColor(address1TextField, UIConstants.WARN_COLOR);
 			} else {
@@ -349,9 +354,14 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				int bus2 = ((Integer) bus2TextField.getValue()).intValue();
 				int address2 = ((Integer) address2TextField.getValue())
 						.intValue();
-				Turnout aTurnout2 = turnoutPersistence.getTurnoutByAddressBus(
-						bus2, address2);
-				if (aTurnout2 != null && !aTurnout2.equals(turnout)) {
+				boolean unique2 = true;
+				for (Turnout t : turnoutPersistence.getAllTurnouts()) {
+					if (t.getBus2() == bus2
+							&& t.getAddress2() == address2
+							&& !t.equals(turnout))
+						unique2 = false;
+				}
+				if (!unique2) {
 					setSpinnerColor(bus2TextField, UIConstants.WARN_COLOR);
 					setSpinnerColor(address2TextField, UIConstants.WARN_COLOR);
 				} else {

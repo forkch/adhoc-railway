@@ -1,5 +1,6 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
 public interface TurnoutControlIface {
@@ -26,5 +27,11 @@ public interface TurnoutControlIface {
 	public void removeAllTurnoutChangeListener();
 
 	public void removeTurnoutChangeListener(TurnoutChangeListener listener);
+	
+	public void undoLastChange() throws TurnoutException;
+	
+	public void previousDeviceToDefault() throws TurnoutException;
+	
+	public TurnoutState getTurnoutState(Turnout turnout);
 
 }

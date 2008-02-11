@@ -3,8 +3,6 @@ package ch.fork.AdHocRailway.ui.routes;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -22,10 +20,8 @@ import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
 import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
-import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
-public class RouteWidget extends JPanel implements RouteChangeListener {
+public class StaticRouteWidget extends JPanel implements RouteChangeListener {
 
     private Route    route;
     private RouteControlIface routeControl;
@@ -35,10 +31,9 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
     private Icon         routeStartIcon;
     private JProgressBar routingProgress;
     private JPanel       southPanel;
-    private MouseAction  mouseAction;
 	private JLabel numberLabel;
 
-    public RouteWidget(Route route) {
+    public StaticRouteWidget(Route route) {
     	this.route = route;
         routeControl = SRCPRouteControl.getInstance();
         initGUI();
@@ -69,7 +64,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
         routingProgress.setBackground(Color.RED);
         routingProgress.setForeground(Color.GREEN);
-        addMouseListener(new MouseAction());
 
         northPanel.add(Box.createHorizontalStrut(5));
         northPanel.add(numberLabel);
@@ -91,32 +85,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         add(Box.createVerticalStrut(5));
     }
 
-    private class MouseAction extends MouseAdapter {
-
-        public void mouseClicked(MouseEvent e) {
-            try {
-                if (routeControl.isRouting(route))
-                    return;
-                if (e.getClickCount() == 1
-                    && e.getButton() == MouseEvent.BUTTON1) {
-                    if (routeControl.getRouteState(route) == RouteState.ENABLED)
-                        routeControl.disableRoute(route);
-                    else
-                        routeControl.enableRoute(route);
-                    removeMouseListener(mouseAction);
-                } else if (e.getClickCount() == 1
-                    && e.getButton() == MouseEvent.BUTTON3) {
-                    displayRouteConfig();
-                }
-            } catch (TurnoutException e1) {
-                ExceptionProcessor.getInstance().processException(e1);
-            }
-        }
-
-        private void displayRouteConfig() {
-
-        }
-    }
 
     public void routeChanged(Route r) {
         if (route.equals(r)) {
@@ -130,8 +98,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
                         iconLabel.setIcon(routeStopIcon);
                         routingProgress.setBackground(Color.RED);
                     }
-                    RouteWidget.this.revalidate();
-                    RouteWidget.this.repaint();
+                    StaticRouteWidget.this.revalidate();
+                    StaticRouteWidget.this.repaint();
                 }
             });
         }
@@ -142,8 +110,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
             public void run() {
                 routingProgress.setValue(routingProgress.getValue() + 1);
-                RouteWidget.this.revalidate();
-                RouteWidget.this.repaint();
+                StaticRouteWidget.this.revalidate();
+                StaticRouteWidget.this.repaint();
             }
         });
     }
@@ -154,8 +122,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
             public void run() {
                 routingProgress.setValue(routingProgress.getValue() - 1);
-                RouteWidget.this.revalidate();
-                RouteWidget.this.repaint();
+                StaticRouteWidget.this.revalidate();
+                StaticRouteWidget.this.repaint();
             }
         });
     }

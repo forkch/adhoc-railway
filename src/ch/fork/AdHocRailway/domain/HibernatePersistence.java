@@ -12,16 +12,15 @@ import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public abstract class HibernatePersistence {
 
-	protected EntityManagerFactory	emf;
-	protected EntityManager			em;
-	private Preferences				preferences;
+	protected static EntityManagerFactory	emf;
+	protected static EntityManager			em;
+	private static Preferences				preferences=Preferences.getInstance();
 
 	public HibernatePersistence() {
-		preferences = Preferences.getInstance();
 	}
 
 	@SuppressWarnings("unchecked")
-	public EntityManager getEntityManager() {
+	public static EntityManager getEntityManager() {
 		// Start EntityManagerFactory
 		if (emf == null) {
 			Map configOverrides = new HashMap();

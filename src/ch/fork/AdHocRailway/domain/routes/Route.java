@@ -15,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Sort;
@@ -55,21 +54,6 @@ public class Route extends Model implements java.io.Serializable,
 		ENABLED, DISABLED
 	};
 
-	@Transient
-	private RouteState routeState;
-
-	@Transient
-	private boolean changingRoute;
-
-	@Transient
-	public RouteState getRouteState() {
-		return routeState;
-	}
-
-	@Transient
-	protected void setRouteState(RouteState routeState) {
-		this.routeState = routeState;
-	}
 
 	public int compareTo(Route o) {
 		if (this == o)
@@ -196,15 +180,4 @@ public class Route extends Model implements java.io.Serializable,
 		this.routeItems = routeItems;
 		firePropertyChange(PROPERTYNAME_ROUTE_ITEMS, old, routeItems);
 	}
-
-	@Transient
-	public void setChangingRoute(boolean changingRoute) {
-		this.changingRoute = changingRoute;
-	}
-
-	@Transient
-	public boolean isChangingRoute() {
-		return changingRoute;
-	}
-
 }

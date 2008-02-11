@@ -1,34 +1,39 @@
 package ch.fork.AdHocRailway.domain.routes;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.Control;
-import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public class SRCPRouteControl extends Control implements RouteControlIface {
-	private static Logger logger = Logger.getLogger(SRCPRouteControl.class);
-	private static RouteControlIface instance;
+	private static Logger					logger				= Logger
+																		.getLogger(SRCPRouteControl.class);
+	private static RouteControlIface		instance;
+
+	private RoutePersistenceIface			persistence;
+
+	private Map<Route, Set<RouteChangeListener>>	listeners;
+
+	private RouteState						lastRouteState;
+
+	private Route							lastChangedRoute;
 	
-	private RoutePersistenceIface persistence;
+	private Map<Route, SRCPRoute>			srcpRoutes;
 
-	private Map<Route, RouteChangeListener> listeners;
-
-	private RouteState lastRouteState;
-	
-	private Route lastChangedRoute;
-
-	protected String ERR_TOGGLE_FAILED = "Toggle of switch failed";
+	protected String						ERR_TOGGLE_FAILED	= "Toggle of switch failed";
 
 	private SRCPRouteControl() {
 		logger.info("SRCPRouteControl loaded");
-		listeners = new HashMap<Route, RouteChangeListener>();
+		listeners = new HashMap<Route, Set<RouteChangeListener>>();
+		srcpRoutes = new HashMap<Route, SRCPRoute>();
 	}
 
 	public static RouteControlIface getInstance() {
@@ -38,86 +43,124 @@ public class SRCPRouteControl extends Control implements RouteControlIface {
 		return instance;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see ch.fork.AdHocRailway.domain.routes.RouteControlIface#enableRoute(ch.fork.AdHocRailway.domain.routes.Route)
 	 */
 	public void enableRoute(Route r) throws TurnoutException {
+		checkRoute(r);
+		SRCPRoute sRoute = srcpRoutes.get(r);
 		logger.debug("enabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
-		Router switchRouter = new Router(r, true, waitTime, listeners.get(r));
+		Router switchRouter = new Router(r, sRoute, true, waitTime, listeners.get(r));
 		switchRouter.start();
 		lastChangedRoute = r;
 		lastRouteState = RouteState.ENABLED;
 	}
 
-	/* (non-Javadoc)
+	private void checkRoute(Route r) {
+		if(srcpRoutes.get(r) == null) {
+			srcpRoutes.put(r, new SRCPRoute(r));
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see ch.fork.AdHocRailway.domain.routes.RouteControlIface#disableRoute(ch.fork.AdHocRailway.domain.routes.Route)
 	 */
 	public void disableRoute(Route r) throws TurnoutException {
+		checkRoute(r);
+		SRCPRoute sRoute = srcpRoutes.get(r);
 		logger.debug("disabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
-		Router switchRouter = new Router(r, false, waitTime, listeners.get(r));
+		Router switchRouter = new Router(r, sRoute, false, waitTime, listeners.get(r));
 		switchRouter.start();
 		lastChangedRoute = r;
 		lastRouteState = RouteState.DISABLED;
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.fork.AdHocRailway.domain.routes.RouteControlIface#addRouteChangeListener(ch.fork.AdHocRailway.domain.routes.Route, ch.fork.AdHocRailway.domain.routes.RouteChangeListener)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.fork.AdHocRailway.domain.routes.RouteControlIface#addRouteChangeListener(ch.fork.AdHocRailway.domain.routes.Route,
+	 *      ch.fork.AdHocRailway.domain.routes.RouteChangeListener)
 	 */
 	public void addRouteChangeListener(Route r, RouteChangeListener listener) {
-		listeners.put(r, listener);
+		if(listeners.get(r) == null)
+			listeners.put(r, new HashSet<RouteChangeListener>());
+		listeners.get(r).add(listener);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see ch.fork.AdHocRailway.domain.routes.RouteControlIface#removeAllRouteChangeListeners()
 	 */
 	public void removeAllRouteChangeListeners() {
 		listeners.clear();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see ch.fork.AdHocRailway.domain.routes.RouteControlIface#removeRouteChangeListener(ch.fork.AdHocRailway.domain.routes.Route)
 	 */
-	public void removeRouteChangeListener(Route r) {
-		listeners.remove(r);
+	public void removeRouteChangeListener(Route r, RouteChangeListener listener) {
+		listeners.get(r).remove(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.fork.AdHocRailway.domain.routes.RouteControlIface#undoLastChange()
-	 */
-	@Override
-	public void undoLastChange() throws ControlException {
+	public void undoLastChange() throws RouteException {
 		if (lastChangedRoute == null)
 			return;
-		switch (lastRouteState) {
-		case ENABLED:
-			disableRoute(lastChangedRoute);
-			break;
-		case DISABLED:
-			enableRoute(lastChangedRoute);
-			break;
+		try {
+			switch (lastRouteState) {
+			case ENABLED:
+
+				disableRoute(lastChangedRoute);
+
+				break;
+			case DISABLED:
+				enableRoute(lastChangedRoute);
+				break;
+			}
+			lastChangedRoute = null;
+			lastRouteState = null;
+		} catch (TurnoutException e) {
+			throw new RouteException(e);
 		}
-		lastChangedRoute = null;
-		lastRouteState = null;
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.fork.AdHocRailway.domain.routes.RouteControlIface#previousDeviceToDefault()
-	 */
-	@Override
-	public void previousDeviceToDefault() throws ControlException {
+	public void previousDeviceToDefault() throws RouteException {
 		if (lastChangedRoute == null)
 			return;
-		disableRoute(lastChangedRoute);
+		try {
+			disableRoute(lastChangedRoute);
+		} catch (TurnoutException e) {
+			throw new RouteException(e);
+		}
 		lastChangedRoute = null;
 		lastRouteState = null;
 	}
 
 	public void setRoutePersistence(RoutePersistenceIface routePersistence) {
 		this.persistence = routePersistence;
-		
+
 	}
+
+	public RouteState getRouteState(Route route) {
+		checkRoute(route);
+		SRCPRoute sRoute = srcpRoutes.get(route);
+		return sRoute.getRouteState();
+	}
+
+	public boolean isRouting(Route route) {
+		checkRoute(route);
+		SRCPRoute sRoute = srcpRoutes.get(route);
+		return sRoute.isRouting();
+	}
+
 }

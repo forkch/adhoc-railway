@@ -30,7 +30,6 @@ import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.Control;
-import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.exception.InvalidAddressException;
 import ch.fork.AdHocRailway.domain.exception.NoSessionException;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotive.Direction;
@@ -345,25 +344,9 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#undoLastChange()
-	 */
-	@Override
-	public void undoLastChange() throws ControlException {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#previousDeviceToDefault()
-	 */
-	@Override
-	public void previousDeviceToDefault() throws ControlException {
-		// TODO Auto-generated method stub
-	}
-
 	public void setLocomotivePersistence(LocomotivePersistenceIface persistence) {
 		this.persistence = persistence;
+		
 	}
 
 }

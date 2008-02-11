@@ -180,6 +180,7 @@ public class HibernateRoutePersistence extends HibernatePersistence implements
 
 		em.getTransaction().commit();
 		em.getTransaction().begin();
+		updateRouteCache();
 	}
 
 	public ArrayListModel<RouteGroup> getAllRouteGroups() {
@@ -247,6 +248,7 @@ public class HibernateRoutePersistence extends HibernatePersistence implements
 		em.merge(routeGroup);
 		em.getTransaction().commit();
 		em.getTransaction().begin();
+		updateRouteGroupCache();
 	}
 
 	/*

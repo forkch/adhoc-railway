@@ -33,7 +33,7 @@ public class XMLExporter_0_3 {
 		sb = new StringBuffer();
 		sb.append("<?xml version=\"1.0\"?>\n");
 		sb.append("<RailControl xmlns=\"http://www.fork.ch/RailControl\" "
-				+ "ExporterVersion=\"0.2\">\n");
+				+ "ExporterVersion=\"0.3\">\n");
 
 		exportSwitchConfiguration();
 		exportRouteConfiguration();

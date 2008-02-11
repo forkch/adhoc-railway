@@ -5,7 +5,8 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
@@ -17,45 +18,59 @@ import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
-import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
-import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
+import ch.fork.AdHocRailway.ui.turnouts.StaticTurnoutWidget;
 
 public class KeyTrackControl extends SimpleInternalFrame {
 
-	private Segment7 seg1;
+	private Segment7				seg1;
 
-	private Segment7 seg2;
+	private Segment7				seg2;
 
-	private Segment7 seg3;
+	private Segment7				seg3;
 
-	private StringBuffer enteredNumberKeys;
+	private StringBuffer			enteredNumberKeys;
 
-	private JPanel switchesHistory;
+	private JPanel					switchesHistory;
+
+	private Deque<Object>			historyStack;
+
+	private Deque<JPanel>			historyWidgets;
+
+	private TurnoutControlIface		turnoutControl		= AdHocRailway
+																.getInstance()
+																.getTurnoutControl();
+
+	private TurnoutPersistenceIface	turnoutPersistence	= AdHocRailway
+																.getInstance()
+																.getTurnoutPersistence();
+
+	private RouteControlIface		routeControl		= AdHocRailway
+																.getInstance()
+																.getRouteControl();
+
+	private RoutePersistenceIface	routePersistence	= AdHocRailway
+																.getInstance()
+																.getRoutePersistence();
+
+	public boolean					routeMode;
+
+	public boolean					changedSwitch		= false;
+
+	public boolean					changedRoute		= false;
 	
-	private Stack<Object> historyStack;
+	public static final int HISTORY_LENGTH = 5;
 
-	private SRCPTurnoutControl turnoutControl = SRCPTurnoutControl.getInstance();
-
-	private TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance().getTurnoutPersistence();
-
-	private RouteControlIface routeControl = SRCPRouteControl.getInstance();
-
-	private RoutePersistenceIface routePersistence = AdHocRailway.getInstance().getRoutePersistence();
-
-	public boolean routeMode;
-
-	public boolean changedSwitch = false;
-
-	public boolean changedRoute = false;
+	private JScrollPane	switchesHistoryPane;
 
 	public KeyTrackControl() {
 		super("Track Control / History");
-		this.historyStack = new Stack<Object>();
+		this.historyStack = new ArrayDeque<Object>();
+		this.historyWidgets = new ArrayDeque<JPanel>();
 		enteredNumberKeys = new StringBuffer();
 		initGUI();
 		initKeyboardActions();
@@ -68,8 +83,11 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 		BoxLayout boxLayout = new BoxLayout(switchesHistory, BoxLayout.Y_AXIS);
 		switchesHistory.setLayout(boxLayout);
-		
-		sh1.add(new JScrollPane(switchesHistory), BorderLayout.NORTH);
+
+		switchesHistoryPane = new JScrollPane(switchesHistory,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		sh1.add(switchesHistoryPane, BorderLayout.CENTER);
 
 		add(segmentPanelNorth, BorderLayout.NORTH);
 		add(sh1, BorderLayout.CENTER);
@@ -128,27 +146,37 @@ public class KeyTrackControl extends SimpleInternalFrame {
 	}
 
 	private void updateHistory(Object obj) {
-		if(historyStack.size() > 3) {
-			historyStack.remove(3);
+		if (historyStack.size() == HISTORY_LENGTH) {
+			historyStack.removeLast();
+			historyWidgets.removeLast();
+
 		}
 		historyStack.push(obj);
+		JPanel w = null;
+		if (obj instanceof Turnout) {
+			Turnout turnout = (Turnout) obj;
+
+			w = new StaticTurnoutWidget(turnout, turnoutControl
+					.getTurnoutState(turnout));
+		} else if (obj instanceof Route) {
+			w = new RouteWidget((Route) obj);
+		} else {
+			return;
+		}
+		historyWidgets.push(w);
+		updateHistory();
+	}
+
+	private void updateHistory() {
 		switchesHistory.removeAll();
-		for(int i = 0 ; i < historyStack.size(); i++) {
-			Object routeTurnout = historyStack.get(i);
-			JPanel w = null;
-			if(routeTurnout instanceof Turnout) {
-				w = new TurnoutWidget((Turnout)routeTurnout);
-			} else if(routeTurnout instanceof Route) {
-				w = new RouteWidget((Route)routeTurnout);
-			} else {
-				return;
-			}
-			switchesHistory.add(w);
+
+		for (JPanel p : historyWidgets) {
+			switchesHistory.add(p);
 		}
 		revalidate();
 		repaint();
 	}
-	
+
 	private void resetSegmentDisplay() {
 		enteredNumberKeys = new StringBuffer();
 		seg1.setValue(-1);
@@ -207,14 +235,18 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 			try {
 				if (enteredNumberKeys.toString().equals("")) {
-					if (changedSwitch) {
-						turnoutControl.previousDeviceToDefault();
-					} else if (changedRoute) {
-						routeControl.previousDeviceToDefault();
+					Object obj = historyStack.pop();
+					if (obj instanceof Turnout) {
+						Turnout t = (Turnout) obj;
+						turnoutControl.setDefaultState(t);
+					} else if (obj instanceof Route) {
+						Route r = (Route) obj;
+						routeControl.disableRoute(r);
+					} else {
+						return;
 					}
-					changedSwitch = false;
-					changedRoute = false;
-
+					historyWidgets.pop();
+					updateHistory();
 					return;
 				}
 				String enteredNumberAsString = enteredNumberKeys.toString();
@@ -260,8 +292,6 @@ public class KeyTrackControl extends SimpleInternalFrame {
 			} else if (e.getActionCommand().equals("\n")) {
 				turnoutControl.setDefaultState(searchedTurnout);
 			}
-			changedRoute = false;
-			changedSwitch = true;
 			updateHistory(searchedTurnout);
 			resetSegmentDisplay();
 		}
@@ -275,7 +305,8 @@ public class KeyTrackControl extends SimpleInternalFrame {
 				resetSegmentDisplay();
 				return;
 			}
-			if (e.getActionCommand().equals("+") || e.getActionCommand().equals("bs")) {
+			if (e.getActionCommand().equals("+")
+					|| e.getActionCommand().equals("bs")) {
 				routeControl.enableRoute(searchedRoute);
 			} else if (e.getActionCommand().equals("\n")) {
 				routeControl.disableRoute(searchedRoute);
@@ -283,9 +314,6 @@ public class KeyTrackControl extends SimpleInternalFrame {
 				routeControl.enableRoute(searchedRoute);
 			}
 
-			changedRoute = true;
-			changedSwitch = false;
-			
 			updateHistory(searchedRoute);
 			resetSegmentDisplay();
 		}

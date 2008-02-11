@@ -22,7 +22,6 @@
 package ch.fork.AdHocRailway.ui;
 
 import java.awt.AWTEvent;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;

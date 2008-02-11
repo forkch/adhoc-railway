@@ -72,6 +72,7 @@ public class PreferencesDialog
 	private JTextField	databaseNameField;
 	private JTextField	databaseUserField;
 	private JTextField	databasePasswordField;
+	private JCheckBox useDatabaseCheckBox;
 
 	public PreferencesDialog(JFrame owner) {
 		super(owner, "Preferences", true);
@@ -214,7 +215,7 @@ public class PreferencesDialog
 
 	private JPanel createServerTab() {
 
-		hostnameTextField = new JTextField();
+		hostnameTextField = new JTextField(15);
 
 		portnumberTextField = new JTextField("12345", 15);
 
@@ -239,31 +240,37 @@ public class PreferencesDialog
 
 	private JPanel createDatabaseTab() {
 
-		databaseHostField = new JTextField();
+		useDatabaseCheckBox = new JCheckBox();
+		
+		databaseHostField = new JTextField(15);
 
-		databaseNameField = new JTextField();
+		databaseNameField = new JTextField(15);
 		
-		databaseUserField = new JTextField();
+		databaseUserField = new JTextField(15);
 		
-		databasePasswordField = new JPasswordField();
+		databasePasswordField = new JPasswordField(15);
 
 		
 		FormLayout layout =
 				new FormLayout("right:pref, 3dlu, fill:pref",
-						"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
+						"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
-		builder.addLabel("Host", cc.xy(1, 1));
-		builder.add(databaseHostField, cc.xy(3, 1));
-
-		builder.addLabel("Database", cc.xy(1, 3));
-		builder.add(databaseNameField, cc.xy(3, 3));
-
-		builder.addLabel("User", cc.xy(1, 5));
-		builder.add(databaseUserField, cc.xy(3, 5));
 		
-		builder.addLabel("Password", cc.xy(1, 7));
-		builder.add(databasePasswordField, cc.xy(3, 7));
+		builder.addLabel("Use Database", cc.xy(1, 1));
+		builder.add(useDatabaseCheckBox, cc.xy(3, 1));
+
+		builder.addLabel("Host", cc.xy(1, 3));
+		builder.add(databaseHostField, cc.xy(3, 3));
+
+		builder.addLabel("Database", cc.xy(1, 5));
+		builder.add(databaseNameField, cc.xy(3, 5));
+
+		builder.addLabel("User", cc.xy(1, 7));
+		builder.add(databaseUserField, cc.xy(3, 7));
+		
+		builder.addLabel("Password", cc.xy(1, 9));
+		builder.add(databasePasswordField, cc.xy(3, 9));
 
 		return builder.getPanel();
 	}
@@ -297,6 +304,7 @@ public class PreferencesDialog
 		portnumberTextField.setText(Integer.toString(p.getIntValue(PORT)));
 		autoconnectCheckBox.setSelected(p.getBooleanValue(AUTOCONNECT));
 		
+		useDatabaseCheckBox.setSelected(p.getBooleanValue(USE_DATABASE));
 		databaseHostField.setText(p.getStringValue(DATABASE_HOST));
 		databaseNameField.setText(p.getStringValue(DATABASE_NAME));
 		databaseUserField.setText(p.getStringValue(DATABASE_USER));
@@ -329,7 +337,8 @@ public class PreferencesDialog
 		p.setIntValue(PORT, Integer.parseInt(portnumberTextField.getText()));
 		p.setBooleanValue(AUTOCONNECT, autoconnectCheckBox.isSelected());
 		
-		p.setStringValue(DATABASE_HOST, (String) databaseNameField.getText());
+		p.setBooleanValue(USE_DATABASE, useDatabaseCheckBox.isSelected());
+		p.setStringValue(DATABASE_HOST, (String) databaseHostField.getText());
 		p.setStringValue(DATABASE_NAME, (String) databaseNameField.getText());
 		p.setStringValue(DATABASE_USER, (String) databaseUserField.getText());
 		p.setStringValue(DATABASE_PWD, (String) databasePasswordField.getText());

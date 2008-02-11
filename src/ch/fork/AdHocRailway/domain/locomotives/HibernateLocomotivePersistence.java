@@ -187,6 +187,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		em.merge(locomotive);
 		em.getTransaction().commit();
 		em.getTransaction().begin();
+		updateLocomotiveCache();
 	}
 
 	public ArrayListModel<LocomotiveGroup> getAllLocomotiveGroups() {
@@ -254,6 +255,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		em.merge(group);
 		em.getTransaction().commit();
 		em.getTransaction().begin();
+		updateLocomotiveGroupCache();
 	}
 
 	/*

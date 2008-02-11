@@ -19,90 +19,129 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.technical.configuration;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
 
 public class Preferences implements PreferencesKeys {
-    private Map<String, String> preferences;
-    private List<String>        hostnames;
-    private static Preferences  instance                = null;
+	private static Logger		logger		= Logger
+													.getLogger(Preferences.class);
+	private Map<String, String>	preferences;
+	private List<String>		hostnames;
+	private static Preferences	instance	= null;
 
-    private Preferences() {
-        preferences = new HashMap<String, String>();
-        hostnames = new ArrayList<String>();
-        hostnames.add("localhost");
-        setStringValue(HOSTNAME, "localhost");
-        setIntValue(PORT, 12345);
-        setIntValue(ACTIVATION_TIME, 50);
-        setIntValue(ROUTING_DELAY, 250);
-        setIntValue(LOCK_DURATION, 0);
-        setIntValue(LOCOMOTIVE_CONTROLES, 4);
-        setStringValue(KEYBOARD_LAYOUT, "Swiss German");
-        setStringValue(INTERFACE_6051, "N");
-        setIntValue(TURNOUT_CONTROLES, 5);
-        setIntValue(ROUTE_CONTROLES, 5);
-        setBooleanValue(LOGGING, true);
-        setBooleanValue(FULLSCREEN, false);
-        setBooleanValue(AUTOCONNECT, false);
-        setBooleanValue(TABBED_TRACK, false);
-        setBooleanValue(USE_DATABASE, false);
-        setStringValue(DATABASE_HOST, "localhost");
-        setStringValue(DATABASE_NAME, "adhocrailway");
-        setStringValue(DATABASE_USER, "adhocrailway");
-        setStringValue(DATABASE_PWD, "adhocrailway");
-    }
+	private Preferences() {
 
-    public static Preferences getInstance() {
-        if (instance == null) {
-            instance = new Preferences();
-            return instance;
-        } else {
-            return instance;
-        }
-    }
+		preferences = new HashMap<String, String>();
+		hostnames = new ArrayList<String>();
+		hostnames.add("localhost");
+		setStringValue(HOSTNAME, "localhost");
+		setIntValue(PORT, 12345);
+		setIntValue(ACTIVATION_TIME, 50);
+		setIntValue(ROUTING_DELAY, 250);
+		setIntValue(LOCK_DURATION, 0);
+		setIntValue(LOCOMOTIVE_CONTROLES, 4);
+		setStringValue(KEYBOARD_LAYOUT, "Swiss German");
+		setStringValue(INTERFACE_6051, "N");
+		setIntValue(TURNOUT_CONTROLES, 5);
+		setIntValue(ROUTE_CONTROLES, 5);
+		setBooleanValue(LOGGING, true);
+		setBooleanValue(FULLSCREEN, false);
+		setBooleanValue(AUTOCONNECT, false);
+		setBooleanValue(TABBED_TRACK, true);
+		setBooleanValue(USE_DATABASE, false);
 
-    public void setStringValue(String key, String value) {
-        preferences.put(key, value);
-    }
+		File currentDirConfig = new File("./adhocrailway.conf");
+		File homeDirConfig = new File(System.getProperty("user.home")
+				+ File.separator + ".adhocrailway.conf");
 
-    public String getStringValue(String key) {
-        return preferences.get(key);
-    }
+		if (currentDirConfig.exists()) {
+			Properties props = new Properties();
+			try {
+				logger.info("found adhocrailway.conf in current directory");
+				props.load(new FileInputStream(currentDirConfig));
+				for (Object key : props.keySet()) {
+					setStringValue(key.toString(), props.getProperty(
+							key.toString()).toString());
+				}
+			} catch (FileNotFoundException e) {
 
-    public void setIntValue(String key, int value) {
-        preferences.put(key, Integer.toString(value));
-    }
+			} catch (IOException e) {
+			}
 
-    public int getIntValue(String key) {
-        return Integer.parseInt(preferences.get(key));
-    }
+		}
+		if (homeDirConfig.exists()) {
+			Properties props = new Properties();
+			try {
+				logger.info("found .adhocrailway.conf in users home directory");
+				props.load(new FileInputStream(homeDirConfig));
+				for (Object key : props.keySet()) {
+					setStringValue(key.toString(), props.getProperty(
+							key.toString()).toString());
+				}
+			} catch (FileNotFoundException e) {
 
-    public void setBooleanValue(String key, boolean value) {
-        preferences.put(key, Boolean.toString(value));
-    }
+			} catch (IOException e) {
+			}
+		}
+	}
 
-    public boolean getBooleanValue(String key) {
-        return Boolean.parseBoolean(preferences.get(key));
-    }
+	public static Preferences getInstance() {
+		if (instance == null) {
+			instance = new Preferences();
+			return instance;
+		} else {
+			return instance;
+		}
+	}
 
-    public List<String> getHostnames() {
-        return hostnames;
-    }
+	public void setStringValue(String key, String value) {
+		preferences.put(key, value);
+	}
 
-    public void setHostnames(List<String> hostnames) {
-        this.hostnames = hostnames;
-    }
+	public String getStringValue(String key) {
+		return preferences.get(key);
+	}
 
-    public Map<String, String> getPreferences() {
-        return preferences;
-    }
-    
-    public void setPreferences(Map<String, String> preferences) {
-        this.preferences = preferences;
-    }
+	public void setIntValue(String key, int value) {
+		setStringValue(key, Integer.toString(value));
+	}
+
+	public int getIntValue(String key) {
+		return Integer.parseInt(preferences.get(key));
+	}
+
+	public void setBooleanValue(String key, boolean value) {
+		setStringValue(key, Boolean.toString(value));
+	}
+
+	public boolean getBooleanValue(String key) {
+		return Boolean.parseBoolean(preferences.get(key));
+	}
+
+	public List<String> getHostnames() {
+		return hostnames;
+	}
+
+	public void setHostnames(List<String> hostnames) {
+		this.hostnames = hostnames;
+	}
+
+	public Map<String, String> getPreferences() {
+		return preferences;
+	}
+
+	public void setPreferences(Map<String, String> preferences) {
+		this.preferences = preferences;
+	}
 }

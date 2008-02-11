@@ -59,6 +59,8 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 			TurnoutType threewayType = new TurnoutType(0, "THREEWAY");
 			addTurnoutType(threewayType);
 		}
+		updateTurnoutCache();
+		updateTurnoutGroupCache();
 	}
 
 	public static TurnoutPersistenceIface getInstance() {
@@ -256,6 +258,7 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 			throw new TurnoutPersistenceException("Duplicate Number");
 		}
 		em.getTransaction().begin();
+		updateTurnoutCache();
 	}
 
 	public ArrayListModel<TurnoutGroup> getAllTurnoutGroups() {

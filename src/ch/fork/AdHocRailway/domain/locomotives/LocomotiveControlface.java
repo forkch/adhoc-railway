@@ -1,6 +1,5 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
-import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotive.Direction;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 
@@ -82,10 +81,6 @@ public interface LocomotiveControlface {
 			LocomotiveChangeListener l);
 
 	public abstract void removeAllLocomotiveChangeListener();
-
-	public abstract void undoLastChange() throws ControlException;
-
-	public abstract void previousDeviceToDefault() throws ControlException;
 
 	public void update();
 

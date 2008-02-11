@@ -31,7 +31,6 @@ import ch.fork.AdHocRailway.domain.Address;
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.Control;
 import ch.fork.AdHocRailway.domain.ControlObject;
-import ch.fork.AdHocRailway.domain.exception.ControlException;
 import ch.fork.AdHocRailway.domain.locking.exception.LockingException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -181,17 +180,5 @@ public class SRCPLockControl extends Control implements LOCKInfoListener, Consta
 			return session.getCommandChannelID();
 		else
 			return -1;
-	}
-
-	@Override
-	public void undoLastChange() throws ControlException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void previousDeviceToDefault() throws ControlException {
-		// TODO Auto-generated method stub
-
 	}
 }

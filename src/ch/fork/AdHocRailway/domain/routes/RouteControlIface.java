@@ -1,6 +1,7 @@
 package ch.fork.AdHocRailway.domain.routes;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
+import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
 import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
 public interface RouteControlIface {
@@ -14,7 +15,8 @@ public interface RouteControlIface {
 
 	public abstract void removeAllRouteChangeListeners();
 
-	public abstract void removeRouteChangeListener(Route r);
+	public abstract void removeRouteChangeListener(Route r,
+			RouteChangeListener listener);
 
 	public abstract void undoLastChange() throws ControlException;
 
@@ -22,5 +24,9 @@ public interface RouteControlIface {
 
 	public abstract void setRoutePersistence(
 			RoutePersistenceIface routePersistence);
+
+	public abstract RouteState getRouteState(Route route);
+
+	public abstract boolean isRouting(Route route);
 
 }

@@ -50,31 +50,31 @@ import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 
 public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 		LockChangeListener {
-	private TurnoutControlIface turnoutControl;
+	private TurnoutControlIface		turnoutControl;
 
-	private static final long serialVersionUID = 1L;
+	private static final long		serialVersionUID	= 1L;
 
-	private Turnout turnout;
+	private Turnout					turnout;
 
-	private JLabel numberLabel;
+	private JLabel					numberLabel;
 
-	private JLabel descLabel;
+	private JLabel					descLabel;
 
-	private TurnoutCanvas turnoutCanvas;
+	private TurnoutCanvas			turnoutCanvas;
 
-	private GridBagLayout turnoutWidgetLayout;
+	private GridBagLayout			turnoutWidgetLayout;
 
-	private GridBagConstraints turnoutWidgetConstraints;
+	private GridBagConstraints		turnoutWidgetConstraints;
 
-	private TurnoutState actualTurnoutState = TurnoutState.UNDEF;
+	private TurnoutState			actualTurnoutState	= TurnoutState.UNDEF;
 
-	private boolean widgetEnabled;
+	private boolean					widgetEnabled;
 
-	private Color defaultBackground;
+	private Color					defaultBackground;
 
-	private boolean testMode;
+	private boolean					testMode;
 
-	private TurnoutPersistenceIface turnoutPersistence;
+	private TurnoutPersistenceIface	turnoutPersistence;
 
 	public TurnoutWidget(Turnout turnout) {
 		this(turnout, false);
@@ -111,11 +111,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 		turnoutWidgetLayout.setConstraints(numberLabel,
 				turnoutWidgetConstraints);
 		add(numberLabel);
-//		turnoutWidgetConstraints.gridx = 1;
-//		descLabel = new JLabel(turnout.getDescription());
-//		turnoutWidgetLayout.setConstraints(descLabel, turnoutWidgetConstraints);
-//		add(descLabel);
-		
+
 		turnoutWidgetConstraints.gridx = 0;
 		turnoutWidgetConstraints.gridy = 1;
 		turnoutWidgetConstraints.gridwidth = 2;
@@ -146,9 +142,14 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 		if (bus1Valid && address1Valid) {
 			int bus1 = turnout.getBus1();
 			int address1 = turnout.getAddress1();
-			Turnout aTurnout1 = turnoutPersistence.getTurnoutByAddressBus(bus1,
-					address1);
-			if (aTurnout1 != null && !aTurnout1.equals(turnout)) {
+
+			boolean unique1 = true;
+			for (Turnout t : turnoutPersistence.getAllTurnouts()) {
+				if (t.getBus1() == bus1 && t.getAddress1() == address1
+						&& !t.equals(turnout))
+					unique1 = false;
+			}
+			if (!unique1) {
 				setBackground(UIConstants.WARN_COLOR);
 			} else {
 				setBackground(UIConstants.DEFAULT_PANEL_COLOR);
@@ -174,9 +175,14 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 			if (bus2Valid && address2Valid) {
 				int bus2 = turnout.getBus2();
 				int address2 = turnout.getAddress2();
-				Turnout aTurnout2 = turnoutPersistence.getTurnoutByAddressBus(
-						bus2, address2);
-				if (aTurnout2 != null && !aTurnout2.equals(turnout)) {
+				boolean unique2 = true;
+				for (Turnout t : turnoutPersistence.getAllTurnouts()) {
+					if (t.getBus2() == bus2
+							&& t.getAddress2() == address2
+							&& !t.equals(turnout))
+						unique2 = false;
+				}
+				if (!unique2) {
 					setBackground(UIConstants.WARN_COLOR);
 				} else {
 					setBackground(UIConstants.DEFAULT_PANEL_COLOR);
@@ -186,11 +192,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 	}
 
 	public void lockChanged(ControlObject changedLock) {
-		// TODO reimplement
-		// if (changedLock instanceof Turnout) {
-		// Turnout changedSwitch = (Turnout) changedLock;
-		// turnoutChanged(changedSwitch);
-		// }
 	}
 
 	private class MouseAction extends MouseAdapter {
@@ -234,7 +235,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					numberLabel.setText(Integer.toString(turnout.getNumber()));
-					descLabel.setText(turnout.getDescription());
 					turnoutCanvas.setTurnoutState(actualTurnoutState);
 					TurnoutWidget.this.revalidate();
 					TurnoutWidget.this.repaint();

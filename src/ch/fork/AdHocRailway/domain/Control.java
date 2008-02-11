@@ -21,7 +21,6 @@
 
 package ch.fork.AdHocRailway.domain;
 
-import ch.fork.AdHocRailway.domain.exception.ControlException;
 import de.dermoba.srcp.client.SRCPSession;
 
 /**
@@ -38,9 +37,4 @@ public abstract class Control {
 	public Control() {
 		
 	}
-
-
-	abstract public void undoLastChange() throws ControlException;
-
-	abstract public void previousDeviceToDefault() throws ControlException;
 }

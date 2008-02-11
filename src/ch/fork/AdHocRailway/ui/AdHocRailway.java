@@ -31,6 +31,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.ConnectException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -79,6 +82,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.technical.configuration.exporter.XMLExporter_0_3;
 import ch.fork.AdHocRailway.technical.configuration.importer.XMLImporter;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
@@ -350,7 +354,7 @@ public class AdHocRailway
 			extends AbstractAction {
 
 		public OpenAction() {
-			super("Open", createImageIcon("fileopen.png"));
+			super("Open\u2026", createImageIcon("fileopen.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -380,6 +384,39 @@ public class AdHocRailway
 			locomotiveControl.setLocomotivePersistence(locomotivePersistence);
 			updateGUI();
 
+		}
+	}
+	
+	private class SaveAction extends AbstractAction {
+		public SaveAction() {
+			super("Save\u2026", createImageIcon("filesave.png"));
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			
+			JFileChooser fileChooser = new JFileChooser(new File("."));
+			int returnVal = fileChooser.showSaveDialog(AdHocRailway.this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File saveFile = fileChooser.getSelectedFile();
+				
+				try {
+					XMLExporter_0_3 exporter = new XMLExporter_0_3(turnoutPersistence, locomotivePersistence, routePersistence);
+					String xml = exporter.export();
+					FileWriter fw = new FileWriter(saveFile);
+					fw.write(xml);
+					fw.close();
+				} catch (FileNotFoundException e1) {
+					ExceptionProcessor.getInstance().processException(e1);
+				} catch (IOException e2) {
+					ExceptionProcessor.getInstance().processException(e2);
+				}
+				
+			} else {
+				updateCommandHistory("Save command cancelled by user");
+			}
+			
+			
+			
 		}
 	}
 
@@ -661,6 +698,12 @@ public class AdHocRailway
 		openItem.setMnemonic(KeyEvent.VK_O);
 		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
 				ActionEvent.CTRL_MASK));
+		
+		JMenuItem saveItem = new JMenuItem(new SaveAction());
+		saveItem.setMnemonic(KeyEvent.VK_S);
+		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+				ActionEvent.CTRL_MASK));
+		
 		JMenuItem exportToDatavaseItem =
 				new JMenuItem(new ExportToDatabaseAction());
 		exportToDatavaseItem.setMnemonic(KeyEvent.VK_O);
@@ -673,6 +716,7 @@ public class AdHocRailway
 				ActionEvent.CTRL_MASK));
 
 		fileMenu.add(openItem);
+		fileMenu.add(saveItem);
 		fileMenu.add(exportToDatavaseItem);
 		fileMenu.add(new JSeparator());
 		fileMenu.add(exitItem);
@@ -745,7 +789,9 @@ public class AdHocRailway
 		JButton exitToolBarButton = new SmallToolbarButton(new ExitAction());
 
 		JButton openToolBarButton = new SmallToolbarButton(new OpenAction());
+		JButton saveToolBarButton = new SmallToolbarButton(new SaveAction());
 		fileTooBar.add(openToolBarButton);
+		fileTooBar.add(saveToolBarButton);
 		fileTooBar.add(exitToolBarButton);
 
 		/* DIGITAL */
