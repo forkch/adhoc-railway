@@ -105,7 +105,7 @@ public class Segment7
 		Color background = new Color(0, 0, 0);
 		Color foreground = new Color(255, 255, 0);
 		Color activatedColor = new Color(0, 255, 0);
-		Color deactivatedColor = new Color(50, 50, 50);
+		Color deactivatedColor = new Color(30,30,30);
 		// dx und dy berechnen
 		int dx = (getSize().width-11) / 11;
 		int dy = getSize().height / 20;

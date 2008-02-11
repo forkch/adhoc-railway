@@ -101,7 +101,7 @@ public class AdHocRailway
 	private static final long			serialVersionUID	= 1L;
 	private static AdHocRailway			instance;
 
-	private static final String			NAME				= "AdHoc-Railway";
+	private static final String			TITLE				= "AdHoc-Railway";
 
 	private SRCPSession					session;
 
@@ -161,7 +161,7 @@ public class AdHocRailway
 	}
 
 	public AdHocRailway(String file) {
-		super(NAME);
+		super(TITLE);
 
 		instance = this;
 		splash = new SplashWindow(createImageIcon("splash.png"), this, 500, 10);
@@ -197,7 +197,7 @@ public class AdHocRailway
 			String database =
 					preferences.getStringValue(PreferencesKeys.DATABASE_NAME);
 			String url = "jdbc:mysql://" + host + "/" + database;
-			setName(NAME + " [" + url + "]");
+			setTitle(AdHocRailway.TITLE + " [" + url + "]");
 		}
 		initProceeded("Loading Control Layer (Locomotives)");
 		locomotiveControl = SRCPLocomotiveControl.getInstance();
@@ -359,7 +359,7 @@ public class AdHocRailway
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				file = fileChooser.getSelectedFile();
 				openFile(file);
-				setName(NAME + " [" + file.getAbsolutePath() + "]");
+				setTitle(AdHocRailway.TITLE + " [" + file.getAbsolutePath() + "]");
 			} else {
 				updateCommandHistory("Open command cancelled by user");
 			}
@@ -392,12 +392,17 @@ public class AdHocRailway
 
 		public void actionPerformed(ActionEvent e) {
 			int result =
-					JOptionPane.showConfirmDialog(AdHocRailway.this,
-							"All data in the database will be deleted prior to the export.\n"
-									+ "Do you really want to proceed ?",
-							"Export to database", JOptionPane.YES_NO_OPTION,
-							JOptionPane.QUESTION_MESSAGE,
-							createImageIcon("messagebox_warning.png"));
+					JOptionPane
+							.showConfirmDialog(
+									AdHocRailway.this,
+									"All data in the database will be deleted prior "
+											+ "to the export. The application will afterwards "
+											+ "switch to database-mode.\n"
+											+ "Do you really want to proceed ?",
+									"Export to database",
+									JOptionPane.YES_NO_OPTION,
+									JOptionPane.QUESTION_MESSAGE,
+									createImageIcon("messagebox_warning.png"));
 			if (result == JOptionPane.YES_OPTION) {
 				try {
 					new XMLImporter(file.getAbsolutePath(),
@@ -417,6 +422,12 @@ public class AdHocRailway
 						.setLocomotivePersistence(locomotivePersistence);
 				routePersistence = HibernateRoutePersistence.getInstance();
 				routeControl.setRoutePersistence(routePersistence);
+				String host =
+					preferences.getStringValue(PreferencesKeys.DATABASE_HOST);
+				String database =
+						preferences.getStringValue(PreferencesKeys.DATABASE_NAME);
+				String url = "jdbc:mysql://" + host + "/" + database;
+				setTitle(AdHocRailway.TITLE + " [" + url + "]");
 				updateGUI();
 			}
 		}
