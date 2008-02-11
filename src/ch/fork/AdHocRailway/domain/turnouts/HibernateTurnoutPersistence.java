@@ -34,7 +34,7 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 	private Map<Integer, Turnout>			numberToTurnoutCache;
 
 	private HibernateTurnoutPersistence() {
-		super();
+		logger.info("HibernateTurnoutPersistence loaded");
 		this.addressTurnoutCache = new HashMap<LookupAddress, Turnout>();
 		this.addressThreewayCache = new HashMap<LookupAddress, Turnout>();
 		this.turnoutCache = new ArrayListModel<Turnout>();

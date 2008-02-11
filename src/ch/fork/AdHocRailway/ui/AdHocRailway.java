@@ -167,48 +167,57 @@ public class AdHocRailway
 		splash = new SplashWindow(createImageIcon("splash.png"), this, 500, 10);
 		setIconImage(createImageIcon("RailControl.png").getImage());
 
-		splash.nextStep("Loading Persistence Layer (Preferences)");
+		initProceeded("Loading Persistence Layer (Preferences)");
 		preferences = Preferences.getInstance();
 		boolean useDatabase =
 				preferences.getBooleanValue(PreferencesKeys.USE_DATABASE);
 
-		splash.nextStep("Loading Persistence Layer (Locomotives)");
+		initProceeded("Loading Persistence Layer (Locomotives)");
 		if (useDatabase)
 			locomotivePersistence =
 					HibernateLocomotivePersistence.getInstance();
 		else
 			locomotivePersistence = MemoryLocomotivePersistence.getInstance();
 
-		splash.nextStep("Loading Persistence Layer (Turnouts)");
+		initProceeded("Loading Persistence Layer (Turnouts)");
 		if (useDatabase)
 			turnoutPersistence = HibernateTurnoutPersistence.getInstance();
 		else
 			turnoutPersistence = MemoryTurnoutPersistence.getInstance();
 
-		splash.nextStep("Loading Persistence Layer (Routes)");
+		initProceeded("Loading Persistence Layer (Routes)");
 		if (useDatabase)
 			routePersistence = HibernateRoutePersistence.getInstance();
 		else
 			routePersistence = MemoryRoutePersistence.getInstance();
 
-		splash.nextStep("Loading Control Layer (Locomotives)");
+		if (useDatabase) {
+			String host =
+					preferences.getStringValue(PreferencesKeys.DATABASE_HOST);
+			String database =
+					preferences.getStringValue(PreferencesKeys.DATABASE_NAME);
+			String url = "jdbc:mysql://" + host + "/" + database;
+			setName(NAME + " [" + url + "]");
+		}
+		initProceeded("Loading Control Layer (Locomotives)");
 		locomotiveControl = SRCPLocomotiveControl.getInstance();
 		locomotiveControl.setLocomotivePersistence(locomotivePersistence);
 
-		splash.nextStep("Loading Control Layer (Turnouts)");
+		initProceeded("Loading Control Layer (Turnouts)");
 		turnoutControl = SRCPTurnoutControl.getInstance();
 		turnoutControl.setTurnoutPersistence(turnoutPersistence);
 
-		splash.nextStep("Loading Control Layer (Routes)");
+		initProceeded("Loading Control Layer (Routes)");
 		routeControl = SRCPRouteControl.getInstance();
 		routeControl.setRoutePersistence(routePersistence);
 
-		splash.nextStep("Loading Control Layer (Locks)");
+		initProceeded("Loading Control Layer (Locks)");
 		lockControl = SRCPLockControl.getInstance();
 
 		// locomotiveControl.update();
 		// turnoutControl.update();
-		splash.nextStep("Creating GUI ...");
+
+		initProceeded("Creating GUI ...");
 		initGUI();
 
 		trackControlPanel.update();
@@ -220,7 +229,7 @@ public class AdHocRailway
 
 		TutorialUtils.locateOnOpticalScreenCenter(this);
 
-		splash.nextStep("RailControl started");
+		initProceeded("RailControl started");
 		updateCommandHistory("RailControl started");
 		if (preferences.getBooleanValue(AUTOCONNECT))
 			new ConnectAction().actionPerformed(null);
@@ -258,7 +267,6 @@ public class AdHocRailway
 				new ExitAction().actionPerformed(null);
 			}
 		});
-		// updateGUI();
 		hostnameLabel.setText(preferences.getStringValue("Hostname"));
 
 	}
@@ -308,17 +316,17 @@ public class AdHocRailway
 		logger.info("From Server: " + infoData.trim());
 	}
 
-	public void infoDataReceived(double timestamp, int bus, String deviceGroup,
-			String data) {
-
-	}
-
 	public void updateCommandHistory(String text) {
 		DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
 		String date = df.format(GregorianCalendar.getInstance().getTime());
 		String fullText = "[" + date + "]: " + text;
 		SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
 
+	}
+
+	private void initProceeded(String message) {
+		logger.info(message);
+		splash.nextStep(message);
 	}
 
 	private class CommandHistoryUpdater implements Runnable {
@@ -351,6 +359,7 @@ public class AdHocRailway
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				file = fileChooser.getSelectedFile();
 				openFile(file);
+				setName(NAME + " [" + file.getAbsolutePath() + "]");
 			} else {
 				updateCommandHistory("Open command cancelled by user");
 			}

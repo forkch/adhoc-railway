@@ -26,7 +26,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 	private Map<LookupAddress, Locomotive> addressLocomotiveCache;
 
 	private HibernateLocomotivePersistence() {
-		super();
+		logger.info("HibernateLocomotivePersistence loded");
 		this.locomotiveCache = new ArrayListModel<Locomotive>();
 		this.locomotiveGroupCache = new ArrayListModel<LocomotiveGroup>();
 		this.addressLocomotiveCache = new HashMap<LookupAddress, Locomotive>();

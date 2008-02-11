@@ -67,7 +67,7 @@ public class Segment7
 			{ 1, 1, 1, 0, 0, 0, 0 }, // Ziffer 7
 			{ 1, 1, 1, 1, 1, 1, 1 }, // Ziffer 8
 			{ 1, 1, 1, 1, 0, 1, 1 }, // Ziffer 9
-			{ 0, 0, 0, 0, 0, 0, 1 } // Ziffer -
+			{ 0, 0, 0, 0, 0, 0, 0 } // Ziffer -
 											};
 
 	public Segment7() {

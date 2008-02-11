@@ -30,7 +30,7 @@ public class MemoryTurnoutPersistence implements TurnoutPersistenceIface {
 	private Map<String, TurnoutType>		turnoutTypes;
 
 	private MemoryTurnoutPersistence() {
-		super();
+		logger.info("MemoryTurnoutPersistence lodaded");
 		this.addressTurnoutCache = new HashMap<LookupAddress, Turnout>();
 		this.addressThreewayCache = new HashMap<LookupAddress, Turnout>();
 		this.turnoutCache = new ArrayListModel<Turnout>();

@@ -18,7 +18,7 @@ public class MemoryRoutePersistence implements RoutePersistenceIface {
 	private ArrayListModel<RouteGroup> routeGroupCache;
 
 	private MemoryRoutePersistence() {
-		super();
+		logger.info("MemoryRoutePersistence loded");
 		this.routeGroupCache = new ArrayListModel<RouteGroup>();
 		this.routeCache = new ArrayListModel<Route>();
 		this.routeItemCache = new ArrayListModel<RouteItem>();

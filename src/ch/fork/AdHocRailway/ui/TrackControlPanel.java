@@ -232,6 +232,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		public void actionPerformed(ActionEvent e) {
 			int selectedSwitchGroup = Integer.parseInt(e.getActionCommand());
+			if(selectedSwitchGroup == turnoutGroupsTabbedPane.getSelectedIndex())
+				return;
 			if (selectedSwitchGroup < turnoutPersistence.getAllTurnoutGroups()
 					.size()) {
 				turnoutGroupsTabbedPane.setSelectedIndex(selectedSwitchGroup);

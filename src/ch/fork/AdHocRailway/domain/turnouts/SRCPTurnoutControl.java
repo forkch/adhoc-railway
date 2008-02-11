@@ -60,6 +60,7 @@ public class SRCPTurnoutControl extends Control implements TurnoutControlIface,
 	TurnoutState previousState;
 
 	private SRCPTurnoutControl() {
+		logger.info("SRCPTurnoutControl loaded");
 		listeners = new HashMap<Turnout, List<TurnoutChangeListener>>();
 		srcpTurnouts = new HashMap<Turnout, SRCPTurnout>();
 	}

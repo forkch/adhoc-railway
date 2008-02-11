@@ -27,6 +27,7 @@ public class SRCPRouteControl extends Control implements RouteControlIface {
 	protected String ERR_TOGGLE_FAILED = "Toggle of switch failed";
 
 	private SRCPRouteControl() {
+		logger.info("SRCPRouteControl loaded");
 		listeners = new HashMap<Route, RouteChangeListener>();
 	}
 

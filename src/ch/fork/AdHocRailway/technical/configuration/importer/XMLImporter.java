@@ -22,19 +22,22 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
-public class XMLImporter extends DefaultHandler implements ContentHandler {
+public class XMLImporter
+		extends DefaultHandler implements ContentHandler {
 
-	private static Logger logger = Logger.getLogger(XMLImporter.class);
-	private String filename;
-	private boolean supported = true;
-	private TurnoutPersistenceIface turnoutPersistence;
-	private LocomotivePersistenceIface locomotivePersistence;
-	private RoutePersistenceIface routePersistence;
+	private static Logger				logger		=
+															Logger
+																	.getLogger(XMLImporter.class);
+	private String						filename;
+	private boolean						supported	= true;
+	private TurnoutPersistenceIface		turnoutPersistence;
+	private LocomotivePersistenceIface	locomotivePersistence;
+	private RoutePersistenceIface		routePersistence;
 
 	public XMLImporter(String filename) throws ConfigurationException {
 		this(filename, MemoryTurnoutPersistence.getInstance(),
-				MemoryLocomotivePersistence.getInstance(), MemoryRoutePersistence
-						.getInstance());
+				MemoryLocomotivePersistence.getInstance(),
+				MemoryRoutePersistence.getInstance());
 	}
 
 	public XMLImporter(String filename,
@@ -76,18 +79,21 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 			Attributes attributes) throws SAXException {
 		qName = qName.toLowerCase();
 		if (qName.equals("railcontrol")) {
-			double version = Double.parseDouble(attributes
-					.getValue("ExporterVersion"));
+			double version =
+					Double.parseDouble(attributes.getValue("ExporterVersion"));
 			if (version == 0.2) {
-				logger.info("AdHoc-Railway Config Version 0.2");
-				XMLImporter_0_2 importer = new XMLImporter_0_2(filename,
-						turnoutPersistence, locomotivePersistence, routePersistence);
+				XMLImporter_0_2 importer =
+						new XMLImporter_0_2(filename, turnoutPersistence,
+								locomotivePersistence, routePersistence);
+				logger.info("AdHoc-Railway Config Version 0.2 loaded ("
+						+ filename + ")");
 				return;
 			} else if (version == 0.3) {
-				logger.info("AdHoc-Railway Config Version 0.3");
-				XMLImporter_0_3 importer = new XMLImporter_0_3(filename,
-						turnoutPersistence, locomotivePersistence,
-						routePersistence);
+				XMLImporter_0_3 importer =
+						new XMLImporter_0_3(filename, turnoutPersistence,
+								locomotivePersistence, routePersistence);
+				logger.info("AdHoc-Railway Config Version 0.3 loaded ("
+						+ filename + ")");
 				return;
 			}
 			supported = false;

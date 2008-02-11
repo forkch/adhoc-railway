@@ -5,12 +5,18 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.log4j.Logger;
+
 import ch.fork.AdHocRailway.domain.LookupAddress;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
 public class MemoryLocomotivePersistence implements LocomotivePersistenceIface {
 	private static MemoryLocomotivePersistence	instance;
+
+	private static Logger						logger	=
+																Logger
+																		.getLogger(LocomotivePersistenceIface.class);
 
 	private ArrayListModel<LocomotiveGroup>		locomotiveGroupCache;
 	private ArrayListModel<Locomotive>			locomotiveCache;
@@ -19,7 +25,7 @@ public class MemoryLocomotivePersistence implements LocomotivePersistenceIface {
 	private Map<String, LocomotiveType>			locomotiveTypes;
 
 	private MemoryLocomotivePersistence() {
-		super();
+		logger.info("MemoryLocomotivePersistence loded");
 		this.locomotiveCache = new ArrayListModel<Locomotive>();
 		this.locomotiveGroupCache = new ArrayListModel<LocomotiveGroup>();
 		this.addressLocomotiveCache = new HashMap<LookupAddress, Locomotive>();

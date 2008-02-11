@@ -60,6 +60,7 @@ public class SRCPLocomotiveControl extends Control implements GLInfoListener,
 	Map<Locomotive, SRCPLocomotive> srcpLocomotives;
 	
 	private SRCPLocomotiveControl() {
+		logger.info("SRCPLocomotiveControl loaded");
 		listeners = new ArrayList<LocomotiveChangeListener>();
 		srcpLocomotives = new HashMap<Locomotive, SRCPLocomotive>();
 	}

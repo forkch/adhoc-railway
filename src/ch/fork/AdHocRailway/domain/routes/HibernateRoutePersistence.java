@@ -24,7 +24,7 @@ public class HibernateRoutePersistence extends HibernatePersistence implements
 	private ArrayListModel<RouteGroup> routeGroupCache;
 
 	private HibernateRoutePersistence() {
-		super();
+		logger.info("HibernateRoutePersistence lodaded");
 		this.routeGroupCache = new ArrayListModel<RouteGroup>();
 		this.routeCache = new ArrayListModel<Route>();
 		this.routeItemCache = new ArrayListModel<RouteItem>();
