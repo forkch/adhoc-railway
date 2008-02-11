@@ -14,12 +14,10 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
-import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
-import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
@@ -79,7 +77,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 	private JPanel initSegmentPanel() {
 		JPanel segmentPanelNorth = new JPanel(new FlowLayout(
-				FlowLayout.TRAILING, 5, 0));
+				FlowLayout.TRAILING, 0, 0));
 		segmentPanelNorth.setBackground(new Color(0, 0, 0));
 		seg1 = new Segment7();
 		seg2 = new Segment7();

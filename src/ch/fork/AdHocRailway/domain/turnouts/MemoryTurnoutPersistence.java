@@ -6,8 +6,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.persistence.NoResultException;
-
 import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.LookupAddress;

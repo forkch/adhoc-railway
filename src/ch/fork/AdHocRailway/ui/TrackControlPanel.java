@@ -22,7 +22,6 @@ import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
 import ch.fork.AdHocRailway.domain.exception.ControlException;
-import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;

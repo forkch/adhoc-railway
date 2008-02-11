@@ -21,8 +21,9 @@
 
 package ch.fork.AdHocRailway.ui;
 
-import javax.swing.JOptionPane;
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
+
+import javax.swing.JOptionPane;
 
 public class ExceptionProcessor {
 	private ErrorPanel errorPanel;
