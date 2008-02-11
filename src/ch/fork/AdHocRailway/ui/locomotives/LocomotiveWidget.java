@@ -428,7 +428,6 @@ public class LocomotiveWidget extends JPanel implements
 
 	private class LocomotiveGroupSelectAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("LocomotiveGroupSelectAction");
 			LocomotiveGroup lg = (LocomotiveGroup) locomotiveGroupComboBox
 					.getSelectedItem();
 			locomotiveComboBox.removeAllItems();

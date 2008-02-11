@@ -365,7 +365,6 @@ public class SRCPTurnoutControl extends Control implements TurnoutControlIface,
 	}
 
 	private void portChanged(Turnout turnout, int port) {
-		System.out.println(turnout);
 		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
 		if (port == getPort(sTurnout.getTurnoutAddress(0),
 				Constants.TURNOUT_STRAIGHT_PORT)) {

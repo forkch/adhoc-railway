@@ -128,7 +128,6 @@ public class KeyTrackControl extends SimpleInternalFrame {
 	}
 
 	private void updateHistory(Object obj) {
-		System.out.println(obj);
 		if(historyStack.size() > 3) {
 			historyStack.remove(3);
 		}
@@ -144,7 +143,6 @@ public class KeyTrackControl extends SimpleInternalFrame {
 			} else {
 				return;
 			}
-			System.out.println("here");
 			switchesHistory.add(w);
 		}
 		revalidate();

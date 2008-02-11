@@ -44,26 +44,38 @@ import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 
 import com.jgoodies.looks.Options;
 
-public class TrackControlPanel extends JPanel implements PreferencesKeys {
+public class TrackControlPanel
+		extends JPanel implements PreferencesKeys {
 
-	private JTabbedPane routeGroupsTabbedPane;
+	private JTabbedPane					routeGroupsTabbedPane;
 
-	private JTabbedPane turnoutGroupsTabbedPane;
+	private JTabbedPane					turnoutGroupsTabbedPane;
 
-	private Preferences preferences = Preferences.getInstance();;
+	private Preferences					preferences			=
+																	Preferences
+																			.getInstance();				;
 
-	private JTabbedPane trackControlPane;
+	private JTabbedPane					trackControlPane;
 
-	private TurnoutControlIface turnoutControl = SRCPTurnoutControl
-			.getInstance();
+	private TurnoutControlIface			turnoutControl		=
+																	SRCPTurnoutControl
+																			.getInstance();
 
-	private TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance().getTurnoutPersistence();
+	private TurnoutPersistenceIface		turnoutPersistence	=
+																	AdHocRailway
+																			.getInstance()
+																			.getTurnoutPersistence();
 
-	private RouteControlIface routeControl = SRCPRouteControl.getInstance();
+	private RouteControlIface			routeControl		=
+																	SRCPRouteControl
+																			.getInstance();
 
-	private RoutePersistenceIface routePersistence = AdHocRailway.getInstance().getRoutePersistence();
+	private RoutePersistenceIface		routePersistence	=
+																	AdHocRailway
+																			.getInstance()
+																			.getRoutePersistence();
 
-	private Map<Integer, TurnoutGroup> indexToTurnoutGroup;
+	private Map<Integer, TurnoutGroup>	indexToTurnoutGroup;
 
 	public TrackControlPanel() {
 		this.indexToTurnoutGroup = new HashMap<Integer, TurnoutGroup>();
@@ -73,7 +85,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private void initGUI() {
 		setLayout(new BorderLayout(5, 5));
-		setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		initTurnoutPanel();
 		initRoutesPanel();
 
@@ -126,8 +138,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private void initKeyboardActions() {
 		for (int i = 1; i <= 12; i++) {
-			KeyStroke stroke = KeyStroke
-					.getKeyStroke("F" + Integer.toString(i));
+			KeyStroke stroke =
+					KeyStroke.getKeyStroke("F" + Integer.toString(i));
 			registerKeyboardAction(new TurnoutGroupChangeAction(), Integer
 					.toString(i - 1), stroke, WHEN_IN_FOCUSED_WINDOW);
 			registerKeyboardAction(new RouteGroupChangeAction(), Integer
@@ -141,12 +153,12 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private void initToolBar() {
 		/* Turnout Tools */
 		JToolBar turnoutToolsToolBar = new JToolBar();
-		JButton addTurnoutsButton = new SmallToolbarButton(
-				new AddTurnoutsAction());
-		JButton setAllSwitchesStraightButton = new SmallToolbarButton(
-				new TurnoutsStraightAction());
-		JButton switchProgrammerButton = new SmallToolbarButton(
-				new TurnoutProgrammerAction());
+		JButton addTurnoutsButton =
+				new SmallToolbarButton(new AddTurnoutsAction());
+		JButton setAllSwitchesStraightButton =
+				new SmallToolbarButton(new TurnoutsStraightAction());
+		JButton switchProgrammerButton =
+				new SmallToolbarButton(new TurnoutProgrammerAction());
 
 		turnoutToolsToolBar.add(addTurnoutsButton);
 		turnoutToolsToolBar.add(setAllSwitchesStraightButton);
@@ -159,10 +171,10 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		/* TOOLS */
 		JMenu toolsMenu = new JMenu("Tools");
 		JMenuItem addTurnoutsItem = new JMenuItem(new AddTurnoutsAction());
-		JMenuItem switchesStraightItem = new JMenuItem(
-				new TurnoutsStraightAction());
-		JMenuItem switchProgrammerItem = new JMenuItem(
-				new TurnoutProgrammerAction());
+		JMenuItem switchesStraightItem =
+				new JMenuItem(new TurnoutsStraightAction());
+		JMenuItem switchProgrammerItem =
+				new JMenuItem(new TurnoutProgrammerAction());
 
 		toolsMenu.add(addTurnoutsItem);
 		toolsMenu.add(switchesStraightItem);
@@ -182,14 +194,17 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private void updateRoutes() {
 		routeGroupsTabbedPane.removeAll();
-		int maxRouteCols = preferences
-				.getIntValue(PreferencesKeys.ROUTE_CONTROLES);
+		int maxRouteCols =
+				preferences.getIntValue(PreferencesKeys.ROUTE_CONTROLES);
 		int i = 1;
 		routeControl.removeAllRouteChangeListeners();
 		for (RouteGroup routeGroup : routePersistence.getAllRouteGroups()) {
 
 			WidgetTab routeGroupTab = new WidgetTab(maxRouteCols);
-			JScrollPane groupScrollPane = new JScrollPane(routeGroupTab);
+			JScrollPane groupScrollPane = new JScrollPane(routeGroupTab,
+					JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			
 			groupScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 			groupScrollPane.getVerticalScrollBar().setBlockIncrement(10);
 			for (Route aRoute : routeGroup.getRoutes()) {
@@ -206,8 +221,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private void updateTurnouts() {
 		indexToTurnoutGroup.clear();
 		turnoutGroupsTabbedPane.removeAll();
-		int maxTurnoutCols = preferences
-				.getIntValue(PreferencesKeys.TURNOUT_CONTROLES);
+		int maxTurnoutCols =
+				preferences.getIntValue(PreferencesKeys.TURNOUT_CONTROLES);
 		int i = 1;
 		turnoutControl.removeAllTurnoutChangeListener();
 		for (TurnoutGroup turnoutGroup : turnoutPersistence
@@ -215,7 +230,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 			indexToTurnoutGroup.put(i - 1, turnoutGroup);
 			WidgetTab switchGroupTab = new WidgetTab(maxTurnoutCols);
-			JScrollPane groupScrollPane = new JScrollPane(switchGroupTab);
+			JScrollPane groupScrollPane =
+					new JScrollPane(switchGroupTab);
 			groupScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 			groupScrollPane.getVerticalScrollBar().setBlockIncrement(10);
 			for (Turnout turnout : turnoutGroup.getTurnouts()) {
@@ -224,15 +240,18 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			}
 			turnoutGroupsTabbedPane.add(groupScrollPane, "F" + i + ": "
 					+ turnoutGroup.getName());
+			switchGroupTab.setPreferredSize(groupScrollPane.getSize());
 			i++;
 		}
 	}
 
-	private class TurnoutGroupChangeAction extends AbstractAction {
+	private class TurnoutGroupChangeAction
+			extends AbstractAction {
 
 		public void actionPerformed(ActionEvent e) {
 			int selectedSwitchGroup = Integer.parseInt(e.getActionCommand());
-			if(selectedSwitchGroup == turnoutGroupsTabbedPane.getSelectedIndex())
+			if (selectedSwitchGroup == turnoutGroupsTabbedPane
+					.getSelectedIndex())
 				return;
 			if (selectedSwitchGroup < turnoutPersistence.getAllTurnoutGroups()
 					.size()) {
@@ -241,7 +260,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		}
 	}
 
-	private class RouteGroupChangeAction extends AbstractAction {
+	private class RouteGroupChangeAction
+			extends AbstractAction {
 
 		public void actionPerformed(ActionEvent e) {
 			int selectedRouteGroup = Integer.parseInt(e.getActionCommand());
@@ -252,7 +272,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		}
 	}
 
-	private class TurnoutsStraightAction extends AbstractAction {
+	private class TurnoutsStraightAction
+			extends AbstractAction {
 
 		public TurnoutsStraightAction() {
 			super("Set all turnouts straight", createImageIcon("switch.png"));
@@ -263,7 +284,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			s.start();
 		}
 
-		private class TurnoutStraighter extends Thread {
+		private class TurnoutStraighter
+				extends Thread {
 
 			public void run() {
 				try {
@@ -282,7 +304,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		}
 	}
 
-	private class AddTurnoutsAction extends AbstractAction {
+	private class AddTurnoutsAction
+			extends AbstractAction {
 		public AddTurnoutsAction() {
 			super("Add Turnouts", createImageIcon("filenew.png"));
 		}
@@ -291,8 +314,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			TurnoutConfig config = null;
 			int selectedGroupPane = turnoutGroupsTabbedPane.getSelectedIndex();
 			do {
-				TurnoutGroup selectedTurnoutGroup = indexToTurnoutGroup
-						.get(selectedGroupPane);
+				TurnoutGroup selectedTurnoutGroup =
+						indexToTurnoutGroup.get(selectedGroupPane);
 
 				Turnout newTurnout = new Turnout();
 				newTurnout.setNumber(turnoutPersistence
@@ -303,18 +326,21 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				newTurnout.setTurnoutType(turnoutPersistence
 						.getTurnoutType(TurnoutTypes.DEFAULT));
 
-				config = new TurnoutConfig(AdHocRailway.getInstance(),
-						newTurnout);
+				config =
+						new TurnoutConfig(AdHocRailway.getInstance(),
+								newTurnout);
 			} while (!config.isCancelPressed());
 			update();
 			turnoutGroupsTabbedPane.setSelectedIndex(selectedGroupPane);
 		}
 	}
 
-	private class TurnoutProgrammerAction extends AbstractAction {
+	private class TurnoutProgrammerAction
+			extends AbstractAction {
 
 		public TurnoutProgrammerAction() {
-			super("Turnout Decoder Programmer", createImageIcon("switch_programmer.png"));
+			super("Turnout Decoder Programmer",
+					createImageIcon("switch_programmer.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {

@@ -37,7 +37,6 @@ public class RouteControl extends Control {
 	}
 
 	public void enableRoute(Route r) throws TurnoutException {
-		// System.out.println("enabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
 		Router switchRouter = new Router(r, true, waitTime, listeners.get(r));
@@ -47,7 +46,6 @@ public class RouteControl extends Control {
 	}
 
 	public void disableRoute(Route r) throws TurnoutException {
-		// System.out.println("disabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
 		Router switchRouter = new Router(r, false, waitTime, listeners.get(r));

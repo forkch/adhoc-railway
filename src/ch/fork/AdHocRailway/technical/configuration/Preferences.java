@@ -49,7 +49,7 @@ public class Preferences implements PreferencesKeys {
         setBooleanValue(LOGGING, true);
         setBooleanValue(FULLSCREEN, false);
         setBooleanValue(AUTOCONNECT, false);
-        setBooleanValue(TABBED_TRACK, true);
+        setBooleanValue(TABBED_TRACK, false);
         setBooleanValue(USE_DATABASE, false);
         setStringValue(DATABASE_HOST, "localhost");
         setStringValue(DATABASE_NAME, "adhocrailway");

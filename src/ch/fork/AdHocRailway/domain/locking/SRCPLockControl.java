@@ -140,10 +140,6 @@ public class SRCPLockControl extends Control implements LOCKInfoListener, Consta
 
 	public void LOCKset(double timestamp, int bus, int address,
 			String deviceGroup, int duration, int sessionID) {
-		/*
-		 * System.out.println("LOCKset(" + bus + " , " + address + " , " +
-		 * deviceGroup + " , " + duration + " , " + sessionID + " )");
-		 */
 		Address addr = new Address(bus, address);
 		ControlObject object = addressToControlObject.get(addr);
 		if (object != null) {
@@ -154,10 +150,6 @@ public class SRCPLockControl extends Control implements LOCKInfoListener, Consta
 
 	public void LOCKterm(double timestamp, int bus, int address,
 			String deviceGroup) {
-		/*
-		 * System.out.println("LOCKtern(" + bus + " , " + address + " , " +
-		 * deviceGroup + " )");
-		 */
 		Address addr = new Address(bus, address);
 		ControlObject object = addressToControlObject.get(addr);
 		if (object != null) {

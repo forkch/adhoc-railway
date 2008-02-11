@@ -117,9 +117,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 
 	private void initGUI() {
 		usedTurnoutNumbers = turnoutPersistence.getUsedTurnoutNumbers();
-		System.out.println(usedTurnoutNumbers);
 		usedTurnoutNumbers.remove(presentationModel.getBean().getNumber());
-		System.out.println(usedTurnoutNumbers);
 		buildPanel();
 		pack();
 		TutorialUtils.locateOnOpticalScreenCenter(this);
@@ -282,9 +280,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	}
 
 	private boolean validate(Turnout turnout) {
-		System.out.println("validate");
 		boolean validate = true;
-		System.out.println(usedTurnoutNumbers);
 		if (turnout.getNumber() == 0
 				|| usedTurnoutNumbers.contains(turnout.getNumber())) {
 			setSpinnerColor(numberTextField, UIConstants.ERROR_COLOR);
@@ -366,7 +362,6 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				}
 			}
 		}
-		//builder.getPanel().repaint();
 		return validate;
 	}
 

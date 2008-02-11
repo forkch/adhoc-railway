@@ -22,6 +22,7 @@
 
 package ch.fork.AdHocRailway.ui;
 
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -40,7 +41,8 @@ public class WidgetTab extends JPanel {
 		
     	this.maxCols = maxCols;
         layout = new GridBagLayout();
-        setLayout(layout);
+        //setLayout(layout);
+        setLayout(new FlowLayout());
         currentRow = 0;
         currentCol = 0;
         gbc = new GridBagConstraints();
