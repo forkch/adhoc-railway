@@ -129,7 +129,7 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
 		qName = qName.toLowerCase();
 		if (qName.equals("switchgroup")) {
 			actualTurnoutGroup = new TurnoutGroup(0, attributes
-					.getValue("name"));
+					.getValue("name"),0,0);
 			try {
 				turnoutPersistence.addTurnoutGroup(actualTurnoutGroup);
 			} catch (TurnoutPersistenceException e) {
@@ -143,7 +143,7 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
 			actualAddresses[actualAddressCounter] = actualAddress;
 			actualAddressCounter++;
 		} else if (qName.equals("routegroup")) {
-			actualRouteGroup = new RouteGroup(0, attributes.getValue("name"));
+			actualRouteGroup = new RouteGroup(0, attributes.getValue("name"),0,0);
 			routePersistence.addRouteGroup(actualRouteGroup);
 		} else if (qName.equals("route")) {
 			parseRoute(qName, attributes);

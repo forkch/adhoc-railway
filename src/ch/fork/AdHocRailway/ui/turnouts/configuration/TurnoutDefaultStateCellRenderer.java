@@ -19,7 +19,6 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import java.awt.Component;
@@ -27,27 +26,39 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
-public class TurnoutDefaultStateCellRenderer implements TableCellRenderer {
-    public Component getTableCellRendererComponent(JTable table, Object value,
-        boolean isSelected, boolean hasFocus, int row, int column) {
-        JLabel iconLabel = new JLabel();
-        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        if (table.getValueAt(row, 1).equals("ThreeWay")) {
-            iconLabel.setText("N/A");
-            return iconLabel;
-        }
-        if (value.equals(TurnoutState.STRAIGHT)) {
-            iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches/default_straight.png"));
-        } else {
-            iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches/default_curved.png"));
-        }
-        return iconLabel;
-    }
+public class TurnoutDefaultStateCellRenderer
+		extends DefaultTableCellRenderer {
+
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column) {
+		JLabel iconLabel =
+				(JLabel) super.getTableCellRendererComponent(table, value,
+						isSelected, hasFocus, row, column);
+		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		if (table.getValueAt(row, 1).equals("ThreeWay")) {
+			iconLabel.setText("N/A");
+			return iconLabel;
+		}
+		iconLabel.setText("");
+		if (value.equals(TurnoutState.STRAIGHT)) {
+			iconLabel.setIcon(ImageTools
+					.createImageIcon("switches/default_straight.png"));
+		} else {
+			iconLabel.setIcon(ImageTools
+					.createImageIcon("switches/default_curved.png"));
+		}
+		if (isSelected) {
+			iconLabel.setBackground(table.getSelectionBackground());
+			iconLabel.setForeground(table.getSelectionForeground());
+		} else {
+			iconLabel.setBackground(table.getBackground());
+			iconLabel.setForeground(table.getForeground());
+		}
+		return iconLabel;
+	}
 }

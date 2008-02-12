@@ -19,11 +19,11 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import java.awt.Component;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -33,22 +33,26 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
-public class TurnoutTypeComboBoxCellRenderer implements ListCellRenderer {
-    public Component getListCellRendererComponent(JList list, Object value,
-        int index, boolean isSelected, boolean cellHasFocus) {
-        JLabel iconLabel = new JLabel();
-        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        TurnoutType type = (TurnoutType)value;
-        if (type.getTurnoutTypeEnum() == TurnoutTypes.DEFAULT) {
-            iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches/default_switch_small.png"));
-        } else if (type.getTurnoutTypeEnum() == TurnoutTypes.DOUBLECROSS) {
-            iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches/double_cross_switch_small.png"));
-        } else if (type.getTurnoutTypeEnum() == TurnoutTypes.THREEWAY) {
-            iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches/three_way_switch_small.png"));
-        }
-        return iconLabel;
-    }
+public class TurnoutTypeComboBoxCellRenderer
+		extends DefaultListCellRenderer {
+	public Component getListCellRendererComponent(JList list, Object value,
+			int index, boolean isSelected, boolean cellHasFocus) {
+		JLabel iconLabel =
+				(JLabel) super.getListCellRendererComponent(list, value, index,
+						isSelected, cellHasFocus);
+		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		TurnoutType type = (TurnoutType) value;
+		iconLabel.setText("");
+		if (type.getTurnoutTypeEnum() == TurnoutTypes.DEFAULT) {
+			iconLabel.setIcon(ImageTools
+					.createImageIcon("switches/default_switch_small.png"));
+		} else if (type.getTurnoutTypeEnum() == TurnoutTypes.DOUBLECROSS) {
+			iconLabel.setIcon(ImageTools
+					.createImageIcon("switches/double_cross_switch_small.png"));
+		} else if (type.getTurnoutTypeEnum() == TurnoutTypes.THREEWAY) {
+			iconLabel.setIcon(ImageTools
+					.createImageIcon("switches/three_way_switch_small.png"));
+		}
+		return iconLabel;
+	}
 }

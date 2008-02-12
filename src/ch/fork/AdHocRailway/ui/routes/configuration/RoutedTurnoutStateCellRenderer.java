@@ -26,6 +26,7 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
@@ -35,18 +36,25 @@ import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
-public class RoutedTurnoutStateCellRenderer implements TableCellRenderer {
-	private static TurnoutPersistenceIface persistence = AdHocRailway
-			.getInstance().getTurnoutPersistence();
+public class RoutedTurnoutStateCellRenderer
+		extends DefaultTableCellRenderer {
+	private static TurnoutPersistenceIface	persistence	=
+																AdHocRailway
+																		.getInstance()
+																		.getTurnoutPersistence();
 
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
-		JLabel iconLabel = new JLabel();
+		JLabel iconLabel =
+				(JLabel) super.getTableCellRendererComponent(table, value,
+						isSelected, hasFocus, row, column);
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		Turnout currentTurnout;
+		iconLabel.setText("");
 		try {
-			currentTurnout = persistence.getTurnoutByNumber(Integer
-					.valueOf((Integer) table.getValueAt(row, 0)));
+			currentTurnout =
+					persistence.getTurnoutByNumber(Integer
+							.valueOf((Integer) table.getValueAt(row, 0)));
 			TurnoutState routedState = (TurnoutState) value;
 			String stateString = "";
 			switch (routedState) {

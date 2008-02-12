@@ -124,7 +124,7 @@ public class XMLImporter_0_2 extends DefaultHandler implements ContentHandler {
 		qName = qName.toLowerCase();
 		if (qName.equals("switchgroup")) {
 			actualTurnoutGroup = new TurnoutGroup(0, attributes
-					.getValue("name"));
+					.getValue("name"),0,0);
 			try {
 				turnoutPersistence.addTurnoutGroup(actualTurnoutGroup);
 			} catch (TurnoutPersistenceException e) {

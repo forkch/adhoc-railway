@@ -186,9 +186,6 @@
 	<target name="clean" description="Removes generated class files">
 		<delete dir="${build.dir}"/>
 		<delete dir="${release.dir}"/>
-		<delete file="AdHoc-Railway-${release}-src.zip"/>
-		<delete file="AdHoc-Railway-${release}-bin.zip"/>
-		<delete file="AdHoc-Railway-${release}.jar"/>
 	</target>
 	<target name="clean-javadoc" description="Removes generated Javadoc files">
 		<delete dir="${javadoc.dir}"/>

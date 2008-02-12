@@ -19,22 +19,24 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import java.awt.Component;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
-public class SwitchRoutedStateComboBoxCellRenderer implements ListCellRenderer {
-    public Component getListCellRendererComponent(JList list, Object value,
-        int index, boolean isSelected, boolean cellHasFocus) {
-        JLabel iconLabel = new JLabel();
-        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        iconLabel.setText(value.toString());
-        return iconLabel;
-    }
+public class SwitchRoutedStateComboBoxCellRenderer
+		extends DefaultListCellRenderer {
+	public Component getListCellRendererComponent(JList list, Object value,
+			int index, boolean isSelected, boolean cellHasFocus) {
+		JLabel iconLabel =
+				(JLabel) super.getListCellRendererComponent(list, value, index,
+						isSelected, cellHasFocus);
+		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		iconLabel.setText(value.toString());
+		return iconLabel;
+	}
 }

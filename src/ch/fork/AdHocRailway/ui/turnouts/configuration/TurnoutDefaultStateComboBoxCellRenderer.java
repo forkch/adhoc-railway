@@ -19,34 +19,37 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import java.awt.Component;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
-public class TurnoutDefaultStateComboBoxCellRenderer implements ListCellRenderer {
-    public Component getListCellRendererComponent(JList list, Object value,
-        int index, boolean isSelected, boolean cellHasFocus) {
-        JLabel iconLabel = new JLabel();
-        if(value == null) {
-        	return iconLabel;
-        }
-        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        if (value.equals(TurnoutState.STRAIGHT)) {
-            iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches/default_straight.png"));
-        } else {
-            iconLabel.setIcon(ImageTools.createImageIcon(
-                "switches/default_curved.png"));
-        }
-        return iconLabel;
-    }
+public class TurnoutDefaultStateComboBoxCellRenderer
+		extends DefaultListCellRenderer {
+	public Component getListCellRendererComponent(JList list, Object value,
+			int index, boolean isSelected, boolean cellHasFocus) {
+		JLabel iconLabel =
+				(JLabel) super.getListCellRendererComponent(list, value, index,
+						isSelected, cellHasFocus);
+		if (value == null) {
+			return iconLabel;
+		}
+		iconLabel.setText("");
+		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		if (value.equals(TurnoutState.STRAIGHT)) {
+			iconLabel.setIcon(ImageTools
+					.createImageIcon("switches/default_straight.png"));
+		} else {
+			iconLabel.setIcon(ImageTools
+					.createImageIcon("switches/default_curved.png"));
+		}
+		return iconLabel;
+	}
 }

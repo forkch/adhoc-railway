@@ -273,7 +273,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private class TurnoutsStraightAction extends AbstractAction {
 
 		public TurnoutsStraightAction() {
-			super("Set all turnouts straight", createImageIcon("switch.png"));
+			super("Set all turnouts straight\u2026", createImageIcon("switch.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -303,7 +303,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private class AddTurnoutsAction extends AbstractAction {
 		public AddTurnoutsAction() {
-			super("Add Turnouts", createImageIcon("filenew.png"));
+			super("Add Turnouts\u2026", createImageIcon("filenew.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -333,7 +333,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private class TurnoutProgrammerAction extends AbstractAction {
 
 		public TurnoutProgrammerAction() {
-			super("Turnout Decoder Programmer",
+			super("Turnout Decoder Programmer\u2026",
 					createImageIcon("switch_programmer.png"));
 		}
 

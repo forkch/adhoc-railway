@@ -27,19 +27,20 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
-public class TurnoutTypeCellRenderer implements TableCellRenderer {
+public class TurnoutTypeCellRenderer extends  DefaultTableCellRenderer {
     
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int column) {
-        JLabel iconLabel = new JLabel();
+        JLabel iconLabel = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
         TurnoutType type = (TurnoutType)value;
+		iconLabel.setText("");
         if (type.getTurnoutTypeEnum() == TurnoutTypes.DEFAULT) {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "switches/default_switch_small.png"));
@@ -50,6 +51,7 @@ public class TurnoutTypeCellRenderer implements TableCellRenderer {
             iconLabel.setIcon(ImageTools.createImageIcon(
                 "switches/three_way_switch_small.png"));
         }
+        
         return iconLabel;
     }
 }

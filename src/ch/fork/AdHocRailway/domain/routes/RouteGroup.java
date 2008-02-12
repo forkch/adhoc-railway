@@ -34,12 +34,17 @@ public class RouteGroup extends Model implements java.io.Serializable,
 	private int id;
 
 	private String name;
+	private int					routeNumberOffset;
+
+	private int					routeNumberAmount;
 
 	@Sort(type = SortType.NATURAL)
 	private SortedSet<Route> routes = new TreeSet<Route>();
 	
 	public static final String PROPERTYNAME_ID = "id";
 	public static final String PROPERTYNAME_NAME = "name";
+	public static final String PROPERTYNAME_ROUTE_NUMBER_OFFSET = "routeNumberOffset";
+	public static final String PROPERTYNAME_ROUTE_NUMBER_AMOUNT = "routeNumberAmount";
 	public static final String PROPERTYNAME_ROUTES = "routes";
 
 	public int compareTo(RouteGroup o) {
@@ -83,15 +88,19 @@ public class RouteGroup extends Model implements java.io.Serializable,
 	}
 
 	/** minimal constructor */
-	public RouteGroup(int id, String name) {
+	public RouteGroup(int id, String name, int routeNumberOffset, int routeNumberAmount) {
 		this.id = id;
 		this.name = name;
+		this.routeNumberOffset = routeNumberOffset;
+		this.routeNumberAmount = routeNumberAmount;
 	}
 
 	/** full constructor */
-	public RouteGroup(int id, String name, SortedSet<Route> routes) {
+	public RouteGroup(int id, String name, int routeNumberOffset, int routeNumberAmount, SortedSet<Route> routes) {
 		this.id = id;
 		this.name = name;
+		this.routeNumberOffset = routeNumberOffset;
+		this.routeNumberAmount = routeNumberAmount;
 		this.routes = routes;
 	}
 
@@ -113,6 +122,28 @@ public class RouteGroup extends Model implements java.io.Serializable,
 	@Column(name = "name", unique = false, nullable = false, insertable = true, updatable = true)
 	public String getName() {
 		return this.name;
+	}
+	
+	@Column(name = "turnout_number_offset", unique = false, nullable = false, insertable = true, updatable = true)
+	public int getRouteNumberOffset() {
+		return this.routeNumberOffset;
+	}
+
+	public void setRouteNumberOffset(int turnoutNumberOffset) {
+		int old = this.routeNumberOffset;
+		this.routeNumberOffset = turnoutNumberOffset;
+		firePropertyChange(PROPERTYNAME_ID, old, turnoutNumberOffset);
+	}
+
+	@Column(name = "turnout_number_amount", unique = false, nullable = false, insertable = true, updatable = true)
+	public int getRouteNumberAmount() {
+		return this.routeNumberAmount;
+	}
+
+	public void setRouteNumberAmount(int turnoutNumberAmount) {
+		int old = this.routeNumberAmount;
+		this.routeNumberAmount = turnoutNumberAmount;
+		firePropertyChange(PROPERTYNAME_ID, old, turnoutNumberAmount);
 	}
 
 	public void setName(String name) {

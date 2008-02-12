@@ -24,23 +24,31 @@ import com.jgoodies.binding.beans.Model;
  */
 @Entity
 @Table(name = "turnout_group", catalog = "adhocrailway", uniqueConstraints = {})
-public class TurnoutGroup extends Model implements java.io.Serializable,
-		Comparable<TurnoutGroup> {
+public class TurnoutGroup
+		extends Model implements java.io.Serializable, Comparable<TurnoutGroup> {
 
 	// Fields
 
 	@Id
 	@GeneratedValue
-	private int id;
+	private int					id;
 
-	private String name;
+	private String				name;
+
+	private int					turnoutNumberOffset;
+
+	private int					turnoutNumberAmount;
 
 	@Sort(type = SortType.NATURAL)
-	private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
+	private SortedSet<Turnout>	turnouts				=
+																new TreeSet<Turnout>();
 
-	private static final String PROPERTYNAME_ID = "id";
-	private static final String PROPERTYNAME_NAME = "name";
-	private static final String PROPERTYNAME_TURNOUTS = "turnouts";
+	public static final String	PROPERTYNAME_ID			= "id";
+	public static final String	PROPERTYNAME_NAME		= "name";
+	public static final String PROPERTYNAME_TURNOUT_NUMBER_OFFSET = "turnoutNumberOffset";
+	public static final String PROPERTYNAME_TURNOUT_NUMBER_AMOUNT = "turnoutNumberAmount";
+	
+	private static final String	PROPERTYNAME_TURNOUTS	= "turnouts";
 
 	public int compareTo(TurnoutGroup o) {
 		if (this == o)
@@ -85,15 +93,19 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 	}
 
 	/** minimal constructor */
-	public TurnoutGroup(int id, String name) {
+	public TurnoutGroup(int id, String name, int turnoutNumberOffset, int turnoutNumberAmount) {
 		this.id = id;
 		this.name = name;
+		this.turnoutNumberOffset = turnoutNumberOffset;
+		this.turnoutNumberAmount = turnoutNumberAmount;
 	}
 
 	/** full constructor */
-	public TurnoutGroup(int id, String name, SortedSet<Turnout> turnouts) {
+	public TurnoutGroup(int id, String name, int turnoutNumberOffset, int turnoutNumberAmount, SortedSet<Turnout> turnouts) {
 		this.id = id;
 		this.name = name;
+		this.turnoutNumberOffset = turnoutNumberOffset;
+		this.turnoutNumberAmount = turnoutNumberAmount;
 		this.turnouts = turnouts;
 	}
 
@@ -121,6 +133,28 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 		String old = this.name;
 		this.name = name;
 		firePropertyChange(PROPERTYNAME_NAME, old, name);
+	}
+
+	@Column(name = "turnout_number_offset", unique = false, nullable = false, insertable = true, updatable = true)
+	public int getTurnoutNumberOffset() {
+		return this.turnoutNumberOffset;
+	}
+
+	public void setTurnoutNumberOffset(int turnoutNumberOffset) {
+		int old = this.turnoutNumberOffset;
+		this.turnoutNumberOffset = turnoutNumberOffset;
+		firePropertyChange(PROPERTYNAME_ID, old, turnoutNumberOffset);
+	}
+
+	@Column(name = "turnout_number_amount", unique = false, nullable = false, insertable = true, updatable = true)
+	public int getTurnoutNumberAmount() {
+		return this.turnoutNumberAmount;
+	}
+
+	public void setTurnoutNumberAmount(int turnoutNumberAmount) {
+		int old = this.turnoutNumberAmount;
+		this.turnoutNumberAmount = turnoutNumberAmount;
+		firePropertyChange(PROPERTYNAME_ID, old, turnoutNumberAmount);
 	}
 
 	@Sort(type = SortType.NATURAL)

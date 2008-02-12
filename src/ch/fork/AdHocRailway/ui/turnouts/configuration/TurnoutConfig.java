@@ -62,66 +62,67 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class TurnoutConfig extends JDialog implements PropertyChangeListener {
-	private boolean okPressed;
-	private boolean cancelPressed;
-	private boolean visible;
-	private JSpinner numberTextField;
-	private JTextField descTextField;
-	private JSpinner bus1TextField;
-	private JSpinner bus2TextField;
-	private JSpinner address1TextField;
-	private JSpinner address2TextField;
-	private JCheckBox switched1Checkbox;
-	private JCheckBox switched2Checkbox;
-	private JComboBox turnoutTypeComboBox;
-	private JComboBox turnoutDefaultStateComboBox;
-	private JComboBox turnoutOrientationComboBox;
-	private Set<Integer> usedTurnoutNumbers;
+public class TurnoutConfig
+		extends JDialog implements PropertyChangeListener {
+	private boolean						okPressed;
+	private boolean						cancelPressed;
+	private JSpinner					numberTextField;
+	private JTextField					descTextField;
+	private JSpinner					bus1TextField;
+	private JSpinner					bus2TextField;
+	private JSpinner					address1TextField;
+	private JSpinner					address2TextField;
+	private JCheckBox					switched1Checkbox;
+	private JCheckBox					switched2Checkbox;
+	private JComboBox					turnoutTypeComboBox;
+	private JComboBox					turnoutDefaultStateComboBox;
+	private JComboBox					turnoutOrientationComboBox;
+	private Set<Integer>				usedTurnoutNumbers;
 
-	private TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance().getTurnoutPersistence();
+	private TurnoutPersistenceIface		turnoutPersistence	=
+																	AdHocRailway
+																			.getInstance()
+																			.getTurnoutPersistence();
 
-	private PresentationModel<Turnout> presentationModel;
-	private JButton okButton;
-	private JButton cancelButton;
-	private TurnoutWidget testTurnoutWidget;
-	private PanelBuilder builder;
+	private PresentationModel<Turnout>	presentationModel;
+	private JButton						okButton;
+	private JButton						cancelButton;
+	private TurnoutWidget				testTurnoutWidget;
+	private PanelBuilder				builder;
 
-	public TurnoutConfig(Frame owner, Turnout myTurnout) {
-		this(owner, myTurnout, true);
-	}
 
 	public TurnoutConfig(JDialog owner, Turnout myTurnout) {
-		this(owner, new PresentationModel<Turnout>(myTurnout), true);
+		this(owner, new PresentationModel<Turnout>(myTurnout));
 	}
 
-	public TurnoutConfig(JDialog owner,
-			PresentationModel<Turnout> presentationModel) {
-		this(owner, presentationModel, true);
-	}
 
-	public TurnoutConfig(Frame owner, Turnout myTurnout, boolean visible) {
+	public TurnoutConfig(Frame owner, Turnout myTurnout) {
 		super(owner, "Turnout Config", true);
-		this.visible = visible;
 		this.presentationModel = new PresentationModel<Turnout>(myTurnout);
 		initGUI();
 	}
 
 	public TurnoutConfig(JDialog owner,
-			PresentationModel<Turnout> presentationModel, boolean visible) {
+			PresentationModel<Turnout> presentationModel) {
 		super(owner, "Turnout Config", true);
-		this.visible = visible;
 		this.presentationModel = presentationModel;
 		initGUI();
 	}
 
+	public TurnoutConfig(Frame owner,
+			PresentationModel<Turnout> presentationModel) {
+		super(owner, "Turnout Config", true);
+		this.presentationModel = presentationModel;
+		initGUI();
+	}
+	
 	private void initGUI() {
 		usedTurnoutNumbers = turnoutPersistence.getUsedTurnoutNumbers();
 		usedTurnoutNumbers.remove(presentationModel.getBean().getNumber());
 		buildPanel();
 		pack();
 		TutorialUtils.locateOnOpticalScreenCenter(this);
-		setVisible(visible);
+		setVisible(true);
 	}
 
 	private void initComponents() {
@@ -132,8 +133,9 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				1000, // maxValue
 				1)); // step
 
-		descTextField = BasicComponentFactory.createTextField(presentationModel
-				.getModel(Turnout.PROPERTYNAME_DESCRIPTION));
+		descTextField =
+				BasicComponentFactory.createTextField(presentationModel
+						.getModel(Turnout.PROPERTYNAME_DESCRIPTION));
 		descTextField.setColumns(5);
 
 		bus1TextField = new JSpinner();
@@ -163,42 +165,47 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				0, // minValue
 				324, // maxValue
 				1)); // step
-		switched1Checkbox = BasicComponentFactory.createCheckBox(
-				presentationModel
+		switched1Checkbox =
+				BasicComponentFactory.createCheckBox(presentationModel
 						.getModel(Turnout.PROPERTYNAME_ADDRESS1_SWITCHED),
-				"Inverted");
+						"Inverted");
 
-		switched2Checkbox = BasicComponentFactory.createCheckBox(
-				presentationModel
+		switched2Checkbox =
+				BasicComponentFactory.createCheckBox(presentationModel
 						.getModel(Turnout.PROPERTYNAME_ADDRESS2_SWITCHED),
-				"Inverted");
+						"Inverted");
 
-		List<TurnoutType> turnoutTypes = new ArrayList<TurnoutType>(
-				turnoutPersistence.getAllTurnoutTypes());
+		List<TurnoutType> turnoutTypes =
+				new ArrayList<TurnoutType>(turnoutPersistence
+						.getAllTurnoutTypes());
 
-		ValueModel turnoutTypeModel = presentationModel
-				.getModel(Turnout.PROPERTYNAME_TURNOUT_TYPE);
-		turnoutTypeComboBox = BasicComponentFactory
-				.createComboBox(new SelectionInList<TurnoutType>(turnoutTypes,
-						turnoutTypeModel));
+		ValueModel turnoutTypeModel =
+				presentationModel.getModel(Turnout.PROPERTYNAME_TURNOUT_TYPE);
+		turnoutTypeComboBox =
+				BasicComponentFactory
+						.createComboBox(new SelectionInList<TurnoutType>(
+								turnoutTypes, turnoutTypeModel));
 		turnoutTypeComboBox.setRenderer(new TurnoutTypeComboBoxCellRenderer());
 
-		ValueModel defaultStateModel = presentationModel
-				.getModel(Turnout.PROPERTYNAME_DEFAULT_STATE);
-		turnoutDefaultStateComboBox = BasicComponentFactory
-				.createComboBox(new SelectionInList<TurnoutState>(
-						new TurnoutState[] { TurnoutState.STRAIGHT,
-								TurnoutState.LEFT }, defaultStateModel));
+		ValueModel defaultStateModel =
+				presentationModel.getModel(Turnout.PROPERTYNAME_DEFAULT_STATE);
+		turnoutDefaultStateComboBox =
+				BasicComponentFactory
+						.createComboBox(new SelectionInList<TurnoutState>(
+								new TurnoutState[] { TurnoutState.STRAIGHT,
+										TurnoutState.LEFT }, defaultStateModel));
 		turnoutDefaultStateComboBox
 				.setRenderer(new TurnoutDefaultStateComboBoxCellRenderer());
 
-		ValueModel orientationModel = presentationModel
-				.getModel(Turnout.PROPERTYNAME_ORIENTATION);
-		turnoutOrientationComboBox = BasicComponentFactory
-				.createComboBox(new SelectionInList<TurnoutOrientation>(
-						TurnoutOrientation.values(), orientationModel));
+		ValueModel orientationModel =
+				presentationModel.getModel(Turnout.PROPERTYNAME_ORIENTATION);
+		turnoutOrientationComboBox =
+				BasicComponentFactory
+						.createComboBox(new SelectionInList<TurnoutOrientation>(
+								TurnoutOrientation.values(), orientationModel));
 
-		testTurnoutWidget = new TurnoutWidget(presentationModel.getBean(), true);
+		testTurnoutWidget =
+				new TurnoutWidget(presentationModel.getBean(), true);
 		if (!isTurnoutReadyToTest(presentationModel.getBean()))
 			testTurnoutWidget.setEnabled(false);
 
@@ -211,9 +218,10 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	private void buildPanel() {
 		initComponents();
 
-		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow, 3dlu,pref:grow, 30dlu, pref",
-				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu, p:grow, 3dlu, p:grow, 10dlu,p:grow, 3dlu");
+		FormLayout layout =
+				new FormLayout(
+						"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow, 3dlu,pref:grow, 30dlu, pref",
+						"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu, p:grow, 3dlu, p:grow, 10dlu,p:grow, 3dlu");
 		layout.setColumnGroups(new int[][] { { 1, 5 }, { 3, 7 } });
 		layout.setRowGroups(new int[][] { { 3, 5, 7, 9, 11 } });
 
@@ -352,12 +360,11 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 			}
 			if (bus2Valid && address2Valid) {
 				int bus2 = ((Integer) bus2TextField.getValue()).intValue();
-				int address2 = ((Integer) address2TextField.getValue())
-						.intValue();
+				int address2 =
+						((Integer) address2TextField.getValue()).intValue();
 				boolean unique2 = true;
 				for (Turnout t : turnoutPersistence.getAllTurnouts()) {
-					if (t.getBus2() == bus2
-							&& t.getAddress2() == address2
+					if (t.getBus2() == bus2 && t.getAddress2() == address2
 							&& !t.equals(turnout))
 						unique2 = false;
 				}
@@ -376,8 +383,8 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	}
 
 	private void setSpinnerColor(JSpinner spinner, Color color) {
-		JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner
-				.getEditor();
+		JSpinner.DefaultEditor editor =
+				(JSpinner.DefaultEditor) spinner.getEditor();
 		editor.getTextField().setBackground(color);
 	}
 
@@ -398,7 +405,8 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 		return okPressed;
 	}
 
-	class ApplyChangesAction extends AbstractAction {
+	class ApplyChangesAction
+			extends AbstractAction {
 
 		public ApplyChangesAction() {
 			super("OK");
@@ -409,11 +417,9 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 			try {
 				Turnout turnout = presentationModel.getBean();
 				if (turnout.getId() == 0) {
-					turnoutPersistence.addTurnout(
-							turnout);
+					turnoutPersistence.addTurnout(turnout);
 				} else {
-					turnoutPersistence.updateTurnout(
-							turnout);
+					turnoutPersistence.updateTurnout(turnout);
 				}
 				okPressed = true;
 				turnout.removePropertyChangeListener(TurnoutConfig.this);
@@ -421,18 +427,17 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 			} catch (TurnoutPersistenceException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
 			}
-
 		}
 	}
 
-	class CancelAction extends AbstractAction {
+	class CancelAction
+			extends AbstractAction {
 
 		public CancelAction() {
 			super("Cancel");
 		}
 
 		public void actionPerformed(ActionEvent e) {
-
 			Turnout turnout = presentationModel.getBean();
 			turnout.removePropertyChangeListener(TurnoutConfig.this);
 			okPressed = false;

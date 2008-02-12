@@ -93,6 +93,8 @@ public class TurnoutConfigurationDialog extends JDialog {
 
 	private JButton okButton;
 
+	private TurnoutGroupConfigPanel	turnoutGroupConfig;
+
 	public TurnoutConfigurationDialog(JFrame owner) {
 		super(owner, "Turnout Configuration");
 		initGUI();
@@ -110,7 +112,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 		initEventHandling();
 
 		FormLayout layout = new FormLayout("pref, 10dlu, pref:grow",
-				"pref, 3dlu, fill:pref:grow, 3dlu, pref, 3dlu, pref");
+				"pref, 3dlu, fill:pref:grow, 3dlu, pref, 3dlu, pref, 3dlu, pref");
 
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -119,13 +121,14 @@ public class TurnoutConfigurationDialog extends JDialog {
 		builder.addSeparator("Turnout Groups", cc.xyw(1, 1, 1));
 
 		builder.add(new JScrollPane(turnoutGroupList), cc.xy(1, 3));
-		builder.add(buildGroupButtonBar(), cc.xy(1, 5));
+		builder.add(turnoutGroupConfig, cc.xy(1, 5));
+		builder.add(buildGroupButtonBar(), cc.xy(1, 7));
 
 		builder.addSeparator("Turnouts", cc.xyw(3, 1, 1));
 		builder.add(new JScrollPane(turnoutsTable), cc.xy(3, 3));
-		builder.add(buildTurnoutButtonBar(), cc.xy(3, 5));
+		builder.add(buildTurnoutButtonBar(), cc.xy(3, 7));
 
-		builder.add(buildMainButtonBar(), cc.xyw(1, 7, 3));
+		builder.add(buildMainButtonBar(), cc.xyw(1, 9, 3));
 		add(builder.getPanel());
 
 	}
@@ -154,6 +157,8 @@ public class TurnoutConfigurationDialog extends JDialog {
 		turnoutGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		turnoutGroupList.setCellRenderer(new TurnoutGroupListCellRenderer());
 
+		turnoutGroupConfig = new TurnoutGroupConfigPanel(turnoutGroupModel);
+		
 		addGroupButton = new JButton(new AddTurnoutGroupAction());
 		removeGroupButton = new JButton(new RemoveTurnoutGroupAction());
 
@@ -264,6 +269,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 					.getSelectedValue();
 			if (selectedGroup == null)
 				return;
+			
 			List<Turnout> turnouts = new ArrayList<Turnout>(selectedGroup
 					.getTurnouts());
 			turnoutModel.setList(turnouts);

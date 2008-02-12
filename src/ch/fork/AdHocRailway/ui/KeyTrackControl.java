@@ -235,6 +235,8 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 			try {
 				if (enteredNumberKeys.toString().equals("")) {
+					if(historyStack.size() == 0)
+						return;
 					Object obj = historyStack.pop();
 					if (obj instanceof Turnout) {
 						Turnout t = (Turnout) obj;

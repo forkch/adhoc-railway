@@ -218,9 +218,6 @@ public class AdHocRailway
 		initProceeded("Loading Control Layer (Locks)");
 		lockControl = SRCPLockControl.getInstance();
 
-		// locomotiveControl.update();
-		// turnoutControl.update();
-
 		initProceeded("Creating GUI ...");
 		initGUI();
 
@@ -310,14 +307,14 @@ public class AdHocRailway
 		if (preferences.getBooleanValue(LOGGING)) {
 			updateCommandHistory("To Server: " + commandData);
 		}
-		logger.info("To Server: " + commandData.trim());
+		logger.debug("To Server: " + commandData.trim());
 	}
 
 	public void infoDataReceived(String infoData) {
 		if (preferences.getBooleanValue(LOGGING)) {
 			updateCommandHistory("From Server: " + infoData);
 		}
-		logger.info("From Server: " + infoData.trim());
+		logger.debug("From Server: " + infoData.trim());
 	}
 
 	public void updateCommandHistory(String text) {
@@ -499,7 +496,7 @@ public class AdHocRailway
 			extends AbstractAction {
 
 		public TurnoutAction() {
-			super("Switches", createImageIcon("switch.png"));
+			super("Turnouts\u2026", createImageIcon("switch.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -516,7 +513,7 @@ public class AdHocRailway
 			extends AbstractAction {
 
 		public RoutesAction() {
-			super("Routes", createImageIcon("route_edit.png"));
+			super("Routes\u2026", createImageIcon("route_edit.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -533,7 +530,7 @@ public class AdHocRailway
 			extends AbstractAction {
 
 		public LocomotivesAction() {
-			super("Locomotives", createImageIcon("locomotive.png"));
+			super("Locomotives\u2026", createImageIcon("locomotive.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -550,7 +547,7 @@ public class AdHocRailway
 			extends AbstractAction {
 
 		public PreferencesAction() {
-			super("Preferences", createImageIcon("package_settings.png"));
+			super("Preferences\u2026", createImageIcon("package_settings.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
