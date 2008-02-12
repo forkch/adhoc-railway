@@ -370,39 +370,6 @@ public class TurnoutConfigurationDialog extends JDialog {
 		}
 	}
 
-	private class Add10TurnoutsAction extends AbstractAction {
-		public void actionPerformed(ActionEvent e) {
-			TurnoutGroup selectedTurnoutGroup = (TurnoutGroup) (turnoutGroupList
-					.getSelectedValue());
-			if (selectedTurnoutGroup == null) {
-				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
-						"Please select a switch group", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			int nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
-			try {
-				for (int i = 0; i < 10; i++) {
-					Turnout newTurnout = new Turnout();
-					newTurnout.setNumber(turnoutPersistence
-							.getNextFreeTurnoutNumber());
-					newTurnout.setTurnoutGroup(selectedTurnoutGroup);
-					newTurnout.setDefaultStateEnum(TurnoutState.STRAIGHT);
-					newTurnout.setOrientationEnum(TurnoutOrientation.EAST);
-					newTurnout.setTurnoutType(turnoutPersistence
-							.getTurnoutType(TurnoutTypes.DEFAULT));
-					selectedTurnoutGroup.getTurnouts().add(newTurnout);
-
-					turnoutPersistence.addTurnout(newTurnout);
-
-					nextNumber++;
-				}
-			} catch (TurnoutPersistenceException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
-			}
-		}
-	}
-
 	private class RemoveTurnoutAction extends AbstractAction {
 
 		public RemoveTurnoutAction() {
@@ -446,7 +413,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 					turnoutModel);
 			if (model == null)
 				return;
-			TurnoutConfig turnoutConfig = new TurnoutConfig(
+			new TurnoutConfig(
 					TurnoutConfigurationDialog.this, model);
 		}
 	}

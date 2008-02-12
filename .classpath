@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="etc"/>
 	<classpathentry kind="src" path="res"/>
+	<classpathentry kind="src" path="etc"/>
 	<classpathentry kind="lib" path="lib/asm-attrs.jar"/>
 	<classpathentry kind="lib" path="lib/asm.jar"/>
 	<classpathentry kind="lib" path="lib/c3p0-0.9.1.jar"/>
@@ -19,7 +19,6 @@
 	<classpathentry kind="lib" path="lib/javassist.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-archive-browsing.jar"/>
 	<classpathentry kind="lib" path="lib/jdbc2_0-stdext.jar"/>
-	<classpathentry kind="lib" path="lib/jsrcpc-0.2-bin.jar"/>
 	<classpathentry kind="lib" path="lib/jta.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.0.7-bin.jar" sourcepath="/home/fork/downloads/mysql-connector-java-5.0.7/src"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
@@ -28,7 +27,7 @@
 	<classpathentry kind="lib" path="lib/binding-2.0.2.jar" sourcepath="/home/fork/devel/AdHoc-Railway/lib/binding-2.0.2/src"/>
 	<classpathentry kind="lib" path="lib/forms-1.1.0.jar" sourcepath="/home/fork/devel/AdHoc-Railway/lib/forms-1.1.0/src"/>
 	<classpathentry kind="lib" path="lib/antlr-2.7.6.jar"/>
-	<classpathentry kind="lib" path="lib/jsrcpc-0.3-bin.jar" sourcepath="/jsrcpc/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jsrcpc-0.3-bin.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

@@ -24,6 +24,7 @@ package ch.fork.AdHocRailway.technical.configuration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,9 +40,10 @@ public class Preferences implements PreferencesKeys {
 	private Map<String, String>	preferences;
 	private List<String>		hostnames;
 	private static Preferences	instance	= null;
+	private Properties	props;
+	private File	configFile;
 
 	private Preferences() {
-
 		preferences = new HashMap<String, String>();
 		hostnames = new ArrayList<String>();
 		hostnames.add("localhost");
@@ -60,40 +62,40 @@ public class Preferences implements PreferencesKeys {
 		setBooleanValue(AUTOCONNECT, false);
 		setBooleanValue(TABBED_TRACK, true);
 		setBooleanValue(USE_DATABASE, false);
-
-		File currentDirConfig = new File("./adhocrailway.conf");
-		File homeDirConfig = new File(System.getProperty("user.home")
+		
+		configFile = new File(System.getProperty("user.home")
 				+ File.separator + ".adhocrailway.conf");
-
-		if (currentDirConfig.exists()) {
-			Properties props = new Properties();
-			try {
-				logger.info("found adhocrailway.conf in current directory");
-				props.load(new FileInputStream(currentDirConfig));
-				for (Object key : props.keySet()) {
-					setStringValue(key.toString(), props.getProperty(
-							key.toString()).toString());
-				}
-			} catch (FileNotFoundException e) {
-
-			} catch (IOException e) {
-			}
-
-		}
-		if (homeDirConfig.exists()) {
-			Properties props = new Properties();
+		if (configFile.exists()) {
+			props = new Properties();
 			try {
 				logger.info("found .adhocrailway.conf in users home directory");
-				props.load(new FileInputStream(homeDirConfig));
+				props.load(new FileInputStream(configFile));
 				for (Object key : props.keySet()) {
 					setStringValue(key.toString(), props.getProperty(
 							key.toString()).toString());
 				}
+				return;
 			} catch (FileNotFoundException e) {
 
 			} catch (IOException e) {
 			}
 		}
+		configFile = new File("./adhocrailway.conf");
+		if (configFile.exists()) {
+			props = new Properties();
+			try {
+				logger.info("found adhocrailway.conf in current directory");
+				props.load(new FileInputStream(configFile));
+				for (Object key : props.keySet()) {
+					setStringValue(key.toString(), props.getProperty(
+							key.toString()).toString());
+				}
+				return;
+			} catch (FileNotFoundException e) {
+
+			} catch (IOException e) {
+			}
+		}		
 	}
 
 	public static Preferences getInstance() {
@@ -105,6 +107,12 @@ public class Preferences implements PreferencesKeys {
 		}
 	}
 
+	public void save() throws FileNotFoundException, IOException {
+		for(String key : preferences.keySet()) {
+			props.setProperty(key, preferences.get(key));
+		}
+		props.store(new FileOutputStream(configFile), "");
+	}
 	public void setStringValue(String key, String value) {
 		preferences.put(key, value);
 	}

@@ -82,15 +82,13 @@ public class XMLImporter
 			double version =
 					Double.parseDouble(attributes.getValue("ExporterVersion"));
 			if (version == 0.2) {
-				XMLImporter_0_2 importer =
-						new XMLImporter_0_2(filename, turnoutPersistence,
+				new XMLImporter_0_2(filename, turnoutPersistence,
 								locomotivePersistence, routePersistence);
 				logger.info("AdHoc-Railway Config Version 0.2 loaded ("
 						+ filename + ")");
 				return;
 			} else if (version == 0.3) {
-				XMLImporter_0_3 importer =
-						new XMLImporter_0_3(filename, turnoutPersistence,
+				new XMLImporter_0_3(filename, turnoutPersistence,
 								locomotivePersistence, routePersistence);
 				logger.info("AdHoc-Railway Config Version 0.3 loaded ("
 						+ filename + ")");

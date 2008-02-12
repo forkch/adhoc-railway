@@ -58,8 +58,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 
 	private JLabel					numberLabel;
 
-	private JLabel					descLabel;
-
 	private TurnoutCanvas			turnoutCanvas;
 
 	private GridBagLayout			turnoutWidgetLayout;
@@ -215,7 +213,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 			if (testMode)
 				return;
 			turnoutControl.removeTurnoutChangeListener(turnout);
-			TurnoutConfig switchConf = new TurnoutConfig(AdHocRailway
+			new TurnoutConfig(AdHocRailway
 					.getInstance(), turnout);
 			turnoutControl
 					.addTurnoutChangeListener(turnout, TurnoutWidget.this);

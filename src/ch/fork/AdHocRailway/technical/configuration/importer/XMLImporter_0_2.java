@@ -43,7 +43,6 @@ public class XMLImporter_0_2 extends DefaultHandler implements ContentHandler {
 	private Locomotive actualLocomotive;
 	private LocomotiveGroup actualLocomotiveGroup;
 	private LocomotivePersistenceIface locomotivePersistence;
-	private Object routePersistence;
 
 	public XMLImporter_0_2(String filename) {
 		this(filename, MemoryTurnoutPersistence.getInstance(),
@@ -58,7 +57,6 @@ public class XMLImporter_0_2 extends DefaultHandler implements ContentHandler {
 		this.preferences = Preferences.getInstance();
 		this.turnoutPersistence = turnoutPersistence;
 		this.locomotivePersistence = locomotivePersistence;
-		this.routePersistence = routePersistence;
 
 		try {
 			routePersistence.clear();

@@ -11,12 +11,21 @@ AdHoc-Railway is designed to be used in a Multiuser-Environment. This means
 that many persons can control the whole railway and each AdHoc-Railway-Instance 
 is informed about the changes on the railway which were made by the other 
 users.
-It uses the jsrcpc-Library to communicate with a srcp-server.
+It uses the jsrcpc-Library (http://sourceforge.net/projects/jsrcpc) to 
+communicate with a srcp-server.
 
 2. Installation
+AdHoc-Railway works with files or a database as datastorage.
 
-AdHoc-Railway needs the xerces-java library in order to save and load its configuration,
-see that you have them installed. The jsrcpc-library is already in the binary-distribution included.
+If you want to use a database as datastorage install a MySQL-server, create a 
+database and execute the SQL-Script adhocrailway.sql in the etc/ directory
+
+Adjust the database settings accordingly in the file adhocrailway.conf. Below is an example:
+UseDatabase=true
+DatabaseHost=localhost
+DatabaseName=adhocrailway
+DatabaseUser=adhocrailway
+DatabasePWD=adhocrailway
 
 3. Run
 
@@ -25,13 +34,13 @@ Just download the .jar-Version and start it via
 
 4. Build from source
 
-To build AdHoc-Railway from source copy the actual jsrcpc-library into the lib-directory and update the link.
+There is an Ant-Buildfile in the root folder of the source-distribution use this 
+to build AdHoc-Railway from source.
 
-4. Usage
+5. Usage
 
-TBD.
 
-5. Image-Source
+6. Image-Source
 
 All images used in the AdHoc-Railway are coming either from the KDE-Project or 
 from the SpDrS60-Project. Both are distributed under the terms of the GPL.

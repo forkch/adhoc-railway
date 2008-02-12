@@ -16,14 +16,12 @@ public class XMLExporter_0_2 {
 	private StringBuffer sb;
 	private TurnoutPersistenceIface turnoutPersistence;
 	private LocomotivePersistenceIface locomotivePersistence;
-	private RoutePersistenceIface routePersistence;
 
 	public XMLExporter_0_2(TurnoutPersistenceIface turnoutPersistence,
 			LocomotivePersistenceIface locomotivePersistence,
 			RoutePersistenceIface routePersistence) {
 		this.turnoutPersistence = turnoutPersistence;
 		this.locomotivePersistence = locomotivePersistence;
-		this.routePersistence = routePersistence;
 
 	}
 

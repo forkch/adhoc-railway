@@ -86,8 +86,8 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		locomotiveCache.clear();
 		locomotiveGroupCache.clear();
 		em.getTransaction().commit();
-		super.em = emf.createEntityManager();
-		super.em.getTransaction().begin();
+		HibernatePersistence.em = emf.createEntityManager();
+		HibernatePersistence.em.getTransaction().begin();
 	}
 	
 	/*

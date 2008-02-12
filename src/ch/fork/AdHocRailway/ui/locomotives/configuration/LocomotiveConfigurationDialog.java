@@ -42,7 +42,6 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableModel;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -70,8 +69,6 @@ public class LocomotiveConfigurationDialog extends JDialog {
 	private boolean okPressed;
 	
 	private LocomotivePersistenceIface locomotivePersistence;
-
-	private TableModel locomotivesTableModel;
 
 	private JTable locomotivesTable;
 

@@ -111,8 +111,8 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 		numberToTurnoutCache.clear();
 		turnoutCache.clear();
 		em.getTransaction().commit();
-		super.em = emf.createEntityManager();
-		super.em.getTransaction().begin();
+		HibernatePersistence.em = emf.createEntityManager();
+		HibernatePersistence.em.getTransaction().begin();
 	}
 
 	/*

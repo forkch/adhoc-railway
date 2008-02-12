@@ -23,6 +23,8 @@ package ch.fork.AdHocRailway.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -342,6 +344,13 @@ public class PreferencesDialog
 		p.setStringValue(DATABASE_NAME, (String) databaseNameField.getText());
 		p.setStringValue(DATABASE_USER, (String) databaseUserField.getText());
 		p.setStringValue(DATABASE_PWD, (String) databasePasswordField.getText());
+		try {
+			p.save();
+		} catch (FileNotFoundException e) {
+			ExceptionProcessor.getInstance().processException(e);
+		} catch (IOException e) {
+			ExceptionProcessor.getInstance().processException(e);
+		}
 	}
 
 }

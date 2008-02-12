@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
 Main-Class: ch.fork.AdHocRailway.ui.AdHocRailway
-Class-Path: jsrcpc-bin.jar xercesImpl.jar
+Class-Path: etc/ etc/META-INF/ lib/asm-attrs.jar lib/asm.jar lib/c3p0-0.9.1.jar lib/cglib-2.1.3.jar lib/commons-collections-2.1.1.jar lib/commons-logging-1.0.4.jar lib/dom4j-1.6.1.jar lib/ejb3-persistence.jar lib/hibernate-annotations.jar lib/hibernate-commons-annotations.jar lib/hibernate-entitymanager.jar lib/hibernate-validator.jar lib/hibernate3.jar lib/javassist.jar lib/jboss-archive-browsing.jar lib/jdbc2_0-stdext.jar lib/jta.jar lib/mysql-connector-jara-5.0.7-bin.jar lib/xml-apis.jar lib/looks-2.1.4.jar lib/log4j-1.2.14.jar lib/binding-2.0.2.jar lib/forms-1.1.0.jar lib/antlr-2.7.6.jar lib/jsrcpc-0.3-bin.jar
