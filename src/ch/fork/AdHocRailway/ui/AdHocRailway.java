@@ -503,7 +503,7 @@ public class AdHocRailway
 			TurnoutConfigurationDialog switchConfigDialog =
 					new TurnoutConfigurationDialog(AdHocRailway.this);
 			if (switchConfigDialog.isOkPressed()) {
-				updateGUI();
+				updateTurnouts();
 				updateCommandHistory("Turnout configuration changed");
 			}
 		}
@@ -520,7 +520,7 @@ public class AdHocRailway
 			RoutesConfigurationDialog routesConfig =
 					new RoutesConfigurationDialog(AdHocRailway.this);
 			if (routesConfig.isOkPressed()) {
-				updateGUI();
+				updateTurnouts();
 				updateCommandHistory("Routes configuration changed");
 			}
 		}
@@ -537,7 +537,7 @@ public class AdHocRailway
 			LocomotiveConfigurationDialog locomotiveConfigDialog =
 					new LocomotiveConfigurationDialog(AdHocRailway.this);
 			if (locomotiveConfigDialog.isOkPressed()) {
-				updateGUI();
+				updateLocomotives();
 				updateCommandHistory("Locomotive configuration changed");
 			}
 		}

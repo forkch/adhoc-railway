@@ -124,7 +124,7 @@ public class RouteGroup extends Model implements java.io.Serializable,
 		return this.name;
 	}
 	
-	@Column(name = "turnout_number_offset", unique = false, nullable = false, insertable = true, updatable = true)
+	@Column(name = "route_number_offset", unique = false, nullable = false, insertable = true, updatable = true)
 	public int getRouteNumberOffset() {
 		return this.routeNumberOffset;
 	}
@@ -135,7 +135,7 @@ public class RouteGroup extends Model implements java.io.Serializable,
 		firePropertyChange(PROPERTYNAME_ID, old, turnoutNumberOffset);
 	}
 
-	@Column(name = "turnout_number_amount", unique = false, nullable = false, insertable = true, updatable = true)
+	@Column(name = "route_number_amount", unique = false, nullable = false, insertable = true, updatable = true)
 	public int getRouteNumberAmount() {
 		return this.routeNumberAmount;
 	}

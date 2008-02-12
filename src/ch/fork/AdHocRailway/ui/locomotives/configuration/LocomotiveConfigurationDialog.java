@@ -89,7 +89,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 	private JButton okButton;
 
 	public LocomotiveConfigurationDialog(JFrame owner) {
-		super(owner, "Locomotive Configuration");
+		super(owner, "Locomotive Configuration", true);
 		locomotivePersistence = AdHocRailway.getInstance().getLocomotivePersistence();
 		initGUI();
 	}

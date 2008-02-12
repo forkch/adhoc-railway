@@ -16,7 +16,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.SpinnerAdapterFactory;
-import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -25,29 +25,29 @@ import com.jgoodies.forms.layout.FormLayout;
  * @author Benjamin Mueller <benjamin.b.mueller@siemens.com>
  * 
  */
-public class TurnoutGroupConfigPanel
-		extends JPanel {
+public class TurnoutGroupConfigPanel extends JPanel {
 
 	private PresentationModel<TurnoutGroup>	presentationModel;
 	private JTextField						turnoutGroupName;
 	private JSpinner						turnoutNumberOffset;
 	private JSpinner						turnoutNumberAmount;
-	private SelectionInList<TurnoutGroup>	turnoutGroupModel;
 
-	public TurnoutGroupConfigPanel(SelectionInList<TurnoutGroup> turnoutGroupModel) {
-		this.turnoutGroupModel = turnoutGroupModel;
+	public TurnoutGroupConfigPanel() {
+		presentationModel = new PresentationModel<TurnoutGroup>(new ValueHolder(null, true));
 		buildPanel();
+	}
+	
+	public void setTurnoutGroup(TurnoutGroup group) {
+		presentationModel.setBean(group);
 	}
 
 	private void buildPanel() {
 		initComponents();
-		
-		FormLayout layout =
-				new FormLayout(
-						"right:pref, 3dlu, pref:grow",
-						"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu");
-		layout.setColumnGroups(new int[][] { { 1, 3 }});
-		layout.setRowGroups(new int[][] { { 1,3,5 } });
+
+		FormLayout layout = new FormLayout("right:pref, 3dlu, pref:grow",
+				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu");
+		layout.setColumnGroups(new int[][] { { 1, 3 } });
+		layout.setRowGroups(new int[][] { { 1, 3, 5 } });
 
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -60,12 +60,14 @@ public class TurnoutGroupConfigPanel
 		builder.addLabel("Turnout Amount", cc.xy(1, 5));
 		builder.add(turnoutNumberAmount, cc.xy(3, 5));
 		
+
 		add(builder.getPanel());
 	}
+	
 
 	private void initComponents() {
-		turnoutGroupName =
-				BasicComponentFactory.createTextField(presentationModel
+		turnoutGroupName = BasicComponentFactory
+				.createTextField(presentationModel
 						.getModel(TurnoutGroup.PROPERTYNAME_NAME));
 		turnoutGroupName.setColumns(5);
 
@@ -90,5 +92,6 @@ public class TurnoutGroupConfigPanel
 								0, // minValue
 								1000, // maxValue
 								10)); // step
+
 	}
 }

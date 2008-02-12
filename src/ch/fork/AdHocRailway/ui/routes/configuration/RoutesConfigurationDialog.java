@@ -88,7 +88,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	private PanelBuilder builder;
 
 	public RoutesConfigurationDialog(JFrame parent) {
-		super(parent, "Edit Routes");
+		super(parent, "Edit Routes", true);
 		initGUI();
 	}
 
