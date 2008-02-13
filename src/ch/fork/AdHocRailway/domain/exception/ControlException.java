@@ -22,7 +22,7 @@
 
 package ch.fork.AdHocRailway.domain.exception;
 
-public class ControlException extends Exception {
+public class ControlException extends RuntimeException {
 
     public ControlException() {
         super();

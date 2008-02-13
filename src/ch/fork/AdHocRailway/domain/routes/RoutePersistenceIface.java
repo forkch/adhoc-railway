@@ -32,6 +32,8 @@ public interface RoutePersistenceIface {
 	public abstract void updateRouteItem(RouteItem item);
 
 	public abstract int getNextFreeRouteNumber();
+
+	public void flush() throws RoutePersistenceException;
 	
 	public abstract void clear() throws RoutePersistenceException;
 

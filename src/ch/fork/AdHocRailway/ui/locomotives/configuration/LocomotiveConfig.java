@@ -142,7 +142,7 @@ public class LocomotiveConfig extends JDialog {
 
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow",
-				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 10dlu,p:grow, 3dlu");
+				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 10dlu,p:grow");
 		layout.setColumnGroups(new int[][] { { 1, 5 }, { 3, 7 } });
 		layout.setRowGroups(new int[][] {{3,5,7,9}});
 		

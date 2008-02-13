@@ -8,6 +8,7 @@ import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.RollbackException;
 
 import org.apache.log4j.Logger;
 
@@ -308,6 +309,20 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 		}
 		em.remove(type);
 		em.getTransaction().commit();
+		em.getTransaction().begin();
+	}
+
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#flush()
+	 */
+	public void flush() throws LocomotivePersistenceException {
+		logger.debug("flush()");
+		try {
+			em.getTransaction().commit();
+		} catch (RollbackException ex) {
+			em.getTransaction().begin();
+			throw new LocomotivePersistenceException("Error", ex);
+		}
 		em.getTransaction().begin();
 	}
 }

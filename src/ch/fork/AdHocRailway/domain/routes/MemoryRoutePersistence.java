@@ -199,4 +199,11 @@ public class MemoryRoutePersistence implements RoutePersistenceIface {
 		return turnouts.last().getNumber() + 1;
 	}
 
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#flush()
+	 */
+	public void flush() throws RoutePersistenceException {
+		logger.debug("flush()");
+	}
+
 }

@@ -305,4 +305,11 @@ public class MemoryTurnoutPersistence implements TurnoutPersistenceIface {
 		turnoutTypes.values().remove(type);
 
 	}
+
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#flush()
+	 */
+	public void flush() {
+		logger.debug("flush()");
+	}
 }

@@ -200,4 +200,11 @@ public class MemoryLocomotivePersistence implements LocomotivePersistenceIface {
 		locomotiveTypes.values().remove(type);
 
 	}
+
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#flush()
+	 */
+	public void flush() throws LocomotivePersistenceException {
+		logger.debug("flush()");
+	}
 }

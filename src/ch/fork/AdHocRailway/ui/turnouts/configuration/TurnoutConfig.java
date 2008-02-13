@@ -41,13 +41,11 @@ import javax.swing.JTextField;
 
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
@@ -221,7 +219,7 @@ public class TurnoutConfig
 		FormLayout layout =
 				new FormLayout(
 						"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow, 3dlu,pref:grow, 30dlu, pref",
-						"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu, p:grow, 3dlu, p:grow, 10dlu,p:grow, 3dlu");
+						"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu, p:grow, 3dlu, p:grow, 10dlu,p:grow");
 		layout.setColumnGroups(new int[][] { { 1, 5 }, { 3, 7 } });
 		layout.setRowGroups(new int[][] { { 3, 5, 7, 9, 11 } });
 
@@ -414,7 +412,7 @@ public class TurnoutConfig
 
 		public void actionPerformed(ActionEvent e) {
 
-			try {
+			
 				Turnout turnout = presentationModel.getBean();
 				if (turnout.getId() == 0) {
 					turnoutPersistence.addTurnout(turnout);
@@ -424,9 +422,7 @@ public class TurnoutConfig
 				okPressed = true;
 				turnout.removePropertyChangeListener(TurnoutConfig.this);
 				TurnoutConfig.this.setVisible(false);
-			} catch (TurnoutPersistenceException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
-			}
+			
 		}
 	}
 

@@ -232,6 +232,12 @@ public class AdHocRailway
 
 		initProceeded("RailControl started");
 		updateCommandHistory("RailControl started");
+		if (preferences.getStringValue(LAST_OPENED_FILE) != null
+				&& !preferences.getStringValue(LAST_OPENED_FILE).equals("")) {
+
+			new OpenAction().openFile(new File(preferences
+					.getStringValue(LAST_OPENED_FILE)));
+		}
 		if (preferences.getBooleanValue(AUTOCONNECT))
 			new ConnectAction().actionPerformed(null);
 		setVisible(true);
@@ -360,14 +366,14 @@ public class AdHocRailway
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				file = fileChooser.getSelectedFile();
 				openFile(file);
-				setTitle(AdHocRailway.TITLE + " [" + file.getAbsolutePath() + "]");
+
 			} else {
 				updateCommandHistory("Open command cancelled by user");
 			}
 
 		}
 
-		private void openFile(File file) {
+		public void openFile(File file) {
 			try {
 				new XMLImporter(file.getAbsolutePath());
 			} catch (ConfigurationException e) {
@@ -379,25 +385,29 @@ public class AdHocRailway
 			turnoutControl.setTurnoutPersistence(turnoutPersistence);
 			locomotivePersistence = MemoryLocomotivePersistence.getInstance();
 			locomotiveControl.setLocomotivePersistence(locomotivePersistence);
+			setTitle(AdHocRailway.TITLE + " [" + file.getAbsolutePath() + "]");
 			updateGUI();
 
 		}
 	}
-	
-	private class SaveAction extends AbstractAction {
+
+	private class SaveAction
+			extends AbstractAction {
 		public SaveAction() {
 			super("Save\u2026", createImageIcon("filesave.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			
+
 			JFileChooser fileChooser = new JFileChooser(new File("."));
 			int returnVal = fileChooser.showSaveDialog(AdHocRailway.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File saveFile = fileChooser.getSelectedFile();
-				
+
 				try {
-					XMLExporter_0_3 exporter = new XMLExporter_0_3(turnoutPersistence, locomotivePersistence, routePersistence);
+					XMLExporter_0_3 exporter =
+							new XMLExporter_0_3(turnoutPersistence,
+									locomotivePersistence, routePersistence);
 					String xml = exporter.export();
 					FileWriter fw = new FileWriter(saveFile);
 					fw.write(xml);
@@ -407,13 +417,12 @@ public class AdHocRailway
 				} catch (IOException e2) {
 					ExceptionProcessor.getInstance().processException(e2);
 				}
-				
+				file = saveFile;
+
 			} else {
 				updateCommandHistory("Save command cancelled by user");
 			}
-			
-			
-			
+
 		}
 	}
 
@@ -457,11 +466,14 @@ public class AdHocRailway
 				routePersistence = HibernateRoutePersistence.getInstance();
 				routeControl.setRoutePersistence(routePersistence);
 				String host =
-					preferences.getStringValue(PreferencesKeys.DATABASE_HOST);
+						preferences
+								.getStringValue(PreferencesKeys.DATABASE_HOST);
 				String database =
-						preferences.getStringValue(PreferencesKeys.DATABASE_NAME);
+						preferences
+								.getStringValue(PreferencesKeys.DATABASE_NAME);
 				String url = "jdbc:mysql://" + host + "/" + database;
 				setTitle(AdHocRailway.TITLE + " [" + url + "]");
+				file = null;
 				updateGUI();
 			}
 		}
@@ -486,6 +498,19 @@ public class AdHocRailway
 					SRCPLockControl.getInstance().releaseAllLocks();
 				} catch (LockingException e1) {
 					e1.printStackTrace();
+				}
+
+				if (file != null) {
+					preferences.setStringValue(
+							PreferencesKeys.LAST_OPENED_FILE, file
+									.getAbsolutePath());
+					try {
+						preferences.save();
+					} catch (FileNotFoundException e1) {
+						ExceptionProcessor.getInstance().processException(e1);
+					} catch (IOException e1) {
+						ExceptionProcessor.getInstance().processException(e1);
+					}
 				}
 				System.exit(0);
 			}
@@ -695,12 +720,12 @@ public class AdHocRailway
 		openItem.setMnemonic(KeyEvent.VK_O);
 		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
 				ActionEvent.CTRL_MASK));
-		
+
 		JMenuItem saveItem = new JMenuItem(new SaveAction());
 		saveItem.setMnemonic(KeyEvent.VK_S);
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				ActionEvent.CTRL_MASK));
-		
+
 		JMenuItem exportToDatavaseItem =
 				new JMenuItem(new ExportToDatabaseAction());
 		exportToDatavaseItem.setMnemonic(KeyEvent.VK_O);

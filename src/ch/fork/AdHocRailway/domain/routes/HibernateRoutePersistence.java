@@ -6,6 +6,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
+import javax.persistence.RollbackException;
 
 import org.apache.log4j.Logger;
 
@@ -316,6 +317,22 @@ public class HibernateRoutePersistence extends HibernatePersistence implements
 			return 1;
 		}
 		return turnouts.last().getNumber() + 1;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#flush()
+	 */
+	public void flush() throws RoutePersistenceException {
+		logger.debug("flush()");
+		try {
+			em.getTransaction().commit();
+		} catch (RollbackException ex) {
+			em.getTransaction().begin();
+			throw new RoutePersistenceException("Error", ex);
+		}
+		em.getTransaction().begin();
+		
 	}
 
 }

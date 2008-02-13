@@ -48,8 +48,8 @@ import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 
-public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
-		LockChangeListener {
+public class TurnoutWidget
+		extends JPanel implements TurnoutChangeListener, LockChangeListener {
 	private TurnoutControlIface		turnoutControl;
 
 	private static final long		serialVersionUID	= 1L;
@@ -82,8 +82,8 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 		this.testMode = testMode;
 		this.turnout = turnout;
 		this.turnoutControl = AdHocRailway.getInstance().getTurnoutControl();
-		this.turnoutPersistence = AdHocRailway.getInstance()
-				.getTurnoutPersistence();
+		this.turnoutPersistence =
+				AdHocRailway.getInstance().getTurnoutPersistence();
 		turnoutControl.addTurnoutChangeListener(turnout, this);
 		defaultBackground = getBackground();
 		widgetEnabled = true;
@@ -175,8 +175,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 				int address2 = turnout.getAddress2();
 				boolean unique2 = true;
 				for (Turnout t : turnoutPersistence.getAllTurnouts()) {
-					if (t.getBus2() == bus2
-							&& t.getAddress2() == address2
+					if (t.getBus2() == bus2 && t.getAddress2() == address2
 							&& !t.equals(turnout))
 						unique2 = false;
 				}
@@ -192,29 +191,30 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener,
 	public void lockChanged(ControlObject changedLock) {
 	}
 
-	private class MouseAction extends MouseAdapter {
+	private class MouseAction
+			extends MouseAdapter {
 		public void mouseClicked(MouseEvent e) {
 			if (!widgetEnabled)
 				return;
-			try {
-				if (e.getClickCount() == 1
-						&& e.getButton() == MouseEvent.BUTTON1) {
+
+			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
+				try {
 					turnoutControl.toggle(turnout);
-				} else if (e.getClickCount() == 1
-						&& e.getButton() == MouseEvent.BUTTON3) {
-					displaySwitchConfig();
+				} catch (TurnoutException e1) {
+					ExceptionProcessor.getInstance().processException(e1);
 				}
-			} catch (TurnoutException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+			} else if (e.getClickCount() == 1
+					&& e.getButton() == MouseEvent.BUTTON3) {
+				displaySwitchConfig();
 			}
+
 		}
 
 		private void displaySwitchConfig() {
 			if (testMode)
 				return;
 			turnoutControl.removeTurnoutChangeListener(turnout);
-			new TurnoutConfig(AdHocRailway
-					.getInstance(), turnout);
+			new TurnoutConfig(AdHocRailway.getInstance(), turnout);
 			turnoutControl
 					.addTurnoutChangeListener(turnout, TurnoutWidget.this);
 

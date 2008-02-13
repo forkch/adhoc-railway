@@ -35,7 +35,7 @@ public interface TurnoutPersistenceIface {
 
 	public abstract TurnoutType getTurnoutType(TurnoutTypes typeName);
 	
-	public abstract void addTurnoutType(TurnoutType type);
+	public abstract void addTurnoutType(TurnoutType type) throws TurnoutPersistenceException;
 	
 	public abstract void deleteTurnoutType(TurnoutType type) throws TurnoutPersistenceException;
 
@@ -43,5 +43,7 @@ public interface TurnoutPersistenceIface {
 
 	public Set<Integer> getUsedTurnoutNumbers();
 
+	public void flush() throws TurnoutPersistenceException;
+	
 	public abstract void clear() throws TurnoutPersistenceException;
 }
