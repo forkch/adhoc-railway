@@ -20,14 +20,11 @@ import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.MemoryTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
-public class XMLImporter
-		extends DefaultHandler implements ContentHandler {
+public class XMLImporter extends DefaultHandler implements ContentHandler {
 
-	private static Logger				logger		=
-															Logger
-																	.getLogger(XMLImporter.class);
+	private static Logger				logger		= Logger
+															.getLogger(XMLImporter.class);
 	private String						filename;
 	private boolean						supported	= true;
 	private TurnoutPersistenceIface		turnoutPersistence;
@@ -56,7 +53,7 @@ public class XMLImporter
 		}
 	}
 
-	private void parseDocument(String filename) {
+	private void parseDocument(String filename) throws ConfigurationException {
 		// get a factory
 		SAXParserFactory spf = SAXParserFactory.newInstance();
 		try {
@@ -65,12 +62,11 @@ public class XMLImporter
 			// parse the file and also register this class for call backs
 			sp.parse(filename, this);
 		} catch (SAXException se) {
-			ExceptionProcessor.getInstance().processException(
-					"Error opening file", se);
+			throw new ConfigurationException("Error loading configuration", se);
 		} catch (ParserConfigurationException pce) {
-			pce.printStackTrace();
+			throw new ConfigurationException("Error configuring SAX-Parser", pce);
 		} catch (IOException ie) {
-			ie.printStackTrace();
+			throw new ConfigurationException("Error opening configuration file", ie);
 		}
 	}
 
@@ -79,17 +75,17 @@ public class XMLImporter
 			Attributes attributes) throws SAXException {
 		qName = qName.toLowerCase();
 		if (qName.equals("railcontrol")) {
-			double version =
-					Double.parseDouble(attributes.getValue("ExporterVersion"));
+			double version = Double.parseDouble(attributes
+					.getValue("ExporterVersion"));
 			if (version == 0.2) {
 				new XMLImporter_0_2(filename, turnoutPersistence,
-								locomotivePersistence, routePersistence);
+						locomotivePersistence, routePersistence);
 				logger.info("AdHoc-Railway Config Version 0.2 loaded ("
 						+ filename + ")");
 				return;
 			} else if (version == 0.3) {
 				new XMLImporter_0_3(filename, turnoutPersistence,
-								locomotivePersistence, routePersistence);
+						locomotivePersistence, routePersistence);
 				logger.info("AdHoc-Railway Config Version 0.3 loaded ("
 						+ filename + ")");
 				return;

@@ -1,15 +1,13 @@
 package ch.fork.AdHocRailway.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
@@ -67,6 +65,8 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 	private JScrollPane	switchesHistoryPane;
 
+	private ThreeDigitDisplay	digitDisplay;
+
 	public KeyTrackControl() {
 		super("Track Control / History");
 		this.historyStack = new ArrayDeque<Object>();
@@ -81,8 +81,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		switchesHistory = new JPanel();
 		JPanel sh1 = new JPanel(new BorderLayout());
 
-		BoxLayout boxLayout = new BoxLayout(switchesHistory, BoxLayout.Y_AXIS);
-		switchesHistory.setLayout(boxLayout);
+		switchesHistory.setLayout(new GridLayout(HISTORY_LENGTH, 1));
 
 		switchesHistoryPane = new JScrollPane(switchesHistory,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -94,17 +93,9 @@ public class KeyTrackControl extends SimpleInternalFrame {
 	}
 
 	private JPanel initSegmentPanel() {
-		JPanel segmentPanelNorth = new JPanel(new FlowLayout(
-				FlowLayout.TRAILING, 0, 0));
-		segmentPanelNorth.setBackground(new Color(0, 0, 0));
-		seg1 = new Segment7();
-		seg2 = new Segment7();
-		seg3 = new Segment7();
-		segmentPanelNorth.add(seg3);
-		segmentPanelNorth.add(seg2);
-		segmentPanelNorth.add(seg1);
+		digitDisplay = new ThreeDigitDisplay();
 		JPanel p = new JPanel(new BorderLayout());
-		p.add(segmentPanelNorth, BorderLayout.WEST);
+		p.add(digitDisplay, BorderLayout.WEST);
 		return p;
 	}
 
@@ -179,14 +170,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 	private void resetSegmentDisplay() {
 		enteredNumberKeys = new StringBuffer();
-		seg1.setValue(-1);
-		seg2.setValue(-1);
-		seg3.setValue(-1);
-		seg3.setDisplayPeriod(false);
-
-		seg1.repaint();
-		seg2.repaint();
-		seg3.repaint();
+		digitDisplay.reset();
 	}
 
 	private class NumberEnteredAction extends AbstractAction {
@@ -194,8 +178,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getActionCommand() == ".") {
 				routeMode = true;
-				seg3.setDisplayPeriod(true);
-				seg3.repaint();
+				digitDisplay.setPeriod(true);
 			} else {
 				enteredNumberKeys.append(e.getActionCommand());
 				String switchNumberAsString = enteredNumberKeys.toString();
@@ -204,28 +187,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 					resetSegmentDisplay();
 					return;
 				}
-				int seg1Value = switchNumber % 10;
-				seg1.setValue(seg1Value);
-				seg1.repaint();
-				switchNumber = switchNumber - seg1Value;
-				int seg2Value = 0;
-				if (switchNumber != 0) {
-					seg2Value = (switchNumber % 100) / 10;
-					seg2.setValue(seg2Value);
-				} else {
-					seg2.setValue(-1);
-				}
-				seg2.repaint();
-				switchNumber = switchNumber - seg2Value * 10;
-				int seg3Value = 0;
-				if (switchNumber != 0) {
-					seg3Value = (switchNumber % 1000) / 100;
-					seg3.setValue(seg3Value);
-				} else {
-					seg3.setValue(-1);
-				}
-				seg3.repaint();
-				switchNumber = switchNumber - seg3Value * 100;
+				digitDisplay.setNumber(switchNumber);
 			}
 		}
 	}

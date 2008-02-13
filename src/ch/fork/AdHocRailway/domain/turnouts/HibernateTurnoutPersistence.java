@@ -143,7 +143,7 @@ public class HibernateTurnoutPersistence
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#getAllTurnouts()
 	 */
-	public ArrayListModel<Turnout> getAllTurnouts() {
+	public ArrayListModel<Turnout> getAllTurnouts() throws TurnoutPersistenceException {
 		logger.debug("getAllTurnouts()");
 		if (addressTurnoutCache.size() == 0) {
 			updateTurnoutCache();

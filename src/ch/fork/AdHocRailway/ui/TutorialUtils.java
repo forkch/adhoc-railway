@@ -64,5 +64,20 @@ public final class TutorialUtils {
             (int) ((screenSize.height - paneSize.height) *0.45));
     }
 
+    public static void locateOnOpticalScreenLeft3rd(Component component) {
+        Dimension paneSize = component.getSize();
+        Dimension screenSize = component.getToolkit().getScreenSize();
+        component.setLocation(
+            (screenSize.width/3  - paneSize.width/2),
+            (int) ((screenSize.height - paneSize.height) *0.45));
+    }
+    public static void locateOnOpticalScreenRight3rd(Component component) {
+        Dimension paneSize = component.getSize();
+        Dimension screenSize = component.getToolkit().getScreenSize();
+        component.setLocation(
+            (screenSize.width*2/3  - paneSize.width/2),
+            (int) ((screenSize.height - paneSize.height) *0.45));
+    }
+
 
 }

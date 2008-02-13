@@ -22,12 +22,28 @@
 
 package ch.fork.AdHocRailway.domain.locking.exception;
 
-public class LockingException extends Exception {
-    public LockingException(String msg) {
-        super(msg);
-    }
+import ch.fork.AdHocRailway.domain.exception.ControlException;
 
-    public LockingException(String msg, Exception parent) {
-        super(msg, parent);
-    }
+public class LockingException extends ControlException {
+
+	public LockingException() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public LockingException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
+
+	public LockingException(String message) {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
+
+	public LockingException(Throwable cause) {
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
+
 }

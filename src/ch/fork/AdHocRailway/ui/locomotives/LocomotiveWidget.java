@@ -47,10 +47,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import ch.fork.AdHocRailway.domain.ControlObject;
 import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
-import ch.fork.AdHocRailway.domain.locking.LockControlIface;
-import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
@@ -60,54 +57,58 @@ import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
+import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
 public class LocomotiveWidget extends JPanel implements
 		LocomotiveChangeListener, LockChangeListener {
-	private static final long serialVersionUID = 1L;
+	private static final long			serialVersionUID		= 1L;
 
-	private JComboBox locomotiveComboBox;
+	private JComboBox					locomotiveComboBox;
 
-	private JComboBox locomotiveGroupComboBox;
+	private JComboBox					locomotiveGroupComboBox;
 
-	private JLabel desc;
+	private JLabel						desc;
 
-	private JProgressBar speedBar;
+	private JProgressBar				speedBar;
 
-	private JButton increaseSpeed;
+	private JButton						increaseSpeed;
 
-	private JButton decreaseSpeed;
+	private JButton						decreaseSpeed;
 
-	private JButton stopButton;
+	private JButton						stopButton;
 
-	private JButton directionButton;
+	private JButton						directionButton;
 
-	private LockToggleButton lockButton;
+	private LockToggleButton			lockButton;
 
-	private Locomotive myLocomotive;
+	private Locomotive					myLocomotive;
 
-	private int accelerateKey, deccelerateKey, toggleDirectionKey;
+	private int							accelerateKey, deccelerateKey,
+			toggleDirectionKey;
 
-	private FunctionToggleButton[] functionToggleButtons;
+	private FunctionToggleButton[]		functionToggleButtons;
 
-	private Color defaultBackground;
+	private Color						defaultBackground;
 
-	private Locomotive none;
+	private Locomotive					none;
 
-	private LocomotiveControlface locomotiveControl = SRCPLocomotiveControl
-			.getInstance();;
+	private LocomotiveControlface		locomotiveControl		= SRCPLocomotiveControl
+																		.getInstance();					;
 
-	private LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance().getLocomotivePersistence();
+	private LocomotivePersistenceIface	locomotivePersistence	= AdHocRailway
+																		.getInstance()
+																		.getLocomotivePersistence();
 
-	private LocomotiveGroup allLocomotives;
+	private LocomotiveGroup				allLocomotives;
 
-	private LocomotiveSelectAction locomotiveSelectAction;
+	private LocomotiveSelectAction		locomotiveSelectAction;
 
-	private LocomotiveGroupSelectAction groupSelectAction;
+	private LocomotiveGroupSelectAction	groupSelectAction;
 
-	private JFrame frame;
+	private JFrame						frame;
 
 	public LocomotiveWidget(int accelerateKey, int deccelerateKey,
 			int toggleDirectionKey, JFrame frame) {
@@ -123,7 +124,7 @@ public class LocomotiveWidget extends JPanel implements
 
 	private void initGUI() {
 		setLayout(new BorderLayout(10, 10));
-		setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+		setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		setPreferredSize(new Dimension(200, 250));
 		JPanel selectionPanel = initSelectionPanel();
 		JPanel controlPanel = initControlPanel();
@@ -259,8 +260,8 @@ public class LocomotiveWidget extends JPanel implements
 	protected void updateWidget() {
 		if (myLocomotive == null)
 			return;
-		LocomotiveControlface control = locomotiveControl;
-		double speedInPercent = ((double) control.getCurrentSpeed(myLocomotive))
+		double speedInPercent = ((double) locomotiveControl
+				.getCurrentSpeed(myLocomotive))
 				/ ((double) myLocomotive.getLocomotiveType().getDrivingSteps());
 		if (speedInPercent > 0.9) {
 			speedBar.setForeground(new Color(255, 0, 0));
@@ -286,19 +287,18 @@ public class LocomotiveWidget extends JPanel implements
 		default:
 			directionButton.setIcon(createImageIcon("locomotives/forward.png"));
 		}
-		// TODO
-		// lockButton.setSelected(myLocomotive.isLocked());
-		// if (myLocomotive.isLocked()) {
-		// if (lockedByMe()) {
-		// lockButton.setSelectedIcon(createImageIcon("locomotives/locked_by_me.png"));
-		//
-		// } else {
-		// lockButton.setSelectedIcon(createImageIcon("locomotives/locked_by_enemy.png"));
-		//
-		// }
-		// }
-		lockButton.revalidate();
-		lockButton.repaint();
+		boolean locked = locomotiveControl.isLocked(myLocomotive);
+		lockButton.setSelected(locked);
+		if (locked) {
+			if (locomotiveControl.isLockedByMe(myLocomotive)) {
+				lockButton.setSelectedIcon(ImageTools
+						.createImageIcon("locomotives/locked_by_me.png"));
+
+			} else {
+				lockButton.setSelectedIcon(ImageTools
+						.createImageIcon("locomotives/locked_by_enemy.png"));
+			}
+		}
 		setPreferredSize(new Dimension(200, 250));
 		revalidate();
 		repaint();
@@ -330,6 +330,9 @@ public class LocomotiveWidget extends JPanel implements
 	}
 
 	public void locomotiveChanged(Locomotive changedLocomotive) {
+		if (myLocomotive == null) // this widget does not have a selected
+									// locomotive yet
+			return;
 		if (myLocomotive.equals(changedLocomotive)) {
 			SwingUtilities.invokeLater(new LocomotiveWidgetUpdater());
 		}
@@ -341,16 +344,14 @@ public class LocomotiveWidget extends JPanel implements
 		}
 	}
 
-	public void lockChanged(ControlObject changedLock) {
-		// TODO
-		// if (changedLock instanceof Locomotive) {
-		// Locomotive changedLocomotive = (Locomotive) changedLock;
-		// locomotiveChanged(changedLocomotive);
-		// }
+	public void lockChanged(Object object) {
+		if (object instanceof Locomotive) {
+			locomotiveChanged((Locomotive) object);
+		}
 	}
 
 	private class LocomotiveFunctionAction extends AbstractAction {
-		private int function;
+		private int	function;
 
 		public LocomotiveFunctionAction(int function) {
 			this.function = function;
@@ -374,7 +375,7 @@ public class LocomotiveWidget extends JPanel implements
 
 	private class LocomotiveControlAction extends AbstractAction {
 
-		private long time = 0;
+		private long	time	= 0;
 
 		public void actionPerformed(ActionEvent e) {
 			if (myLocomotive == null)
@@ -415,11 +416,12 @@ public class LocomotiveWidget extends JPanel implements
 				locomotiveControl.addLocomotiveChangeListener(myLocomotive,
 						LocomotiveWidget.this);
 
-				updateWidget();
+				// updateWidget();
 				desc.setText(myLocomotive.getDescription());
 				speedBar.requestFocus();
 			} else {
-				locomotiveGroupComboBox.setSelectedItem(myLocomotive.getLocomotiveGroup());
+				locomotiveGroupComboBox.setSelectedItem(myLocomotive
+						.getLocomotiveGroup());
 				locomotiveComboBox.setBackground(Color.RED);
 				locomotiveComboBox.setSelectedItem(myLocomotive);
 			}
@@ -509,15 +511,15 @@ public class LocomotiveWidget extends JPanel implements
 		public void actionPerformed(ActionEvent e) {
 			if (myLocomotive == null)
 				return;
-			LockControlIface lc = SRCPLockControl.getInstance();
-			// TODO
+
 			if (lockButton.isSelected()) {
-				// boolean succeeded = lc.acquireLock(myLocomotive);
-				// lockButton.setSelected(succeeded);
+				boolean succeeded = locomotiveControl.acquireLock(myLocomotive);
+				lockButton.setSelected(succeeded);
 			} else {
-				if (lockedByMe()) {
-					// boolean succeeded = !lc.releaseLock(myLocomotive);
-					// lockButton.setSelected(succeeded);
+				if (locomotiveControl.isLockedByMe(myLocomotive)) {
+					boolean succeeded = !locomotiveControl
+							.releaseLock(myLocomotive);
+					lockButton.setSelected(succeeded);
 				} else {
 					lockButton.setSelected(true);
 				}
@@ -564,12 +566,5 @@ public class LocomotiveWidget extends JPanel implements
 			}
 			a.actionPerformed(null);
 		}
-	}
-
-	private boolean lockedByMe() {
-		// TODO
-		// return LockControl.getInstance().getSessionID() == myLocomotive
-		// .getLockedBySession();
-		return true;
 	}
 }

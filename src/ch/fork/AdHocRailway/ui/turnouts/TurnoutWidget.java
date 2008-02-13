@@ -35,8 +35,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.ControlObject;
-import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
@@ -49,7 +47,7 @@ import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 
 public class TurnoutWidget
-		extends JPanel implements TurnoutChangeListener, LockChangeListener {
+		extends JPanel implements TurnoutChangeListener {
 	private TurnoutControlIface		turnoutControl;
 
 	private static final long		serialVersionUID	= 1L;
@@ -186,9 +184,6 @@ public class TurnoutWidget
 				}
 			}
 		}
-	}
-
-	public void lockChanged(ControlObject changedLock) {
 	}
 
 	private class MouseAction

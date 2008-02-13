@@ -22,15 +22,14 @@
 package ch.fork.AdHocRailway.domain.locking;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ch.fork.AdHocRailway.domain.Address;
+import org.apache.log4j.Logger;
+
 import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.Control;
-import ch.fork.AdHocRailway.domain.ControlObject;
+import ch.fork.AdHocRailway.domain.LookupAddress;
 import ch.fork.AdHocRailway.domain.locking.exception.LockingException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -40,16 +39,20 @@ import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.LOCK;
 import de.dermoba.srcp.devices.LOCKInfoListener;
 
-public class SRCPLockControl extends Control implements LOCKInfoListener, Constants, LockControlIface {
+public class SRCPLockControl implements LOCKInfoListener, Constants {
+	private static Logger					logger		= Logger
+																.getLogger(SRCPLockControl.class);
+	private static SRCPLockControl			instance	= null;
+	private SRCPSession						session;
 
-	private static SRCPLockControl instance = null;
+	Map<String, Map<LookupAddress, Object>>	addressToControlObject;
+	Map<Object, SRCPLock>					locks;
 
-	private Map<Integer, ControlObject> addressToControlObject;
-
-	private List<LockChangeListener> listeners;
+	private List<LockChangeListener>		listeners;
 
 	private SRCPLockControl() {
-		addressToControlObject = new HashMap<Integer, ControlObject>();
+		addressToControlObject = new HashMap<String, Map<LookupAddress, Object>>();
+		locks = new HashMap<Object, SRCPLock>();
 		listeners = new ArrayList<LockChangeListener>();
 	}
 
@@ -60,28 +63,23 @@ public class SRCPLockControl extends Control implements LOCKInfoListener, Consta
 		return instance;
 	}
 
-	public void registerControlObject(ControlObject object) {
-		int[] addresses = object.getAddresses();
-		for (int address : addresses) {
-			addressToControlObject.put(address, object);
-		}
+	public void registerControlObject(String deviceGroup,
+			LookupAddress address, Object object) {
+		System.out.println(object);
+		if (addressToControlObject.get(deviceGroup) == null)
+			addressToControlObject.put(deviceGroup,
+					new HashMap<LookupAddress, Object>());
+		addressToControlObject.get(deviceGroup).put(address, object);
+		SRCPLock lock = new SRCPLock(new LOCK(session, address.getBus1()),
+				false, -1);
+		locks.put(object, lock);
 	}
 
-	public void registerControlObjects(Collection<ControlObject> objects) {
-		for (ControlObject anObject : objects) {
-			registerControlObject(anObject);
-		}
-	}
-
-	public void unregisterControlObject(ControlObject object) {
-		int[] addresses = object.getAddresses();
-		for (int address : addresses) {
-			addressToControlObject.remove(address);
-		}
-	}
-
-	public void unregisterAllControlObjects() {
-		addressToControlObject.clear();
+	public void unregisterControlObject(String deviceGroup,
+			LookupAddress address) {
+		if (addressToControlObject.get(deviceGroup) == null)
+			return;
+		addressToControlObject.get(deviceGroup).remove(address);
 	}
 
 	public void setSession(SRCPSession session) {
@@ -89,75 +87,89 @@ public class SRCPLockControl extends Control implements LOCKInfoListener, Consta
 		session.getInfoChannel().addLOCKInfoListener(this);
 	}
 
-	public boolean acquireLock(ControlObject object) throws LockingException {
+	public boolean acquireLock(String deviceGroup, LookupAddress address)
+			throws LockingException {
+		logger.info("acquireLock( " + deviceGroup + " , " + address + " )");
+		if (addressToControlObject.get(deviceGroup) == null)
+			throw new LockingException("Object to lock not found");
+		if (addressToControlObject.get(deviceGroup).get(address) == null)
+			throw new LockingException("Object to lock not found");
 
-		if (object == null) return false;
-		// TODO checkControlObject(object);
-		// TODO init(object);
-		for (int address : object.getAddresses()) {
-			LOCK lock = object.getLock();
-			try {
-				lock.set(object.getDeviceGroup(), address, Preferences
-						.getInstance().getIntValue(
-								PreferencesKeys.LOCK_DURATION));
-			} catch (SRCPDeviceLockedException e) {
-				throw new LockingException(ERR_LOCKED, e);
-			} catch (SRCPException e) {
-				throw new LockingException(ERR_FAILED, e);
-			}
+		Object obj = addressToControlObject.get(deviceGroup).get(address);
+		SRCPLock sLock = locks.get(obj);
+		LOCK lock = sLock.getLock();
+		try {
+			lock.set(deviceGroup, address.getAddress1(), Preferences
+					.getInstance().getIntValue(PreferencesKeys.LOCK_DURATION));
+			sLock.setLocked(true);
+			sLock.setSessionID(session.getCommandChannelID());
+		} catch (SRCPDeviceLockedException e) {
+			throw new LockingException(ERR_LOCKED, e);
+		} catch (SRCPException e) {
+			throw new LockingException(ERR_FAILED, e);
 		}
 		return true;
 	}
 
-	public boolean releaseLock(ControlObject object) throws LockingException {
+	public boolean releaseLock(String deviceGroup, LookupAddress address)
+			throws LockingException {
 
-		if (object == null) return false;
-		// TODO checkControlObject(object);
-		// TODO init(object);
-		for (int address : object.getAddresses()) {
-			LOCK lock = object.getLock();
-			try {
-				lock.term(object.getDeviceGroup(), address);
-			} catch (SRCPDeviceLockedException e) {
-				throw new LockingException(ERR_LOCKED, e);
-			} catch (SRCPException e) {
-				throw new LockingException(ERR_FAILED, e);
-			}
+		logger.info("acquireLock( " + deviceGroup + " , " + address + " )");
+		if (addressToControlObject.get(deviceGroup) == null)
+			throw new LockingException("Object to lock not found");
+		if (addressToControlObject.get(deviceGroup).get(address) == null)
+			throw new LockingException("Object to lock not found");
+
+		Object obj = addressToControlObject.get(deviceGroup).get(address);
+
+		SRCPLock sLock = locks.get(obj);
+		LOCK lock = sLock.getLock();
+		try {
+			lock.term(deviceGroup, address.getAddress1());
+			sLock.setLocked(false);
+			sLock.setSessionID(-1);
+			System.out.println(">>>" + false);
+		} catch (SRCPDeviceLockedException e) {
+			throw new LockingException(ERR_LOCKED, e);
+		} catch (SRCPException e) {
+			throw new LockingException(ERR_FAILED, e);
 		}
 		return true;
 	}
 
 	public void releaseAllLocks() throws LockingException {
-		if (session != null) {
-			for (ControlObject co : addressToControlObject.values()) {
-				if (co.getLockedBySession() == session.getCommandChannelID()) {
-					releaseLock(co);
-				}
-			}
-		}
+
 	}
 
 	public void LOCKset(double timestamp, int bus, int address,
 			String deviceGroup, int duration, int sessionID) {
-		Address addr = new Address(bus, address);
-		ControlObject object = addressToControlObject.get(addr);
+		logger.debug("LOCKset( " + bus + " , " + address + " , " + deviceGroup
+				+ " , " + duration + " , " + sessionID + " )");
+		LookupAddress addr = new LookupAddress(bus, address);
+		Object object = addressToControlObject.get(deviceGroup).get(addr);
 		if (object != null) {
-			object.lockSet(addr, duration, sessionID);
+			SRCPLock sLock = locks.get(object);
+			sLock.setLocked(true);
+			sLock.setSessionID(sessionID);
 			informListeners(object);
 		}
 	}
 
 	public void LOCKterm(double timestamp, int bus, int address,
 			String deviceGroup) {
-		Address addr = new Address(bus, address);
-		ControlObject object = addressToControlObject.get(addr);
+		logger.debug("LOCKset( " + bus + " , " + address + " , " + deviceGroup
+				+ " )");
+		LookupAddress addr = new LookupAddress(bus, address);
+		Object object = addressToControlObject.get(deviceGroup).get(addr);
 		if (object != null) {
-			object.lockTerm(addr);
+			SRCPLock sLock = locks.get(object);
+			sLock.setLocked(false);
+			sLock.setSessionID(-1);
 			informListeners(object);
 		}
 	}
 
-	private void informListeners(ControlObject object) {
+	private void informListeners(Object object) {
 		for (LockChangeListener l : listeners) {
 			l.lockChanged(object);
 		}
@@ -171,14 +183,27 @@ public class SRCPLockControl extends Control implements LOCKInfoListener, Consta
 		listeners.clear();
 	}
 
-	public ControlObject getControlObject(Address address) {
-		return null;
+	public boolean isLocked(String deviceGroup, LookupAddress lookupAddress) {
+		Object object = addressToControlObject.get(deviceGroup).get(
+				lookupAddress);
+		
+		if (object != null) {
+			SRCPLock sLock = locks.get(object);
+			return sLock.isLocked();
+		} else {
+			return false;
+		}
 	}
 
-	public int getSessionID() {
-		if (session != null)
-			return session.getCommandChannelID();
-		else
+	public int getLockingSessionID(String deviceGroup,
+			LookupAddress lookupAddress) {
+		Object object = addressToControlObject.get(deviceGroup).get(
+				lookupAddress);
+		if (object != null) {
+			SRCPLock sLock = locks.get(object);
+			return sLock.getSessionID();
+		} else {
 			return -1;
+		}
 	}
 }
