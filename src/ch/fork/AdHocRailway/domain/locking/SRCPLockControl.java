@@ -83,7 +83,8 @@ public class SRCPLockControl implements LOCKInfoListener, Constants {
 
 	public void setSession(SRCPSession session) {
 		this.session = session;
-		session.getInfoChannel().addLOCKInfoListener(this);
+		if (session != null)
+			session.getInfoChannel().addLOCKInfoListener(this);
 	}
 
 	public boolean acquireLock(String deviceGroup, LookupAddress address)
@@ -185,7 +186,7 @@ public class SRCPLockControl implements LOCKInfoListener, Constants {
 	public boolean isLocked(String deviceGroup, LookupAddress lookupAddress) {
 		Object object = addressToControlObject.get(deviceGroup).get(
 				lookupAddress);
-		
+
 		if (object != null) {
 			SRCPLock sLock = locks.get(object);
 			return sLock.isLocked();

@@ -63,6 +63,7 @@ import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
 
+import ch.fork.AdHocRailway.domain.NoSessionException;
 import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
 import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
@@ -97,6 +98,7 @@ import de.dermoba.srcp.client.CommandDataListener;
 import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
+import de.dermoba.srcp.devices.SERVER;
 
 public class AdHocRailway
 		extends JFrame implements CommandDataListener, InfoDataListener,
@@ -286,7 +288,6 @@ public class AdHocRailway
 			}
 		});
 		hostnameLabel.setText(preferences.getStringValue("Hostname"));
-		
 	}
 	
 	private void initKeyboardActions() {
@@ -613,6 +614,7 @@ public class AdHocRailway
 			try {
 				String host = preferences.getStringValue(HOSTNAME);
 				int port = preferences.getIntValue(PORT);
+				
 				session = new SRCPSession(host, port, false);
 				session.getCommandChannel().addCommandDataListener(
 						AdHocRailway.this);
@@ -680,6 +682,14 @@ public class AdHocRailway
 		}
 		
 		public void actionPerformed(ActionEvent e) {
+			if(session == null) 
+				throw new NoSessionException();
+			SERVER serverDevice = new SERVER(session);
+			try {
+				serverDevice.reset();
+			} catch (SRCPException e1) {
+				ExceptionProcessor.getInstance().processException(e1);
+			}
 		}
 	}
 	
@@ -807,13 +817,13 @@ public class AdHocRailway
 		viewMenu.add(fullscreenItem);
 		
 		/* HELP */
-		JMenu helpMenu = new JMenu("Help");
+		//JMenu helpMenu = new JMenu("Help");
 		
 		addMenu(fileMenu);
 		addMenu(editMenu);
 		addMenu(daemonMenu);
 		addMenu(viewMenu);
-		addMenu(helpMenu);
+		//addMenu(helpMenu);
 		setJMenuBar(menuBar);
 	}
 	

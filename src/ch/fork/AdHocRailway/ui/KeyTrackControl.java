@@ -54,12 +54,12 @@ public class KeyTrackControl extends SimpleInternalFrame {
 	public boolean					changedSwitch		= false;
 
 	public boolean					changedRoute		= false;
-	
-	public static final int HISTORY_LENGTH = 5;
 
-	private JScrollPane	switchesHistoryPane;
+	public static final int			HISTORY_LENGTH		= 5;
 
-	private ThreeDigitDisplay	digitDisplay;
+	private JScrollPane				switchesHistoryPane;
+
+	private ThreeDigitDisplay		digitDisplay;
 
 	public KeyTrackControl() {
 		super("Track Control / History");
@@ -162,11 +162,6 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		repaint();
 	}
 
-	private void resetSegmentDisplay() {
-		enteredNumberKeys = new StringBuffer();
-		digitDisplay.reset();
-	}
-
 	private class NumberEnteredAction extends AbstractAction {
 
 		public void actionPerformed(ActionEvent e) {
@@ -178,7 +173,8 @@ public class KeyTrackControl extends SimpleInternalFrame {
 				String switchNumberAsString = enteredNumberKeys.toString();
 				int switchNumber = Integer.parseInt(switchNumberAsString);
 				if (switchNumber > 999) {
-					resetSegmentDisplay();
+					digitDisplay.reset();
+					enteredNumberKeys = new StringBuffer();
 					return;
 				}
 				digitDisplay.setNumber(switchNumber);
@@ -190,17 +186,10 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		public void actionPerformed(ActionEvent e) {
 
 			try {
-				
+
 				String enteredNumberAsString = enteredNumberKeys.toString();
-				
-				int enteredNumber = Integer.parseInt(enteredNumberAsString);
-				if (routeMode) {
-					handleRouteChange(e, enteredNumber);
-				} else {
-					handleSwitchChange(e, enteredNumber);
-				}
 				if (enteredNumberKeys.toString().equals("")) {
-					if(historyStack.size() == 0)
+					if (historyStack.size() == 0)
 						return;
 					Object obj = historyStack.pop();
 					if (obj instanceof Turnout) {
@@ -214,12 +203,22 @@ public class KeyTrackControl extends SimpleInternalFrame {
 					}
 					historyWidgets.pop();
 					updateHistory();
-					return;
+				} else {
+					int enteredNumber = Integer.parseInt(enteredNumberAsString);
+					if (routeMode) {
+						handleRouteChange(e, enteredNumber);
+					} else {
+						handleSwitchChange(e, enteredNumber);
+					}
 				}
 
+				enteredNumberKeys = new StringBuffer();
 				routeMode = false;
+				digitDisplay.reset();
 			} catch (ControlException e1) {
-				resetSegmentDisplay();
+
+				enteredNumberKeys = new StringBuffer();
+				digitDisplay.reset();
 				ExceptionProcessor.getInstance().processException(e1);
 			}
 		}
@@ -231,7 +230,6 @@ public class KeyTrackControl extends SimpleInternalFrame {
 			searchedTurnout = turnoutPersistence
 					.getTurnoutByNumber(enteredNumber);
 			if (searchedTurnout == null) {
-				resetSegmentDisplay();
 				return;
 			}
 
@@ -253,7 +251,6 @@ public class KeyTrackControl extends SimpleInternalFrame {
 				turnoutControl.setDefaultState(searchedTurnout);
 			}
 			updateHistory(searchedTurnout);
-			resetSegmentDisplay();
 		}
 
 		private void handleRouteChange(ActionEvent e, int enteredNumber)
@@ -262,7 +259,6 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 			searchedRoute = routePersistence.getRouteByNumber(enteredNumber);
 			if (searchedRoute == null) {
-				resetSegmentDisplay();
 				return;
 			}
 			if (e.getActionCommand().equals("+")
@@ -273,9 +269,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 			} else if (e.getActionCommand().equals("\\")) {
 				routeControl.enableRoute(searchedRoute);
 			}
-
 			updateHistory(searchedRoute);
-			resetSegmentDisplay();
 		}
 	}
 

@@ -19,7 +19,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.border.EmptyBorder;
 
 import ch.fork.AdHocRailway.domain.ControlException;
 import ch.fork.AdHocRailway.domain.routes.Route;
@@ -41,8 +40,6 @@ import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.SwitchProgrammer;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
-
-import com.jgoodies.looks.Options;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 

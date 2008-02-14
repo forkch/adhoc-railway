@@ -452,6 +452,23 @@ public class HibernateTurnoutPersistence
 		}
 		return turnouts.last().getNumber() + 1;
 	}
+	
+
+	public int getNextFreeTurnoutNumberOfGroup(TurnoutGroup turnoutGroup) {
+		logger.debug("getNextFreeTurnoutNumberOfGroup()");
+		SortedSet<Turnout> turnouts = new TreeSet<Turnout>(turnoutGroup.getTurnouts());
+		int offset = turnoutGroup.getTurnoutNumberOffset();
+		int amount = turnoutGroup.getTurnoutNumberAmount();
+		
+		if (turnouts.isEmpty()) {
+			return offset;
+		}
+		int nextNumber = turnouts.last().getNumber() + 1;
+		if(nextNumber < offset + amount) {
+			return nextNumber;
+		}
+		return -1; 
+	}
 
 	public Set<Integer> getUsedTurnoutNumbers() {
 		logger.debug("getUsedTurnoutNumbers()");

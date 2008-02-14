@@ -54,10 +54,10 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
-import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
+import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -91,18 +91,13 @@ public class LocomotiveWidget extends JPanel implements
 
 	private FunctionToggleButton[]		functionToggleButtons;
 
-	private Color						defaultBackground;
-
-	private Locomotive					none;
-
-	private LocomotiveControlface		locomotiveControl		= SRCPLocomotiveControl
-																		.getInstance();					;
+	private LocomotiveControlface		locomotiveControl		= AdHocRailway
+																		.getInstance()
+																		.getLocomotiveControl();
 
 	private LocomotivePersistenceIface	locomotivePersistence	= AdHocRailway
 																		.getInstance()
 																		.getLocomotivePersistence();
-
-	private LocomotiveGroup				allLocomotives;
 
 	private LocomotiveSelectAction		locomotiveSelectAction;
 
@@ -153,8 +148,6 @@ public class LocomotiveWidget extends JPanel implements
 		groupSelectAction = new LocomotiveGroupSelectAction();
 		locomotiveComboBox = new JComboBox();
 		locomotiveComboBox.setFocusable(false);
-		myLocomotive = none;
-		defaultBackground = locomotiveComboBox.getBackground();
 		locomotiveSelectAction = new LocomotiveSelectAction();
 		selectionPanel.add(locomotiveGroupComboBox, BorderLayout.NORTH);
 		selectionPanel.add(locomotiveComboBox, BorderLayout.SOUTH);
@@ -257,6 +250,108 @@ public class LocomotiveWidget extends JPanel implements
 						0), WHEN_IN_FOCUSED_WINDOW);
 	}
 
+	private boolean isFree() {
+		if (myLocomotive == null)
+			return true;
+		if (locomotiveControl.getCurrentSpeed(myLocomotive) == 0) {
+			if (locomotiveControl.isLocked(myLocomotive)) {
+				if (locomotiveControl.isLockedByMe(myLocomotive))
+					return false;
+				else {
+					return true;
+				}
+			} else {
+				return true;
+			}
+		} else {
+			if (locomotiveControl.isLocked(myLocomotive)) {
+				if (locomotiveControl.isLockedByMe(myLocomotive))
+					return false;
+				else {
+					return true;
+				}
+			} else {
+					return false;
+			}
+		}
+	}
+
+	public void updateLocomotiveGroups() {
+		locomotiveComboBox.removeActionListener(locomotiveSelectAction);
+		locomotiveGroupComboBox.removeActionListener(groupSelectAction);
+
+		locomotiveGroupComboBox.addItem("All");
+		locomotiveComboBox.addItem("");
+		for (LocomotiveGroup lg : locomotivePersistence
+				.getAllLocomotiveGroups()) {
+			locomotiveGroupComboBox.addItem(lg);
+			for (Locomotive l : lg.getLocomotives()) {
+				locomotiveComboBox.addItem(l);
+			}
+		}
+
+		locomotiveGroupComboBox.setSelectedIndex(0);
+		if (myLocomotive != null)
+			locomotiveComboBox.setSelectedItem(myLocomotive);
+		else
+			locomotiveComboBox.setSelectedIndex(0);
+
+		locomotiveComboBox.addActionListener(locomotiveSelectAction);
+		locomotiveGroupComboBox.addActionListener(groupSelectAction);
+	}
+
+	private class LocomotiveGroupSelectAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			locomotiveComboBox.removeAllItems();
+			if (locomotiveGroupComboBox.getSelectedIndex() == 0) {
+				ArrayListModel<Locomotive> sl = locomotivePersistence
+						.getAllLocomotives();
+
+				locomotiveComboBox.addItem("");
+				for (Locomotive l : sl) {
+					locomotiveComboBox.addItem(l);
+				}
+			} else {
+				LocomotiveGroup lg = (LocomotiveGroup) locomotiveGroupComboBox
+						.getSelectedItem();
+
+				locomotiveComboBox.addItem("");
+				for (Locomotive l : lg.getLocomotives()) {
+					locomotiveComboBox.addItem(l);
+				}
+			}
+			locomotiveComboBox.setSelectedIndex(0);
+			locomotiveComboBox.revalidate();
+			locomotiveComboBox.repaint();
+		}
+	}
+
+	private class LocomotiveSelectAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			if (locomotiveComboBox.getItemCount() == 0
+					|| locomotiveComboBox.getSelectedIndex() == 0) {
+				myLocomotive = null;
+				return;
+			}
+			if (isFree()) {
+				locomotiveComboBox
+						.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
+				lockButton.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
+				myLocomotive = (Locomotive) locomotiveComboBox
+						.getSelectedItem();
+				locomotiveControl.addLocomotiveChangeListener(myLocomotive,
+						LocomotiveWidget.this);
+				updateWidget();
+				speedBar.requestFocus();
+			} else {
+				locomotiveGroupComboBox.setSelectedItem(myLocomotive
+						.getLocomotiveGroup());
+				locomotiveComboBox.setBackground(UIConstants.ERROR_COLOR);
+				locomotiveComboBox.setSelectedItem(myLocomotive);
+			}
+		}
+	}
+
 	protected void updateWidget() {
 		if (myLocomotive == null)
 			return;
@@ -299,55 +394,16 @@ public class LocomotiveWidget extends JPanel implements
 						.createImageIcon("locomotives/locked_by_enemy.png"));
 			}
 		}
+		if (isFree()) {
+			locomotiveGroupComboBox.setEnabled(true);
+			locomotiveComboBox.setEnabled(true);
+		} else {
+			locomotiveGroupComboBox.setEnabled(false);
+			locomotiveComboBox.setEnabled(false);
+		}
 		setPreferredSize(new Dimension(200, 250));
 		revalidate();
 		repaint();
-	}
-
-	public void updateLocomotiveGroups() {
-		locomotiveComboBox.removeActionListener(locomotiveSelectAction);
-		locomotiveGroupComboBox.removeActionListener(groupSelectAction);
-		for (LocomotiveGroup lg : locomotivePersistence
-				.getAllLocomotiveGroups()) {
-			locomotiveGroupComboBox.addItem(lg);
-			for (Locomotive l : lg.getLocomotives()) {
-				locomotiveComboBox.addItem(l);
-			}
-		}
-
-		locomotiveGroupComboBox.setSelectedIndex(-1);
-		if (myLocomotive != null)
-			locomotiveComboBox.setSelectedItem(myLocomotive);
-		else
-			locomotiveComboBox.setSelectedIndex(-1);
-
-		locomotiveComboBox.addActionListener(locomotiveSelectAction);
-		locomotiveGroupComboBox.addActionListener(groupSelectAction);
-	}
-
-	public Locomotive getMyLocomotive() {
-		return myLocomotive;
-	}
-
-	public void locomotiveChanged(Locomotive changedLocomotive) {
-		if (myLocomotive == null) // this widget does not have a selected
-									// locomotive yet
-			return;
-		if (myLocomotive.equals(changedLocomotive)) {
-			SwingUtilities.invokeLater(new LocomotiveWidgetUpdater());
-		}
-	}
-
-	private class LocomotiveWidgetUpdater implements Runnable {
-		public void run() {
-			updateWidget();
-		}
-	}
-
-	public void lockChanged(Object object) {
-		if (object instanceof Locomotive) {
-			locomotiveChanged((Locomotive) object);
-		}
 	}
 
 	private class LocomotiveFunctionAction extends AbstractAction {
@@ -398,55 +454,6 @@ public class LocomotiveWidget extends JPanel implements
 				ExceptionProcessor.getInstance().processException(e3);
 			}
 
-		}
-	}
-
-	private class LocomotiveSelectAction extends AbstractAction {
-		public void actionPerformed(ActionEvent e) {
-			if (locomotiveComboBox.getItemCount() == 0
-					|| locomotiveComboBox.getSelectedIndex() == -1)
-				return;
-			// TODO LOCKED BY ME
-			if (myLocomotive == null
-					|| locomotiveControl.getCurrentSpeed(myLocomotive) == 0) {
-				locomotiveComboBox.setBackground(defaultBackground);
-				lockButton.setBackground(defaultBackground);
-				myLocomotive = (Locomotive) locomotiveComboBox
-						.getSelectedItem();
-				locomotiveControl.addLocomotiveChangeListener(myLocomotive,
-						LocomotiveWidget.this);
-
-				// updateWidget();
-				desc.setText(myLocomotive.getDescription());
-				speedBar.requestFocus();
-			} else {
-				locomotiveGroupComboBox.setSelectedItem(myLocomotive
-						.getLocomotiveGroup());
-				locomotiveComboBox.setBackground(Color.RED);
-				locomotiveComboBox.setSelectedItem(myLocomotive);
-			}
-		}
-	}
-
-	private class LocomotiveGroupSelectAction extends AbstractAction {
-		public void actionPerformed(ActionEvent e) {
-			LocomotiveGroup lg = (LocomotiveGroup) locomotiveGroupComboBox
-					.getSelectedItem();
-			locomotiveComboBox.removeAllItems();
-			if (lg == allLocomotives) {
-				ArrayListModel<Locomotive> sl = locomotivePersistence
-						.getAllLocomotives();
-				for (Locomotive l : sl) {
-					locomotiveComboBox.addItem(l);
-				}
-			} else {
-				for (Locomotive l : lg.getLocomotives()) {
-					locomotiveComboBox.addItem(l);
-				}
-			}
-			locomotiveComboBox.setSelectedIndex(-1);
-			locomotiveComboBox.revalidate();
-			locomotiveComboBox.repaint();
 		}
 	}
 
@@ -565,6 +572,31 @@ public class LocomotiveWidget extends JPanel implements
 				return;
 			}
 			a.actionPerformed(null);
+		}
+	}
+
+	public Locomotive getMyLocomotive() {
+		return myLocomotive;
+	}
+
+	public void locomotiveChanged(Locomotive changedLocomotive) {
+		if (myLocomotive == null) // this widget does not have a selected
+			// locomotive yet
+			return;
+		if (myLocomotive.equals(changedLocomotive)) {
+			SwingUtilities.invokeLater(new LocomotiveWidgetUpdater());
+		}
+	}
+
+	private class LocomotiveWidgetUpdater implements Runnable {
+		public void run() {
+			updateWidget();
+		}
+	}
+
+	public void lockChanged(Object object) {
+		if (object instanceof Locomotive) {
+			locomotiveChanged((Locomotive) object);
 		}
 	}
 }

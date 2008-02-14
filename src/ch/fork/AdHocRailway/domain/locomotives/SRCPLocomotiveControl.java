@@ -98,10 +98,12 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 	 */
 	public void setSession(SRCPSession session) {
 		this.session = session;
+		if(session != null)
+			session.getInfoChannel().addGLInfoListener(this);
 		for (SRCPLocomotive l : srcpLocomotives.values()) {
 			l.setSession(session);
 		}
-		session.getInfoChannel().addGLInfoListener(this);
+
 	}
 	
 	/*

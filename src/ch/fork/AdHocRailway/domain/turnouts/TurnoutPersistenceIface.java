@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 
@@ -46,4 +47,6 @@ public interface TurnoutPersistenceIface {
 	public void flush() throws TurnoutPersistenceException;
 	
 	public abstract void clear() throws TurnoutPersistenceException;
+
+	public int getNextFreeTurnoutNumberOfGroup(TurnoutGroup turnoutGroup);
 }

@@ -37,7 +37,7 @@ public class RouteGroupConfigPanel extends JPanel {
 		buildPanel();
 	}
 	
-	public void setTurnoutGroup(RouteGroup group) {
+	public void setRouteGroup(RouteGroup group) {
 		presentationModel.setBean(group);
 	}
 

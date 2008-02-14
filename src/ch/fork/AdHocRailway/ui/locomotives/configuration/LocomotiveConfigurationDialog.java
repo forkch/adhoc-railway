@@ -130,12 +130,12 @@ public class LocomotiveConfigurationDialog
 	}
 
 	private Component buildLocomotiveButtonBar() {
-		return ButtonBarFactory.buildRightAlignedBar(addLocomotiveButton,
+		return ButtonBarFactory.buildCenteredBar(addLocomotiveButton,
 				removeLocomotiveButton);
 	}
 
 	private Component buildGroupButtonBar() {
-		return ButtonBarFactory.buildRightAlignedBar(addGroupButton,
+		return ButtonBarFactory.buildCenteredBar(addGroupButton,
 				removeGroupButton);
 	}
 

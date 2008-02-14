@@ -141,12 +141,12 @@ public class TurnoutConfigurationDialog
 	}
 
 	private Component buildTurnoutButtonBar() {
-		return ButtonBarFactory.buildLeftAlignedBar(addTurnoutButton,
+		return ButtonBarFactory.buildCenteredBar(addTurnoutButton,
 				removeTurnoutButton);
 	}
 
 	private Component buildGroupButtonBar() {
-		return ButtonBarFactory.buildRightAlignedBar(addGroupButton,
+		return ButtonBarFactory.buildCenteredBar(addGroupButton,
 				removeGroupButton);
 	}
 

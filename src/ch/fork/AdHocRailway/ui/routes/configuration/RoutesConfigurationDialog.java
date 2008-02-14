@@ -148,7 +148,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	}
 
 	private Component buildRouteGroupButtonBar() {
-		return ButtonBarFactory.buildLeftAlignedBar(addRouteGroupButton,
+		return ButtonBarFactory.buildCenteredBar(addRouteGroupButton,
 				removeRouteGroupButton);
 	}
 
@@ -158,7 +158,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	}
 
 	private Component buildRouteItemButtonBar() {
-		return ButtonBarFactory.buildRightAlignedBar(addRouteItemButton,
+		return ButtonBarFactory.buildCenteredBar(addRouteItemButton,
 				recordRouteButton, removeRouteItemButton);
 	}
 
@@ -257,6 +257,7 @@ public class RoutesConfigurationDialog extends JDialog {
 			if (selectedGroup == null)
 				return;
 			routesList.setSelectedIndex(-1);
+			routeGroupConfig.setRouteGroup(selectedGroup);
 			List<Route> routes = new ArrayList<Route>(selectedGroup.getRoutes());
 			routesModel.setList(routes);
 		}

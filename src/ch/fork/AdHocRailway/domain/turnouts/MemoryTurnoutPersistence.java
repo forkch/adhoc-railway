@@ -317,4 +317,8 @@ public class MemoryTurnoutPersistence implements TurnoutPersistenceIface {
 	public void flush() {
 		logger.debug("flush()");
 	}
+
+	public int getNextFreeTurnoutNumberOfGroup(TurnoutGroup turnoutGroup) {
+		return 0;
+	}
 }

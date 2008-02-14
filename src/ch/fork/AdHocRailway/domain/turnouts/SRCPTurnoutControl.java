@@ -81,12 +81,12 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 	
 	public void setSession(SRCPSession session) {
 		this.session = session;
-		session.getInfoChannel().addGAInfoListener(this);
+		if(session != null) {
+			session.getInfoChannel().addGAInfoListener(this);
+		}
 		for (SRCPTurnout st : srcpTurnouts.values()) {
 			st.setSession(session);
 		}
-		
-		// session.getInfoChannel().addGAInfoListener(this);
 	}
 	
 	/**
