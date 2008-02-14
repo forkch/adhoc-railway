@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/locking/exception/LockingException.java>  -  <desc>
+ * <./domain/locomotives/exception/LocomotiveException.java>  -  <>
  * 
- * begin     : Wed Aug 23 16:58:50 BST 2006
+ * begin     : Wed Aug 23 16:55:05 BST 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
@@ -20,30 +20,28 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.locking.exception;
+package ch.fork.AdHocRailway.domain.locomotives;
 
-import ch.fork.AdHocRailway.domain.exception.ControlException;
+import ch.fork.AdHocRailway.domain.ControlException;
 
-public class LockingException extends ControlException {
+public class LocomotiveException extends ControlException {
 
-	public LockingException() {
-		super();
+	public LocomotiveException() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public LockingException(String message, Throwable cause) {
-		super(message, cause);
-		// TODO Auto-generated constructor stub
-	}
-
-	public LockingException(String message) {
+	public LocomotiveException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public LockingException(Throwable cause) {
+	public LocomotiveException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
 
+	public LocomotiveException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
 }

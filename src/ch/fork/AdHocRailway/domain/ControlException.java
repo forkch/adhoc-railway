@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/switches/exception/SwitchException.java>  -  <>
+ * <./domain/exception/ControlException.java>  -  <desc>
  * 
- * begin     : Wed Aug 23 16:54:33 BST 2006
+ * begin     : Wed Aug 23 16:58:54 BST 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
@@ -20,29 +20,25 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.turnouts.exception;
+package ch.fork.AdHocRailway.domain;
 
-import ch.fork.AdHocRailway.domain.exception.ControlException;
+public class ControlException extends RuntimeException {
 
-public class TurnoutException extends ControlException {
+    public ControlException() {
+        super();
+    }
 
-	public TurnoutException() {
-		// TODO Auto-generated constructor stub
-	}
-	
-	public TurnoutException(String msg) {
-        super(msg);
+    public ControlException(String message) {
+        super(message);
+    }
+
+    public ControlException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ControlException(Throwable cause) {
+        super(cause);
     }
 
 
-	public TurnoutException(Throwable cause) {
-		super(cause);
-		// TODO Auto-generated constructor stub
-	}
-
-
-	public TurnoutException(String message, Throwable cause) {
-		super(message, cause);
-		// TODO Auto-generated constructor stub
-	}
 }

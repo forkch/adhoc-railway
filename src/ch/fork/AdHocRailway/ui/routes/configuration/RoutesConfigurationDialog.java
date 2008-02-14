@@ -35,9 +35,9 @@ import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
-import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
@@ -513,8 +513,8 @@ public class RoutesConfigurationDialog extends JDialog {
 				numberDisplayDialog.add(digitDisplay);
 				numberDisplayDialog.pack();
 				numberDisplayDialog.setAlwaysOnTop(true);
+				
 				TutorialUtils.locateOnOpticalScreenLeft3rd(numberDisplayDialog);
-
 				recordRouteButton.setIcon(ImageTools.createImageIcon("record.png"));
 				initKeyboardActions(selectedRoute);
 				numberDisplayDialog.setVisible(true);
@@ -530,46 +530,45 @@ public class RoutesConfigurationDialog extends JDialog {
 			enteredNumberKeys = new StringBuffer();
 			JPanel routeItemPanel = builder.getPanel();
 			JPanel[] panels = new JPanel[] { routeItemPanel, digitDisplay };
-			System.out.println(digitDisplay);
 			for (int i = 0; i <= 10; i++) {
 				for (JPanel p : panels) {
 					p.registerKeyboardAction(new NumberEnteredAction(), Integer
 							.toString(i), KeyStroke.getKeyStroke(Integer
-							.toString(i)), JComponent.WHEN_IN_FOCUSED_WINDOW);
+							.toString(i)), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 					p.registerKeyboardAction(new NumberEnteredAction(), Integer
 							.toString(i), KeyStroke.getKeyStroke("NUMPAD"
 							+ Integer.toString(i)),
-							JComponent.WHEN_IN_FOCUSED_WINDOW);
+							JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 				}
 
 			}
 			for (JPanel p : panels) {
 				p.registerKeyboardAction(new SwitchingAction(route), "\\",
 						KeyStroke.getKeyStroke(92, 0),
-						JComponent.WHEN_IN_FOCUSED_WINDOW);
+						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 				p.registerKeyboardAction(new SwitchingAction(route), "\n",
 						KeyStroke.getKeyStroke("ENTER"),
-						JComponent.WHEN_IN_FOCUSED_WINDOW);
+						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
 				p.registerKeyboardAction(new SwitchingAction(route), "+",
 						KeyStroke.getKeyStroke(KeyEvent.VK_ADD, 0),
-						JComponent.WHEN_IN_FOCUSED_WINDOW);
+						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
 				p.registerKeyboardAction(new SwitchingAction(route), "bs",
 						KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0),
-						JComponent.WHEN_IN_FOCUSED_WINDOW);
+						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
 				p.registerKeyboardAction(new SwitchingAction(route), "/",
 						KeyStroke.getKeyStroke(KeyEvent.VK_DIVIDE, 0),
-						JComponent.WHEN_IN_FOCUSED_WINDOW);
+						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
 				p.registerKeyboardAction(new SwitchingAction(route), "*",
 						KeyStroke.getKeyStroke(KeyEvent.VK_MULTIPLY, 0),
-						JComponent.WHEN_IN_FOCUSED_WINDOW);
+						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
 				p.registerKeyboardAction(new SwitchingAction(route), "-",
 						KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, 0),
-						JComponent.WHEN_IN_FOCUSED_WINDOW);
+						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 			}
 
 		}

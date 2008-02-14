@@ -2,7 +2,6 @@ package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.locking.LockControlIface;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotive.Direction;
-import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 
 public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 

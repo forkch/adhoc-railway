@@ -7,7 +7,7 @@ import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
-import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
 public class Router extends Thread {

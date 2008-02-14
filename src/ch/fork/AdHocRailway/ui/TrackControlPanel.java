@@ -19,9 +19,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.EmptyBorder;
 
-import ch.fork.AdHocRailway.domain.exception.ControlException;
+import ch.fork.AdHocRailway.domain.ControlException;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
@@ -89,19 +89,23 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		JPanel controlPanel = new JPanel(new GridLayout(1, 2));
 		if (preferences.getBooleanValue(TABBED_TRACK)) {
 			trackControlPane = new JTabbedPane();
-			trackControlPane.putClientProperty(Options.NO_CONTENT_BORDER_KEY,
-					Boolean.TRUE);
-			trackControlPane.putClientProperty(Options.EMBEDDED_TABS_KEY,
-					Boolean.TRUE);
-
-			trackControlPane.add("Switches", turnoutGroupsTabbedPane);
+			
+			trackControlPane.add("Turnouts", turnoutGroupsTabbedPane);
 			trackControlPane.add("Routes", routeGroupsTabbedPane);
-			controlPanel.add(trackControlPane, BorderLayout.CENTER);
+			SimpleInternalFrame turnoutRouteFrame = new SimpleInternalFrame("Turnouts/Routes");
+			turnoutRouteFrame.add(trackControlPane);
+			controlPanel.add(turnoutRouteFrame);
 		} else {
-			turnoutGroupsTabbedPane.setBorder(new TitledBorder("Turnouts"));
-			routeGroupsTabbedPane.setBorder(new TitledBorder("Routes"));
-			controlPanel.add(turnoutGroupsTabbedPane, BorderLayout.CENTER);
-			controlPanel.add(routeGroupsTabbedPane, BorderLayout.EAST);
+//			turnoutGroupsTabbedPane.setBorder(new TitledBorder("Turnouts"));
+//			routeGroupsTabbedPane.setBorder(new TitledBorder("Routes"));
+			SimpleInternalFrame turnoutFrame = new SimpleInternalFrame("Turnouts");
+			SimpleInternalFrame routesFrame = new SimpleInternalFrame("Routes");
+			
+			turnoutFrame.add(turnoutGroupsTabbedPane, BorderLayout.CENTER);
+			routesFrame.add(routeGroupsTabbedPane, BorderLayout.CENTER);
+			
+			controlPanel.add(turnoutFrame);
+			controlPanel.add(routesFrame);
 		}
 		initMenuBar();
 		initToolBar();
@@ -110,23 +114,13 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private void initTurnoutPanel() {
 		turnoutGroupsTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
-
-		turnoutGroupsTabbedPane.putClientProperty(
-				Options.NO_CONTENT_BORDER_KEY, Boolean.TRUE);
-		turnoutGroupsTabbedPane.putClientProperty(Options.EMBEDDED_TABS_KEY,
-				Boolean.TRUE);
-
+		
 		updateTurnouts();
 	}
 
 	private void initRoutesPanel() {
 		routeGroupsTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
-
-		routeGroupsTabbedPane.putClientProperty(Options.NO_CONTENT_BORDER_KEY,
-				Boolean.TRUE);
-		routeGroupsTabbedPane.putClientProperty(Options.EMBEDDED_TABS_KEY,
-				Boolean.TRUE);
-
+		
 		updateRoutes();
 	}
 

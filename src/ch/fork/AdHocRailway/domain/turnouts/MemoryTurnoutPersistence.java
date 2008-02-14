@@ -12,7 +12,6 @@ import ch.fork.AdHocRailway.domain.LookupAddress;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
-import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
@@ -82,6 +81,7 @@ public class MemoryTurnoutPersistence implements TurnoutPersistenceIface {
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#getAllTurnouts()
 	 */
 	public ArrayListModel<Turnout> getAllTurnouts() {
+		logger.debug("getAllTurnouts()");
 		return turnoutCache;
 	}
 
@@ -130,6 +130,7 @@ public class MemoryTurnoutPersistence implements TurnoutPersistenceIface {
 	 */
 	public void addTurnout(Turnout turnout) throws TurnoutPersistenceException {
 
+		logger.debug("addTurnout()");
 		if (turnout.getTurnoutGroup() == null) {
 			throw new TurnoutPersistenceException(
 					"Turnout has no associated Group");
@@ -146,6 +147,7 @@ public class MemoryTurnoutPersistence implements TurnoutPersistenceIface {
 			addressThreewayCache.put(new LookupAddress(0, 0, turnout.getBus2(),
 					turnout.getAddress2()), turnout);
 		}
+		numberToTurnoutCache.put(turnout.getNumber(), turnout);
 	}
 
 	/*
@@ -155,6 +157,7 @@ public class MemoryTurnoutPersistence implements TurnoutPersistenceIface {
 	 */
 	public void deleteTurnout(Turnout turnout) {
 
+		logger.debug("deleteTurnout()");
 		TurnoutGroup group = turnout.getTurnoutGroup();
 		group.getTurnouts().remove(turnout);
 
@@ -293,11 +296,13 @@ public class MemoryTurnoutPersistence implements TurnoutPersistenceIface {
 	}
 
 	public void addTurnoutType(TurnoutType type) {
+		logger.debug("addTurnoutType()");
 		turnoutTypes.put(type.getTypeName(), type);
 	}
 
 	public void deleteTurnoutType(TurnoutType type)
 			throws TurnoutPersistenceException {
+		logger.debug("deleteTurnoutType()");
 		if (!type.getTurnouts().isEmpty()) {
 			throw new TurnoutPersistenceException(
 					"Cannot delete turnout type with associated turnouts");

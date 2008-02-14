@@ -206,13 +206,13 @@ public class XMLImporter_0_3
 		String switchStateRouted = attributes.getValue("switchStateRouted");
 		Turnout turnout = null;
 		turnout = turnoutPersistence.getTurnoutByNumber(switchNumber);
-
 		if (turnout != null) {
 
 			actualRouteItem =
 					new RouteItem(0, turnout, actualRoute, switchStateRouted);
 			actualRoute.getRouteItems().add(actualRouteItem);
 			turnout.getRouteItems().add(actualRouteItem);
+			routePersistence.addRouteItem(actualRouteItem);
 		}
 	}
 
@@ -241,8 +241,8 @@ public class XMLImporter_0_3
 	}
 
 	private void parseGuiConfig(String gName, Attributes attributes) {
-		preferences.setStringValue(attributes.getValue("name"), attributes
-				.getValue("value"));
+//		preferences.setStringValue(attributes.getValue("name"), attributes
+//				.getValue("value"));
 	}
 
 	public void endElement(String uri, String localName, String qName)

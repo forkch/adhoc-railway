@@ -1,6 +1,6 @@
 package ch.fork.AdHocRailway.domain.routes;
 
-import ch.fork.AdHocRailway.domain.exception.ControlException;
+import ch.fork.AdHocRailway.domain.ControlException;
 
 public class RouteException extends ControlException {
 

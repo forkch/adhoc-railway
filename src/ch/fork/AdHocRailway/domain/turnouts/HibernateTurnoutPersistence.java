@@ -220,9 +220,7 @@ public class HibernateTurnoutPersistence
 		turnout.getTurnoutGroup().getTurnouts().add(turnout);
 		try {
 			em.persist(turnout);
-
 			flush();
-
 			updateTurnoutCache();
 		} catch (HibernateException x) {
 			em.close();

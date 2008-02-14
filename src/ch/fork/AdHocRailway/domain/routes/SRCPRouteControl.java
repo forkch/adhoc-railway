@@ -7,13 +7,12 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import ch.fork.AdHocRailway.domain.Control;
 import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
-import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
-public class SRCPRouteControl extends Control implements RouteControlIface {
+public class SRCPRouteControl implements RouteControlIface {
 	private static Logger					logger				= Logger
 																		.getLogger(SRCPRouteControl.class);
 	private static RouteControlIface		instance;

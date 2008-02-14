@@ -20,7 +20,7 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.turnouts.exception;
+package ch.fork.AdHocRailway.domain.turnouts;
 
 public class SwitchLockedException extends TurnoutException {
     public SwitchLockedException(String msg) {

@@ -1,8 +1,8 @@
 package ch.fork.AdHocRailway.domain.routes;
 
-import ch.fork.AdHocRailway.domain.exception.ControlException;
+import ch.fork.AdHocRailway.domain.ControlException;
 import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
-import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 
 public interface RouteControlIface {
 

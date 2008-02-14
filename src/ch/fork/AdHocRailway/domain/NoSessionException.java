@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <Control.java>  -  <>
+ * <./domain/exception/NoSessionException.java>  -  <desc>
  * 
- * begin     : Wed Aug 23 16:54:02 BST 2006
+ * begin     : Wed Aug 23 16:59:00 BST 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
@@ -19,22 +19,13 @@
  *
  *----------------------------------------------------------------------*/
 
+
 package ch.fork.AdHocRailway.domain;
 
-import de.dermoba.srcp.client.SRCPSession;
 
-/**
- * Basic Control class. Each Control should inherit from this class, so that it
- * can check the session of its associated ControlObject and if its initialized.
- * 
- * @author fork
- * 
- */
-public abstract class Control {
+public class NoSessionException extends ControlException {
 
-	protected SRCPSession session = null;
-
-	public Control() {
-		
-	}
+    public NoSessionException() {
+        super(Constants.ERR_NO_SESSION);
+    }
 }

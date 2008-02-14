@@ -37,12 +37,13 @@ import javax.swing.KeyStroke;
 import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
-import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
+import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
 
 public class LocomotiveControlPanel extends JPanel {
 
@@ -86,7 +87,9 @@ public class LocomotiveControlPanel extends JPanel {
         FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.CENTER, 10, 0);
         controlPanel = new JPanel(controlPanelLayout); 
 		controlPanel.setLayout(controlPanelLayout);
-		add(controlPanel, BorderLayout.NORTH);
+		SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame("Trains");
+		locomotivesFrame.add(controlPanel, BorderLayout.CENTER);
+		add(locomotivesFrame, BorderLayout.NORTH);
         registerKeyboardAction(new LocomotiveStopAction(), "", KeyStroke
             .getKeyStroke(KeyEvent.VK_SPACE, 0), WHEN_IN_FOCUSED_WINDOW);
     }

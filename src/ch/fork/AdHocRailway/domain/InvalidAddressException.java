@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/exception/ControlException.java>  -  <desc>
+ * <./domain/exception/InvalidAddressException.java>  -  <desc>
  * 
- * begin     : Wed Aug 23 16:58:54 BST 2006
+ * begin     : Wed Aug 23 16:59:03 BST 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
@@ -20,25 +20,26 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.exception;
+package ch.fork.AdHocRailway.domain;
 
-public class ControlException extends RuntimeException {
 
-    public ControlException() {
-        super();
+public class InvalidAddressException extends ControlException {
+
+    public InvalidAddressException() {
+        super(Constants.ERR_INVALID_ADDRESS);
     }
 
-    public ControlException(String message) {
+    public InvalidAddressException(String message) {
         super(message);
     }
 
-    public ControlException(String message, Throwable cause) {
+    public InvalidAddressException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ControlException(Throwable cause) {
+    public InvalidAddressException(Throwable cause) {
         super(cause);
     }
-
+    
 
 }

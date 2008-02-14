@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/exception/NoSessionException.java>  -  <desc>
+ * <./domain/locomotives/exception/LocomotiveLockedException.java>  -  <>
  * 
- * begin     : Wed Aug 23 16:59:00 BST 2006
+ * begin     : Wed Aug 23 16:55:08 BST 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
@@ -20,13 +20,14 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.exception;
+package ch.fork.AdHocRailway.domain.locomotives;
 
-import ch.fork.AdHocRailway.domain.Constants;
+public class LocomotiveLockedException extends LocomotiveException {
+    public LocomotiveLockedException(String msg) {
+        super(msg);
+    }
 
-public class NoSessionException extends ControlException {
-
-    public NoSessionException() {
-        super(Constants.ERR_NO_SESSION);
+    public LocomotiveLockedException(String msg, Exception parent) {
+        super(msg, parent);
     }
 }

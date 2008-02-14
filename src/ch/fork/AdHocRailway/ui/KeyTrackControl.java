@@ -12,24 +12,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
-import ch.fork.AdHocRailway.domain.exception.ControlException;
+import ch.fork.AdHocRailway.domain.ControlException;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.StaticTurnoutWidget;
 
 public class KeyTrackControl extends SimpleInternalFrame {
-
-	private Segment7				seg1;
-
-	private Segment7				seg2;
-
-	private Segment7				seg3;
 
 	private StringBuffer			enteredNumberKeys;
 
@@ -196,6 +190,15 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		public void actionPerformed(ActionEvent e) {
 
 			try {
+				
+				String enteredNumberAsString = enteredNumberKeys.toString();
+				
+				int enteredNumber = Integer.parseInt(enteredNumberAsString);
+				if (routeMode) {
+					handleRouteChange(e, enteredNumber);
+				} else {
+					handleSwitchChange(e, enteredNumber);
+				}
 				if (enteredNumberKeys.toString().equals("")) {
 					if(historyStack.size() == 0)
 						return;
@@ -212,13 +215,6 @@ public class KeyTrackControl extends SimpleInternalFrame {
 					historyWidgets.pop();
 					updateHistory();
 					return;
-				}
-				String enteredNumberAsString = enteredNumberKeys.toString();
-				int enteredNumber = Integer.parseInt(enteredNumberAsString);
-				if (routeMode) {
-					handleRouteChange(e, enteredNumber);
-				} else {
-					handleSwitchChange(e, enteredNumber);
 				}
 
 				routeMode = false;

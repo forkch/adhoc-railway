@@ -1,6 +1,5 @@
 package ch.fork.AdHocRailway.domain.locking;
 
-import ch.fork.AdHocRailway.domain.locking.exception.LockingException;
 
 public interface LockControlIface<E> {
 

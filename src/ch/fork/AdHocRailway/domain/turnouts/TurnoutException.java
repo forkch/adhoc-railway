@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/exception/InvalidAddressException.java>  -  <desc>
+ * <./domain/switches/exception/SwitchException.java>  -  <>
  * 
- * begin     : Wed Aug 23 16:59:03 BST 2006
+ * begin     : Wed Aug 23 16:54:33 BST 2006
  * copyright : (C) by Benjamin Mueller 
  * email     : news@fork.ch
  * language  : java
@@ -20,27 +20,29 @@
  *----------------------------------------------------------------------*/
 
 
-package ch.fork.AdHocRailway.domain.exception;
+package ch.fork.AdHocRailway.domain.turnouts;
 
-import ch.fork.AdHocRailway.domain.Constants;
+import ch.fork.AdHocRailway.domain.ControlException;
 
-public class InvalidAddressException extends ControlException {
+public class TurnoutException extends ControlException {
 
-    public InvalidAddressException() {
-        super(Constants.ERR_INVALID_ADDRESS);
+	public TurnoutException() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public TurnoutException(String msg) {
+        super(msg);
     }
 
-    public InvalidAddressException(String message) {
-        super(message);
-    }
 
-    public InvalidAddressException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public TurnoutException(Throwable cause) {
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
 
-    public InvalidAddressException(Throwable cause) {
-        super(cause);
-    }
-    
 
+	public TurnoutException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
 }

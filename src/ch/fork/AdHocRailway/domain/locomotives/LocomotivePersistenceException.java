@@ -1,6 +1,5 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
-import ch.fork.AdHocRailway.domain.locomotives.exception.LocomotiveException;
 
 public class LocomotivePersistenceException extends LocomotiveException{
 

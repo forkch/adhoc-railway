@@ -1,6 +1,5 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import ch.fork.AdHocRailway.domain.turnouts.exception.TurnoutException;
 
 public class TurnoutPersistenceException extends TurnoutException {
 
