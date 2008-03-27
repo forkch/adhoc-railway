@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.routes;
 
 // Generated 08-Aug-2007 18:10:44 by Hibernate Tools 3.2.0.beta8
@@ -31,21 +49,21 @@ public class RouteGroup extends Model implements java.io.Serializable,
 
 	@Id
 	@GeneratedValue
-	private int id;
+	private int					id;
 
-	private String name;
+	private String				name;
 	private int					routeNumberOffset;
 
 	private int					routeNumberAmount;
 
 	@Sort(type = SortType.NATURAL)
-	private SortedSet<Route> routes = new TreeSet<Route>();
-	
-	public static final String PROPERTYNAME_ID = "id";
-	public static final String PROPERTYNAME_NAME = "name";
-	public static final String PROPERTYNAME_ROUTE_NUMBER_OFFSET = "routeNumberOffset";
-	public static final String PROPERTYNAME_ROUTE_NUMBER_AMOUNT = "routeNumberAmount";
-	public static final String PROPERTYNAME_ROUTES = "routes";
+	private SortedSet<Route>	routes								= new TreeSet<Route>();
+
+	public static final String	PROPERTYNAME_ID						= "id";
+	public static final String	PROPERTYNAME_NAME					= "name";
+	public static final String	PROPERTYNAME_ROUTE_NUMBER_OFFSET	= "routeNumberOffset";
+	public static final String	PROPERTYNAME_ROUTE_NUMBER_AMOUNT	= "routeNumberAmount";
+	public static final String	PROPERTYNAME_ROUTES					= "routes";
 
 	public int compareTo(RouteGroup o) {
 		if (this == o)
@@ -88,7 +106,8 @@ public class RouteGroup extends Model implements java.io.Serializable,
 	}
 
 	/** minimal constructor */
-	public RouteGroup(int id, String name, int routeNumberOffset, int routeNumberAmount) {
+	public RouteGroup(int id, String name, int routeNumberOffset,
+			int routeNumberAmount) {
 		this.id = id;
 		this.name = name;
 		this.routeNumberOffset = routeNumberOffset;
@@ -96,7 +115,8 @@ public class RouteGroup extends Model implements java.io.Serializable,
 	}
 
 	/** full constructor */
-	public RouteGroup(int id, String name, int routeNumberOffset, int routeNumberAmount, SortedSet<Route> routes) {
+	public RouteGroup(int id, String name, int routeNumberOffset,
+			int routeNumberAmount, SortedSet<Route> routes) {
 		this.id = id;
 		this.name = name;
 		this.routeNumberOffset = routeNumberOffset;
@@ -123,7 +143,7 @@ public class RouteGroup extends Model implements java.io.Serializable,
 	public String getName() {
 		return this.name;
 	}
-	
+
 	@Column(name = "route_number_offset", unique = false, nullable = false, insertable = true, updatable = true)
 	public int getRouteNumberOffset() {
 		return this.routeNumberOffset;

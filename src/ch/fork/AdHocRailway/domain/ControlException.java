@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/exception/ControlException.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:58:54 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -19,26 +16,24 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.domain;
 
 public class ControlException extends RuntimeException {
 
-    public ControlException() {
-        super();
-    }
+	public ControlException() {
+		super();
+	}
 
-    public ControlException(String message) {
-        super(message);
-    }
+	public ControlException(String message) {
+		super(message);
+	}
 
-    public ControlException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public ControlException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public ControlException(Throwable cause) {
-        super(cause);
-    }
-
+	public ControlException(Throwable cause) {
+		super(cause);
+	}
 
 }

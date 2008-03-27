@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/ExceptionProcessor.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 17:00:14 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -26,9 +23,9 @@ import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
 import javax.swing.JOptionPane;
 
 public class ExceptionProcessor {
-	private ErrorPanel errorPanel;
+	private ErrorPanel					errorPanel;
 
-	private static ExceptionProcessor instance;
+	private static ExceptionProcessor	instance;
 
 	private ExceptionProcessor(ErrorPanel errorPanel) {
 		this.errorPanel = errorPanel;
@@ -65,13 +62,14 @@ public class ExceptionProcessor {
 		errorPanel.setErrorTextIcon(msg, ImageTools
 				.createImageIcon("messagebox_critical.png"));
 	}
-	 public void processExceptionDialog(Exception e) {
-	        String exceptionMsg = e.getMessage();
-	        if (e.getCause() != null) {
-	            exceptionMsg += "\n" + e.getCause().getMessage();
-	        }
-	        JOptionPane.showMessageDialog(AdHocRailway.getInstance(), exceptionMsg,
-	                "Error", JOptionPane.ERROR_MESSAGE,
-	                createImageIcon("messagebox_critical.png"));
-	    }
+
+	public void processExceptionDialog(Exception e) {
+		String exceptionMsg = e.getMessage();
+		if (e.getCause() != null) {
+			exceptionMsg += "\n" + e.getCause().getMessage();
+		}
+		JOptionPane.showMessageDialog(AdHocRailway.getInstance(), exceptionMsg,
+				"Error", JOptionPane.ERROR_MESSAGE,
+				createImageIcon("messagebox_critical.png"));
+	}
 }

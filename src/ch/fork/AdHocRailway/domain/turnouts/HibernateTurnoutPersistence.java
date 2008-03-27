@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id: Preferences.java 151 2008-02-14 14:52:37Z fork_ch $
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import java.util.HashMap;
@@ -21,11 +39,10 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
-public class HibernateTurnoutPersistence
-		extends HibernatePersistence implements TurnoutPersistenceIface {
-	static Logger							logger	=
-															Logger
-																	.getLogger(HibernateTurnoutPersistence.class);
+public class HibernateTurnoutPersistence extends HibernatePersistence implements
+		TurnoutPersistenceIface {
+	static Logger							logger	= Logger
+															.getLogger(HibernateTurnoutPersistence.class);
 	private static TurnoutPersistenceIface	instance;
 
 	private Map<LookupAddress, Turnout>		addressTurnoutCache;
@@ -143,7 +160,8 @@ public class HibernateTurnoutPersistence
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#getAllTurnouts()
 	 */
-	public ArrayListModel<Turnout> getAllTurnouts() throws TurnoutPersistenceException {
+	public ArrayListModel<Turnout> getAllTurnouts()
+			throws TurnoutPersistenceException {
 		logger.debug("getAllTurnouts()");
 		if (addressTurnoutCache.size() == 0) {
 			updateTurnoutCache();
@@ -157,8 +175,8 @@ public class HibernateTurnoutPersistence
 		logger.debug("getAllTurnoutsDB()");
 		EntityManager em = getEntityManager();
 		try {
-			List<Turnout> turnouts =
-					em.createQuery("from Turnout").getResultList();
+			List<Turnout> turnouts = em.createQuery("from Turnout")
+					.getResultList();
 			SortedSet<Turnout> res = new TreeSet<Turnout>(turnouts);
 			return res;
 		} catch (HibernateException x) {
@@ -303,8 +321,8 @@ public class HibernateTurnoutPersistence
 		logger.debug("getAllTurnoutGroups()");
 		EntityManager em = getEntityManager();
 		try {
-			List<TurnoutGroup> groups =
-					em.createQuery("from TurnoutGroup").getResultList();
+			List<TurnoutGroup> groups = em.createQuery("from TurnoutGroup")
+					.getResultList();
 
 			// em.getTransaction().commit();
 			// em.getTransaction().begin();
@@ -403,8 +421,8 @@ public class HibernateTurnoutPersistence
 			throws TurnoutPersistenceException {
 		logger.debug("getAllTurnoutTypes()");
 		EntityManager em = getEntityManager();
-		List<TurnoutType> types =
-				em.createQuery("from TurnoutType").getResultList();
+		List<TurnoutType> types = em.createQuery("from TurnoutType")
+				.getResultList();
 
 		return new TreeSet<TurnoutType>(types);
 	}
@@ -431,10 +449,9 @@ public class HibernateTurnoutPersistence
 			break;
 		}
 		try {
-			TurnoutType turnoutType =
-					(TurnoutType) em.createQuery(
-							"from TurnoutType as t where t.typeName = ?1")
-							.setParameter(1, typeStr).getSingleResult();
+			TurnoutType turnoutType = (TurnoutType) em.createQuery(
+					"from TurnoutType as t where t.typeName = ?1")
+					.setParameter(1, typeStr).getSingleResult();
 
 			return turnoutType;
 		} catch (HibernateException x) {
@@ -452,22 +469,22 @@ public class HibernateTurnoutPersistence
 		}
 		return turnouts.last().getNumber() + 1;
 	}
-	
 
 	public int getNextFreeTurnoutNumberOfGroup(TurnoutGroup turnoutGroup) {
 		logger.debug("getNextFreeTurnoutNumberOfGroup()");
-		SortedSet<Turnout> turnouts = new TreeSet<Turnout>(turnoutGroup.getTurnouts());
+		SortedSet<Turnout> turnouts = new TreeSet<Turnout>(turnoutGroup
+				.getTurnouts());
 		int offset = turnoutGroup.getTurnoutNumberOffset();
 		int amount = turnoutGroup.getTurnoutNumberAmount();
-		
+
 		if (turnouts.isEmpty()) {
 			return offset;
 		}
 		int nextNumber = turnouts.last().getNumber() + 1;
-		if(nextNumber < offset + amount) {
+		if (nextNumber < offset + amount) {
 			return nextNumber;
 		}
-		return -1; 
+		return -1;
 	}
 
 	public Set<Integer> getUsedTurnoutNumbers() {

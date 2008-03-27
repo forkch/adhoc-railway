@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/switches/canvas/Segment7.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:59:40 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -32,8 +29,7 @@ import java.awt.geom.AffineTransform;
 
 import javax.swing.JPanel;
 
-public class Segment7
-		extends JPanel {
+public class Segment7 extends JPanel {
 	private int		digit;
 	private boolean	hasfocus;
 	private boolean	displayPeriod	= false;
@@ -68,7 +64,7 @@ public class Segment7
 			{ 1, 1, 1, 1, 1, 1, 1 }, // Ziffer 8
 			{ 1, 1, 1, 1, 0, 1, 1 }, // Ziffer 9
 			{ 0, 0, 0, 0, 0, 0, 0 } // Ziffer -
-											};
+									};
 
 	public Segment7() {
 		this(-1);
@@ -98,16 +94,16 @@ public class Segment7
 
 	public void paint(Graphics g) {
 
-		Graphics2D g2d =(Graphics2D) g;
+		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 
 		Color background = new Color(0, 0, 0);
 		Color foreground = new Color(255, 255, 0);
 		Color activatedColor = new Color(0, 255, 0);
-		Color deactivatedColor = new Color(30,30,30);
+		Color deactivatedColor = new Color(30, 30, 30);
 		// dx und dy berechnen
-		int dx = (getSize().width-11) / 11;
+		int dx = (getSize().width - 11) / 11;
 		int dy = getSize().height / 20;
 		// Hintergrund
 		g2d.setColor(background);
@@ -117,8 +113,7 @@ public class Segment7
 		g2d.transform(shear);
 		AffineTransform translate = AffineTransform.getTranslateInstance(11, 0);
 		g2d.transform(translate);
-		
-		
+
 		// Segmente
 		if (hasfocus) {
 			g2d.setColor(activatedColor);

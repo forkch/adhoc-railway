@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.locomotives;
 
 // Generated 08-Aug-2007 18:10:44 by Hibernate Tools 3.2.0.beta8
@@ -31,29 +49,29 @@ public class LocomotiveType extends Model implements java.io.Serializable,
 
 	@Id
 	@GeneratedValue
-	private int id;
+	private int						id;
 
-	private String typeName;
+	private String					typeName;
 
-	private int drivingSteps;
+	private int						drivingSteps;
 
-	private int stepping;
+	private int						stepping;
 
-	private int functionCount;
+	private int						functionCount;
 
-	public static final int PROTOCOL_VERSION = 2;
+	public static final int			PROTOCOL_VERSION			= 2;
 
-	public static final String PROTOCOL = "M";
+	public static final String		PROTOCOL					= "M";
 
 	@Sort(type = SortType.NATURAL)
-	private SortedSet<Locomotive> locomotives = new TreeSet<Locomotive>();
+	private SortedSet<Locomotive>	locomotives					= new TreeSet<Locomotive>();
 
-	public static final String PROPERTYNAME_ID = "id";
-	public static final String PROPERTYNAME_TYPE_NAME = "typeName";
-	public static final String PROPERTYNAME_DRIVING_STEPS = "drivingSteps";
-	public static final String PROPERTYNAME_STEPPING = "stepping";
-	public static final String PROPERTYNAME_FUNCTION_COUNT = "functionCount";
-	public static final String PROPERTYNAME_LOCOMOTIVES = "locomotives";
+	public static final String		PROPERTYNAME_ID				= "id";
+	public static final String		PROPERTYNAME_TYPE_NAME		= "typeName";
+	public static final String		PROPERTYNAME_DRIVING_STEPS	= "drivingSteps";
+	public static final String		PROPERTYNAME_STEPPING		= "stepping";
+	public static final String		PROPERTYNAME_FUNCTION_COUNT	= "functionCount";
+	public static final String		PROPERTYNAME_LOCOMOTIVES	= "locomotives";
 
 	public int compareTo(LocomotiveType o) {
 		if (this == o)
@@ -134,7 +152,8 @@ public class LocomotiveType extends Model implements java.io.Serializable,
 		return this.id;
 	}
 
-	public void setId(int id) {int old = this.id;
+	public void setId(int id) {
+		int old = this.id;
 		this.id = id;
 		firePropertyChange(PROPERTYNAME_ID, old, id);
 	}

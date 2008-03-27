@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/ImageTools.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 17:00:28 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -19,15 +16,14 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.ui;
 
 import javax.swing.ImageIcon;
 
 public class ImageTools {
 
-    public static ImageIcon createImageIcon(String icon) {
-        return new ImageIcon(ClassLoader.getSystemResource(icon));
-    }
+	public static ImageIcon createImageIcon(String icon) {
+		return new ImageIcon(ClassLoader.getSystemResource(icon));
+	}
 
 }

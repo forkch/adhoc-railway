@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/exception/InvalidAddressException.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:59:03 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -19,27 +16,24 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.domain;
-
 
 public class InvalidAddressException extends ControlException {
 
-    public InvalidAddressException() {
-        super(Constants.ERR_INVALID_ADDRESS);
-    }
+	public InvalidAddressException() {
+		super(Constants.ERR_INVALID_ADDRESS);
+	}
 
-    public InvalidAddressException(String message) {
-        super(message);
-    }
+	public InvalidAddressException(String message) {
+		super(message);
+	}
 
-    public InvalidAddressException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public InvalidAddressException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public InvalidAddressException(Throwable cause) {
-        super(cause);
-    }
-    
+	public InvalidAddressException(Throwable cause) {
+		super(cause);
+	}
 
 }

@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <Address.java>  -  <>
- * 
- * begin     : Wed Aug 23 16:53:53 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -19,7 +16,6 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.domain;
 
 /**
@@ -31,58 +27,58 @@ package ch.fork.AdHocRailway.domain;
  * 
  */
 public class Address {
-    private int     bus;
-    private int     address;
-    private boolean addressSwitched = false;
+	private int		bus;
+	private int		address;
+	private boolean	addressSwitched	= false;
 
-    public Address(int bus, int address) {
-        this.bus = bus;
-        this.address = address;
-    }
+	public Address(int bus, int address) {
+		this.bus = bus;
+		this.address = address;
+	}
 
-    public int getAddress() {
-        return address;
-    }
+	public int getAddress() {
+		return address;
+	}
 
-    public void setAddress(int address) {
-        this.address = address;
-    }
+	public void setAddress(int address) {
+		this.address = address;
+	}
 
-    public int hashCode() {
-        return Integer.valueOf(bus).hashCode() * 1000
-            + Integer.valueOf(address).hashCode();
-    }
+	public int hashCode() {
+		return Integer.valueOf(bus).hashCode() * 1000
+				+ Integer.valueOf(address).hashCode();
+	}
 
-    public boolean equals(Object anAddress) {
-        if (anAddress instanceof Address) {
-            Address ad = (Address) anAddress;
-            if (ad.bus == bus && ad.address == address
-                && ad.addressSwitched == addressSwitched) {
-                return true;
-            }
-        }
-        return false;
-    }
+	public boolean equals(Object anAddress) {
+		if (anAddress instanceof Address) {
+			Address ad = (Address) anAddress;
+			if (ad.bus == bus && ad.address == address
+					&& ad.addressSwitched == addressSwitched) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    public String toString() {
-        return " bus: " + bus + " address: " + address + " : "
-            + addressSwitched;
-    }
+	public String toString() {
+		return " bus: " + bus + " address: " + address + " : "
+				+ addressSwitched;
+	}
 
-    public boolean isAddressSwitched() {
-        return addressSwitched;
-    }
+	public boolean isAddressSwitched() {
+		return addressSwitched;
+	}
 
-    public void setAddressSwitched(boolean addressSwitched) {
-        this.addressSwitched = addressSwitched;
-    }
+	public void setAddressSwitched(boolean addressSwitched) {
+		this.addressSwitched = addressSwitched;
+	}
 
-    public int getBus() {
-        return bus;
-    }
+	public int getBus() {
+		return bus;
+	}
 
-    public void setBus(int bus) {
-        this.bus = bus;
-    }
+	public void setBus(int bus) {
+		this.bus = bus;
+	}
 
 }

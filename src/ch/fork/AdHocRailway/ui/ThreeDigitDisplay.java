@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id: Preferences.java 151 2008-02-14 14:52:37Z fork_ch $
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 /**
  * description
  *
@@ -10,19 +28,17 @@ package ch.fork.AdHocRailway.ui;
 import java.awt.Color;
 import java.awt.FlowLayout;
 
-
 /**
  * @author Benjamin Mueller <benjamin.b.mueller@siemens.com>
- *
+ * 
  */
-public class ThreeDigitDisplay
-		extends javax.swing.JPanel {
-	private Segment7				seg1;
+public class ThreeDigitDisplay extends javax.swing.JPanel {
+	private Segment7	seg1;
 
-	private Segment7				seg2;
+	private Segment7	seg2;
 
-	private Segment7				seg3;
-	
+	private Segment7	seg3;
+
 	public ThreeDigitDisplay() {
 		initGUI();
 	}
@@ -31,8 +47,7 @@ public class ThreeDigitDisplay
 	 * 
 	 */
 	private void initGUI() {
-		setLayout(new FlowLayout(
-				FlowLayout.TRAILING, 0, 0));
+		setLayout(new FlowLayout(FlowLayout.TRAILING, 0, 0));
 		setBackground(new Color(0, 0, 0));
 		seg1 = new Segment7();
 		seg2 = new Segment7();
@@ -41,7 +56,7 @@ public class ThreeDigitDisplay
 		add(seg2);
 		add(seg1);
 	}
-	
+
 	public void reset() {
 		seg1.setValue(-1);
 		seg2.setValue(-1);
@@ -52,12 +67,12 @@ public class ThreeDigitDisplay
 		seg2.repaint();
 		seg3.repaint();
 	}
-	
+
 	public void setPeriod(boolean period) {
 		seg3.setDisplayPeriod(period);
 		seg3.repaint();
 	}
-	
+
 	public void setNumber(int number) {
 		int seg1Value = number % 10;
 		seg1.setValue(seg1Value);

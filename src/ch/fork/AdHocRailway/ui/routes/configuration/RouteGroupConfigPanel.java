@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id: Preferences.java 151 2008-02-14 14:52:37Z fork_ch $
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 /**
  * description
  * 
@@ -33,10 +51,11 @@ public class RouteGroupConfigPanel extends JPanel {
 	private JSpinner						routeNumberAmount;
 
 	public RouteGroupConfigPanel() {
-		presentationModel = new PresentationModel<RouteGroup>(new ValueHolder(null, true));
+		presentationModel = new PresentationModel<RouteGroup>(new ValueHolder(
+				null, true));
 		buildPanel();
 	}
-	
+
 	public void setRouteGroup(RouteGroup group) {
 		presentationModel.setBean(group);
 	}
@@ -59,11 +78,9 @@ public class RouteGroupConfigPanel extends JPanel {
 		builder.add(routeNumberOffset, cc.xy(3, 3));
 		builder.addLabel("Number Amount", cc.xy(1, 5));
 		builder.add(routeNumberAmount, cc.xy(3, 5));
-		
 
 		add(builder.getPanel());
 	}
-	
 
 	private void initComponents() {
 		routeGroupName = BasicComponentFactory
@@ -72,26 +89,22 @@ public class RouteGroupConfigPanel extends JPanel {
 		routeGroupName.setColumns(5);
 
 		routeNumberOffset = new JSpinner();
-		routeNumberOffset
-				.setModel(SpinnerAdapterFactory
-						.createNumberAdapter(
-								presentationModel
-										.getModel(RouteGroup.PROPERTYNAME_ROUTE_NUMBER_OFFSET),
-								0, // defaultValue
-								0, // minValue
-								1000, // maxValue
-								10)); // step
+		routeNumberOffset.setModel(SpinnerAdapterFactory.createNumberAdapter(
+				presentationModel
+						.getModel(RouteGroup.PROPERTYNAME_ROUTE_NUMBER_OFFSET),
+				0, // defaultValue
+				0, // minValue
+				1000, // maxValue
+				10)); // step
 
 		routeNumberAmount = new JSpinner();
-		routeNumberAmount
-				.setModel(SpinnerAdapterFactory
-						.createNumberAdapter(
-								presentationModel
-										.getModel(RouteGroup.PROPERTYNAME_ROUTE_NUMBER_AMOUNT),
-								0, // defaultValue
-								0, // minValue
-								1000, // maxValue
-								10)); // step
+		routeNumberAmount.setModel(SpinnerAdapterFactory.createNumberAdapter(
+				presentationModel
+						.getModel(RouteGroup.PROPERTYNAME_ROUTE_NUMBER_AMOUNT),
+				0, // defaultValue
+				0, // minValue
+				1000, // maxValue
+				10)); // step
 
 	}
 }

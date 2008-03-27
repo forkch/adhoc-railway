@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import java.awt.Component;
@@ -495,7 +513,7 @@ public class RoutesConfigurationDialog extends JDialog {
 		private JWindow	numberDisplayDialog;
 
 		public RecordRouteAction() {
-			super("Record",ImageTools.createImageIcon("record_off.png"));
+			super("Record", ImageTools.createImageIcon("record_off.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -514,14 +532,16 @@ public class RoutesConfigurationDialog extends JDialog {
 				numberDisplayDialog.add(digitDisplay);
 				numberDisplayDialog.pack();
 				numberDisplayDialog.setAlwaysOnTop(true);
-				
+
 				TutorialUtils.locateOnOpticalScreenLeft3rd(numberDisplayDialog);
-				recordRouteButton.setIcon(ImageTools.createImageIcon("record.png"));
+				recordRouteButton.setIcon(ImageTools
+						.createImageIcon("record.png"));
 				initKeyboardActions(selectedRoute);
 				numberDisplayDialog.setVisible(true);
 				recording = true;
 			} else {
-				recordRouteButton.setIcon(ImageTools.createImageIcon("record_off.png"));
+				recordRouteButton.setIcon(ImageTools
+						.createImageIcon("record_off.png"));
 				recording = false;
 				numberDisplayDialog.setVisible(false);
 			}
@@ -535,7 +555,8 @@ public class RoutesConfigurationDialog extends JDialog {
 				for (JPanel p : panels) {
 					p.registerKeyboardAction(new NumberEnteredAction(), Integer
 							.toString(i), KeyStroke.getKeyStroke(Integer
-							.toString(i)), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+							.toString(i)),
+							JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 					p.registerKeyboardAction(new NumberEnteredAction(), Integer
 							.toString(i), KeyStroke.getKeyStroke("NUMPAD"
 							+ Integer.toString(i)),
@@ -585,7 +606,7 @@ public class RoutesConfigurationDialog extends JDialog {
 		public void actionPerformed(ActionEvent e) {
 
 			String enteredNumberAsString = enteredNumberKeys.toString();
-			if(enteredNumberAsString.equals(""))
+			if (enteredNumberAsString.equals(""))
 				return;
 			int enteredNumber = Integer.parseInt(enteredNumberAsString);
 			Turnout turnout;

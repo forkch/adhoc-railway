@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id: Preferences.java 151 2008-02-14 14:52:37Z fork_ch $
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.routes;
 
 import java.util.List;
@@ -156,8 +174,13 @@ public class HibernateRoutePersistence extends HibernatePersistence implements
 		logger.debug("deleteRoute(" + route + ")");
 		EntityManager em = getEntityManager();
 		if (!route.getRouteItems().isEmpty()) {
-			throw new RoutePersistenceException(
-					"Cannot delete Route-Group with associated Route-Items");
+			SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>(route
+					.getRouteItems());
+			for (RouteItem routeitem : routeItems) {
+				deleteRouteItem(routeitem);
+			}
+			// throw new RoutePersistenceException(
+			// "Cannot delete Route-Group with associated Route-Items");
 		}
 
 		RouteGroup group = route.getRouteGroup();
@@ -289,7 +312,8 @@ public class HibernateRoutePersistence extends HibernatePersistence implements
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRouteItem(ch.fork.AdHocRailway.domain.routes.RouteItem)
 	 */
-	public void deleteRouteItem(RouteItem item) throws RoutePersistenceException {
+	public void deleteRouteItem(RouteItem item)
+			throws RoutePersistenceException {
 		EntityManager em = getEntityManager();
 
 		Turnout turnout = item.getTurnout();
@@ -307,7 +331,8 @@ public class HibernateRoutePersistence extends HibernatePersistence implements
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRouteItem(ch.fork.AdHocRailway.domain.routes.RouteItem)
 	 */
-	public void updateRouteItem(RouteItem item) throws RoutePersistenceException {
+	public void updateRouteItem(RouteItem item)
+			throws RoutePersistenceException {
 		EntityManager em = getEntityManager();
 		em.merge(item);
 		em.refresh(item.getRoute());

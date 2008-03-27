@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/configuration/Preferences.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:58:14 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -35,9 +32,8 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 public class Preferences implements PreferencesKeys {
-	private static Logger		logger		=
-													Logger
-															.getLogger(Preferences.class);
+	private static Logger		logger		= Logger
+													.getLogger(Preferences.class);
 	private Map<String, String>	preferences;
 	private List<String>		hostnames;
 	private static Preferences	instance	= null;
@@ -45,7 +41,7 @@ public class Preferences implements PreferencesKeys {
 	private File				configFile;
 
 	private Preferences() {
-		
+
 		// Fill default values
 		preferences = new HashMap<String, String>();
 		hostnames = new ArrayList<String>();
@@ -112,6 +108,9 @@ public class Preferences implements PreferencesKeys {
 	}
 
 	public void save() throws FileNotFoundException, IOException {
+		if (props == null) {
+			props = new Properties();
+		}
 		for (String key : preferences.keySet()) {
 			props.setProperty(key, preferences.get(key));
 		}

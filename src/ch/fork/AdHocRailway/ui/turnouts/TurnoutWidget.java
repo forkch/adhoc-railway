@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/switches/SwitchWidget.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:59:35 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -46,8 +43,7 @@ import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 
-public class TurnoutWidget
-		extends JPanel implements TurnoutChangeListener {
+public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	private TurnoutControlIface		turnoutControl;
 
 	private static final long		serialVersionUID	= 1L;
@@ -80,8 +76,8 @@ public class TurnoutWidget
 		this.testMode = testMode;
 		this.turnout = turnout;
 		this.turnoutControl = AdHocRailway.getInstance().getTurnoutControl();
-		this.turnoutPersistence =
-				AdHocRailway.getInstance().getTurnoutPersistence();
+		this.turnoutPersistence = AdHocRailway.getInstance()
+				.getTurnoutPersistence();
 		turnoutControl.addTurnoutChangeListener(turnout, this);
 		defaultBackground = getBackground();
 		widgetEnabled = true;
@@ -186,8 +182,7 @@ public class TurnoutWidget
 		}
 	}
 
-	private class MouseAction
-			extends MouseAdapter {
+	private class MouseAction extends MouseAdapter {
 		public void mouseClicked(MouseEvent e) {
 			if (!widgetEnabled)
 				return;

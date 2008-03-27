@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.technical.configuration.exporter;
 
 import java.util.Map;
@@ -13,9 +31,9 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 
 public class XMLExporter_0_2 {
 
-	private StringBuffer sb;
-	private TurnoutPersistenceIface turnoutPersistence;
-	private LocomotivePersistenceIface locomotivePersistence;
+	private StringBuffer				sb;
+	private TurnoutPersistenceIface		turnoutPersistence;
+	private LocomotivePersistenceIface	locomotivePersistence;
 
 	public XMLExporter_0_2(TurnoutPersistenceIface turnoutPersistence,
 			LocomotivePersistenceIface locomotivePersistence,
@@ -73,7 +91,8 @@ public class XMLExporter_0_2 {
 
 	private void exportLocomotiveConfiguration() {
 		sb.append("<LocomotiveConfiguration>\n");
-		for (LocomotiveGroup lg : locomotivePersistence.getAllLocomotiveGroups()) {
+		for (LocomotiveGroup lg : locomotivePersistence
+				.getAllLocomotiveGroups()) {
 
 			sb.append("<LocomotiveGroup name=\"" + lg.getName() + "\">\n");
 			for (Locomotive l : lg.getLocomotives()) {

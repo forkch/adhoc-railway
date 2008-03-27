@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/exception/NoSessionException.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:59:00 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -19,13 +16,11 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.domain;
-
 
 public class NoSessionException extends ControlException {
 
-    public NoSessionException() {
-        super(Constants.ERR_NO_SESSION);
-    }
+	public NoSessionException() {
+		super(Constants.ERR_NO_SESSION);
+	}
 }

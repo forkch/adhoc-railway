@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id: Preferences.java 151 2008-02-14 14:52:37Z fork_ch $
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.ui;
 
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
@@ -86,21 +104,23 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		JPanel controlPanel = new JPanel(new GridLayout(1, 2));
 		if (preferences.getBooleanValue(TABBED_TRACK)) {
 			trackControlPane = new JTabbedPane();
-			
+
 			trackControlPane.add("Turnouts", turnoutGroupsTabbedPane);
 			trackControlPane.add("Routes", routeGroupsTabbedPane);
-			SimpleInternalFrame turnoutRouteFrame = new SimpleInternalFrame("Turnouts/Routes");
+			SimpleInternalFrame turnoutRouteFrame = new SimpleInternalFrame(
+					"Turnouts/Routes");
 			turnoutRouteFrame.add(trackControlPane);
 			controlPanel.add(turnoutRouteFrame);
 		} else {
-//			turnoutGroupsTabbedPane.setBorder(new TitledBorder("Turnouts"));
-//			routeGroupsTabbedPane.setBorder(new TitledBorder("Routes"));
-			SimpleInternalFrame turnoutFrame = new SimpleInternalFrame("Turnouts");
+			// turnoutGroupsTabbedPane.setBorder(new TitledBorder("Turnouts"));
+			// routeGroupsTabbedPane.setBorder(new TitledBorder("Routes"));
+			SimpleInternalFrame turnoutFrame = new SimpleInternalFrame(
+					"Turnouts");
 			SimpleInternalFrame routesFrame = new SimpleInternalFrame("Routes");
-			
+
 			turnoutFrame.add(turnoutGroupsTabbedPane, BorderLayout.CENTER);
 			routesFrame.add(routeGroupsTabbedPane, BorderLayout.CENTER);
-			
+
 			controlPanel.add(turnoutFrame);
 			controlPanel.add(routesFrame);
 		}
@@ -111,13 +131,13 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private void initTurnoutPanel() {
 		turnoutGroupsTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
-		
+
 		updateTurnouts();
 	}
 
 	private void initRoutesPanel() {
 		routeGroupsTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
-		
+
 		updateRoutes();
 	}
 
@@ -198,9 +218,10 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 			turnoutGroupsTabbedPane.add(groupScrollPane, "F" + i + ": "
 					+ turnoutGroup.getName());
-			
-//			Dimension dim = new Dimension(groupScrollPane.getSize().width, 4000);
-//			switchGroupTab.setPreferredSize(dim);
+
+			// Dimension dim = new Dimension(groupScrollPane.getSize().width,
+			// 4000);
+			// switchGroupTab.setPreferredSize(dim);
 			for (Turnout turnout : turnoutGroup.getTurnouts()) {
 				TurnoutWidget switchWidget = new TurnoutWidget(turnout);
 				switchGroupTab.addWidget(switchWidget);
@@ -235,7 +256,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			i++;
 		}
 	}
-	
+
 	private class TurnoutGroupChangeAction extends AbstractAction {
 
 		public void actionPerformed(ActionEvent e) {
@@ -264,7 +285,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private class TurnoutsStraightAction extends AbstractAction {
 
 		public TurnoutsStraightAction() {
-			super("Set all turnouts straight\u2026", createImageIcon("switch.png"));
+			super("Set all turnouts straight\u2026",
+					createImageIcon("switch.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {

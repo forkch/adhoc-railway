@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
@@ -5,7 +23,7 @@ import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 public interface TurnoutControlIface {
 
 	public void setTurnoutPersistence(TurnoutPersistenceIface persistence);
-	
+
 	public void update();
 
 	public void toggle(Turnout turnout) throws TurnoutException;
@@ -20,18 +38,19 @@ public interface TurnoutControlIface {
 
 	public void setCurvedRight(Turnout turnout) throws TurnoutException;
 
-	public void addTurnoutChangeListener(Turnout turnout, TurnoutChangeListener listener);
+	public void addTurnoutChangeListener(Turnout turnout,
+			TurnoutChangeListener listener);
 
 	public void removeTurnoutChangeListener(Turnout turnout);
 
 	public void removeAllTurnoutChangeListener();
 
 	public void removeTurnoutChangeListener(TurnoutChangeListener listener);
-	
+
 	public void undoLastChange() throws TurnoutException;
-	
+
 	public void previousDeviceToDefault() throws TurnoutException;
-	
+
 	public TurnoutState getTurnoutState(Turnout turnout);
 
 }

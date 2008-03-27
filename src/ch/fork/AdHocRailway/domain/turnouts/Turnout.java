@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.turnouts;
 
 // Generated 08-Aug-2007 18:10:44 by Hibernate Tools 3.2.0.beta8
@@ -36,48 +54,49 @@ public class Turnout extends Model implements java.io.Serializable,
 
 	@Id
 	@GeneratedValue
-	private int id;
+	private int					id;
 
-	private TurnoutType turnoutType;
+	private TurnoutType			turnoutType;
 
-	private TurnoutGroup turnoutGroup;
+	private TurnoutGroup		turnoutGroup;
 
-	private int number;
+	private int					number;
 
-	private String description;
+	private String				description;
 
-	private String defaultState;
+	private String				defaultState;
 
-	private String orientation;
+	private String				orientation;
 
-	private Set<RouteItem> routeItems = new HashSet<RouteItem>(0);
+	private Set<RouteItem>		routeItems						= new HashSet<RouteItem>(
+																		0);
 
-	private int address1;
+	private int					address1;
 
-	private int address2;
+	private int					address2;
 
-	private int bus1;
+	private int					bus1;
 
-	private int bus2;
+	private int					bus2;
 
-	private boolean address1Switched;
+	private boolean				address1Switched;
 
-	private boolean address2Switched;
+	private boolean				address2Switched;
 
-	public static final String PROPERTYNAME_ID = "id";
-	public static final String PROPERTYNAME_TURNOUT_TYPE = "turnoutType";
-	public static final String PROPERTYNAME_TURNOUT_GROUP = "turnoutGroup";
-	public static final String PROPERTYNAME_NUMBER = "number";
-	public static final String PROPERTYNAME_DESCRIPTION = "description";
-	public static final String PROPERTYNAME_DEFAULT_STATE = "defaultStateEnum";
-	public static final String PROPERTYNAME_ORIENTATION = "orientationEnum";
-	public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
-	public static final String PROPERTYNAME_ADDRESS1 = "address1";
-	public static final String PROPERTYNAME_ADDRESS2 = "address2";
-	public static final String PROPERTYNAME_BUS1 = "bus1";
-	public static final String PROPERTYNAME_BUS2 = "bus2";
-	public static final String PROPERTYNAME_ADDRESS1_SWITCHED = "address1Switched";
-	public static final String PROPERTYNAME_ADDRESS2_SWITCHED = "address2Switched";
+	public static final String	PROPERTYNAME_ID					= "id";
+	public static final String	PROPERTYNAME_TURNOUT_TYPE		= "turnoutType";
+	public static final String	PROPERTYNAME_TURNOUT_GROUP		= "turnoutGroup";
+	public static final String	PROPERTYNAME_NUMBER				= "number";
+	public static final String	PROPERTYNAME_DESCRIPTION		= "description";
+	public static final String	PROPERTYNAME_DEFAULT_STATE		= "defaultStateEnum";
+	public static final String	PROPERTYNAME_ORIENTATION		= "orientationEnum";
+	public static final String	PROPERTYNAME_ROUTE_ITEMS		= "routeItems";
+	public static final String	PROPERTYNAME_ADDRESS1			= "address1";
+	public static final String	PROPERTYNAME_ADDRESS2			= "address2";
+	public static final String	PROPERTYNAME_BUS1				= "bus1";
+	public static final String	PROPERTYNAME_BUS2				= "bus2";
+	public static final String	PROPERTYNAME_ADDRESS1_SWITCHED	= "address1Switched";
+	public static final String	PROPERTYNAME_ADDRESS2_SWITCHED	= "address2Switched";
 
 	public enum TurnoutOrientation {
 		NORTH, SOUTH, WEST, EAST

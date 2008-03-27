@@ -1,12 +1,9 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/switches/SwitchGroupTab.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:59:32 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
- * version   : $Id: SwitchGroupTab.java 81 2006-11-28 17:47:01Z fork_ch $
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id: Preferences.java 151 2008-02-14 14:52:37Z fork_ch $
  * 
  *----------------------------------------------------------------------*/
 

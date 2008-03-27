@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id: Preferences.java 151 2008-02-14 14:52:37Z fork_ch $
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 /**
  * description
  * 
@@ -33,10 +51,11 @@ public class TurnoutGroupConfigPanel extends JPanel {
 	private JSpinner						turnoutNumberAmount;
 
 	public TurnoutGroupConfigPanel() {
-		presentationModel = new PresentationModel<TurnoutGroup>(new ValueHolder(null, true));
+		presentationModel = new PresentationModel<TurnoutGroup>(
+				new ValueHolder(null, true));
 		buildPanel();
 	}
-	
+
 	public void setTurnoutGroup(TurnoutGroup group) {
 		presentationModel.setBean(group);
 	}
@@ -59,11 +78,9 @@ public class TurnoutGroupConfigPanel extends JPanel {
 		builder.add(turnoutNumberOffset, cc.xy(3, 3));
 		builder.addLabel("Turnout Amount", cc.xy(1, 5));
 		builder.add(turnoutNumberAmount, cc.xy(3, 5));
-		
 
 		add(builder.getPanel());
 	}
-	
 
 	private void initComponents() {
 		turnoutGroupName = BasicComponentFactory

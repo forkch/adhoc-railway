@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/locking/LockControl.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:58:45 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/

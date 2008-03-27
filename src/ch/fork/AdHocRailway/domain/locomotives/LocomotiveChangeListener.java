@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/locomotives/LocomotiveChangeListener.java>  -  <>
- * 
- * begin     : Wed Aug 23 16:55:11 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -19,10 +16,8 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.domain.locomotives;
 
-
 public interface LocomotiveChangeListener {
-    public void locomotiveChanged(Locomotive changedSwitch);
+	public void locomotiveChanged(Locomotive changedSwitch);
 }

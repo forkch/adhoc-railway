@@ -121,7 +121,7 @@
 		<mkdir dir=""/>
 		<copy todir="${bindir}">
 			<fileset dir="."
-				includes="ChangeLog, README, COPYING, TODO, adhocrailway.conf"
+				includes="ChangeLog, README, COPYING, TODO"
 				excludes="**/.svn/"/>
 		</copy>
 		<copy todir="${bindir}">
@@ -141,7 +141,8 @@
 		<copy todir="${bindir}/${db.dir}">
 			<fileset dir="${db.dir}"  excludes="**/.svn/"/>
 		</copy>
-		<zip destfile="AdHoc-Railway-${release}-bin.zip" basedir="${release.dir}"
+		<tar destfile="AdHoc-Railway-${release}-bin.tar.bz2" basedir="${release.dir}"
+      compression="bzip2"
 			/>
 		
 		<delete file="ChangeLog"/>
@@ -155,7 +156,7 @@
 		<copy todir="${srcdir}">
 			<fileset dir="."
 				includes="ChangeLog, README, COPYING, TODO, build.xml,
-        build.properties, adhocrailway.conf"
+        build.properties"
 				excludes="**/.svn/"/>
 		</copy>
 		<!--copy todir="${srcdir}/${javadoc.dir}">
@@ -176,7 +177,8 @@
 		<copy todir="${srcdir}/${db.dir}">
 			<fileset dir="${db.dir}"  excludes="**/.svn/"/>
 		</copy>
-		<zip destfile="AdHoc-Railway-${release}-src.zip" basedir="${release.dir}"
+		<tar destfile="AdHoc-Railway-${release}-src.tar.bz2" basedir="${release.dir}"
+      compression="bzip2"
 			/>
 		<delete file="ChangeLog"/>
 	</target>

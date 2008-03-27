@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/switches/exception/SwitchLockedException.java>  -  <>
- * 
- * begin     : Wed Aug 23 16:54:36 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -19,15 +16,14 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.domain.turnouts;
 
 public class SwitchLockedException extends TurnoutException {
-    public SwitchLockedException(String msg) {
-        super(msg);
-    }
+	public SwitchLockedException(String msg) {
+		super(msg);
+	}
 
-    public SwitchLockedException(String msg, Exception parent) {
-        super(msg, parent);
-    }
+	public SwitchLockedException(String msg, Exception parent) {
+		super(msg, parent);
+	}
 }

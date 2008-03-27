@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.locking.LockControlIface;
@@ -5,7 +23,9 @@ import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotive.Direction;
 
 public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 
-	public abstract void setLocomotivePersistence(LocomotivePersistenceIface persistence);
+	public abstract void setLocomotivePersistence(
+			LocomotivePersistenceIface persistence);
+
 	/**
 	 * Toggles the direction of the Locomotive
 	 * 
@@ -16,7 +36,7 @@ public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 			throws LocomotiveException;
 
 	public abstract Direction getDirection(Locomotive locomotive);
-	
+
 	public abstract int getCurrentSpeed(Locomotive locomotive);
 
 	/**
@@ -83,6 +103,5 @@ public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 	public abstract void removeAllLocomotiveChangeListener();
 
 	public void update();
-
 
 }

@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.technical.configuration.importer;
 
 import java.io.IOException;
@@ -31,8 +49,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
-public class XMLImporter_0_2
-		extends DefaultHandler implements ContentHandler {
+public class XMLImporter_0_2 extends DefaultHandler implements ContentHandler {
 	private Preferences					preferences;
 	private Turnout						actualTurnout;
 	private TurnoutGroup				actualTurnoutGroup;
@@ -120,8 +137,8 @@ public class XMLImporter_0_2
 			Attributes attributes) throws SAXException {
 		qName = qName.toLowerCase();
 		if (qName.equals("switchgroup")) {
-			actualTurnoutGroup =
-					new TurnoutGroup(0, attributes.getValue("name"), 0, 0);
+			actualTurnoutGroup = new TurnoutGroup(0, attributes
+					.getValue("name"), 0, 0);
 
 			turnoutPersistence.addTurnoutGroup(actualTurnoutGroup);
 		} else if (qName.equals("switch")) {
@@ -133,8 +150,8 @@ public class XMLImporter_0_2
 			actualAddresses[actualAddressCounter] = actualAddress;
 			actualAddressCounter++;
 		} else if (qName.equals("locomotivegroup")) {
-			actualLocomotiveGroup =
-					new LocomotiveGroup(0, attributes.getValue("name"));
+			actualLocomotiveGroup = new LocomotiveGroup(0, attributes
+					.getValue("name"));
 			locomotivePersistence.addLocomotiveGroup(actualLocomotiveGroup);
 		} else if (qName.equals("locomotive")) {
 			parseLocomotive(qName, attributes);
@@ -151,30 +168,27 @@ public class XMLImporter_0_2
 		int number = Integer.parseInt(attributes.getValue("number"));
 
 		if (type.equals("DefaultSwitch")) {
-			TurnoutType turnoutType =
-					turnoutPersistence.getTurnoutType(TurnoutTypes.DEFAULT);
-			actualTurnout =
-					new Turnout(0, turnoutType, actualTurnoutGroup, number,
-							desc, defaultstate.toUpperCase(), orientation
-									.toUpperCase(), 0, 0, false);
+			TurnoutType turnoutType = turnoutPersistence
+					.getTurnoutType(TurnoutTypes.DEFAULT);
+			actualTurnout = new Turnout(0, turnoutType, actualTurnoutGroup,
+					number, desc, defaultstate.toUpperCase(), orientation
+							.toUpperCase(), 0, 0, false);
 			actualAddresses = new Address[1];
 			turnoutType.getTurnouts().add(actualTurnout);
 		} else if (type.equals("DoubleCrossSwitch")) {
-			TurnoutType turnoutType =
-					turnoutPersistence.getTurnoutType(TurnoutTypes.DOUBLECROSS);
-			actualTurnout =
-					new Turnout(0, turnoutType, actualTurnoutGroup, number,
-							desc, defaultstate.toUpperCase(), orientation
-									.toUpperCase(), 0, 0, false);
+			TurnoutType turnoutType = turnoutPersistence
+					.getTurnoutType(TurnoutTypes.DOUBLECROSS);
+			actualTurnout = new Turnout(0, turnoutType, actualTurnoutGroup,
+					number, desc, defaultstate.toUpperCase(), orientation
+							.toUpperCase(), 0, 0, false);
 			actualAddresses = new Address[1];
 			turnoutType.getTurnouts().add(actualTurnout);
 		} else if (type.equals("ThreeWaySwitch")) {
-			TurnoutType turnoutType =
-					turnoutPersistence.getTurnoutType(TurnoutTypes.THREEWAY);
-			actualTurnout =
-					new Turnout(0, turnoutType, actualTurnoutGroup, number,
-							desc, defaultstate.toUpperCase(), orientation
-									.toUpperCase(), 0, 0, false);
+			TurnoutType turnoutType = turnoutPersistence
+					.getTurnoutType(TurnoutTypes.THREEWAY);
+			actualTurnout = new Turnout(0, turnoutType, actualTurnoutGroup,
+					number, desc, defaultstate.toUpperCase(), orientation
+							.toUpperCase(), 0, 0, false);
 			actualAddresses = new Address[2];
 			turnoutType.getTurnouts().add(actualTurnout);
 		}
@@ -188,18 +202,16 @@ public class XMLImporter_0_2
 		int address = Integer.parseInt(attributes.getValue("address"));
 
 		if (type.equals("DeltaLocomotive")) {
-			LocomotiveType locomotiveType =
-					locomotivePersistence.getLocomotiveTypeByName("DELTA");
-			actualLocomotive =
-					new Locomotive(0, actualLocomotiveGroup, locomotiveType,
-							name, desc, "", address, bus);
+			LocomotiveType locomotiveType = locomotivePersistence
+					.getLocomotiveTypeByName("DELTA");
+			actualLocomotive = new Locomotive(0, actualLocomotiveGroup,
+					locomotiveType, name, desc, "", address, bus);
 			locomotiveType.getLocomotives().add(actualLocomotive);
 		} else if (type.equals("DigitalLocomotive")) {
-			LocomotiveType locomotiveType =
-					locomotivePersistence.getLocomotiveTypeByName("DIGITAL");
-			actualLocomotive =
-					new Locomotive(0, actualLocomotiveGroup, locomotiveType,
-							name, desc, "", address, bus);
+			LocomotiveType locomotiveType = locomotivePersistence
+					.getLocomotiveTypeByName("DIGITAL");
+			actualLocomotive = new Locomotive(0, actualLocomotiveGroup,
+					locomotiveType, name, desc, "", address, bus);
 			locomotiveType.getLocomotives().add(actualLocomotive);
 		}
 	}

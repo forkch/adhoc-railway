@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/PreferencesDialog.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 17:00:22 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -45,8 +42,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class PreferencesDialog
-		extends JDialog implements PreferencesKeys {
+public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private JSpinner			defaultActivationTime;
 	private JSpinner			defaultRoutingDelay;
 	private JSpinner			defaultLockDuration;
@@ -70,11 +66,11 @@ public class PreferencesDialog
 	private boolean				cancelPressed;
 	private JCheckBox			autoconnectCheckBox;
 	private SpinnerNumberModel	routeControlNumberModel;
-	private JTextField	databaseHostField;
-	private JTextField	databaseNameField;
-	private JTextField	databaseUserField;
-	private JTextField	databasePasswordField;
-	private JCheckBox useDatabaseCheckBox;
+	private JTextField			databaseHostField;
+	private JTextField			databaseNameField;
+	private JTextField			databaseUserField;
+	private JTextField			databasePasswordField;
+	private JCheckBox			useDatabaseCheckBox;
 
 	public PreferencesDialog(JFrame owner) {
 		super(owner, "Preferences", true);
@@ -83,12 +79,11 @@ public class PreferencesDialog
 
 	private void initGUI() {
 
-		FormLayout layout =
-				new FormLayout("5dlu, pref, 10dlu, pref, 5dlu",
-						"5dlu, pref, 3dlu, top:pref,3dlu, pref, 3dlu, top:pref, 3dlu, pref, 5dlu");
-      
-		layout.setColumnGroups(new int[][]{{2, 4}});
-		
+		FormLayout layout = new FormLayout("5dlu, pref, 10dlu, pref, 5dlu",
+				"5dlu, pref, 3dlu, top:pref,3dlu, pref, 3dlu, top:pref, 3dlu, pref, 5dlu");
+
+		layout.setColumnGroups(new int[][] { { 2, 4 } });
+
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 
@@ -100,7 +95,7 @@ public class PreferencesDialog
 
 		builder.addSeparator("SRCP-Server", cc.xy(2, 6));
 		builder.add(createServerTab(), cc.xy(2, 8));
-		
+
 		builder.addSeparator("Database", cc.xy(4, 6));
 		builder.add(createDatabaseTab(), cc.xy(4, 8));
 
@@ -148,10 +143,9 @@ public class PreferencesDialog
 		fullscreen = new JCheckBox();
 		tabbedTrackCheckBox = new JCheckBox();
 
-		FormLayout layout =
-				new FormLayout(
-						"right:pref, 3dlu, fill:pref",
-						"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
+		FormLayout layout = new FormLayout(
+				"right:pref, 3dlu, fill:pref",
+				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 
@@ -191,22 +185,17 @@ public class PreferencesDialog
 
 		interface6051 = new JCheckBox();
 
-		FormLayout layout =
-				new FormLayout("right:pref, 3dlu, fill:pref",
-						"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
+		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
+				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
-		builder.addLabel("Solenoid activation time [ms]", cc.xy(1,
-				1));
+		builder.addLabel("Solenoid activation time [ms]", cc.xy(1, 1));
 		builder.add(defaultActivationTime, cc.xy(3, 1));
 
-		builder.addLabel("Routing delay [ms]", cc
-				.xy(1, 3));
+		builder.addLabel("Routing delay [ms]", cc.xy(1, 3));
 		builder.add(defaultRoutingDelay, cc.xy(3, 3));
 
-		builder
-				.addLabel("Lock time (0 means forever) [s]", cc
-						.xy(1, 5));
+		builder.addLabel("Lock time (0 means forever) [s]", cc.xy(1, 5));
 		builder.add(defaultLockDuration, cc.xy(3, 5));
 
 		builder.addLabel("Interface 6051 attached", cc.xy(1, 7));
@@ -222,10 +211,9 @@ public class PreferencesDialog
 		portnumberTextField = new JTextField("12345", 15);
 
 		autoconnectCheckBox = new JCheckBox();
-		
-		FormLayout layout =
-				new FormLayout("right:pref, 3dlu, fill:pref",
-						"pref, 3dlu, pref, 3dlu, pref, 3dlu");
+
+		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
+				"pref, 3dlu, pref, 3dlu, pref, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 		builder.addLabel("Hostname (Name or IP)", cc.xy(1, 1));
@@ -243,22 +231,20 @@ public class PreferencesDialog
 	private JPanel createDatabaseTab() {
 
 		useDatabaseCheckBox = new JCheckBox();
-		
+
 		databaseHostField = new JTextField(15);
 
 		databaseNameField = new JTextField(15);
-		
+
 		databaseUserField = new JTextField(15);
-		
+
 		databasePasswordField = new JPasswordField(15);
 
-		
-		FormLayout layout =
-				new FormLayout("right:pref, 3dlu, fill:pref",
-						"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
+		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
+				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
-		
+
 		builder.addLabel("Use Database", cc.xy(1, 1));
 		builder.add(useDatabaseCheckBox, cc.xy(3, 1));
 
@@ -270,7 +256,7 @@ public class PreferencesDialog
 
 		builder.addLabel("User", cc.xy(1, 7));
 		builder.add(databaseUserField, cc.xy(3, 7));
-		
+
 		builder.addLabel("Password", cc.xy(1, 9));
 		builder.add(databasePasswordField, cc.xy(3, 9));
 
@@ -301,11 +287,11 @@ public class PreferencesDialog
 		defaultRoutingDelayModel.setValue(p.getIntValue(ROUTING_DELAY));
 		defaultLockDurationModel.setValue(p.getIntValue(LOCK_DURATION));
 		interface6051.setSelected(p.getBooleanValue(INTERFACE_6051));
-		
+
 		hostnameTextField.setText(p.getStringValue(HOSTNAME));
 		portnumberTextField.setText(Integer.toString(p.getIntValue(PORT)));
 		autoconnectCheckBox.setSelected(p.getBooleanValue(AUTOCONNECT));
-		
+
 		useDatabaseCheckBox.setSelected(p.getBooleanValue(USE_DATABASE));
 		databaseHostField.setText(p.getStringValue(DATABASE_HOST));
 		databaseNameField.setText(p.getStringValue(DATABASE_NAME));
@@ -338,12 +324,14 @@ public class PreferencesDialog
 		p.setStringValue(HOSTNAME, (String) hostnameTextField.getText());
 		p.setIntValue(PORT, Integer.parseInt(portnumberTextField.getText()));
 		p.setBooleanValue(AUTOCONNECT, autoconnectCheckBox.isSelected());
-		
+
 		p.setBooleanValue(USE_DATABASE, useDatabaseCheckBox.isSelected());
 		p.setStringValue(DATABASE_HOST, (String) databaseHostField.getText());
 		p.setStringValue(DATABASE_NAME, (String) databaseNameField.getText());
 		p.setStringValue(DATABASE_USER, (String) databaseUserField.getText());
-		p.setStringValue(DATABASE_PWD, (String) databasePasswordField.getText());
+		p
+				.setStringValue(DATABASE_PWD, (String) databasePasswordField
+						.getText());
 		try {
 			p.save();
 		} catch (FileNotFoundException e) {

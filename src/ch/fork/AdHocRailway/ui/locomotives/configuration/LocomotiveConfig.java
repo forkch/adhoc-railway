@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/locomotives/configuration/LocomotiveConfig.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:59:57 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -51,25 +48,25 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class LocomotiveConfig extends JDialog {
-	private boolean okPressed;
+	private boolean							okPressed;
 
-	private JTextField nameTextField;
+	private JTextField						nameTextField;
 
-	private JSpinner busTextField;
+	private JSpinner						busTextField;
 
-	private JSpinner addressTextField;
+	private JSpinner						addressTextField;
 
-	private JTextField descTextField;
+	private JTextField						descTextField;
 
-	private JTextField imageTextField;
+	private JTextField						imageTextField;
 
-	private JComboBox locomotiveTypeComboBox;
+	private JComboBox						locomotiveTypeComboBox;
 
-	private PresentationModel<Locomotive> presentationModel;
-	
-	private LocomotivePersistenceIface locomotivePersistence;
+	private PresentationModel<Locomotive>	presentationModel;
 
-	private JButton okButton;
+	private LocomotivePersistenceIface		locomotivePersistence;
+
+	private JButton							okButton;
 
 	public LocomotiveConfig(Frame owner, Locomotive myLocomotive) {
 		super(owner, "Locomotive Config", true);
@@ -82,7 +79,9 @@ public class LocomotiveConfig extends JDialog {
 		this.presentationModel = new PresentationModel<Locomotive>(myLocomotive);
 		initGUI();
 	}
-	public LocomotiveConfig(JDialog owner, PresentationModel<Locomotive> presentationModel) {
+
+	public LocomotiveConfig(JDialog owner,
+			PresentationModel<Locomotive> presentationModel) {
 		super(owner, "Locomotive Config", true);
 		this.presentationModel = presentationModel;
 		initGUI();
@@ -97,7 +96,6 @@ public class LocomotiveConfig extends JDialog {
 
 	private void initComponents() {
 
-
 		nameTextField = BasicComponentFactory.createTextField(presentationModel
 				.getModel(Locomotive.PROPERTYNAME_DESCRIPTION));
 		nameTextField.setColumns(10);
@@ -106,8 +104,9 @@ public class LocomotiveConfig extends JDialog {
 				.getModel(Locomotive.PROPERTYNAME_NAME));
 		descTextField.setColumns(10);
 
-		imageTextField = BasicComponentFactory.createTextField(presentationModel
-				.getModel(Locomotive.PROPERTYNAME_IMAGE));
+		imageTextField = BasicComponentFactory
+				.createTextField(presentationModel
+						.getModel(Locomotive.PROPERTYNAME_IMAGE));
 		imageTextField.setColumns(10);
 
 		busTextField = new JSpinner();
@@ -124,16 +123,17 @@ public class LocomotiveConfig extends JDialog {
 				324, // maxValue
 				1)); // step
 
-		
-		locomotivePersistence = AdHocRailway.getInstance().getLocomotivePersistence();
-		List<LocomotiveType> locomotiveTypes = new ArrayList<LocomotiveType>(locomotivePersistence.getAllLocomotiveTypes());
+		locomotivePersistence = AdHocRailway.getInstance()
+				.getLocomotivePersistence();
+		List<LocomotiveType> locomotiveTypes = new ArrayList<LocomotiveType>(
+				locomotivePersistence.getAllLocomotiveTypes());
 
 		ValueModel locomotiveTypeModel = presentationModel
 				.getModel(Locomotive.PROPERTYNAME_LOCOMOTIVE_TYPE);
 		locomotiveTypeComboBox = BasicComponentFactory
-				.createComboBox(new SelectionInList<LocomotiveType>(locomotiveTypes,
-						locomotiveTypeModel));
-		
+				.createComboBox(new SelectionInList<LocomotiveType>(
+						locomotiveTypes, locomotiveTypeModel));
+
 		okButton = new JButton(new ApplyChangesAction());
 	}
 
@@ -144,8 +144,8 @@ public class LocomotiveConfig extends JDialog {
 				"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow",
 				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 10dlu,p:grow");
 		layout.setColumnGroups(new int[][] { { 1, 5 }, { 3, 7 } });
-		layout.setRowGroups(new int[][] {{3,5,7,9}});
-		
+		layout.setRowGroups(new int[][] { { 3, 5, 7, 9 } });
+
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
@@ -165,7 +165,7 @@ public class LocomotiveConfig extends JDialog {
 		builder.add(locomotiveTypeComboBox, cc.xy(3, 9));
 
 		builder.addSeparator("Interface", cc.xyw(5, 1, 3));
-		
+
 		builder.addLabel("Bus", cc.xy(5, 3));
 		builder.add(busTextField, cc.xy(7, 3));
 
@@ -186,11 +186,11 @@ public class LocomotiveConfig extends JDialog {
 	}
 
 	class ApplyChangesAction extends AbstractAction {
-		
+
 		public ApplyChangesAction() {
 			super("OK");
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			okPressed = true;
 			LocomotiveConfig.this.setVisible(false);

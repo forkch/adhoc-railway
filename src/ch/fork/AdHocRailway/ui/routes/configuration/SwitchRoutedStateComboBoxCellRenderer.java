@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/switches/configuration/SwitchDefaultStateComboBoxCellRenderer.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:59:18 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -28,13 +25,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
 
-public class SwitchRoutedStateComboBoxCellRenderer
-		extends DefaultListCellRenderer {
+public class SwitchRoutedStateComboBoxCellRenderer extends
+		DefaultListCellRenderer {
 	public Component getListCellRendererComponent(JList list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
-		JLabel iconLabel =
-				(JLabel) super.getListCellRendererComponent(list, value, index,
-						isSelected, cellHasFocus);
+		JLabel iconLabel = (JLabel) super.getListCellRendererComponent(list,
+				value, index, isSelected, cellHasFocus);
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		iconLabel.setText(value.toString());
 		return iconLabel;

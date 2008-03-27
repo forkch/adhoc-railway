@@ -1,12 +1,9 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/switches/configuration/SwitchConfig.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:59:11 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
- * version   : $Id:TurnoutConfig.java 130 2008-02-01 20:23:34Z fork_ch $
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
 
@@ -60,8 +57,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class TurnoutConfig
-		extends JDialog implements PropertyChangeListener {
+public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	private boolean						okPressed;
 	private boolean						cancelPressed;
 	private JSpinner					numberTextField;
@@ -77,10 +73,9 @@ public class TurnoutConfig
 	private JComboBox					turnoutOrientationComboBox;
 	private Set<Integer>				usedTurnoutNumbers;
 
-	private TurnoutPersistenceIface		turnoutPersistence	=
-																	AdHocRailway
-																			.getInstance()
-																			.getTurnoutPersistence();
+	private TurnoutPersistenceIface		turnoutPersistence	= AdHocRailway
+																	.getInstance()
+																	.getTurnoutPersistence();
 
 	private PresentationModel<Turnout>	presentationModel;
 	private JButton						okButton;
@@ -88,11 +83,9 @@ public class TurnoutConfig
 	private TurnoutWidget				testTurnoutWidget;
 	private PanelBuilder				builder;
 
-
 	public TurnoutConfig(JDialog owner, Turnout myTurnout) {
 		this(owner, new PresentationModel<Turnout>(myTurnout));
 	}
-
 
 	public TurnoutConfig(Frame owner, Turnout myTurnout) {
 		super(owner, "Turnout Config", true);
@@ -113,7 +106,7 @@ public class TurnoutConfig
 		this.presentationModel = presentationModel;
 		initGUI();
 	}
-	
+
 	private void initGUI() {
 		usedTurnoutNumbers = turnoutPersistence.getUsedTurnoutNumbers();
 		usedTurnoutNumbers.remove(presentationModel.getBean().getNumber());
@@ -131,9 +124,8 @@ public class TurnoutConfig
 				1000, // maxValue
 				1)); // step
 
-		descTextField =
-				BasicComponentFactory.createTextField(presentationModel
-						.getModel(Turnout.PROPERTYNAME_DESCRIPTION));
+		descTextField = BasicComponentFactory.createTextField(presentationModel
+				.getModel(Turnout.PROPERTYNAME_DESCRIPTION));
 		descTextField.setColumns(5);
 
 		bus1TextField = new JSpinner();
@@ -163,47 +155,42 @@ public class TurnoutConfig
 				0, // minValue
 				324, // maxValue
 				1)); // step
-		switched1Checkbox =
-				BasicComponentFactory.createCheckBox(presentationModel
+		switched1Checkbox = BasicComponentFactory.createCheckBox(
+				presentationModel
 						.getModel(Turnout.PROPERTYNAME_ADDRESS1_SWITCHED),
-						"Inverted");
+				"Inverted");
 
-		switched2Checkbox =
-				BasicComponentFactory.createCheckBox(presentationModel
+		switched2Checkbox = BasicComponentFactory.createCheckBox(
+				presentationModel
 						.getModel(Turnout.PROPERTYNAME_ADDRESS2_SWITCHED),
-						"Inverted");
+				"Inverted");
 
-		List<TurnoutType> turnoutTypes =
-				new ArrayList<TurnoutType>(turnoutPersistence
-						.getAllTurnoutTypes());
+		List<TurnoutType> turnoutTypes = new ArrayList<TurnoutType>(
+				turnoutPersistence.getAllTurnoutTypes());
 
-		ValueModel turnoutTypeModel =
-				presentationModel.getModel(Turnout.PROPERTYNAME_TURNOUT_TYPE);
-		turnoutTypeComboBox =
-				BasicComponentFactory
-						.createComboBox(new SelectionInList<TurnoutType>(
-								turnoutTypes, turnoutTypeModel));
+		ValueModel turnoutTypeModel = presentationModel
+				.getModel(Turnout.PROPERTYNAME_TURNOUT_TYPE);
+		turnoutTypeComboBox = BasicComponentFactory
+				.createComboBox(new SelectionInList<TurnoutType>(turnoutTypes,
+						turnoutTypeModel));
 		turnoutTypeComboBox.setRenderer(new TurnoutTypeComboBoxCellRenderer());
 
-		ValueModel defaultStateModel =
-				presentationModel.getModel(Turnout.PROPERTYNAME_DEFAULT_STATE);
-		turnoutDefaultStateComboBox =
-				BasicComponentFactory
-						.createComboBox(new SelectionInList<TurnoutState>(
-								new TurnoutState[] { TurnoutState.STRAIGHT,
-										TurnoutState.LEFT }, defaultStateModel));
+		ValueModel defaultStateModel = presentationModel
+				.getModel(Turnout.PROPERTYNAME_DEFAULT_STATE);
+		turnoutDefaultStateComboBox = BasicComponentFactory
+				.createComboBox(new SelectionInList<TurnoutState>(
+						new TurnoutState[] { TurnoutState.STRAIGHT,
+								TurnoutState.LEFT }, defaultStateModel));
 		turnoutDefaultStateComboBox
 				.setRenderer(new TurnoutDefaultStateComboBoxCellRenderer());
 
-		ValueModel orientationModel =
-				presentationModel.getModel(Turnout.PROPERTYNAME_ORIENTATION);
-		turnoutOrientationComboBox =
-				BasicComponentFactory
-						.createComboBox(new SelectionInList<TurnoutOrientation>(
-								TurnoutOrientation.values(), orientationModel));
+		ValueModel orientationModel = presentationModel
+				.getModel(Turnout.PROPERTYNAME_ORIENTATION);
+		turnoutOrientationComboBox = BasicComponentFactory
+				.createComboBox(new SelectionInList<TurnoutOrientation>(
+						TurnoutOrientation.values(), orientationModel));
 
-		testTurnoutWidget =
-				new TurnoutWidget(presentationModel.getBean(), true);
+		testTurnoutWidget = new TurnoutWidget(presentationModel.getBean(), true);
 		if (!isTurnoutReadyToTest(presentationModel.getBean()))
 			testTurnoutWidget.setEnabled(false);
 
@@ -216,10 +203,9 @@ public class TurnoutConfig
 	private void buildPanel() {
 		initComponents();
 
-		FormLayout layout =
-				new FormLayout(
-						"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow, 3dlu,pref:grow, 30dlu, pref",
-						"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu, p:grow, 3dlu, p:grow, 10dlu,p:grow");
+		FormLayout layout = new FormLayout(
+				"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow, 3dlu,pref:grow, 30dlu, pref",
+				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu, p:grow, 3dlu, p:grow, 10dlu,p:grow");
 		layout.setColumnGroups(new int[][] { { 1, 5 }, { 3, 7 } });
 		layout.setRowGroups(new int[][] { { 3, 5, 7, 9, 11 } });
 
@@ -358,8 +344,8 @@ public class TurnoutConfig
 			}
 			if (bus2Valid && address2Valid) {
 				int bus2 = ((Integer) bus2TextField.getValue()).intValue();
-				int address2 =
-						((Integer) address2TextField.getValue()).intValue();
+				int address2 = ((Integer) address2TextField.getValue())
+						.intValue();
 				boolean unique2 = true;
 				for (Turnout t : turnoutPersistence.getAllTurnouts()) {
 					if (t.getBus2() == bus2 && t.getAddress2() == address2
@@ -381,8 +367,8 @@ public class TurnoutConfig
 	}
 
 	private void setSpinnerColor(JSpinner spinner, Color color) {
-		JSpinner.DefaultEditor editor =
-				(JSpinner.DefaultEditor) spinner.getEditor();
+		JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner
+				.getEditor();
 		editor.getTextField().setBackground(color);
 	}
 
@@ -403,8 +389,7 @@ public class TurnoutConfig
 		return okPressed;
 	}
 
-	class ApplyChangesAction
-			extends AbstractAction {
+	class ApplyChangesAction extends AbstractAction {
 
 		public ApplyChangesAction() {
 			super("OK");
@@ -412,22 +397,20 @@ public class TurnoutConfig
 
 		public void actionPerformed(ActionEvent e) {
 
-			
-				Turnout turnout = presentationModel.getBean();
-				if (turnout.getId() == 0) {
-					turnoutPersistence.addTurnout(turnout);
-				} else {
-					turnoutPersistence.updateTurnout(turnout);
-				}
-				okPressed = true;
-				turnout.removePropertyChangeListener(TurnoutConfig.this);
-				TurnoutConfig.this.setVisible(false);
-			
+			Turnout turnout = presentationModel.getBean();
+			if (turnout.getId() == 0) {
+				turnoutPersistence.addTurnout(turnout);
+			} else {
+				turnoutPersistence.updateTurnout(turnout);
+			}
+			okPressed = true;
+			turnout.removePropertyChangeListener(TurnoutConfig.this);
+			TurnoutConfig.this.setVisible(false);
+
 		}
 	}
 
-	class CancelAction
-			extends AbstractAction {
+	class CancelAction extends AbstractAction {
 
 		public CancelAction() {
 			super("Cancel");

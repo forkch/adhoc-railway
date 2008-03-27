@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <ControlObject.java>  -  <>
- * 
- * begin     : Wed Aug 23 16:54:05 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -18,7 +15,6 @@
  * (at your option) any later version.
  *
  *----------------------------------------------------------------------*/
-
 
 package ch.fork.AdHocRailway.domain;
 
@@ -36,53 +32,54 @@ import de.dermoba.srcp.devices.LOCK;
  * 
  */
 public abstract class ControlObject {
-	
-    protected LOCK        lock;
-    protected boolean     locked      = false;
-    protected int         lockedBySession;
-    protected int         lockDuration;
-    protected boolean     initialized = false;
 
-    public ControlObject() {
-    	
-    }
+	protected LOCK		lock;
+	protected boolean	locked		= false;
+	protected int		lockedBySession;
+	protected int		lockDuration;
+	protected boolean	initialized	= false;
 
-    public abstract String getDeviceGroup();
-    public abstract int[] getAddresses();
-    
-    public void lockSet(Address addr, int duration, int sessionID) {
-        lockDuration = duration;
-        lockedBySession = sessionID;
-        locked = true;
-    }
+	public ControlObject() {
 
-    public void lockTerm(Address addr) {
-        lockDuration = 0;
-        lockedBySession = 0;
-        locked = false;
-    }
+	}
 
-    public boolean isInitialized() {
-        return initialized;
-    }
-    
-    public void setInitialized(boolean init) {
-        initialized = init;
-    }
+	public abstract String getDeviceGroup();
 
-    public LOCK getLock() {
-        return lock;
-    }
+	public abstract int[] getAddresses();
 
-    public int getLockDuration() {
-        return lockDuration;
-    }
+	public void lockSet(Address addr, int duration, int sessionID) {
+		lockDuration = duration;
+		lockedBySession = sessionID;
+		locked = true;
+	}
 
-    public int getLockedBySession() {
-        return lockedBySession;
-    }
+	public void lockTerm(Address addr) {
+		lockDuration = 0;
+		lockedBySession = 0;
+		locked = false;
+	}
 
-    public boolean isLocked() {
-        return locked;
-    }
+	public boolean isInitialized() {
+		return initialized;
+	}
+
+	public void setInitialized(boolean init) {
+		initialized = init;
+	}
+
+	public LOCK getLock() {
+		return lock;
+	}
+
+	public int getLockDuration() {
+		return lockDuration;
+	}
+
+	public int getLockedBySession() {
+		return lockedBySession;
+	}
+
+	public boolean isLocked() {
+		return locked;
+	}
 }

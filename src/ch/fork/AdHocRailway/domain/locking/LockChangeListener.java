@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/locking/LockChangeListener.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:58:47 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -19,11 +16,9 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.domain.locking;
-
 
 public interface LockChangeListener {
 
-    public void lockChanged(Object changedLock);
+	public void lockChanged(Object changedLock);
 }

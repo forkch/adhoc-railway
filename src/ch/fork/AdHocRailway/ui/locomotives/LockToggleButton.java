@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/locomotives/LockToggleButton.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 17:00:10 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -19,7 +16,6 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.ui.locomotives;
 
 import javax.swing.Action;
@@ -29,39 +25,39 @@ import javax.swing.JToggleButton;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class LockToggleButton extends JToggleButton {
-    public LockToggleButton() {
-        super();
-    }
+	public LockToggleButton() {
+		super();
+	}
 
-    public LockToggleButton(Icon icon) {
-        super(icon);
-    }
+	public LockToggleButton(Icon icon) {
+		super(icon);
+	}
 
-    public LockToggleButton(Icon icon, boolean selected) {
-        super(icon, selected);
-    }
+	public LockToggleButton(Icon icon, boolean selected) {
+		super(icon, selected);
+	}
 
-    public LockToggleButton(String text) {
-        super(text);
+	public LockToggleButton(String text) {
+		super(text);
 
-        setIcon(ImageTools.createImageIcon("locomotives/unlocked.png"));
-        setSelectedIcon(ImageTools.createImageIcon("locomotives/locked.png"));
+		setIcon(ImageTools.createImageIcon("locomotives/unlocked.png"));
+		setSelectedIcon(ImageTools.createImageIcon("locomotives/locked.png"));
 
-    }
+	}
 
-    public LockToggleButton(String text, boolean selected) {
-        super(text, selected);
-    }
+	public LockToggleButton(String text, boolean selected) {
+		super(text, selected);
+	}
 
-    public LockToggleButton(Action a) {
-        super(a);
-    }
+	public LockToggleButton(Action a) {
+		super(a);
+	}
 
-    public LockToggleButton(String text, Icon icon) {
-        super(text, icon);
-    }
+	public LockToggleButton(String text, Icon icon) {
+		super(text, icon);
+	}
 
-    public LockToggleButton(String text, Icon icon, boolean selected) {
-        super(text, icon, selected);
-    }
+	public LockToggleButton(String text, Icon icon, boolean selected) {
+		super(text, icon, selected);
+	}
 }

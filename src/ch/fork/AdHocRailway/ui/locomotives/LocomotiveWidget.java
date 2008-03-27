@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/locomotives/LocomotiveWidget.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 17:00:02 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -271,7 +268,7 @@ public class LocomotiveWidget extends JPanel implements
 					return true;
 				}
 			} else {
-					return false;
+				return false;
 			}
 		}
 	}

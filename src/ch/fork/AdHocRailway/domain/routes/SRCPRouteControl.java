@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.routes;
 
 import java.util.HashMap;
@@ -13,21 +31,21 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public class SRCPRouteControl implements RouteControlIface {
-	private static Logger					logger				= Logger
-																		.getLogger(SRCPRouteControl.class);
-	private static RouteControlIface		instance;
+	private static Logger							logger				= Logger
+																				.getLogger(SRCPRouteControl.class);
+	private static RouteControlIface				instance;
 
-	private RoutePersistenceIface			persistence;
+	private RoutePersistenceIface					persistence;
 
 	private Map<Route, Set<RouteChangeListener>>	listeners;
 
-	private RouteState						lastRouteState;
+	private RouteState								lastRouteState;
 
-	private Route							lastChangedRoute;
-	
-	private Map<Route, SRCPRoute>			srcpRoutes;
+	private Route									lastChangedRoute;
 
-	protected String						ERR_TOGGLE_FAILED	= "Toggle of switch failed";
+	private Map<Route, SRCPRoute>					srcpRoutes;
+
+	protected String								ERR_TOGGLE_FAILED	= "Toggle of switch failed";
 
 	private SRCPRouteControl() {
 		logger.info("SRCPRouteControl loaded");
@@ -53,14 +71,15 @@ public class SRCPRouteControl implements RouteControlIface {
 		logger.debug("enabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
-		Router switchRouter = new Router(r, sRoute, true, waitTime, listeners.get(r));
+		Router switchRouter = new Router(r, sRoute, true, waitTime, listeners
+				.get(r));
 		switchRouter.start();
 		lastChangedRoute = r;
 		lastRouteState = RouteState.ENABLED;
 	}
 
 	private void checkRoute(Route r) {
-		if(srcpRoutes.get(r) == null) {
+		if (srcpRoutes.get(r) == null) {
 			srcpRoutes.put(r, new SRCPRoute(r));
 		}
 	}
@@ -76,7 +95,8 @@ public class SRCPRouteControl implements RouteControlIface {
 		logger.debug("disabling route: " + r);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
-		Router switchRouter = new Router(r, sRoute, false, waitTime, listeners.get(r));
+		Router switchRouter = new Router(r, sRoute, false, waitTime, listeners
+				.get(r));
 		switchRouter.start();
 		lastChangedRoute = r;
 		lastRouteState = RouteState.DISABLED;
@@ -89,7 +109,7 @@ public class SRCPRouteControl implements RouteControlIface {
 	 *      ch.fork.AdHocRailway.domain.routes.RouteChangeListener)
 	 */
 	public void addRouteChangeListener(Route r, RouteChangeListener listener) {
-		if(listeners.get(r) == null)
+		if (listeners.get(r) == null)
 			listeners.put(r, new HashSet<RouteChangeListener>());
 		listeners.get(r).add(listener);
 	}

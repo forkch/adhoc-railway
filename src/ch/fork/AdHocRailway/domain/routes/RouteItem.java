@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.routes;
 
 // Generated 08-Aug-2007 18:10:44 by Hibernate Tools 3.2.0.beta8
@@ -22,31 +40,34 @@ import com.jgoodies.binding.beans.Model;
  */
 @Entity
 @Table(name = "route_item", catalog = "adhocrailway", uniqueConstraints = {})
-public class RouteItem extends Model implements java.io.Serializable,Comparable<RouteItem> {
+public class RouteItem extends Model implements java.io.Serializable,
+		Comparable<RouteItem> {
 
-	// Fields    
+	// Fields
 
-	@Id @GeneratedValue
-	private int id;
+	@Id
+	@GeneratedValue
+	private int					id;
 
-	private Turnout turnout;
+	private Turnout				turnout;
 
-	private Route route;
+	private Route				route;
 
-	private String routedState;
-	
-	public static final String PROPERTYNAME_ID = "id";
-	public static final String PROPERTYNAME_TURNOUT = "turnout";
-	public static final String PROPERTYNAME_ROUTE = "route";
-	public static final String PROPERTYNAME_ROUTED_STATE = "routedState";
+	private String				routedState;
 
+	public static final String	PROPERTYNAME_ID				= "id";
+	public static final String	PROPERTYNAME_TURNOUT		= "turnout";
+	public static final String	PROPERTYNAME_ROUTE			= "route";
+	public static final String	PROPERTYNAME_ROUTED_STATE	= "routedState";
 
 	public int compareTo(RouteItem o) {
-		if(this == o) return 0;
-		if(o == null) return -1;
+		if (this == o)
+			return 0;
+		if (o == null)
+			return -1;
 		return turnout.compareTo(o.getTurnout());
 	}
-	
+
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
@@ -66,11 +87,11 @@ public class RouteItem extends Model implements java.io.Serializable,Comparable<
 	public int hashCode() {
 		return turnout.hashCode() + routedState.hashCode();
 	}
-	
+
 	public String toString() {
-		return turnout.toString() + ":"+routedState;
+		return turnout.toString() + ":" + routedState;
 	}
-	
+
 	@Transient
 	public TurnoutState getRoutedStateEnum() {
 		if (routedState.toUpperCase().equals("STRAIGHT")) {
@@ -82,7 +103,7 @@ public class RouteItem extends Model implements java.io.Serializable,Comparable<
 		}
 		return TurnoutState.UNDEF;
 	}
-	
+
 	public void setRoutedStateEnum(TurnoutState state) {
 		switch (state) {
 		case STRAIGHT:
@@ -98,7 +119,7 @@ public class RouteItem extends Model implements java.io.Serializable,Comparable<
 			setRoutedState("UNDEF");
 		}
 	}
-	
+
 	// Constructors
 
 	/** default constructor */
@@ -115,7 +136,8 @@ public class RouteItem extends Model implements java.io.Serializable,Comparable<
 
 	// Property accessors
 
-	@Id @GeneratedValue
+	@Id
+	@GeneratedValue
 	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = true)
 	public int getId() {
 		return this.id;

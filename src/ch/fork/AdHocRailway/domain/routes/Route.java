@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.routes;
 
 // Generated 08-Aug-2007 18:10:44 by Hibernate Tools 3.2.0.beta8
@@ -33,27 +51,26 @@ public class Route extends Model implements java.io.Serializable,
 	// Fields
 	@Id
 	@GeneratedValue
-	private int id;
+	private int						id;
 
-	private RouteGroup routeGroup;
+	private RouteGroup				routeGroup;
 
-	private int number;
+	private int						number;
 
-	private String name;
+	private String					name;
 
 	@Sort(type = SortType.NATURAL)
-	private SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>();
+	private SortedSet<RouteItem>	routeItems					= new TreeSet<RouteItem>();
 
-	public static final String PROPERTYNAME_ID = "id";
-	public static final String PROPERTYNAME_ROUTE_GROUP = "routeGroup";
-	public static final String PROPERTYNAME_NUMBER = "number";
-	public static final String PROPERTYNAME_NAME = "name";
-	public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
+	public static final String		PROPERTYNAME_ID				= "id";
+	public static final String		PROPERTYNAME_ROUTE_GROUP	= "routeGroup";
+	public static final String		PROPERTYNAME_NUMBER			= "number";
+	public static final String		PROPERTYNAME_NAME			= "name";
+	public static final String		PROPERTYNAME_ROUTE_ITEMS	= "routeItems";
 
 	public enum RouteState {
 		ENABLED, DISABLED
 	};
-
 
 	public int compareTo(Route o) {
 		if (this == o)

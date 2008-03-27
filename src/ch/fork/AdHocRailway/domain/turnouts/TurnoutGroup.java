@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id: Preferences.java 151 2008-02-14 14:52:37Z fork_ch $
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.turnouts;
 
 // Generated 08-Aug-2007 18:10:44 by Hibernate Tools 3.2.0.beta8
@@ -24,8 +42,8 @@ import com.jgoodies.binding.beans.Model;
  */
 @Entity
 @Table(name = "turnout_group", catalog = "adhocrailway", uniqueConstraints = {})
-public class TurnoutGroup
-		extends Model implements java.io.Serializable, Comparable<TurnoutGroup> {
+public class TurnoutGroup extends Model implements java.io.Serializable,
+		Comparable<TurnoutGroup> {
 
 	// Fields
 
@@ -40,15 +58,14 @@ public class TurnoutGroup
 	private int					turnoutNumberAmount;
 
 	@Sort(type = SortType.NATURAL)
-	private SortedSet<Turnout>	turnouts				=
-																new TreeSet<Turnout>();
+	private SortedSet<Turnout>	turnouts							= new TreeSet<Turnout>();
 
-	public static final String	PROPERTYNAME_ID			= "id";
-	public static final String	PROPERTYNAME_NAME		= "name";
-	public static final String PROPERTYNAME_TURNOUT_NUMBER_OFFSET = "turnoutNumberOffset";
-	public static final String PROPERTYNAME_TURNOUT_NUMBER_AMOUNT = "turnoutNumberAmount";
-	
-	private static final String	PROPERTYNAME_TURNOUTS	= "turnouts";
+	public static final String	PROPERTYNAME_ID						= "id";
+	public static final String	PROPERTYNAME_NAME					= "name";
+	public static final String	PROPERTYNAME_TURNOUT_NUMBER_OFFSET	= "turnoutNumberOffset";
+	public static final String	PROPERTYNAME_TURNOUT_NUMBER_AMOUNT	= "turnoutNumberAmount";
+
+	private static final String	PROPERTYNAME_TURNOUTS				= "turnouts";
 
 	public int compareTo(TurnoutGroup o) {
 		if (this == o)
@@ -93,7 +110,8 @@ public class TurnoutGroup
 	}
 
 	/** minimal constructor */
-	public TurnoutGroup(int id, String name, int turnoutNumberOffset, int turnoutNumberAmount) {
+	public TurnoutGroup(int id, String name, int turnoutNumberOffset,
+			int turnoutNumberAmount) {
 		this.id = id;
 		this.name = name;
 		this.turnoutNumberOffset = turnoutNumberOffset;
@@ -101,7 +119,8 @@ public class TurnoutGroup
 	}
 
 	/** full constructor */
-	public TurnoutGroup(int id, String name, int turnoutNumberOffset, int turnoutNumberAmount, SortedSet<Turnout> turnouts) {
+	public TurnoutGroup(int id, String name, int turnoutNumberOffset,
+			int turnoutNumberAmount, SortedSet<Turnout> turnouts) {
 		this.id = id;
 		this.name = name;
 		this.turnoutNumberOffset = turnoutNumberOffset;

@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./domain/locomotives/exception/LocomotiveException.java>  -  <>
- * 
- * begin     : Wed Aug 23 16:55:05 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -18,7 +15,6 @@
  * (at your option) any later version.
  *
  *----------------------------------------------------------------------*/
-
 
 package ch.fork.AdHocRailway.domain.locomotives;
 

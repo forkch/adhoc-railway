@@ -1,12 +1,9 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/switches/configuration/SwitchTypeComboBoxCellRenderer.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:59:14 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
- * version   : $Id:TurnoutTypeComboBoxCellRenderer.java 130 2008-02-01 20:23:34Z fork_ch $
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
 
@@ -32,13 +29,11 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
-public class TurnoutTypeComboBoxCellRenderer
-		extends DefaultListCellRenderer {
+public class TurnoutTypeComboBoxCellRenderer extends DefaultListCellRenderer {
 	public Component getListCellRendererComponent(JList list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
-		JLabel iconLabel =
-				(JLabel) super.getListCellRendererComponent(list, value, index,
-						isSelected, cellHasFocus);
+		JLabel iconLabel = (JLabel) super.getListCellRendererComponent(list,
+				value, index, isSelected, cellHasFocus);
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		TurnoutType type = (TurnoutType) value;
 		iconLabel.setText("");

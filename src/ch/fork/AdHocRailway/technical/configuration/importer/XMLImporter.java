@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.technical.configuration.importer;
 
 import java.io.IOException;
@@ -64,9 +82,11 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 		} catch (SAXException se) {
 			throw new ConfigurationException("Error loading configuration", se);
 		} catch (ParserConfigurationException pce) {
-			throw new ConfigurationException("Error configuring SAX-Parser", pce);
+			throw new ConfigurationException("Error configuring SAX-Parser",
+					pce);
 		} catch (IOException ie) {
-			throw new ConfigurationException("Error opening configuration file", ie);
+			throw new ConfigurationException(
+					"Error opening configuration file", ie);
 		}
 	}
 

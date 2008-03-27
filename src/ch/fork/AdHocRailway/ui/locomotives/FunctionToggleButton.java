@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/locomotives/FunctionToggleButton.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 17:00:04 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -19,7 +16,6 @@
  *
  *----------------------------------------------------------------------*/
 
-
 package ch.fork.AdHocRailway.ui.locomotives;
 
 import javax.swing.JToggleButton;
@@ -28,10 +24,10 @@ import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class FunctionToggleButton extends JToggleButton {
 
-    public FunctionToggleButton(String text) {
-        super(text);
-        setIcon(ImageTools.createImageIcon("locomotives/button_cancel.png"));
-        setSelectedIcon(ImageTools.createImageIcon("locomotives/button_ok.png"));
+	public FunctionToggleButton(String text) {
+		super(text);
+		setIcon(ImageTools.createImageIcon("locomotives/button_cancel.png"));
+		setSelectedIcon(ImageTools.createImageIcon("locomotives/button_ok.png"));
 
-    }
+	}
 }

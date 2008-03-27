@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.routes;
 
 import java.util.Set;
@@ -11,11 +29,12 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import com.jgoodies.binding.list.ArrayListModel;
 
 public class MemoryRoutePersistence implements RoutePersistenceIface {
-	private static Logger logger = Logger.getLogger(MemoryRoutePersistence.class);
-	private static MemoryRoutePersistence instance;
-	private ArrayListModel<Route> routeCache;
-	private ArrayListModel<RouteItem> routeItemCache;
-	private ArrayListModel<RouteGroup> routeGroupCache;
+	private static Logger					logger	= Logger
+															.getLogger(MemoryRoutePersistence.class);
+	private static MemoryRoutePersistence	instance;
+	private ArrayListModel<Route>			routeCache;
+	private ArrayListModel<RouteItem>		routeItemCache;
+	private ArrayListModel<RouteGroup>		routeGroupCache;
 
 	private MemoryRoutePersistence() {
 		logger.info("MemoryRoutePersistence loded");
@@ -78,8 +97,13 @@ public class MemoryRoutePersistence implements RoutePersistenceIface {
 	public void deleteRoute(Route route) throws RoutePersistenceException {
 		logger.debug("deleteRoute()");
 		if (!route.getRouteItems().isEmpty()) {
-			throw new RoutePersistenceException(
-					"Cannot delete Route-Group with associated Route-Items");
+			SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>(route
+					.getRouteItems());
+			for (RouteItem routeitem : routeItems) {
+				deleteRouteItem(routeitem);
+			}
+			// throw new RoutePersistenceException(
+			// "Cannot delete Route-Group with associated Route-Items");
 		}
 
 		RouteGroup group = route.getRouteGroup();
@@ -199,7 +223,9 @@ public class MemoryRoutePersistence implements RoutePersistenceIface {
 		return turnouts.last().getNumber() + 1;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#flush()
 	 */
 	public void flush() throws RoutePersistenceException {

@@ -1,11 +1,8 @@
 /*------------------------------------------------------------------------
  * 
- * <./ui/switches/SwitchWidget.java>  -  <desc>
- * 
- * begin     : Wed Aug 23 16:59:35 BST 2006
- * copyright : (C) by Benjamin Mueller 
+ * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
- * language  : java
+ * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
  * 
  *----------------------------------------------------------------------*/
@@ -32,15 +29,15 @@ import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 
 public class StaticTurnoutWidget extends JPanel {
 
-	private static final long		serialVersionUID	= 1L;
+	private static final long	serialVersionUID	= 1L;
 
-	private Turnout					turnout;
+	private Turnout				turnout;
 
-	private JLabel					numberLabel;
+	private JLabel				numberLabel;
 
-	private TurnoutCanvas			turnoutCanvas;
+	private TurnoutCanvas		turnoutCanvas;
 
-	private TurnoutState	state;
+	private TurnoutState		state;
 
 	public StaticTurnoutWidget(Turnout turnout, TurnoutState state) {
 		this.turnout = turnout;
@@ -50,7 +47,7 @@ public class StaticTurnoutWidget extends JPanel {
 	}
 
 	private void initGUI() {
-		
+
 		setLayout(new FlowLayout());
 		numberLabel = new JLabel(Integer.toString(turnout.getNumber()));
 		turnoutCanvas = new TurnoutCanvas(turnout);
@@ -60,6 +57,7 @@ public class StaticTurnoutWidget extends JPanel {
 		add(turnoutCanvas);
 
 	}
+
 	public Turnout getTurnout() {
 		return turnout;
 	}

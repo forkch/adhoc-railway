@@ -1,3 +1,21 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id$
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
 package ch.fork.AdHocRailway.domain.turnouts;
 
 // Generated 08-Aug-2007 18:10:44 by Hibernate Tools 3.2.0.beta8
@@ -31,16 +49,16 @@ public class TurnoutType extends Model implements java.io.Serializable,
 	// Fields
 	@Id
 	@GeneratedValue
-	private int id;
+	private int					id;
 
-	private String typeName;
+	private String				typeName;
 
 	@Sort(type = SortType.NATURAL)
-	private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
+	private SortedSet<Turnout>	turnouts				= new TreeSet<Turnout>();
 
-	private static final String PROPERTYNAME_ID = "id";
-	private static final String PROPERTYNAME_TYPENAME = "typeName";
-	private static final String PROPERTYNAME_TURNOUTS = "turnouts";
+	private static final String	PROPERTYNAME_ID			= "id";
+	private static final String	PROPERTYNAME_TYPENAME	= "typeName";
+	private static final String	PROPERTYNAME_TURNOUTS	= "turnouts";
 
 	public enum TurnoutTypes {
 		DEFAULT, DOUBLECROSS, THREEWAY, UNKNOWN
@@ -49,7 +67,6 @@ public class TurnoutType extends Model implements java.io.Serializable,
 	public int compareTo(TurnoutType o) {
 		return typeName.compareTo(o.getTypeName());
 	}
-	
 
 	@Override
 	public int hashCode() {
@@ -60,8 +77,6 @@ public class TurnoutType extends Model implements java.io.Serializable,
 				+ ((typeName == null) ? 0 : typeName.hashCode());
 		return result;
 	}
-
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -81,8 +96,6 @@ public class TurnoutType extends Model implements java.io.Serializable,
 			return false;
 		return true;
 	}
-
-
 
 	public String toString() {
 		return typeName;
