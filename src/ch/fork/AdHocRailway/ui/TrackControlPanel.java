@@ -32,6 +32,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -58,6 +59,7 @@ import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.SwitchProgrammer;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
+import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
@@ -176,14 +178,19 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		/* TOOLS */
 		JMenu toolsMenu = new JMenu("Tools");
 		JMenuItem addTurnoutsItem = new JMenuItem(new AddTurnoutsAction());
-		JMenuItem switchesStraightItem = new JMenuItem(
+		JMenuItem turnoutsStraightItem = new JMenuItem(
 				new TurnoutsStraightAction());
-		JMenuItem switchProgrammerItem = new JMenuItem(
+		JMenuItem turnoutsProgrammerItem = new JMenuItem(
 				new TurnoutProgrammerAction());
 
+		JMenuItem enlargeTurnoutGroupsItem = new JMenuItem(
+				new EnlargeTurnoutGroups());
+
 		toolsMenu.add(addTurnoutsItem);
-		toolsMenu.add(switchesStraightItem);
-		toolsMenu.add(switchProgrammerItem);
+		toolsMenu.add(turnoutsStraightItem);
+		toolsMenu.add(turnoutsProgrammerItem);
+		toolsMenu.addSeparator();
+		toolsMenu.add(enlargeTurnoutGroupsItem);
 
 		AdHocRailway.getInstance().addMenu(toolsMenu);
 	}
@@ -314,6 +321,30 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		}
 	}
 
+	private class EnlargeTurnoutGroups extends AbstractAction {
+		public EnlargeTurnoutGroups() {
+			super("Rearranging Turnout and Route numbers (enlarge groups)");
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			int result = JOptionPane
+					.showConfirmDialog(
+							AdHocRailway.getInstance(),
+							"The numbering of the Turnout- and Route-Groups is now being adjusted\n"
+									+ "such that each group has at least 5 free slots for the turnouts\n"
+									+ "(each group has a multiple of 10 turnouts)\n\n"
+									+ "Do you want to proceed ?",
+							"Rearranging Turnout and Route numbers",
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE,
+							createImageIcon("messagebox_info.png"));
+			if (result == JOptionPane.OK_OPTION) {
+				turnoutPersistence.enlargeTurnoutGroups();
+				update();
+			}
+		}
+	}
+
 	private class AddTurnoutsAction extends AbstractAction {
 		public AddTurnoutsAction() {
 			super("Add Turnouts\u2026", createImageIcon("filenew.png"));
@@ -325,10 +356,29 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			do {
 				TurnoutGroup selectedTurnoutGroup = indexToTurnoutGroup
 						.get(selectedGroupPane);
+				int nextNumber = 0;
+				if (Preferences
+						.getInstance()
+						.getBooleanValue(
+								PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
+					nextNumber = turnoutPersistence
+							.getNextFreeTurnoutNumberOfGroup(selectedTurnoutGroup);
+					if (nextNumber == -1) {
+						JOptionPane.showMessageDialog(AdHocRailway
+								.getInstance(),
+								"No more free numbers in this group", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						update();
+						turnoutGroupsTabbedPane
+								.setSelectedIndex(selectedGroupPane);
+						return;
+					}
+				} else {
+					nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
+				}
 
 				Turnout newTurnout = new Turnout();
-				newTurnout.setNumber(turnoutPersistence
-						.getNextFreeTurnoutNumber());
+				newTurnout.setNumber(nextNumber);
 				newTurnout.setTurnoutGroup(selectedTurnoutGroup);
 				newTurnout.setDefaultStateEnum(TurnoutState.STRAIGHT);
 				newTurnout.setOrientationEnum(TurnoutOrientation.EAST);

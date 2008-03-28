@@ -362,7 +362,7 @@ public class Turnout extends Model implements java.io.Serializable,
 		firePropertyChange(PROPERTYNAME_TURNOUT_GROUP, old, turnoutGroup);
 	}
 
-	@Column(name = "number", unique = true, nullable = false, insertable = true, updatable = true)
+	@Column(name = "number", unique = false, nullable = false, insertable = true, updatable = true)
 	public int getNumber() {
 		return this.number;
 	}
@@ -428,7 +428,7 @@ public class Turnout extends Model implements java.io.Serializable,
 		firePropertyChange(PROPERTYNAME_ADDRESS1, old, address1);
 	}
 
-	@Column(name = "address2", unique = false, nullable = true, insertable = true, updatable = true)
+	@Column(name = "address2", unique = false, nullable = false, insertable = true, updatable = true)
 	public int getAddress2() {
 		return this.address2;
 	}
@@ -450,7 +450,7 @@ public class Turnout extends Model implements java.io.Serializable,
 		firePropertyChange(PROPERTYNAME_BUS1, old, bus1);
 	}
 
-	@Column(name = "bus2", unique = false, nullable = true, insertable = true, updatable = true)
+	@Column(name = "bus2", unique = false, nullable = false, insertable = true, updatable = true)
 	public int getBus2() {
 		return this.bus2;
 	}

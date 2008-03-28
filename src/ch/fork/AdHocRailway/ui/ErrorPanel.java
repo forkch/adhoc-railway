@@ -28,9 +28,11 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
@@ -49,7 +51,8 @@ public class ErrorPanel
 	}
 	
 	private void initGUI() {
-		setLayout(new BorderLayout(5, 5));
+		JPanel p = new JPanel();
+		p.setLayout(new BorderLayout(5, 5));
 		
 		errorTextArea = new JTextArea(2, 30);
 		errorTextArea.setEditable(false);
@@ -61,8 +64,12 @@ public class ErrorPanel
 		addMouseListener(new ErrorConfirmAction());
 		errorTextArea.addMouseListener(new ErrorConfirmAction());
 		
-		add(iconLabel, BorderLayout.WEST);
-		add(errorTextArea, BorderLayout.CENTER);
+		p.add(iconLabel, BorderLayout.WEST);
+		p.add(errorTextArea, BorderLayout.CENTER);
+		JScrollPane pane = new JScrollPane(p, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		//pane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+		add(p);
 	}
 	
 	public void setErrorTextIcon(String text, Icon icon) {
@@ -79,47 +86,9 @@ public class ErrorPanel
 		errorTextArea.setBackground(new Color(255, 177, 177));
 		revalidate();
 		repaint();
-		final Runnable closerRunner = new Runnable() {
-			public void run() {
-				try {
-					Thread.sleep(pause);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				while (active) {
-					repaint();
-					ErrorPanel.this.alpha -= 0.1f;
-					if (ErrorPanel.this.alpha < 0.1f) {
-						active = false;
-					}
-					
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					
-				}
-				errorTextArea.setBackground(ErrorPanel.this.defaultColor);
-				errorTextArea.setText("");
-				iconLabel.setIcon(null);
-			}
-		};
-		Runnable waitRunner = new Runnable() {
-			public void run() {
-				try {
-					Thread.sleep(pause);
-					SwingUtilities.invokeLater(closerRunner);
-				} catch (Exception e) {
-					e.printStackTrace();
-					// can catch InvocationTargetException
-					// can catch InterruptedException
-				}
-			}
-		};
+		
 		Thread errorPanelCloser =
-				new Thread(closerRunner, "ErrorPanelCloserThread");
+				new Thread(waitRunner, "ErrorPanelCloserThread");
 		errorPanelCloser.start();
 	}
 	
@@ -128,9 +97,7 @@ public class ErrorPanel
 		public void mouseClicked(MouseEvent e) {
 			
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
-				errorTextArea.setBackground(defaultColor);
-				errorTextArea.setText("");
-				iconLabel.setIcon(null);
+				SwingUtilities.invokeLater(closerRunner);
 			}
 		}
 	}
@@ -143,4 +110,39 @@ public class ErrorPanel
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setComposite(alphaCompositge);
 	}
+	
+	final Runnable waitRunner = new Runnable() {
+		public void run() {
+			try {
+				Thread.sleep(pause);
+				Thread closer = new Thread(closerRunner);
+				closer.start();
+			} catch (Exception e) {
+				e.printStackTrace();
+				// can catch InvocationTargetException
+				// can catch InterruptedException
+			}
+		}
+	};
+	
+	final Runnable closerRunner = new Runnable() {
+		public void run() {
+			while (active) {
+				repaint();
+				ErrorPanel.this.alpha -= 0.05f;
+				if (ErrorPanel.this.alpha < 0.1f) {
+					active = false;
+				}
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			errorTextArea.setBackground(ErrorPanel.this.defaultColor);
+			errorTextArea.setText("");
+			iconLabel.setIcon(null);
+		}
+	};
 }

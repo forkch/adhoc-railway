@@ -70,9 +70,11 @@ public interface TurnoutPersistenceIface {
 
 	public Set<Integer> getUsedTurnoutNumbers();
 
-	public void flush() throws TurnoutPersistenceException;
-
 	public abstract void clear() throws TurnoutPersistenceException;
 
 	public int getNextFreeTurnoutNumberOfGroup(TurnoutGroup turnoutGroup);
+	
+	public void enlargeTurnoutGroups();
+	
+	public abstract void flush();
 }

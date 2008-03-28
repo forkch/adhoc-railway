@@ -30,6 +30,8 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -109,6 +111,11 @@ public class TurnoutGroupConfigPanel extends JPanel {
 								0, // minValue
 								1000, // maxValue
 								10)); // step
-
+		if (!Preferences.getInstance().getBooleanValue(
+				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
+			turnoutNumberOffset.setEnabled(false);
+			turnoutNumberAmount.setEnabled(false);
+			
+		}
 	}
 }

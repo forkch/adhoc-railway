@@ -60,8 +60,7 @@ public interface RoutePersistenceIface {
 	public abstract int getNextFreeRouteNumber()
 			throws RoutePersistenceException;
 
-	public void flush() throws RoutePersistenceException;
-
 	public abstract void clear() throws RoutePersistenceException;
+	public abstract void flush();
 
 }

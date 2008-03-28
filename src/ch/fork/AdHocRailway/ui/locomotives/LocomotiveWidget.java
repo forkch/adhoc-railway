@@ -379,6 +379,8 @@ public class LocomotiveWidget extends JPanel implements
 		default:
 			directionButton.setIcon(createImageIcon("locomotives/forward.png"));
 		}
+
+		try {
 		boolean locked = locomotiveControl.isLocked(myLocomotive);
 		lockButton.setSelected(locked);
 		if (locked) {
@@ -397,6 +399,9 @@ public class LocomotiveWidget extends JPanel implements
 		} else {
 			locomotiveGroupComboBox.setEnabled(false);
 			locomotiveComboBox.setEnabled(false);
+		}
+		} catch(LocomotiveException ex) {
+			//ignore here
 		}
 		setPreferredSize(new Dimension(200, 250));
 		revalidate();

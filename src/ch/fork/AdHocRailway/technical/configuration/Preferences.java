@@ -61,6 +61,8 @@ public class Preferences implements PreferencesKeys {
 		setBooleanValue(AUTOCONNECT, false);
 		setBooleanValue(TABBED_TRACK, true);
 		setBooleanValue(USE_DATABASE, false);
+		setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES, false);
+		setBooleanValue(OPEN_LAST_FILE, false);
 
 		// configFile =
 		// new File(System.getProperty("user.home") + File.separator
@@ -156,5 +158,9 @@ public class Preferences implements PreferencesKeys {
 
 	public void setPreferences(Map<String, String> preferences) {
 		this.preferences = preferences;
+	}
+
+	public File getConfigFile() {
+		return configFile;
 	}
 }

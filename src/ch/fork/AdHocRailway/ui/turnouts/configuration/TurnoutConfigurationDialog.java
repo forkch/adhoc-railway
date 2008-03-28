@@ -49,6 +49,8 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
@@ -167,8 +169,10 @@ public class TurnoutConfigurationDialog extends JDialog {
 		turnoutsTable = new JTable();
 		turnoutsTable.setModel(new TurnoutTableModel(turnoutModel));
 
-		turnoutsTable.setSelectionModel(new SingleListSelectionAdapter(
-				turnoutModel.getSelectionIndexHolder()));
+		// turnoutsTable.setSelectionModel(new SingleListSelectionAdapter(
+		// turnoutModel.getSelectionIndexHolder()));
+		turnoutsTable
+				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
 		TableColumn typeColumn = turnoutsTable.getColumnModel().getColumn(1);
 		typeColumn.setCellRenderer(new TurnoutTypeCellRenderer());
@@ -322,8 +326,26 @@ public class TurnoutConfigurationDialog extends JDialog {
 					TurnoutConfigurationDialog.this,
 					"Enter the name of the new Turnout-Group",
 					"Add Turnout-Group", JOptionPane.QUESTION_MESSAGE);
+			if (newGroupName == null)
+				return;
+
 			TurnoutGroup newTurnoutGroup = new TurnoutGroup();
 			newTurnoutGroup.setName(newGroupName);
+			if (Preferences.getInstance().getBooleanValue(
+					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
+				String newAmount = JOptionPane.showInputDialog(
+						TurnoutConfigurationDialog.this,
+						"How many Turnouts should be in this gorup?", "10");
+				int newOffset = 1;
+				for (TurnoutGroup group : turnoutPersistence
+						.getAllTurnoutGroups()) {
+					newOffset += group.getTurnoutNumberAmount();
+				}
+				newTurnoutGroup.setTurnoutNumberOffset(newOffset);
+				newTurnoutGroup.setTurnoutNumberAmount(Integer
+						.parseInt(newAmount));
+			}
+
 			previousSelectedGroup = null;
 			turnoutPersistence.addTurnoutGroup(newTurnoutGroup);
 			turnoutGroupConfig.setTurnoutGroup(null);
@@ -376,8 +398,23 @@ public class TurnoutConfigurationDialog extends JDialog {
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			int nextNumber = 0;
+			if (Preferences.getInstance().getBooleanValue(
+					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
+				nextNumber = turnoutPersistence
+						.getNextFreeTurnoutNumberOfGroup(selectedTurnoutGroup);
+				if (nextNumber == -1) {
+					JOptionPane.showMessageDialog(
+							TurnoutConfigurationDialog.this,
+							"No more free numbers in this group", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			} else {
+				nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
+			}
 			Turnout newTurnout = new Turnout();
-			newTurnout.setNumber(turnoutPersistence.getNextFreeTurnoutNumber());
+			newTurnout.setNumber(nextNumber);
 			newTurnout.setTurnoutGroup(selectedTurnoutGroup);
 			newTurnout.setDefaultStateEnum(TurnoutState.STRAIGHT);
 			newTurnout.setOrientationEnum(TurnoutOrientation.EAST);
@@ -421,6 +458,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 				List<Turnout> turnouts = new ArrayList<Turnout>(
 						selectedTurnoutGroup.getTurnouts());
 				turnoutModel.setList(turnouts);
+				turnoutsTable.clearSelection();
 
 			} catch (TurnoutException e1) {
 				// TODO Auto-generated catch block
@@ -432,8 +470,13 @@ public class TurnoutConfigurationDialog extends JDialog {
 	private class EditTurnoutAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
 
+			// PresentationModel<Turnout> model = new
+			// PresentationModel<Turnout>(
+			// turnoutModel);
+			int row = turnoutsTable.getSelectedRow();
+			int number = (Integer) turnoutsTable.getValueAt(row, 0);
 			PresentationModel<Turnout> model = new PresentationModel<Turnout>(
-					turnoutModel);
+					turnoutPersistence.getTurnoutByNumber(number));
 			if (model == null)
 				return;
 			new TurnoutConfig(TurnoutConfigurationDialog.this, model);

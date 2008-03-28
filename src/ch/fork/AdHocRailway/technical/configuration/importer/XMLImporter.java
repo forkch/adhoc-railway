@@ -32,10 +32,11 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
-import ch.fork.AdHocRailway.domain.locomotives.MemoryLocomotivePersistence;
-import ch.fork.AdHocRailway.domain.routes.MemoryRoutePersistence;
+import ch.fork.AdHocRailway.domain.locomotives.FileLocomotivePersistence;
+import ch.fork.AdHocRailway.domain.routes.FileRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.MemoryTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.CachingTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.FileTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 
@@ -50,9 +51,9 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 	private RoutePersistenceIface		routePersistence;
 
 	public XMLImporter(String filename) throws ConfigurationException {
-		this(filename, MemoryTurnoutPersistence.getInstance(),
-				MemoryLocomotivePersistence.getInstance(),
-				MemoryRoutePersistence.getInstance());
+		this(filename, FileTurnoutPersistence.getInstance(),
+				FileLocomotivePersistence.getInstance(),
+				FileRoutePersistence.getInstance());
 	}
 
 	public XMLImporter(String filename,
@@ -64,6 +65,10 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 		this.turnoutPersistence = turnoutPersistence;
 		this.locomotivePersistence = locomotivePersistence;
 		this.routePersistence = routePersistence;
+
+		routePersistence.clear();
+		turnoutPersistence.clear();
+		locomotivePersistence.clear();
 		parseDocument(filename);
 		if (!supported) {
 			throw new ConfigurationException(
@@ -108,6 +113,12 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 				new XMLImporter_0_3(filename, turnoutPersistence,
 						locomotivePersistence, routePersistence);
 				logger.info("AdHoc-Railway Configuration (Schema Version 0.3) loaded ("
+						+ filename + ")");
+				return;
+			} else if (version == 0.4) {
+				new XMLImporter_0_4(filename, turnoutPersistence,
+						locomotivePersistence, routePersistence);
+				logger.info("AdHoc-Railway Configuration (Schema Version 0.4) loaded ("
 						+ filename + ")");
 				return;
 			}

@@ -62,8 +62,7 @@ public interface LocomotivePersistenceIface {
 	public abstract void deleteLocomotiveType(LocomotiveType type)
 			throws LocomotivePersistenceException;
 
-	public void flush() throws LocomotivePersistenceException;
-
 	public abstract void clear() throws LocomotivePersistenceException;
+	public abstract void flush();
 
 }

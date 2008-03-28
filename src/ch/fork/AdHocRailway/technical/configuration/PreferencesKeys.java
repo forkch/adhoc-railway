@@ -28,6 +28,8 @@ public interface PreferencesKeys {
 	public static final String	FULLSCREEN				= "Fullscreen";
 	public static final String	TABBED_TRACK			= "TabbedTrack";
 	public static final String	LAST_OPENED_FILE		= "LastOpenedFile";
+	public static final String	USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES		= "UseFixedTurnoutAndRouteGroupSizes";
+	public static final String  OPEN_LAST_FILE			= "OpenLastFile";
 
 	// Digital Data
 	public static final String	ACTIVATION_TIME			= "DefaultActivationTime";

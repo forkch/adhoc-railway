@@ -35,14 +35,15 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.domain.locomotives.MemoryLocomotivePersistence;
-import ch.fork.AdHocRailway.domain.routes.MemoryRoutePersistence;
+import ch.fork.AdHocRailway.domain.locomotives.FileLocomotivePersistence;
+import ch.fork.AdHocRailway.domain.routes.FileRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.MemoryTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.CachingTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.FileTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
@@ -68,9 +69,9 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
 	private RouteItem					actualRouteItem;
 
 	public XMLImporter_0_3(String filename) {
-		this(filename, MemoryTurnoutPersistence.getInstance(),
-				MemoryLocomotivePersistence.getInstance(),
-				MemoryRoutePersistence.getInstance());
+		this(filename, FileTurnoutPersistence.getInstance(),
+				FileLocomotivePersistence.getInstance(),
+				FileRoutePersistence.getInstance());
 	}
 
 	public XMLImporter_0_3(String filename,

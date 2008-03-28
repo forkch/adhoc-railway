@@ -61,6 +61,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private JCheckBox			writeLog;
 	private JCheckBox			fullscreen;
 	private JCheckBox			tabbedTrackCheckBox;
+	private JCheckBox			fixedTurnoutGroupSizesCheckBox;
 
 	private boolean				okPressed;
 	private boolean				cancelPressed;
@@ -71,6 +72,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private JTextField			databaseUserField;
 	private JTextField			databasePasswordField;
 	private JCheckBox			useDatabaseCheckBox;
+	private JCheckBox			openLastFileCheckBox;
 
 	public PreferencesDialog(JFrame owner) {
 		super(owner, "Preferences", true);
@@ -134,6 +136,9 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		routeControlNumberModel = new SpinnerNumberModel(7, 1, 10, 1);
 		routeControlNumber = new JSpinner(routeControlNumberModel);
+		
+		fixedTurnoutGroupSizesCheckBox = new JCheckBox();
+		
 
 		keyBoardLayoutComboBox = new JComboBox();
 		keyBoardLayoutComboBox.addItem("Swiss German");
@@ -142,10 +147,11 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		writeLog = new JCheckBox();
 		fullscreen = new JCheckBox();
 		tabbedTrackCheckBox = new JCheckBox();
+		openLastFileCheckBox = new JCheckBox();
 
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, fill:pref",
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
+				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 
@@ -169,6 +175,12 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		builder.addLabel("Tabbed Track-Control", cc.xy(1, 13));
 		builder.add(tabbedTrackCheckBox, cc.xy(3, 13));
+
+		builder.addLabel("Fixed Turnout- and Route-Group sizes", cc.xy(1, 15));
+		builder.add(fixedTurnoutGroupSizesCheckBox, cc.xy(3, 15));
+		
+		builder.addLabel("Open last file", cc.xy(1, 17));
+		builder.add(openLastFileCheckBox, cc.xy(3, 17));
 
 		return builder.getPanel();
 	}
@@ -282,6 +294,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		writeLog.setSelected(p.getBooleanValue(LOGGING));
 		fullscreen.setSelected(p.getBooleanValue(FULLSCREEN));
 		tabbedTrackCheckBox.setSelected(p.getBooleanValue(TABBED_TRACK));
+		fixedTurnoutGroupSizesCheckBox.setSelected(p.getBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES));
+		openLastFileCheckBox.setSelected(p.getBooleanValue(OPEN_LAST_FILE));
 
 		defaultActivationTimeModel.setValue(p.getIntValue(ACTIVATION_TIME));
 		defaultRoutingDelayModel.setValue(p.getIntValue(ROUTING_DELAY));
@@ -312,6 +326,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		p.setBooleanValue(LOGGING, writeLog.isSelected());
 		p.setBooleanValue(FULLSCREEN, fullscreen.isSelected());
 		p.setBooleanValue(TABBED_TRACK, tabbedTrackCheckBox.isSelected());
+		p.setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES, fixedTurnoutGroupSizesCheckBox.isSelected());
+		p.setBooleanValue(OPEN_LAST_FILE, openLastFileCheckBox.isSelected());
 
 		p.setIntValue(ACTIVATION_TIME, defaultActivationTimeModel.getNumber()
 				.intValue());

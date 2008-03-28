@@ -50,10 +50,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -68,22 +70,23 @@ import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
 import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
-import ch.fork.AdHocRailway.domain.locomotives.MemoryLocomotivePersistence;
+import ch.fork.AdHocRailway.domain.locomotives.FileLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
 import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
-import ch.fork.AdHocRailway.domain.routes.MemoryRoutePersistence;
+import ch.fork.AdHocRailway.domain.routes.FileRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
+import ch.fork.AdHocRailway.domain.turnouts.FileTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
-import ch.fork.AdHocRailway.domain.turnouts.MemoryTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.CachingTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.technical.configuration.exporter.XMLExporter_0_3;
+import ch.fork.AdHocRailway.technical.configuration.exporter.XMLExporter_0_4;
 import ch.fork.AdHocRailway.technical.configuration.importer.XMLImporter;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
@@ -160,6 +163,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private JPanel						toolbarPanel;
 	public File							file;
 	private RoutePersistenceIface		routePersistence;
+	private JProgressBar				progressBar;
 
 	public AdHocRailway() {
 		this(null);
@@ -206,19 +210,19 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			locomotivePersistence = HibernateLocomotivePersistence
 					.getInstance();
 		else
-			locomotivePersistence = MemoryLocomotivePersistence.getInstance();
+			locomotivePersistence = FileLocomotivePersistence.getInstance();
 
 		initProceeded("Loading Persistence Layer (Turnouts)");
 		if (useDatabase)
 			turnoutPersistence = HibernateTurnoutPersistence.getInstance();
 		else
-			turnoutPersistence = MemoryTurnoutPersistence.getInstance();
+			turnoutPersistence = FileTurnoutPersistence.getInstance();
 
 		initProceeded("Loading Persistence Layer (Routes)");
 		if (useDatabase)
 			routePersistence = HibernateRoutePersistence.getInstance();
 		else
-			routePersistence = MemoryRoutePersistence.getInstance();
+			routePersistence = FileRoutePersistence.getInstance();
 
 		if (useDatabase) {
 			String host = preferences
@@ -245,20 +249,23 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		initProceeded("Creating GUI ...");
 		initGUI();
-//
-//		trackControlPanel.update();
-//		locomotiveControlPanel.update();
 
-		String lastFile = preferences.getStringValue(LAST_OPENED_FILE);
-		if (lastFile != null && !lastFile.equals("") && !useDatabase) {
+		if (preferences.getBooleanValue(OPEN_LAST_FILE)) {
+			String lastFile = preferences.getStringValue(LAST_OPENED_FILE);
+			if (lastFile != null && !lastFile.equals("") && !useDatabase) {
 
-			new OpenFileAction().openFile(new File(preferences
-					.getStringValue(LAST_OPENED_FILE)));
+				new OpenFileAction().openFile(new File(preferences
+						.getStringValue(LAST_OPENED_FILE)));
+			} else if (useDatabase) {
+				updateGUI();
+			}
+		} else {
+			updateGUI();
 		}
 		if (preferences.getBooleanValue(AUTOCONNECT))
 			new ConnectAction().actionPerformed(null);
-		//EnablerDisabler.setEnable(false, trackControlPanel);
-		//EnablerDisabler.setEnable(false, locomotiveControlPanel);
+		// EnablerDisabler.setEnable(false, trackControlPanel);
+		// EnablerDisabler.setEnable(false, locomotiveControlPanel);
 		initKeyboardActions();
 
 		setSize(1000, 700);
@@ -399,6 +406,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 
 		public void openFile(File file) {
+			FileTurnoutPersistence.getInstance().clear();
+			FileLocomotivePersistence.getInstance().clear();
+			FileRoutePersistence.getInstance().clear();
 			try {
 				new XMLImporter(file.getAbsolutePath());
 			} catch (ConfigurationException e) {
@@ -407,15 +417,17 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 			hostnameLabel.setText(Preferences.getInstance().getStringValue(
 					PreferencesKeys.HOSTNAME));
-			turnoutPersistence = MemoryTurnoutPersistence.getInstance();
+			turnoutPersistence = FileTurnoutPersistence.getInstance();
 			turnoutControl.setTurnoutPersistence(turnoutPersistence);
-			locomotivePersistence = MemoryLocomotivePersistence.getInstance();
+			locomotivePersistence = FileLocomotivePersistence.getInstance();
 			locomotiveControl.setLocomotivePersistence(locomotivePersistence);
-			routePersistence = MemoryRoutePersistence.getInstance();
+			routePersistence = FileRoutePersistence.getInstance();
 			routeControl.setRoutePersistence(routePersistence);
 			setTitle(AdHocRailway.TITLE + " [" + file.getAbsolutePath() + "]");
 			AdHocRailway.this.file = file;
 			updateGUI();
+			updateCommandHistory("AdHoc-Railway Configuration loaded (" + file
+					+ ")");
 
 		}
 	}
@@ -427,24 +439,43 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			hostnameLabel.setText(Preferences.getInstance().getStringValue(
-					PreferencesKeys.HOSTNAME));
-			turnoutPersistence = HibernateTurnoutPersistence.getInstance();
-			turnoutControl.setTurnoutPersistence(turnoutPersistence);
-			locomotivePersistence = HibernateLocomotivePersistence
-					.getInstance();
-			locomotiveControl.setLocomotivePersistence(locomotivePersistence);
-			routePersistence = HibernateRoutePersistence.getInstance();
-			routeControl.setRoutePersistence(routePersistence);
-			String host = preferences
-					.getStringValue(PreferencesKeys.DATABASE_HOST);
-			String database = preferences
-					.getStringValue(PreferencesKeys.DATABASE_NAME);
-			String url = "jdbc:mysql://" + host + "/" + database;
-			setTitle(AdHocRailway.TITLE + " [" + url + "]");
-			AdHocRailway.this.file = null;
-			updateGUI();
-
+			
+			Thread t = new Thread(new Runnable() {
+				public void run() {
+					try {
+						progressBar.setIndeterminate(true);
+						HibernatePersistence.connect();
+						hostnameLabel.setText(Preferences.getInstance()
+								.getStringValue(PreferencesKeys.HOSTNAME));
+						turnoutPersistence = HibernateTurnoutPersistence
+								.getInstance();
+						turnoutControl
+								.setTurnoutPersistence(turnoutPersistence);
+						locomotivePersistence = HibernateLocomotivePersistence
+								.getInstance();
+						locomotiveControl
+								.setLocomotivePersistence(locomotivePersistence);
+						routePersistence = HibernateRoutePersistence
+								.getInstance();
+						routeControl.setRoutePersistence(routePersistence);
+						String host = preferences
+								.getStringValue(PreferencesKeys.DATABASE_HOST);
+						String database = preferences
+								.getStringValue(PreferencesKeys.DATABASE_NAME);
+						String url = "jdbc:mysql://" + host + "/" + database;
+						setTitle(AdHocRailway.TITLE + " [" + url + "]");
+						AdHocRailway.this.file = null;
+						updateCommandHistory("Successfully connected to database: "
+								+ url);
+					} catch (PersistenceException ex) {
+						ExceptionProcessor.getInstance().processException(
+								"Failed to connect to database", ex);
+					}
+					updateGUI();
+					progressBar.setIndeterminate(false);
+				}
+			});
+			t.start();
 		}
 	}
 
@@ -461,7 +492,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				File saveFile = fileChooser.getSelectedFile();
 
 				try {
-					XMLExporter_0_3 exporter = new XMLExporter_0_3(
+					XMLExporter_0_4 exporter = new XMLExporter_0_4(
 							turnoutPersistence, locomotivePersistence,
 							routePersistence);
 					String xml = exporter.export();
@@ -474,6 +505,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 					ExceptionProcessor.getInstance().processException(e2);
 				}
 				file = saveFile;
+				updateCommandHistory("AdHoc-Railway Configuration saved ("
+						+ file + ")");
 
 			} else {
 				updateCommandHistory("Save command cancelled by user");
@@ -491,38 +524,64 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		public void actionPerformed(ActionEvent e) {
 			int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
 					"All data in the database will be deleted prior "
-							+ "to the export. The application will afterwards "
+							+ "to the export.\n"
+							+ " The application will afterwards "
 							+ "switch to database-mode.\n"
 							+ "Do you really want to proceed ?",
 					"Export to database", JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE,
 					createImageIcon("messagebox_warning.png"));
 			if (result == JOptionPane.YES_OPTION) {
-				try {
-					new XMLImporter(file.getAbsolutePath(),
-							HibernateTurnoutPersistence.getInstance(),
-							HibernateLocomotivePersistence.getInstance(),
-							HibernateRoutePersistence.getInstance());
-				} catch (ConfigurationException e1) {
-				}
 
-				hostnameLabel.setText(Preferences.getInstance().getStringValue(
-						PreferencesKeys.HOSTNAME));
-				turnoutPersistence = HibernateTurnoutPersistence.getInstance();
-				turnoutControl.setTurnoutPersistence(turnoutPersistence);
-				locomotivePersistence = HibernateLocomotivePersistence
-						.getInstance();
-				locomotiveControl
-						.setLocomotivePersistence(locomotivePersistence);
-				routePersistence = HibernateRoutePersistence.getInstance();
-				routeControl.setRoutePersistence(routePersistence);
-				String host = preferences
-						.getStringValue(PreferencesKeys.DATABASE_HOST);
-				String database = preferences
-						.getStringValue(PreferencesKeys.DATABASE_NAME);
-				String url = "jdbc:mysql://" + host + "/" + database;
-				setTitle(AdHocRailway.TITLE + " [" + url + "]");
-				file = null;
+				try {
+					HibernatePersistence.connect();
+					
+					try {
+						new XMLImporter(file.getAbsolutePath(),
+								HibernateTurnoutPersistence.getInstance(),
+								HibernateLocomotivePersistence.getInstance(),
+								HibernateRoutePersistence.getInstance());
+					} catch (ConfigurationException e1) {
+					}
+					result = JOptionPane
+							.showConfirmDialog(
+									AdHocRailway.this,
+									"The configuration has been exported to the database\n\n"
+											+ "Do you want to switch to the database mode ?",
+									"Export to database",
+									JOptionPane.YES_NO_OPTION,
+									JOptionPane.QUESTION_MESSAGE,
+									createImageIcon("messagebox_info.png"));
+					String host = preferences
+							.getStringValue(PreferencesKeys.DATABASE_HOST);
+					String database = preferences
+							.getStringValue(PreferencesKeys.DATABASE_NAME);
+					String url = "jdbc:mysql://" + host + "/" + database;
+					String f = file.toString();
+					if (result == JOptionPane.YES_OPTION) {
+						hostnameLabel.setText(Preferences.getInstance()
+								.getStringValue(PreferencesKeys.HOSTNAME));
+						turnoutPersistence = HibernateTurnoutPersistence
+								.getInstance();
+						turnoutControl
+								.setTurnoutPersistence(turnoutPersistence);
+						locomotivePersistence = HibernateLocomotivePersistence
+								.getInstance();
+						locomotiveControl
+								.setLocomotivePersistence(locomotivePersistence);
+						routePersistence = HibernateRoutePersistence
+								.getInstance();
+						routeControl.setRoutePersistence(routePersistence);
+
+						setTitle(AdHocRailway.TITLE + " [" + url + "]");
+						file = null;
+					}
+					updateCommandHistory("AdHoc-Railway Configuration loaded ("
+							+ f + ") and imported into database " + url);
+				} catch (PersistenceException ex) {
+					ExceptionProcessor.getInstance().processException(
+							"Failed to connect to database", ex);
+				}
 				updateGUI();
 			}
 		}
@@ -623,7 +682,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			if (p.isOkPressed()) {
 				updateGUI();
 				hostnameLabel.setText(preferences.getStringValue("Hostname"));
-				updateCommandHistory("Preferences changed");
+				updateCommandHistory("Preferences saved to: "
+						+ preferences.getConfigFile());
 			}
 		}
 	}
@@ -659,8 +719,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				connectToolBarButton.setEnabled(false);
 				disconnectToolBarButton.setEnabled(true);
 
-				//EnablerDisabler.setEnable(true, trackControlPanel);
-				//EnablerDisabler.setEnable(true, locomotiveControlPanel);
+				// EnablerDisabler.setEnable(true, trackControlPanel);
+				// EnablerDisabler.setEnable(true, locomotiveControlPanel);
 				initKeyboardActions();
 				// updateGUI();
 				updateCommandHistory("Connected to server " + host
@@ -694,8 +754,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				daemonResetItem.setEnabled(false);
 				connectToolBarButton.setEnabled(true);
 				disconnectToolBarButton.setEnabled(false);
-				//nablerDisabler.setEnable(false, trackControlPanel);
-				//EnablerDisabler.setEnable(false, locomotiveControlPanel);
+				// nablerDisabler.setEnable(false, trackControlPanel);
+				// EnablerDisabler.setEnable(false, locomotiveControlPanel);
 				updateCommandHistory("Disconnected from server " + host
 						+ " on port " + port);
 			} catch (SRCPException e1) {
@@ -937,8 +997,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		commandHistory = new JComboBox(commandHistoryModel);
 		commandHistory.setEditable(false);
 		commandHistory.setFocusable(false);
-		statusBarPanel.setLayout(new BorderLayout());
-		statusBarPanel.add(commandHistory, BorderLayout.SOUTH);
+
+		progressBar = new JProgressBar(SwingConstants.HORIZONTAL);
+
+		statusBarPanel.setLayout(new BorderLayout(5, 0));
+		statusBarPanel.add(progressBar, BorderLayout.WEST);
+		statusBarPanel.add(commandHistory, BorderLayout.CENTER);
 		return statusBarPanel;
 	}
 

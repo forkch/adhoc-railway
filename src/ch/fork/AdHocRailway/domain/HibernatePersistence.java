@@ -25,6 +25,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.hibernate.HibernateException;
+
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
@@ -40,25 +43,27 @@ public abstract class HibernatePersistence {
 
 	public static void connect() {
 		// Start EntityManagerFactory
-		if (emf == null) {
-			Map configOverrides = new HashMap();
-			configOverrides.put("hibernate.connection.username", preferences
-					.getStringValue(PreferencesKeys.DATABASE_USER));
-			configOverrides.put("hibernate.connection.password", preferences
-					.getStringValue(PreferencesKeys.DATABASE_PWD));
-			String host = preferences
-					.getStringValue(PreferencesKeys.DATABASE_HOST);
-			String database = preferences
-					.getStringValue(PreferencesKeys.DATABASE_NAME);
-			String url = "jdbc:mysql://" + host + "/" + database;
-			configOverrides.put("hibernate.connection.url", url);
+		Map configOverrides = new HashMap();
+		configOverrides.put("hibernate.connection.username", preferences
+				.getStringValue(PreferencesKeys.DATABASE_USER));
+		configOverrides.put("hibernate.connection.password", preferences
+				.getStringValue(PreferencesKeys.DATABASE_PWD));
+		String host = preferences.getStringValue(PreferencesKeys.DATABASE_HOST);
+		String database = preferences
+				.getStringValue(PreferencesKeys.DATABASE_NAME);
+		String url = "jdbc:mysql://" + host + "/" + database;
+		configOverrides.put("hibernate.connection.url", url);
 
-			emf = Persistence.createEntityManagerFactory("adhocrailway",
-					configOverrides);
-			emf.createEntityManager().getTransaction().begin();
+		emf = Persistence.createEntityManagerFactory("adhocrailway",
+				configOverrides);
 
-		}
-
+	}
+	
+	public static void disconnect() {
+		em.close();
+		emf.close();
+		em = null;
+		emf = null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -66,12 +71,23 @@ public abstract class HibernatePersistence {
 
 		// First unit of work
 		if (em == null) {
-			if (emf == null) {
-				connect();
-			}
 			em = emf.createEntityManager();
 			em.getTransaction().begin();
 		}
 		return em;
+	}
+
+	public static void flush() throws TurnoutPersistenceException {
+		EntityManager em = HibernatePersistence.getEntityManager();
+		try {
+			em.getTransaction().commit();
+		} catch (HibernateException ex) {
+			em.getTransaction().rollback();
+			em.close();
+			HibernatePersistence.connect();
+			HibernatePersistence.getEntityManager().getTransaction().begin();
+			throw new TurnoutPersistenceException("Error", ex);
+		}
+		em.getTransaction().begin();
 	}
 }

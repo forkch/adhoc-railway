@@ -123,6 +123,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				0, // minValue
 				1000, // maxValue
 				1)); // step
+		
 
 		descTextField = BasicComponentFactory.createTextField(presentationModel
 				.getModel(Turnout.PROPERTYNAME_DESCRIPTION));
