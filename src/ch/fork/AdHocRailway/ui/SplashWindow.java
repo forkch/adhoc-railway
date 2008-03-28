@@ -60,7 +60,7 @@ public class SplashWindow extends JWindow {
 		JLabel l = new JLabel(icon);
 
 		getContentPane().add(l, BorderLayout.CENTER);
-		progressBar = new JProgressBar(0, 100);
+		progressBar = new JProgressBar(0, steps);
 		msgLabel = new JLabel("Start");
 		JPanel progressPanel = new JPanel(new BorderLayout());
 		progressPanel.add(progressBar, BorderLayout.NORTH);
@@ -75,10 +75,10 @@ public class SplashWindow extends JWindow {
 	}
 
 	public void nextStep(String msg) {
+		System.out.println(progressBar.getValue() + "  " + msg);
 		msgLabel.setText(msg);
-		progressBar.setValue((int) Math.ceil(progressBar.getValue() + 100.
-				/ steps));
-		if (progressBar.getValue() == 100) {
+		progressBar.setValue(progressBar.getValue()+1);
+		if (progressBar.getValue() == steps) {
 			final int pause = waitTime;
 			final Runnable closerRunner = new Runnable() {
 				public void run() {

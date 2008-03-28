@@ -162,7 +162,7 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 	 */
 	public ArrayListModel<Turnout> getAllTurnouts()
 			throws TurnoutPersistenceException {
-		logger.debug("getAllTurnouts()");
+		//logger.debug("getAllTurnouts()");
 		if (addressTurnoutCache.size() == 0) {
 			updateTurnoutCache();
 		}
@@ -304,6 +304,7 @@ public class HibernateTurnoutPersistence extends HibernatePersistence implements
 	}
 
 	public ArrayListModel<TurnoutGroup> getAllTurnoutGroups() {
+		//logger.debug("getAllTurnoutGroups()");
 		if (turnoutGroupCache.isEmpty()) {
 			updateTurnoutGroupCache();
 		}

@@ -245,18 +245,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		initProceeded("Creating GUI ...");
 		initGUI();
+//
+//		trackControlPanel.update();
+//		locomotiveControlPanel.update();
 
-		trackControlPanel.update();
-		locomotiveControlPanel.update();
-
-		initKeyboardActions();
-
-		setSize(1000, 700);
-
-		TutorialUtils.locateOnOpticalScreenCenter(this);
-
-		initProceeded("RailControl started");
-		updateCommandHistory("RailControl started");
 		String lastFile = preferences.getStringValue(LAST_OPENED_FILE);
 		if (lastFile != null && !lastFile.equals("") && !useDatabase) {
 
@@ -265,6 +257,16 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 		if (preferences.getBooleanValue(AUTOCONNECT))
 			new ConnectAction().actionPerformed(null);
+		//EnablerDisabler.setEnable(false, trackControlPanel);
+		//EnablerDisabler.setEnable(false, locomotiveControlPanel);
+		initKeyboardActions();
+
+		setSize(1000, 700);
+
+		TutorialUtils.locateOnOpticalScreenCenter(this);
+
+		initProceeded("RailControl started");
+		updateCommandHistory("RailControl started");
 		setVisible(true);
 	}
 
@@ -656,6 +658,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				daemonResetItem.setEnabled(true);
 				connectToolBarButton.setEnabled(false);
 				disconnectToolBarButton.setEnabled(true);
+
+				//EnablerDisabler.setEnable(true, trackControlPanel);
+				//EnablerDisabler.setEnable(true, locomotiveControlPanel);
+				initKeyboardActions();
 				// updateGUI();
 				updateCommandHistory("Connected to server " + host
 						+ " on port " + port);
@@ -688,6 +694,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				daemonResetItem.setEnabled(false);
 				connectToolBarButton.setEnabled(true);
 				disconnectToolBarButton.setEnabled(false);
+				//nablerDisabler.setEnable(false, trackControlPanel);
+				//EnablerDisabler.setEnable(false, locomotiveControlPanel);
 				updateCommandHistory("Disconnected from server " + host
 						+ " on port " + port);
 			} catch (SRCPException e1) {

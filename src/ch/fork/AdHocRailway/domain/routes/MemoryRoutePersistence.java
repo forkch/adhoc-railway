@@ -57,6 +57,7 @@ public class MemoryRoutePersistence implements RoutePersistenceIface {
 	}
 
 	public ArrayListModel<Route> getAllRoutes() {
+		//logger.debug("getAllRoutes()");
 		return routeCache;
 	}
 
@@ -126,7 +127,7 @@ public class MemoryRoutePersistence implements RoutePersistenceIface {
 	}
 
 	public ArrayListModel<RouteGroup> getAllRouteGroups() {
-		logger.debug("getAllRouteGroups()");
+		//logger.debug("getAllRouteGroups()");
 		return routeGroupCache;
 	}
 

@@ -115,7 +115,7 @@ public class Preferences implements PreferencesKeys {
 			props.setProperty(key, preferences.get(key));
 		}
 		props.store(new FileOutputStream(configFile), "");
-		logger.info("Configuration saved to: " + configFile.getAbsolutePath());
+		logger.info("Preferences saved to: " + configFile.getAbsolutePath());
 	}
 
 	public void setStringValue(String key, String value) {

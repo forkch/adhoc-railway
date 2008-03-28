@@ -102,7 +102,7 @@ public class HibernateRoutePersistence extends HibernatePersistence implements
 
 	public ArrayListModel<Route> getAllRoutes()
 			throws RoutePersistenceException {
-		logger.debug("getAllRoutes()");
+		//logger.debug("getAllRoutes()");
 		if (routeCache.isEmpty()) {
 			updateRouteCache();
 		}
@@ -213,7 +213,7 @@ public class HibernateRoutePersistence extends HibernatePersistence implements
 
 	public ArrayListModel<RouteGroup> getAllRouteGroups()
 			throws RoutePersistenceException {
-		logger.debug("getAllRouteGroups()");
+		//logger.debug("getAllRouteGroups()");
 		if (routeGroupCache.isEmpty()) {
 			updateRouteGroupCache();
 		}

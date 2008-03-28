@@ -121,7 +121,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 
 	public ArrayListModel<Locomotive> getAllLocomotives()
 			throws LocomotivePersistenceException {
-		logger.debug("getAllLocomotives()");
+		//logger.debug("getAllLocomotives()");
 		if (locomotiveCache.isEmpty()) {
 			updateLocomotiveCache();
 		}
@@ -214,7 +214,7 @@ public class HibernateLocomotivePersistence extends HibernatePersistence
 
 	public ArrayListModel<LocomotiveGroup> getAllLocomotiveGroups()
 			throws LocomotivePersistenceException {
-		logger.debug("getAllLocomotiveGroups()");
+		//logger.debug("getAllLocomotiveGroups()");
 		if (locomotiveGroupCache.isEmpty()) {
 			updateLocomotiveGroupCache();
 		}

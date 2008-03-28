@@ -98,7 +98,7 @@ public class MemoryTurnoutPersistence implements TurnoutPersistenceIface {
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#getAllTurnouts()
 	 */
 	public ArrayListModel<Turnout> getAllTurnouts() {
-		logger.debug("getAllTurnouts()");
+		//logger.debug("getAllTurnouts()");
 		return turnoutCache;
 	}
 
@@ -206,7 +206,7 @@ public class MemoryTurnoutPersistence implements TurnoutPersistenceIface {
 	}
 
 	public ArrayListModel<TurnoutGroup> getAllTurnoutGroups() {
-		logger.debug("getAllTurnoutGroups()");
+		//logger.debug("getAllTurnoutGroups()");
 		return turnoutGroupCache;
 	}
 

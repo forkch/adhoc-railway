@@ -144,6 +144,7 @@
 		<tar destfile="AdHoc-Railway-${release}-bin.tar.bz2" basedir="${release.dir}"
       compression="bzip2"
 			/>
+		<zip destfile="AdHoc-Railway-${release}-bin.zip" basedir="${release.dir}"/>
 		
 		<delete file="ChangeLog"/>
 	</target>
@@ -179,6 +180,8 @@
 		</copy>
 		<tar destfile="AdHoc-Railway-${release}-src.tar.bz2" basedir="${release.dir}"
       compression="bzip2"
+			/>
+		<zip destfile="AdHoc-Railway-${release}-src.zip" basedir="${release.dir}"
 			/>
 		<delete file="ChangeLog"/>
 	</target>

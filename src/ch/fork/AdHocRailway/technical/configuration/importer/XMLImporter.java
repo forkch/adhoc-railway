@@ -78,6 +78,7 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 			// get a new instance of parser
 			SAXParser sp = spf.newSAXParser();
 			// parse the file and also register this class for call backs
+			logger.info("Opening configuration file: " + filename);
 			sp.parse(filename, this);
 		} catch (SAXException se) {
 			throw new ConfigurationException("Error loading configuration", se);
@@ -106,7 +107,7 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 			} else if (version == 0.3) {
 				new XMLImporter_0_3(filename, turnoutPersistence,
 						locomotivePersistence, routePersistence);
-				logger.info("AdHoc-Railway Config Version 0.3 loaded ("
+				logger.info("AdHoc-Railway Configuration (Schema Version 0.3) loaded ("
 						+ filename + ")");
 				return;
 			}

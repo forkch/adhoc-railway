@@ -96,6 +96,7 @@ public class MemoryLocomotivePersistence implements LocomotivePersistenceIface {
 	 */
 
 	public ArrayListModel<Locomotive> getAllLocomotives() {
+		//logger.debug("getAllLocomotives()");
 		return locomotiveCache;
 	}
 
@@ -143,7 +144,7 @@ public class MemoryLocomotivePersistence implements LocomotivePersistenceIface {
 	}
 
 	public ArrayListModel<LocomotiveGroup> getAllLocomotiveGroups() {
-
+		//logger.debug("getAllLocomotiveGroups()");
 		return locomotiveGroupCache;
 	}
 
