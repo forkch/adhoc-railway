@@ -182,7 +182,7 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
 		String orientation = attributes.getValue("orientation");
 		int number = Integer.parseInt(attributes.getValue("number"));
 
-		if (type.toUpperCase().equals("DEFAULT")) {
+		if (type.toUpperCase().equals("DEFAULT") || type.toUpperCase().equals("DEFAULTSWITCH")) {
 			TurnoutType turnoutType = turnoutPersistence
 					.getTurnoutType(TurnoutTypes.DEFAULT);
 			actualTurnout = new Turnout(0, turnoutType, actualTurnoutGroup,
@@ -190,7 +190,7 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
 							.toUpperCase(), 0, 0, false);
 			actualAddresses = new Address[1];
 			turnoutType.getTurnouts().add(actualTurnout);
-		} else if (type.toUpperCase().equals("DOUBLECROSS")) {
+		} else if (type.toUpperCase().equals("DOUBLECROSS") || type.toUpperCase().equals("DOUBLECROSSSWITCH")) {
 			TurnoutType turnoutType = turnoutPersistence
 					.getTurnoutType(TurnoutTypes.DOUBLECROSS);
 			actualTurnout = new Turnout(0, turnoutType, actualTurnoutGroup,
@@ -198,7 +198,7 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
 							.toUpperCase(), 0, 0, false);
 			actualAddresses = new Address[1];
 			turnoutType.getTurnouts().add(actualTurnout);
-		} else if (type.toUpperCase().equals("THREEWAY")) {
+		} else if (type.toUpperCase().equals("THREEWAY") || type.toUpperCase().equals("THREEWAYSWITCH")) {
 			TurnoutType turnoutType = turnoutPersistence
 					.getTurnoutType(TurnoutTypes.THREEWAY);
 			actualTurnout = new Turnout(0, turnoutType, actualTurnoutGroup,
@@ -240,13 +240,13 @@ public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
 		int bus = Integer.parseInt(attributes.getValue("bus"));
 		int address = Integer.parseInt(attributes.getValue("address"));
 
-		if (type.toUpperCase().equals("DELTA")) {
+		if (type.toUpperCase().equals("DELTA") ||type.toUpperCase().equals("DELTALOCOMOTIVE") ) {
 			LocomotiveType locomotiveType = locomotivePersistence
 					.getLocomotiveTypeByName("DELTA");
 			actualLocomotive = new Locomotive(0, actualLocomotiveGroup,
 					locomotiveType, name, desc, "", address, bus);
 			locomotiveType.getLocomotives().add(actualLocomotive);
-		} else if (type.toUpperCase().equals("DIGITAL")) {
+		} else if (type.toUpperCase().equals("DIGITAL") ||type.toUpperCase().equals("DIGITALLOCOMOTIVE")) {
 			LocomotiveType locomotiveType = locomotivePersistence
 					.getLocomotiveTypeByName("DIGITAL");
 			actualLocomotive = new Locomotive(0, actualLocomotiveGroup,
