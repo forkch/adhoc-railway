@@ -42,6 +42,8 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
 import ch.fork.AdHocRailway.ui.UIConstants;
@@ -123,7 +125,6 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				0, // minValue
 				1000, // maxValue
 				1)); // step
-		
 
 		descTextField = BasicComponentFactory.createTextField(presentationModel
 				.getModel(Turnout.PROPERTYNAME_DESCRIPTION));
@@ -135,6 +136,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				0, // minValue
 				100, // maxValue
 				1)); // step
+
 
 		address1TextField = new JSpinner();
 		address1TextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
@@ -195,10 +197,10 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 		if (!isTurnoutReadyToTest(presentationModel.getBean()))
 			testTurnoutWidget.setEnabled(false);
 
-		presentationModel.getBean().addPropertyChangeListener(this);
-		validate(presentationModel.getBean());
 		okButton = new JButton(new ApplyChangesAction());
 		cancelButton = new JButton(new CancelAction());
+		presentationModel.getBean().addPropertyChangeListener(this);
+		validate(presentationModel.getBean());
 	}
 
 	private void buildPanel() {
@@ -278,9 +280,11 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				|| usedTurnoutNumbers.contains(turnout.getNumber())) {
 			setSpinnerColor(numberTextField, UIConstants.ERROR_COLOR);
 			validate = false;
+			okButton.setEnabled(false);
 		} else {
 			setSpinnerColor(numberTextField,
 					UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			okButton.setEnabled(true);
 		}
 		boolean bus1Valid = true;
 		if (turnout.getBus1() == 0) {

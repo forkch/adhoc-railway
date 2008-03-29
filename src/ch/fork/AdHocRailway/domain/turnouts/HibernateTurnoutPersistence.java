@@ -36,19 +36,17 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
-public class HibernateTurnoutPersistence extends CachingTurnoutPersistence implements TurnoutPersistenceIface {
+public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
+		implements TurnoutPersistenceIface {
 	static Logger							logger	= Logger
 															.getLogger(HibernateTurnoutPersistence.class);
 	private static TurnoutPersistenceIface	instance;
-
 
 	private HibernateTurnoutPersistence() {
 		super();
 		super.clear();
 		logger.info("HibernateTurnoutPersistence loaded");
-		try {
-			getTurnoutType(TurnoutTypes.DEFAULT);
-		} catch (NoResultException ex) {
+		if (getTurnoutType(TurnoutTypes.DEFAULT) == null) {
 			TurnoutType defaultType = new TurnoutType(0, "DEFAULT");
 			try {
 				addTurnoutType(defaultType);
@@ -56,9 +54,7 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence imple
 				e.printStackTrace();
 			}
 		}
-		try {
-			getTurnoutType(TurnoutTypes.DOUBLECROSS);
-		} catch (NoResultException ex) {
+		if (getTurnoutType(TurnoutTypes.DOUBLECROSS) == null) {
 			TurnoutType doublecrossType = new TurnoutType(0, "DOUBLECROSS");
 			try {
 				addTurnoutType(doublecrossType);
@@ -66,9 +62,7 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence imple
 				e.printStackTrace();
 			}
 		}
-		try {
-			getTurnoutType(TurnoutTypes.THREEWAY);
-		} catch (NoResultException ex) {
+		if (getTurnoutType(TurnoutTypes.THREEWAY) == null) {
 			TurnoutType threewayType = new TurnoutType(0, "THREEWAY");
 			try {
 				addTurnoutType(threewayType);
@@ -142,8 +136,7 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence imple
 		logger.debug("getAllTurnoutsDB()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
-			List<Turnout> turnouts = em.createQuery("from Turnout")
-					.getResultList();
+			List turnouts = em.createQuery("from Turnout").getResultList();
 			SortedSet<Turnout> res = new TreeSet<Turnout>(turnouts);
 			return res;
 		} catch (HibernateException x) {

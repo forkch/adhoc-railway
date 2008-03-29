@@ -56,5 +56,6 @@ public interface Constants {
 	public String				ERR_TOGGLE_FAILED			= "Toggle of switch failed";
 
 	public final static int		MAX_MM_TURNOUT_ADDRESS		= 324;
+	public final static int		MAX_MM_LOCOMOTIVE_ADDRESS		= 99;
 
 }

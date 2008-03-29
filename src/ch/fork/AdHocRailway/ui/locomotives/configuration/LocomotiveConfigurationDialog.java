@@ -85,6 +85,8 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 	private JButton								okButton;
 
+	private LocomotiveGroupSelectionHandler	groupSelectionHandler;
+
 	public LocomotiveConfigurationDialog(JFrame owner) {
 		super(owner, "Locomotive Configuration", true);
 		locomotivePersistence = AdHocRailway.getInstance()
@@ -180,8 +182,9 @@ public class LocomotiveConfigurationDialog extends JDialog {
 	}
 
 	private void initEventHandling() {
+		groupSelectionHandler = new LocomotiveGroupSelectionHandler();
 		locomotiveGroupList
-				.addListSelectionListener(new LocomotiveGroupSelectionHandler());
+				.addListSelectionListener(groupSelectionHandler);
 		locomotivesTable.addMouseListener(new MouseAdapter() {
 
 			public void mouseClicked(MouseEvent e) {
@@ -193,7 +196,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 		});
 	}
-
+	
 	/**
 	 * Sets the selected group as bean in the details model.
 	 */
@@ -207,6 +210,8 @@ public class LocomotiveConfigurationDialog extends JDialog {
 				locomotiveGroupList.setSelectedIndex(0);
 			LocomotiveGroup selectedGroup = (LocomotiveGroup) locomotiveGroupList
 					.getSelectedValue();
+			if(selectedGroup == null) 
+				return;
 			List<Locomotive> locomotives = new ArrayList<Locomotive>(
 					selectedGroup.getLocomotives());
 			locomotiveModel.setList(locomotives);
@@ -323,12 +328,12 @@ public class LocomotiveConfigurationDialog extends JDialog {
 			LocomotiveConfig locomotiveConfig = new LocomotiveConfig(
 					LocomotiveConfigurationDialog.this, newLocomotive);
 			if (locomotiveConfig.isOkPressed()) {
-				selectedLocomotiveGroup.getLocomotives().add(newLocomotive);
-				locomotivePersistence.addLocomotive(newLocomotive);
-				List<Locomotive> locomotives = new ArrayList<Locomotive>(
-						selectedLocomotiveGroup.getLocomotives());
-				locomotiveModel.setList(locomotives);
+//				selectedLocomotiveGroup.getLocomotives().add(newLocomotive);
+//				locomotivePersistence.addLocomotive(newLocomotive);
 			}
+			List<Locomotive> locomotives = new ArrayList<Locomotive>(
+					selectedLocomotiveGroup.getLocomotives());
+			locomotiveModel.setList(locomotives);
 		}
 	}
 
@@ -344,8 +349,13 @@ public class LocomotiveConfigurationDialog extends JDialog {
 			LocomotiveConfig turnoutConfig = new LocomotiveConfig(
 					LocomotiveConfigurationDialog.this, model);
 			if (turnoutConfig.isOkPressed()) {
-				locomotivePersistence.updateLocomotive(model.getBean());
+				//locomotivePersistence.updateLocomotive(model.getBean());
 			}
+			LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) (locomotiveGroupList
+					.getSelectedValue());
+			List<Locomotive> locomotives = new ArrayList<Locomotive>(
+					selectedLocomotiveGroup.getLocomotives());
+			locomotiveModel.setList(locomotives);
 		}
 	}
 

@@ -43,18 +43,15 @@ public class HibernateLocomotivePersistence extends
 		super.clear();
 		logger.info("HibernateLocomotivePersistence loaded");
 
-		try {
-			getLocomotiveTypeByName("DELTA");
-		} catch (NoResultException ex) {
+		if (getLocomotiveTypeByName("DELTA") == null) {
 			LocomotiveType deltaType = new LocomotiveType(0, "DELTA");
 			deltaType.setDrivingSteps(14);
 			deltaType.setStepping(4);
 			deltaType.setFunctionCount(4);
 			addLocomotiveType(deltaType);
 		}
-		try {
-			getLocomotiveTypeByName("DIGITAL");
-		} catch (NoResultException ex) {
+		if (getLocomotiveTypeByName("DIGITAL") == null) {
+
 			LocomotiveType digitalType = new LocomotiveType(0, "DIGITAL");
 			digitalType.setDrivingSteps(28);
 			digitalType.setStepping(2);
@@ -125,7 +122,6 @@ public class HibernateLocomotivePersistence extends
 	private SortedSet<Locomotive> getAllLocomotivesDB()
 			throws LocomotivePersistenceException {
 		EntityManager em = HibernatePersistence.getEntityManager();
-		System.out.println(em.getTransaction().isActive());
 		try {
 			List<Locomotive> locs = em.createQuery("from Locomotive")
 					.getResultList();
@@ -161,6 +157,8 @@ public class HibernateLocomotivePersistence extends
 		logger.debug("addLocomotive()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
+
+			locomotive.getLocomotiveGroup().getLocomotives().add(locomotive);
 			em.persist(locomotive);
 			em.refresh(locomotive.getLocomotiveGroup());
 			HibernatePersistence.flush();
@@ -336,10 +334,6 @@ public class HibernateLocomotivePersistence extends
 	public LocomotiveType getLocomotiveTypeByName(String typeName)
 			throws LocomotivePersistenceException {
 		logger.debug("getLocomotiveTypeByName()");
-		EntityManager em = HibernatePersistence.getEntityManager();
-		List<LocomotiveType> locs = em.createQuery("from LocomotiveType")
-				.getResultList();
-		//System.out.println(locs);
 		return super.getLocomotiveTypeByName(typeName);
 	}
 
@@ -348,7 +342,6 @@ public class HibernateLocomotivePersistence extends
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.persist(type);
-
 			HibernatePersistence.flush();
 			super.addLocomotiveType(type);
 		} catch (HibernateException x) {

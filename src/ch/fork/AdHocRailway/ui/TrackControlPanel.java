@@ -351,8 +351,15 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			if (indexToTurnoutGroup.isEmpty()) {
+				JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
+						"Please configure a group first", "Add Turnouts",
+						JOptionPane.INFORMATION_MESSAGE, createImageIcon("messagebox_info.png"));
+				return;
+			}
 			TurnoutConfig config = null;
 			int selectedGroupPane = turnoutGroupsTabbedPane.getSelectedIndex();
+
 			do {
 				TurnoutGroup selectedTurnoutGroup = indexToTurnoutGroup
 						.get(selectedGroupPane);
@@ -379,6 +386,12 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 				Turnout newTurnout = new Turnout();
 				newTurnout.setNumber(nextNumber);
+
+				newTurnout.setBus1(Preferences.getInstance().getIntValue(
+						PreferencesKeys.DEFAULT_TURNOUT_BUS));
+				newTurnout.setBus2(Preferences.getInstance().getIntValue(
+						PreferencesKeys.DEFAULT_TURNOUT_BUS));
+
 				newTurnout.setTurnoutGroup(selectedTurnoutGroup);
 				newTurnout.setDefaultStateEnum(TurnoutState.STRAIGHT);
 				newTurnout.setOrientationEnum(TurnoutOrientation.EAST);

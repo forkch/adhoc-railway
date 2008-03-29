@@ -338,7 +338,7 @@ public class Turnout extends Model implements java.io.Serializable,
 		firePropertyChange(PROPERTYNAME_ID, old, id);
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "turnout_type_id", unique = false, nullable = false, insertable = true, updatable = true)
 	public TurnoutType getTurnoutType() {
 		return this.turnoutType;

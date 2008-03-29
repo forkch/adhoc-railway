@@ -47,7 +47,7 @@ public class Preferences implements PreferencesKeys {
 		hostnames = new ArrayList<String>();
 		hostnames.add("localhost");
 		setStringValue(HOSTNAME, "localhost");
-		setIntValue(PORT, 12345);
+		setIntValue(PORT, 4303);
 		setIntValue(ACTIVATION_TIME, 50);
 		setIntValue(ROUTING_DELAY, 250);
 		setIntValue(LOCK_DURATION, 0);
@@ -63,30 +63,15 @@ public class Preferences implements PreferencesKeys {
 		setBooleanValue(USE_DATABASE, false);
 		setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES, false);
 		setBooleanValue(OPEN_LAST_FILE, false);
+		setIntValue(DEFAULT_TURNOUT_BUS, 1);
+		setIntValue(DEFAULT_LOCOMOTIVE_BUS, 1);
 
-		// configFile =
-		// new File(System.getProperty("user.home") + File.separator
-		// + ".adhocrailway.conf");
-		// if (configFile.exists()) {
-		// props = new Properties();
-		// try {
-		// logger.info("found .adhocrailway.conf in users home directory");
-		// props.load(new FileInputStream(configFile));
-		// for (Object key : props.keySet()) {
-		// setStringValue(key.toString(), props.getProperty(
-		// key.toString()).toString());
-		// }
-		// return;
-		// } catch (FileNotFoundException e) {
-		//
-		// } catch (IOException e) {
-		// }
-		// }
-		configFile = new File("./adhocrailway.conf");
+		configFile = new File(System.getProperty("user.home") + File.separator
+				+ ".adhocrailway.conf");
 		if (configFile.exists()) {
 			props = new Properties();
 			try {
-				logger.info("found adhocrailway.conf in current directory");
+				logger.info("found .adhocrailway.conf in users home directory");
 				props.load(new FileInputStream(configFile));
 				for (Object key : props.keySet()) {
 					setStringValue(key.toString(), props.getProperty(
@@ -98,6 +83,24 @@ public class Preferences implements PreferencesKeys {
 			} catch (IOException e) {
 			}
 		}
+		/*if (!configFile.exists()) {
+			configFile = new File("./adhocrailway.conf");
+			if (configFile.exists()) {
+				props = new Properties();
+				try {
+					logger.info("found adhocrailway.conf in current directory");
+					props.load(new FileInputStream(configFile));
+					for (Object key : props.keySet()) {
+						setStringValue(key.toString(), props.getProperty(
+								key.toString()).toString());
+					}
+					return;
+				} catch (FileNotFoundException e) {
+
+				} catch (IOException e) {
+				}
+			}
+		}*/
 	}
 
 	public static Preferences getInstance() {

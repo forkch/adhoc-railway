@@ -279,8 +279,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 			if (e.getValueIsAdjusting())
 				return;
 			if (previousSelectedGroup != null) {
-				turnoutPersistence.updateTurnoutGroup(previousSelectedGroup);
-
+				//turnoutPersistence.updateTurnoutGroup(previousSelectedGroup);
 			}
 			if (turnoutGroupList.getSelectedIndex() == -1)
 				turnoutGroupList.setSelectedIndex(0);
@@ -415,11 +414,16 @@ public class TurnoutConfigurationDialog extends JDialog {
 			}
 			Turnout newTurnout = new Turnout();
 			newTurnout.setNumber(nextNumber);
+
+			newTurnout.setBus1(Preferences.getInstance().getIntValue(PreferencesKeys.DEFAULT_TURNOUT_BUS));
+			newTurnout.setBus2(Preferences.getInstance().getIntValue(PreferencesKeys.DEFAULT_TURNOUT_BUS));
+			
 			newTurnout.setTurnoutGroup(selectedTurnoutGroup);
 			newTurnout.setDefaultStateEnum(TurnoutState.STRAIGHT);
 			newTurnout.setOrientationEnum(TurnoutOrientation.EAST);
 			newTurnout.setTurnoutType(turnoutPersistence
 					.getTurnoutType(TurnoutTypes.DEFAULT));
+			
 			TurnoutConfig switchConfig = new TurnoutConfig(
 					TurnoutConfigurationDialog.this, newTurnout);
 			if (switchConfig.isOkPressed()) {

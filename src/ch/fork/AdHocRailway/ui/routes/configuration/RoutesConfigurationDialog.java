@@ -430,6 +430,14 @@ public class RoutesConfigurationDialog extends JDialog {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			RouteGroup selectedRouteGroup = (RouteGroup) (routeGroupList
+					.getSelectedValue());
+			if (selectedRouteGroup == null) {
+				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
+						"Please select a route group", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			String newRouteName = JOptionPane.showInputDialog(
 					RoutesConfigurationDialog.this,
 					"Enter the name of the new Route", "Add Route",
@@ -440,8 +448,7 @@ public class RoutesConfigurationDialog extends JDialog {
 			Route newRoute = new Route();
 			newRoute.setName(newRouteName);
 			newRoute.setNumber(nextNumber);
-			RouteGroup selectedRouteGroup = (RouteGroup) (routeGroupList
-					.getSelectedValue());
+			
 
 			newRoute.setRouteGroup(selectedRouteGroup);
 			try {
@@ -479,9 +486,11 @@ public class RoutesConfigurationDialog extends JDialog {
 			if (response == JOptionPane.YES_OPTION) {
 				try {
 					routePersistence.deleteRoute(routeToDelete);
+					
 					List<Route> routes = new ArrayList<Route>(
 							selectedRouteGroup.getRoutes());
 					routesModel.setList(routes);
+					routesList.clearSelection();
 				} catch (RoutePersistenceException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
 				}

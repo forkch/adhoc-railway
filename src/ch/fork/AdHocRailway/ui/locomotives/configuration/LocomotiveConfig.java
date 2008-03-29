@@ -18,8 +18,11 @@
 
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +34,13 @@ import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
+import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
+import ch.fork.AdHocRailway.ui.UIConstants;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -47,7 +52,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class LocomotiveConfig extends JDialog {
+public class LocomotiveConfig extends JDialog implements PropertyChangeListener {
 	private boolean							okPressed;
 
 	private JTextField						nameTextField;
@@ -67,6 +72,10 @@ public class LocomotiveConfig extends JDialog {
 	private LocomotivePersistenceIface		locomotivePersistence;
 
 	private JButton							okButton;
+
+	private JButton							cancelButton;
+
+	private boolean							cancelPressed;
 
 	public LocomotiveConfig(Frame owner, Locomotive myLocomotive) {
 		super(owner, "Locomotive Config", true);
@@ -97,11 +106,11 @@ public class LocomotiveConfig extends JDialog {
 	private void initComponents() {
 
 		nameTextField = BasicComponentFactory.createTextField(presentationModel
-				.getModel(Locomotive.PROPERTYNAME_DESCRIPTION));
+				.getModel(Locomotive.PROPERTYNAME_NAME));
 		nameTextField.setColumns(10);
 
 		descTextField = BasicComponentFactory.createTextField(presentationModel
-				.getModel(Locomotive.PROPERTYNAME_NAME));
+				.getModel(Locomotive.PROPERTYNAME_DESCRIPTION));
 		descTextField.setColumns(10);
 
 		imageTextField = BasicComponentFactory
@@ -133,8 +142,12 @@ public class LocomotiveConfig extends JDialog {
 		locomotiveTypeComboBox = BasicComponentFactory
 				.createComboBox(new SelectionInList<LocomotiveType>(
 						locomotiveTypes, locomotiveTypeModel));
+		locomotiveTypeComboBox.setSelectedIndex(0);
 
+		presentationModel.getBean().addPropertyChangeListener(this);
+		validate(presentationModel.getBean(), null);
 		okButton = new JButton(new ApplyChangesAction());
+		cancelButton = new JButton(new CancelAction());
 	}
 
 	private void buildPanel() {
@@ -178,7 +191,7 @@ public class LocomotiveConfig extends JDialog {
 	}
 
 	private JComponent buildButtonBar() {
-		return ButtonBarFactory.buildRightAlignedBar(okButton);
+		return ButtonBarFactory.buildRightAlignedBar(okButton, cancelButton);
 	}
 
 	public boolean isOkPressed() {
@@ -192,8 +205,111 @@ public class LocomotiveConfig extends JDialog {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			Locomotive locomotive = presentationModel.getBean();
+			if (locomotive.getId() == 0) {
+				locomotivePersistence.addLocomotive(locomotive);
+			} else {
+				locomotivePersistence.updateLocomotive(locomotive);
+			}
+
 			okPressed = true;
 			LocomotiveConfig.this.setVisible(false);
 		}
+	}
+
+	class CancelAction extends AbstractAction {
+
+		public CancelAction() {
+			super("Cancel");
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			Locomotive locomotive = presentationModel.getBean();
+			locomotive.removePropertyChangeListener(LocomotiveConfig.this);
+			okPressed = false;
+			cancelPressed = true;
+			LocomotiveConfig.this.setVisible(false);
+		}
+	}
+
+	public boolean isCancelPressed() {
+		return cancelPressed;
+	}
+
+	public void propertyChange(PropertyChangeEvent event) {
+		Locomotive locomotive = presentationModel.getBean();
+		if (!validate(locomotive, event))
+			return;
+	}
+
+	private boolean validate(Locomotive locomotive, PropertyChangeEvent event) {
+		boolean validate = true;
+		if (event == null
+				|| event.getPropertyName().equals(Locomotive.PROPERTYNAME_NAME)) {
+			if (locomotive.getName() == null || locomotive.getName().equals("")) {
+				validate = false;
+				nameTextField.setBackground(UIConstants.ERROR_COLOR);
+			} else {
+				nameTextField
+						.setBackground(UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			}
+		}
+		if (event == null
+				|| event.getPropertyName().equals(Locomotive.PROPERTYNAME_BUS)
+				|| event.getPropertyName().equals(
+						Locomotive.PROPERTYNAME_ADDRESS)) {
+			boolean busValid = true;
+
+			if (locomotive.getBus() == 0) {
+				setSpinnerColor(busTextField, UIConstants.ERROR_COLOR);
+				validate = false;
+				busValid = false;
+			} else {
+				setSpinnerColor(busTextField,
+						UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			}
+
+			boolean addressValid = true;
+
+			if (locomotive.getAddress() == 0
+					|| locomotive.getAddress() > Constants.MAX_MM_TURNOUT_ADDRESS) {
+				setSpinnerColor(addressTextField, UIConstants.ERROR_COLOR);
+				validate = false;
+				addressValid = false;
+			} else {
+				setSpinnerColor(addressTextField,
+						UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			}
+
+			if (busValid && addressValid) {
+
+				int bus = ((Integer) busTextField.getValue()).intValue();
+				int address = ((Integer) addressTextField.getValue())
+						.intValue();
+				boolean unique = true;
+				for (Locomotive l : locomotivePersistence.getAllLocomotives()) {
+					if (l.getBus() == bus && l.getAddress() == address
+							&& !l.equals(locomotive))
+						unique = false;
+				}
+				if (!unique) {
+					setSpinnerColor(busTextField, UIConstants.WARN_COLOR);
+					setSpinnerColor(addressTextField, UIConstants.WARN_COLOR);
+				} else {
+					setSpinnerColor(busTextField,
+							UIConstants.DEFAULT_TEXTFIELD_COLOR);
+					setSpinnerColor(addressTextField,
+							UIConstants.DEFAULT_TEXTFIELD_COLOR);
+				}
+			}
+		}
+
+		return validate;
+	}
+
+	private void setSpinnerColor(JSpinner spinner, Color color) {
+		JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner
+				.getEditor();
+		editor.getTextField().setBackground(color);
 	}
 }

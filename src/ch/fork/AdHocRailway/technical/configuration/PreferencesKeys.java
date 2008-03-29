@@ -21,32 +21,34 @@ package ch.fork.AdHocRailway.technical.configuration;
 public interface PreferencesKeys {
 
 	// GUI
-	public static final String	LOCOMOTIVE_CONTROLES	= "LocomotiveControlesAmount";
-	public static final String	TURNOUT_CONTROLES		= "SwitchControlesAmount";
-	public static final String	ROUTE_CONTROLES			= "RouteControlesAmount";
-	public static final String	KEYBOARD_LAYOUT			= "KeyBoardLayout";
-	public static final String	FULLSCREEN				= "Fullscreen";
-	public static final String	TABBED_TRACK			= "TabbedTrack";
-	public static final String	LAST_OPENED_FILE		= "LastOpenedFile";
-	public static final String	USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES		= "UseFixedTurnoutAndRouteGroupSizes";
-	public static final String  OPEN_LAST_FILE			= "OpenLastFile";
+	public static final String	LOCOMOTIVE_CONTROLES					= "LocomotiveControlesAmount";
+	public static final String	TURNOUT_CONTROLES						= "SwitchControlesAmount";
+	public static final String	ROUTE_CONTROLES							= "RouteControlesAmount";
+	public static final String	KEYBOARD_LAYOUT							= "KeyBoardLayout";
+	public static final String	FULLSCREEN								= "Fullscreen";
+	public static final String	TABBED_TRACK							= "TabbedTrack";
+	public static final String	LAST_OPENED_FILE						= "LastOpenedFile";
+	public static final String	USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES	= "UseFixedTurnoutAndRouteGroupSizes";
+	public static final String	OPEN_LAST_FILE							= "OpenLastFile";
 
 	// Digital Data
-	public static final String	ACTIVATION_TIME			= "DefaultActivationTime";
-	public static final String	ROUTING_DELAY			= "DefaultRoutingDelay";
-	public static final String	LOCK_DURATION			= "DefaultLockDuration";
-	public static final String	INTERFACE_6051			= "Interface6051";
-	public static final String	LOGGING					= "WriteLog";
+	public static final String	ACTIVATION_TIME							= "DefaultActivationTime";
+	public static final String	ROUTING_DELAY							= "DefaultRoutingDelay";
+	public static final String	LOCK_DURATION							= "DefaultLockDuration";
+	public static final String	INTERFACE_6051							= "Interface6051";
+	public static final String	LOGGING									= "WriteLog";
+	public static final String	DEFAULT_TURNOUT_BUS						= "DefaultTurnoutBus";
+	public static final String	DEFAULT_LOCOMOTIVE_BUS					= "DefaultLocomotiveBus";
 
 	// Server
-	public static final String	HOSTNAME				= "Hostname";
-	public static final String	PORT					= "Port";
-	public static final String	AUTOCONNECT				= "Autoconnect";
+	public static final String	HOSTNAME								= "Hostname";
+	public static final String	PORT									= "Port";
+	public static final String	AUTOCONNECT								= "Autoconnect";
 
 	// Database
-	public static final String	USE_DATABASE			= "UseDatabase";
-	public static final String	DATABASE_HOST			= "DatabaseHost";
-	public static final String	DATABASE_NAME			= "DatabaseName";
-	public static final String	DATABASE_USER			= "DatabaseUser";
-	public static final String	DATABASE_PWD			= "DatabasePWD";
+	public static final String	USE_DATABASE							= "UseDatabase";
+	public static final String	DATABASE_HOST							= "DatabaseHost";
+	public static final String	DATABASE_NAME							= "DatabaseName";
+	public static final String	DATABASE_USER							= "DatabaseUser";
+	public static final String	DATABASE_PWD							= "DatabasePWD";
 }

@@ -32,6 +32,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+
 import com.jgoodies.binding.beans.Model;
 
 /**
@@ -69,15 +71,25 @@ public class Locomotive extends Model implements java.io.Serializable,
 	public static final String	PROPERTYNAME_IMAGE				= "image";
 	public static final String	PROPERTYNAME_ADDRESS			= "address";
 	public static final String	PROPERTYNAME_BUS				= "bus";
-
+	
 	public int compareTo(Locomotive o) {
 		if (this == o)
 			return 0;
 		if (o == null)
 			return -1;
-		return getName().compareTo(o.getName());
+		if(name == null) {
+			if (id > o.getId())
+				return 1;
+			else if (id == o.getId()) 
+				return 0;
+			else 
+				return -1;
+		}else{
+			return name.compareTo(o.getName());
+		}
+			
 	}
-
+	@Transient
 	public String toString() {
 		return name;
 	}
@@ -88,6 +100,18 @@ public class Locomotive extends Model implements java.io.Serializable,
 	public Locomotive() {
 	}
 
+	/** minimal constructor */
+	public Locomotive(int id, LocomotiveGroup locomotiveGroup,
+			LocomotiveType locomotiveType, String name, int address, int bus) {
+		this.id = id;
+		this.locomotiveGroup = locomotiveGroup;
+		this.locomotiveType = locomotiveType;
+		this.name = name;
+		this.address = address;
+		this.bus = bus;
+
+	}
+	
 	/** full constructor */
 	public Locomotive(int id, LocomotiveGroup locomotiveGroup,
 			LocomotiveType locomotiveType, String name, String description,
@@ -203,6 +227,7 @@ public class Locomotive extends Model implements java.io.Serializable,
 	}
 
 	@Override
+	@Transient
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -221,6 +246,7 @@ public class Locomotive extends Model implements java.io.Serializable,
 	}
 
 	@Override
+	@Transient
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

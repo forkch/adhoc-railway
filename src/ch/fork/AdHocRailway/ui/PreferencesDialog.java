@@ -52,6 +52,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private JSpinner			locomotiveControlNumber;
 	private JSpinner			switchControlNumber;
 	private JSpinner			routeControlNumber;
+	private JSpinner			defaultTurnoutBus;
+	private JSpinner			defaultLocomotiveBus;
 	private SpinnerNumberModel	locomotiveControlNumberModel;
 	private SpinnerNumberModel	switchControlNumberModel;
 	private JTextField			hostnameTextField;
@@ -73,6 +75,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private JTextField			databasePasswordField;
 	private JCheckBox			useDatabaseCheckBox;
 	private JCheckBox			openLastFileCheckBox;
+	private SpinnerNumberModel	defaultTurnoutBusModel;
+	private SpinnerNumberModel	defaultLocomotiveBusModel;
 
 	public PreferencesDialog(JFrame owner) {
 		super(owner, "Preferences", true);
@@ -194,24 +198,34 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		defaultLockDurationModel = new SpinnerNumberModel(0, 0, 60, 1);
 		defaultLockDuration = new JSpinner(defaultLockDurationModel);
+		defaultTurnoutBusModel = new SpinnerNumberModel(0, 0, 60, 1);
+		defaultTurnoutBus = new JSpinner(defaultTurnoutBusModel);
+		defaultLocomotiveBusModel = new SpinnerNumberModel(0, 0, 60, 1);
+		defaultLocomotiveBus = new JSpinner(defaultLocomotiveBusModel);
 
 		interface6051 = new JCheckBox();
 
 		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
+				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
-		builder.addLabel("Solenoid activation time [ms]", cc.xy(1, 1));
-		builder.add(defaultActivationTime, cc.xy(3, 1));
+		builder.addLabel("Default Turnout Bus", cc.xy(1, 1));
+		builder.add(defaultTurnoutBus, cc.xy(3, 1));
+		
+		builder.addLabel("Default Locomotive Bus", cc.xy(1, 3));
+		builder.add(defaultLocomotiveBus, cc.xy(3, 3));
+		
+		builder.addLabel("Solenoid activation time [ms]", cc.xy(1, 5));
+		builder.add(defaultActivationTime, cc.xy(3, 5));
 
-		builder.addLabel("Routing delay [ms]", cc.xy(1, 3));
-		builder.add(defaultRoutingDelay, cc.xy(3, 3));
+		builder.addLabel("Routing delay [ms]", cc.xy(1, 7));
+		builder.add(defaultRoutingDelay, cc.xy(3, 7));
 
-		builder.addLabel("Lock time (0 means forever) [s]", cc.xy(1, 5));
-		builder.add(defaultLockDuration, cc.xy(3, 5));
+		builder.addLabel("Lock time (0 means forever) [s]", cc.xy(1, 9));
+		builder.add(defaultLockDuration, cc.xy(3, 9));
 
-		builder.addLabel("Interface 6051 attached", cc.xy(1, 7));
-		builder.add(interface6051, cc.xy(3, 7));
+		builder.addLabel("Interface 6051 attached", cc.xy(1, 11));
+		builder.add(interface6051, cc.xy(3, 11));
 
 		return builder.getPanel();
 	}
@@ -297,6 +311,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		fixedTurnoutGroupSizesCheckBox.setSelected(p.getBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES));
 		openLastFileCheckBox.setSelected(p.getBooleanValue(OPEN_LAST_FILE));
 
+		defaultTurnoutBusModel.setValue(p.getIntValue(DEFAULT_TURNOUT_BUS));
+		defaultLocomotiveBusModel.setValue(p.getIntValue(DEFAULT_LOCOMOTIVE_BUS));
 		defaultActivationTimeModel.setValue(p.getIntValue(ACTIVATION_TIME));
 		defaultRoutingDelayModel.setValue(p.getIntValue(ROUTING_DELAY));
 		defaultLockDurationModel.setValue(p.getIntValue(LOCK_DURATION));
@@ -329,6 +345,10 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		p.setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES, fixedTurnoutGroupSizesCheckBox.isSelected());
 		p.setBooleanValue(OPEN_LAST_FILE, openLastFileCheckBox.isSelected());
 
+		p.setIntValue(DEFAULT_TURNOUT_BUS, defaultTurnoutBusModel.getNumber()
+				.intValue());
+		p.setIntValue(DEFAULT_LOCOMOTIVE_BUS, defaultLocomotiveBusModel.getNumber()
+				.intValue());
 		p.setIntValue(ACTIVATION_TIME, defaultActivationTimeModel.getNumber()
 				.intValue());
 		p.setIntValue(ROUTING_DELAY, defaultRoutingDelayModel.getNumber()
