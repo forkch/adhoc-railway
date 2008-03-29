@@ -250,7 +250,6 @@ public class KeyTrackControl extends SimpleInternalFrame {
 			if (searchedTurnout == null) {
 				return;
 			}
-			System.out.println(">>>" + e.getActionCommand());
 			if (e.getActionCommand().equals("/")) {
 				turnoutControl.setCurvedLeft(searchedTurnout);
 			} else if (e.getActionCommand().equals("*")) {

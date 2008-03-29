@@ -87,7 +87,6 @@ public class Router extends Thread {
 		TurnoutControlIface sc = SRCPTurnoutControl.getInstance();
 		for (RouteItem ri : routeItems) {
 			Turnout turnoutToRoute = ri.getTurnout();
-			System.out.println(turnoutToRoute);
 			switch (ri.getRoutedStateEnum()) {
 			case STRAIGHT:
 				sc.setStraight(turnoutToRoute);

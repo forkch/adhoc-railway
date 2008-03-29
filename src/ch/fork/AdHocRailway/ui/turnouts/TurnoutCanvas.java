@@ -39,7 +39,7 @@ public class TurnoutCanvas extends JPanel {
 		this.turnout = turnout;
 	}
 
-	public void paint(Graphics g) {
+	public void paintComponent(Graphics g) {
 		if (turnout.isDoubleCross()) {
 			paintDoubleCross(g);
 		} else if (turnout.isDefault()) {

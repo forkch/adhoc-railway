@@ -67,19 +67,18 @@ import ch.fork.AdHocRailway.domain.HibernatePersistence;
 import ch.fork.AdHocRailway.domain.NoSessionException;
 import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
+import ch.fork.AdHocRailway.domain.locomotives.FileLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
-import ch.fork.AdHocRailway.domain.locomotives.FileLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
-import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.FileRoutePersistence;
+import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
 import ch.fork.AdHocRailway.domain.turnouts.FileTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
-import ch.fork.AdHocRailway.domain.turnouts.CachingTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
@@ -439,7 +438,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			
+
 			Thread t = new Thread(new Runnable() {
 				public void run() {
 					try {
@@ -535,7 +534,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 				try {
 					HibernatePersistence.connect();
-					
+
 					try {
 						new XMLImporter(file.getAbsolutePath(),
 								HibernateTurnoutPersistence.getInstance(),
@@ -581,6 +580,35 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				} catch (PersistenceException ex) {
 					ExceptionProcessor.getInstance().processException(
 							"Failed to connect to database", ex);
+				}
+				updateGUI();
+			}
+		}
+	}
+
+	private class ClearDatabaseAction extends AbstractAction {
+
+		public ClearDatabaseAction() {
+			super("Clear Database");
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
+					"All data in the database will be deleted \n"
+							+ "Do you really want to proceed ?",
+					"Export to database", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					createImageIcon("messagebox_warning.png"));
+			if (result == JOptionPane.YES_OPTION) {
+
+				try {
+					HibernatePersistence.connect();
+
+					HibernateRoutePersistence.getInstance().clear();
+					HibernateTurnoutPersistence.getInstance().clear();
+					HibernateLocomotivePersistence.getInstance().clear();
+				} catch (Exception x) {
+					ExceptionProcessor.getInstance().processException(x);
 				}
 				updateGUI();
 			}
@@ -839,10 +867,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				ActionEvent.CTRL_MASK));
 
-		JMenuItem exportToDatavaseItem = new JMenuItem(
+		JMenuItem exportToDatabaseItem = new JMenuItem(
 				new ExportToDatabaseAction());
 
 		JMenuItem openDatabaseItem = new JMenuItem(new OpenDatabaseAction());
+		JMenuItem clearDatabaseItem = new JMenuItem(new ClearDatabaseAction());
 
 		JMenuItem exitItem = new JMenuItem(new ExitAction());
 		exitItem.setMnemonic(KeyEvent.VK_X);
@@ -852,7 +881,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		fileMenu.add(openItem);
 		fileMenu.add(openDatabaseItem);
 		fileMenu.add(saveItem);
-		fileMenu.add(exportToDatavaseItem);
+		fileMenu.add(exportToDatabaseItem);
+		fileMenu.add(new JSeparator());
+		fileMenu.add(clearDatabaseItem);
 		fileMenu.add(new JSeparator());
 		fileMenu.add(exitItem);
 

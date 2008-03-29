@@ -75,7 +75,6 @@ public class SplashWindow extends JWindow {
 	}
 
 	public void nextStep(String msg) {
-		System.out.println(progressBar.getValue() + "  " + msg);
 		msgLabel.setText(msg);
 		progressBar.setValue(progressBar.getValue()+1);
 		if (progressBar.getValue() == steps) {

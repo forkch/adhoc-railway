@@ -59,7 +59,6 @@ import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.SwitchProgrammer;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
-import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 

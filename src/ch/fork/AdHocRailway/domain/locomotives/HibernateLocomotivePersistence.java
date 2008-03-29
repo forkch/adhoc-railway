@@ -23,7 +23,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -43,21 +42,7 @@ public class HibernateLocomotivePersistence extends
 		super.clear();
 		logger.info("HibernateLocomotivePersistence loaded");
 
-		if (getLocomotiveTypeByName("DELTA") == null) {
-			LocomotiveType deltaType = new LocomotiveType(0, "DELTA");
-			deltaType.setDrivingSteps(14);
-			deltaType.setStepping(4);
-			deltaType.setFunctionCount(4);
-			addLocomotiveType(deltaType);
-		}
-		if (getLocomotiveTypeByName("DIGITAL") == null) {
-
-			LocomotiveType digitalType = new LocomotiveType(0, "DIGITAL");
-			digitalType.setDrivingSteps(28);
-			digitalType.setStepping(2);
-			digitalType.setFunctionCount(5);
-			addLocomotiveType(digitalType);
-		}
+		updateLocomotiveTypeCache();
 		updateLocomotiveCache();
 		updateLocomotiveGroupCache();
 	}
@@ -69,6 +54,11 @@ public class HibernateLocomotivePersistence extends
 		return instance;
 	}
 
+	private void updateLocomotiveTypeCache() {
+		for(LocomotiveType type : getAllLocomotiveTypesDB()) {
+			super.addLocomotiveType(type);
+		}
+	}
 	private void updateLocomotiveCache() {
 		for (Locomotive locomotive : getAllLocomotivesDB()) {
 			super.addLocomotive(locomotive);
@@ -86,8 +76,8 @@ public class HibernateLocomotivePersistence extends
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.createNativeQuery("TRUNCATE TABLE locomotive").executeUpdate();
-			em.createNativeQuery("TRUNCATE TABLE locomotive_type")
-					.executeUpdate();
+//			em.createNativeQuery("TRUNCATE TABLE locomotive_type")
+//					.executeUpdate();
 			em.createNativeQuery("TRUNCATE TABLE locomotive_group")
 					.executeUpdate();
 
@@ -324,6 +314,23 @@ public class HibernateLocomotivePersistence extends
 			throws LocomotivePersistenceException {
 		logger.debug("getAllLocomotiveTypes()");
 		return super.getAllLocomotiveTypes();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private SortedSet<LocomotiveType> getAllLocomotiveTypesDB() {
+		logger.debug("getAllLocomotiveTypessDB()");
+		EntityManager em = HibernatePersistence.getEntityManager();
+		try {
+			List turnoutTypes = em.createQuery("from LocomotiveType").getResultList();
+			SortedSet<LocomotiveType> res = new TreeSet<LocomotiveType>(turnoutTypes);
+			
+			return res;
+		} catch (HibernateException x) {
+			em.close();
+			HibernatePersistence.connect();
+			HibernatePersistence.getEntityManager().getTransaction().begin();
+			throw new LocomotivePersistenceException("Error", x);
+		}
 	}
 
 	/*

@@ -61,7 +61,6 @@ public class SRCPLockControl implements LOCKInfoListener, Constants {
 
 	public void registerControlObject(String deviceGroup,
 			LookupAddress address, Object object) {
-		System.out.println(object);
 		if (addressToControlObject.get(deviceGroup) == null)
 			addressToControlObject.put(deviceGroup,
 					new HashMap<LookupAddress, Object>());
@@ -125,7 +124,6 @@ public class SRCPLockControl implements LOCKInfoListener, Constants {
 			lock.term(deviceGroup, address.getAddress1());
 			sLock.setLocked(false);
 			sLock.setSessionID(-1);
-			System.out.println(">>>" + false);
 		} catch (SRCPDeviceLockedException e) {
 			throw new LockingException(ERR_LOCKED, e);
 		} catch (SRCPException e) {

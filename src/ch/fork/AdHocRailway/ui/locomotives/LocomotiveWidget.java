@@ -43,6 +43,8 @@ import javax.swing.JProgressBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.plaf.ColorUIResource;
 
 import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
@@ -102,6 +104,8 @@ public class LocomotiveWidget extends JPanel implements
 
 	private JFrame						frame;
 
+	private Object	defaultDisabledComboColor;
+
 	public LocomotiveWidget(int accelerateKey, int deccelerateKey,
 			int toggleDirectionKey, JFrame frame) {
 		super();
@@ -109,7 +113,7 @@ public class LocomotiveWidget extends JPanel implements
 		this.deccelerateKey = deccelerateKey;
 		this.toggleDirectionKey = toggleDirectionKey;
 		this.frame = frame;
-
+		defaultDisabledComboColor = UIManager.get("ComboBox.disabledForeground");
 		initGUI();
 		initKeyboardActions();
 	}
@@ -397,6 +401,7 @@ public class LocomotiveWidget extends JPanel implements
 			locomotiveGroupComboBox.setEnabled(true);
 			locomotiveComboBox.setEnabled(true);
 		} else {
+			UIManager.put("ComboBox.disabledForeground", new ColorUIResource(Color.BLACK));
 			locomotiveGroupComboBox.setEnabled(false);
 			locomotiveComboBox.setEnabled(false);
 		}
