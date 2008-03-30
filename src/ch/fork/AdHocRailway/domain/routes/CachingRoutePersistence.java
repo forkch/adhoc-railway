@@ -25,6 +25,7 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
@@ -224,6 +225,61 @@ public class CachingRoutePersistence implements RoutePersistenceIface {
 	 */
 	public void flush() throws RoutePersistenceException {
 		logger.debug("flush()");
+	}
+
+	public void enlargeRouteGroups() {
+		logger.debug("enlargeRouteGroups()");
+		int runningNumber = 1;
+		for (RouteGroup group : getAllRouteGroups()) {
+			logger.debug("offset of group " + group.getName() + ": "
+					+ runningNumber);
+			
+			group.setRouteNumberOffset(runningNumber);
+			int routesInThisGroup = 0;
+			for (Route route : group.getRoutes()) {
+				route.setNumber(runningNumber);
+				routesInThisGroup++;
+				runningNumber++;
+			}
+
+			logger.debug("actual routeNumberAmount " + group.getRouteNumberAmount());
+			logger.debug("routes in this group " + routesInThisGroup);
+			int diff = group.getRouteNumberAmount() - routesInThisGroup;
+			logger.debug("difference " + diff);
+			if (diff <= 5 && diff >= 0) {
+				logger.debug("setting turnout amount of group "
+						+ group.getName() + " to "
+						+ (group.getRouteNumberAmount() + 10));
+				group
+						.setRouteNumberAmount(group.getRouteNumberAmount() + 10);
+			} else if(diff < 0) {
+				int newAmount = (int)Math.ceil(Math.abs(diff)/10.0)*10;
+				logger.debug("setting turnout amount of group "
+						+ group.getName() + " to "
+						+ newAmount);
+				group
+						.setRouteNumberAmount(newAmount);
+			}
+			runningNumber = group.getRouteNumberOffset() + group.getRouteNumberAmount();
+			logger.debug("offset of next group: " + runningNumber);
+		}
+		
+	}
+
+	public int getNextFreeRouteNumberOfGroup(RouteGroup routeGroup) {
+		SortedSet<Route> routes = new TreeSet<Route>(routeGroup
+				.getRoutes());
+		int offset = routeGroup.getRouteNumberOffset();
+		int amount = routeGroup.getRouteNumberAmount();
+
+		if (routes.isEmpty()) {
+			return offset;
+		}
+		int nextNumber = routes.last().getNumber() + 1;
+		if (nextNumber < offset + amount) {
+			return nextNumber;
+		}
+		return -1;
 	}
 
 }

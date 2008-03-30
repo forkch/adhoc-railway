@@ -38,10 +38,13 @@ import javax.swing.SwingUtilities;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
+import ch.fork.AdHocRailway.domain.routes.RouteException;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
 import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
+import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
+import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
@@ -112,10 +115,12 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 		public void mouseClicked(MouseEvent e) {
 			try {
-				if (routeControl.isRouting(route))
-					return;
+				System.out.println(e.getButton() == MouseEvent.BUTTON1);
+
 				if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON1) {
+					if (routeControl.isRouting(route))
+						return;
 					if (routeControl.getRouteState(route) == RouteState.ENABLED)
 						routeControl.disableRoute(route);
 					else
@@ -127,11 +132,18 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 				}
 			} catch (TurnoutException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
+
+			} catch (RouteException e1) {
+				ExceptionProcessor.getInstance().processException(e1);
 			}
 		}
 
 		private void displayRouteConfig() {
+			//routeControl.removeRouteChangeListener(route, RouteWidget.this);
+			new RouteConfig(AdHocRailway.getInstance(), route);
+			//routeControl.addRouteChangeListener(route, RouteWidget.this);
 
+			routeChanged(route);
 		}
 	}
 

@@ -25,10 +25,13 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import ch.fork.AdHocRailway.domain.Constants;
+import ch.fork.AdHocRailway.domain.NoSessionException;
 import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import de.dermoba.srcp.client.SRCPSession;
 
 public class SRCPRouteControl implements RouteControlIface {
 	private static Logger							logger				= Logger
@@ -46,6 +49,16 @@ public class SRCPRouteControl implements RouteControlIface {
 	private Map<Route, SRCPRoute>					srcpRoutes;
 
 	protected String								ERR_TOGGLE_FAILED	= "Toggle of switch failed";
+	
+	protected SRCPSession session;
+
+	public SRCPSession getSession() {
+		return session;
+	}
+
+	public void setSession(SRCPSession session) {
+		this.session = session;
+	}
 
 	private SRCPRouteControl() {
 		logger.info("SRCPRouteControl loaded");
@@ -82,6 +95,9 @@ public class SRCPRouteControl implements RouteControlIface {
 		if (srcpRoutes.get(r) == null) {
 			srcpRoutes.put(r, new SRCPRoute(r));
 		}
+		if(session == null) 
+			throw new RouteException(Constants.ERR_NOT_CONNECTED,
+					new NoSessionException());
 	}
 
 	/*

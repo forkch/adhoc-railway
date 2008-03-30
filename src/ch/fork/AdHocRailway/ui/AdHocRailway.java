@@ -738,6 +738,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				session.getInfoChannel().addInfoDataListener(AdHocRailway.this);
 				((SRCPTurnoutControl) turnoutControl).setSession(session);
 				((SRCPLocomotiveControl) locomotiveControl).setSession(session);
+				((SRCPRouteControl) routeControl).setSession(session);
 				// ((SRCPRouteControl) routeControl).setSession(session);
 				lockControl.setSession(session);
 				session.connect();
@@ -776,6 +777,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				session = null;
 				((SRCPTurnoutControl) turnoutControl).setSession(null);
 				((SRCPLocomotiveControl) locomotiveControl).setSession(null);
+				((SRCPRouteControl) routeControl).setSession(null);
 				lockControl.setSession(null);
 				daemonConnectItem.setEnabled(true);
 				daemonDisconnectItem.setEnabled(false);

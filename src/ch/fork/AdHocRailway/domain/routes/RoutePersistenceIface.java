@@ -18,6 +18,8 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+
 import com.jgoodies.binding.list.ArrayListModel;
 
 public interface RoutePersistenceIface {
@@ -59,6 +61,11 @@ public interface RoutePersistenceIface {
 
 	public abstract int getNextFreeRouteNumber()
 			throws RoutePersistenceException;
+
+	public int getNextFreeRouteNumberOfGroup(RouteGroup routeGroup);
+	
+	public void enlargeRouteGroups();
+	
 
 	public abstract void clear() throws RoutePersistenceException;
 	public abstract void flush();

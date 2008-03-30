@@ -334,7 +334,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
 				String newAmount = JOptionPane.showInputDialog(
 						TurnoutConfigurationDialog.this,
-						"How many Turnouts should be in this gorup?", "10");
+						"How many Turnouts should be in this group?", "10");
 				int newOffset = 1;
 				for (TurnoutGroup group : turnoutPersistence
 						.getAllTurnoutGroups()) {

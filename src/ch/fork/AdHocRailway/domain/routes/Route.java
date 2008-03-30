@@ -164,7 +164,7 @@ public class Route extends Model implements java.io.Serializable,
 		this.routeGroup = routeGroup;
 	}
 
-	@Column(name = "number", unique = true, nullable = false, insertable = true, updatable = true)
+	@Column(name = "number", unique = false, nullable = false, insertable = true, updatable = true)
 	public int getNumber() {
 		return this.number;
 	}

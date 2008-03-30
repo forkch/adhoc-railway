@@ -339,6 +339,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 							createImageIcon("messagebox_info.png"));
 			if (result == JOptionPane.OK_OPTION) {
 				turnoutPersistence.enlargeTurnoutGroups();
+				routePersistence.enlargeRouteGroups();
 				update();
 			}
 		}

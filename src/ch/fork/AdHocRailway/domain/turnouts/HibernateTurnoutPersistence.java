@@ -43,13 +43,11 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 
 	private HibernateTurnoutPersistence() {
 		logger.info("HibernateTurnoutPersistence loaded");
-		
-		
+
 		updateTurnoutTypeCache();
 		updateTurnoutCache();
 		updateTurnoutGroupCache();
 	}
-
 
 	public static TurnoutPersistenceIface getInstance() {
 		if (instance == null) {
@@ -59,11 +57,10 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 	}
 
 	private void updateTurnoutTypeCache() {
-		for(TurnoutType type : getAllTurnoutTypesDB()) {
+		for (TurnoutType type : getAllTurnoutTypesDB()) {
 			super.addTurnoutType(type);
 		}
 	}
-
 
 	private void updateTurnoutCache() {
 		SortedSet<Turnout> turnouts = getAllTurnoutsDB();
@@ -83,7 +80,8 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.createNativeQuery("TRUNCATE TABLE turnout").executeUpdate();
-			//em.createNativeQuery("TRUNCATE TABLE turnout_type").executeUpdate();
+			// em.createNativeQuery("TRUNCATE TABLE
+			// turnout_type").executeUpdate();
 			em.createNativeQuery("TRUNCATE TABLE turnout_group")
 					.executeUpdate();
 
@@ -369,9 +367,10 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		logger.debug("getAllTurnoutTypessDB()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
-			List turnoutTypes = em.createQuery("from TurnoutType").getResultList();
+			List turnoutTypes = em.createQuery("from TurnoutType")
+					.getResultList();
 			SortedSet<TurnoutType> res = new TreeSet<TurnoutType>(turnoutTypes);
-			
+
 			return res;
 		} catch (HibernateException x) {
 			em.close();

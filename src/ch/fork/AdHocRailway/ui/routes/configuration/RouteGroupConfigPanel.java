@@ -74,9 +74,9 @@ public class RouteGroupConfigPanel extends JPanel {
 
 		builder.addLabel("Name", cc.xy(1, 1));
 		builder.add(routeGroupName, cc.xy(3, 1));
-		builder.addLabel("Number Offset", cc.xy(1, 3));
+		builder.addLabel("Route Number Offset", cc.xy(1, 3));
 		builder.add(routeNumberOffset, cc.xy(3, 3));
-		builder.addLabel("Number Amount", cc.xy(1, 5));
+		builder.addLabel("Route Amount", cc.xy(1, 5));
 		builder.add(routeNumberAmount, cc.xy(3, 5));
 
 		add(builder.getPanel());
