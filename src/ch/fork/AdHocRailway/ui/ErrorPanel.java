@@ -30,6 +30,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -43,6 +44,9 @@ public class ErrorPanel extends JPanel {
 	private int			pause	= 5000;
 	private float		alpha	= 1.0f;
 	boolean				active	= true;
+	private String		cause;
+	private String		text;
+	private Icon		icon;
 
 	public ErrorPanel() {
 		initGUI();
@@ -72,13 +76,21 @@ public class ErrorPanel extends JPanel {
 	}
 
 	public void setErrorTextIcon(String text, Icon icon) {
+		this.icon = icon;
 		iconLabel.setIcon(icon);
 		iconLabel.setBackground(new Color(255, 177, 177));
 		setErrorText(text);
 
 	}
 
+	public void setErrorTextIcon(String text, String cause, Icon icon) {
+		this.cause = cause;
+		setErrorTextIcon(text, icon);
+		// setToolTipText(cause);
+	}
+
 	public void setErrorText(String text) {
+		this.text = text;
 		alpha = 1.0f;
 		active = true;
 		errorTextArea.setText(text);
@@ -93,9 +105,14 @@ public class ErrorPanel extends JPanel {
 
 	private class ErrorConfirmAction extends MouseAdapter {
 		public void mouseClicked(MouseEvent e) {
-
+			System.out.println(e.getButton());
+			System.out.println(e.getButton() == MouseEvent.BUTTON2);
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
 				SwingUtilities.invokeLater(closerRunner);
+			} else if (e.getClickCount() == 1
+					&& e.getButton() == MouseEvent.BUTTON3) {
+				JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
+						cause, text, JOptionPane.ERROR_MESSAGE, icon);
 			}
 		}
 	}

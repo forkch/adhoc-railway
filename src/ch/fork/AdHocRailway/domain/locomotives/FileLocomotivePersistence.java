@@ -18,16 +18,9 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
-
-import ch.fork.AdHocRailway.domain.LookupAddress;
-
-import com.jgoodies.binding.list.ArrayListModel;
 
 public class FileLocomotivePersistence extends CachingLocomotivePersistence {
 	private static FileLocomotivePersistence	instance;
@@ -41,6 +34,11 @@ public class FileLocomotivePersistence extends CachingLocomotivePersistence {
 	private FileLocomotivePersistence() {
 		logger.info("FileLocomotivePersistence loaded");
 
+		addDefaultLocomotiveTypes();
+
+	}
+
+	private void addDefaultLocomotiveTypes() {
 		if (getLocomotiveTypeByName("DELTA") == null) {
 			LocomotiveType deltaType = new LocomotiveType(0, "DELTA");
 			deltaType.setDrivingSteps(14);
@@ -56,7 +54,11 @@ public class FileLocomotivePersistence extends CachingLocomotivePersistence {
 			digitalType.setFunctionCount(5);
 			addLocomotiveType(digitalType);
 		}
-
+	}
+	
+	public void clear() {
+		super.clear();
+		addDefaultLocomotiveTypes();
 	}
 
 	public static FileLocomotivePersistence getInstance() {

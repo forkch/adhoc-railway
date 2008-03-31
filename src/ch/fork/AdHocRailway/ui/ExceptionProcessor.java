@@ -44,23 +44,25 @@ public class ExceptionProcessor {
 
 	public void processException(Exception e) {
 		e.printStackTrace();
-		String exceptionMsg = e.getMessage();
 		if (e.getCause() != null) {
-			exceptionMsg += "\nCause: " + e.getCause().getMessage();
+			errorPanel.setErrorTextIcon(e.getMessage(), e.getCause()
+					.getMessage(), ImageTools
+					.createImageIcon("messagebox_critical.png"));
+		} else {
+			errorPanel.setErrorTextIcon(e.getMessage(), ImageTools
+					.createImageIcon("messagebox_critical.png"));
 		}
-		errorPanel.setErrorTextIcon(exceptionMsg, ImageTools
-				.createImageIcon("messagebox_critical.png"));
 	}
 
 	public void processException(String msg, Exception e) {
 		e.printStackTrace();
-		String exceptionMsg = e.getMessage();
-		msg = msg + "\n" + exceptionMsg;
 		if (e.getCause() != null) {
-			exceptionMsg += "\n\nCause: " + e.getCause().getMessage();
+			errorPanel.setErrorTextIcon(msg, e.getMessage(), ImageTools
+					.createImageIcon("messagebox_critical.png"));
+		} else {
+			errorPanel.setErrorTextIcon(e.getMessage(), ImageTools
+					.createImageIcon("messagebox_critical.png"));
 		}
-		errorPanel.setErrorTextIcon(msg, ImageTools
-				.createImageIcon("messagebox_critical.png"));
 	}
 
 	public void processExceptionDialog(Exception e) {

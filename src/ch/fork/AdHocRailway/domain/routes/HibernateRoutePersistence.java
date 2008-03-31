@@ -24,6 +24,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -85,7 +86,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Error", x);
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
 		}
 	}
 
@@ -117,13 +122,16 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			List<Route> routes = em.createQuery("from Route").getResultList();
-
+			HibernatePersistence.flush();
 			return new TreeSet<Route>(routes);
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new RoutePersistenceException("Error", x);
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
 		}
 	}
 
@@ -159,8 +167,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new RoutePersistenceException("Error", x);
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
 		}
 	}
 
@@ -197,8 +208,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new RoutePersistenceException("Error", x);
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
 		}
 	}
 
@@ -217,8 +231,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new RoutePersistenceException("Error", x);
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
 		}
 	}
 
@@ -249,8 +266,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new RoutePersistenceException("Error", x);
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
 		}
 	}
 
@@ -269,8 +289,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new RoutePersistenceException("Error", x);
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
 		}
 	}
 
@@ -293,8 +316,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new RoutePersistenceException("Error", x);
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
 		}
 	}
 
@@ -312,8 +338,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new RoutePersistenceException("Error", x);
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
 		}
 	}
 
@@ -344,8 +373,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new RoutePersistenceException("Error", x);
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
 		}
 	}
 
@@ -371,8 +403,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new RoutePersistenceException("Error", x);
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
 		}
 	}
 
@@ -392,8 +427,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new RoutePersistenceException("Error", x);
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
 		}
 	}
 

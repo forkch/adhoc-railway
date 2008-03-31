@@ -404,30 +404,43 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		}
 
-		public void openFile(File file) {
-			FileTurnoutPersistence.getInstance().clear();
-			FileLocomotivePersistence.getInstance().clear();
-			FileRoutePersistence.getInstance().clear();
-			try {
-				new XMLImporter(file.getAbsolutePath());
-			} catch (ConfigurationException e) {
-				ExceptionProcessor.getInstance().processException(e);
-			}
+		public void openFile(final File file) {
+			Thread t = new Thread(new Runnable() {
+				public void run() {
+					try {
+						progressBar.setIndeterminate(true);
+						FileTurnoutPersistence.getInstance().clear();
+						FileLocomotivePersistence.getInstance().clear();
+						FileRoutePersistence.getInstance().clear();
 
-			hostnameLabel.setText(Preferences.getInstance().getStringValue(
-					PreferencesKeys.HOSTNAME));
-			turnoutPersistence = FileTurnoutPersistence.getInstance();
-			turnoutControl.setTurnoutPersistence(turnoutPersistence);
-			locomotivePersistence = FileLocomotivePersistence.getInstance();
-			locomotiveControl.setLocomotivePersistence(locomotivePersistence);
-			routePersistence = FileRoutePersistence.getInstance();
-			routeControl.setRoutePersistence(routePersistence);
-			setTitle(AdHocRailway.TITLE + " [" + file.getAbsolutePath() + "]");
-			AdHocRailway.this.file = file;
-			updateGUI();
-			updateCommandHistory("AdHoc-Railway Configuration loaded (" + file
-					+ ")");
+						new XMLImporter(file.getAbsolutePath());
 
+						hostnameLabel.setText(Preferences.getInstance()
+								.getStringValue(PreferencesKeys.HOSTNAME));
+						turnoutPersistence = FileTurnoutPersistence
+								.getInstance();
+						turnoutControl
+								.setTurnoutPersistence(turnoutPersistence);
+						locomotivePersistence = FileLocomotivePersistence
+								.getInstance();
+						locomotiveControl
+								.setLocomotivePersistence(locomotivePersistence);
+						routePersistence = FileRoutePersistence.getInstance();
+						routeControl.setRoutePersistence(routePersistence);
+						setTitle(AdHocRailway.TITLE + " ["
+								+ file.getAbsolutePath() + "]");
+						AdHocRailway.this.file = file;
+						updateGUI();
+						updateCommandHistory("AdHoc-Railway Configuration loaded ("
+								+ file + ")");
+					} catch (ConfigurationException e) {
+						ExceptionProcessor.getInstance().processException(e);
+					}
+					progressBar.setIndeterminate(false);
+
+				}
+			});
+			t.start();
 		}
 	}
 
@@ -521,67 +534,78 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
+			final int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
 					"All data in the database will be deleted prior "
 							+ "to the export.\n"
-							+ " The application will afterwards "
+							+ "The application will afterwards "
 							+ "switch to database-mode.\n"
 							+ "Do you really want to proceed ?",
 					"Export to database", JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE,
 					createImageIcon("messagebox_warning.png"));
 			if (result == JOptionPane.YES_OPTION) {
+				Thread t = new Thread(new Runnable() {
+					public void run() {
+						try {
+							progressBar.setIndeterminate(true);
+							HibernatePersistence.connect();
 
-				try {
-					HibernatePersistence.connect();
+							new XMLImporter(file.getAbsolutePath(),
+									HibernateTurnoutPersistence.getInstance(),
+									HibernateLocomotivePersistence
+											.getInstance(),
+									HibernateRoutePersistence.getInstance());
 
-					try {
-						new XMLImporter(file.getAbsolutePath(),
-								HibernateTurnoutPersistence.getInstance(),
-								HibernateLocomotivePersistence.getInstance(),
-								HibernateRoutePersistence.getInstance());
-					} catch (ConfigurationException e1) {
+							int result2 = JOptionPane
+									.showConfirmDialog(
+											AdHocRailway.this,
+											"The configuration has been exported to the database\n"
+													+ "Do you want to switch to the database mode ?",
+											"Export to database",
+											JOptionPane.YES_NO_OPTION,
+											JOptionPane.QUESTION_MESSAGE,
+											createImageIcon("messagebox_info.png"));
+							String host = preferences
+									.getStringValue(PreferencesKeys.DATABASE_HOST);
+							String database = preferences
+									.getStringValue(PreferencesKeys.DATABASE_NAME);
+							String url = "jdbc:mysql://" + host + "/"
+									+ database;
+							String f = file.toString();
+							if (result2 == JOptionPane.YES_OPTION) {
+								hostnameLabel.setText(Preferences.getInstance()
+										.getStringValue(
+												PreferencesKeys.HOSTNAME));
+								turnoutPersistence = HibernateTurnoutPersistence
+										.getInstance();
+								turnoutControl
+										.setTurnoutPersistence(turnoutPersistence);
+								locomotivePersistence = HibernateLocomotivePersistence
+										.getInstance();
+								locomotiveControl
+										.setLocomotivePersistence(locomotivePersistence);
+								routePersistence = HibernateRoutePersistence
+										.getInstance();
+								routeControl
+										.setRoutePersistence(routePersistence);
+
+								setTitle(AdHocRailway.TITLE + " [" + url + "]");
+								file = null;
+							}
+							updateCommandHistory("AdHoc-Railway Configuration loaded ("
+									+ f + ") and imported into database " + url);
+						} catch (PersistenceException ex) {
+							ExceptionProcessor.getInstance().processException(
+									"Failed to connect to database", ex);
+						} catch (ConfigurationException e1) {
+							ExceptionProcessor.getInstance().processException(
+									"Failed to connect to database", e1);
+						}
+						updateGUI();
+						progressBar.setIndeterminate(false);
 					}
-					result = JOptionPane
-							.showConfirmDialog(
-									AdHocRailway.this,
-									"The configuration has been exported to the database\n\n"
-											+ "Do you want to switch to the database mode ?",
-									"Export to database",
-									JOptionPane.YES_NO_OPTION,
-									JOptionPane.QUESTION_MESSAGE,
-									createImageIcon("messagebox_info.png"));
-					String host = preferences
-							.getStringValue(PreferencesKeys.DATABASE_HOST);
-					String database = preferences
-							.getStringValue(PreferencesKeys.DATABASE_NAME);
-					String url = "jdbc:mysql://" + host + "/" + database;
-					String f = file.toString();
-					if (result == JOptionPane.YES_OPTION) {
-						hostnameLabel.setText(Preferences.getInstance()
-								.getStringValue(PreferencesKeys.HOSTNAME));
-						turnoutPersistence = HibernateTurnoutPersistence
-								.getInstance();
-						turnoutControl
-								.setTurnoutPersistence(turnoutPersistence);
-						locomotivePersistence = HibernateLocomotivePersistence
-								.getInstance();
-						locomotiveControl
-								.setLocomotivePersistence(locomotivePersistence);
-						routePersistence = HibernateRoutePersistence
-								.getInstance();
-						routeControl.setRoutePersistence(routePersistence);
-
-						setTitle(AdHocRailway.TITLE + " [" + url + "]");
-						file = null;
-					}
-					updateCommandHistory("AdHoc-Railway Configuration loaded ("
-							+ f + ") and imported into database " + url);
-				} catch (PersistenceException ex) {
-					ExceptionProcessor.getInstance().processException(
-							"Failed to connect to database", ex);
-				}
-				updateGUI();
+				});
+				t.start();
 			}
 		}
 	}

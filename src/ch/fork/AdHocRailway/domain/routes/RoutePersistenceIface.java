@@ -18,8 +18,6 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-
 import com.jgoodies.binding.list.ArrayListModel;
 
 public interface RoutePersistenceIface {

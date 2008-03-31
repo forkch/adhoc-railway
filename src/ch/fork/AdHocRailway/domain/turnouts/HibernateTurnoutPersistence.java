@@ -24,6 +24,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -86,14 +87,18 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 					.executeUpdate();
 
 			super.clear();
-
 			em.getTransaction().commit();
 			HibernatePersistence.disconnect();
 			HibernatePersistence.connect();
+			updateTurnoutTypeCache();
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			throw new TurnoutPersistenceException("Error", x);
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
 	}
 
@@ -124,8 +129,11 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Error", x);
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
 	}
 
@@ -170,8 +178,11 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Error", x);
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
 	}
 
@@ -207,8 +218,11 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Error", x);
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
 	}
 
@@ -229,8 +243,11 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Error", x);
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
 	}
 
@@ -262,8 +279,11 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Error", x);
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
 	}
 
@@ -294,8 +314,11 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Error", x);
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
 	}
 
@@ -325,8 +348,11 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Error", x);
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
 	}
 
@@ -346,8 +372,11 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Error", x);
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
 	}
 
@@ -375,8 +404,11 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Error", x);
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
 	}
 
@@ -391,34 +423,24 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		return super.getTurnoutType(typeName);
 	}
 
-	public int getNextFreeTurnoutNumber() {
-		logger.debug("getNextFreeTurnoutNumber()");
-		return super.getNextFreeTurnoutNumber();
-	}
-
-	public int getNextFreeTurnoutNumberOfGroup(TurnoutGroup turnoutGroup) {
-		logger.debug("getNextFreeTurnoutNumberOfGroup()");
-		return super.getNextFreeTurnoutNumberOfGroup(turnoutGroup);
-	}
-
-	public Set<Integer> getUsedTurnoutNumbers() {
-		logger.debug("getUsedTurnoutNumbers()");
-		return super.getUsedTurnoutNumbers();
-	}
-
 	public void addTurnoutType(TurnoutType type)
 			throws TurnoutPersistenceException {
 		logger.debug("addTurnoutType()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
-			em.persist(type);
-			HibernatePersistence.flush();
-			super.addTurnoutType(type);
+			if (getTurnoutType(type.getTurnoutTypeEnum()) == null) {
+				em.persist(type);
+				HibernatePersistence.flush();
+				super.addTurnoutType(type);
+			}
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Error", x);
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
 	}
 
@@ -437,9 +459,27 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Error", x);
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
+	}
+
+	public int getNextFreeTurnoutNumber() {
+		logger.debug("getNextFreeTurnoutNumber()");
+		return super.getNextFreeTurnoutNumber();
+	}
+
+	public int getNextFreeTurnoutNumberOfGroup(TurnoutGroup turnoutGroup) {
+		logger.debug("getNextFreeTurnoutNumberOfGroup()");
+		return super.getNextFreeTurnoutNumberOfGroup(turnoutGroup);
+	}
+
+	public Set<Integer> getUsedTurnoutNumbers() {
+		logger.debug("getUsedTurnoutNumbers()");
+		return super.getUsedTurnoutNumbers();
 	}
 
 	public void enlargeTurnoutGroups() {

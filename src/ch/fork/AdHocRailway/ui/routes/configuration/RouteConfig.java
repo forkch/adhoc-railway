@@ -58,7 +58,6 @@ import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
-import ch.fork.AdHocRailway.ui.UIConstants;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.AbstractTableAdapter;

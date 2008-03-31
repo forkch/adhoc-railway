@@ -34,7 +34,16 @@ CREATE TABLE `locomotive` (
   KEY `locomotive_locomotive_type_fk` (`locomotive_type_id`),
   CONSTRAINT `locomotive_locomotive_group_id` FOREIGN KEY (`locomotive_group_id`) REFERENCES `locomotive_group` (`id`),
   CONSTRAINT `locomotive_locomotive_type_fk` FOREIGN KEY (`locomotive_type_id`) REFERENCES `locomotive_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `locomotive`
+--
+
+LOCK TABLES `locomotive` WRITE;
+/*!40000 ALTER TABLE `locomotive` DISABLE KEYS */;
+/*!40000 ALTER TABLE `locomotive` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `locomotive_group`
@@ -45,7 +54,16 @@ CREATE TABLE `locomotive_group` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `locomotive_group`
+--
+
+LOCK TABLES `locomotive_group` WRITE;
+/*!40000 ALTER TABLE `locomotive_group` DISABLE KEYS */;
+/*!40000 ALTER TABLE `locomotive_group` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `locomotive_type`
@@ -59,7 +77,17 @@ CREATE TABLE `locomotive_type` (
   `functionCount` int(11) NOT NULL,
   `stepping` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `locomotive_type`
+--
+
+LOCK TABLES `locomotive_type` WRITE;
+/*!40000 ALTER TABLE `locomotive_type` DISABLE KEYS */;
+INSERT INTO `locomotive_type` VALUES (1,'DELTA',14,4,4),(2,'DIGITAL',28,5,2);
+/*!40000 ALTER TABLE `locomotive_type` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `route`
@@ -72,10 +100,18 @@ CREATE TABLE `route` (
   `number` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `number` (`number`),
   KEY `route_route_group_fk` (`route_group_id`),
   CONSTRAINT `route_route_group_fk` FOREIGN KEY (`route_group_id`) REFERENCES `route_group` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `route`
+--
+
+LOCK TABLES `route` WRITE;
+/*!40000 ALTER TABLE `route` DISABLE KEYS */;
+/*!40000 ALTER TABLE `route` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `route_group`
@@ -89,7 +125,16 @@ CREATE TABLE `route_group` (
   `route_number_offset` int(11) NOT NULL default '0',
   `route_number_amount` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `route_group`
+--
+
+LOCK TABLES `route_group` WRITE;
+/*!40000 ALTER TABLE `route_group` DISABLE KEYS */;
+/*!40000 ALTER TABLE `route_group` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `route_item`
@@ -106,7 +151,16 @@ CREATE TABLE `route_item` (
   KEY `route_item_turnout_id_fk` (`turnout_id`),
   CONSTRAINT `route_item_route_id_fk` FOREIGN KEY (`route_id`) REFERENCES `route` (`id`),
   CONSTRAINT `route_item_turnout_id_fk` FOREIGN KEY (`turnout_id`) REFERENCES `turnout` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=138 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `route_item`
+--
+
+LOCK TABLES `route_item` WRITE;
+/*!40000 ALTER TABLE `route_item` DISABLE KEYS */;
+/*!40000 ALTER TABLE `route_item` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `turnout`
@@ -134,7 +188,16 @@ CREATE TABLE `turnout` (
   KEY `turnout_address2_fk` (`address2`),
   CONSTRAINT `turnout_turnout_group_id_fk` FOREIGN KEY (`turnout_group_id`) REFERENCES `turnout_group` (`id`),
   CONSTRAINT `turnout_turnout_type_fk` FOREIGN KEY (`turnout_type_id`) REFERENCES `turnout_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `turnout`
+--
+
+LOCK TABLES `turnout` WRITE;
+/*!40000 ALTER TABLE `turnout` DISABLE KEYS */;
+/*!40000 ALTER TABLE `turnout` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `turnout_group`
@@ -148,7 +211,16 @@ CREATE TABLE `turnout_group` (
   `turnout_number_offset` int(11) NOT NULL default '0',
   `turnout_number_amount` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `turnout_group`
+--
+
+LOCK TABLES `turnout_group` WRITE;
+/*!40000 ALTER TABLE `turnout_group` DISABLE KEYS */;
+/*!40000 ALTER TABLE `turnout_group` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `turnout_type`
@@ -160,6 +232,16 @@ CREATE TABLE `turnout_type` (
   `type_name` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `turnout_type`
+--
+
+LOCK TABLES `turnout_type` WRITE;
+/*!40000 ALTER TABLE `turnout_type` DISABLE KEYS */;
+INSERT INTO `turnout_type` VALUES (1,'DOUBLECROSS'),(2,'DEFAULT'),(3,'THREEWAY');
+/*!40000 ALTER TABLE `turnout_type` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -170,4 +252,4 @@ CREATE TABLE `turnout_type` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2008-03-28 21:42:46
+-- Dump completed on 2008-03-30 13:31:13

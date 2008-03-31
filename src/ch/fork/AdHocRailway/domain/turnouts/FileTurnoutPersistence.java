@@ -18,20 +18,9 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import org.apache.log4j.Logger;
 
-import ch.fork.AdHocRailway.domain.LookupAddress;
-import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
-
-import com.jgoodies.binding.list.ArrayListModel;
 
 public class FileTurnoutPersistence extends CachingTurnoutPersistence{
 	static Logger							logger	= Logger
@@ -42,7 +31,11 @@ public class FileTurnoutPersistence extends CachingTurnoutPersistence{
 	private FileTurnoutPersistence() {
 		super.clear();
 		logger.info("FileTurnoutPersistence loaded");
+		
+		addDefaultTurnoutTypes();
+	}
 
+	private void addDefaultTurnoutTypes() {
 		if (getTurnoutType(TurnoutTypes.DEFAULT) == null) {
 			TurnoutType defaultType = new TurnoutType(0, "DEFAULT");
 			addTurnoutType(defaultType);
@@ -55,6 +48,11 @@ public class FileTurnoutPersistence extends CachingTurnoutPersistence{
 			TurnoutType threewayType = new TurnoutType(0, "THREEWAY");
 			addTurnoutType(threewayType);
 		}
+	}
+	
+	public void clear() {
+		super.clear();
+		addDefaultTurnoutTypes();
 	}
 
 	public static FileTurnoutPersistence getInstance() {

@@ -30,9 +30,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
-
-import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 
 import com.jgoodies.binding.beans.Model;
 

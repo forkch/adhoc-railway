@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
 
 import org.hibernate.HibernateException;
 
@@ -86,7 +87,13 @@ public abstract class HibernatePersistence {
 			em.close();
 			HibernatePersistence.connect();
 			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Error", ex);
+			throw new TurnoutPersistenceException("Database Error", ex);
+		} catch (PersistenceException x) {
+			em.getTransaction().rollback();
+			em.close();
+			HibernatePersistence.connect();
+			HibernatePersistence.getEntityManager().getTransaction().begin();
+			throw new TurnoutPersistenceException("Database Error", x);
 		}
 		em.getTransaction().begin();
 	}

@@ -67,7 +67,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private JTabbedPane					turnoutGroupsTabbedPane;
 
 	private Preferences					preferences			= Preferences
-																	.getInstance();				;
+																	.getInstance();
 
 	private JTabbedPane					trackControlPane;
 

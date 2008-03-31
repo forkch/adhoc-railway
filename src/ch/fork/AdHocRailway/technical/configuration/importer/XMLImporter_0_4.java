@@ -30,12 +30,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import ch.fork.AdHocRailway.domain.Address;
+import ch.fork.AdHocRailway.domain.locomotives.FileLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.domain.locomotives.FileLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.routes.FileRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
@@ -45,6 +45,7 @@ import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.FileTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
@@ -69,8 +70,8 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 
 	public XMLImporter_0_4(String filename) {
 		this(filename, FileTurnoutPersistence.getInstance(),
-				FileLocomotivePersistence.getInstance(),
-				FileRoutePersistence.getInstance());
+				FileLocomotivePersistence.getInstance(), FileRoutePersistence
+						.getInstance());
 	}
 
 	public XMLImporter_0_4(String filename,
@@ -88,8 +89,12 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		turnoutPersistence.clear();
-
+		try {
+			turnoutPersistence.clear();
+		} catch (TurnoutPersistenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		try {
 			locomotivePersistence.clear();
 		} catch (LocomotivePersistenceException e) {
@@ -97,24 +102,23 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 			e.printStackTrace();
 		}
 
-		TurnoutType defaultType = new TurnoutType(0, "DEFAULT");
-		TurnoutType doublecrossType = new TurnoutType(0, "DOUBLECROSS");
-		TurnoutType threewayType = new TurnoutType(0, "THREEWAY");
-
-		turnoutPersistence.addTurnoutType(defaultType);
-		turnoutPersistence.addTurnoutType(doublecrossType);
-		turnoutPersistence.addTurnoutType(threewayType);
-
-		LocomotiveType deltaType = new LocomotiveType(0, "DELTA");
-		deltaType.setDrivingSteps(14);
-		deltaType.setStepping(4);
-		deltaType.setFunctionCount(4);
-		LocomotiveType digitalType = new LocomotiveType(0, "DIGITAL");
-		digitalType.setDrivingSteps(28);
-		digitalType.setStepping(2);
-		digitalType.setFunctionCount(5);
-		locomotivePersistence.addLocomotiveType(deltaType);
-		locomotivePersistence.addLocomotiveType(digitalType);
+		/*
+		 * TurnoutType defaultType = new TurnoutType(0, "DEFAULT"); TurnoutType
+		 * doublecrossType = new TurnoutType(0, "DOUBLECROSS"); TurnoutType
+		 * threewayType = new TurnoutType(0, "THREEWAY");
+		 * 
+		 * turnoutPersistence.addTurnoutType(defaultType);
+		 * turnoutPersistence.addTurnoutType(doublecrossType);
+		 * turnoutPersistence.addTurnoutType(threewayType);
+		 * 
+		 * LocomotiveType deltaType = new LocomotiveType(0, "DELTA");
+		 * deltaType.setDrivingSteps(14); deltaType.setStepping(4);
+		 * deltaType.setFunctionCount(4); LocomotiveType digitalType = new
+		 * LocomotiveType(0, "DIGITAL"); digitalType.setDrivingSteps(28);
+		 * digitalType.setStepping(2); digitalType.setFunctionCount(5);
+		 * locomotivePersistence.addLocomotiveType(deltaType);
+		 * locomotivePersistence.addLocomotiveType(digitalType);
+		 */
 
 		parseDocument(filename);
 	}
@@ -173,10 +177,13 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 
 	private void parseTurnoutGroup(String qName, Attributes attributes) {
 		String name = attributes.getValue("name");
-		int turnoutNumberOffset = Integer.parseInt(attributes.getValue("turnoutNumberOffset"));
-		int turnoutAmount =  Integer.parseInt(attributes.getValue("turnoutAmount"));
-		
-		actualTurnoutGroup = new TurnoutGroup(0,name , turnoutNumberOffset, turnoutAmount);
+		int turnoutNumberOffset = Integer.parseInt(attributes
+				.getValue("turnoutNumberOffset"));
+		int turnoutAmount = Integer.parseInt(attributes
+				.getValue("turnoutAmount"));
+
+		actualTurnoutGroup = new TurnoutGroup(0, name, turnoutNumberOffset,
+				turnoutAmount);
 
 		turnoutPersistence.addTurnoutGroup(actualTurnoutGroup);
 	}
@@ -187,7 +194,6 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 		String defaultstate = attributes.getValue("defaultstate");
 		String orientation = attributes.getValue("orientation");
 		int number = Integer.parseInt(attributes.getValue("number"));
-
 		if (type.toUpperCase().equals("DEFAULT")) {
 			TurnoutType turnoutType = turnoutPersistence
 					.getTurnoutType(TurnoutTypes.DEFAULT);
@@ -245,7 +251,6 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 		String type = attributes.getValue("type");
 		int bus = Integer.parseInt(attributes.getValue("bus"));
 		int address = Integer.parseInt(attributes.getValue("address"));
-
 		if (type.toUpperCase().equals("DELTA")) {
 			LocomotiveType locomotiveType = locomotivePersistence
 					.getLocomotiveTypeByName("DELTA");

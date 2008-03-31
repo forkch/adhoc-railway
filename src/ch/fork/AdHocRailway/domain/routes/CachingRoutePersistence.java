@@ -25,7 +25,6 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 
 import com.jgoodies.binding.list.ArrayListModel;
 

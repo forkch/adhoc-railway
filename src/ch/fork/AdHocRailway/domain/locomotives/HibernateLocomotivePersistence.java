@@ -23,11 +23,15 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
@@ -76,20 +80,27 @@ public class HibernateLocomotivePersistence extends
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.createNativeQuery("TRUNCATE TABLE locomotive").executeUpdate();
-//			em.createNativeQuery("TRUNCATE TABLE locomotive_type")
-//					.executeUpdate();
+			//em.createNativeQuery("TRUNCATE TABLE locomotive_type")
+			//		.executeUpdate();
 			em.createNativeQuery("TRUNCATE TABLE locomotive_group")
 					.executeUpdate();
 
 			super.clear();
-
+			
+			
 			em.getTransaction().commit();
 			HibernatePersistence.disconnect();
 			HibernatePersistence.connect();
+
+			updateLocomotiveTypeCache();
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			throw new LocomotivePersistenceException("Error", x);
+			throw new LocomotivePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new LocomotivePersistenceException("Database Error", x);
 		}
 	}
 
@@ -115,12 +126,17 @@ public class HibernateLocomotivePersistence extends
 		try {
 			List<Locomotive> locs = em.createQuery("from Locomotive")
 					.getResultList();
+
+			HibernatePersistence.flush();
 			return new TreeSet<Locomotive>(locs);
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new LocomotivePersistenceException("Error", x);
+			throw new LocomotivePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new LocomotivePersistenceException("Database Error", x);
 		}
 	}
 
@@ -147,7 +163,7 @@ public class HibernateLocomotivePersistence extends
 		logger.debug("addLocomotive()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
-
+			
 			locomotive.getLocomotiveGroup().getLocomotives().add(locomotive);
 			em.persist(locomotive);
 			em.refresh(locomotive.getLocomotiveGroup());
@@ -156,8 +172,11 @@ public class HibernateLocomotivePersistence extends
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new LocomotivePersistenceException("Error", x);
+			throw new LocomotivePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new LocomotivePersistenceException("Database Error", x);
 		}
 	}
 
@@ -184,8 +203,11 @@ public class HibernateLocomotivePersistence extends
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new LocomotivePersistenceException("Error", x);
+			throw new LocomotivePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new LocomotivePersistenceException("Database Error", x);
 		}
 	}
 
@@ -205,8 +227,11 @@ public class HibernateLocomotivePersistence extends
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new LocomotivePersistenceException("Error", x);
+			throw new LocomotivePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new LocomotivePersistenceException("Database Error", x);
 		}
 	}
 
@@ -228,12 +253,17 @@ public class HibernateLocomotivePersistence extends
 		try {
 			List<LocomotiveGroup> groups = em.createQuery(
 					"from LocomotiveGroup").getResultList();
+
+			HibernatePersistence.flush();
 			return new TreeSet<LocomotiveGroup>(groups);
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new LocomotivePersistenceException("Error", x);
+			throw new LocomotivePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new LocomotivePersistenceException("Database Error", x);
 		}
 	}
 
@@ -253,8 +283,11 @@ public class HibernateLocomotivePersistence extends
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new LocomotivePersistenceException("Error", x);
+			throw new LocomotivePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new LocomotivePersistenceException("Database Error", x);
 		}
 	}
 
@@ -278,8 +311,11 @@ public class HibernateLocomotivePersistence extends
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new LocomotivePersistenceException("Error", x);
+			throw new LocomotivePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new LocomotivePersistenceException("Database Error", x);
 		}
 	}
 
@@ -299,8 +335,11 @@ public class HibernateLocomotivePersistence extends
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new LocomotivePersistenceException("Error", x);
+			throw new LocomotivePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new LocomotivePersistenceException("Database Error", x);
 		}
 	}
 
@@ -323,13 +362,17 @@ public class HibernateLocomotivePersistence extends
 		try {
 			List turnoutTypes = em.createQuery("from LocomotiveType").getResultList();
 			SortedSet<LocomotiveType> res = new TreeSet<LocomotiveType>(turnoutTypes);
-			
+
+			HibernatePersistence.flush();
 			return res;
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new LocomotivePersistenceException("Error", x);
+			throw new LocomotivePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new LocomotivePersistenceException("Database Error", x);
 		}
 	}
 
@@ -342,20 +385,28 @@ public class HibernateLocomotivePersistence extends
 			throws LocomotivePersistenceException {
 		logger.debug("getLocomotiveTypeByName()");
 		return super.getLocomotiveTypeByName(typeName);
+		
 	}
 
 	public void addLocomotiveType(LocomotiveType type) {
 		logger.debug("addLocomotiveType()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
-			em.persist(type);
-			HibernatePersistence.flush();
+			if (getLocomotiveTypeByName(type.getTypeName()) == null) {
+				System.out.println("ADDING");
+				em.persist(type);
+				HibernatePersistence.flush();
+				super.addLocomotiveType(type);
+			}
 			super.addLocomotiveType(type);
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new LocomotivePersistenceException("Error", x);
+			throw new LocomotivePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new LocomotivePersistenceException("Database Error", x);
 		}
 	}
 
@@ -375,8 +426,11 @@ public class HibernateLocomotivePersistence extends
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
-			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new LocomotivePersistenceException("Error", x);
+			throw new LocomotivePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new LocomotivePersistenceException("Database Error", x);
 		}
 	}
 
