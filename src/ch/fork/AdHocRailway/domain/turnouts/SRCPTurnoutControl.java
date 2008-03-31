@@ -41,7 +41,7 @@ import de.dermoba.srcp.devices.GAInfoListener;
 public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 	private static Logger						logger	= Logger
 																.getLogger(SRCPTurnoutControl.class);
-	private static SRCPTurnoutControl			instance;
+	private static TurnoutControlIface			instance;
 
 	TurnoutPersistenceIface						persistence;
 
@@ -59,7 +59,7 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		srcpTurnouts = new HashMap<Turnout, SRCPTurnout>();
 	}
 
-	public static SRCPTurnoutControl getInstance() {
+	public static TurnoutControlIface getInstance() {
 		if (instance == null) {
 			instance = new SRCPTurnoutControl();
 		}
@@ -101,6 +101,40 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 			} else {
 				return Constants.TURNOUT_STRAIGHT_PORT;
 			}
+		}
+	}
+
+	public void refresh(Turnout turnout) throws TurnoutException {
+		checkTurnout(turnout);
+		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		if (turnout.isThreeWay()) {
+			refreshThreeWay(turnout);
+			return;
+		}
+
+		switch (sTurnout.getTurnoutState()) {
+		case STRAIGHT:
+			setStraight(turnout);
+			break;
+		case LEFT:
+			setCurvedLeft(turnout);
+			break;
+		case RIGHT:
+			setCurvedRight(turnout);
+			break;
+		default:
+		}
+		informListeners(turnout);
+	}
+
+	private void refreshThreeWay(Turnout turnout) {
+		checkTurnout(turnout);
+		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		Turnout[] subTurnouts = sTurnout.getSubTurnouts();
+		for (Turnout t : subTurnouts) {
+			checkTurnout(t);
+			// initTurnout(t);
+			refresh(t);
 		}
 	}
 
@@ -350,7 +384,7 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 				+ value + " )");
 		Turnout turnout = persistence.getTurnoutByAddressBus(bus, address);
 		if (turnout == null) {
-			// TODO
+			// a turnout which the srcp-server knows but not me
 			return;
 		}
 		checkTurnout(turnout);
@@ -366,6 +400,7 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 			portChanged(turnout, port);
 		}
 		if (sTurnout != null) {
+			System.out.println(turnout + " >>>>> " + listeners.get(turnout));
 			informListeners(turnout);
 		}
 	}
@@ -416,11 +451,10 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		checkTurnout(turnout);
 		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
 		if (sTurnout != null) {
-			try {
-				sTurnout.getGA().get(0);
-			} catch (SRCPException e) {
-
-			}
+			/*
+			 * try { sTurnout.getGA().get(0); } catch (SRCPException e) {
+			 *  }
+			 */
 			informListeners(turnout);
 		}
 	}
@@ -457,7 +491,7 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		listeners.clear();
 	}
 
-	private void informListeners(Turnout changedTurnout) {
+	void informListeners(Turnout changedTurnout) {
 		List<TurnoutChangeListener> ll = listeners.get(changedTurnout);
 		SRCPTurnout sTurnout = srcpTurnouts.get(changedTurnout);
 		if (ll == null)
@@ -470,7 +504,8 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 
 	}
 
-	private void checkTurnout(Turnout turnout) throws TurnoutException {
+	void checkTurnout(Turnout turnout) throws TurnoutException {
+		logger.debug("checkTurnout(" + turnout + ")");
 		if (turnout == null) {
 			return;
 		}
@@ -520,7 +555,7 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 					ga.setBus(turnout.getBus1());
 					ga.setAddress(turnout.getAddress1());
 				}
-				ga.get(0);
+				// ga.get(0);
 
 				sTurnout.setGA(ga);
 				sTurnout.setInitialized(true);

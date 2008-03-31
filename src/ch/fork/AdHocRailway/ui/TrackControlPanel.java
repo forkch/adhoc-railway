@@ -179,6 +179,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		JMenuItem addTurnoutsItem = new JMenuItem(new AddTurnoutsAction());
 		JMenuItem turnoutsStraightItem = new JMenuItem(
 				new TurnoutsStraightAction());
+		JMenuItem refreshTurnoutStateItem = new JMenuItem(
+				new RefreshTurnoutStateAction());
 		JMenuItem turnoutsProgrammerItem = new JMenuItem(
 				new TurnoutProgrammerAction());
 
@@ -187,6 +189,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		toolsMenu.add(addTurnoutsItem);
 		toolsMenu.add(turnoutsStraightItem);
+		toolsMenu.add(refreshTurnoutStateItem);
 		toolsMenu.add(turnoutsProgrammerItem);
 		toolsMenu.addSeparator();
 		toolsMenu.add(enlargeTurnoutGroupsItem);
@@ -316,6 +319,21 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				} catch (InterruptedException e2) {
 					e2.printStackTrace();
 				}
+			}
+		}
+	}
+	
+	private class RefreshTurnoutStateAction extends AbstractAction {
+
+		public RefreshTurnoutStateAction() {
+			super("Determine state of each turnout\u2026",
+					createImageIcon("switch.png"));
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			
+			for(Turnout t : turnoutPersistence.getAllTurnouts()) {
+				turnoutControl.refresh(t);
 			}
 		}
 	}

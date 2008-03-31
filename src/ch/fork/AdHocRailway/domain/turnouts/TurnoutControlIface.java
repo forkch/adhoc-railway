@@ -52,5 +52,7 @@ public interface TurnoutControlIface {
 	public void previousDeviceToDefault() throws TurnoutException;
 
 	public TurnoutState getTurnoutState(Turnout turnout);
+	
+	public void refresh(Turnout turnout) throws TurnoutException;
 
 }

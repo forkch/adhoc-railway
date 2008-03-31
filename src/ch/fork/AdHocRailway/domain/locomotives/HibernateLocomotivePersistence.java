@@ -29,9 +29,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
