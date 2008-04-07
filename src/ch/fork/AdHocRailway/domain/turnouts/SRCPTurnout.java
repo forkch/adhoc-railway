@@ -18,14 +18,14 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import ch.fork.AdHocRailway.domain.ControlObject;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GA;
 
-public class SRCPTurnout extends ControlObject {
+public class SRCPTurnout {
 
 	private Turnout	turnout;
 
+	protected boolean	initialized	= false;
 	public enum TurnoutState {
 		LEFT, STRAIGHT, RIGHT, UNDEF
 	}
@@ -57,23 +57,12 @@ public class SRCPTurnout extends ControlObject {
 		this.session = session;
 	}
 
-	@Override
-	public String getDeviceGroup() {
-		return "GA";
-	}
-
 	public TurnoutState getTurnoutState() {
 		return turnoutState;
 	}
 
 	protected void setTurnoutState(TurnoutState switchState) {
 		this.turnoutState = switchState;
-	}
-
-	@Override
-	public int[] getAddresses() {
-		int[] addrs = new int[] { turnout.getAddress1(), turnout.getAddress2() };
-		return addrs;
 	}
 
 	public TurnoutAddress[] getTurnoutAddresses() {
@@ -106,5 +95,13 @@ public class SRCPTurnout extends ControlObject {
 			buf += " " + getTurnoutAddress(1);
 		buf += " Group:" + turnout.getTurnoutGroup().toString();
 		return buf;
+	}
+
+	public boolean isInitialized() {
+		return initialized;
+	}
+	
+	public void setInitialized(boolean init) {
+		initialized = init;
 	}
 }

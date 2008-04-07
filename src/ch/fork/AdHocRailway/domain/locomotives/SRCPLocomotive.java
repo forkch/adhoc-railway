@@ -18,16 +18,16 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
-import ch.fork.AdHocRailway.domain.ControlObject;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GL;
 
-public class SRCPLocomotive extends ControlObject {
+public class SRCPLocomotive {
 
 	public enum Direction {
 		FORWARD, REVERSE, UNDEF
 	};
 
+	protected boolean	initialized	= false;
 	protected Direction				direction			= Direction.UNDEF;
 
 	protected static final String	FORWARD_DIRECTION	= "1";
@@ -91,16 +91,12 @@ public class SRCPLocomotive extends ControlObject {
 		this.session = session;
 	}
 
-	@Override
-	public int[] getAddresses() {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean isInitialized() {
+		return initialized;
 	}
-
-	@Override
-	public String getDeviceGroup() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public void setInitialized(boolean init) {
+		initialized = init;
 	}
 
 }

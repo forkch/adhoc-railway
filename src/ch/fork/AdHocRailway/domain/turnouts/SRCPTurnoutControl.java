@@ -451,10 +451,6 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		checkTurnout(turnout);
 		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
 		if (sTurnout != null) {
-			/*
-			 * try { sTurnout.getGA().get(0); } catch (SRCPException e) {
-			 *  }
-			 */
 			informListeners(turnout);
 		}
 	}
@@ -555,7 +551,6 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 					ga.setBus(turnout.getBus1());
 					ga.setAddress(turnout.getAddress1());
 				}
-				// ga.get(0);
 
 				sTurnout.setGA(ga);
 				sTurnout.setInitialized(true);
@@ -634,6 +629,5 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 
 	public void setTurnoutPersistence(TurnoutPersistenceIface persistence) {
 		this.persistence = persistence;
-
 	}
 }
