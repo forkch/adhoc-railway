@@ -32,12 +32,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import ch.fork.AdHocRailway.domain.Constants;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.UIConstants;
@@ -58,7 +58,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
 	private GridBagConstraints		turnoutWidgetConstraints;
 
-	private TurnoutState			actualTurnoutState	= TurnoutState.UNDEF;
+	private SRCPTurnoutState			actualTurnoutState	= SRCPTurnoutState.UNDEF;
 
 	private boolean					widgetEnabled;
 
@@ -217,7 +217,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		return turnout;
 	}
 
-	public void turnoutChanged(Turnout changedTurnout, TurnoutState newState) {
+	public void turnoutChanged(Turnout changedTurnout, SRCPTurnoutState newState) {
 		if (turnout.equals(changedTurnout)) {
 			actualTurnoutState = newState;
 			SwingUtilities.invokeLater(new Runnable() {
@@ -241,6 +241,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		widgetEnabled = enabled;
 		turnoutControl.removeTurnoutChangeListener(this);
 		turnoutControl.addTurnoutChangeListener(turnout, this);
-		turnoutCanvas.setTurnoutState(TurnoutState.UNDEF);
+		turnoutCanvas.setTurnoutState(SRCPTurnoutState.UNDEF);
 	}
 }

@@ -18,25 +18,26 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SRCPRoute {
 
-	private Route		route;
+	private SRCPRouteState		routeState;
 
-	private RouteState	routeState;
+	private boolean				routing;
 
-	private boolean		routing;
+	private List<SRCPRouteItem>	routeItems;
 
-	public SRCPRoute(Route route) {
-		this.route = route;
+	public SRCPRoute() {
+		routeItems = new ArrayList<SRCPRouteItem>();
 	}
 
-	public RouteState getRouteState() {
+	public SRCPRouteState getRouteState() {
 		return routeState;
 	}
 
-	protected void setRouteState(RouteState routeState) {
+	protected void setRouteState(SRCPRouteState routeState) {
 		this.routeState = routeState;
 	}
 
@@ -46,5 +47,17 @@ public class SRCPRoute {
 
 	public boolean isRouting() {
 		return routing;
+	}
+
+	public List<SRCPRouteItem> getRouteItems() {
+		return routeItems;
+	}
+
+	public void setRouteItems(List<SRCPRouteItem> routeItems) {
+		this.routeItems = routeItems;
+	}
+	
+	public void addRouteItem(SRCPRouteItem item) {
+		this.routeItems.add(item);
 	}
 }

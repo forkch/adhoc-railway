@@ -41,14 +41,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutTypes;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
@@ -418,10 +418,10 @@ public class TurnoutConfigurationDialog extends JDialog {
 			newTurnout.setBus2(Preferences.getInstance().getIntValue(PreferencesKeys.DEFAULT_TURNOUT_BUS));
 			
 			newTurnout.setTurnoutGroup(selectedTurnoutGroup);
-			newTurnout.setDefaultStateEnum(TurnoutState.STRAIGHT);
+			newTurnout.setDefaultStateEnum(SRCPTurnoutState.STRAIGHT);
 			newTurnout.setOrientationEnum(TurnoutOrientation.EAST);
 			newTurnout.setTurnoutType(turnoutPersistence
-					.getTurnoutType(TurnoutTypes.DEFAULT));
+					.getTurnoutType(SRCPTurnoutTypes.DEFAULT));
 			
 			TurnoutConfig switchConfig = new TurnoutConfig(
 					TurnoutConfigurationDialog.this, newTurnout);

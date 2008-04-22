@@ -25,7 +25,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class TurnoutDefaultStateCellRenderer extends DefaultTableCellRenderer {
@@ -40,7 +40,7 @@ public class TurnoutDefaultStateCellRenderer extends DefaultTableCellRenderer {
 			return iconLabel;
 		}
 		iconLabel.setText("");
-		if (value.equals(TurnoutState.STRAIGHT)) {
+		if (value.equals(SRCPTurnoutState.STRAIGHT)) {
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/default_straight.png"));
 		} else {

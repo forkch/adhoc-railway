@@ -19,7 +19,6 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.locking.LockControlIface;
-import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotive.Direction;
 
 public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 
@@ -35,7 +34,7 @@ public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 	public abstract void toggleDirection(Locomotive locomotive)
 			throws LocomotiveException;
 
-	public abstract Direction getDirection(Locomotive locomotive);
+	public abstract SRCPLocomotiveDirection getDirection(Locomotive locomotive);
 
 	public abstract int getCurrentSpeed(Locomotive locomotive);
 

@@ -21,34 +21,46 @@ package ch.fork.AdHocRailway.domain.locomotives;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GL;
 
-public class SRCPLocomotive {
+public abstract class SRCPLocomotive {
 
-	public enum Direction {
-		FORWARD, REVERSE, UNDEF
-	};
+	protected boolean					initialized		= false;
+	protected SRCPLocomotiveDirection	direction		= SRCPLocomotiveDirection.UNDEF;
 
-	protected boolean	initialized	= false;
-	protected Direction				direction			= Direction.UNDEF;
+	protected int						currentSpeed	= 0;
 
-	protected static final String	FORWARD_DIRECTION	= "1";
+	private GL							gl;
 
-	protected static final String	REVERSE_DIRECTION	= "0";
+	private SRCPSession					session;
 
-	protected int					currentSpeed		= 0;
+	protected boolean[]					functions;
 
-	private GL						gl;
+	protected String[]					params;
 
-	private SRCPSession				session;
+	protected String					protocol;
 
-	protected boolean[]				functions			= new boolean[] {
-			false, false, false, false, false			};
+	protected int						drivingSteps;
 
-	protected String[]				params;
+	private int							bus;
 
-	private Locomotive				locomotive;
+	private int							address;
 
-	public SRCPLocomotive(Locomotive locomotive) {
-		this.locomotive = locomotive;
+	public SRCPLocomotive() {
+	}
+
+	public int getBus() {
+		return bus;
+	}
+
+	public void setBus(int bus) {
+		this.bus = bus;
+	}
+
+	public int getAddress() {
+		return address;
+	}
+
+	public void setAddress(int address) {
+		this.address = address;
 	}
 
 	public int getCurrentSpeed() {
@@ -59,11 +71,11 @@ public class SRCPLocomotive {
 		this.currentSpeed = currentSpeed;
 	}
 
-	public Direction getDirection() {
+	public SRCPLocomotiveDirection getDirection() {
 		return direction;
 	}
 
-	protected void setDirection(Direction direction) {
+	protected void setDirection(SRCPLocomotiveDirection direction) {
 		this.direction = direction;
 	}
 
@@ -94,9 +106,20 @@ public class SRCPLocomotive {
 	public boolean isInitialized() {
 		return initialized;
 	}
-	
+
 	public void setInitialized(boolean init) {
 		initialized = init;
 	}
 
+	public String[] getParams() {
+		return params;
+	}
+
+	public String getProtocol() {
+		return protocol;
+	}
+
+	public int getDrivingSteps() {
+		return drivingSteps;
+	}
 }

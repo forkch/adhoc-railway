@@ -25,7 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
 
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class TurnoutDefaultStateComboBoxCellRenderer extends
@@ -39,7 +39,7 @@ public class TurnoutDefaultStateComboBoxCellRenderer extends
 		}
 		iconLabel.setText("");
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		if (value.equals(TurnoutState.STRAIGHT)) {
+		if (value.equals(SRCPTurnoutState.STRAIGHT)) {
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/default_straight.png"));
 		} else {

@@ -60,9 +60,6 @@ public class TurnoutType extends Model implements java.io.Serializable,
 	private static final String	PROPERTYNAME_TYPENAME	= "typeName";
 	private static final String	PROPERTYNAME_TURNOUTS	= "turnouts";
 
-	public enum TurnoutTypes {
-		DEFAULT, DOUBLECROSS, THREEWAY, UNKNOWN
-	};
 
 	public int compareTo(TurnoutType o) {
 		return typeName.compareTo(o.getTypeName());
@@ -102,15 +99,15 @@ public class TurnoutType extends Model implements java.io.Serializable,
 	}
 
 	@Transient
-	public TurnoutTypes getTurnoutTypeEnum() {
+	public SRCPTurnoutTypes getTurnoutTypeEnum() {
 		if (typeName.toUpperCase().equals("DEFAULT"))
-			return TurnoutTypes.DEFAULT;
+			return SRCPTurnoutTypes.DEFAULT;
 		else if (typeName.toUpperCase().equals("DOUBLECROSS"))
-			return TurnoutTypes.DOUBLECROSS;
+			return SRCPTurnoutTypes.DOUBLECROSS;
 		else if (typeName.toUpperCase().equals("THREEWAY"))
-			return TurnoutTypes.THREEWAY;
+			return SRCPTurnoutTypes.THREEWAY;
 		else
-			return TurnoutTypes.UNKNOWN;
+			return SRCPTurnoutTypes.UNKNOWN;
 
 	}
 

@@ -18,39 +18,32 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.NoSessionException;
-import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import de.dermoba.srcp.client.SRCPSession;
 
-public class SRCPRouteControl implements RouteControlIface {
-	private static Logger							logger				= Logger
-																				.getLogger(SRCPRouteControl.class);
-	private static RouteControlIface				instance;
+public class SRCPRouteControl {
+	private static Logger					logger				= Logger
+																		.getLogger(SRCPRouteControl.class);
+	private static SRCPRouteControl			instance;
 
-	private RoutePersistenceIface					persistence;
+	private List<SRCPRouteChangeListener>	listeners;
 
-	private Map<Route, Set<RouteChangeListener>>	listeners;
+	private SRCPRouteState					lastRouteState;
 
-	private RouteState								lastRouteState;
+	private SRCPRoute						lastChangedRoute;
 
-	private Route									lastChangedRoute;
+	protected String						ERR_TOGGLE_FAILED	= "Toggle of switch failed";
 
-	private Map<Route, SRCPRoute>					srcpRoutes;
-
-	protected String								ERR_TOGGLE_FAILED	= "Toggle of switch failed";
-	
-	protected SRCPSession session;
+	protected SRCPSession					session;
 
 	public SRCPSession getSession() {
 		return session;
@@ -62,11 +55,10 @@ public class SRCPRouteControl implements RouteControlIface {
 
 	private SRCPRouteControl() {
 		logger.info("SRCPRouteControl loaded");
-		listeners = new HashMap<Route, Set<RouteChangeListener>>();
-		srcpRoutes = new HashMap<Route, SRCPRoute>();
+		listeners = new ArrayList<SRCPRouteChangeListener>();
 	}
 
-	public static RouteControlIface getInstance() {
+	public static SRCPRouteControl getInstance() {
 		if (instance == null) {
 			instance = new SRCPRouteControl();
 		}
@@ -78,26 +70,15 @@ public class SRCPRouteControl implements RouteControlIface {
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.routes.RouteControlIface#enableRoute(ch.fork.AdHocRailway.domain.routes.Route)
 	 */
-	public void enableRoute(Route r) throws TurnoutException {
-		checkRoute(r);
-		SRCPRoute sRoute = srcpRoutes.get(r);
-		logger.debug("enabling route: " + r);
+	public void enableRoute(SRCPRoute route) throws TurnoutException {
+		checkRoute(route);
+		logger.debug("enabling route: " + route);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
-		Router switchRouter = new Router(r, sRoute, true, waitTime, listeners
-				.get(r));
+		Router switchRouter = new Router(route, true, waitTime, listeners);
 		switchRouter.start();
-		lastChangedRoute = r;
-		lastRouteState = RouteState.ENABLED;
-	}
-
-	private void checkRoute(Route r) {
-		if (srcpRoutes.get(r) == null) {
-			srcpRoutes.put(r, new SRCPRoute(r));
-		}
-		if(session == null) 
-			throw new RouteException(Constants.ERR_NOT_CONNECTED,
-					new NoSessionException());
+		lastChangedRoute = route;
+		lastRouteState = SRCPRouteState.ENABLED;
 	}
 
 	/*
@@ -105,17 +86,21 @@ public class SRCPRouteControl implements RouteControlIface {
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.routes.RouteControlIface#disableRoute(ch.fork.AdHocRailway.domain.routes.Route)
 	 */
-	public void disableRoute(Route r) throws TurnoutException {
-		checkRoute(r);
-		SRCPRoute sRoute = srcpRoutes.get(r);
-		logger.debug("disabling route: " + r);
+	public void disableRoute(SRCPRoute route) throws TurnoutException {
+		checkRoute(route);
+		logger.debug("disabling route: " + route);
 		int waitTime = Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY);
-		Router switchRouter = new Router(r, sRoute, false, waitTime, listeners
-				.get(r));
+		Router switchRouter = new Router(route, false, waitTime, listeners);
 		switchRouter.start();
-		lastChangedRoute = r;
-		lastRouteState = RouteState.DISABLED;
+		lastChangedRoute = route;
+		lastRouteState = SRCPRouteState.DISABLED;
+	}
+
+	private void checkRoute(SRCPRoute r) {
+		if (session == null)
+			throw new RouteException(Constants.ERR_NOT_CONNECTED,
+					new NoSessionException());
 	}
 
 	/*
@@ -124,10 +109,9 @@ public class SRCPRouteControl implements RouteControlIface {
 	 * @see ch.fork.AdHocRailway.domain.routes.RouteControlIface#addRouteChangeListener(ch.fork.AdHocRailway.domain.routes.Route,
 	 *      ch.fork.AdHocRailway.domain.routes.RouteChangeListener)
 	 */
-	public void addRouteChangeListener(Route r, RouteChangeListener listener) {
-		if (listeners.get(r) == null)
-			listeners.put(r, new HashSet<RouteChangeListener>());
-		listeners.get(r).add(listener);
+	public void addRouteChangeListener(SRCPRouteChangeListener listener) {
+		
+		listeners.add(listener);
 	}
 
 	/*
@@ -144,8 +128,8 @@ public class SRCPRouteControl implements RouteControlIface {
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.routes.RouteControlIface#removeRouteChangeListener(ch.fork.AdHocRailway.domain.routes.Route)
 	 */
-	public void removeRouteChangeListener(Route r, RouteChangeListener listener) {
-		listeners.get(r).remove(listener);
+	public void removeRouteChangeListener(SRCPRouteChangeListener listener) {
+		listeners.remove(listener);
 	}
 
 	public void undoLastChange() throws RouteException {
@@ -179,23 +163,6 @@ public class SRCPRouteControl implements RouteControlIface {
 		}
 		lastChangedRoute = null;
 		lastRouteState = null;
-	}
-
-	public void setRoutePersistence(RoutePersistenceIface routePersistence) {
-		this.persistence = routePersistence;
-
-	}
-
-	public RouteState getRouteState(Route route) {
-		checkRoute(route);
-		SRCPRoute sRoute = srcpRoutes.get(route);
-		return sRoute.getRouteState();
-	}
-
-	public boolean isRouting(Route route) {
-		checkRoute(route);
-		SRCPRoute sRoute = srcpRoutes.get(route);
-		return sRoute.isRouting();
 	}
 
 }

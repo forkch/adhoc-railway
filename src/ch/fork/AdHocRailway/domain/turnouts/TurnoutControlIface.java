@@ -18,11 +18,7 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
-
 public interface TurnoutControlIface {
-
-	public void setTurnoutPersistence(TurnoutPersistenceIface persistence);
 
 	public void update();
 
@@ -51,8 +47,10 @@ public interface TurnoutControlIface {
 
 	public void previousDeviceToDefault() throws TurnoutException;
 
-	public TurnoutState getTurnoutState(Turnout turnout);
-	
+	public SRCPTurnoutState getTurnoutState(Turnout turnout);
+
 	public void refresh(Turnout turnout) throws TurnoutException;
+
+	public void setPersistence(TurnoutPersistenceIface persistence);
 
 }

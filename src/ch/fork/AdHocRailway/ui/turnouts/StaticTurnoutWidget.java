@@ -24,8 +24,8 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 
 public class StaticTurnoutWidget extends JPanel {
 
@@ -37,9 +37,9 @@ public class StaticTurnoutWidget extends JPanel {
 
 	private TurnoutCanvas		turnoutCanvas;
 
-	private TurnoutState		state;
+	private SRCPTurnoutState		state;
 
-	public StaticTurnoutWidget(Turnout turnout, TurnoutState state) {
+	public StaticTurnoutWidget(Turnout turnout, SRCPTurnoutState state) {
 		this.turnout = turnout;
 		this.state = state;
 

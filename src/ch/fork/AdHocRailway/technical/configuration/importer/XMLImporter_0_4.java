@@ -43,12 +43,12 @@ import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.FileTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutTypes;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 
@@ -196,7 +196,7 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 		int number = Integer.parseInt(attributes.getValue("number"));
 		if (type.toUpperCase().equals("DEFAULT")) {
 			TurnoutType turnoutType = turnoutPersistence
-					.getTurnoutType(TurnoutTypes.DEFAULT);
+					.getTurnoutType(SRCPTurnoutTypes.DEFAULT);
 			actualTurnout = new Turnout(0, turnoutType, actualTurnoutGroup,
 					number, desc, defaultstate.toUpperCase(), orientation
 							.toUpperCase(), 0, 0, false);
@@ -204,7 +204,7 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 			turnoutType.getTurnouts().add(actualTurnout);
 		} else if (type.toUpperCase().equals("DOUBLECROSS")) {
 			TurnoutType turnoutType = turnoutPersistence
-					.getTurnoutType(TurnoutTypes.DOUBLECROSS);
+					.getTurnoutType(SRCPTurnoutTypes.DOUBLECROSS);
 			actualTurnout = new Turnout(0, turnoutType, actualTurnoutGroup,
 					number, desc, defaultstate.toUpperCase(), orientation
 							.toUpperCase(), 0, 0, false);
@@ -212,7 +212,7 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 			turnoutType.getTurnouts().add(actualTurnout);
 		} else if (type.toUpperCase().equals("THREEWAY")) {
 			TurnoutType turnoutType = turnoutPersistence
-					.getTurnoutType(TurnoutTypes.THREEWAY);
+					.getTurnoutType(SRCPTurnoutTypes.THREEWAY);
 			actualTurnout = new Turnout(0, turnoutType, actualTurnoutGroup,
 					number, desc, defaultstate.toUpperCase(), orientation
 							.toUpperCase(), 0, 0, false);

@@ -21,8 +21,6 @@ package ch.fork.AdHocRailway.domain.turnouts;
 import java.util.Set;
 import java.util.SortedSet;
 
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
-
 import com.jgoodies.binding.list.ArrayListModel;
 
 public interface TurnoutPersistenceIface {
@@ -58,7 +56,7 @@ public interface TurnoutPersistenceIface {
 
 	public abstract SortedSet<TurnoutType> getAllTurnoutTypes();
 
-	public abstract TurnoutType getTurnoutType(TurnoutTypes typeName);
+	public abstract TurnoutType getTurnoutType(SRCPTurnoutTypes typeName);
 
 	public abstract void addTurnoutType(TurnoutType type)
 			throws TurnoutPersistenceException;

@@ -37,10 +37,10 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
 import ch.fork.AdHocRailway.domain.Constants;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
@@ -179,9 +179,9 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 		ValueModel defaultStateModel = presentationModel
 				.getModel(Turnout.PROPERTYNAME_DEFAULT_STATE);
 		turnoutDefaultStateComboBox = BasicComponentFactory
-				.createComboBox(new SelectionInList<TurnoutState>(
-						new TurnoutState[] { TurnoutState.STRAIGHT,
-								TurnoutState.LEFT }, defaultStateModel));
+				.createComboBox(new SelectionInList<SRCPTurnoutState>(
+						new SRCPTurnoutState[] { SRCPTurnoutState.STRAIGHT,
+								SRCPTurnoutState.LEFT }, defaultStateModel));
 		turnoutDefaultStateComboBox
 				.setRenderer(new TurnoutDefaultStateComboBoxCellRenderer());
 

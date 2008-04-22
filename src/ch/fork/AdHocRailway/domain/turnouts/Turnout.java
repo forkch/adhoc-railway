@@ -37,8 +37,6 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 
 import com.jgoodies.binding.beans.Model;
 
@@ -135,19 +133,19 @@ public class Turnout extends Model implements java.io.Serializable,
 	}
 
 	@Transient
-	public TurnoutState getDefaultStateEnum() {
+	public SRCPTurnoutState getDefaultStateEnum() {
 		if (getDefaultState().toUpperCase().equals("STRAIGHT")) {
-			return TurnoutState.STRAIGHT;
+			return SRCPTurnoutState.STRAIGHT;
 		} else if (getDefaultState().toUpperCase().equals("LEFT")) {
-			return TurnoutState.LEFT;
+			return SRCPTurnoutState.LEFT;
 		} else if (getDefaultState().toUpperCase().equals("RIGHT")) {
-			return TurnoutState.RIGHT;
+			return SRCPTurnoutState.RIGHT;
 		}
-		return TurnoutState.UNDEF;
+		return SRCPTurnoutState.UNDEF;
 	}
 
 	@Transient
-	public void setDefaultStateEnum(TurnoutState state) {
+	public void setDefaultStateEnum(SRCPTurnoutState state) {
 		switch (state) {
 		case STRAIGHT:
 			setDefaultState("STRAIGHT");
@@ -165,17 +163,17 @@ public class Turnout extends Model implements java.io.Serializable,
 
 	@Transient
 	public boolean isDefault() {
-		return getTurnoutType().getTurnoutTypeEnum() == TurnoutTypes.DEFAULT;
+		return getTurnoutType().getTurnoutTypeEnum() == SRCPTurnoutTypes.DEFAULT;
 	}
 
 	@Transient
 	public boolean isDoubleCross() {
-		return getTurnoutType().getTurnoutTypeEnum() == TurnoutTypes.DOUBLECROSS;
+		return getTurnoutType().getTurnoutTypeEnum() == SRCPTurnoutTypes.DOUBLECROSS;
 	}
 
 	@Transient
 	public boolean isThreeWay() {
-		return getTurnoutType().getTurnoutTypeEnum() == TurnoutTypes.THREEWAY;
+		return getTurnoutType().getTurnoutTypeEnum() == SRCPTurnoutTypes.THREEWAY;
 	}
 
 	public int compareTo(Turnout o) {

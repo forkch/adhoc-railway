@@ -18,10 +18,10 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-public interface RouteChangeListener {
-	public void nextSwitchRouted();
+public interface SRCPRouteChangeListener {
+	public void nextTurnoutRouted(SRCPRoute r);
 
-	public void nextSwitchDerouted();
+	public void nextTurnoutDerouted(SRCPRoute r);
 
-	public void routeChanged(Route r);
+	public void routeChanged(SRCPRoute r);
 }

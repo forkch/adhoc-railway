@@ -25,8 +25,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
 
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutTypes;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class TurnoutTypeComboBoxCellRenderer extends DefaultListCellRenderer {
@@ -37,13 +37,13 @@ public class TurnoutTypeComboBoxCellRenderer extends DefaultListCellRenderer {
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		TurnoutType type = (TurnoutType) value;
 		iconLabel.setText("");
-		if (type.getTurnoutTypeEnum() == TurnoutTypes.DEFAULT) {
+		if (type.getTurnoutTypeEnum() == SRCPTurnoutTypes.DEFAULT) {
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/default_switch_small.png"));
-		} else if (type.getTurnoutTypeEnum() == TurnoutTypes.DOUBLECROSS) {
+		} else if (type.getTurnoutTypeEnum() == SRCPTurnoutTypes.DOUBLECROSS) {
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/double_cross_switch_small.png"));
-		} else if (type.getTurnoutTypeEnum() == TurnoutTypes.THREEWAY) {
+		} else if (type.getTurnoutTypeEnum() == SRCPTurnoutTypes.THREEWAY) {
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/three_way_switch_small.png"));
 		}

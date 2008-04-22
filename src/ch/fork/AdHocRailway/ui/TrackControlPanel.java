@@ -44,15 +44,13 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
-import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutTypes;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
@@ -71,16 +69,14 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private JTabbedPane					trackControlPane;
 
-	private TurnoutControlIface			turnoutControl		= SRCPTurnoutControl
-																	.getInstance();
+	private TurnoutControlIface			turnoutControl		= AdHocRailway.getInstance().getTurnoutControl();
 
 	private TurnoutPersistenceIface		turnoutPersistence	= AdHocRailway
 																	.getInstance()
 																	.getTurnoutPersistence();
 
-	private RouteControlIface			routeControl		= SRCPRouteControl
-																	.getInstance();
-
+	private RouteControlIface			routeControl		= AdHocRailway.getInstance().getRouteControl();
+	
 	private RoutePersistenceIface		routePersistence	= AdHocRailway
 																	.getInstance()
 																	.getRoutePersistence();
@@ -411,10 +407,10 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 						PreferencesKeys.DEFAULT_TURNOUT_BUS));
 
 				newTurnout.setTurnoutGroup(selectedTurnoutGroup);
-				newTurnout.setDefaultStateEnum(TurnoutState.STRAIGHT);
+				newTurnout.setDefaultStateEnum(SRCPTurnoutState.STRAIGHT);
 				newTurnout.setOrientationEnum(TurnoutOrientation.EAST);
 				newTurnout.setTurnoutType(turnoutPersistence
-						.getTurnoutType(TurnoutTypes.DEFAULT));
+						.getTurnoutType(SRCPTurnoutTypes.DEFAULT));
 
 				config = new TurnoutConfig(AdHocRailway.getInstance(),
 						newTurnout);

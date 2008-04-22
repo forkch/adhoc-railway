@@ -16,23 +16,8 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.ui.routes.configuration;
+package ch.fork.AdHocRailway.domain.locomotives;
 
-import java.awt.Component;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.SwingConstants;
-
-public class SwitchRoutedStateComboBoxCellRenderer extends
-		DefaultListCellRenderer {
-	public Component getListCellRendererComponent(JList list, Object value,
-			int index, boolean isSelected, boolean cellHasFocus) {
-		JLabel iconLabel = (JLabel) super.getListCellRendererComponent(list,
-				value, index, isSelected, cellHasFocus);
-		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		iconLabel.setText(value.toString());
-		return iconLabel;
-	}
+public interface SRCPLocomotiveChangeListener {
+	public void locomotiveChanged(SRCPLocomotive changedSwitch);
 }

@@ -29,7 +29,6 @@ import org.apache.log4j.Logger;
 import ch.fork.AdHocRailway.domain.LookupAddress;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
@@ -259,7 +258,7 @@ public class CachingTurnoutPersistence implements TurnoutPersistenceIface {
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#getTurnoutTypeByName(java.lang.String)
 	 */
-	public TurnoutType getTurnoutType(TurnoutTypes typeName) {
+	public TurnoutType getTurnoutType(SRCPTurnoutTypes typeName) {
 		logger.debug("getTurnoutType()");
 
 		String typeStr = "";

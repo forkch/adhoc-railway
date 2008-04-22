@@ -30,8 +30,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 
 import com.jgoodies.binding.beans.Model;
 
@@ -93,18 +93,18 @@ public class RouteItem extends Model implements java.io.Serializable,
 	}
 
 	@Transient
-	public TurnoutState getRoutedStateEnum() {
+	public SRCPTurnoutState getRoutedStateEnum() {
 		if (routedState.toUpperCase().equals("STRAIGHT")) {
-			return TurnoutState.STRAIGHT;
+			return SRCPTurnoutState.STRAIGHT;
 		} else if (routedState.toUpperCase().equals("LEFT")) {
-			return TurnoutState.LEFT;
+			return SRCPTurnoutState.LEFT;
 		} else if (routedState.toUpperCase().equals("RIGHT")) {
-			return TurnoutState.RIGHT;
+			return SRCPTurnoutState.RIGHT;
 		}
-		return TurnoutState.UNDEF;
+		return SRCPTurnoutState.UNDEF;
 	}
 
-	public void setRoutedStateEnum(TurnoutState state) {
+	public void setRoutedStateEnum(SRCPTurnoutState state) {
 		switch (state) {
 		case STRAIGHT:
 			setRoutedState("STRAIGHT");

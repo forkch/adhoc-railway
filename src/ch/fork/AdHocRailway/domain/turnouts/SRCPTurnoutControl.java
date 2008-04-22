@@ -22,14 +22,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.InvalidAddressException;
+import ch.fork.AdHocRailway.domain.LookupAddress;
 import ch.fork.AdHocRailway.domain.NoSessionException;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import de.dermoba.srcp.client.SRCPSession;
@@ -38,40 +38,56 @@ import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GA;
 import de.dermoba.srcp.devices.GAInfoListener;
 
-public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
+public class SRCPTurnoutControl implements GAInfoListener {
 	private static Logger						logger	= Logger
 																.getLogger(SRCPTurnoutControl.class);
-	private static TurnoutControlIface			instance;
+	private static SRCPTurnoutControl			instance;
 
-	TurnoutPersistenceIface						persistence;
+	private List<SRCPTurnoutChangeListener>	listeners;
 
-	Map<Turnout, List<TurnoutChangeListener>>	listeners;
+	private List<SRCPTurnout>					srcpTurnouts;
 
-	Map<Turnout, SRCPTurnout>					srcpTurnouts;
-	Turnout										lastChangedTurnout;
+	private Map<LookupAddress, SRCPTurnout>		addressTurnoutCache;
+	private Map<LookupAddress, SRCPTurnout>		addressThreewayCache;
+	private SRCPTurnout										lastChangedTurnout;
 
-	TurnoutState								previousState;
+	private SRCPTurnoutState								previousState;
 	private SRCPSession							session;
 
 	private SRCPTurnoutControl() {
 		logger.info("SRCPTurnoutControl loaded");
-		listeners = new HashMap<Turnout, List<TurnoutChangeListener>>();
-		srcpTurnouts = new HashMap<Turnout, SRCPTurnout>();
+		listeners = new ArrayList<SRCPTurnoutChangeListener>();
+		srcpTurnouts = new ArrayList<SRCPTurnout>();
+
+		this.addressTurnoutCache = new HashMap<LookupAddress, SRCPTurnout>();
+		this.addressThreewayCache = new HashMap<LookupAddress, SRCPTurnout>();
 	}
 
-	public static TurnoutControlIface getInstance() {
+	public static SRCPTurnoutControl getInstance() {
 		if (instance == null) {
 			instance = new SRCPTurnoutControl();
 		}
 		return instance;
 	}
 
-	public void update() {
+	public void update(Set<SRCPTurnout> turnouts) {
+
+		this.addressTurnoutCache.clear();
+		this.addressThreewayCache.clear();
 		srcpTurnouts.clear();
-		for (Turnout t : persistence.getAllTurnouts()) {
-			SRCPTurnout sTurnout = new SRCPTurnout(t);
-			srcpTurnouts.put(t, sTurnout);
-			sTurnout.setSession(session);
+		for (SRCPTurnout turnout : turnouts) {
+			srcpTurnouts.add(turnout);
+			turnout.setSession(session);
+			
+			addressTurnoutCache.put(new LookupAddress(turnout.getBus1(), turnout
+					.getAddress1(), turnout.getBus2(), turnout.getAddress2()),
+					turnout);
+			if (turnout.isThreeWay()) {
+				addressThreewayCache.put(new LookupAddress(turnout.getBus1(),
+						turnout.getAddress1(), 0, 0), turnout);
+				addressThreewayCache.put(new LookupAddress(0, 0, turnout.getBus2(),
+						turnout.getAddress2()), turnout);
+			}
 		}
 	}
 
@@ -80,7 +96,7 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		if (session != null) {
 			session.getInfoChannel().addGAInfoListener(this);
 		}
-		for (SRCPTurnout st : srcpTurnouts.values()) {
+		for (SRCPTurnout st : srcpTurnouts) {
 			st.setSession(session);
 		}
 	}
@@ -92,8 +108,8 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 	 *            The port to 'convert'
 	 * @return The 'converted' port
 	 */
-	int getPort(TurnoutAddress address, int wantedPort) {
-		if (!address.isSwitched()) {
+	int getPort(SRCPTurnout turnout, int wantedPort) {
+		if (!turnout.isAddress1Switched()) {
 			return wantedPort;
 		} else {
 			if (wantedPort == Constants.TURNOUT_STRAIGHT_PORT) {
@@ -104,15 +120,15 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		}
 	}
 
-	public void refresh(Turnout turnout) throws TurnoutException {
+	public void refresh(SRCPTurnout turnout) throws TurnoutException {
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
 		if (turnout.isThreeWay()) {
 			refreshThreeWay(turnout);
 			return;
 		}
 
-		switch (sTurnout.getTurnoutState()) {
+		switch (turnout.getTurnoutState()) {
 		case STRAIGHT:
 			setStraight(turnout);
 			break;
@@ -127,26 +143,26 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		informListeners(turnout);
 	}
 
-	private void refreshThreeWay(Turnout turnout) {
+	private void refreshThreeWay(SRCPTurnout turnout) {
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		Turnout[] subTurnouts = sTurnout.getSubTurnouts();
-		for (Turnout t : subTurnouts) {
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		SRCPTurnout[] subTurnouts = turnout.getSubTurnouts();
+		for (SRCPTurnout t : subTurnouts) {
 			checkTurnout(t);
 			// initTurnout(t);
 			refresh(t);
 		}
 	}
 
-	public void toggle(Turnout turnout) throws TurnoutException {
+	public void toggle(SRCPTurnout turnout) throws TurnoutException {
 		checkTurnout(turnout);
 		// initTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
 		if (turnout.isThreeWay()) {
 			toggleThreeWay(turnout);
 			return;
 		}
-		previousState = sTurnout.getTurnoutState();
+		previousState = turnout.getTurnoutState();
 		switch (previousState) {
 		case STRAIGHT:
 			setCurvedLeft(turnout);
@@ -162,15 +178,15 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		lastChangedTurnout = turnout;
 	}
 
-	private void toggleThreeWay(Turnout turnout) throws TurnoutException {
+	private void toggleThreeWay(SRCPTurnout turnout) throws TurnoutException {
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		Turnout[] subTurnouts = sTurnout.getSubTurnouts();
-		for (Turnout t : subTurnouts) {
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		SRCPTurnout[] subTurnouts = turnout.getSubTurnouts();
+		for (SRCPTurnout t : subTurnouts) {
 			checkTurnout(t);
 			initTurnout(t);
 		}
-		switch (sTurnout.getTurnoutState()) {
+		switch (turnout.getTurnoutState()) {
 		case LEFT:
 			setStraightThreeWay(turnout);
 			break;
@@ -188,15 +204,15 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		lastChangedTurnout = turnout;
 	}
 
-	public void setDefaultState(Turnout turnout) throws TurnoutException {
+	public void setDefaultState(SRCPTurnout turnout) throws TurnoutException {
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		previousState = sTurnout.getTurnoutState();
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		previousState = turnout.getTurnoutState();
 		if (turnout.isThreeWay()) {
 			setDefaultStateTheeWay(turnout);
 			return;
 		}
-		switch (turnout.getDefaultStateEnum()) {
+		switch (turnout.getDefaultState()) {
 		case STRAIGHT:
 			setStraight(turnout);
 			break;
@@ -209,31 +225,31 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		lastChangedTurnout = turnout;
 	}
 
-	private void setDefaultStateTheeWay(Turnout turnout)
+	private void setDefaultStateTheeWay(SRCPTurnout turnout)
 			throws TurnoutException {
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		Turnout[] subTurnouts = sTurnout.getSubTurnouts();
-		for (Turnout t : subTurnouts) {
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		SRCPTurnout[] subTurnouts = turnout.getSubTurnouts();
+		for (SRCPTurnout t : subTurnouts) {
 			checkTurnout(t);
 			initTurnout(t);
 		}
 		setStraight(subTurnouts[0]);
 		setStraight(subTurnouts[1]);
-		sTurnout.setTurnoutState(TurnoutState.STRAIGHT);
+		turnout.setTurnoutState(SRCPTurnoutState.STRAIGHT);
 		informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
-	public void setNonDefaultState(Turnout turnout) throws TurnoutException {
+	public void setNonDefaultState(SRCPTurnout turnout) throws TurnoutException {
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		previousState = sTurnout.getTurnoutState();
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		previousState = turnout.getTurnoutState();
 		if (turnout.isThreeWay()) {
 			setNonDefaultStateTheeWay(turnout);
 			return;
 		}
-		switch (turnout.getDefaultStateEnum()) {
+		switch (turnout.getDefaultState()) {
 		case STRAIGHT:
 			setCurvedLeft(turnout);
 			break;
@@ -246,101 +262,101 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		lastChangedTurnout = turnout;
 	}
 
-	private void setNonDefaultStateTheeWay(Turnout turnout) {
+	private void setNonDefaultStateTheeWay(SRCPTurnout turnout) {
 		// do nothing
 	}
 
-	public void setStraight(Turnout turnout) throws TurnoutException {
+	public void setStraight(SRCPTurnout turnout) throws TurnoutException {
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		previousState = sTurnout.getTurnoutState();
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		previousState = turnout.getTurnoutState();
 		if (turnout.isThreeWay()) {
 			setStraightThreeWay(turnout);
 			return;
 		}
-		GA ga = sTurnout.getGA();
-		TurnoutAddress address = sTurnout.getTurnoutAddresses()[0];
+		GA ga = turnout.getGA();
+		//TurnoutAddress address = turnout.getTurnoutAddresses()[0];
 		try {
 			int defaultActivationTime = Preferences.getInstance().getIntValue(
 					PreferencesKeys.ACTIVATION_TIME);
-			ga.set(getPort(address, Constants.TURNOUT_STRAIGHT_PORT),
+			ga.set(getPort(turnout, Constants.TURNOUT_STRAIGHT_PORT),
 					Constants.TURNOUT_PORT_ACTIVATE, defaultActivationTime);
-			ga.set(getPort(address, Constants.TURNOUT_CURVED_PORT),
+			ga.set(getPort(turnout, Constants.TURNOUT_CURVED_PORT),
 					Constants.TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
-			sTurnout.setTurnoutState(TurnoutState.STRAIGHT);
+			turnout.setTurnoutState(SRCPTurnoutState.STRAIGHT);
 			informListeners(turnout);
 			lastChangedTurnout = turnout;
 		} catch (SRCPDeviceLockedException x1) {
-			throw new SwitchLockedException(Constants.ERR_LOCKED, x1);
+			throw new TurnoutLockedException(Constants.ERR_LOCKED, x1);
 		} catch (SRCPException e) {
 			logger.error(e);
 			throw new TurnoutException(Constants.ERR_TOGGLE_FAILED, e);
 		}
 	}
 
-	private void setStraightThreeWay(Turnout turnout) throws TurnoutException {
+	private void setStraightThreeWay(SRCPTurnout turnout) throws TurnoutException {
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		Turnout[] subTurnouts = sTurnout.getSubTurnouts();
-		for (Turnout t : subTurnouts) {
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		SRCPTurnout[] subTurnouts = turnout.getSubTurnouts();
+		for (SRCPTurnout t : subTurnouts) {
 			checkTurnout(t);
 			initTurnout(t);
 		}
 		setStraight(subTurnouts[0]);
 		setStraight(subTurnouts[1]);
-		sTurnout.setTurnoutState(TurnoutState.STRAIGHT);
+		turnout.setTurnoutState(SRCPTurnoutState.STRAIGHT);
 		informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
-	public void setCurvedLeft(Turnout turnout) throws TurnoutException {
+	public void setCurvedLeft(SRCPTurnout turnout) throws TurnoutException {
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		previousState = sTurnout.getTurnoutState();
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		previousState = turnout.getTurnoutState();
 		if (turnout.isThreeWay()) {
 			setCurvedLeftThreeWay(turnout);
 			return;
 		}
-		GA ga = sTurnout.getGA();
-		TurnoutAddress address = sTurnout.getTurnoutAddresses()[0];
+		GA ga = turnout.getGA();
+		//TurnoutAddress address = sTurnout.getTurnoutAddresses()[0];
 		try {
 			int defaultActivationTime = Preferences.getInstance().getIntValue(
 					PreferencesKeys.ACTIVATION_TIME);
-			ga.set(getPort(address, Constants.TURNOUT_CURVED_PORT),
+			ga.set(getPort(turnout, Constants.TURNOUT_CURVED_PORT),
 					Constants.TURNOUT_PORT_ACTIVATE, defaultActivationTime);
-			ga.set(getPort(address, Constants.TURNOUT_STRAIGHT_PORT),
+			ga.set(getPort(turnout, Constants.TURNOUT_STRAIGHT_PORT),
 					Constants.TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
-			sTurnout.setTurnoutState(TurnoutState.LEFT);
+			turnout.setTurnoutState(SRCPTurnoutState.LEFT);
 			informListeners(turnout);
 			lastChangedTurnout = turnout;
 		} catch (SRCPDeviceLockedException x1) {
-			throw new SwitchLockedException(Constants.ERR_LOCKED, x1);
+			throw new TurnoutLockedException(Constants.ERR_LOCKED, x1);
 		} catch (SRCPException e) {
 			logger.error(e);
 			throw new TurnoutException(Constants.ERR_TOGGLE_FAILED, e);
 		}
 	}
 
-	private void setCurvedLeftThreeWay(Turnout turnout) throws TurnoutException {
+	private void setCurvedLeftThreeWay(SRCPTurnout turnout) throws TurnoutException {
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		Turnout[] subTurnouts = sTurnout.getSubTurnouts();
-		for (Turnout t : subTurnouts) {
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		SRCPTurnout[] subTurnouts = turnout.getSubTurnouts();
+		for (SRCPTurnout t : subTurnouts) {
 			checkTurnout(t);
 			initTurnout(t);
 		}
 
 		setCurvedLeft(subTurnouts[0]);
 		setStraight(subTurnouts[1]);
-		sTurnout.setTurnoutState(TurnoutState.LEFT);
+		turnout.setTurnoutState(SRCPTurnoutState.LEFT);
 		informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
-	public void setCurvedRight(Turnout turnout) throws TurnoutException {
+	public void setCurvedRight(SRCPTurnout turnout) throws TurnoutException {
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		previousState = sTurnout.getTurnoutState();
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		previousState = turnout.getTurnoutState();
 		if (turnout.isThreeWay()) {
 			setCurvedRightThreeWay(turnout);
 			return;
@@ -351,44 +367,44 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		lastChangedTurnout = turnout;
 	}
 
-	private void setCurvedRightThreeWay(Turnout turnout)
+	private void setCurvedRightThreeWay(SRCPTurnout turnout)
 			throws TurnoutException {
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		Turnout[] subTurnouts = sTurnout.getSubTurnouts();
-		for (Turnout t : subTurnouts) {
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		SRCPTurnout[] subTurnouts = turnout.getSubTurnouts();
+		for (SRCPTurnout t : subTurnouts) {
 			checkTurnout(t);
 			initTurnout(t);
 		}
 
 		setStraight(subTurnouts[0]);
 		setCurvedLeft(subTurnouts[1]);
-		sTurnout.setTurnoutState(TurnoutState.RIGHT);
+		turnout.setTurnoutState(SRCPTurnoutState.RIGHT);
 		informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
-	public TurnoutState getTurnoutState(Turnout turnout) {
+	public SRCPTurnoutState getTurnoutState(SRCPTurnout turnout) {
 		try {
 			checkTurnout(turnout);
-			SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-			return sTurnout.getTurnoutState();
+			//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+			return turnout.getTurnoutState();
 		} catch (TurnoutException e) {
 		}
-		return TurnoutState.UNDEF;
+		return SRCPTurnoutState.UNDEF;
 	}
 
 	public void GAset(double timestamp, int bus, int address, int port,
 			int value) {
 		logger.debug("GAset(" + bus + " , " + address + " , " + port + " , "
 				+ value + " )");
-		Turnout turnout = persistence.getTurnoutByAddressBus(bus, address);
+		SRCPTurnout turnout = getTurnoutByAddressBus(bus, address);
 		if (turnout == null) {
 			// a turnout which the srcp-server knows but not me
 			return;
 		}
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
 		if (value == 0) {
 			// ignore deactivation
 			return;
@@ -399,46 +415,44 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		} else {
 			portChanged(turnout, port);
 		}
-		if (sTurnout != null) {
-			System.out.println(turnout + " >>>>> " + listeners.get(turnout));
-			informListeners(turnout);
-		}
+		
+		informListeners(turnout);
 	}
 
-	private void portChanged(Turnout turnout, int port) {
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		if (port == getPort(sTurnout.getTurnoutAddress(0),
+	private void portChanged(SRCPTurnout turnout, int port) {
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		if (port == getPort(turnout,
 				Constants.TURNOUT_STRAIGHT_PORT)) {
-			sTurnout.setTurnoutState(TurnoutState.STRAIGHT);
-		} else if (port == getPort(sTurnout.getTurnoutAddress(0),
+			turnout.setTurnoutState(SRCPTurnoutState.STRAIGHT);
+		} else if (port == getPort(turnout,
 				Constants.TURNOUT_CURVED_PORT)) {
-			sTurnout.setTurnoutState(TurnoutState.LEFT);
+			turnout.setTurnoutState(SRCPTurnoutState.LEFT);
 		}
 	}
 
-	private void portChangedThreeway(Turnout turnout, int address, int port) {
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		Turnout[] subTurnouts = sTurnout.getSubTurnouts();
-		SRCPTurnout[] subSRCPTurnouts = new SRCPTurnout[2];
-		for (Turnout subTurnout : subTurnouts) {
+	private void portChangedThreeway(SRCPTurnout turnout, int address, int port) {
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		SRCPTurnout[] subTurnouts = turnout.getSubTurnouts();
+		//SRCPTurnout[] subSRCPTurnouts = new SRCPTurnout[2];
+		for (SRCPTurnout subTurnout : subTurnouts) {
 			if (subTurnout.getAddress1() == address) {
 				portChanged(subTurnout, port);
 			}
 		}
-		subSRCPTurnouts[0] = srcpTurnouts.get(subTurnouts[0]);
-		subSRCPTurnouts[1] = srcpTurnouts.get(subTurnouts[1]);
-		if (subSRCPTurnouts[0].getTurnoutState() == TurnoutState.STRAIGHT
-				&& subSRCPTurnouts[1].getTurnoutState() == TurnoutState.STRAIGHT) {
-			sTurnout.setTurnoutState(TurnoutState.STRAIGHT);
-		} else if (subSRCPTurnouts[0].getTurnoutState() == TurnoutState.LEFT
-				&& subSRCPTurnouts[1].getTurnoutState() == TurnoutState.STRAIGHT) {
-			sTurnout.setTurnoutState(TurnoutState.LEFT);
-		} else if (subSRCPTurnouts[0].getTurnoutState() == TurnoutState.STRAIGHT
-				&& subSRCPTurnouts[1].getTurnoutState() == TurnoutState.LEFT) {
-			sTurnout.setTurnoutState(TurnoutState.RIGHT);
-		} else if (subSRCPTurnouts[0].getTurnoutState() == TurnoutState.LEFT
-				&& subSRCPTurnouts[1].getTurnoutState() == TurnoutState.LEFT) {
-			sTurnout.setTurnoutState(TurnoutState.UNDEF);
+		//subSRCPTurnouts[0] = srcpTurnouts.get(subTurnouts[0]);
+		//subSRCPTurnouts[1] = srcpTurnouts.get(subTurnouts[1]);
+		if (subTurnouts[0].getTurnoutState() == SRCPTurnoutState.STRAIGHT
+				&& subTurnouts[1].getTurnoutState() == SRCPTurnoutState.STRAIGHT) {
+			turnout.setTurnoutState(SRCPTurnoutState.STRAIGHT);
+		} else if (subTurnouts[0].getTurnoutState() == SRCPTurnoutState.LEFT
+				&& subTurnouts[1].getTurnoutState() == SRCPTurnoutState.STRAIGHT) {
+			turnout.setTurnoutState(SRCPTurnoutState.LEFT);
+		} else if (subTurnouts[0].getTurnoutState() == SRCPTurnoutState.STRAIGHT
+				&& subTurnouts[1].getTurnoutState() == SRCPTurnoutState.LEFT) {
+			turnout.setTurnoutState(SRCPTurnoutState.RIGHT);
+		} else if (subTurnouts[0].getTurnoutState() == SRCPTurnoutState.LEFT
+				&& subTurnouts[1].getTurnoutState() == SRCPTurnoutState.LEFT) {
+			turnout.setTurnoutState(SRCPTurnoutState.UNDEF);
 		}
 	}
 
@@ -447,98 +461,93 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		logger.debug("GAinit(" + bus + " , " + address + " , " + protocol
 				+ " , " + params + " )");
 
-		Turnout turnout = persistence.getTurnoutByAddressBus(bus, address);
+		SRCPTurnout turnout = getTurnoutByAddressBus(bus, address);
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		if (sTurnout != null) {
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		if (turnout != null) {
 			informListeners(turnout);
 		}
 	}
 
 	public void GAterm(double timestamp, int bus, int address) {
 		logger.debug("GAterm( " + bus + " , " + address + " )");
-		Turnout turnout = persistence.getTurnoutByAddressBus(bus, address);
+		SRCPTurnout turnout = getTurnoutByAddressBus(bus, address);
 		checkTurnout(turnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		if (sTurnout != null) {
-			sTurnout.setGA(null);
-			sTurnout.setInitialized(false);
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		if (turnout != null) {
+			turnout.setGA(null);
+			turnout.setInitialized(false);
 			informListeners(turnout);
 		}
 	}
 
-	public void addTurnoutChangeListener(Turnout turnout,
-			TurnoutChangeListener listener) {
-		if (listeners.get(turnout) == null) {
-			listeners.put(turnout, new ArrayList<TurnoutChangeListener>());
-		}
-		listeners.get(turnout).add(listener);
+	public void addTurnoutChangeListener(SRCPTurnoutChangeListener listener) {
+		listeners.add(listener);
 	}
 
-	public void removeTurnoutChangeListener(Turnout turnout) {
-		listeners.remove(turnout);
-	}
-
-	public void removeTurnoutChangeListener(TurnoutChangeListener listener) {
-		listeners.keySet().remove(listener);
+	public void removeTurnoutChangeListener(SRCPTurnoutChangeListener listener) {
+		listeners.remove(listener);
 	}
 
 	public void removeAllTurnoutChangeListener() {
 		listeners.clear();
 	}
 
-	void informListeners(Turnout changedTurnout) {
-		List<TurnoutChangeListener> ll = listeners.get(changedTurnout);
-		SRCPTurnout sTurnout = srcpTurnouts.get(changedTurnout);
-		if (ll == null)
-			// its a sub-turnout of a threeway turnout
-			return;
-		for (TurnoutChangeListener scl : ll)
-			scl.turnoutChanged(changedTurnout, sTurnout.getTurnoutState());
-		logger.debug("turnoutChanged(" + changedTurnout.getNumber() + ", "
-				+ sTurnout.getTurnoutState() + ")");
+	void informListeners(SRCPTurnout changedTurnout) {
+		for (SRCPTurnoutChangeListener scl : listeners)
+			scl.turnoutChanged(changedTurnout, changedTurnout.getTurnoutState());
+		logger.debug("turnoutChanged("+changedTurnout+")");
 
 	}
 
-	void checkTurnout(Turnout turnout) throws TurnoutException {
+	void checkTurnout(SRCPTurnout turnout) throws TurnoutException {
 		logger.debug("checkTurnout(" + turnout + ")");
 		if (turnout == null) {
 			return;
 		}
 		if (turnout.getBus1() == 0 || turnout.getAddress1() == 0)
 			throw new TurnoutException(Constants.ERR_FAILED,
-					new InvalidAddressException("Turnout "
-							+ turnout.getNumber()
-							+ " has an invalid address or bus"));
+					new InvalidAddressException("Turnout has an invalid address or bus"));
 		if (turnout.isThreeWay()) {
 			if (turnout.getBus2() == 0 || turnout.getAddress2() == 0)
 				throw new TurnoutException(Constants.ERR_FAILED,
-						new InvalidAddressException("Turnout "
-								+ turnout.getNumber()
-								+ " has an invalid address or bus"));
+						new InvalidAddressException("Turnout has an invalid address or bus"));
 		}
 
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		if (sTurnout == null) {
-			srcpTurnouts.put(turnout, new SRCPTurnout(turnout));
-			sTurnout = srcpTurnouts.get(turnout);
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		//if (sTurnout == null) {
+		//	srcpTurnouts.put(turnout, new SRCPTurnout(turnout));
+		//	sTurnout = srcpTurnouts.get(turnout);
+		//}
+		
+		if(!srcpTurnouts.contains(turnout)) {
+			srcpTurnouts.add(turnout);
+			addressTurnoutCache.put(new LookupAddress(turnout.getBus1(), turnout
+					.getAddress1(), turnout.getBus2(), turnout.getAddress2()),
+					turnout);
+			if (turnout.isThreeWay()) {
+				addressThreewayCache.put(new LookupAddress(turnout.getBus1(),
+						turnout.getAddress1(), 0, 0), turnout);
+				addressThreewayCache.put(new LookupAddress(0, 0, turnout.getBus2(),
+						turnout.getAddress2()), turnout);
+			}
 		}
 
-		if (sTurnout.getSession() == null && session == null) {
+		if (turnout.getSession() == null && session == null) {
 			throw new TurnoutException(Constants.ERR_NOT_CONNECTED,
 					new NoSessionException());
 		}
-		if (sTurnout.getSession() == null && session != null) {
-			sTurnout.setSession(session);
+		if (turnout.getSession() == null && session != null) {
+			turnout.setSession(session);
 		}
 
 		initTurnout(turnout);
 	}
 
-	private void initTurnout(Turnout turnout) throws TurnoutException {
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+	private void initTurnout(SRCPTurnout turnout) throws TurnoutException {
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
 
-		if (!sTurnout.isInitialized()) {
+		if (!turnout.isInitialized()) {
 			if (turnout.isThreeWay())
 				initTurnoutThreeWay(turnout);
 			try {
@@ -546,14 +555,14 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 				if (Preferences.getInstance().getBooleanValue(
 						PreferencesKeys.INTERFACE_6051)) {
 					ga.init(turnout.getBus1(), turnout.getAddress1(),
-							SRCPTurnout.PROTOCOL);
+							turnout.getProtocol());
 				} else {
 					ga.setBus(turnout.getBus1());
 					ga.setAddress(turnout.getAddress1());
 				}
 
-				sTurnout.setGA(ga);
-				sTurnout.setInitialized(true);
+				turnout.setGA(ga);
+				turnout.setInitialized(true);
 			} catch (SRCPException e) {
 				logger.error(e);
 				throw new TurnoutException(Constants.ERR_INIT_FAILED, e);
@@ -561,37 +570,38 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		}
 	}
 
-	private void initTurnoutThreeWay(Turnout turnout) throws TurnoutException {
-		SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
-		Turnout turnout1 = new Turnout();
-		Turnout turnout2 = new Turnout();
-		SRCPTurnout sTurnout1 = new SRCPTurnout(turnout1);
-		SRCPTurnout sTurnout2 = new SRCPTurnout(turnout2);
-		turnout1.setNumber(turnout.getNumber());
+	private void initTurnoutThreeWay(SRCPTurnout turnout) throws TurnoutException {
+		//SRCPTurnout sTurnout = srcpTurnouts.get(turnout);
+		//Turnout turnout1 = new Turnout();
+		//Turnout turnout2 = new Turnout();
+		SRCPTurnout turnout1 = new SRCPTurnout();
+		SRCPTurnout turnout2 = new SRCPTurnout();
+		
+		//turnout1.setNumber(turnout.getNumber());
 		turnout1.setBus1(turnout.getBus1());
 		turnout1.setAddress1(turnout.getAddress1());
 		turnout1.setAddress1Switched(turnout.isAddress1Switched());
-		turnout1.setTurnoutType(persistence
-				.getTurnoutType(TurnoutTypes.DEFAULT));
-		turnout1.setTurnoutGroup(turnout.getTurnoutGroup());
-		sTurnout1.setSession(sTurnout.getSession());
+		turnout1.setTurnoutType(SRCPTurnoutTypes.DEFAULT);
+		turnout1.setProtocol(turnout.getProtocol());
+		//turnout1.setTurnoutGroup(turnout.getTurnoutGroup());
+		turnout1.setSession(turnout.getSession());
 
-		turnout2.setNumber(turnout.getNumber());
+		//turnout2.setNumber(turnout.getNumber());
 		turnout2.setBus1(turnout.getBus2());
 		turnout2.setAddress1(turnout.getAddress2());
 		turnout2.setAddress1Switched(turnout.isAddress2Switched());
-		turnout2.setTurnoutType(persistence
-				.getTurnoutType(TurnoutTypes.DEFAULT));
-		turnout2.setTurnoutGroup(turnout.getTurnoutGroup());
-		sTurnout2.setSession(sTurnout.getSession());
+		turnout2.setTurnoutType(SRCPTurnoutTypes.DEFAULT);
+		turnout2.setProtocol(turnout.getProtocol());
+		//turnout2.setTurnoutGroup(turnout.getTurnoutGroup());
+		turnout2.setSession(turnout.getSession());
 
-		srcpTurnouts.put(turnout1, sTurnout1);
-		srcpTurnouts.put(turnout2, sTurnout2);
+		srcpTurnouts.add(turnout1);
+		srcpTurnouts.add(turnout2);
 		initTurnout(turnout1);
 		initTurnout(turnout2);
 
-		Turnout[] turnouts = new Turnout[] { turnout1, turnout2 };
-		sTurnout.setSubTurnouts(turnouts);
+		SRCPTurnout[] turnouts = new SRCPTurnout[] { turnout1, turnout2 };
+		turnout.setSubTurnouts(turnouts);
 
 	}
 
@@ -626,8 +636,25 @@ public class SRCPTurnoutControl implements TurnoutControlIface, GAInfoListener {
 		}
 		setDefaultState(lastChangedTurnout);
 	}
+	
+	private  SRCPTurnout getTurnoutByAddressBus(int bus, int address) {
+		logger.debug("getTurnoutByAddressBus()");
+		LookupAddress key1 = new LookupAddress(bus, address, 0, 0);
+		SRCPTurnout lookup1 = addressTurnoutCache.get(key1);
+		if (lookup1 != null)
+			return lookup1;
+		LookupAddress key2 = new LookupAddress(0, 0, bus, address);
+		SRCPTurnout lookup2 = addressTurnoutCache.get(key2);
+		if (lookup2 != null)
+			return lookup2;
+		SRCPTurnout threewayLookup1 = addressThreewayCache.get(key1);
+		if (threewayLookup1 != null)
+			return threewayLookup1;
 
-	public void setTurnoutPersistence(TurnoutPersistenceIface persistence) {
-		this.persistence = persistence;
+		SRCPTurnout threewayLookup2 = addressThreewayCache.get(key2);
+		if (threewayLookup2 != null)
+			return threewayLookup2;
+
+		return null;
 	}
 }

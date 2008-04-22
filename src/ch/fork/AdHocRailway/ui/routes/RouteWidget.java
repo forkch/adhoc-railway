@@ -39,8 +39,7 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteException;
-import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
-import ch.fork.AdHocRailway.domain.routes.Route.RouteState;
+import ch.fork.AdHocRailway.domain.routes.SRCPRouteState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
@@ -61,7 +60,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 	public RouteWidget(Route route) {
 		this.route = route;
-		routeControl = SRCPRouteControl.getInstance();
+		routeControl = AdHocRailway.getInstance().getRouteControl();
 		initGUI();
 		routeControl.addRouteChangeListener(route, this);
 	}
@@ -121,7 +120,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 						&& e.getButton() == MouseEvent.BUTTON1) {
 					if (routeControl.isRouting(route))
 						return;
-					if (routeControl.getRouteState(route) == RouteState.ENABLED)
+					if (routeControl.getRouteState(route) == SRCPRouteState.ENABLED)
 						routeControl.disableRoute(route);
 					else
 						routeControl.enableRoute(route);
@@ -139,31 +138,31 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		}
 
 		private void displayRouteConfig() {
-			//routeControl.removeRouteChangeListener(route, RouteWidget.this);
+			// routeControl.removeRouteChangeListener(route, RouteWidget.this);
 			new RouteConfig(AdHocRailway.getInstance(), route);
-			//routeControl.addRouteChangeListener(route, RouteWidget.this);
+			// routeControl.addRouteChangeListener(route, RouteWidget.this);
 
-			routeChanged(route);
+			routeChanged();
 		}
 	}
 
-	public void routeChanged(Route r) {
-		if (route.equals(r)) {
-			SwingUtilities.invokeLater(new Runnable() {
+	public void routeChanged() {
+		// /if (route.equals(r)) {
+		SwingUtilities.invokeLater(new Runnable() {
 
-				public void run() {
-					if (routeControl.getRouteState(route) == RouteState.ENABLED) {
-						iconLabel.setIcon(routeStartIcon);
-						routingProgress.setForeground(Color.GREEN);
-					} else {
-						iconLabel.setIcon(routeStopIcon);
-						routingProgress.setBackground(Color.RED);
-					}
-					RouteWidget.this.revalidate();
-					RouteWidget.this.repaint();
+			public void run() {
+				if (routeControl.getRouteState(route) == SRCPRouteState.ENABLED) {
+					iconLabel.setIcon(routeStartIcon);
+					routingProgress.setForeground(Color.GREEN);
+				} else {
+					iconLabel.setIcon(routeStopIcon);
+					routingProgress.setBackground(Color.RED);
 				}
-			});
-		}
+				RouteWidget.this.revalidate();
+				RouteWidget.this.repaint();
+			}
+		});
+		// }
 	}
 
 	public void nextSwitchRouted() {

@@ -72,14 +72,17 @@ import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
+import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.routes.FileRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
+import ch.fork.AdHocRailway.domain.routes.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.FileTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
@@ -232,15 +235,15 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			setTitle(AdHocRailway.TITLE + " [" + url + "]");
 		}
 		initProceeded("Loading Control Layer (Locomotives)");
-		locomotiveControl = SRCPLocomotiveControl.getInstance();
+		locomotiveControl = SRCPLocomotiveControlAdapter.getInstance();
 		locomotiveControl.setLocomotivePersistence(locomotivePersistence);
 
 		initProceeded("Loading Control Layer (Turnouts)");
-		turnoutControl = SRCPTurnoutControl.getInstance();
-		turnoutControl.setTurnoutPersistence(turnoutPersistence);
+		turnoutControl = SRCPTurnoutControlAdapter.getInstance();
+		turnoutControl.setPersistence(turnoutPersistence);
 
 		initProceeded("Loading Control Layer (Routes)");
-		routeControl = SRCPRouteControl.getInstance();
+		routeControl = SRCPRouteControlAdapter.getInstance();
 		routeControl.setRoutePersistence(routePersistence);
 
 		initProceeded("Loading Control Layer (Locks)");
@@ -338,6 +341,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private void updateTurnouts() {
 		turnoutControl.update();
+		routeControl.update();
 		trackControlPanel.update();
 	}
 
@@ -419,8 +423,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 								.getStringValue(PreferencesKeys.HOSTNAME));
 						turnoutPersistence = FileTurnoutPersistence
 								.getInstance();
-						turnoutControl
-								.setTurnoutPersistence(turnoutPersistence);
+						//turnoutControl
+						//		.setTurnoutPersistence(turnoutPersistence);
 						locomotivePersistence = FileLocomotivePersistence
 								.getInstance();
 						locomotiveControl
@@ -461,8 +465,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 								.getStringValue(PreferencesKeys.HOSTNAME));
 						turnoutPersistence = HibernateTurnoutPersistence
 								.getInstance();
-						turnoutControl
-								.setTurnoutPersistence(turnoutPersistence);
+						//turnoutControl
+						//		.setTurnoutPersistence(turnoutPersistence);
 						locomotivePersistence = HibernateLocomotivePersistence
 								.getInstance();
 						locomotiveControl
@@ -578,8 +582,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 												PreferencesKeys.HOSTNAME));
 								turnoutPersistence = HibernateTurnoutPersistence
 										.getInstance();
-								turnoutControl
-										.setTurnoutPersistence(turnoutPersistence);
+								//turnoutControl
+								//		.setTurnoutPersistence(turnoutPersistence);
 								locomotivePersistence = HibernateLocomotivePersistence
 										.getInstance();
 								locomotiveControl
@@ -760,9 +764,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				session.getCommandChannel().addCommandDataListener(
 						AdHocRailway.this);
 				session.getInfoChannel().addInfoDataListener(AdHocRailway.this);
-				((SRCPTurnoutControl) turnoutControl).setSession(session);
-				((SRCPLocomotiveControl) locomotiveControl).setSession(session);
-				((SRCPRouteControl) routeControl).setSession(session);
+				((SRCPTurnoutControlAdapter) turnoutControl).setSession(session);
+				((SRCPLocomotiveControlAdapter) locomotiveControl).setSession(session);
+				((SRCPRouteControlAdapter) routeControl).setSession(session);
 				// ((SRCPRouteControl) routeControl).setSession(session);
 				lockControl.setSession(session);
 				session.connect();

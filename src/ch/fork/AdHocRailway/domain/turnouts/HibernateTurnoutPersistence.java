@@ -32,7 +32,6 @@ import org.hibernate.HibernateException;
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
@@ -417,7 +416,7 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#getTurnoutTypeByName(java.lang.String)
 	 */
-	public TurnoutType getTurnoutType(TurnoutTypes typeName)
+	public TurnoutType getTurnoutType(SRCPTurnoutTypes typeName)
 			throws TurnoutPersistenceException {
 		logger.debug("getTurnoutType()");
 		return super.getTurnoutType(typeName);

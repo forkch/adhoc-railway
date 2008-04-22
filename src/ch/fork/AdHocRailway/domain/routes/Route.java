@@ -68,9 +68,6 @@ public class Route extends Model implements java.io.Serializable,
 	public static final String		PROPERTYNAME_NAME			= "name";
 	public static final String		PROPERTYNAME_ROUTE_ITEMS	= "routeItems";
 
-	public enum RouteState {
-		ENABLED, DISABLED
-	};
 
 	public int compareTo(Route o) {
 		if (this == o)

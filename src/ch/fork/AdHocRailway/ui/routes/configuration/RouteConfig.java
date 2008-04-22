@@ -49,10 +49,10 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
@@ -385,30 +385,30 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 									ImageTools
 											.createImageIcon("messagebox_critical.png"));
 				} else {
-					TurnoutState routedState = null;
+					SRCPTurnoutState routedState = null;
 					if (e.getActionCommand().equals("/")) {
 						// ThreeWay LEFT
-						routedState = TurnoutState.LEFT;
+						routedState = SRCPTurnoutState.LEFT;
 					} else if (e.getActionCommand().equals("*")) {
 						// ThreeWay STRAIGHT
-						routedState = TurnoutState.STRAIGHT;
+						routedState = SRCPTurnoutState.STRAIGHT;
 					} else if (e.getActionCommand().equals("-")) {
 						// ThreeWay RIGHT
-						routedState = TurnoutState.RIGHT;
+						routedState = SRCPTurnoutState.RIGHT;
 					} else if (e.getActionCommand().equals("+")
 							|| e.getActionCommand().equals("bs")) {
 						// CURVED
 						if (!turnout.isThreeWay()) {
 							switch (turnout.getDefaultStateEnum()) {
 							case STRAIGHT:
-								routedState = TurnoutState.LEFT;
+								routedState = SRCPTurnoutState.LEFT;
 								break;
 							case LEFT:
-								routedState = TurnoutState.STRAIGHT;
+								routedState = SRCPTurnoutState.STRAIGHT;
 								break;
 							}
 						} else {
-							routedState = TurnoutState.LEFT;
+							routedState = SRCPTurnoutState.LEFT;
 						}
 					} else if (e.getActionCommand().equals("\n")) {
 						// STRAIGHT

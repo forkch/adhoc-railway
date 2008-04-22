@@ -16,8 +16,14 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.domain.locomotives;
+package ch.fork.AdHocRailway.domain.turnouts;
 
-public interface LocomotiveChangeListener {
-	public void locomotiveChanged(Locomotive changedSwitch);
+public class TurnoutLockedException extends TurnoutException {
+	public TurnoutLockedException(String msg) {
+		super(msg);
+	}
+
+	public TurnoutLockedException(String msg, Exception parent) {
+		super(msg, parent);
+	}
 }

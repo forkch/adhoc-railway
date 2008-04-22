@@ -20,8 +20,6 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import org.apache.log4j.Logger;
 
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType.TurnoutTypes;
-
 public class FileTurnoutPersistence extends CachingTurnoutPersistence{
 	static Logger							logger	= Logger
 															.getLogger(FileTurnoutPersistence.class);
@@ -36,15 +34,15 @@ public class FileTurnoutPersistence extends CachingTurnoutPersistence{
 	}
 
 	private void addDefaultTurnoutTypes() {
-		if (getTurnoutType(TurnoutTypes.DEFAULT) == null) {
+		if (getTurnoutType(SRCPTurnoutTypes.DEFAULT) == null) {
 			TurnoutType defaultType = new TurnoutType(0, "DEFAULT");
 			addTurnoutType(defaultType);
 		}
-		if (getTurnoutType(TurnoutTypes.DOUBLECROSS) == null) {
+		if (getTurnoutType(SRCPTurnoutTypes.DOUBLECROSS) == null) {
 			TurnoutType doublecrossType = new TurnoutType(0, "DOUBLECROSS");
 			addTurnoutType(doublecrossType);
 		}
-		if (getTurnoutType(TurnoutTypes.THREEWAY) == null) {
+		if (getTurnoutType(SRCPTurnoutTypes.THREEWAY) == null) {
 			TurnoutType threewayType = new TurnoutType(0, "THREEWAY");
 			addTurnoutType(threewayType);
 		}

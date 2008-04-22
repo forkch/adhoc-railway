@@ -25,10 +25,10 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
@@ -47,7 +47,10 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 		try {
 			currentTurnout = persistence.getTurnoutByNumber(Integer
 					.valueOf((Integer) table.getValueAt(row, 0)));
-			TurnoutState routedState = (TurnoutState) value;
+			if(currentTurnout == null) {
+				return iconLabel;
+			}
+			SRCPTurnoutState routedState = (SRCPTurnoutState) value;
 			String stateString = "";
 			switch (routedState) {
 			case STRAIGHT:

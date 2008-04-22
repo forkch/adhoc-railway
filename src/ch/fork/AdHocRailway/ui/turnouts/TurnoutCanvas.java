@@ -28,12 +28,12 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout.TurnoutState;
 
 public class TurnoutCanvas extends JPanel {
 	protected Turnout		turnout;
-	protected TurnoutState	turnoutState	= TurnoutState.UNDEF;
+	protected SRCPTurnoutState	turnoutState	= SRCPTurnoutState.UNDEF;
 
 	public TurnoutCanvas(Turnout turnout) {
 		this.turnout = turnout;
@@ -229,7 +229,7 @@ public class TurnoutCanvas extends JPanel {
 		return true;
 	}
 
-	public void setTurnoutState(TurnoutState turnoutState) {
+	public void setTurnoutState(SRCPTurnoutState turnoutState) {
 		this.turnoutState = turnoutState;
 	}
 }

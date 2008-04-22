@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -32,7 +33,6 @@ import ch.fork.AdHocRailway.domain.LookupAddress;
 import ch.fork.AdHocRailway.domain.NoSessionException;
 import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
-import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotive.Direction;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
 import de.dermoba.srcp.common.exception.SRCPException;
@@ -45,32 +45,34 @@ import de.dermoba.srcp.devices.GLInfoListener;
  * @author fork
  * 
  */
-public class SRCPLocomotiveControl implements GLInfoListener, Constants,
-		LocomotiveControlface {
-	private static Logger					logger		= Logger
-																.getLogger(SRCPLocomotiveControl.class);
+public class SRCPLocomotiveControl implements GLInfoListener, Constants {
+	private static Logger						logger		= Logger
+																	.getLogger(SRCPLocomotiveControl.class);
 
-	private static LocomotiveControlface	instance;
-	private LocomotivePersistenceIface		persistence;
-	private List<LocomotiveChangeListener>	listeners;
-	private Map<Locomotive, SRCPLocomotive>	srcpLocomotives;
-	private SRCPLockControl					lockControl	= SRCPLockControl
-																.getInstance();
+	private static SRCPLocomotiveControl		instance;
+	private List<SRCPLocomotiveChangeListener>	listeners;
+	private SRCPLockControl						lockControl	= SRCPLockControl
+																	.getInstance();
 
-	private SRCPSession						session;
+	private List<SRCPLocomotive>				srcpLocomotives;
+	private Map<LookupAddress, SRCPLocomotive>		addressLocomotiveCache;
+	private SRCPSession							session;
 
 	private SRCPLocomotiveControl() {
 		logger.info("SRCPLocomotiveControl loaded");
-		listeners = new ArrayList<LocomotiveChangeListener>();
-		srcpLocomotives = new HashMap<Locomotive, SRCPLocomotive>();
+		listeners = new ArrayList<SRCPLocomotiveChangeListener>();
+		srcpLocomotives = new ArrayList<SRCPLocomotive>();
+		addressLocomotiveCache = new HashMap<LookupAddress, SRCPLocomotive>();
 	}
 
-	public void update() {
+	public void update(Set<SRCPLocomotive> locomotives) {
 		srcpLocomotives.clear();
-		for (Locomotive l : persistence.getAllLocomotives()) {
-			SRCPLocomotive sLocomotive = new SRCPLocomotive(l);
-			srcpLocomotives.put(l, sLocomotive);
-			sLocomotive.setSession(session);
+		addressLocomotiveCache.clear();
+		for (SRCPLocomotive l : locomotives) {
+			LookupAddress addr = new LookupAddress(l.getBus(), l.getAddress());
+			addressLocomotiveCache.put(addr, l);
+			srcpLocomotives.add(l);
+			l.setSession(session);
 		}
 	}
 
@@ -79,7 +81,7 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 	 * 
 	 * @return an instance of LocomotiveControl
 	 */
-	public static LocomotiveControlface getInstance() {
+	public static SRCPLocomotiveControl getInstance() {
 		if (instance == null) {
 			instance = new SRCPLocomotiveControl();
 		}
@@ -95,7 +97,7 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 		this.session = session;
 		if (session != null)
 			session.getInfoChannel().addGLInfoListener(this);
-		for (SRCPLocomotive l : srcpLocomotives.values()) {
+		for (SRCPLocomotive l : srcpLocomotives) {
 			l.setSession(session);
 		}
 
@@ -106,25 +108,23 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#toggleDirection(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
-	public void toggleDirection(Locomotive locomotive)
+	public void toggleDirection(SRCPLocomotive locomotive)
 			throws LocomotiveException {
 		checkLocomotive(locomotive);
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
-		switch (sLocomotive.direction) {
+		switch (locomotive.direction) {
 		case FORWARD:
-			sLocomotive.setDirection(Direction.REVERSE);
+			locomotive.setDirection(SRCPLocomotiveDirection.REVERSE);
 			break;
 		case REVERSE:
-			sLocomotive.setDirection(Direction.FORWARD);
+			locomotive.setDirection(SRCPLocomotiveDirection.FORWARD);
 			break;
 		}
 	}
 
-	public Direction getDirection(Locomotive locomotive) {
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
-		if (sLocomotive == null)
-			return Direction.UNDEF;
-		return sLocomotive.getDirection();
+	public SRCPLocomotiveDirection getDirection(SRCPLocomotive locomotive) {
+		if (locomotive == null)
+			return SRCPLocomotiveDirection.UNDEF;
+		return locomotive.getDirection();
 	}
 
 	/*
@@ -132,11 +132,10 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#getCurrentSpeed(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
-	public int getCurrentSpeed(Locomotive locomotive) {
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
-		if (sLocomotive == null)
+	public int getCurrentSpeed(SRCPLocomotive locomotive) {
+		if (locomotive == null)
 			return 0;
-		return sLocomotive.getCurrentSpeed();
+		return locomotive.getCurrentSpeed();
 	}
 
 	/*
@@ -145,37 +144,35 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#setSpeed(ch.fork.AdHocRailway.domain.locomotives.Locomotive,
 	 *      int, boolean[])
 	 */
-	public void setSpeed(Locomotive locomotive, int speed, boolean[] functions)
-			throws LocomotiveException {
+	public void setSpeed(SRCPLocomotive locomotive, int speed,
+			boolean[] functions) throws LocomotiveException {
 
 		checkLocomotive(locomotive);
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
 		try {
 			if (functions == null) {
-				functions = sLocomotive.getFunctions();
+				functions = locomotive.getFunctions();
 			}
-			LocomotiveType lt = locomotive.getLocomotiveType();
-			int drivingSteps = lt.getDrivingSteps();
+			int drivingSteps = locomotive.getDrivingSteps();
 			if (speed < 0 || speed > drivingSteps) {
 				return;
 			}
-			GL gl = sLocomotive.getGL();
-			switch (sLocomotive.direction) {
+			GL gl = locomotive.getGL();
+			switch (locomotive.direction) {
 			case FORWARD:
-				gl.set(SRCPLocomotive.FORWARD_DIRECTION, speed, drivingSteps,
+				gl.set(Constants.FORWARD_DIRECTION, speed, drivingSteps,
 						functions);
 				break;
 			case REVERSE:
-				gl.set(SRCPLocomotive.REVERSE_DIRECTION, speed, drivingSteps,
+				gl.set(Constants.REVERSE_DIRECTION, speed, drivingSteps,
 						functions);
 				break;
 			case UNDEF:
-				gl.set(SRCPLocomotive.FORWARD_DIRECTION, speed, drivingSteps,
+				gl.set(Constants.FORWARD_DIRECTION, speed, drivingSteps,
 						functions);
-				sLocomotive.setDirection(Direction.FORWARD);
+				locomotive.setDirection(SRCPLocomotiveDirection.FORWARD);
 				break;
 			}
-			sLocomotive.setCurrentSpeed(speed);
+			locomotive.setCurrentSpeed(speed);
 		} catch (SRCPException x) {
 			if (x instanceof SRCPDeviceLockedException) {
 				throw new LocomotiveLockedException(ERR_LOCKED);
@@ -190,14 +187,13 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#increaseSpeed(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
-	public void increaseSpeed(Locomotive locomotive) throws LocomotiveException {
+	public void increaseSpeed(SRCPLocomotive locomotive)
+			throws LocomotiveException {
 		checkLocomotive(locomotive);
-		initLocomotive(locomotive);
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
-		int newSpeed = sLocomotive.getCurrentSpeed() + 1;
-		if (newSpeed <= locomotive.getLocomotiveType().getDrivingSteps()) {
-			setSpeed(locomotive, newSpeed, sLocomotive.getFunctions());
-		}
+		int newSpeed = locomotive.getCurrentSpeed() + 1;
+
+		setSpeed(locomotive, newSpeed, locomotive.getFunctions());
+
 	}
 
 	/*
@@ -205,13 +201,12 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#decreaseSpeed(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
-	public void decreaseSpeed(Locomotive locomotive) throws LocomotiveException {
+	public void decreaseSpeed(SRCPLocomotive locomotive)
+			throws LocomotiveException {
 		checkLocomotive(locomotive);
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
-		int newSpeed = sLocomotive.getCurrentSpeed() - 1;
-		if (newSpeed <= locomotive.getLocomotiveType().getDrivingSteps()) {
-			setSpeed(locomotive, newSpeed, sLocomotive.getFunctions());
-		}
+		int newSpeed = locomotive.getCurrentSpeed() - 1;
+
+		setSpeed(locomotive, newSpeed, locomotive.getFunctions());
 	}
 
 	/*
@@ -219,15 +214,12 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#increaseSpeedStep(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
-	public void increaseSpeedStep(Locomotive locomotive)
+	public void increaseSpeedStep(SRCPLocomotive locomotive)
 			throws LocomotiveException {
 		checkLocomotive(locomotive);
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
-		int newSpeed = sLocomotive.getCurrentSpeed()
-				+ locomotive.getLocomotiveType().getStepping();
-		if (newSpeed <= locomotive.getLocomotiveType().getDrivingSteps()) {
-			setSpeed(locomotive, newSpeed, sLocomotive.getFunctions());
-		}
+		int newSpeed = locomotive.getCurrentSpeed() + 1;
+
+		setSpeed(locomotive, newSpeed, locomotive.getFunctions());
 	}
 
 	/*
@@ -235,15 +227,12 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 	 * 
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#decreaseSpeedStep(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
-	public void decreaseSpeedStep(Locomotive locomotive)
+	public void decreaseSpeedStep(SRCPLocomotive locomotive)
 			throws LocomotiveException {
 		checkLocomotive(locomotive);
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
-		int newSpeed = sLocomotive.getCurrentSpeed()
-				- locomotive.getLocomotiveType().getStepping();
-		if (newSpeed <= locomotive.getLocomotiveType().getDrivingSteps()) {
-			setSpeed(locomotive, newSpeed, sLocomotive.getFunctions());
-		}
+		int newSpeed = locomotive.getCurrentSpeed()
+				- 1;
+			setSpeed(locomotive, newSpeed, locomotive.getFunctions());
 	}
 
 	/*
@@ -252,32 +241,29 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#setFunctions(ch.fork.AdHocRailway.domain.locomotives.Locomotive,
 	 *      boolean[])
 	 */
-	public void setFunctions(Locomotive locomotive, boolean[] functions)
+	public void setFunctions(SRCPLocomotive locomotive, boolean[] functions)
 			throws LocomotiveException {
 		checkLocomotive(locomotive);
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
-		setSpeed(locomotive, sLocomotive.getCurrentSpeed(), functions);
+		setSpeed(locomotive, locomotive.getCurrentSpeed(), functions);
 	}
 
-	public boolean[] getFunctions(Locomotive locomotive) {
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
-		if (sLocomotive == null)
+	public boolean[] getFunctions(SRCPLocomotive locomotive) {
+		if (locomotive == null)
 			return new boolean[0];
 
-		return sLocomotive.getFunctions();
+		return locomotive.getFunctions();
 	}
 
 	public void GLinit(double timestamp, int bus, int address, String protocol,
 			String[] params) {
 		logger.debug("GLinit( " + bus + " , " + address + " , " + protocol
 				+ " , " + Arrays.toString(params) + " )");
-		Locomotive locomotive = persistence.getLocomotiveByBusAddress(bus,
-				address);
+		SRCPLocomotive locomotive = addressLocomotiveCache.get(new LookupAddress(bus,
+				address));
 		checkLocomotive(locomotive);
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
 		if (locomotive != null) {
 			try {
-				sLocomotive.getGL().get();
+				locomotive.getGL().get();
 			} catch (SRCPException e) {
 			}
 			informListeners(locomotive);
@@ -290,100 +276,84 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 		logger.debug("GLset( " + bus + " , " + address + " , " + drivemode
 				+ " , " + v + " , " + vMax + " , " + Arrays.toString(functions)
 				+ " )");
-		Locomotive locomotive = persistence.getLocomotiveByBusAddress(bus,
-				address);
+		SRCPLocomotive locomotive = addressLocomotiveCache.get(new LookupAddress(bus,
+				address));
 		checkLocomotive(locomotive);
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
 		if (locomotive != null) {
-			if (drivemode.equals(SRCPLocomotive.FORWARD_DIRECTION)) {
-				sLocomotive.setDirection(Direction.FORWARD);
-			} else if (drivemode.equals(SRCPLocomotive.REVERSE_DIRECTION)) {
-				sLocomotive.setDirection(Direction.REVERSE);
+			if (drivemode.equals(Constants.FORWARD_DIRECTION)) {
+				locomotive.setDirection(SRCPLocomotiveDirection.FORWARD);
+			} else if (drivemode.equals(Constants.REVERSE_DIRECTION)) {
+				locomotive.setDirection(SRCPLocomotiveDirection.REVERSE);
 			}
-			sLocomotive.setCurrentSpeed(v);
-			sLocomotive.setFunctions(functions);
+			locomotive.setCurrentSpeed(v);
+			locomotive.setFunctions(functions);
 			informListeners(locomotive);
 		}
 	}
 
 	public void GLterm(double timestamp, int bus, int address) {
 		logger.debug("GLterm( " + bus + " , " + address + " )");
-		Locomotive locomotive = persistence.getLocomotiveByBusAddress(bus,
-				address);
+
+		SRCPLocomotive locomotive = addressLocomotiveCache.get(new LookupAddress(bus,
+				address));
 		checkLocomotive(locomotive);
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
 		if (locomotive != null) {
-			sLocomotive.setGL(null);
-			sLocomotive.setInitialized(false);
+			locomotive.setGL(null);
+			locomotive.setInitialized(false);
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#addLocomotiveChangeListener(ch.fork.AdHocRailway.domain.locomotives.Locomotive,
-	 *      ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener)
-	 */
-	public void addLocomotiveChangeListener(Locomotive loco,
-			LocomotiveChangeListener l) {
+	public void addLocomotiveChangeListener(
+			SRCPLocomotiveChangeListener l) {
 		listeners.add(l);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface#removeAllLocomotiveChangeListener()
-	 */
+	public void removeLocomotiveChangeListener(
+			SRCPLocomotiveChangeListener l) {
+		listeners.remove(l);
+	}
+	
 	public void removeAllLocomotiveChangeListener() {
 		listeners.clear();
 	}
 
-	private void informListeners(Locomotive changedLocomotive) {
-		for (LocomotiveChangeListener l : listeners)
+	private void informListeners(SRCPLocomotive changedLocomotive) {
+		for (SRCPLocomotiveChangeListener l : listeners)
 			l.locomotiveChanged(changedLocomotive);
 
 	}
 
-	private void checkLocomotive(Locomotive locomotive)
+	private void checkLocomotive(SRCPLocomotive locomotive)
 			throws LocomotiveException {
 		if (locomotive == null)
 			return;
 		if (locomotive.getAddress() == 0) {
-			throw new LocomotiveException("Locomotive " + locomotive.getName()
-					+ " has an invalid bus or address",
+			throw new LocomotiveException("Locomotive has an invalid bus or address",
 					new InvalidAddressException());
 		}
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
-		if (sLocomotive == null) {
-			srcpLocomotives.put(locomotive, new SRCPLocomotive(locomotive));
-			sLocomotive = srcpLocomotives.get(locomotive);
-		}
-		if (sLocomotive.getSession() == null && session == null) {
+		
+		if (locomotive.getSession() == null && session == null) {
 			throw new LocomotiveException(Constants.ERR_NOT_CONNECTED,
 					new NoSessionException());
 		}
-		if (sLocomotive.getSession() == null && session != null) {
-			sLocomotive.setSession(session);
+		if (locomotive.getSession() == null && session != null) {
+			locomotive.setSession(session);
 		}
 
 		initLocomotive(locomotive);
 	}
 
-	private void initLocomotive(Locomotive locomotive)
+	private void initLocomotive(SRCPLocomotive locomotive)
 			throws LocomotiveException {
-		SRCPLocomotive sLocomotive = srcpLocomotives.get(locomotive);
-		if (!sLocomotive.isInitialized()) {
+		if (!locomotive.isInitialized()) {
 			try {
 				GL gl = new GL(session);
-				LocomotiveType lt = locomotive.getLocomotiveType();
-				String[] params = new String[3];
-				params[0] = Integer.toString(LocomotiveType.PROTOCOL_VERSION);
-				params[1] = Integer.toString(lt.getDrivingSteps());
-				params[2] = Integer.toString(lt.getFunctionCount());
+				String[] params = locomotive.getParams();
+				
 				gl.init(locomotive.getBus(), locomotive.getAddress(),
-						LocomotiveType.PROTOCOL, params);
-				sLocomotive.setInitialized(true);
-				sLocomotive.setGL(gl);
+						locomotive.getProtocol(), params);
+				locomotive.setInitialized(true);
+				locomotive.setGL(gl);
 				gl.get();
 				lockControl.registerControlObject("GL", new LookupAddress(
 						locomotive.getBus(), locomotive.getAddress()),
@@ -396,31 +366,26 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants,
 		}
 	}
 
-	public void setLocomotivePersistence(LocomotivePersistenceIface persistence) {
-		this.persistence = persistence;
-
-	}
-
-	public boolean acquireLock(Locomotive object) throws LockingException {
+	public boolean acquireLock(SRCPLocomotive object) throws LockingException {
 		checkLocomotive(object);
 		boolean locked = lockControl.acquireLock("GL", new LookupAddress(object
 				.getBus(), object.getAddress()));
 		return locked;
 	}
 
-	public boolean releaseLock(Locomotive object) throws LockingException {
+	public boolean releaseLock(SRCPLocomotive object) throws LockingException {
 		checkLocomotive(object);
 		return lockControl.releaseLock("GL", new LookupAddress(object.getBus(),
 				object.getAddress()));
 	}
 
-	public boolean isLocked(Locomotive object) throws LockingException {
+	public boolean isLocked(SRCPLocomotive object) throws LockingException {
 		checkLocomotive(object);
 		return lockControl.isLocked("GL", new LookupAddress(object.getBus(),
 				object.getAddress()));
 	}
 
-	public boolean isLockedByMe(Locomotive object) throws LockingException {
+	public boolean isLockedByMe(SRCPLocomotive object) throws LockingException {
 		checkLocomotive(object);
 		int sessionID = lockControl.getLockingSessionID("GL",
 				new LookupAddress(object.getBus(), object.getAddress()));
