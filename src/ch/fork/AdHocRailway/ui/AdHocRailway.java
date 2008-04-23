@@ -237,14 +237,17 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		initProceeded("Loading Control Layer (Locomotives)");
 		locomotiveControl = SRCPLocomotiveControlAdapter.getInstance();
 		locomotiveControl.setLocomotivePersistence(locomotivePersistence);
-
+		locomotiveControl.update();
+		
 		initProceeded("Loading Control Layer (Turnouts)");
 		turnoutControl = SRCPTurnoutControlAdapter.getInstance();
 		turnoutControl.setPersistence(turnoutPersistence);
+		turnoutControl.update();
 
 		initProceeded("Loading Control Layer (Routes)");
 		routeControl = SRCPRouteControlAdapter.getInstance();
 		routeControl.setRoutePersistence(routePersistence);
+		routeControl.update();
 
 		initProceeded("Loading Control Layer (Locks)");
 		lockControl = SRCPLockControl.getInstance();
@@ -423,8 +426,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 								.getStringValue(PreferencesKeys.HOSTNAME));
 						turnoutPersistence = FileTurnoutPersistence
 								.getInstance();
-						//turnoutControl
-						//		.setTurnoutPersistence(turnoutPersistence);
+						turnoutControl
+								.setPersistence(turnoutPersistence);
 						locomotivePersistence = FileLocomotivePersistence
 								.getInstance();
 						locomotiveControl

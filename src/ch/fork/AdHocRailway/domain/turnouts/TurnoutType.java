@@ -69,7 +69,7 @@ public class TurnoutType extends Model implements java.io.Serializable,
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
+		//result = prime * result + id;
 		result = prime * result
 				+ ((typeName == null) ? 0 : typeName.hashCode());
 		return result;
@@ -84,8 +84,8 @@ public class TurnoutType extends Model implements java.io.Serializable,
 		if (getClass() != obj.getClass())
 			return false;
 		final TurnoutType other = (TurnoutType) obj;
-		if (id != other.id)
-			return false;
+//		if (id != other.id)
+//			return false;
 		if (typeName == null) {
 			if (other.typeName != null)
 				return false;

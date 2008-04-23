@@ -327,7 +327,7 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants {
 			throws LocomotiveException {
 		if (locomotive == null)
 			return;
-		if (locomotive.getAddress() == 0) {
+		if (!locomotive.checkBusAddress()) {
 			throw new LocomotiveException("Locomotive has an invalid bus or address",
 					new InvalidAddressException());
 		}

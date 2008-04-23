@@ -12,4 +12,13 @@ public class MMLocomotive extends SRCPLocomotive {
 
 		protocol = PROTOCOL;
 	}
+
+	@Override
+	public boolean checkBusAddress() {
+		if(bus == 0)
+			return false;
+		if(address < 0 ||address > 81)
+			return false;
+		return true;
+	}
 }

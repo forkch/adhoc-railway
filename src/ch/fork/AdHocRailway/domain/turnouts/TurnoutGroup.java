@@ -79,7 +79,7 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + id;
+		//result = PRIME * result + id;
 		result = PRIME * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}

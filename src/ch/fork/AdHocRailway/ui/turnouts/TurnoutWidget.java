@@ -205,10 +205,11 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 				return;
 			turnoutControl.removeTurnoutChangeListener(turnout);
 			new TurnoutConfig(AdHocRailway.getInstance(), turnout);
+			validateTurnout();
+			turnoutControl.update();
 			turnoutControl
 					.addTurnoutChangeListener(turnout, TurnoutWidget.this);
 
-			validateTurnout();
 			turnoutChanged(turnout, actualTurnoutState);
 		}
 	}
@@ -218,6 +219,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	}
 
 	public void turnoutChanged(Turnout changedTurnout, SRCPTurnoutState newState) {
+		System.out.println("turnoutChanged    " + changedTurnout.getNumber() + "   " + newState);
 		if (turnout.equals(changedTurnout)) {
 			actualTurnoutState = newState;
 			SwingUtilities.invokeLater(new Runnable() {

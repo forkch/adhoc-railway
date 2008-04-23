@@ -40,13 +40,12 @@ public abstract class SRCPLocomotive {
 
 	protected int						drivingSteps;
 
-	private int							bus;
+	protected int							bus;
 
-	private int							address;
+	protected int							address;
 
-	public SRCPLocomotive() {
-	}
-
+	public abstract boolean checkBusAddress();
+	
 	public int getBus() {
 		return bus;
 	}

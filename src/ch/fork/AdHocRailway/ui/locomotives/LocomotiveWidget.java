@@ -555,6 +555,7 @@ public class LocomotiveWidget extends JPanel implements
 					locomotivePersistence.updateLocomotive(myLocomotive);
 				}
 				locomotiveChanged(myLocomotive);
+				locomotiveControl.update();
 			} else if (e.getButton() == MouseEvent.BUTTON2) {
 				ToggleDirectionAction a = new ToggleDirectionAction();
 				a.actionPerformed(null);

@@ -218,7 +218,7 @@ public class Turnout extends Model implements java.io.Serializable,
 				+ ((defaultState == null) ? 0 : defaultState.hashCode());
 		result = PRIME * result
 				+ ((description == null) ? 0 : description.hashCode());
-		result = PRIME * result + id;
+		//result = PRIME * result + id;
 		result = PRIME * result + number;
 		result = PRIME * result
 				+ ((orientation == null) ? 0 : orientation.hashCode());
@@ -260,8 +260,8 @@ public class Turnout extends Model implements java.io.Serializable,
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
-		if (id != other.id)
-			return false;
+//		if (id != other.id)
+//			return false;
 		if (number != other.number)
 			return false;
 		if (orientation == null) {
@@ -325,7 +325,7 @@ public class Turnout extends Model implements java.io.Serializable,
 	// Property accessors
 	@Id
 	@GeneratedValue
-	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = true)
+	@Column(name = "id", unique = true, nullable = true, insertable = true, updatable = true)
 	public int getId() {
 		return this.id;
 	}

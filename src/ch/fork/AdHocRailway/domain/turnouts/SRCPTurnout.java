@@ -20,6 +20,8 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import java.util.Arrays;
 
+import net.sf.cglib.transform.impl.AddDelegateTransformer;
+
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GA;
 
@@ -213,7 +215,6 @@ public class SRCPTurnout {
 				+ ((defaultState == null) ? 0 : defaultState.hashCode());
 		result = prime * result
 				+ ((protocol == null) ? 0 : protocol.hashCode());
-		result = prime * result + Arrays.hashCode(subTurnouts);
 		result = prime * result
 				+ ((turnoutType == null) ? 0 : turnoutType.hashCode());
 		return result;
@@ -250,13 +251,15 @@ public class SRCPTurnout {
 				return false;
 		} else if (!protocol.equals(other.protocol))
 			return false;
-		if (!Arrays.equals(subTurnouts, other.subTurnouts))
-			return false;
 		if (turnoutType == null) {
 			if (other.turnoutType != null)
 				return false;
 		} else if (!turnoutType.equals(other.turnoutType))
 			return false;
 		return true;
+	}
+	
+	public String toString() {
+		return turnoutType.toString() + " [" + bus1 + "," + address1 + "],[" + bus2 + "," + address2 + "]";
 	}
 }
