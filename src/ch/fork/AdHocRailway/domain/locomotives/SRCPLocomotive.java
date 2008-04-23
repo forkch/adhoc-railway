@@ -23,10 +23,15 @@ import de.dermoba.srcp.devices.GL;
 
 public abstract class SRCPLocomotive {
 
-	protected boolean					initialized		= false;
-	protected SRCPLocomotiveDirection	direction		= SRCPLocomotiveDirection.UNDEF;
+	public static final String			FORWARD_DIRECTION	= "1";
 
-	protected int						currentSpeed	= 0;
+	public static final String			REVERSE_DIRECTION	= "0";
+
+	protected boolean					initialized			= false;
+	
+	protected SRCPLocomotiveDirection	direction			= SRCPLocomotiveDirection.UNDEF;
+
+	protected int						currentSpeed		= 0;
 
 	private GL							gl;
 
@@ -40,12 +45,30 @@ public abstract class SRCPLocomotive {
 
 	protected int						drivingSteps;
 
-	protected int							bus;
+	protected int						bus;
 
-	protected int							address;
+	protected int						address;
 
-	public abstract boolean checkBusAddress();
+	public SRCPLocomotive() {
+		this(0,0);
+	}
 	
+	public SRCPLocomotive(int bus, int address) {
+		super();
+		this.bus = bus;
+		this.address = address;
+	}
+
+	public abstract boolean checkAddress();
+
+	public boolean checkBus() {
+		return bus > 0;
+	}
+
+	public boolean checkBusAddress() {
+		return (checkBus() && checkAddress());
+	}
+
 	public int getBus() {
 		return bus;
 	}

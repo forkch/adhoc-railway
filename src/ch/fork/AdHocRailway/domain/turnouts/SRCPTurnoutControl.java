@@ -39,20 +39,20 @@ import de.dermoba.srcp.devices.GA;
 import de.dermoba.srcp.devices.GAInfoListener;
 
 public class SRCPTurnoutControl implements GAInfoListener {
-	private static Logger						logger	= Logger
-																.getLogger(SRCPTurnoutControl.class);
-	private static SRCPTurnoutControl			instance;
+	private static Logger					logger	= Logger
+															.getLogger(SRCPTurnoutControl.class);
+	private static SRCPTurnoutControl		instance;
 
 	private List<SRCPTurnoutChangeListener>	listeners;
 
-	private List<SRCPTurnout>					srcpTurnouts;
+	private List<SRCPTurnout>				srcpTurnouts;
 
-	private Map<LookupAddress, SRCPTurnout>		addressTurnoutCache;
-	private Map<LookupAddress, SRCPTurnout>		addressThreewayCache;
-	private SRCPTurnout										lastChangedTurnout;
+	private Map<LookupAddress, SRCPTurnout>	addressTurnoutCache;
+	private Map<LookupAddress, SRCPTurnout>	addressThreewayCache;
+	private SRCPTurnout						lastChangedTurnout;
 
-	private SRCPTurnoutState								previousState;
-	private SRCPSession							session;
+	private SRCPTurnoutState				previousState;
+	private SRCPSession						session;
 
 	private SRCPTurnoutControl() {
 		logger.info("SRCPTurnoutControl loaded");
@@ -78,15 +78,15 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		for (SRCPTurnout turnout : turnouts) {
 			srcpTurnouts.add(turnout);
 			turnout.setSession(session);
-			
-			addressTurnoutCache.put(new LookupAddress(turnout.getBus1(), turnout
-					.getAddress1(), turnout.getBus2(), turnout.getAddress2()),
-					turnout);
+
+			addressTurnoutCache.put(new LookupAddress(turnout.getBus1(),
+					turnout.getAddress1(), turnout.getBus2(), turnout
+							.getAddress2()), turnout);
 			if (turnout.isThreeWay()) {
 				addressThreewayCache.put(new LookupAddress(turnout.getBus1(),
 						turnout.getAddress1(), 0, 0), turnout);
-				addressThreewayCache.put(new LookupAddress(0, 0, turnout.getBus2(),
-						turnout.getAddress2()), turnout);
+				addressThreewayCache.put(new LookupAddress(0, 0, turnout
+						.getBus2(), turnout.getAddress2()), turnout);
 			}
 		}
 	}
@@ -139,7 +139,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 			break;
 		default:
 		}
-		//informListeners(turnout);
+		// informListeners(turnout);
 	}
 
 	private void refreshThreeWay(SRCPTurnout turnout) {
@@ -170,7 +170,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		case UNDEF:
 			setDefaultState(turnout);
 		}
-		//informListeners(turnout);
+		// informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
@@ -195,7 +195,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 			setStraightThreeWay(turnout);
 			break;
 		}
-		//informListeners(turnout);
+		// informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
@@ -215,7 +215,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 			setCurvedLeft(turnout);
 			break;
 		}
-		//informListeners(turnout);
+		// informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
@@ -230,7 +230,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		setStraight(subTurnouts[0]);
 		setStraight(subTurnouts[1]);
 		turnout.setTurnoutState(SRCPTurnoutState.STRAIGHT);
-		//informListeners(turnout);
+		// informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
@@ -250,7 +250,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 			setStraight(turnout);
 			break;
 		}
-		//informListeners(turnout);
+		// informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
@@ -274,7 +274,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 			ga.set(getPort(turnout, Constants.TURNOUT_CURVED_PORT),
 					Constants.TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
 			turnout.setTurnoutState(SRCPTurnoutState.STRAIGHT);
-			//informListeners(turnout);
+			// informListeners(turnout);
 			lastChangedTurnout = turnout;
 		} catch (SRCPDeviceLockedException x1) {
 			throw new TurnoutLockedException(Constants.ERR_LOCKED, x1);
@@ -284,7 +284,8 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		}
 	}
 
-	private void setStraightThreeWay(SRCPTurnout turnout) throws TurnoutException {
+	private void setStraightThreeWay(SRCPTurnout turnout)
+			throws TurnoutException {
 		checkTurnout(turnout);
 		SRCPTurnout[] subTurnouts = turnout.getSubTurnouts();
 		for (SRCPTurnout t : subTurnouts) {
@@ -294,7 +295,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		setStraight(subTurnouts[0]);
 		setStraight(subTurnouts[1]);
 		turnout.setTurnoutState(SRCPTurnoutState.STRAIGHT);
-		//informListeners(turnout);
+		// informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
@@ -314,7 +315,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 			ga.set(getPort(turnout, Constants.TURNOUT_STRAIGHT_PORT),
 					Constants.TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
 			turnout.setTurnoutState(SRCPTurnoutState.LEFT);
-			//informListeners(turnout);
+			// informListeners(turnout);
 			lastChangedTurnout = turnout;
 		} catch (SRCPDeviceLockedException x1) {
 			throw new TurnoutLockedException(Constants.ERR_LOCKED, x1);
@@ -324,7 +325,8 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		}
 	}
 
-	private void setCurvedLeftThreeWay(SRCPTurnout turnout) throws TurnoutException {
+	private void setCurvedLeftThreeWay(SRCPTurnout turnout)
+			throws TurnoutException {
 		checkTurnout(turnout);
 		SRCPTurnout[] subTurnouts = turnout.getSubTurnouts();
 		for (SRCPTurnout t : subTurnouts) {
@@ -335,7 +337,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		setCurvedLeft(subTurnouts[0]);
 		setStraight(subTurnouts[1]);
 		turnout.setTurnoutState(SRCPTurnoutState.LEFT);
-		//informListeners(turnout);
+		// informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
@@ -348,7 +350,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		}
 		setCurvedLeft(turnout);
 
-		//informListeners(turnout);
+		// informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
@@ -364,7 +366,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		setStraight(subTurnouts[0]);
 		setCurvedLeft(subTurnouts[1]);
 		turnout.setTurnoutState(SRCPTurnoutState.RIGHT);
-		//informListeners(turnout);
+		// informListeners(turnout);
 		lastChangedTurnout = turnout;
 	}
 
@@ -397,16 +399,14 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		} else {
 			portChanged(turnout, port);
 		}
-		
+
 		informListeners(turnout);
 	}
 
 	private void portChanged(SRCPTurnout turnout, int port) {
-		if (port == getPort(turnout,
-				Constants.TURNOUT_STRAIGHT_PORT)) {
+		if (port == getPort(turnout, Constants.TURNOUT_STRAIGHT_PORT)) {
 			turnout.setTurnoutState(SRCPTurnoutState.STRAIGHT);
-		} else if (port == getPort(turnout,
-				Constants.TURNOUT_CURVED_PORT)) {
+		} else if (port == getPort(turnout, Constants.TURNOUT_CURVED_PORT)) {
 			turnout.setTurnoutState(SRCPTurnoutState.LEFT);
 		}
 	}
@@ -470,9 +470,10 @@ public class SRCPTurnoutControl implements GAInfoListener {
 
 	void informListeners(SRCPTurnout changedTurnout) {
 		for (SRCPTurnoutChangeListener scl : listeners)
-			scl.turnoutChanged(changedTurnout, changedTurnout.getTurnoutState());
-		logger.debug("turnoutChanged("+changedTurnout+")");
-		System.out.println(changedTurnout);
+			scl
+					.turnoutChanged(changedTurnout, changedTurnout
+							.getTurnoutState());
+		logger.debug("turnoutChanged(" + changedTurnout + ")");
 
 	}
 
@@ -481,25 +482,21 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		if (turnout == null) {
 			return;
 		}
-		if (turnout.getBus1() == 0 || turnout.getAddress1() == 0)
+		if (!turnout.checkBusAddress())
 			throw new TurnoutException(Constants.ERR_FAILED,
-					new InvalidAddressException("Turnout has an invalid address or bus"));
-		if (turnout.isThreeWay()) {
-			if (turnout.getBus2() == 0 || turnout.getAddress2() == 0)
-				throw new TurnoutException(Constants.ERR_FAILED,
-						new InvalidAddressException("Turnout has an invalid address or bus"));
-		}
-		
-		if(!srcpTurnouts.contains(turnout)) {
+					new InvalidAddressException(
+							"Turnout has an invalid address or bus"));
+
+		if (!srcpTurnouts.contains(turnout)) {
 			srcpTurnouts.add(turnout);
-			addressTurnoutCache.put(new LookupAddress(turnout.getBus1(), turnout
-					.getAddress1(), turnout.getBus2(), turnout.getAddress2()),
-					turnout);
+			addressTurnoutCache.put(new LookupAddress(turnout.getBus1(),
+					turnout.getAddress1(), turnout.getBus2(), turnout
+							.getAddress2()), turnout);
 			if (turnout.isThreeWay()) {
 				addressThreewayCache.put(new LookupAddress(turnout.getBus1(),
 						turnout.getAddress1(), 0, 0), turnout);
-				addressThreewayCache.put(new LookupAddress(0, 0, turnout.getBus2(),
-						turnout.getAddress2()), turnout);
+				addressThreewayCache.put(new LookupAddress(0, 0, turnout
+						.getBus2(), turnout.getAddress2()), turnout);
 			}
 		}
 
@@ -523,8 +520,8 @@ public class SRCPTurnoutControl implements GAInfoListener {
 				GA ga = new GA(session);
 				if (Preferences.getInstance().getBooleanValue(
 						PreferencesKeys.INTERFACE_6051)) {
-					ga.init(turnout.getBus1(), turnout.getAddress1(),
-							turnout.getProtocol());
+					ga.init(turnout.getBus1(), turnout.getAddress1(), turnout
+							.getProtocol());
 				} else {
 					ga.setBus(turnout.getBus1());
 					ga.setAddress(turnout.getAddress1());
@@ -539,22 +536,21 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		}
 	}
 
-	private void initTurnoutThreeWay(SRCPTurnout turnout) throws TurnoutException {
-		SRCPTurnout turnout1 = new SRCPTurnout();
-		SRCPTurnout turnout2 = new SRCPTurnout();
-		
+	private void initTurnoutThreeWay(SRCPTurnout turnout)
+			throws TurnoutException {
+		SRCPTurnout turnout1 = (SRCPTurnout) turnout.clone();
+		SRCPTurnout turnout2 = (SRCPTurnout) turnout.clone();
+
 		turnout1.setBus1(turnout.getBus1());
 		turnout1.setAddress1(turnout.getAddress1());
 		turnout1.setAddress1Switched(turnout.isAddress1Switched());
 		turnout1.setTurnoutType(SRCPTurnoutTypes.DEFAULT);
-		turnout1.setProtocol(turnout.getProtocol());
 		turnout1.setSession(turnout.getSession());
 
 		turnout2.setBus1(turnout.getBus2());
 		turnout2.setAddress1(turnout.getAddress2());
 		turnout2.setAddress1Switched(turnout.isAddress2Switched());
 		turnout2.setTurnoutType(SRCPTurnoutTypes.DEFAULT);
-		turnout2.setProtocol(turnout.getProtocol());
 		turnout2.setSession(turnout.getSession());
 
 		srcpTurnouts.add(turnout1);
@@ -586,7 +582,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 			setStraight(lastChangedTurnout);
 			break;
 		}
-		//informListeners(lastChangedTurnout);
+		// informListeners(lastChangedTurnout);
 
 		lastChangedTurnout = null;
 		previousState = null;
@@ -598,8 +594,8 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		}
 		setDefaultState(lastChangedTurnout);
 	}
-	
-	private  SRCPTurnout getTurnoutByAddressBus(int bus, int address) {
+
+	private SRCPTurnout getTurnoutByAddressBus(int bus, int address) {
 		logger.debug("getTurnoutByAddressBus()");
 		LookupAddress key1 = new LookupAddress(bus, address, 0, 0);
 		SRCPTurnout lookup1 = addressTurnoutCache.get(key1);

@@ -806,17 +806,15 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				int port = preferences.getIntValue(PORT);
 				session.disconnect();
 				session = null;
-				((SRCPTurnoutControl) turnoutControl).setSession(null);
-				((SRCPLocomotiveControl) locomotiveControl).setSession(null);
-				((SRCPRouteControl) routeControl).setSession(null);
+				((SRCPTurnoutControlAdapter) turnoutControl).setSession(null);
+				((SRCPLocomotiveControlAdapter) locomotiveControl).setSession(null);
+				((SRCPRouteControlAdapter) routeControl).setSession(null);
 				lockControl.setSession(null);
 				daemonConnectItem.setEnabled(true);
 				daemonDisconnectItem.setEnabled(false);
 				daemonResetItem.setEnabled(false);
 				connectToolBarButton.setEnabled(true);
 				disconnectToolBarButton.setEnabled(false);
-				// nablerDisabler.setEnable(false, trackControlPanel);
-				// EnablerDisabler.setEnable(false, locomotiveControlPanel);
 				updateCommandHistory("Disconnected from server " + host
 						+ " on port " + port);
 			} catch (SRCPException e1) {

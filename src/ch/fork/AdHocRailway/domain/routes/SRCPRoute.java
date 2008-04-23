@@ -60,4 +60,30 @@ public class SRCPRoute {
 	public void addRouteItem(SRCPRouteItem item) {
 		this.routeItems.add(item);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((routeItems == null) ? 0 : routeItems.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final SRCPRoute other = (SRCPRoute) obj;
+		if (routeItems == null) {
+			if (other.routeItems != null)
+				return false;
+		} else if (!routeItems.equals(other.routeItems))
+			return false;
+		return true;
+	}
 }

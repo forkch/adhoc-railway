@@ -38,6 +38,7 @@ import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+import ch.fork.AdHocRailway.domain.turnouts.MMTurnout;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
 import ch.fork.AdHocRailway.ui.UIConstants;
@@ -272,7 +273,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 			boolean addressValid = true;
 
 			if (locomotive.getAddress() == 0
-					|| locomotive.getAddress() > Constants.MAX_MM_TURNOUT_ADDRESS) {
+					|| locomotive.getAddress() > MMTurnout.MAX_MM_TURNOUT_ADDRESS) {
 				setSpinnerColor(addressTextField, UIConstants.ERROR_COLOR);
 				validate = false;
 				addressValid = false;

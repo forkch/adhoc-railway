@@ -32,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import ch.fork.AdHocRailway.domain.Constants;
+import ch.fork.AdHocRailway.domain.turnouts.MMTurnout;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
@@ -123,7 +124,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		}
 		boolean address1Valid = true;
 		if (turnout.getAddress1() == 0
-				|| turnout.getAddress1() > Constants.MAX_MM_TURNOUT_ADDRESS) {
+				|| turnout.getAddress1() > MMTurnout.MAX_MM_TURNOUT_ADDRESS) {
 			setBackground(UIConstants.ERROR_COLOR);
 			address1Valid = false;
 
@@ -158,7 +159,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			}
 			boolean address2Valid = true;
 			if (turnout.getAddress2() == 0
-					|| turnout.getAddress2() > Constants.MAX_MM_TURNOUT_ADDRESS) {
+					|| turnout.getAddress2() > MMTurnout.MAX_MM_TURNOUT_ADDRESS) {
 				setBackground(UIConstants.ERROR_COLOR);
 				address2Valid = false;
 			} else {
@@ -219,7 +220,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	}
 
 	public void turnoutChanged(Turnout changedTurnout, SRCPTurnoutState newState) {
-		System.out.println("turnoutChanged    " + changedTurnout.getNumber() + "   " + newState);
 		if (turnout.equals(changedTurnout)) {
 			actualTurnoutState = newState;
 			SwingUtilities.invokeLater(new Runnable() {

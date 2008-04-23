@@ -29,23 +29,42 @@ public class SRCPRouteItem {
 
 	private SRCPTurnoutState	routedState;
 
-	public boolean equals(Object o) {
-		if (this == o)
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
 			return true;
-		if (o == null || getClass() != o.getClass())
+		if (obj == null)
 			return false;
-
-		final SRCPRouteItem l = (SRCPRouteItem) o;
-		
-		if (!turnout.equals(l.getTurnout()))
+		if (getClass() != obj.getClass())
 			return false;
-		if (!routedState.equals(l.getRoutedState()))
+		final SRCPRouteItem other = (SRCPRouteItem) obj;
+		if (route == null) {
+			if (other.route != null)
+				return false;
+		} else if (!route.equals(other.route))
+			return false;
+		if (routedState == null) {
+			if (other.routedState != null)
+				return false;
+		} else if (!routedState.equals(other.routedState))
+			return false;
+		if (turnout == null) {
+			if (other.turnout != null)
+				return false;
+		} else if (!turnout.equals(other.turnout))
 			return false;
 		return true;
 	}
 
+	@Override
 	public int hashCode() {
-		return turnout.hashCode() + routedState.hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((route == null) ? 0 : route.hashCode());
+		result = prime * result
+				+ ((routedState == null) ? 0 : routedState.hashCode());
+		result = prime * result + ((turnout == null) ? 0 : turnout.hashCode());
+		return result;
 	}
 
 	/** default constructor */

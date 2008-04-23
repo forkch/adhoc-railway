@@ -1,12 +1,21 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import ch.fork.AdHocRailway.domain.turnouts.MMTurnout;
+
 public class MMLocomotive extends SRCPLocomotive {
 
+	public final static int		MAX_MM_LOCOMOTIVE_ADDRESS	= 99;
 	public static final String	PROTOCOL_VERSION	= "2";
 
 	public static final String	PROTOCOL			= "M";
 
+
 	public MMLocomotive() {
+		this(0, 0);
+	}
+
+	public MMLocomotive(int bus, int address) {
+		super(bus, address);
 		params = new String[3];
 		params[0] = PROTOCOL_VERSION;
 
@@ -14,11 +23,7 @@ public class MMLocomotive extends SRCPLocomotive {
 	}
 
 	@Override
-	public boolean checkBusAddress() {
-		if(bus == 0)
-			return false;
-		if(address < 0 ||address > 81)
-			return false;
-		return true;
+	public boolean checkAddress() {
+		return !(address < 0 || address > MMTurnout.MAX_MM_TURNOUT_ADDRESS);
 	}
 }

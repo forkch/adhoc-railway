@@ -37,6 +37,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
 import ch.fork.AdHocRailway.domain.Constants;
+import ch.fork.AdHocRailway.domain.turnouts.MMTurnout;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
@@ -295,7 +296,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 
 		boolean address1Valid = true;
 		if (turnout.getAddress1() == 0
-				|| turnout.getAddress1() > Constants.MAX_MM_TURNOUT_ADDRESS) {
+				|| turnout.getAddress1() > MMTurnout.MAX_MM_TURNOUT_ADDRESS) {
 			setSpinnerColor(address1TextField, UIConstants.ERROR_COLOR);
 			validate = false;
 			address1Valid = false;
@@ -337,7 +338,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 			}
 			boolean address2Valid = true;
 			if (turnout.getAddress2() == 0
-					|| turnout.getAddress2() > Constants.MAX_MM_TURNOUT_ADDRESS) {
+					|| turnout.getAddress2() > MMTurnout.MAX_MM_TURNOUT_ADDRESS) {
 				setSpinnerColor(address2TextField, UIConstants.ERROR_COLOR);
 				validate = false;
 				address2Valid = false;

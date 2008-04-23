@@ -159,15 +159,15 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants {
 			GL gl = locomotive.getGL();
 			switch (locomotive.direction) {
 			case FORWARD:
-				gl.set(Constants.FORWARD_DIRECTION, speed, drivingSteps,
+				gl.set(SRCPLocomotive.FORWARD_DIRECTION, speed, drivingSteps,
 						functions);
 				break;
 			case REVERSE:
-				gl.set(Constants.REVERSE_DIRECTION, speed, drivingSteps,
+				gl.set(SRCPLocomotive.REVERSE_DIRECTION, speed, drivingSteps,
 						functions);
 				break;
 			case UNDEF:
-				gl.set(Constants.FORWARD_DIRECTION, speed, drivingSteps,
+				gl.set(SRCPLocomotive.FORWARD_DIRECTION, speed, drivingSteps,
 						functions);
 				locomotive.setDirection(SRCPLocomotiveDirection.FORWARD);
 				break;
@@ -280,9 +280,9 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants {
 				address));
 		checkLocomotive(locomotive);
 		if (locomotive != null) {
-			if (drivemode.equals(Constants.FORWARD_DIRECTION)) {
+			if (drivemode.equals(SRCPLocomotive.FORWARD_DIRECTION)) {
 				locomotive.setDirection(SRCPLocomotiveDirection.FORWARD);
-			} else if (drivemode.equals(Constants.REVERSE_DIRECTION)) {
+			} else if (drivemode.equals(SRCPLocomotive.REVERSE_DIRECTION)) {
 				locomotive.setDirection(SRCPLocomotiveDirection.REVERSE);
 			}
 			locomotive.setCurrentSpeed(v);
@@ -327,7 +327,7 @@ public class SRCPLocomotiveControl implements GLInfoListener, Constants {
 			throws LocomotiveException {
 		if (locomotive == null)
 			return;
-		if (!locomotive.checkBusAddress()) {
+		if (!locomotive.checkAddress()) {
 			throw new LocomotiveException("Locomotive has an invalid bus or address",
 					new InvalidAddressException());
 		}

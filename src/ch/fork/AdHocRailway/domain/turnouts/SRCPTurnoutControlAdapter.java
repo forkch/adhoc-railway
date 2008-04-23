@@ -98,7 +98,7 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 		turnoutsSRCPTurnoutsMap.clear();
 		turnoutControl.removeTurnoutChangeListener(this);
 		for (Turnout turnout : persistence.getAllTurnouts()) {
-			SRCPTurnout sTurnout = new SRCPTurnout();
+			SRCPTurnout sTurnout = new MMTurnout();
 			sTurnout.setBus1(turnout.getBus1());
 			sTurnout.setBus2(turnout.getBus2());
 
@@ -108,7 +108,6 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 			sTurnout.setAddress1Switched(turnout.isAddress1Switched());
 			sTurnout.setAddress2Switched(turnout.isAddress2Switched());
 
-			sTurnout.setProtocol(Constants.DEFAULT_TURNOUT_PROTOCOL);
 
 			switch (turnout.getDefaultStateEnum()) {
 			case STRAIGHT:
@@ -179,14 +178,11 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 
 	public void turnoutChanged(SRCPTurnout changedTurnout,
 			SRCPTurnoutState newState) {
-		System.out.println(changedTurnout);
 		informListeners(changedTurnout);
 	}
 
 	private void informListeners(SRCPTurnout changedTurnout) {
 		List<TurnoutChangeListener> ll = listeners.get(changedTurnout);
-		System.out.println(ll);
-		System.out.println(listeners);
 		if (ll == null)
 			// its a sub-turnout of a threeway turnout
 			return;

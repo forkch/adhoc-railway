@@ -45,7 +45,7 @@ public class ExceptionProcessor {
 	public void processException(Exception e) {
 		e.printStackTrace();
 		if (e.getCause() != null) {
-			errorPanel.setErrorTextIcon(e.getMessage(), e.getCause()
+			errorPanel.setErrorTextIcon(e.getMessage() + "\n"+ e.getCause()
 					.getMessage(), ImageTools
 					.createImageIcon("messagebox_critical.png"));
 		} else {

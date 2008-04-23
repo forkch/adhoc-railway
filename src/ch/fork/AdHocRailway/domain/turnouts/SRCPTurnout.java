@@ -18,56 +18,49 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import java.util.Arrays;
-
-import net.sf.cglib.transform.impl.AddDelegateTransformer;
-
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.devices.GA;
 
-public class SRCPTurnout {
+public abstract class SRCPTurnout {
 
+	protected int				address1;
 
-	private int					address1;
+	protected boolean			address1Switched;
 
-	private boolean				address1Switched;
+	protected int				address2;
 
-	private int					address2;
+	protected boolean			address2Switched;
 
-	private boolean				address2Switched;
+	protected int				bus1;
 
-	private int					bus1;
+	protected int				bus2;
 
-	private int					bus2;
-
-	private SRCPTurnoutState	defaultState;
+	protected SRCPTurnoutState	defaultState;
 
 	private GA					ga;
-	
+
 	protected boolean			initialized		= false;
-	
-	private String				protocol;
-	
+
+	protected String			protocol;
+
 	private SRCPSession			session;
-	
+
 	private SRCPTurnout[]		subTurnouts;
 
 	protected SRCPTurnoutState	turnoutState	= SRCPTurnoutState.UNDEF;
 
-	private SRCPTurnoutTypes	turnoutType;
+	protected SRCPTurnoutTypes	turnoutType;
 
 	public SRCPTurnout() {
 	}
 
 	public SRCPTurnout(int address1, boolean address1Switched, int bus1,
-			SRCPTurnoutState defaultState, String protocol,
-			SRCPTurnoutTypes turnoutType) {
+			SRCPTurnoutState defaultState, SRCPTurnoutTypes turnoutType) {
 		super();
 		this.address1 = address1;
 		this.address1Switched = address1Switched;
 		this.bus1 = bus1;
 		this.defaultState = defaultState;
-		this.protocol = protocol;
 		this.turnoutType = turnoutType;
 	}
 
@@ -83,6 +76,25 @@ public class SRCPTurnout {
 		this.bus2 = bus2;
 		this.defaultState = defaultState;
 		this.turnoutType = turnoutType;
+	}
+
+	public abstract Object clone();
+
+	public abstract boolean checkAddress();
+
+	public boolean checkBus() {
+		switch (turnoutType) {
+		case DEFAULT:
+		case DOUBLECROSS:
+			return (bus1 > 0);
+		case THREEWAY:
+			return (bus2 > 0);
+		}
+		return false;
+	}
+
+	public boolean checkBusAddress() {
+		return (checkBus() && checkAddress());
 	}
 
 	public int getAddress1() {
@@ -140,7 +152,7 @@ public class SRCPTurnout {
 	public boolean isInitialized() {
 		return initialized;
 	}
-	
+
 	public boolean isThreeWay() {
 		return turnoutType.equals(SRCPTurnoutTypes.THREEWAY);
 	}
@@ -258,8 +270,9 @@ public class SRCPTurnout {
 			return false;
 		return true;
 	}
-	
+
 	public String toString() {
-		return turnoutType.toString() + " [" + bus1 + "," + address1 + "],[" + bus2 + "," + address2 + "]";
+		return turnoutType.toString() + " [" + bus1 + "," + address1 + "],["
+				+ bus2 + "," + address2 + "]";
 	}
 }
