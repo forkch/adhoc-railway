@@ -22,8 +22,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -47,9 +46,9 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 	private JPanel					switchesHistory;
 
-	private Deque<Object>			historyStack;
+	private LinkedList<Object>			historyStack;
 
-	private Deque<JPanel>			historyWidgets;
+	private LinkedList<JPanel>			historyWidgets;
 
 	private TurnoutControlIface		turnoutControl		= AdHocRailway
 																.getInstance()
@@ -81,8 +80,8 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 	public KeyTrackControl() {
 		super("Track Control / History");
-		this.historyStack = new ArrayDeque<Object>();
-		this.historyWidgets = new ArrayDeque<JPanel>();
+		this.historyStack = new LinkedList<Object>();
+		this.historyWidgets = new LinkedList<JPanel>();
 		enteredNumberKeys = new StringBuffer();
 		initGUI();
 		initKeyboardActions();
@@ -154,7 +153,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 			historyWidgets.removeLast();
 
 		}
-		historyStack.push(obj);
+		historyStack.addFirst(obj);
 		JPanel w = null;
 		if (obj instanceof Turnout) {
 			Turnout turnout = (Turnout) obj;
@@ -166,7 +165,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		} else {
 			return;
 		}
-		historyWidgets.push(w);
+		historyWidgets.addFirst(w);
 		updateHistory();
 	}
 
@@ -209,7 +208,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 				if (enteredNumberKeys.toString().equals("")) {
 					if (historyStack.size() == 0)
 						return;
-					Object obj = historyStack.pop();
+					Object obj = historyStack.removeFirst();
 					if (obj instanceof Turnout) {
 						Turnout t = (Turnout) obj;
 						turnoutControl.setDefaultState(t);
@@ -219,7 +218,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 					} else {
 						return;
 					}
-					historyWidgets.pop();
+					historyWidgets.removeFirst();
 					updateHistory();
 				} else {
 					int enteredNumber = Integer.parseInt(enteredNumberAsString);

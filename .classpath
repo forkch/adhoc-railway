@@ -21,10 +21,10 @@
 	<classpathentry kind="lib" path="lib/hibernate-commons-annotations.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate-entitymanager.jar"/>
 	<classpathentry kind="lib" path="lib/javassist.jar"/>
-	<classpathentry kind="lib" path="lib/jsrcpc-0.3-bin.jar"/>
 	<classpathentry kind="lib" path="lib/jta.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.11.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-1.5.0-sun-1.5.0.15"/>
+	<classpathentry kind="lib" path="lib/jsrcpc-0.3-bin.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

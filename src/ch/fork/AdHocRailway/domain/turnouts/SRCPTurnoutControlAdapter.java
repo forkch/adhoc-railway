@@ -143,7 +143,7 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 		turnoutControl.addTurnoutChangeListener(this);
 
 		turnoutControl.update(SRCPTurnoutsTurnoutsMap.keySet());
-
+		//turnoutControl.setSession(session)
 	}
 
 	public void addTurnoutChangeListener(Turnout turnout,
@@ -183,6 +183,7 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 
 	private void informListeners(SRCPTurnout changedTurnout) {
 		List<TurnoutChangeListener> ll = listeners.get(changedTurnout);
+
 		if (ll == null)
 			// its a sub-turnout of a threeway turnout
 			return;

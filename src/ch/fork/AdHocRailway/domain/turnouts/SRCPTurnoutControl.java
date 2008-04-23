@@ -154,6 +154,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 
 	public void toggle(SRCPTurnout turnout) throws TurnoutException {
 		checkTurnout(turnout);
+		
 		if (turnout.isThreeWay()) {
 			toggleThreeWay(turnout);
 			return;
@@ -469,6 +470,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 	}
 
 	void informListeners(SRCPTurnout changedTurnout) {
+		
 		for (SRCPTurnoutChangeListener scl : listeners)
 			scl
 					.turnoutChanged(changedTurnout, changedTurnout
@@ -481,6 +483,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		logger.debug("checkTurnout(" + turnout + ")");
 		if (turnout == null) {
 			return;
+			//throw new TurnoutException("Unknown Turnout (null)");
 		}
 		if (!turnout.checkBusAddress())
 			throw new TurnoutException(Constants.ERR_FAILED,

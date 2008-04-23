@@ -22,7 +22,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	private Map<SRCPLocomotive, Locomotive>						SRCPLocomotiveLocomotiveMap;
 	private Map<SRCPLocomotive, List<LocomotiveChangeListener>>	listeners;
 
-	private SRCPLocomotiveControl									locomotiveControl;
+	private SRCPLocomotiveControl								locomotiveControl;
 
 	private SRCPLocomotiveControlAdapter() {
 		locomotiveControl = SRCPLocomotiveControl.getInstance();
@@ -38,46 +38,54 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	}
 
 	public void decreaseSpeed(Locomotive locomotive) throws LocomotiveException {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		locomotiveControl.decreaseSpeed(sLocomotive);
 	}
 
 	public void decreaseSpeedStep(Locomotive locomotive)
 			throws LocomotiveException {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		locomotiveControl.decreaseSpeedStep(sLocomotive);
 
 	}
 
 	public int getCurrentSpeed(Locomotive locomotive) {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		return sLocomotive.getCurrentSpeed();
 	}
 
 	public SRCPLocomotiveDirection getDirection(Locomotive locomotive) {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		return sLocomotive.getDirection();
 	}
 
 	public boolean[] getFunctions(Locomotive locomotive) {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		return sLocomotive.getFunctions();
 	}
 
 	public void increaseSpeed(Locomotive locomotive) throws LocomotiveException {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		locomotiveControl.increaseSpeed(sLocomotive);
 	}
 
 	public void increaseSpeedStep(Locomotive locomotive)
 			throws LocomotiveException {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		locomotiveControl.increaseSpeedStep(sLocomotive);
 	}
 
 	public void setFunctions(Locomotive locomotive, boolean[] functions)
 			throws LocomotiveException {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		locomotiveControl.setFunctions(sLocomotive, functions);
 	}
 
@@ -88,13 +96,15 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 
 	public void setSpeed(Locomotive locomotive, int speed, boolean[] functions)
 			throws LocomotiveException {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		locomotiveControl.setSpeed(sLocomotive, speed, functions);
 	}
 
 	public void toggleDirection(Locomotive locomotive)
 			throws LocomotiveException {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		locomotiveControl.toggleDirection(sLocomotive);
 	}
 
@@ -102,12 +112,12 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		locomotiveSRCPLocomotiveMap.clear();
 		SRCPLocomotiveLocomotiveMap.clear();
 		locomotiveControl.removeLocomotiveChangeListener(this);
-		for(Locomotive locomotive : persistence.getAllLocomotives()) {
+		for (Locomotive locomotive : persistence.getAllLocomotives()) {
 			LocomotiveType type = locomotive.getLocomotiveType();
 			SRCPLocomotive sLocomotive = null;
-			if(type.getTypeName().equals("DELTA")) {
+			if (type.getTypeName().equals("DELTA")) {
 				sLocomotive = new MMDeltaLocomotive();
-			} else if(type.getTypeName().equals("DIGITAL")) {
+			} else if (type.getTypeName().equals("DIGITAL")) {
 				sLocomotive = new MMDigitalLocomotive();
 			}
 			sLocomotive.setBus(locomotive.getBus());
@@ -117,39 +127,46 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 			SRCPLocomotiveLocomotiveMap.put(sLocomotive, locomotive);
 		}
 		locomotiveControl.addLocomotiveChangeListener(this);
-		
+
 		locomotiveControl.update(SRCPLocomotiveLocomotiveMap.keySet());
-		
+
 	}
 
 	public void setSession(SRCPSession session) {
 		locomotiveControl.setSession(session);
 	}
+
 	public boolean acquireLock(Locomotive locomotive) throws LockingException {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		return locomotiveControl.acquireLock(sLocomotive);
 	}
 
 	public boolean isLocked(Locomotive locomotive) throws LockingException {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		return locomotiveControl.isLocked(sLocomotive);
 	}
 
 	public boolean isLockedByMe(Locomotive locomotive) throws LockingException {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		return locomotiveControl.isLockedByMe(sLocomotive);
 	}
 
 	public boolean releaseLock(Locomotive locomotive) throws LockingException {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		return locomotiveControl.releaseLock(sLocomotive);
 	}
 
 	public void addLocomotiveChangeListener(Locomotive locomotive,
 			LocomotiveChangeListener listener) {
-		SRCPLocomotive sLocomotive= locomotiveSRCPLocomotiveMap.get(locomotive);
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
 		if (listeners.get(sLocomotive) == null) {
-			listeners.put(sLocomotive, new ArrayList<LocomotiveChangeListener>());
+			listeners.put(sLocomotive,
+					new ArrayList<LocomotiveChangeListener>());
 		}
 		listeners.get(sLocomotive).add(listener);
 
@@ -168,7 +185,8 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		if (ll == null)
 			return;
 
-		Locomotive locomotive = SRCPLocomotiveLocomotiveMap.get(changedLocomotive);
+		Locomotive locomotive = SRCPLocomotiveLocomotiveMap
+				.get(changedLocomotive);
 		for (LocomotiveChangeListener scl : ll)
 			scl.locomotiveChanged(locomotive);
 		logger.debug("locomotiveChanged(" + changedLocomotive + ")");

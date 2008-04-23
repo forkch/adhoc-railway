@@ -468,8 +468,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 								.getStringValue(PreferencesKeys.HOSTNAME));
 						turnoutPersistence = HibernateTurnoutPersistence
 								.getInstance();
-						//turnoutControl
-						//		.setTurnoutPersistence(turnoutPersistence);
+						turnoutControl
+								.setPersistence(turnoutPersistence);
 						locomotivePersistence = HibernateLocomotivePersistence
 								.getInstance();
 						locomotiveControl
@@ -1110,5 +1110,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	public RoutePersistenceIface getRoutePersistence() {
 		return routePersistence;
+	}
+
+	public void commandDataReceived(String response) {
+		// TODO Auto-generated method stub
+		
 	}
 }
