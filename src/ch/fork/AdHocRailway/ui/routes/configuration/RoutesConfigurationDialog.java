@@ -391,10 +391,12 @@ public class RoutesConfigurationDialog extends JDialog {
 			Route newRoute = new Route();
 			newRoute.setName(newRouteName);
 			newRoute.setNumber(nextNumber);
+			selectedRouteGroup.getRoutes().add(newRoute);
 
 			newRoute.setRouteGroup(selectedRouteGroup);
 			try {
 				routePersistence.addRoute(newRoute);
+				
 				List<Route> routes = new ArrayList<Route>(selectedRouteGroup
 						.getRoutes());
 				routesModel.setList(routes);

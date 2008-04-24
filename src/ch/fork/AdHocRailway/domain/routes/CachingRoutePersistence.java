@@ -44,13 +44,14 @@ public class CachingRoutePersistence implements RoutePersistenceIface {
 	}
 
 	public void clear() {
+		logger.debug("clear()");
 		routeCache.clear();
 		routeGroupCache.clear();
 		routeItemCache.clear();
 	}
 
 	public ArrayListModel<Route> getAllRoutes() {
-		//logger.debug("getAllRoutes()");
+		logger.debug("getAllRoutes()");
 		return routeCache;
 	}
 
