@@ -112,10 +112,10 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		if (!turnout.isAddress1Switched()) {
 			return wantedPort;
 		} else {
-			if (wantedPort == Constants.TURNOUT_STRAIGHT_PORT) {
-				return Constants.TURNOUT_CURVED_PORT;
+			if (wantedPort == SRCPTurnout.TURNOUT_STRAIGHT_PORT) {
+				return SRCPTurnout.TURNOUT_CURVED_PORT;
 			} else {
-				return Constants.TURNOUT_STRAIGHT_PORT;
+				return SRCPTurnout.TURNOUT_STRAIGHT_PORT;
 			}
 		}
 	}
@@ -270,10 +270,10 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		try {
 			int defaultActivationTime = Preferences.getInstance().getIntValue(
 					PreferencesKeys.ACTIVATION_TIME);
-			ga.set(getPort(turnout, Constants.TURNOUT_STRAIGHT_PORT),
-					Constants.TURNOUT_PORT_ACTIVATE, defaultActivationTime);
-			ga.set(getPort(turnout, Constants.TURNOUT_CURVED_PORT),
-					Constants.TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
+			ga.set(getPort(turnout, SRCPTurnout.TURNOUT_STRAIGHT_PORT),
+					SRCPTurnout.TURNOUT_PORT_ACTIVATE, defaultActivationTime);
+			ga.set(getPort(turnout, SRCPTurnout.TURNOUT_CURVED_PORT),
+					SRCPTurnout.TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
 			turnout.setTurnoutState(SRCPTurnoutState.STRAIGHT);
 			// informListeners(turnout);
 			lastChangedTurnout = turnout;
@@ -311,10 +311,10 @@ public class SRCPTurnoutControl implements GAInfoListener {
 		try {
 			int defaultActivationTime = Preferences.getInstance().getIntValue(
 					PreferencesKeys.ACTIVATION_TIME);
-			ga.set(getPort(turnout, Constants.TURNOUT_CURVED_PORT),
-					Constants.TURNOUT_PORT_ACTIVATE, defaultActivationTime);
-			ga.set(getPort(turnout, Constants.TURNOUT_STRAIGHT_PORT),
-					Constants.TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
+			ga.set(getPort(turnout, SRCPTurnout.TURNOUT_CURVED_PORT),
+					SRCPTurnout.TURNOUT_PORT_ACTIVATE, defaultActivationTime);
+			ga.set(getPort(turnout, SRCPTurnout.TURNOUT_STRAIGHT_PORT),
+					SRCPTurnout.TURNOUT_PORT_DEACTIVATE, defaultActivationTime);
 			turnout.setTurnoutState(SRCPTurnoutState.LEFT);
 			// informListeners(turnout);
 			lastChangedTurnout = turnout;
@@ -405,9 +405,9 @@ public class SRCPTurnoutControl implements GAInfoListener {
 	}
 
 	private void portChanged(SRCPTurnout turnout, int port) {
-		if (port == getPort(turnout, Constants.TURNOUT_STRAIGHT_PORT)) {
+		if (port == getPort(turnout, SRCPTurnout.TURNOUT_STRAIGHT_PORT)) {
 			turnout.setTurnoutState(SRCPTurnoutState.STRAIGHT);
-		} else if (port == getPort(turnout, Constants.TURNOUT_CURVED_PORT)) {
+		} else if (port == getPort(turnout, SRCPTurnout.TURNOUT_CURVED_PORT)) {
 			turnout.setTurnoutState(SRCPTurnoutState.LEFT);
 		}
 	}

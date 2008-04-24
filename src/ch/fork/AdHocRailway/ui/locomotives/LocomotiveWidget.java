@@ -46,7 +46,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 
-import ch.fork.AdHocRailway.domain.locking.LockChangeListener;
+import ch.fork.AdHocRailway.domain.locking.SRCPLockChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
@@ -62,7 +62,7 @@ import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 import com.jgoodies.binding.list.ArrayListModel;
 
 public class LocomotiveWidget extends JPanel implements
-		LocomotiveChangeListener, LockChangeListener {
+		LocomotiveChangeListener, SRCPLockChangeListener {
 	private static final long			serialVersionUID		= 1L;
 
 	private JComboBox					locomotiveComboBox;

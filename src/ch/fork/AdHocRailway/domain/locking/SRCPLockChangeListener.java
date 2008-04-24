@@ -18,14 +18,7 @@
 
 package ch.fork.AdHocRailway.domain.locking;
 
-public interface LockControlIface<E> {
+public interface SRCPLockChangeListener {
 
-	public boolean isLocked(E object) throws LockingException;
-
-	public boolean isLockedByMe(E object) throws LockingException;
-
-	public boolean acquireLock(E object) throws LockingException;
-
-	public boolean releaseLock(E object) throws LockingException;
-
+	public void lockChanged(Object changedLock);
 }

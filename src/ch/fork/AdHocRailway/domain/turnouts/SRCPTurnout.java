@@ -51,6 +51,13 @@ public abstract class SRCPTurnout {
 
 	protected SRCPTurnoutTypes	turnoutType;
 
+	public final static int		TURNOUT_STRAIGHT_PORT		= 0;
+
+	public final static int		TURNOUT_CURVED_PORT			= 1;
+	
+	public final static int		TURNOUT_PORT_ACTIVATE		= 1;
+
+	public final static int		TURNOUT_PORT_DEACTIVATE		= 0;
 	public SRCPTurnout() {
 	}
 

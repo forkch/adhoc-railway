@@ -44,12 +44,12 @@ public class SRCPLockControl implements LOCKInfoListener, Constants {
 	Map<String, Map<LookupAddress, Object>>	addressToControlObject;
 	Map<Object, SRCPLock>					locks;
 
-	private List<LockChangeListener>		listeners;
+	private List<SRCPLockChangeListener>		listeners;
 
 	private SRCPLockControl() {
 		addressToControlObject = new HashMap<String, Map<LookupAddress, Object>>();
 		locks = new HashMap<Object, SRCPLock>();
-		listeners = new ArrayList<LockChangeListener>();
+		listeners = new ArrayList<SRCPLockChangeListener>();
 	}
 
 	public static SRCPLockControl getInstance() {
@@ -165,12 +165,12 @@ public class SRCPLockControl implements LOCKInfoListener, Constants {
 	}
 
 	private void informListeners(Object object) {
-		for (LockChangeListener l : listeners) {
+		for (SRCPLockChangeListener l : listeners) {
 			l.lockChanged(object);
 		}
 	}
 
-	public void addLockChangeListener(LockChangeListener l) {
+	public void addLockChangeListener(SRCPLockChangeListener l) {
 		listeners.add(l);
 	}
 

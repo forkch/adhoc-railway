@@ -18,9 +18,9 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
-import ch.fork.AdHocRailway.domain.locking.LockControlIface;
+import ch.fork.AdHocRailway.domain.locking.SRCPLockControlIface;
 
-public interface LocomotiveControlface extends LockControlIface<Locomotive> {
+public interface LocomotiveControlface extends SRCPLockControlIface<Locomotive> {
 
 	public abstract void setLocomotivePersistence(
 			LocomotivePersistenceIface persistence);
