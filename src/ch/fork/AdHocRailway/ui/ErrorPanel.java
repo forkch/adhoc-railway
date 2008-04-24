@@ -105,8 +105,6 @@ public class ErrorPanel extends JPanel {
 
 	private class ErrorConfirmAction extends MouseAdapter {
 		public void mouseClicked(MouseEvent e) {
-			System.out.println(e.getButton());
-			System.out.println(e.getButton() == MouseEvent.BUTTON2);
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
 				SwingUtilities.invokeLater(closerRunner);
 			} else if (e.getClickCount() == 1

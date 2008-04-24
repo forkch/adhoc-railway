@@ -29,9 +29,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
-import ch.fork.AdHocRailway.domain.ControlException;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
+import ch.fork.AdHocRailway.domain.routes.RouteException;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
@@ -229,15 +229,15 @@ public class KeyTrackControl extends SimpleInternalFrame {
 					}
 				}
 
-				enteredNumberKeys = new StringBuffer();
-				routeMode = false;
-				digitDisplay.reset();
-			} catch (ControlException e1) {
-
-				enteredNumberKeys = new StringBuffer();
-				digitDisplay.reset();
+				
+			} catch (RouteException e1) {
+				ExceptionProcessor.getInstance().processException(e1);
+			} catch (TurnoutException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
 			}
+			enteredNumberKeys = new StringBuffer();
+			routeMode = false;
+			digitDisplay.reset();
 		}
 
 		private void handleSwitchChange(ActionEvent e, int enteredNumber)
@@ -270,7 +270,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		}
 
 		private void handleRouteChange(ActionEvent e, int enteredNumber)
-				throws TurnoutException {
+				throws TurnoutException, RouteException {
 			Route searchedRoute = null;
 
 			searchedRoute = routePersistence.getRouteByNumber(enteredNumber);

@@ -39,7 +39,6 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteException;
-import ch.fork.AdHocRailway.domain.routes.SRCPRouteState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
@@ -118,7 +117,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 						&& e.getButton() == MouseEvent.BUTTON1) {
 					if (routeControl.isRouting(route))
 						return;
-					if (routeControl.getRouteState(route) == SRCPRouteState.ENABLED)
+					if (routeControl.isRouteEnabled(route))
 						routeControl.disableRoute(route);
 					else
 						routeControl.enableRoute(route);
@@ -127,9 +126,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 						&& e.getButton() == MouseEvent.BUTTON3) {
 					displayRouteConfig();
 				}
-			} catch (TurnoutException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
-
 			} catch (RouteException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
 			}
@@ -150,7 +146,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
-				if (routeControl.getRouteState(route) == SRCPRouteState.ENABLED) {
+				if (routeControl.isRouteEnabled(route)) {
 					iconLabel.setIcon(routeStartIcon);
 					routingProgress.setForeground(Color.GREEN);
 				} else {

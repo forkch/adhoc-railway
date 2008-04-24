@@ -25,9 +25,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
 
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutTypes;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.ui.ImageTools;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
 
 public class TurnoutTypeComboBoxCellRenderer extends DefaultListCellRenderer {
 	public Component getListCellRendererComponent(JList list, Object value,

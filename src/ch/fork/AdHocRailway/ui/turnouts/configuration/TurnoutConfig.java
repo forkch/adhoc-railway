@@ -36,9 +36,6 @@ import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
-import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.turnouts.MMTurnout;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
@@ -57,6 +54,9 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import de.dermoba.srcp.model.turnouts.MMTurnout;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	private boolean						okPressed;

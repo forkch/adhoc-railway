@@ -64,24 +64,19 @@ import javax.swing.WindowConstants;
 import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
-import ch.fork.AdHocRailway.domain.NoSessionException;
 import ch.fork.AdHocRailway.domain.locking.LockingException;
-import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
 import ch.fork.AdHocRailway.domain.locomotives.FileLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
-import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControl;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.routes.FileRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
-import ch.fork.AdHocRailway.domain.routes.SRCPRouteControl;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.FileTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControl;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
@@ -103,6 +98,8 @@ import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.SERVER;
+import de.dermoba.srcp.model.NoSessionException;
+import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 public class AdHocRailway extends JFrame implements CommandDataListener,
 		InfoDataListener, PreferencesKeys {
@@ -660,7 +657,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			if (result == JOptionPane.YES_OPTION) {
 
 				try {
-					SRCPLockControl.getInstance().releaseAllLocks();
+					//SRCPLockControl.getInstance().releaseAllLocks();
 				} catch (LockingException e1) {
 					e1.printStackTrace();
 				}
@@ -830,8 +827,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			if (session == null)
-				throw new NoSessionException();
 			SERVER serverDevice = new SERVER(session);
 			try {
 				serverDevice.reset();

@@ -390,7 +390,6 @@ public class HibernateLocomotivePersistence extends
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			if (getLocomotiveTypeByName(type.getTypeName()) == null) {
-				System.out.println("ADDING");
 				em.persist(type);
 				HibernatePersistence.flush();
 				super.addLocomotiveType(type);

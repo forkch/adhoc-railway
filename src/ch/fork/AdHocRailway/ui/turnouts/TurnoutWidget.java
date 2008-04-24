@@ -31,9 +31,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import ch.fork.AdHocRailway.domain.Constants;
-import ch.fork.AdHocRailway.domain.turnouts.MMTurnout;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
@@ -43,6 +40,8 @@ import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
+import de.dermoba.srcp.model.turnouts.MMTurnout;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	private TurnoutControlIface		turnoutControl;

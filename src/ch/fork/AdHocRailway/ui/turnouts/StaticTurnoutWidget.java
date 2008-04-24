@@ -24,8 +24,8 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class StaticTurnoutWidget extends JPanel {
 

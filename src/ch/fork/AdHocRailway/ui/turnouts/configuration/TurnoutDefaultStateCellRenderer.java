@@ -25,8 +25,8 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.ui.ImageTools;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class TurnoutDefaultStateCellRenderer extends DefaultTableCellRenderer {
 

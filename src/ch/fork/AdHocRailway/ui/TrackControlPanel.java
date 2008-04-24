@@ -39,15 +39,13 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
-import ch.fork.AdHocRailway.domain.ControlException;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutTypes;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
@@ -57,6 +55,8 @@ import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.SwitchProgrammer;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
@@ -309,7 +309,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 						Thread.sleep(Preferences.getInstance().getIntValue(
 								PreferencesKeys.ROUTING_DELAY));
 					}
-				} catch (ControlException e1) {
+				} catch (TurnoutException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
 					return;
 				} catch (InterruptedException e2) {
@@ -329,7 +329,11 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		public void actionPerformed(ActionEvent e) {
 			
 			for(Turnout t : turnoutPersistence.getAllTurnouts()) {
-				turnoutControl.refresh(t);
+				try {
+					turnoutControl.refresh(t);
+				} catch (TurnoutException e1) {
+					ExceptionProcessor.getInstance().processException(e1);
+				}
 			}
 		}
 	}

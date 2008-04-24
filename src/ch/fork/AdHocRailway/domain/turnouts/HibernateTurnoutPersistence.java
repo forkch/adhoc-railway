@@ -35,6 +35,8 @@ import ch.fork.AdHocRailway.domain.routes.RouteItem;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
+
 public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		implements TurnoutPersistenceIface {
 	static Logger							logger	= Logger

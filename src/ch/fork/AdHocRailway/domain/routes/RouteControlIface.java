@@ -18,14 +18,13 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-import ch.fork.AdHocRailway.domain.ControlException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 
 public interface RouteControlIface {
 
-	public abstract void enableRoute(Route r) throws TurnoutException;
+	public abstract void enableRoute(Route r) throws RouteException;
 
-	public abstract void disableRoute(Route r) throws TurnoutException;
+	public abstract void disableRoute(Route r) throws RouteException;
 
 	public abstract void addRouteChangeListener(Route r,
 			RouteChangeListener listener);
@@ -35,14 +34,14 @@ public interface RouteControlIface {
 	public abstract void removeRouteChangeListener(Route r,
 			RouteChangeListener listener);
 
-	public abstract void undoLastChange() throws ControlException;
+	public abstract void undoLastChange() throws RouteException;
 
-	public abstract void previousDeviceToDefault() throws ControlException;
+	public abstract void previousDeviceToDefault() throws RouteException;
 
 	public abstract void setRoutePersistence(
 			RoutePersistenceIface routePersistence);
 
-	public abstract SRCPRouteState getRouteState(Route route);
+	public abstract boolean isRouteEnabled(Route route);
 
 	public abstract boolean isRouting(Route route);
 	

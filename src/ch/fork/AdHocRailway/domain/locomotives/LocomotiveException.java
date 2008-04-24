@@ -18,9 +18,8 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
-import ch.fork.AdHocRailway.domain.ControlException;
 
-public class LocomotiveException extends ControlException {
+public class LocomotiveException extends Exception {
 
 	public LocomotiveException() {
 		// TODO Auto-generated constructor stub

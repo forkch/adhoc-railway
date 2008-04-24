@@ -36,7 +36,6 @@ import javax.swing.SwingUtilities;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
-import ch.fork.AdHocRailway.domain.routes.SRCPRouteState;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 
 public class StaticRouteWidget extends JPanel implements RouteChangeListener {
@@ -107,7 +106,7 @@ public class StaticRouteWidget extends JPanel implements RouteChangeListener {
 			SwingUtilities.invokeLater(new Runnable() {
 
 				public void run() {
-					if (routeControl.getRouteState(route) == SRCPRouteState.ENABLED) {
+					if (routeControl.isRouteEnabled(route)){
 						iconLabel.setIcon(routeStartIcon);
 						routingProgress.setForeground(Color.GREEN);
 					} else {

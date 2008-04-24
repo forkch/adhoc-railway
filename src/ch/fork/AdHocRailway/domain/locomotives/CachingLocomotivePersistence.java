@@ -25,9 +25,9 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
-import ch.fork.AdHocRailway.domain.LookupAddress;
-
 import com.jgoodies.binding.list.ArrayListModel;
+
+import de.dermoba.srcp.model.SRCPAddress;
 
 public class CachingLocomotivePersistence implements LocomotivePersistenceIface {
 	private static Logger						logger	= Logger
@@ -35,14 +35,14 @@ public class CachingLocomotivePersistence implements LocomotivePersistenceIface 
 
 	private ArrayListModel<LocomotiveGroup>		locomotiveGroupCache;
 	private ArrayListModel<Locomotive>			locomotiveCache;
-	private Map<LookupAddress, Locomotive>		addressLocomotiveCache;
+	private Map<SRCPAddress, Locomotive>		addressLocomotiveCache;
 	private Map<String, LocomotiveType>			locomotiveTypes;
 
 	public CachingLocomotivePersistence() {
 		logger.info("CachingLocomotivePersistence loaded");
 		this.locomotiveCache = new ArrayListModel<Locomotive>();
 		this.locomotiveGroupCache = new ArrayListModel<LocomotiveGroup>();
-		this.addressLocomotiveCache = new HashMap<LookupAddress, Locomotive>();
+		this.addressLocomotiveCache = new HashMap<SRCPAddress, Locomotive>();
 
 		locomotiveTypes = new HashMap<String, LocomotiveType>();
 	}
@@ -81,7 +81,7 @@ public class CachingLocomotivePersistence implements LocomotivePersistenceIface 
 	@SuppressWarnings("unchecked")
 	public Locomotive getLocomotiveByBusAddress(int bus, int address) {
 		Locomotive locomotive = addressLocomotiveCache
-				.get(new LookupAddress(bus, address, 0, 0));
+				.get(new SRCPAddress(bus, address, 0, 0));
 		if(locomotive != null)
 			return locomotive;
 		throw new LocomotivePersistenceException("Locomotive with bus " + bus
@@ -94,7 +94,7 @@ public class CachingLocomotivePersistence implements LocomotivePersistenceIface 
 	 * @see ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface#addLocomotive(ch.fork.AdHocRailway.domain.locomotives.Locomotive)
 	 */
 	public void addLocomotive(Locomotive locomotive) {
-		addressLocomotiveCache.put(new LookupAddress(locomotive.getBus(),
+		addressLocomotiveCache.put(new SRCPAddress(locomotive.getBus(),
 				locomotive.getAddress(), 0, 0), locomotive);
 		locomotiveCache.add(locomotive);
 	}

@@ -18,9 +18,8 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import ch.fork.AdHocRailway.domain.ControlException;
 
-public class TurnoutException extends ControlException {
+public class TurnoutException extends Exception {
 
 	public TurnoutException() {
 		// TODO Auto-generated constructor stub

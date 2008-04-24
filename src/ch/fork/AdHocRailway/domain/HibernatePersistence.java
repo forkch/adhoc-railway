@@ -78,7 +78,7 @@ public abstract class HibernatePersistence {
 		return em;
 	}
 
-	public static void flush() throws TurnoutPersistenceException {
+	public static void flush() throws RuntimeException {
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.getTransaction().commit();

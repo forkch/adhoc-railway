@@ -5,19 +5,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
-import ch.fork.AdHocRailway.domain.ControlException;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnout;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import de.dermoba.srcp.client.SRCPSession;
+import de.dermoba.srcp.model.SRCPModelException;
+import de.dermoba.srcp.model.routes.SRCPRoute;
+import de.dermoba.srcp.model.routes.SRCPRouteChangeListener;
+import de.dermoba.srcp.model.routes.SRCPRouteControl;
+import de.dermoba.srcp.model.routes.SRCPRouteException;
+import de.dermoba.srcp.model.routes.SRCPRouteItem;
+import de.dermoba.srcp.model.routes.SRCPRouteState;
+import de.dermoba.srcp.model.turnouts.SRCPTurnout;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutException;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class SRCPRouteControlAdapter implements RouteControlIface,
 		SRCPRouteChangeListener {
-	private static Logger								logger	= Logger
-																		.getLogger(SRCPRouteControlAdapter.class);
-
 	private static SRCPRouteControlAdapter				instance;
 	private RoutePersistenceIface						persistence;
 	private Map<Route, SRCPRoute>						routesSRCPRoutesMap;
@@ -37,30 +42,41 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 		return instance;
 	}
 
-	public void disableRoute(Route route) throws TurnoutException {
+	public void disableRoute(Route route) throws RouteException {
 		SRCPRoute sRoute = routesSRCPRoutesMap.get(route);
-		routeControl.disableRoute(sRoute);
+		try {
+			routeControl.disableRoute(sRoute);
+		} catch (SRCPModelException e) {
+			throw new RouteException("Route Error", e);
+		}
 	}
 
-	public void enableRoute(Route route) throws TurnoutException {
+	public void enableRoute(Route route) throws RouteException {
 		SRCPRoute sRoute = routesSRCPRoutesMap.get(route);
-		routeControl.enableRoute(sRoute);
+		try {
+			routeControl.enableRoute(sRoute);
+		} catch (SRCPModelException e) {
+			throw new RouteException("Route Error", e);
+		}
 
 	}
 
-	public SRCPRouteState getRouteState(Route route) {
-
+	public boolean isRouteEnabled(Route route) {
 		SRCPRoute sRoute = routesSRCPRoutesMap.get(route);
-		return sRoute.getRouteState();
+		return sRoute.getRouteState().equals(SRCPRouteState.ENABLED);
 	}
 
 	public boolean isRouting(Route route) {
 		SRCPRoute sRoute = routesSRCPRoutesMap.get(route);
-		return sRoute.isRouting();
+		return sRoute.getRouteState().equals(SRCPRouteState.ROUTING);
 	}
 
-	public void previousDeviceToDefault() throws ControlException {
-		routeControl.previousDeviceToDefault();
+	public void previousDeviceToDefault() throws RouteException {
+		try {
+			routeControl.previousDeviceToDefault();
+		} catch (SRCPModelException e) {
+			throw new RouteException("Route Error", e);
+		}
 	}
 
 	public void addRouteChangeListener(Route route, RouteChangeListener listener) {
@@ -85,8 +101,12 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 		this.persistence = routePersistence;
 	}
 
-	public void undoLastChange() throws ControlException {
-		routeControl.undoLastChange();
+	public void undoLastChange() throws RouteException {
+		try {
+			routeControl.undoLastChange();
+		} catch (SRCPModelException e) {
+			throw new RouteException("Route Error", e);
+		}
 	}
 
 	public void update() {
@@ -94,6 +114,8 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 		routeControl.removeRouteChangeListener(this);
 		SRCPTurnoutControlAdapter turnoutControl = SRCPTurnoutControlAdapter
 				.getInstance();
+		routeControl.setRoutingDelay(Preferences.getInstance().getIntValue(PreferencesKeys.ROUTING_DELAY));
+
 		for (Route route : persistence.getAllRoutes()) {
 			SRCPRoute sRoute = new SRCPRoute();
 			for (RouteItem routeItem : route.getRouteItems()) {
@@ -102,7 +124,20 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 				SRCPTurnout sTurnout = turnoutControl.getSRCPTurnout(routeItem
 						.getTurnout());
 				sRouteItem.setTurnout(sTurnout);
-				sRouteItem.setRoutedState(routeItem.getRoutedStateEnum());
+				if (routeItem.getRoutedState().toUpperCase().equals("LEFT")) {
+					sRouteItem.setRoutedState(SRCPTurnoutState.LEFT);
+				} else if (routeItem.getRoutedState().toUpperCase().equals(
+						"RIGHT")) {
+
+					sRouteItem.setRoutedState(SRCPTurnoutState.RIGHT);
+				} else if (routeItem.getRoutedState().toUpperCase().equals(
+						"STRAIGHT")) {
+
+					sRouteItem.setRoutedState(SRCPTurnoutState.STRAIGHT);
+				} else {
+
+					sRouteItem.setRoutedState(SRCPTurnoutState.UNDEF);
+				}
 				sRoute.addRouteItem(sRouteItem);
 			}
 			routesSRCPRoutesMap.put(route, sRoute);

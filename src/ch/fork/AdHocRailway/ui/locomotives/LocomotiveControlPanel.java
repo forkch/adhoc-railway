@@ -30,7 +30,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import ch.fork.AdHocRailway.domain.locking.SRCPLockControl;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
@@ -39,6 +38,7 @@ import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
+import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 public class LocomotiveControlPanel extends JPanel {
 
@@ -89,9 +89,7 @@ public class LocomotiveControlPanel extends JPanel {
 	}
 
 	public void update() {
-		SRCPLockControl lockc = SRCPLockControl.getInstance();
 		locomotiveControl.removeAllLocomotiveChangeListener();
-		lockc.removeAllLockChangeListener();
 
 		controlPanel.removeAll();
 		locomotiveWidgets.clear();
@@ -106,7 +104,6 @@ public class LocomotiveControlPanel extends JPanel {
 			LocomotiveWidget w = new LocomotiveWidget(keyBindings[i][0],
 					keyBindings[i][1], keyBindings[i][2], AdHocRailway
 							.getInstance());
-			SRCPLockControl.getInstance().addLockChangeListener(w);
 			w.updateLocomotiveGroups();
 			controlPanel.add(w);
 			locomotiveWidgets.add(w);

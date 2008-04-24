@@ -28,8 +28,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class TurnoutCanvas extends JPanel {
 	protected Turnout		turnout;

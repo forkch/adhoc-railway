@@ -26,18 +26,20 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
-import ch.fork.AdHocRailway.domain.LookupAddress;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
+import de.dermoba.srcp.model.SRCPAddress;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
+
 public class CachingTurnoutPersistence implements TurnoutPersistenceIface {
 	static Logger							logger	= Logger
 															.getLogger(CachingTurnoutPersistence.class);
 	
-	private Map<LookupAddress, Turnout>		addressTurnoutCache;
-	private Map<LookupAddress, Turnout>		addressThreewayCache;
+	private Map<SRCPAddress, Turnout>		addressTurnoutCache;
+	private Map<SRCPAddress, Turnout>		addressThreewayCache;
 	private ArrayListModel<Turnout>			turnoutCache;
 	private ArrayListModel<TurnoutGroup>	turnoutGroupCache;
 	private Map<Integer, Turnout>			numberToTurnoutCache;
@@ -45,8 +47,8 @@ public class CachingTurnoutPersistence implements TurnoutPersistenceIface {
 
 	public CachingTurnoutPersistence() {
 		logger.info("CachingTurnoutPersistence loaded");
-		this.addressTurnoutCache = new HashMap<LookupAddress, Turnout>();
-		this.addressThreewayCache = new HashMap<LookupAddress, Turnout>();
+		this.addressTurnoutCache = new HashMap<SRCPAddress, Turnout>();
+		this.addressThreewayCache = new HashMap<SRCPAddress, Turnout>();
 		this.turnoutCache = new ArrayListModel<Turnout>();
 		this.turnoutGroupCache = new ArrayListModel<TurnoutGroup>();
 		this.numberToTurnoutCache = new HashMap<Integer, Turnout>();
@@ -99,11 +101,11 @@ public class CachingTurnoutPersistence implements TurnoutPersistenceIface {
 	 */
 	public Turnout getTurnoutByAddressBus(int bus, int address) {
 		logger.debug("getTurnoutByAddressBus()");
-		LookupAddress key1 = new LookupAddress(bus, address, 0, 0);
+		SRCPAddress key1 = new SRCPAddress(bus, address, 0, 0);
 		Turnout lookup1 = addressTurnoutCache.get(key1);
 		if (lookup1 != null)
 			return lookup1;
-		LookupAddress key2 = new LookupAddress(0, 0, bus, address);
+		SRCPAddress key2 = new SRCPAddress(0, 0, bus, address);
 		Turnout lookup2 = addressTurnoutCache.get(key2);
 		if (lookup2 != null)
 			return lookup2;
@@ -132,14 +134,14 @@ public class CachingTurnoutPersistence implements TurnoutPersistenceIface {
 		}
 		turnout.getTurnoutGroup().getTurnouts().add(turnout);
 
-		addressTurnoutCache.put(new LookupAddress(turnout.getBus1(), turnout
+		addressTurnoutCache.put(new SRCPAddress(turnout.getBus1(), turnout
 				.getAddress1(), turnout.getBus2(), turnout.getAddress2()),
 				turnout);
 		turnoutCache.add(turnout);
 		if (turnout.isThreeWay()) {
-			addressThreewayCache.put(new LookupAddress(turnout.getBus1(),
+			addressThreewayCache.put(new SRCPAddress(turnout.getBus1(),
 					turnout.getAddress1(), 0, 0), turnout);
-			addressThreewayCache.put(new LookupAddress(0, 0, turnout.getBus2(),
+			addressThreewayCache.put(new SRCPAddress(0, 0, turnout.getBus2(),
 					turnout.getAddress2()), turnout);
 		}
 		numberToTurnoutCache.put(turnout.getNumber(), turnout);

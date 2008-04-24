@@ -46,7 +46,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 
-import ch.fork.AdHocRailway.domain.locking.SRCPLockChangeListener;
+import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
@@ -61,8 +61,10 @@ import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
+import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
+
 public class LocomotiveWidget extends JPanel implements
-		LocomotiveChangeListener, SRCPLockChangeListener {
+		LocomotiveChangeListener {
 	private static final long			serialVersionUID		= 1L;
 
 	private JComboBox					locomotiveComboBox;
@@ -104,7 +106,7 @@ public class LocomotiveWidget extends JPanel implements
 
 	private JFrame						frame;
 
-	private Object	defaultDisabledComboColor;
+	private Object						defaultDisabledComboColor;
 
 	public LocomotiveWidget(int accelerateKey, int deccelerateKey,
 			int toggleDirectionKey, JFrame frame) {
@@ -113,7 +115,8 @@ public class LocomotiveWidget extends JPanel implements
 		this.deccelerateKey = deccelerateKey;
 		this.toggleDirectionKey = toggleDirectionKey;
 		this.frame = frame;
-		defaultDisabledComboColor = UIManager.get("ComboBox.disabledForeground");
+		defaultDisabledComboColor = UIManager
+				.get("ComboBox.disabledForeground");
 		initGUI();
 		initKeyboardActions();
 	}
@@ -384,7 +387,6 @@ public class LocomotiveWidget extends JPanel implements
 			directionButton.setIcon(createImageIcon("locomotives/forward.png"));
 		}
 
-		try {
 		boolean locked = locomotiveControl.isLocked(myLocomotive);
 		lockButton.setSelected(locked);
 		if (locked) {
@@ -401,12 +403,10 @@ public class LocomotiveWidget extends JPanel implements
 			locomotiveGroupComboBox.setEnabled(true);
 			locomotiveComboBox.setEnabled(true);
 		} else {
-			UIManager.put("ComboBox.disabledForeground", new ColorUIResource(Color.BLACK));
+			UIManager.put("ComboBox.disabledForeground", new ColorUIResource(
+					Color.BLACK));
 			locomotiveGroupComboBox.setEnabled(false);
 			locomotiveComboBox.setEnabled(false);
-		}
-		} catch(LocomotiveException ex) {
-			//ignore here
 		}
 		setPreferredSize(new Dimension(200, 250));
 		revalidate();
@@ -525,21 +525,27 @@ public class LocomotiveWidget extends JPanel implements
 		public void actionPerformed(ActionEvent e) {
 			if (myLocomotive == null)
 				return;
-
-			if (lockButton.isSelected()) {
-				boolean succeeded = locomotiveControl.acquireLock(myLocomotive);
-				lockButton.setSelected(succeeded);
-			} else {
-				if (locomotiveControl.isLockedByMe(myLocomotive)) {
-					boolean succeeded = !locomotiveControl
-							.releaseLock(myLocomotive);
+			boolean lockButtonState = lockButton.isSelected();
+			try {
+				if (lockButtonState) {
+					boolean succeeded = locomotiveControl
+							.acquireLock(myLocomotive);
 					lockButton.setSelected(succeeded);
 				} else {
-					lockButton.setSelected(true);
+					if (locomotiveControl.isLockedByMe(myLocomotive)) {
+						boolean succeeded = !locomotiveControl
+								.releaseLock(myLocomotive);
+						lockButton.setSelected(succeeded);
+					} else {
+						lockButton.setSelected(true);
+					}
 				}
+				speedBar.requestFocus();
+			} catch (LockingException ex) {
+				ExceptionProcessor.getInstance().processException(ex);
+				lockButton.setSelected(lockButtonState);
 			}
 			updateWidget();
-			speedBar.requestFocus();
 		}
 
 	}
@@ -599,12 +605,6 @@ public class LocomotiveWidget extends JPanel implements
 	private class LocomotiveWidgetUpdater implements Runnable {
 		public void run() {
 			updateWidget();
-		}
-	}
-
-	public void lockChanged(Object object) {
-		if (object instanceof Locomotive) {
-			locomotiveChanged((Locomotive) object);
 		}
 	}
 }

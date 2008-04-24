@@ -18,7 +18,7 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
-public class LocomotivePersistenceException extends LocomotiveException {
+public class LocomotivePersistenceException extends RuntimeException {
 
 	public LocomotivePersistenceException() {
 		// TODO Auto-generated constructor stub

@@ -43,13 +43,13 @@ import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.FileTurnoutPersistence;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutTypes;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
 
 public class XMLImporter_0_3 extends DefaultHandler implements ContentHandler {
 	private Preferences					preferences;

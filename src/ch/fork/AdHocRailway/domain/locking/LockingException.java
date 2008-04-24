@@ -18,9 +18,8 @@
 
 package ch.fork.AdHocRailway.domain.locking;
 
-import ch.fork.AdHocRailway.domain.ControlException;
 
-public class LockingException extends ControlException {
+public class LockingException extends RuntimeException {
 
 	public LockingException() {
 		super();

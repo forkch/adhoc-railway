@@ -18,7 +18,7 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-public class RoutePersistenceException extends RouteException {
+public class RoutePersistenceException extends RuntimeException {
 
 	public RoutePersistenceException() {
 		// TODO Auto-generated constructor stub

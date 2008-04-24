@@ -23,6 +23,8 @@ import java.util.SortedSet;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
+
 public interface TurnoutPersistenceIface {
 
 	public abstract ArrayListModel<Turnout> getAllTurnouts();

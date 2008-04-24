@@ -49,7 +49,6 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
@@ -69,6 +68,8 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class RouteConfig extends JDialog implements PropertyChangeListener {
 	private boolean						okPressed;
@@ -444,9 +445,6 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 				digitDisplay.reset();
 			} catch (NumberFormatException e1) {
 				e1.printStackTrace();
-			} catch (TurnoutException e1) {
-				ExceptionProcessor.getInstance().processExceptionDialog(e1);
-				enteredNumberKeys = new StringBuffer();
 			}
 		}
 	}

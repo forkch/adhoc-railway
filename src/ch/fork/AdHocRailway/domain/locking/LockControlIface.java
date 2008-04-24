@@ -16,24 +16,17 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.domain;
+package ch.fork.AdHocRailway.domain.locking;
 
-public class ControlException extends RuntimeException {
 
-	public ControlException() {
-		super();
-	}
+public interface LockControlIface<E> {
 
-	public ControlException(String message) {
-		super(message);
-	}
+	public boolean isLocked(E object) throws LockingException;
 
-	public ControlException(String message, Throwable cause) {
-		super(message, cause);
-	}
+	public boolean isLockedByMe(E object) throws LockingException;
 
-	public ControlException(Throwable cause) {
-		super(cause);
-	}
+	public boolean acquireLock(E object) throws LockingException;
+
+	public boolean releaseLock(E object) throws LockingException;
 
 }

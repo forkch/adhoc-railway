@@ -18,7 +18,7 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-public class TurnoutPersistenceException extends TurnoutException {
+public class TurnoutPersistenceException extends RuntimeException {
 
 	public TurnoutPersistenceException() {
 		// TODO Auto-generated constructor stub

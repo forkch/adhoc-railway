@@ -20,6 +20,8 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import org.apache.log4j.Logger;
 
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
+
 public class FileTurnoutPersistence extends CachingTurnoutPersistence{
 	static Logger							logger	= Logger
 															.getLogger(FileTurnoutPersistence.class);

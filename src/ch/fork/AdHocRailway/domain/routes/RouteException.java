@@ -18,9 +18,8 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-import ch.fork.AdHocRailway.domain.ControlException;
 
-public class RouteException extends ControlException {
+public class RouteException extends Exception{
 
 	public RouteException() {
 		// TODO Auto-generated constructor stub

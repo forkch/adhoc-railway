@@ -25,12 +25,12 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
+import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 	private static TurnoutPersistenceIface	persistence	= AdHocRailway
@@ -44,53 +44,47 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		Turnout currentTurnout;
 		iconLabel.setText("");
-		try {
-			currentTurnout = persistence.getTurnoutByNumber(Integer
-					.valueOf((Integer) table.getValueAt(row, 0)));
-			if(currentTurnout == null) {
-				return iconLabel;
-			}
-			SRCPTurnoutState routedState = (SRCPTurnoutState) value;
-			String stateString = "";
+		currentTurnout = persistence.getTurnoutByNumber(Integer
+				.valueOf((Integer) table.getValueAt(row, 0)));
+		if (currentTurnout == null) {
+			return iconLabel;
+		}
+		SRCPTurnoutState routedState = (SRCPTurnoutState) value;
+		String stateString = "";
+		switch (routedState) {
+		case STRAIGHT:
+			stateString = "straight";
+			break;
+		case LEFT:
+		case RIGHT:
+			stateString = "curved";
+			break;
+		}
+		if (currentTurnout.isDefault()) {
+			iconLabel.setIcon(ImageTools
+					.createImageIcon("switches/default_switch_" + stateString
+							+ ".png"));
+		} else if (currentTurnout.isDoubleCross()) {
+			iconLabel.setIcon(ImageTools
+					.createImageIcon("switches/double_cross_switch_"
+							+ stateString + ".png"));
+		} else if (currentTurnout.isThreeWay()) {
 			switch (routedState) {
 			case STRAIGHT:
-				stateString = "straight";
+				iconLabel
+						.setIcon(ImageTools
+								.createImageIcon("switches/three_way_switch_straight.png"));
 				break;
 			case LEFT:
+				iconLabel.setIcon(ImageTools
+						.createImageIcon("switches/three_way_switch_left.png"));
+				break;
 			case RIGHT:
-				stateString = "curved";
+				iconLabel
+						.setIcon(ImageTools
+								.createImageIcon("switches/three_way_switch_right.png"));
 				break;
 			}
-			if (currentTurnout.isDefault()) {
-				iconLabel.setIcon(ImageTools
-						.createImageIcon("switches/default_switch_"
-								+ stateString + ".png"));
-			} else if (currentTurnout.isDoubleCross()) {
-				iconLabel.setIcon(ImageTools
-						.createImageIcon("switches/double_cross_switch_"
-								+ stateString + ".png"));
-			} else if (currentTurnout.isThreeWay()) {
-				switch (routedState) {
-				case STRAIGHT:
-					iconLabel
-							.setIcon(ImageTools
-									.createImageIcon("switches/three_way_switch_straight.png"));
-					break;
-				case LEFT:
-					iconLabel
-							.setIcon(ImageTools
-									.createImageIcon("switches/three_way_switch_left.png"));
-					break;
-				case RIGHT:
-					iconLabel
-							.setIcon(ImageTools
-									.createImageIcon("switches/three_way_switch_right.png"));
-					break;
-				}
-			}
-		} catch (TurnoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 		return iconLabel;
