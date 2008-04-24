@@ -114,8 +114,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 		public void mouseClicked(MouseEvent e) {
 			try {
-				System.out.println(e.getButton() == MouseEvent.BUTTON1);
-
 				if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON1) {
 					if (routeControl.isRouting(route))
