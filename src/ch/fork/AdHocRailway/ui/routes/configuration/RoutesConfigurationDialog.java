@@ -62,9 +62,6 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class RoutesConfigurationDialog extends JDialog {
-	private RoutePersistenceIface		routePersistence	= AdHocRailway
-																	.getInstance()
-																	.getRoutePersistence();
 
 	private JList						routeGroupList;
 
@@ -120,7 +117,7 @@ public class RoutesConfigurationDialog extends JDialog {
 		builder.add(buildRouteGroupButtonBar(), cc.xy(1, 7));
 
 		builder.addSeparator("Routes", cc.xyw(3, 1, 1));
-		
+
 		builder.add(new JScrollPane(routesList), cc.xywh(3, 3, 1, 3));
 		builder.add(buildRouteButtonBar(), cc.xy(3, 7));
 
@@ -145,6 +142,8 @@ public class RoutesConfigurationDialog extends JDialog {
 	}
 
 	private void initComponents() {
+		RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
+				.getRoutePersistence();
 		ArrayListModel<RouteGroup> routeGroups = routePersistence
 				.getAllRouteGroups();
 		routeGroupModel = new SelectionInList<RouteGroup>(
@@ -168,11 +167,12 @@ public class RoutesConfigurationDialog extends JDialog {
 		addRouteButton = new JButton(new AddRouteAction());
 		removeRouteButton = new JButton(new RemoveRouteAction());
 
-
 		okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					RoutePersistenceIface routePersistence = AdHocRailway
+							.getInstance().getRoutePersistence();
 					routePersistence.flush();
 				} catch (RoutePersistenceException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
@@ -278,7 +278,6 @@ public class RoutesConfigurationDialog extends JDialog {
 		}
 	}
 
-	
 	private class AddRouteGroupAction extends AbstractAction {
 
 		public AddRouteGroupAction() {
@@ -296,7 +295,8 @@ public class RoutesConfigurationDialog extends JDialog {
 
 			RouteGroup newRouteGroup = new RouteGroup();
 			newRouteGroup.setName(newRouteGroupName);
-
+			RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
+					.getRoutePersistence();
 			if (Preferences.getInstance().getBooleanValue(
 					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
 				String newAmount = JOptionPane.showInputDialog(
@@ -338,6 +338,8 @@ public class RoutesConfigurationDialog extends JDialog {
 					"Remove Route-Group", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
 				try {
+					RoutePersistenceIface routePersistence = AdHocRailway
+							.getInstance().getRoutePersistence();
 					routePersistence.deleteRouteGroup(routeGroupToDelete);
 				} catch (RoutePersistenceException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
@@ -373,6 +375,8 @@ public class RoutesConfigurationDialog extends JDialog {
 			if (newRouteName == null || newRouteName.equals(""))
 				return;
 			int nextNumber = 0;
+			RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
+					.getRoutePersistence();
 			if (Preferences.getInstance().getBooleanValue(
 					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
 				nextNumber = routePersistence
@@ -396,7 +400,7 @@ public class RoutesConfigurationDialog extends JDialog {
 			newRoute.setRouteGroup(selectedRouteGroup);
 			try {
 				routePersistence.addRoute(newRoute);
-				
+
 				List<Route> routes = new ArrayList<Route>(selectedRouteGroup
 						.getRoutes());
 				routesModel.setList(routes);
@@ -406,16 +410,15 @@ public class RoutesConfigurationDialog extends JDialog {
 
 		}
 	}
-	
+
 	private class EditRouteAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
 
 			// PresentationModel<Turnout> model = new
 			// PresentationModel<Turnout>(
 			// turnoutModel);
-			Route route  = (Route)routesList.getSelectedValue();
-			PresentationModel<Route> model = new PresentationModel<Route>(
-					route);
+			Route route = (Route) routesList.getSelectedValue();
+			PresentationModel<Route> model = new PresentationModel<Route>(route);
 			if (model == null)
 				return;
 			new RouteConfig(RoutesConfigurationDialog.this, model);
@@ -444,6 +447,8 @@ public class RoutesConfigurationDialog extends JDialog {
 					JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
 				try {
+					RoutePersistenceIface routePersistence = AdHocRailway
+							.getInstance().getRoutePersistence();
 					routePersistence.deleteRoute(routeToDelete);
 
 					List<Route> routes = new ArrayList<Route>(

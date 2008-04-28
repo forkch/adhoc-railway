@@ -77,4 +77,6 @@ public interface TurnoutPersistenceIface {
 	public void enlargeTurnoutGroups();
 	
 	public abstract void flush();
+	
+	public abstract void reload();
 }

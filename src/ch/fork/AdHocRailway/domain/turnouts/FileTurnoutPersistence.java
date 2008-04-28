@@ -61,4 +61,9 @@ public class FileTurnoutPersistence extends CachingTurnoutPersistence{
 		}
 		return instance;
 	}
+
+	public void reload() {
+		// TODO Auto-generated method stub
+		
+	}
 }

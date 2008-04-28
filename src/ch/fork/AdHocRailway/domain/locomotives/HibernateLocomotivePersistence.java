@@ -56,10 +56,11 @@ public class HibernateLocomotivePersistence extends
 	}
 
 	private void updateLocomotiveTypeCache() {
-		for(LocomotiveType type : getAllLocomotiveTypesDB()) {
+		for (LocomotiveType type : getAllLocomotiveTypesDB()) {
 			super.addLocomotiveType(type);
 		}
 	}
+
 	private void updateLocomotiveCache() {
 		for (Locomotive locomotive : getAllLocomotivesDB()) {
 			super.addLocomotive(locomotive);
@@ -77,14 +78,13 @@ public class HibernateLocomotivePersistence extends
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.createNativeQuery("TRUNCATE TABLE locomotive").executeUpdate();
-			//em.createNativeQuery("TRUNCATE TABLE locomotive_type")
-			//		.executeUpdate();
+			// em.createNativeQuery("TRUNCATE TABLE locomotive_type")
+			// .executeUpdate();
 			em.createNativeQuery("TRUNCATE TABLE locomotive_group")
 					.executeUpdate();
 
 			super.clear();
-			
-			
+
 			em.getTransaction().commit();
 			HibernatePersistence.disconnect();
 			HibernatePersistence.connect();
@@ -160,7 +160,7 @@ public class HibernateLocomotivePersistence extends
 		logger.debug("addLocomotive()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
-			
+
 			locomotive.getLocomotiveGroup().getLocomotives().add(locomotive);
 			em.persist(locomotive);
 			em.refresh(locomotive.getLocomotiveGroup());
@@ -351,14 +351,16 @@ public class HibernateLocomotivePersistence extends
 		logger.debug("getAllLocomotiveTypes()");
 		return super.getAllLocomotiveTypes();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private SortedSet<LocomotiveType> getAllLocomotiveTypesDB() {
 		logger.debug("getAllLocomotiveTypessDB()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
-			List turnoutTypes = em.createQuery("from LocomotiveType").getResultList();
-			SortedSet<LocomotiveType> res = new TreeSet<LocomotiveType>(turnoutTypes);
+			List turnoutTypes = em.createQuery("from LocomotiveType")
+					.getResultList();
+			SortedSet<LocomotiveType> res = new TreeSet<LocomotiveType>(
+					turnoutTypes);
 
 			HibernatePersistence.flush();
 			return res;
@@ -382,7 +384,7 @@ public class HibernateLocomotivePersistence extends
 			throws LocomotivePersistenceException {
 		logger.debug("getLocomotiveTypeByName()");
 		return super.getLocomotiveTypeByName(typeName);
-		
+
 	}
 
 	public void addLocomotiveType(LocomotiveType type) {
@@ -432,5 +434,29 @@ public class HibernateLocomotivePersistence extends
 
 	public void flush() {
 		HibernatePersistence.flush();
+	}
+
+	public void reload() {
+//		EntityManager em = HibernatePersistence.getEntityManager();
+//		try {
+//			for (LocomotiveGroup g : getAllLocomotiveGroups()) {
+//				em.refresh(g);
+//			}
+//			for (Locomotive  l : getAllLocomotives()) {
+//				em.refresh(l);
+//			}
+//		} catch (HibernateException x) {
+//			em.close();
+//			HibernatePersistence.connect();
+//			throw new LocomotivePersistenceException("Database Error", x);
+//		} catch (PersistenceException x) {
+//			em.close();
+//			HibernatePersistence.connect();
+//			throw new LocomotivePersistenceException("Database Error", x);
+//		}
+		super.clear();
+		logger.info("HibernateLocomotivePersistence reloaded");
+
+		updateLocomotiveTypeCache();
 	}
 }

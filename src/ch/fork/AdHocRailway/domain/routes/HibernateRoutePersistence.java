@@ -448,4 +448,25 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		HibernatePersistence.flush();
 	}
 
+	public void reload() {
+		
+//		EntityManager em = HibernatePersistence.getEntityManager();
+//		try {
+//			for(RouteGroup g : getAllRouteGroups()) {
+//				em.refresh(g);
+//			}
+//		} catch (HibernateException x) {
+//			em.close();
+//			HibernatePersistence.connect();
+//			throw new RoutePersistenceException("Database Error", x);
+//		} catch (PersistenceException x) {
+//			em.close();
+//			HibernatePersistence.connect();
+//			throw new RoutePersistenceException("Database Error", x);
+//		}
+		super.clear();
+		logger.info("HibernateRoutePersistence reloaded");
+
+	}
+
 }

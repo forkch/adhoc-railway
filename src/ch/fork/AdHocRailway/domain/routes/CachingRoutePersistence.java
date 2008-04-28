@@ -28,7 +28,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
-public class CachingRoutePersistence implements RoutePersistenceIface {
+public abstract class CachingRoutePersistence implements RoutePersistenceIface {
 	private static Logger					logger	= Logger
 															.getLogger(CachingRoutePersistence.class);
 	

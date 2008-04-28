@@ -46,20 +46,20 @@ import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
-	private Route				route;
-	private RouteControlIface	routeControl;
-	private JLabel				nameLabel;
-	private JLabel				iconLabel;
-	private Icon				routeStopIcon;
-	private Icon				routeStartIcon;
-	private JProgressBar		routingProgress;
-	private JPanel				southPanel;
-	private MouseAction			mouseAction;
-	private JLabel				numberLabel;
+	private Route			route;
+	private JLabel			nameLabel;
+	private JLabel			iconLabel;
+	private Icon			routeStopIcon;
+	private Icon			routeStartIcon;
+	private JProgressBar	routingProgress;
+	private JPanel			southPanel;
+	private MouseAction		mouseAction;
+	private JLabel			numberLabel;
 
 	public RouteWidget(Route route) {
 		this.route = route;
-		routeControl = AdHocRailway.getInstance().getRouteControl();
+		RouteControlIface routeControl = AdHocRailway.getInstance()
+				.getRouteControl();
 		initGUI();
 		routeControl.addRouteChangeListener(route, this);
 	}
@@ -113,6 +113,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 		public void mouseClicked(MouseEvent e) {
 			try {
+				RouteControlIface routeControl = AdHocRailway.getInstance()
+						.getRouteControl();
 				if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON1) {
 					if (routeControl.isRouting(route))
@@ -132,6 +134,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		}
 
 		private void displayRouteConfig() {
+			RouteControlIface routeControl = AdHocRailway.getInstance()
+					.getRouteControl();
 			routeControl.removeRouteChangeListener(route, RouteWidget.this);
 			new RouteConfig(AdHocRailway.getInstance(), route);
 			routeControl.update();
@@ -146,6 +150,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
+				RouteControlIface routeControl = AdHocRailway.getInstance()
+						.getRouteControl();
 				if (routeControl.isRouteEnabled(route)) {
 					iconLabel.setIcon(routeStartIcon);
 					routingProgress.setForeground(Color.GREEN);

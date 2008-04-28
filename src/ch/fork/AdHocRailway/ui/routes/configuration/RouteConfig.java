@@ -74,15 +74,6 @@ import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 public class RouteConfig extends JDialog implements PropertyChangeListener {
 	private boolean						okPressed;
 	private boolean						cancelPressed;
-	private JSpinner					numberTextField;
-	private Set<Integer>				usedTurnoutNumbers;
-
-	private RoutePersistenceIface		routePersistence	= AdHocRailway
-																	.getInstance()
-																	.getRoutePersistence();
-	private TurnoutPersistenceIface		turnoutPersistence	= AdHocRailway
-																	.getInstance()
-																	.getTurnoutPersistence();
 
 	private PresentationModel<Route>	presentationModel;
 	private JButton						okButton;
@@ -150,7 +141,8 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 		routeItemTable.setSelectionModel(new SingleListSelectionAdapter(
 				routeItemModel.getSelectionIndexHolder()));
 
-		routeItemModel.setList(new ArrayList<RouteItem>(presentationModel.getBean().getRouteItems()));
+		routeItemModel.setList(new ArrayList<RouteItem>(presentationModel
+				.getBean().getRouteItems()));
 
 		TableColumn routedStateColumn = routeItemTable.getColumnModel()
 				.getColumn(1);
@@ -236,16 +228,16 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 
 	private boolean validate(Route route) {
 		boolean validate = true;
-//		if (route.getNumber() == 0
-//				|| usedTurnoutNumbers.contains(route.getNumber())) {
-//			setSpinnerColor(numberTextField, UIConstants.ERROR_COLOR);
-//			validate = false;
-//			okButton.setEnabled(false);
-//		} else {
-//			setSpinnerColor(numberTextField,
-//					UIConstants.DEFAULT_TEXTFIELD_COLOR);
-//			okButton.setEnabled(true);
-//		}
+		// if (route.getNumber() == 0
+		// || usedTurnoutNumbers.contains(route.getNumber())) {
+		// setSpinnerColor(numberTextField, UIConstants.ERROR_COLOR);
+		// validate = false;
+		// okButton.setEnabled(false);
+		// } else {
+		// setSpinnerColor(numberTextField,
+		// UIConstants.DEFAULT_TEXTFIELD_COLOR);
+		// okButton.setEnabled(true);
+		// }
 
 		return validate;
 	}
@@ -374,6 +366,10 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 			int enteredNumber = Integer.parseInt(enteredNumberAsString);
 			Turnout turnout;
 			try {
+				RoutePersistenceIface routePersistence = AdHocRailway
+						.getInstance().getRoutePersistence();
+				TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+						.getInstance().getTurnoutPersistence();
 				turnout = turnoutPersistence.getTurnoutByNumber(enteredNumber);
 				if (turnout == null) {
 					JOptionPane
@@ -477,7 +473,8 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 			RouteItem routeItem = routeItemModel.getSelection();
 			if (routeItem == null)
 				return;
-
+			RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
+					.getRoutePersistence();
 			routePersistence.deleteRouteItem(routeItem);
 			List<RouteItem> routeItems = new ArrayList<RouteItem>(selectedRoute
 					.getRouteItems());
@@ -496,7 +493,8 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-
+			RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
+					.getRoutePersistence();
 			Route route = presentationModel.getBean();
 			if (route.getId() == 0) {
 				routePersistence.addRoute(route);

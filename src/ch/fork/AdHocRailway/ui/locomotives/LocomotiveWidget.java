@@ -65,7 +65,7 @@ import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
 
 public class LocomotiveWidget extends JPanel implements
 		LocomotiveChangeListener {
-	private static final long			serialVersionUID		= 1L;
+	private static final long			serialVersionUID	= 1L;
 
 	private JComboBox					locomotiveComboBox;
 
@@ -91,14 +91,6 @@ public class LocomotiveWidget extends JPanel implements
 			toggleDirectionKey;
 
 	private FunctionToggleButton[]		functionToggleButtons;
-
-	private LocomotiveControlface		locomotiveControl		= AdHocRailway
-																		.getInstance()
-																		.getLocomotiveControl();
-
-	private LocomotivePersistenceIface	locomotivePersistence	= AdHocRailway
-																		.getInstance()
-																		.getLocomotivePersistence();
 
 	private LocomotiveSelectAction		locomotiveSelectAction;
 
@@ -255,6 +247,8 @@ public class LocomotiveWidget extends JPanel implements
 	}
 
 	private boolean isFree() {
+		LocomotiveControlface locomotiveControl = AdHocRailway.getInstance()
+				.getLocomotiveControl();
 		if (myLocomotive == null)
 			return true;
 		if (locomotiveControl.getCurrentSpeed(myLocomotive) == 0) {
@@ -281,6 +275,8 @@ public class LocomotiveWidget extends JPanel implements
 	}
 
 	public void updateLocomotiveGroups() {
+		LocomotivePersistenceIface locomotivePersistence = AdHocRailway
+				.getInstance().getLocomotivePersistence();
 		locomotiveComboBox.removeActionListener(locomotiveSelectAction);
 		locomotiveGroupComboBox.removeActionListener(groupSelectAction);
 
@@ -306,6 +302,9 @@ public class LocomotiveWidget extends JPanel implements
 
 	private class LocomotiveGroupSelectAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
+			LocomotivePersistenceIface locomotivePersistence = AdHocRailway
+					.getInstance().getLocomotivePersistence();
+
 			locomotiveComboBox.removeAllItems();
 			if (locomotiveGroupComboBox.getSelectedIndex() == 0) {
 				ArrayListModel<Locomotive> sl = locomotivePersistence
@@ -332,6 +331,8 @@ public class LocomotiveWidget extends JPanel implements
 
 	private class LocomotiveSelectAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
+			LocomotiveControlface locomotiveControl = AdHocRailway
+					.getInstance().getLocomotiveControl();
 			if (locomotiveComboBox.getItemCount() == 0
 					|| locomotiveComboBox.getSelectedIndex() == 0) {
 				myLocomotive = null;
@@ -357,6 +358,8 @@ public class LocomotiveWidget extends JPanel implements
 	}
 
 	protected void updateWidget() {
+		LocomotiveControlface locomotiveControl = AdHocRailway.getInstance()
+				.getLocomotiveControl();
 		if (myLocomotive == null)
 			return;
 		double speedInPercent = ((double) locomotiveControl
@@ -421,8 +424,11 @@ public class LocomotiveWidget extends JPanel implements
 		}
 
 		public void actionPerformed(ActionEvent e) {
+
 			if (myLocomotive == null)
 				return;
+			LocomotiveControlface locomotiveControl = AdHocRailway
+					.getInstance().getLocomotiveControl();
 			try {
 				boolean[] functions = locomotiveControl
 						.getFunctions(myLocomotive);
@@ -444,6 +450,8 @@ public class LocomotiveWidget extends JPanel implements
 			if (myLocomotive == null)
 				return;
 			try {
+				LocomotiveControlface locomotiveControl = AdHocRailway
+						.getInstance().getLocomotiveControl();
 				if (e.getActionCommand().equals("accelerate")) {
 					locomotiveControl.increaseSpeed(myLocomotive);
 				} else if (e.getActionCommand().equals("deccelerate")) {
@@ -469,6 +477,8 @@ public class LocomotiveWidget extends JPanel implements
 			if (myLocomotive == null)
 				return;
 			try {
+				LocomotiveControlface locomotiveControl = AdHocRailway
+						.getInstance().getLocomotiveControl();
 				locomotiveControl.setSpeed(myLocomotive, 0, null);
 				updateWidget();
 				speedBar.requestFocus();
@@ -483,6 +493,8 @@ public class LocomotiveWidget extends JPanel implements
 			if (myLocomotive == null)
 				return;
 			try {
+				LocomotiveControlface locomotiveControl = AdHocRailway
+						.getInstance().getLocomotiveControl();
 				locomotiveControl.toggleDirection(myLocomotive);
 				speedBar.requestFocus();
 				updateWidget();
@@ -497,6 +509,8 @@ public class LocomotiveWidget extends JPanel implements
 			if (myLocomotive == null)
 				return;
 			try {
+				LocomotiveControlface locomotiveControl = AdHocRailway
+						.getInstance().getLocomotiveControl();
 				locomotiveControl.increaseSpeed(myLocomotive);
 				updateWidget();
 				speedBar.requestFocus();
@@ -511,6 +525,8 @@ public class LocomotiveWidget extends JPanel implements
 			if (myLocomotive == null)
 				return;
 			try {
+				LocomotiveControlface locomotiveControl = AdHocRailway
+						.getInstance().getLocomotiveControl();
 				locomotiveControl.decreaseSpeed(myLocomotive);
 				updateWidget();
 				speedBar.requestFocus();
@@ -527,6 +543,8 @@ public class LocomotiveWidget extends JPanel implements
 				return;
 			boolean lockButtonState = lockButton.isSelected();
 			try {
+				LocomotiveControlface locomotiveControl = AdHocRailway
+						.getInstance().getLocomotiveControl();
 				if (lockButtonState) {
 					boolean succeeded = locomotiveControl
 							.acquireLock(myLocomotive);
@@ -554,7 +572,11 @@ public class LocomotiveWidget extends JPanel implements
 		public void mouseClicked(MouseEvent e) {
 			if (myLocomotive == null)
 				return;
+			LocomotiveControlface locomotiveControl = AdHocRailway
+					.getInstance().getLocomotiveControl();
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
+				LocomotivePersistenceIface locomotivePersistence = AdHocRailway
+						.getInstance().getLocomotivePersistence();
 				LocomotiveConfig locomotiveConfig = new LocomotiveConfig(frame,
 						myLocomotive);
 				if (locomotiveConfig.isOkPressed()) {

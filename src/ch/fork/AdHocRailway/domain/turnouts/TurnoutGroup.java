@@ -140,7 +140,7 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 	public void setId(int id) {
 		int old = this.id;
 		this.id = id;
-		firePropertyChange(PROPERTYNAME_ID, old, id);
+		//firePropertyChange(PROPERTYNAME_ID, old, id);
 	}
 
 	@Column(name = "name", unique = false, nullable = false, insertable = true, updatable = true)
@@ -177,7 +177,7 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 	}
 
 	@Sort(type = SortType.NATURAL)
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, mappedBy = "turnoutGroup")
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "turnoutGroup")
 	public SortedSet<Turnout> getTurnouts() {
 		return this.turnouts;
 	}
@@ -186,7 +186,7 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 	public void setTurnouts(SortedSet<Turnout> turnouts) {
 		SortedSet<Turnout> old = this.turnouts;
 		this.turnouts = turnouts;
-		firePropertyChange(PROPERTYNAME_TURNOUTS, old, turnouts);
+		//firePropertyChange(PROPERTYNAME_TURNOUTS, old, turnouts);
 	}
 
 }

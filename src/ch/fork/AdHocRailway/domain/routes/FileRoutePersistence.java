@@ -35,4 +35,9 @@ public class FileRoutePersistence extends CachingRoutePersistence {
 		}
 		return instance;
 	}
+
+	public void reload() {
+		// TODO Auto-generated method stub
+		
+	}
 }

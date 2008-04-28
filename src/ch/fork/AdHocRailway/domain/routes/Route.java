@@ -148,7 +148,7 @@ public class Route extends Model implements java.io.Serializable,
 	public void setId(int id) {
 		int old = this.id;
 		this.id = id;
-		firePropertyChange(PROPERTYNAME_ID, old, id);
+		//firePropertyChange(PROPERTYNAME_ID, old, id);
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -192,6 +192,6 @@ public class Route extends Model implements java.io.Serializable,
 	public void setRouteItems(SortedSet<RouteItem> routeItems) {
 		SortedSet<RouteItem> old = this.routeItems;
 		this.routeItems = routeItems;
-		firePropertyChange(PROPERTYNAME_ROUTE_ITEMS, old, routeItems);
+		//firePropertyChange(PROPERTYNAME_ROUTE_ITEMS, old, routeItems);
 	}
 }

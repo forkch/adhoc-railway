@@ -143,7 +143,7 @@ public class TurnoutType extends Model implements java.io.Serializable,
 	public void setId(int id) {
 		int old = this.id;
 		this.id = id;
-		firePropertyChange(PROPERTYNAME_ID, old, id);
+		//firePropertyChange(PROPERTYNAME_ID, old, id);
 	}
 
 	@Column(name = "type_name", unique = false, nullable = false, insertable = true, updatable = true)
@@ -167,7 +167,7 @@ public class TurnoutType extends Model implements java.io.Serializable,
 	public void setTurnouts(SortedSet<Turnout> turnouts) {
 		SortedSet<Turnout> old = this.turnouts;
 		this.turnouts = turnouts;
-		firePropertyChange(PROPERTYNAME_TURNOUTS, old, turnouts);
+		//firePropertyChange(PROPERTYNAME_TURNOUTS, old, turnouts);
 	}
 
 }

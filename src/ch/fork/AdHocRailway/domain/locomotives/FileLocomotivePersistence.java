@@ -67,4 +67,9 @@ public class FileLocomotivePersistence extends CachingLocomotivePersistence {
 		}
 		return instance;
 	}
+
+	public void reload() {
+		// TODO Auto-generated method stub
+		
+	}
 }

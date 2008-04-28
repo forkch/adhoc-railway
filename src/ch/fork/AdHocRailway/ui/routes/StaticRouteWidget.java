@@ -41,7 +41,6 @@ import ch.fork.AdHocRailway.ui.AdHocRailway;
 public class StaticRouteWidget extends JPanel implements RouteChangeListener {
 
 	private Route				route;
-	private RouteControlIface	routeControl;
 	private JLabel				nameLabel;
 	private JLabel				iconLabel;
 	private Icon				routeStopIcon;
@@ -52,7 +51,7 @@ public class StaticRouteWidget extends JPanel implements RouteChangeListener {
 
 	public StaticRouteWidget(Route route) {
 		this.route = route;
-		routeControl = AdHocRailway.getInstance().getRouteControl();
+		RouteControlIface routeControl = AdHocRailway.getInstance().getRouteControl();
 		initGUI();
 		routeControl.addRouteChangeListener(route, this);
 	}
@@ -106,6 +105,7 @@ public class StaticRouteWidget extends JPanel implements RouteChangeListener {
 			SwingUtilities.invokeLater(new Runnable() {
 
 				public void run() {
+					RouteControlIface routeControl = AdHocRailway.getInstance().getRouteControl();
 					if (routeControl.isRouteEnabled(route)){
 						iconLabel.setIcon(routeStartIcon);
 						routingProgress.setForeground(Color.GREEN);

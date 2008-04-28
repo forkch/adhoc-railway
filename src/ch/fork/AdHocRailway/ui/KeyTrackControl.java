@@ -42,41 +42,25 @@ import ch.fork.AdHocRailway.ui.turnouts.StaticTurnoutWidget;
 
 public class KeyTrackControl extends SimpleInternalFrame {
 
-	private StringBuffer			enteredNumberKeys;
+	private StringBuffer		enteredNumberKeys;
 
-	private JPanel					switchesHistory;
+	private JPanel				switchesHistory;
 
-	private LinkedList<Object>			historyStack;
+	private LinkedList<Object>	historyStack;
 
-	private LinkedList<JPanel>			historyWidgets;
+	private LinkedList<JPanel>	historyWidgets;
 
-	private TurnoutControlIface		turnoutControl		= AdHocRailway
-																.getInstance()
-																.getTurnoutControl();
+	public boolean				routeMode;
 
-	private TurnoutPersistenceIface	turnoutPersistence	= AdHocRailway
-																.getInstance()
-																.getTurnoutPersistence();
+	public boolean				changedSwitch	= false;
 
-	private RouteControlIface		routeControl		= AdHocRailway
-																.getInstance()
-																.getRouteControl();
+	public boolean				changedRoute	= false;
 
-	private RoutePersistenceIface	routePersistence	= AdHocRailway
-																.getInstance()
-																.getRoutePersistence();
+	public static final int		HISTORY_LENGTH	= 5;
 
-	public boolean					routeMode;
+	private JScrollPane			switchesHistoryPane;
 
-	public boolean					changedSwitch		= false;
-
-	public boolean					changedRoute		= false;
-
-	public static final int			HISTORY_LENGTH		= 5;
-
-	private JScrollPane				switchesHistoryPane;
-
-	private ThreeDigitDisplay		digitDisplay;
+	private ThreeDigitDisplay	digitDisplay;
 
 	public KeyTrackControl() {
 		super("Track Control / History");
@@ -155,6 +139,9 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		}
 		historyStack.addFirst(obj);
 		JPanel w = null;
+		TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
+				.getTurnoutControl();
+
 		if (obj instanceof Turnout) {
 			Turnout turnout = (Turnout) obj;
 
@@ -203,6 +190,10 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		public void actionPerformed(ActionEvent e) {
 
 			try {
+				RouteControlIface routeControl = AdHocRailway.getInstance()
+						.getRouteControl();
+				TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
+						.getTurnoutControl();
 
 				String enteredNumberAsString = enteredNumberKeys.toString();
 				if (enteredNumberKeys.toString().equals("")) {
@@ -229,7 +220,6 @@ public class KeyTrackControl extends SimpleInternalFrame {
 					}
 				}
 
-				
 			} catch (RouteException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
 			} catch (TurnoutException e1) {
@@ -242,13 +232,17 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 		private void handleSwitchChange(ActionEvent e, int enteredNumber)
 				throws TurnoutException {
+			TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+					.getInstance().getTurnoutPersistence();
 			Turnout searchedTurnout = null;
-
 			searchedTurnout = turnoutPersistence
 					.getTurnoutByNumber(enteredNumber);
 			if (searchedTurnout == null) {
 				return;
 			}
+			TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
+					.getTurnoutControl();
+
 			if (e.getActionCommand().equals("/")) {
 				turnoutControl.setCurvedLeft(searchedTurnout);
 			} else if (e.getActionCommand().equals("*")) {
@@ -273,6 +267,10 @@ public class KeyTrackControl extends SimpleInternalFrame {
 				throws TurnoutException, RouteException {
 			Route searchedRoute = null;
 
+			RouteControlIface routeControl = AdHocRailway.getInstance()
+					.getRouteControl();
+			RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
+					.getRoutePersistence();
 			searchedRoute = routePersistence.getRouteByNumber(enteredNumber);
 			if (searchedRoute == null) {
 				return;

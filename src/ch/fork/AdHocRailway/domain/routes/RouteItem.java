@@ -147,10 +147,10 @@ public class RouteItem extends Model implements java.io.Serializable,
 	public void setId(int id) {
 		int old = this.id;
 		this.id = id;
-		firePropertyChange(PROPERTYNAME_ID, old, id);
+		//firePropertyChange(PROPERTYNAME_ID, old, id);
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "turnout_id", unique = false, nullable = false, insertable = true, updatable = true)
 	public Turnout getTurnout() {
 		return this.turnout;
@@ -162,7 +162,7 @@ public class RouteItem extends Model implements java.io.Serializable,
 		firePropertyChange(PROPERTYNAME_TURNOUT, old, turnout);
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "route_id", unique = false, nullable = false, insertable = true, updatable = true)
 	public Route getRoute() {
 		return this.route;

@@ -26,6 +26,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
@@ -33,7 +34,8 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public abstract class HibernatePersistence {
-
+	private static Logger					logger		= Logger
+																.getLogger(HibernatePersistence.class);
 	protected static EntityManagerFactory	emf;
 	protected static EntityManager			em;
 	private static Preferences				preferences	= Preferences
@@ -42,7 +44,14 @@ public abstract class HibernatePersistence {
 	public HibernatePersistence() {
 	}
 
-	public static void connect() {
+	public static void setup() {
+		if (emf != null) {
+			logger.info("Closing existing EntityManagerFactory");
+			emf.close();
+			emf = null;
+		}
+
+		logger.info("Setting up new EntityManagerFactory");
 		// Start EntityManagerFactory
 		Map configOverrides = new HashMap();
 		configOverrides.put("hibernate.connection.username", preferences
@@ -57,24 +66,40 @@ public abstract class HibernatePersistence {
 
 		emf = Persistence.createEntityManagerFactory("adhocrailway",
 				configOverrides);
-
-	}
-	
-	public static void disconnect() {
-		em.close();
-		emf.close();
-		em = null;
-		emf = null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public static EntityManager getEntityManager() {
-
+	public static void connect() {
+		logger.info("Connecting");
 		// First unit of work
 		if (em == null) {
 			em = emf.createEntityManager();
 			em.getTransaction().begin();
 		}
+	}
+
+	public static void disconnect() {
+		logger.info("Disconnecting");
+		if (em != null && em.isOpen()) {
+			try {
+				if (em.getTransaction().isActive())
+					em.getTransaction().commit();
+			} catch (HibernateException ex) {
+				em.getTransaction().rollback();
+				em.close();
+				throw new TurnoutPersistenceException("Database Error", ex);
+			} catch (PersistenceException x) {
+				em.getTransaction().rollback();
+				em.close();
+				throw new TurnoutPersistenceException("Database Error", x);
+			}
+			em.close();
+			em = null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static EntityManager getEntityManager() {
+
 		return em;
 	}
 

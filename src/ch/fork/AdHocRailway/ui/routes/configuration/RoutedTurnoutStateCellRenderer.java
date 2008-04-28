@@ -33,9 +33,6 @@ import ch.fork.AdHocRailway.ui.ImageTools;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
-	private static TurnoutPersistenceIface	persistence	= AdHocRailway
-																.getInstance()
-																.getTurnoutPersistence();
 
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
@@ -44,6 +41,8 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		Turnout currentTurnout;
 		iconLabel.setText("");
+		TurnoutPersistenceIface persistence = AdHocRailway.getInstance()
+				.getTurnoutPersistence();
 		currentTurnout = persistence.getTurnoutByNumber(Integer
 				.valueOf((Integer) table.getValueAt(row, 0)));
 		if (currentTurnout == null) {

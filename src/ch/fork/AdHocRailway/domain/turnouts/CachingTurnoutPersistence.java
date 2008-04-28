@@ -34,7 +34,7 @@ import com.jgoodies.binding.list.ArrayListModel;
 import de.dermoba.srcp.model.SRCPAddress;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
 
-public class CachingTurnoutPersistence implements TurnoutPersistenceIface {
+public abstract class CachingTurnoutPersistence implements TurnoutPersistenceIface {
 	static Logger							logger	= Logger
 															.getLogger(CachingTurnoutPersistence.class);
 	
@@ -56,6 +56,7 @@ public class CachingTurnoutPersistence implements TurnoutPersistenceIface {
 	}
 
 	public void clear() {
+		logger.debug("clear()");
 		this.addressTurnoutCache.clear();
 		this.addressThreewayCache.clear();
 		this.turnoutCache.clear();
@@ -251,7 +252,6 @@ public class CachingTurnoutPersistence implements TurnoutPersistenceIface {
 	@SuppressWarnings("unchecked")
 	public SortedSet<TurnoutType> getAllTurnoutTypes() {
 		logger.debug("getAllTurnoutTypes()");
-
 		return new TreeSet<TurnoutType>(turnoutTypes.values());
 	}
 

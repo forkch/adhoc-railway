@@ -42,7 +42,7 @@ import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 public class LocomotiveControlPanel extends JPanel {
 
-	private LocomotiveControlface	locomotiveControl = AdHocRailway.getInstance().getLocomotiveControl();
+	//private LocomotiveControlface	locomotiveControl = AdHocRailway.getInstance().getLocomotiveControl();
 	private int[][]					keyBindingsUS	= new int[][] {
 			{ KeyEvent.VK_A, KeyEvent.VK_Z, KeyEvent.VK_Q },
 			{ KeyEvent.VK_S, KeyEvent.VK_X, KeyEvent.VK_W },
@@ -89,6 +89,7 @@ public class LocomotiveControlPanel extends JPanel {
 	}
 
 	public void update() {
+		 LocomotiveControlface	locomotiveControl = AdHocRailway.getInstance().getLocomotiveControl();
 		locomotiveControl.removeAllLocomotiveChangeListener();
 
 		controlPanel.removeAll();
@@ -120,7 +121,7 @@ public class LocomotiveControlPanel extends JPanel {
 		}
 
 		public void run() {
-			try {
+			try { LocomotiveControlface	locomotiveControl = AdHocRailway.getInstance().getLocomotiveControl();
 				for (LocomotiveWidget widget : locomotiveWidgets) {
 					Locomotive myLocomotive = widget.getMyLocomotive();
 					if (myLocomotive == null)

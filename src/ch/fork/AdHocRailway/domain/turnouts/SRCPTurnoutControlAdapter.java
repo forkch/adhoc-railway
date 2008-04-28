@@ -142,7 +142,6 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 		turnoutControl.removeTurnoutChangeListener(this);
 		turnoutControl.setInterface6051Connected(Preferences.getInstance().getBooleanValue(PreferencesKeys.INTERFACE_6051));
 		turnoutControl.setActivationTime(Preferences.getInstance().getIntValue(PreferencesKeys.ACTIVATION_TIME));
-		
 		for (Turnout turnout : persistence.getAllTurnouts()) {
 			SRCPTurnout sTurnout = new MMTurnout();
 			sTurnout.setBus1(turnout.getBus1());
@@ -228,7 +227,6 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 
 	private void informListeners(SRCPTurnout changedTurnout) {
 		List<TurnoutChangeListener> ll = listeners.get(changedTurnout);
-
 		if (ll == null)
 			// its a sub-turnout of a threeway turnout
 			return;

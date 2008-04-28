@@ -67,5 +67,7 @@ public interface RoutePersistenceIface {
 
 	public abstract void clear() throws RoutePersistenceException;
 	public abstract void flush();
+	
+	public abstract void reload();
 
 }

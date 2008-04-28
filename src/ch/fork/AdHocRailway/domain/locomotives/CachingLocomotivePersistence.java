@@ -29,7 +29,7 @@ import com.jgoodies.binding.list.ArrayListModel;
 
 import de.dermoba.srcp.model.SRCPAddress;
 
-public class CachingLocomotivePersistence implements LocomotivePersistenceIface {
+public abstract class CachingLocomotivePersistence implements LocomotivePersistenceIface {
 	private static Logger						logger	= Logger
 																.getLogger(LocomotivePersistenceIface.class);
 

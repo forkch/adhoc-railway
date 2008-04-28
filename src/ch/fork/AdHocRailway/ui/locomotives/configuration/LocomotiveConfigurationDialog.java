@@ -65,8 +65,6 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 	private boolean								okPressed;
 
-	private LocomotivePersistenceIface			locomotivePersistence;
-
 	private JTable								locomotivesTable;
 
 	private JList								locomotiveGroupList;
@@ -89,8 +87,6 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 	public LocomotiveConfigurationDialog(JFrame owner) {
 		super(owner, "Locomotive Configuration", true);
-		locomotivePersistence = AdHocRailway.getInstance()
-				.getLocomotivePersistence();
 		initGUI();
 	}
 
@@ -141,6 +137,8 @@ public class LocomotiveConfigurationDialog extends JDialog {
 	}
 
 	private void initComponents() {
+		LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance()
+		.getLocomotivePersistence();
 		ArrayListModel<LocomotiveGroup> locomotiveGroups = locomotivePersistence
 				.getAllLocomotiveGroups();
 		locomotiveGroupModel = new SelectionInList<LocomotiveGroup>(
@@ -169,6 +167,8 @@ public class LocomotiveConfigurationDialog extends JDialog {
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance()
+					.getLocomotivePersistence();
 					locomotivePersistence.flush();
 				} catch (LocomotivePersistenceException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
@@ -288,6 +288,8 @@ public class LocomotiveConfigurationDialog extends JDialog {
 					"Enter the name of the new Locomotive-Group",
 					"Add Locomotive-Group", JOptionPane.QUESTION_MESSAGE);
 			LocomotiveGroup newSection = new LocomotiveGroup(0, newGroupName);
+			LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance()
+			.getLocomotivePersistence();
 			locomotivePersistence.addLocomotiveGroup(newSection);
 		}
 	}
@@ -307,6 +309,8 @@ public class LocomotiveConfigurationDialog extends JDialog {
 					"Remove Locomotive-Group", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
 				try {
+					LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance()
+					.getLocomotivePersistence();
 					locomotivePersistence.deleteLocomotiveGroup(groupToDelete);
 				} catch (LocomotivePersistenceException e) {
 					ExceptionProcessor.getInstance().processException(e);
@@ -325,6 +329,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 					.getSelectedValue());
 			Locomotive newLocomotive = new Locomotive();
 			newLocomotive.setLocomotiveGroup(selectedLocomotiveGroup);
+			selectedLocomotiveGroup.getLocomotives().add(newLocomotive);
 			LocomotiveConfig locomotiveConfig = new LocomotiveConfig(
 					LocomotiveConfigurationDialog.this, newLocomotive);
 			if (locomotiveConfig.isOkPressed()) {
@@ -371,6 +376,8 @@ public class LocomotiveConfigurationDialog extends JDialog {
 			int row = locomotivesTable.getSelectedRow();
 			Locomotive locomotiveToDelete = locomotiveModel.getElementAt(row);
 
+			LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance()
+					.getLocomotivePersistence();
 			locomotivePersistence.deleteLocomotive(locomotiveToDelete);
 			List<Locomotive> locomotives = new ArrayList<Locomotive>(
 					selectedLocomotiveGroup.getLocomotives());

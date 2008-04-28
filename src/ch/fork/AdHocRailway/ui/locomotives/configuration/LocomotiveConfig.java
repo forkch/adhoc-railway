@@ -70,8 +70,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private PresentationModel<Locomotive>	presentationModel;
 
-	private LocomotivePersistenceIface		locomotivePersistence;
-
 	private JButton							okButton;
 
 	private JButton							cancelButton;
@@ -106,6 +104,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private void initComponents() {
 
+		LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance()
+				.getLocomotivePersistence();
 		nameTextField = BasicComponentFactory.createTextField(presentationModel
 				.getModel(Locomotive.PROPERTYNAME_NAME));
 		nameTextField.setColumns(10);
@@ -133,8 +133,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 				324, // maxValue
 				1)); // step
 
-		locomotivePersistence = AdHocRailway.getInstance()
-				.getLocomotivePersistence();
 		List<LocomotiveType> locomotiveTypes = new ArrayList<LocomotiveType>(
 				locomotivePersistence.getAllLocomotiveTypes());
 
@@ -207,6 +205,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 		public void actionPerformed(ActionEvent e) {
 			Locomotive locomotive = presentationModel.getBean();
+			LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance()
+			.getLocomotivePersistence();
 			if (locomotive.getId() == 0) {
 				locomotivePersistence.addLocomotive(locomotive);
 			} else {
@@ -244,6 +244,9 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 	}
 
 	private boolean validate(Locomotive locomotive, PropertyChangeEvent event) {
+
+		LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance()
+				.getLocomotivePersistence();
 		boolean validate = true;
 		if (event == null
 				|| event.getPropertyName().equals(Locomotive.PROPERTYNAME_NAME)) {

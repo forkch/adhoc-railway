@@ -136,7 +136,7 @@ public class RouteGroup extends Model implements java.io.Serializable,
 	public void setId(int id) {
 		int old = id;
 		this.id = id;
-		firePropertyChange(PROPERTYNAME_ID, old, id);
+		//firePropertyChange(PROPERTYNAME_ID, old, id);
 	}
 
 	@Column(name = "name", unique = false, nullable = false, insertable = true, updatable = true)
@@ -182,6 +182,6 @@ public class RouteGroup extends Model implements java.io.Serializable,
 	public void setRoutes(SortedSet<Route> routes) {
 		SortedSet<Route> old = routes;
 		this.routes = routes;
-		firePropertyChange(PROPERTYNAME_ROUTES, old, routes);
+		//firePropertyChange(PROPERTYNAME_ROUTES, old, routes);
 	}
 }

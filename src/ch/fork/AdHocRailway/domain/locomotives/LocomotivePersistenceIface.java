@@ -64,5 +64,7 @@ public interface LocomotivePersistenceIface {
 
 	public abstract void clear() throws LocomotivePersistenceException;
 	public abstract void flush();
+	
+	public abstract void reload();
 
 }

@@ -132,7 +132,7 @@ public class LocomotiveGroup extends Model implements java.io.Serializable,
 	public void setId(int id) {
 		int old = this.id;
 		this.id = id;
-		firePropertyChange(PROPERTYNAME_ID, old, id);
+		//firePropertyChange(PROPERTYNAME_ID, old, id);
 	}
 
 	@Column(name = "name", unique = false, nullable = false, insertable = true, updatable = true)
@@ -156,7 +156,7 @@ public class LocomotiveGroup extends Model implements java.io.Serializable,
 	public void setLocomotives(SortedSet<Locomotive> locomotives) {
 		SortedSet<Locomotive> old = this.locomotives;
 		this.locomotives = locomotives;
-		firePropertyChange(PROPERTYNAME_LOCOMOTIVES, old, locomotives);
+		//firePropertyChange(PROPERTYNAME_LOCOMOTIVES, old, locomotives);
 	}
 
 }
