@@ -157,9 +157,7 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 			actualAddresses[actualAddressCounter] = actualAddress;
 			actualAddressCounter++;
 		} else if (qName.equals("routegroup")) {
-			actualRouteGroup = new RouteGroup(0, attributes.getValue("name"),
-					0, 0);
-			routePersistence.addRouteGroup(actualRouteGroup);
+			parseRouteGroup(qName, attributes);
 		} else if (qName.equals("route")) {
 			parseRoute(qName, attributes);
 		} else if (qName.equals("routedswitch")) {
@@ -173,6 +171,14 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 		} else if (qName.equals("guiconfigparameter")) {
 			parseGuiConfig(qName, attributes);
 		}
+	}
+
+	private void parseRouteGroup(String qName, Attributes attributes) {
+		int routeNumberOffset = Integer.parseInt(attributes.getValue("routeNumberOffset"));
+		int routeNumberAmount = Integer.parseInt(attributes.getValue("routeNumberAmount"));
+		actualRouteGroup = new RouteGroup(0, attributes.getValue("name"),
+				routeNumberOffset, routeNumberAmount);
+		routePersistence.addRouteGroup(actualRouteGroup);
 	}
 
 	private void parseTurnoutGroup(String qName, Attributes attributes) {

@@ -103,7 +103,10 @@ public class XMLExporter_0_4 {
 		sb.append("<RouteConfiguration>\n");
 		for (RouteGroup rg : routePersistence.getAllRouteGroups()) {
 
-			sb.append("<RouteGroup name=\"" + rg.getName() + "\">\n");
+			sb.append("<RouteGroup name=\"" + rg.getName() + "\"");
+			sb.append(" routeNumberOffset=\"" + rg.getRouteNumberOffset() + "\" ");
+			sb.append(" routeNumberAmount=\"" + rg.getRouteNumberAmount() + "\"");
+			sb.append(" >\n");
 			exportRoutes(rg);
 			sb.append("</RouteGroup>\n");
 		}

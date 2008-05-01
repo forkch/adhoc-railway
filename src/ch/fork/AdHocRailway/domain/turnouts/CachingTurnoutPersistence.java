@@ -372,6 +372,11 @@ public abstract class CachingTurnoutPersistence implements TurnoutPersistenceIfa
 			runningNumber = group.getTurnoutNumberOffset() + group.getTurnoutNumberAmount();
 			logger.debug("offset of next group: " + runningNumber);
 		}
+		numberToTurnoutCache.clear();
+		for(Turnout t : getAllTurnouts()) {
+			numberToTurnoutCache.put(t.getNumber(), t);
+		}
+		
 		
 	}
 }

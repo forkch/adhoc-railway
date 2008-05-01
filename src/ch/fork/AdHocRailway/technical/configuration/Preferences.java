@@ -49,11 +49,11 @@ public class Preferences implements PreferencesKeys {
 		setStringValue(HOSTNAME, "localhost");
 		setIntValue(PORT, 4303);
 		setIntValue(ACTIVATION_TIME, 50);
-		setIntValue(ROUTING_DELAY, 250);
+		setIntValue(ROUTING_DELAY, 150);
 		setIntValue(LOCK_DURATION, 0);
 		setIntValue(LOCOMOTIVE_CONTROLES, 4);
 		setStringValue(KEYBOARD_LAYOUT, "Swiss German");
-		setBooleanValue(INTERFACE_6051, true);
+		setBooleanValue(INTERFACE_6051, false);
 		setIntValue(TURNOUT_CONTROLES, 5);
 		setIntValue(ROUTE_CONTROLES, 5);
 		setBooleanValue(LOGGING, true);

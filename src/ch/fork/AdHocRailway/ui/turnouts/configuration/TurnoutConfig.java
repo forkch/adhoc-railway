@@ -37,7 +37,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.event.ListSelectionListener;
 
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
@@ -83,15 +82,14 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	private JButton						cancelButton;
 	private TurnoutWidget				testTurnoutWidget;
 	private PanelBuilder				builder;
+	private List<Turnout>				allTurnouts;
 
 	public TurnoutConfig(JDialog owner, Turnout myTurnout) {
 		this(owner, new PresentationModel<Turnout>(myTurnout));
 	}
 
 	public TurnoutConfig(Frame owner, Turnout myTurnout) {
-		super(owner, "Turnout Config", true);
-		this.presentationModel = new PresentationModel<Turnout>(myTurnout);
-		initGUI();
+		this(owner, new PresentationModel<Turnout>(myTurnout));
 	}
 
 	public TurnoutConfig(JDialog owner,
@@ -116,7 +114,9 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 			if (number != presentationModel.getBean().getNumber())
 				usedTurnoutNumbers.add(number);
 		}
+		allTurnouts = turnoutPersistence.getAllTurnouts();
 		buildPanel();
+		address1TextField.requestFocusInWindow();
 		pack();
 		TutorialUtils.locateOnOpticalScreenCenter(this);
 		setVisible(true);
@@ -298,6 +298,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				address2TextField.setEnabled(false);
 				break;
 			case THREEWAY:
+				bus2TextField.setValue(Constants.DEFAULT_BUS);
 				bus2TextField.setEnabled(true);
 				address2TextField.setEnabled(true);
 				break;
@@ -319,8 +320,6 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	}
 
 	private boolean validate(Turnout turnout) {
-		TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance()
-				.getTurnoutPersistence();
 		boolean validate = true;
 		if (turnout.getNumber() == 0
 				|| usedTurnoutNumbers.contains(turnout.getNumber())) {
@@ -357,7 +356,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 			int bus1 = ((Integer) bus1TextField.getValue()).intValue();
 			int address1 = ((Integer) address1TextField.getValue()).intValue();
 			boolean unique1 = true;
-			for (Turnout t : turnoutPersistence.getAllTurnouts()) {
+			for (Turnout t : allTurnouts) {
 				if (t.getBus1() == bus1 && t.getAddress1() == address1
 						&& !t.equals(turnout))
 					unique1 = false;
@@ -398,10 +397,13 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				int address2 = ((Integer) address2TextField.getValue())
 						.intValue();
 				boolean unique2 = true;
-				for (Turnout t : turnoutPersistence.getAllTurnouts()) {
-					if (t.getBus2() == bus2 && t.getAddress2() == address2
-							&& !t.equals(turnout))
+				for (Turnout t : allTurnouts) {
+					if (t.equals(turnout))
+						continue;
+					if ((t.getBus1() == bus2 && t.getAddress1() == address2)
+							|| (t.getBus2() == bus2 && t.getAddress2() == address2)) {
 						unique2 = false;
+					}
 				}
 				if (!unique2) {
 					setSpinnerColor(bus2TextField, UIConstants.WARN_COLOR);

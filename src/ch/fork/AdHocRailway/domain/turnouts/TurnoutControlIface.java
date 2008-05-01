@@ -18,6 +18,8 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
+import de.dermoba.srcp.model.SRCPModelException;
+import de.dermoba.srcp.model.turnouts.SRCPTurnout;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public interface TurnoutControlIface {
@@ -51,8 +53,8 @@ public interface TurnoutControlIface {
 
 	public SRCPTurnoutState getTurnoutState(Turnout turnout);
 
-	public void refresh(Turnout turnout) throws TurnoutException;
-
 	public void setPersistence(TurnoutPersistenceIface persistence);
+
+	public void toggleTest(Turnout turnout) throws TurnoutException;
 
 }

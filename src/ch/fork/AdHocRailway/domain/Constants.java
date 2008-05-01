@@ -48,4 +48,6 @@ public interface Constants {
 	public static final int		DEFAULT_LOCK_DURATION		= 0;
 
 	public static final String	ERR_VERSION_NOT_SUPPORTED	= "Version not supported";
+
+	public static final int	DEFAULT_BUS	= 1;
 }

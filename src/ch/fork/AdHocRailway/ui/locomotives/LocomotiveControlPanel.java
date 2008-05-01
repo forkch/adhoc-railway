@@ -42,7 +42,6 @@ import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 public class LocomotiveControlPanel extends JPanel {
 
-	//private LocomotiveControlface	locomotiveControl = AdHocRailway.getInstance().getLocomotiveControl();
 	private int[][]					keyBindingsUS	= new int[][] {
 			{ KeyEvent.VK_A, KeyEvent.VK_Z, KeyEvent.VK_Q },
 			{ KeyEvent.VK_S, KeyEvent.VK_X, KeyEvent.VK_W },
@@ -89,7 +88,8 @@ public class LocomotiveControlPanel extends JPanel {
 	}
 
 	public void update() {
-		 LocomotiveControlface	locomotiveControl = AdHocRailway.getInstance().getLocomotiveControl();
+		LocomotiveControlface locomotiveControl = AdHocRailway.getInstance()
+				.getLocomotiveControl();
 		locomotiveControl.removeAllLocomotiveChangeListener();
 
 		controlPanel.removeAll();
@@ -121,20 +121,21 @@ public class LocomotiveControlPanel extends JPanel {
 		}
 
 		public void run() {
-			try { LocomotiveControlface	locomotiveControl = AdHocRailway.getInstance().getLocomotiveControl();
+			try {
+				LocomotiveControlface locomotiveControl = AdHocRailway
+						.getInstance().getLocomotiveControl();
 				for (LocomotiveWidget widget : locomotiveWidgets) {
 					Locomotive myLocomotive = widget.getMyLocomotive();
 					if (myLocomotive == null)
 						continue;
-					locomotiveControl.setSpeed(myLocomotive,
-							0, null);
+					if (locomotiveControl.isLocked(myLocomotive)
+							&& !locomotiveControl.isLockedByMe(myLocomotive))
+						continue;
+					locomotiveControl.setSpeed(myLocomotive, 0, null);
 					widget.updateWidget();
-					Thread.sleep(200);
 				}
 			} catch (LocomotiveException e3) {
 				ExceptionProcessor.getInstance().processException(e3);
-			} catch (InterruptedException e) {
-				ExceptionProcessor.getInstance().processException(e);
 			}
 		}
 	}

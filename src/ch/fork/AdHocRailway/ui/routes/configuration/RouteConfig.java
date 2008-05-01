@@ -152,6 +152,8 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 		recordRouteButton = new JButton(new RecordRouteAction());
 		removeRouteItemButton = new JButton(new RemoveRouteItemAction());
 
+		digitDisplay = new ThreeDigitDisplay();
+		
 		okButton = new JButton(new ApplyChangesAction());
 		cancelButton = new JButton(new CancelAction());
 		presentationModel.getBean().addPropertyChangeListener(this);
@@ -161,23 +163,24 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 	private void buildPanel() {
 		initComponents();
 
-		FormLayout layout = new FormLayout("pref, 3dlu, pref:grow",
+		FormLayout layout = new FormLayout("pref, 5dlu, pref, 3dlu, pref:grow",
 				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref");
 		builder = new PanelBuilder(layout);
 
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
 
-		builder.addLabel("Route Number", cc.xy(1, 1));
-		builder.add(routeNumberField, cc.xy(3, 1));
+		builder.add(digitDisplay, cc.xywh(1, 1, 1, 7));
+		builder.addLabel("Route Number", cc.xy(3, 1));
+		builder.add(routeNumberField, cc.xy(5, 1));
 
-		builder.addLabel("Route Name", cc.xy(1, 3));
-		builder.add(routeNameField, cc.xy(3, 3));
+		builder.addLabel("Route Name", cc.xy(3, 3));
+		builder.add(routeNameField, cc.xy(5, 3));
 
-		builder.add(new JScrollPane(routeItemTable), cc.xyw(1, 5, 3));
+		builder.add(new JScrollPane(routeItemTable), cc.xyw(3, 5, 3));
 
-		builder.add(buildRouteItemButtonBar(), cc.xyw(1, 7, 3));
-		builder.add(buildButtonBar(), cc.xyw(1, 9, 3));
+		builder.add(buildRouteItemButtonBar(), cc.xyw(3, 7, 3));
+		builder.add(buildButtonBar(), cc.xyw(1, 9, 5));
 
 		add(builder.getPanel());
 	}
@@ -282,17 +285,17 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 											.createImageIcon("messagebox_critical.png"));
 					return;
 				}
-				digitDisplay = new ThreeDigitDisplay();
-				numberDisplayDialog = new JWindow(RouteConfig.this);
-				numberDisplayDialog.add(digitDisplay);
-				numberDisplayDialog.pack();
-				numberDisplayDialog.setAlwaysOnTop(true);
+				
+				//numberDisplayDialog = new JWindow(RouteConfig.this);
+				//numberDisplayDialog.add(digitDisplay);
+				//numberDisplayDialog.pack();
+				//numberDisplayDialog.setAlwaysOnTop(true);
 
-				TutorialUtils.locateOnOpticalScreenLeft3rd(numberDisplayDialog);
+				//TutorialUtils.locateOnOpticalScreenLeft3rd(numberDisplayDialog);
 				recordRouteButton.setIcon(ImageTools
 						.createImageIcon("record.png"));
 				initKeyboardActions(selectedRoute);
-				numberDisplayDialog.setVisible(true);
+				//numberDisplayDialog.setVisible(true);
 				recording = true;
 			} else {
 				recordRouteButton.setIcon(ImageTools
@@ -364,6 +367,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 			if (enteredNumberAsString.equals(""))
 				return;
 			int enteredNumber = Integer.parseInt(enteredNumberAsString);
+			System.out.println(enteredNumber);
 			Turnout turnout;
 			try {
 				RoutePersistenceIface routePersistence = AdHocRailway
@@ -371,6 +375,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 				TurnoutPersistenceIface turnoutPersistence = AdHocRailway
 						.getInstance().getTurnoutPersistence();
 				turnout = turnoutPersistence.getTurnoutByNumber(enteredNumber);
+				System.out.println(turnout);
 				if (turnout == null) {
 					JOptionPane
 							.showMessageDialog(
@@ -437,10 +442,11 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 						e1.printStackTrace();
 					}
 				}
-				enteredNumberKeys = new StringBuffer();
-				digitDisplay.reset();
 			} catch (NumberFormatException e1) {
 				e1.printStackTrace();
+			} finally {
+				enteredNumberKeys = new StringBuffer();
+				digitDisplay.reset();
 			}
 		}
 	}

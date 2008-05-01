@@ -119,7 +119,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		registerKeyboardAction(new SwitchingAction(), "bs", KeyStroke
 				.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0),
 				WHEN_IN_FOCUSED_WINDOW);
-
+		registerKeyboardAction(new SwitchingAction(), "bs", KeyStroke.getKeyStroke(8, 0), WHEN_IN_FOCUSED_WINDOW);
 		registerKeyboardAction(new SwitchingAction(), "/", KeyStroke
 				.getKeyStroke(KeyEvent.VK_DIVIDE, 0), WHEN_IN_FOCUSED_WINDOW);
 
@@ -135,7 +135,10 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		if (historyStack.size() == HISTORY_LENGTH) {
 			historyStack.removeLast();
 			historyWidgets.removeLast();
-
+		}
+		if(!historyStack.isEmpty() && historyStack.getFirst().equals(obj)) {
+			historyStack.removeFirst();
+			historyWidgets.removeFirst();
 		}
 		historyStack.addFirst(obj);
 		JPanel w = null;
@@ -144,7 +147,6 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 		if (obj instanceof Turnout) {
 			Turnout turnout = (Turnout) obj;
-
 			w = new StaticTurnoutWidget(turnout, turnoutControl
 					.getTurnoutState(turnout));
 		} else if (obj instanceof Route) {

@@ -333,7 +333,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 	}
 
-	private void updateGUI() {
+	public void updateGUI() {
 		if (!fileMode) {
 			HibernatePersistence.disconnect();
 			HibernatePersistence.connect();
@@ -1123,11 +1123,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		/* VIEWS */
 		JToolBar viewToolBar = new JToolBar();
 		JButton refreshButton = new SmallToolbarButton(new RefreshAction());
-		toggleFullscreenButton = new SmallToolbarButton(
-				new ToggleFullscreenAction());
+		//toggleFullscreenButton = new SmallToolbarButton(
+		//		new ToggleFullscreenAction());
 
 		viewToolBar.add(refreshButton);
-		viewToolBar.add(toggleFullscreenButton);
+		//viewToolBar.add(toggleFullscreenButton);
 
 		/* ERROR */
 		ErrorPanel errorPanel = new ErrorPanel();

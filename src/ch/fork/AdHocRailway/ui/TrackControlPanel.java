@@ -162,8 +162,6 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		JMenuItem addTurnoutsItem = new JMenuItem(new AddTurnoutsAction());
 		JMenuItem turnoutsStraightItem = new JMenuItem(
 				new TurnoutsStraightAction());
-		JMenuItem refreshTurnoutStateItem = new JMenuItem(
-				new RefreshTurnoutStateAction());
 		JMenuItem turnoutsProgrammerItem = new JMenuItem(
 				new TurnoutProgrammerAction());
 
@@ -172,7 +170,6 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		toolsMenu.add(addTurnoutsItem);
 		toolsMenu.add(turnoutsStraightItem);
-		toolsMenu.add(refreshTurnoutStateItem);
 		toolsMenu.add(turnoutsProgrammerItem);
 		toolsMenu.addSeparator();
 		toolsMenu.add(enlargeTurnoutGroupsItem);
@@ -326,29 +323,6 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		}
 	}
 
-	private class RefreshTurnoutStateAction extends AbstractAction {
-
-		public RefreshTurnoutStateAction() {
-			super("Determine state of each turnout\u2026",
-					createImageIcon("switch.png"));
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			TurnoutPersistenceIface turnoutPersistence = AdHocRailway
-					.getInstance().getTurnoutPersistence();
-			for (Turnout t : turnoutPersistence.getAllTurnouts()) {
-				try {
-					TurnoutControlIface turnoutControl = AdHocRailway
-							.getInstance().getTurnoutControl();
-
-					turnoutControl.refresh(t);
-				} catch (TurnoutException e1) {
-					ExceptionProcessor.getInstance().processException(e1);
-				}
-			}
-		}
-	}
-
 	private class EnlargeTurnoutGroups extends AbstractAction {
 		public EnlargeTurnoutGroups() {
 			super("Rearranging Turnout and Route numbers (enlarge groups)");
@@ -374,7 +348,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 				turnoutPersistence.enlargeTurnoutGroups();
 				routePersistence.enlargeRouteGroups();
-				update();
+				AdHocRailway.getInstance().updateGUI();
 			}
 		}
 	}
@@ -412,7 +386,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 								.getInstance(),
 								"No more free numbers in this group", "Error",
 								JOptionPane.ERROR_MESSAGE);
-						update();
+						AdHocRailway.getInstance().updateGUI();
 						turnoutGroupsTabbedPane
 								.setSelectedIndex(selectedGroupPane);
 						return;
@@ -438,7 +412,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				config = new TurnoutConfig(AdHocRailway.getInstance(),
 						newTurnout);
 			} while (!config.isCancelPressed());
-			update();
+			AdHocRailway.getInstance().updateGUI();
 			turnoutGroupsTabbedPane.setSelectedIndex(selectedGroupPane);
 		}
 	}
