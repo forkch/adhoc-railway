@@ -18,7 +18,6 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 
 public interface RouteControlIface {
 

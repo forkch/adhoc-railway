@@ -341,6 +341,7 @@ public class RoutesConfigurationDialog extends JDialog {
 					RoutePersistenceIface routePersistence = AdHocRailway
 							.getInstance().getRoutePersistence();
 					routePersistence.deleteRouteGroup(routeGroupToDelete);
+					routeGroupConfig.setRouteGroup(null);
 				} catch (RoutePersistenceException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
 				}

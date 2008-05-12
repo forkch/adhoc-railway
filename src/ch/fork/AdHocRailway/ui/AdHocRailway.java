@@ -98,7 +98,6 @@ import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.SERVER;
-import de.dermoba.srcp.model.NoSessionException;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 public class AdHocRailway extends JFrame implements CommandDataListener,
@@ -358,14 +357,14 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	public void commandDataSent(String commandData) {
 		if (preferences.getBooleanValue(LOGGING)) {
-			updateCommandHistory("To Server: " + commandData);
+		//	updateCommandHistory("To Server: " + commandData);
 		}
 		logger.info("To Server: " + commandData.trim());
 	}
 
 	public void infoDataReceived(String infoData) {
 		if (preferences.getBooleanValue(LOGGING)) {
-			updateCommandHistory("From Server: " + infoData);
+		//	updateCommandHistory("From Server: " + infoData);
 		}
 		logger.info("From Server: " + infoData.trim());
 	}

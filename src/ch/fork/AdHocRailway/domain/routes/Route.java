@@ -89,8 +89,6 @@ public class Route extends Model implements java.io.Serializable,
 			return false;
 
 		final Route l = (Route) o;
-		if (id != l.getId())
-			return false;
 		if (!name.equals(l.getName()))
 			return false;
 		if (number != l.getNumber())

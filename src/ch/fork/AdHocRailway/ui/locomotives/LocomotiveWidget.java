@@ -61,8 +61,6 @@ import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
-import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
-
 public class LocomotiveWidget extends JPanel implements
 		LocomotiveChangeListener {
 	private static final long			serialVersionUID	= 1L;

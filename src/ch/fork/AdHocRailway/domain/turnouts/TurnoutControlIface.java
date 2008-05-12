@@ -18,8 +18,6 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import de.dermoba.srcp.model.SRCPModelException;
-import de.dermoba.srcp.model.turnouts.SRCPTurnout;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public interface TurnoutControlIface {

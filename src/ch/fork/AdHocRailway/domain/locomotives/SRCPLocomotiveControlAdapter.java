@@ -8,9 +8,12 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.locking.LockingException;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
+import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
 import de.dermoba.srcp.model.locomotives.MMDeltaLocomotive;
 import de.dermoba.srcp.model.locomotives.MMDigitalLocomotive;
@@ -149,6 +152,9 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	public void update() {
 		locomotiveSRCPLocomotiveMap.clear();
 		SRCPLocomotiveLocomotiveMap.clear();
+		
+		SRCPLockControl.getInstance().setLockDuration(Preferences.getInstance().getIntValue(PreferencesKeys.LOCK_DURATION));
+		
 		locomotiveControl.removeLocomotiveChangeListener(this, this);
 		for (Locomotive locomotive : persistence.getAllLocomotives()) {
 			LocomotiveType type = locomotive.getLocomotiveType();

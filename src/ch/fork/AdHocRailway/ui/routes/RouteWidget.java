@@ -39,7 +39,6 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
@@ -141,52 +140,55 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 			routeControl.update();
 			routeControl.addRouteChangeListener(route, RouteWidget.this);
 
-			routeChanged();
+			routeChanged(route);
 		}
 	}
 
-	public void routeChanged() {
-		// /if (route.equals(r)) {
-		SwingUtilities.invokeLater(new Runnable() {
+	public void routeChanged(Route changedRoute) {
+		if (route.equals(changedRoute)) {
+			SwingUtilities.invokeLater(new Runnable() {
 
-			public void run() {
-				RouteControlIface routeControl = AdHocRailway.getInstance()
-						.getRouteControl();
-				if (routeControl.isRouteEnabled(route)) {
-					iconLabel.setIcon(routeStartIcon);
-					routingProgress.setForeground(Color.GREEN);
-				} else {
-					iconLabel.setIcon(routeStopIcon);
-					routingProgress.setBackground(Color.RED);
+				public void run() {
+					RouteControlIface routeControl = AdHocRailway.getInstance()
+							.getRouteControl();
+					if (routeControl.isRouteEnabled(route)) {
+						iconLabel.setIcon(routeStartIcon);
+						routingProgress.setForeground(Color.GREEN);
+					} else {
+						iconLabel.setIcon(routeStopIcon);
+						routingProgress.setBackground(Color.RED);
+					}
+					RouteWidget.this.revalidate();
+					RouteWidget.this.repaint();
 				}
-				RouteWidget.this.revalidate();
-				RouteWidget.this.repaint();
-			}
-		});
-		// }
+			});
+		}
 	}
 
-	public void nextSwitchRouted() {
-		SwingUtilities.invokeLater(new Runnable() {
+	public void nextSwitchRouted(Route changedRoute) {
+		if (route.equals(changedRoute)) {
+			SwingUtilities.invokeLater(new Runnable() {
 
-			public void run() {
-				routingProgress.setValue(routingProgress.getValue() + 1);
-				RouteWidget.this.revalidate();
-				RouteWidget.this.repaint();
-			}
-		});
+				public void run() {
+					//routingProgress.setValue(routingProgress.getValue() + 1);
+					RouteWidget.this.revalidate();
+					RouteWidget.this.repaint();
+				}
+			});
+		}
 	}
 
-	public void nextSwitchDerouted() {
+	public void nextSwitchDerouted(Route changedRoute) {
+		if (route.equals(changedRoute)) {
+			SwingUtilities.invokeLater(new Runnable() {
 
-		SwingUtilities.invokeLater(new Runnable() {
-
-			public void run() {
-				routingProgress.setValue(routingProgress.getValue() - 1);
-				RouteWidget.this.revalidate();
-				RouteWidget.this.repaint();
-			}
-		});
+				public void run() {
+					//routingProgress.setValue(routingProgress.getValue() - 1);
+					RouteWidget.this.revalidate();
+					RouteWidget.this.repaint();
+				}
+			});
+		}
 	}
 
 	public Route getRoute() {

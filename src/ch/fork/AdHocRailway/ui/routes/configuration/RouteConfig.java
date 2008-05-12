@@ -27,7 +27,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
@@ -50,10 +49,8 @@ import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
 import ch.fork.AdHocRailway.ui.TutorialUtils;

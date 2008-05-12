@@ -56,9 +56,16 @@ public class TurnoutGroupConfigPanel extends JPanel {
 		presentationModel = new PresentationModel<TurnoutGroup>(
 				new ValueHolder(null, true));
 		buildPanel();
+		setTurnoutGroup(null);
 	}
 
 	public void setTurnoutGroup(TurnoutGroup group) {
+		turnoutGroupName.setEnabled(group != null);
+		if (Preferences.getInstance().getBooleanValue(
+				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
+			turnoutNumberOffset.setEnabled(group != null);
+			turnoutNumberAmount.setEnabled(group != null);
+		}
 		presentationModel.setBean(group);
 	}
 
@@ -115,7 +122,7 @@ public class TurnoutGroupConfigPanel extends JPanel {
 				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
 			turnoutNumberOffset.setEnabled(false);
 			turnoutNumberAmount.setEnabled(false);
-			
+
 		}
 	}
 }

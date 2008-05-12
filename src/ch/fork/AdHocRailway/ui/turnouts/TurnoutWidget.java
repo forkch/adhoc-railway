@@ -226,9 +226,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	}
 
 	public void turnoutChanged(Turnout changedTurnout, SRCPTurnoutState newState) {
-		System.out.println(turnout.equals(changedTurnout));
-		System.out.println("mine:  " + turnout);
-		System.out.println("other: " + changedTurnout);
 		if (turnout.equals(changedTurnout)) {
 			actualTurnoutState = newState;
 			SwingUtilities.invokeLater(new Runnable() {

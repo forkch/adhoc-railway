@@ -21,6 +21,7 @@ package ch.fork.AdHocRailway.ui.turnouts.configuration;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -42,7 +44,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
@@ -158,6 +159,10 @@ public class TurnoutConfigurationDialog extends JDialog {
 		turnoutGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		turnoutGroupList.setCellRenderer(new TurnoutGroupListCellRenderer());
 
+		turnoutGroupList.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "deleteTurnoutGroup");
+		turnoutGroupList.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "deleteTurnoutGroup");
+		turnoutGroupList.getActionMap().put("deleteTurnoutGroup", new RemoveTurnoutGroupAction());
+		
 		turnoutGroupConfig = new TurnoutGroupConfigPanel();
 
 		addGroupButton = new JButton(new AddTurnoutGroupAction());
@@ -172,6 +177,9 @@ public class TurnoutConfigurationDialog extends JDialog {
 		turnoutsTable
 				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
+		turnoutsTable.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "deleteTurnout");
+		turnoutsTable.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "deleteTurnout");
+		turnoutsTable.getActionMap().put("deleteTurnout", new RemoveTurnoutAction());
 		TableColumn typeColumn = turnoutsTable.getColumnModel().getColumn(1);
 		typeColumn.setCellRenderer(new TurnoutTypeCellRenderer());
 
@@ -378,6 +386,9 @@ public class TurnoutConfigurationDialog extends JDialog {
 				previousSelectedGroup = null;
 				turnoutPersistence.deleteTurnoutGroup(groupToDelete);
 				turnoutGroupConfig.setTurnoutGroup(null);
+				List<TurnoutGroup> turnoutGroups = new ArrayList<TurnoutGroup>(
+						turnoutPersistence.getAllTurnoutGroups());
+				turnoutGroupModel.setList(turnoutGroups);
 			}
 		}
 	}

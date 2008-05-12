@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.turnouts.MMTurnout;

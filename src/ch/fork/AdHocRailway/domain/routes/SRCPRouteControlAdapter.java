@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControlAdapter;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import de.dermoba.srcp.client.SRCPSession;
@@ -14,25 +13,26 @@ import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.routes.SRCPRoute;
 import de.dermoba.srcp.model.routes.SRCPRouteChangeListener;
 import de.dermoba.srcp.model.routes.SRCPRouteControl;
-import de.dermoba.srcp.model.routes.SRCPRouteException;
 import de.dermoba.srcp.model.routes.SRCPRouteItem;
 import de.dermoba.srcp.model.routes.SRCPRouteState;
 import de.dermoba.srcp.model.turnouts.SRCPTurnout;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutException;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class SRCPRouteControlAdapter implements RouteControlIface,
 		SRCPRouteChangeListener {
-	private static SRCPRouteControlAdapter				instance;
-	private RoutePersistenceIface						persistence;
-	private Map<Route, SRCPRoute>						routesSRCPRoutesMap;
-	private Map<SRCPRoute, List<RouteChangeListener>>	listeners;
-	private SRCPRouteControl							routeControl;
+	private static SRCPRouteControlAdapter	instance;
+	private RoutePersistenceIface			persistence;
+	private Map<Route, SRCPRoute>			routesSRCPRoutesMap;
+
+	private Map<SRCPRoute, Route>			SRCPRoutesRoutesMap;
+	private List<RouteChangeListener>		listeners;
+	private SRCPRouteControl				routeControl;
 
 	private SRCPRouteControlAdapter() {
 		routeControl = SRCPRouteControl.getInstance();
 		routesSRCPRoutesMap = new HashMap<Route, SRCPRoute>();
-		listeners = new HashMap<SRCPRoute, List<RouteChangeListener>>();
+		SRCPRoutesRoutesMap = new HashMap<SRCPRoute, Route>();
+		listeners = new ArrayList<RouteChangeListener>();
 
 	}
 
@@ -80,11 +80,8 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 	}
 
 	public void addRouteChangeListener(Route route, RouteChangeListener listener) {
-		SRCPRoute sRoute = routesSRCPRoutesMap.get(route);
-		if (listeners.get(sRoute) == null) {
-			listeners.put(sRoute, new ArrayList<RouteChangeListener>());
-		}
-		listeners.get(sRoute).add(listener);
+
+		listeners.add(listener);
 	}
 
 	public void removeAllRouteChangeListeners() {
@@ -93,8 +90,7 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 
 	public void removeRouteChangeListener(Route route,
 			RouteChangeListener listener) {
-		SRCPRoute sRoute = routesSRCPRoutesMap.get(route);
-		listeners.remove(sRoute);
+		listeners.remove(listener);
 	}
 
 	public void setRoutePersistence(RoutePersistenceIface routePersistence) {
@@ -111,10 +107,12 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 
 	public void update() {
 		routesSRCPRoutesMap.clear();
+		SRCPRoutesRoutesMap.clear();
 		routeControl.removeRouteChangeListener(this);
 		SRCPTurnoutControlAdapter turnoutControl = SRCPTurnoutControlAdapter
 				.getInstance();
-		routeControl.setRoutingDelay(Preferences.getInstance().getIntValue(PreferencesKeys.ROUTING_DELAY));
+		routeControl.setRoutingDelay(Preferences.getInstance().getIntValue(
+				PreferencesKeys.ROUTING_DELAY));
 
 		for (Route route : persistence.getAllRoutes()) {
 			SRCPRoute sRoute = new SRCPRoute();
@@ -141,25 +139,29 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 				sRoute.addRouteItem(sRouteItem);
 			}
 			routesSRCPRoutesMap.put(route, sRoute);
+			SRCPRoutesRoutesMap.put(sRoute, route);
 		}
 		routeControl.addRouteChangeListener(this);
 	}
 
 	public void nextTurnoutDerouted(SRCPRoute sRoute) {
-		for (RouteChangeListener listener : listeners.get(sRoute)) {
-			listener.nextSwitchDerouted();
+		Route route = SRCPRoutesRoutesMap.get(sRoute); 
+		for (RouteChangeListener listener : listeners) {
+			listener.nextSwitchDerouted(route);
 		}
 	}
 
 	public void nextTurnoutRouted(SRCPRoute sRoute) {
-		for (RouteChangeListener listener : listeners.get(sRoute)) {
-			listener.nextSwitchRouted();
+		Route route = SRCPRoutesRoutesMap.get(sRoute); 
+		for (RouteChangeListener listener : listeners) {
+			listener.nextSwitchRouted(route);
 		}
 	}
 
 	public void routeChanged(SRCPRoute sRoute) {
-		for (RouteChangeListener listener : listeners.get(sRoute)) {
-			listener.routeChanged();
+		Route route = SRCPRoutesRoutesMap.get(sRoute); 
+		for (RouteChangeListener listener : listeners) {
+			listener.routeChanged(route);
 		}
 
 	}

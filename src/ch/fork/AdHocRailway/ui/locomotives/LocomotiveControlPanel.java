@@ -38,7 +38,6 @@ import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
-import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 public class LocomotiveControlPanel extends JPanel {
 
