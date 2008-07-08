@@ -192,14 +192,17 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			initProceeded("Connecting to database");
 			try {
 				HibernatePersistence.setup();
+				System.out.println("setup()");
 				HibernatePersistence.connect();
-
+				System.out.println("connect()");
 				fileMode = false;
-			} catch (PersistenceException e) {
+			} catch (Exception e) {
+				splash.setVisible(false);
+				fileMode = true;
 				JOptionPane
 						.showMessageDialog(
-								this,
-								"Failed to connect to database\nStarting AdHoc-Railway in Memory-Mode",
+								splash,
+								"Failed to connect to database\nStarting AdHoc-Railway in File-Mode",
 								"Error", JOptionPane.ERROR_MESSAGE);
 				useDatabase = false;
 			}

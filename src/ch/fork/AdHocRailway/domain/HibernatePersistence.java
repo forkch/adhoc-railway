@@ -40,6 +40,7 @@ public abstract class HibernatePersistence {
 	protected static EntityManager			em;
 	private static Preferences				preferences	= Preferences
 																.getInstance();
+	private static Map	configOverrides;
 
 	public HibernatePersistence() {
 	}
@@ -52,8 +53,7 @@ public abstract class HibernatePersistence {
 		}
 
 		logger.info("Setting up new EntityManagerFactory");
-		// Start EntityManagerFactory
-		Map configOverrides = new HashMap();
+		configOverrides = new HashMap();
 		configOverrides.put("hibernate.connection.username", preferences
 				.getStringValue(PreferencesKeys.DATABASE_USER));
 		configOverrides.put("hibernate.connection.password", preferences
@@ -63,14 +63,15 @@ public abstract class HibernatePersistence {
 				.getStringValue(PreferencesKeys.DATABASE_NAME);
 		String url = "jdbc:mysql://" + host + "/" + database;
 		configOverrides.put("hibernate.connection.url", url);
-
-		emf = Persistence.createEntityManagerFactory("adhocrailway",
-				configOverrides);
 	}
 
 	public static void connect() {
 		logger.info("Connecting");
 		// First unit of work
+		if (emf == null) {
+			emf = Persistence.createEntityManagerFactory("adhocrailway",
+					configOverrides);
+		}
 		if (em == null) {
 			em = emf.createEntityManager();
 			em.getTransaction().begin();
@@ -94,6 +95,8 @@ public abstract class HibernatePersistence {
 			}
 			em.close();
 			em = null;
+			emf.close();
+			emf = null;
 		}
 	}
 
