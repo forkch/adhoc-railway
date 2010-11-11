@@ -216,6 +216,14 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 							.toUpperCase(), 0, 0, false);
 			actualAddresses = new Address[1];
 			turnoutType.getTurnouts().add(actualTurnout);
+		} else if (type.toUpperCase().equals("CUTTER")) {
+					TurnoutType turnoutType = turnoutPersistence
+							.getTurnoutType(SRCPTurnoutTypes.CUTTER);
+					actualTurnout = new Turnout(0, turnoutType, actualTurnoutGroup,
+							number, desc, defaultstate.toUpperCase(), orientation
+									.toUpperCase(), 0, 0, false);
+					actualAddresses = new Address[1];
+					turnoutType.getTurnouts().add(actualTurnout);
 		} else if (type.toUpperCase().equals("THREEWAY")) {
 			TurnoutType turnoutType = turnoutPersistence
 					.getTurnoutType(SRCPTurnoutTypes.THREEWAY);

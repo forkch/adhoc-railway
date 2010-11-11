@@ -77,13 +77,11 @@ public class HibernateTurnoutPersistence extends CachingTurnoutPersistence
 		}
 	}
 
-	public void clear() throws TurnoutPersistenceException {
+	public void clear() {
 		logger.debug("clear()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.createNativeQuery("TRUNCATE TABLE turnout").executeUpdate();
-			// em.createNativeQuery("TRUNCATE TABLE
-			// turnout_type").executeUpdate();
 			em.createNativeQuery("TRUNCATE TABLE turnout_group")
 					.executeUpdate();
 

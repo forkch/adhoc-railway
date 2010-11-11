@@ -66,8 +66,26 @@ public class Preferences implements PreferencesKeys {
 		setIntValue(DEFAULT_TURNOUT_BUS, 1);
 		setIntValue(DEFAULT_LOCOMOTIVE_BUS, 1);
 
+		
+		configFile = new File("./adhocrailway.conf");
+		if (configFile.exists()) {
+			props = new Properties();
+			try {
+				logger.info("found adhocrailway.conf in current directory");
+				props.load(new FileInputStream(configFile));
+				for (Object key : props.keySet()) {
+					setStringValue(key.toString(), props.getProperty(
+							key.toString()).toString());
+				}
+				return;
+			} catch (FileNotFoundException e) {
+
+			} catch (IOException e) {
+			}
+		}
 		configFile = new File(System.getProperty("user.home") + File.separator
 				+ ".adhocrailway.conf");
+		
 		if (configFile.exists()) {
 			props = new Properties();
 			try {
@@ -83,24 +101,7 @@ public class Preferences implements PreferencesKeys {
 			} catch (IOException e) {
 			}
 		}
-		/*if (!configFile.exists()) {
-			configFile = new File("./adhocrailway.conf");
-			if (configFile.exists()) {
-				props = new Properties();
-				try {
-					logger.info("found adhocrailway.conf in current directory");
-					props.load(new FileInputStream(configFile));
-					for (Object key : props.keySet()) {
-						setStringValue(key.toString(), props.getProperty(
-								key.toString()).toString());
-					}
-					return;
-				} catch (FileNotFoundException e) {
-
-				} catch (IOException e) {
-				}
-			}
-		}*/
+		
 	}
 
 	public static Preferences getInstance() {

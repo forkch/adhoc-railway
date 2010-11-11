@@ -1,8 +1,7 @@
 - Clients duerfen nicht unendlich kommandos senden koennen (queue)
 - Sofort Stopp von Lok's (Bremsverz. ausschalten via F4)
 - Switches should do a GET to determine their state after init, adapt jsrcpc
-- Stack mit zuletzt geschalteten Weichen/Routen 
-	-> Enter schaltet eine nach der anderen zurueck
-	-> Anzeigen der Stack
+
 
 - Defaultbus von Dreiwegweichen
+- Lok hinzufügen funzt nicht

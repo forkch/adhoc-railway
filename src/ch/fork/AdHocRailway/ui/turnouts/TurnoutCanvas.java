@@ -46,6 +46,8 @@ public class TurnoutCanvas extends JPanel {
 			paintDefault(g);
 		} else if (turnout.isThreeWay()) {
 			paintThreeway(g);
+		} else if (turnout.isCutter()) {
+			paintCutter(g);
 		}
 	}
 
@@ -110,7 +112,17 @@ public class TurnoutCanvas extends JPanel {
 				.getImage(), 0, 0, this);
 		rotate(g, img);
 	}
-
+	
+	private void paintCutter(Graphics g) {
+		BufferedImage img = new BufferedImage(56, 35,
+				BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D g3 = img.createGraphics();
+		g3.drawImage(createImageIcon("switches/cutter.png")
+				.getImage(), 0, 0, this);
+		
+		rotate(g, img);
+	}
+	
 	private void paintDoubleCross(Graphics g) {
 		BufferedImage img = new BufferedImage(56, 35,
 				BufferedImage.TYPE_4BYTE_ABGR);

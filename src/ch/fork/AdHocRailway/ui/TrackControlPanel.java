@@ -23,7 +23,6 @@ import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +52,7 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.SwitchProgrammer;
+import ch.fork.AdHocRailway.ui.turnouts.TurnoutWarmer;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
@@ -60,15 +60,15 @@ import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
-	private JTabbedPane					routeGroupsTabbedPane;
+	private JTabbedPane routeGroupsTabbedPane;
 
-	private JTabbedPane					turnoutGroupsTabbedPane;
+	private JTabbedPane turnoutGroupsTabbedPane;
 
-	private Preferences					preferences	= Preferences.getInstance();
+	private Preferences preferences = Preferences.getInstance();
 
-	private JTabbedPane					trackControlPane;
+	private JTabbedPane trackControlPane;
 
-	private Map<Integer, TurnoutGroup>	indexToTurnoutGroup;
+	private Map<Integer, TurnoutGroup> indexToTurnoutGroup;
 
 	public TrackControlPanel() {
 		this.indexToTurnoutGroup = new HashMap<Integer, TurnoutGroup>();
@@ -129,14 +129,12 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		for (int i = 1; i <= 12; i++) {
 			KeyStroke stroke = KeyStroke
 					.getKeyStroke("F" + Integer.toString(i));
-			registerKeyboardAction(new TurnoutGroupChangeAction(), Integer
+			registerKeyboardAction(new GroupChangeAction(), Integer
 					.toString(i - 1), stroke, WHEN_IN_FOCUSED_WINDOW);
-			registerKeyboardAction(new RouteGroupChangeAction(), Integer
-					.toString(i - 1), KeyStroke.getKeyStroke(stroke
-					.getKeyCode(), InputEvent.SHIFT_DOWN_MASK),
-					WHEN_IN_FOCUSED_WINDOW);
 
 		}
+//		registerKeyboardAction(new TurnoutRouteChangeAction(), "§", KeyStroke
+//				.getKeyStroke(KeyEvent.VK_DEAD_TILDE, 0), WHEN_IN_FOCUSED_WINDOW);
 	}
 
 	private void initToolBar() {
@@ -162,6 +160,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		JMenuItem addTurnoutsItem = new JMenuItem(new AddTurnoutsAction());
 		JMenuItem turnoutsStraightItem = new JMenuItem(
 				new TurnoutsStraightAction());
+		JMenuItem turnoutsWarmerItem = new JMenuItem(new TurnoutWarmerAction());
 		JMenuItem turnoutsProgrammerItem = new JMenuItem(
 				new TurnoutProgrammerAction());
 
@@ -170,6 +169,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		toolsMenu.add(addTurnoutsItem);
 		toolsMenu.add(turnoutsStraightItem);
+		toolsMenu.add(turnoutsWarmerItem);
 		toolsMenu.add(turnoutsProgrammerItem);
 		toolsMenu.addSeparator();
 		toolsMenu.add(enlargeTurnoutGroupsItem);
@@ -257,32 +257,33 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		}
 	}
 
-	private class TurnoutGroupChangeAction extends AbstractAction {
+	private class GroupChangeAction extends AbstractAction {
 
 		public void actionPerformed(ActionEvent e) {
-			int selectedSwitchGroup = Integer.parseInt(e.getActionCommand());
-			if (selectedSwitchGroup == turnoutGroupsTabbedPane
-					.getSelectedIndex())
-				return;
-			TurnoutPersistenceIface turnoutPersistence = AdHocRailway
-					.getInstance().getTurnoutPersistence();
-			if (selectedSwitchGroup < turnoutPersistence.getAllTurnoutGroups()
-					.size()) {
-				turnoutGroupsTabbedPane.setSelectedIndex(selectedSwitchGroup);
-			}
-		}
-	}
+			if (trackControlPane.getSelectedIndex() == 0) {
+				int selectedSwitchGroup = Integer
+						.parseInt(e.getActionCommand());
+				if (selectedSwitchGroup == turnoutGroupsTabbedPane
+						.getSelectedIndex())
+					return;
+				TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+						.getInstance().getTurnoutPersistence();
+				if (selectedSwitchGroup < turnoutPersistence
+						.getAllTurnoutGroups().size()) {
+					turnoutGroupsTabbedPane
+							.setSelectedIndex(selectedSwitchGroup);
+				}
+			} else if (trackControlPane.getSelectedIndex() == 1) {
+				int selectedRouteGroup = Integer.parseInt(e.getActionCommand());
+				RoutePersistenceIface routePersistence = AdHocRailway
+						.getInstance().getRoutePersistence();
+				System.out.println("here" + selectedRouteGroup);
 
-	private class RouteGroupChangeAction extends AbstractAction {
+				if (selectedRouteGroup < routePersistence.getAllRouteGroups()
+						.size()) {
+					routeGroupsTabbedPane.setSelectedIndex(selectedRouteGroup);
+				}
 
-		public void actionPerformed(ActionEvent e) {
-			int selectedRouteGroup = Integer.parseInt(e.getActionCommand());
-			RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
-					.getRoutePersistence();
-
-			if (selectedRouteGroup < routePersistence.getAllRouteGroups()
-					.size()) {
-				routeGroupsTabbedPane.setSelectedIndex(selectedRouteGroup);
 			}
 		}
 	}
@@ -309,8 +310,16 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 							.getInstance().getTurnoutControl();
 
 					for (Turnout t : turnoutPersistence.getAllTurnouts()) {
+						for (int i = 0; i < 15; i++) {
+							turnoutControl.toggle(t);
+							Thread
+									.sleep(3 * Preferences
+											.getInstance()
+											.getIntValue(
+													PreferencesKeys.ROUTING_DELAY));
+						}
 						turnoutControl.setDefaultState(t);
-						Thread.sleep(Preferences.getInstance().getIntValue(
+						Thread.sleep(3 * Preferences.getInstance().getIntValue(
 								PreferencesKeys.ROUTING_DELAY));
 					}
 				} catch (TurnoutException e1) {
@@ -369,49 +378,44 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			TurnoutConfig config = null;
 			int selectedGroupPane = turnoutGroupsTabbedPane.getSelectedIndex();
 
-			do {
-				TurnoutGroup selectedTurnoutGroup = indexToTurnoutGroup
-						.get(selectedGroupPane);
-				int nextNumber = 0;
-				TurnoutPersistenceIface turnoutPersistence = AdHocRailway
-						.getInstance().getTurnoutPersistence();
-				if (Preferences
-						.getInstance()
-						.getBooleanValue(
-								PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-					nextNumber = turnoutPersistence
-							.getNextFreeTurnoutNumberOfGroup(selectedTurnoutGroup);
-					if (nextNumber == -1) {
-						JOptionPane.showMessageDialog(AdHocRailway
-								.getInstance(),
-								"No more free numbers in this group", "Error",
-								JOptionPane.ERROR_MESSAGE);
-						AdHocRailway.getInstance().updateGUI();
-						turnoutGroupsTabbedPane
-								.setSelectedIndex(selectedGroupPane);
-						return;
-					}
-				} else {
-					nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
+			// do {
+			TurnoutGroup selectedTurnoutGroup = indexToTurnoutGroup
+					.get(selectedGroupPane);
+			int nextNumber = 0;
+			TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+					.getInstance().getTurnoutPersistence();
+			if (Preferences.getInstance().getBooleanValue(
+					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
+				nextNumber = turnoutPersistence
+						.getNextFreeTurnoutNumberOfGroup(selectedTurnoutGroup);
+				if (nextNumber == -1) {
+					JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
+							"No more free numbers in this group", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					AdHocRailway.getInstance().updateGUI();
+					turnoutGroupsTabbedPane.setSelectedIndex(selectedGroupPane);
+					return;
 				}
+			} else {
+				nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
+			}
 
-				Turnout newTurnout = new Turnout();
-				newTurnout.setNumber(nextNumber);
+			Turnout newTurnout = new Turnout();
+			newTurnout.setNumber(nextNumber);
 
-				newTurnout.setBus1(Preferences.getInstance().getIntValue(
-						PreferencesKeys.DEFAULT_TURNOUT_BUS));
-				newTurnout.setBus2(Preferences.getInstance().getIntValue(
-						PreferencesKeys.DEFAULT_TURNOUT_BUS));
+			newTurnout.setBus1(Preferences.getInstance().getIntValue(
+					PreferencesKeys.DEFAULT_TURNOUT_BUS));
+			newTurnout.setBus2(Preferences.getInstance().getIntValue(
+					PreferencesKeys.DEFAULT_TURNOUT_BUS));
 
-				newTurnout.setTurnoutGroup(selectedTurnoutGroup);
-				newTurnout.setDefaultStateEnum(SRCPTurnoutState.STRAIGHT);
-				newTurnout.setOrientationEnum(TurnoutOrientation.EAST);
-				newTurnout.setTurnoutType(turnoutPersistence
-						.getTurnoutType(SRCPTurnoutTypes.DEFAULT));
+			newTurnout.setTurnoutGroup(selectedTurnoutGroup);
+			newTurnout.setDefaultStateEnum(SRCPTurnoutState.STRAIGHT);
+			newTurnout.setOrientationEnum(TurnoutOrientation.EAST);
+			newTurnout.setTurnoutType(turnoutPersistence
+					.getTurnoutType(SRCPTurnoutTypes.DEFAULT));
 
-				config = new TurnoutConfig(AdHocRailway.getInstance(),
-						newTurnout);
-			} while (!config.isCancelPressed());
+			config = new TurnoutConfig(AdHocRailway.getInstance(), newTurnout);
+			// } while (!config.isCancelPressed());
 			AdHocRailway.getInstance().updateGUI();
 			turnoutGroupsTabbedPane.setSelectedIndex(selectedGroupPane);
 		}
@@ -426,6 +430,19 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		public void actionPerformed(ActionEvent e) {
 			new SwitchProgrammer(AdHocRailway.getInstance(), AdHocRailway
+					.getInstance().getSession());
+		}
+	}
+
+	private class TurnoutWarmerAction extends AbstractAction {
+
+		public TurnoutWarmerAction() {
+			// TODO Auto-generated constructor stub
+			super("Turnout Warmer\u2026");
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			new TurnoutWarmer(AdHocRailway.getInstance(), AdHocRailway
 					.getInstance().getSession());
 		}
 	}

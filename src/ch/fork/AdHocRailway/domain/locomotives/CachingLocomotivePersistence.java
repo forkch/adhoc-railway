@@ -106,6 +106,8 @@ public abstract class CachingLocomotivePersistence implements LocomotivePersiste
 	 */
 	public void deleteLocomotive(Locomotive locomotive) {
 
+		locomotive.getLocomotiveGroup().getLocomotives().remove(locomotive);
+		locomotive.getLocomotiveType().getLocomotives().remove(locomotive);
 		locomotiveCache.remove(locomotive);
 		addressLocomotiveCache.values().remove(locomotive);
 

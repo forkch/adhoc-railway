@@ -29,48 +29,39 @@ public interface TurnoutPersistenceIface {
 
 	public abstract ArrayListModel<Turnout> getAllTurnouts();
 
-	public abstract Turnout getTurnoutByNumber(int number)
-			throws TurnoutPersistenceException;
+	public abstract Turnout getTurnoutByNumber(int number);
 
 	public abstract Turnout getTurnoutByAddressBus(int bus, int address);
 
-	public abstract void addTurnout(Turnout turnout)
-			throws TurnoutPersistenceException;
+	public abstract void addTurnout(Turnout turnout);
 
-	public abstract void deleteTurnout(Turnout turnout)
-			throws TurnoutPersistenceException;
+	public abstract void deleteTurnout(Turnout turnout);
 
-	public abstract void updateTurnout(Turnout turnout)
-			throws TurnoutPersistenceException;
+	public abstract void updateTurnout(Turnout turnout);
 
 	public abstract ArrayListModel<TurnoutGroup> getAllTurnoutGroups();
 
 	public abstract TurnoutGroup getTurnoutGroupByName(String name);
 
-	public abstract void addTurnoutGroup(TurnoutGroup group)
-			throws TurnoutPersistenceException;
+	public abstract void addTurnoutGroup(TurnoutGroup group);
 
-	public abstract void deleteTurnoutGroup(TurnoutGroup group)
-			throws TurnoutPersistenceException;
+	public abstract void deleteTurnoutGroup(TurnoutGroup group);
 
-	public abstract void updateTurnoutGroup(TurnoutGroup group)
-			throws TurnoutPersistenceException;
+	public abstract void updateTurnoutGroup(TurnoutGroup group);
 
 	public abstract SortedSet<TurnoutType> getAllTurnoutTypes();
 
 	public abstract TurnoutType getTurnoutType(SRCPTurnoutTypes typeName);
 
-	public abstract void addTurnoutType(TurnoutType type)
-			throws TurnoutPersistenceException;
+	public abstract void addTurnoutType(TurnoutType type);
 
-	public abstract void deleteTurnoutType(TurnoutType type)
-			throws TurnoutPersistenceException;
+	public abstract void deleteTurnoutType(TurnoutType type);
 
 	public int getNextFreeTurnoutNumber();
 
 	public Set<Integer> getUsedTurnoutNumbers();
 
-	public abstract void clear() throws TurnoutPersistenceException;
+	public abstract void clear();
 
 	public int getNextFreeTurnoutNumberOfGroup(TurnoutGroup turnoutGroup);
 	

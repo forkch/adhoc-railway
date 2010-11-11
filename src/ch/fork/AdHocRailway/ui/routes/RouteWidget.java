@@ -153,10 +153,12 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 							.getRouteControl();
 					if (routeControl.isRouteEnabled(route)) {
 						iconLabel.setIcon(routeStartIcon);
-						routingProgress.setForeground(Color.GREEN);
+						//routingProgress.setForeground(Color.GREEN);
+						routingProgress.setValue(routingProgress.getMaximum());
 					} else {
 						iconLabel.setIcon(routeStopIcon);
-						routingProgress.setBackground(Color.RED);
+						//routingProgress.setBackground(Color.RED);
+						routingProgress.setValue(routingProgress.getMinimum());
 					}
 					RouteWidget.this.revalidate();
 					RouteWidget.this.repaint();

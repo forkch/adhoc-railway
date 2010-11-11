@@ -608,6 +608,28 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 	}
 
+	private class ImportLocomotivesAction extends AbstractAction {
+
+		public ImportLocomotivesAction() {
+			super("Import Locomotives");
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			
+		}
+	}
+
+	private class ExportLocomotivesAction extends AbstractAction {
+
+		public ExportLocomotivesAction() {
+			super("Export Locomotives");
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			
+		}
+	}
+	
 	private class ExportToDatabaseAction extends AbstractAction {
 
 		public ExportToDatabaseAction() {
@@ -992,6 +1014,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		saveAsItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
 
+		JMenuItem importLocomotivesItem = new JMenuItem(new ImportLocomotivesAction());
+		JMenuItem exportLocomotivesItem = new JMenuItem(new ExportLocomotivesAction());
+		
 		JMenuItem exportToDatabaseItem = new JMenuItem(
 				new ExportToDatabaseAction());
 
@@ -1003,14 +1028,23 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
 				ActionEvent.CTRL_MASK));
 
+		JMenu importMenu = new JMenu("Import");
+		JMenu exportMenu = new JMenu("Export");
+		importMenu.add(importLocomotivesItem);
+		exportMenu.add(exportLocomotivesItem);
+		exportMenu.add(exportToDatabaseItem);
+		
 		fileMenu.add(newItem);
 		fileMenu.add(openItem);
 		fileMenu.add(openDatabaseItem);
 		fileMenu.add(saveItem);
 		fileMenu.add(saveAsItem);
-		fileMenu.add(exportToDatabaseItem);
 		fileMenu.add(new JSeparator());
+		fileMenu.add(openDatabaseItem);
 		fileMenu.add(clearDatabaseItem);
+		fileMenu.add(new JSeparator());
+		fileMenu.add(importMenu);
+		fileMenu.add(exportMenu);
 		fileMenu.add(new JSeparator());
 		fileMenu.add(exitItem);
 
@@ -1215,5 +1249,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	public void commandDataReceived(String response) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void infoDataSent(String infoData) {
+		// TODO Auto-generated method stub
+		
 	}
 }

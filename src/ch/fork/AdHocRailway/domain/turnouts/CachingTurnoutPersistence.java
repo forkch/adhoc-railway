@@ -155,7 +155,7 @@ public abstract class CachingTurnoutPersistence implements TurnoutPersistenceIfa
 	 */
 	public void deleteTurnout(Turnout turnout) {
 
-		logger.debug("deleteTurnout()");
+		logger.debug("deleteTurnout(" + turnout + ")");
 		TurnoutGroup group = turnout.getTurnoutGroup();
 		group.getTurnouts().remove(turnout);
 
@@ -270,6 +270,9 @@ public abstract class CachingTurnoutPersistence implements TurnoutPersistenceIfa
 			break;
 		case DOUBLECROSS:
 			typeStr = "DOUBLECROSS";
+			break;
+		case CUTTER:
+			typeStr = "CUTTER";
 			break;
 		case THREEWAY:
 			typeStr = "THREEWAY";

@@ -48,6 +48,10 @@ public class FileTurnoutPersistence extends CachingTurnoutPersistence{
 			TurnoutType threewayType = new TurnoutType(0, "THREEWAY");
 			addTurnoutType(threewayType);
 		}
+		if (getTurnoutType(SRCPTurnoutTypes.CUTTER) == null) {
+			TurnoutType cutterType = new TurnoutType(0, "CUTTER");
+			addTurnoutType(cutterType);
+		}
 	}
 	
 	public void clear() {

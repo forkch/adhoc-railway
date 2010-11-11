@@ -119,7 +119,6 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 		if (sTurnoutTemp != null) {
 			turnoutControl.removeTurnout(sTurnoutTemp);
 		}
-		System.out.println(turnoutTemp);
 		if (turnoutTemp != null)
 			System.out.println(turnoutTemp.equals(turnout));
 		if (turnoutTemp == null || !turnoutTemp.equals(turnout)) {
@@ -168,7 +167,7 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 		turnoutControl.removeTurnoutChangeListener(this);
 		turnoutControl.setInterface6051Connected(Preferences.getInstance()
 				.getBooleanValue(PreferencesKeys.INTERFACE_6051));
-		turnoutControl.setActivationTime(Preferences.getInstance().getIntValue(
+		turnoutControl.setTurnoutActivationTime(Preferences.getInstance().getIntValue(
 				PreferencesKeys.ACTIVATION_TIME));
 		for (Turnout turnout : persistence.getAllTurnouts()) {
 			SRCPTurnout sTurnout = createSRCPTurnout(turnout);
@@ -215,6 +214,9 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 			break;
 		case DOUBLECROSS:
 			sTurnout.setTurnoutType(SRCPTurnoutTypes.DOUBLECROSS);
+			break;
+		case CUTTER:
+			sTurnout.setTurnoutType(SRCPTurnoutTypes.CUTTER);
 			break;
 		case THREEWAY:
 			sTurnout.setTurnoutType(SRCPTurnoutTypes.THREEWAY);

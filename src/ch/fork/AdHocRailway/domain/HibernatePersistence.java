@@ -59,9 +59,12 @@ public abstract class HibernatePersistence {
 		configOverrides.put("hibernate.connection.password", preferences
 				.getStringValue(PreferencesKeys.DATABASE_PWD));
 		String host = preferences.getStringValue(PreferencesKeys.DATABASE_HOST);
+		
+		
 		String database = preferences
 				.getStringValue(PreferencesKeys.DATABASE_NAME);
 		String url = "jdbc:mysql://" + host + "/" + database;
+		System.out.println(url);
 		configOverrides.put("hibernate.connection.url", url);
 	}
 
@@ -102,7 +105,6 @@ public abstract class HibernatePersistence {
 
 	@SuppressWarnings("unchecked")
 	public static EntityManager getEntityManager() {
-
 		return em;
 	}
 

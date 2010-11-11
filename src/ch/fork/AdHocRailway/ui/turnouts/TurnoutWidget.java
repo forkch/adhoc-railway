@@ -232,6 +232,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 				public void run() {
 					numberLabel.setText(Integer.toString(turnout.getNumber()));
 					turnoutCanvas.setTurnoutState(actualTurnoutState);
+					System.out.println(actualTurnoutState);
 					TurnoutWidget.this.revalidate();
 					TurnoutWidget.this.repaint();
 				}

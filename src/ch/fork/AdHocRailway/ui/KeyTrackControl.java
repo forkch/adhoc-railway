@@ -115,11 +115,9 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 		registerKeyboardAction(new SwitchingAction(), "+", KeyStroke
 				.getKeyStroke(KeyEvent.VK_ADD, 0), WHEN_IN_FOCUSED_WINDOW);
+		registerKeyboardAction(new SwitchingAction(), "+", KeyStroke
+				.getKeyStroke(KeyEvent.VK_DOLLAR, 0), WHEN_IN_FOCUSED_WINDOW);
 
-		registerKeyboardAction(new SwitchingAction(), "bs", KeyStroke
-				.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0),
-				WHEN_IN_FOCUSED_WINDOW);
-		registerKeyboardAction(new SwitchingAction(), "bs", KeyStroke.getKeyStroke(8, 0), WHEN_IN_FOCUSED_WINDOW);
 		registerKeyboardAction(new SwitchingAction(), "/", KeyStroke
 				.getKeyStroke(KeyEvent.VK_DIVIDE, 0), WHEN_IN_FOCUSED_WINDOW);
 
@@ -128,6 +126,15 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 		registerKeyboardAction(new SwitchingAction(), "-", KeyStroke
 				.getKeyStroke(KeyEvent.VK_SUBTRACT, 0), WHEN_IN_FOCUSED_WINDOW);
+
+		registerKeyboardAction(new SwitchingAction(), "/", KeyStroke
+				.getKeyStroke(KeyEvent.VK_I, 0), WHEN_IN_FOCUSED_WINDOW);
+
+		registerKeyboardAction(new SwitchingAction(), "*", KeyStroke
+				.getKeyStroke(KeyEvent.VK_O, 0), WHEN_IN_FOCUSED_WINDOW);
+
+		registerKeyboardAction(new SwitchingAction(), "-", KeyStroke
+				.getKeyStroke(KeyEvent.VK_P, 0), WHEN_IN_FOCUSED_WINDOW);
 
 	}
 

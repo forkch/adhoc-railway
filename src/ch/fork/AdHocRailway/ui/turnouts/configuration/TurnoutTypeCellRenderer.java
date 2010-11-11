@@ -47,6 +47,9 @@ public class TurnoutTypeCellRenderer extends DefaultTableCellRenderer {
 		} else if (type.getTurnoutTypeEnum() == SRCPTurnoutTypes.THREEWAY) {
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/three_way_switch_small.png"));
+		} else if (type.getTurnoutTypeEnum() == SRCPTurnoutTypes.CUTTER) {
+			iconLabel.setIcon(ImageTools
+					.createImageIcon("switches/cutter_small.png"));
 		}
 
 		return iconLabel;

@@ -175,6 +175,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 
 		List<TurnoutType> turnoutTypes = new ArrayList<TurnoutType>(
 				turnoutPersistence.getAllTurnoutTypes());
+		System.out.println(turnoutTypes);
 
 		ValueModel turnoutTypeModel = presentationModel
 				.getModel(Turnout.PROPERTYNAME_TURNOUT_TYPE);
@@ -189,6 +190,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				.getTurnoutTypeEnum()) {
 		case DEFAULT:
 		case DOUBLECROSS:
+		case CUTTER:
 			bus2TextField.setValue(0);
 			bus2TextField.setEnabled(false);
 			address2TextField.setValue(0);
