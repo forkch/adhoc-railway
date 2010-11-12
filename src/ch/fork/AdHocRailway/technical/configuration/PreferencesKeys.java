@@ -30,6 +30,7 @@ public interface PreferencesKeys {
 	public static final String	LAST_OPENED_FILE						= "LastOpenedFile";
 	public static final String	USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES	= "UseFixedTurnoutAndRouteGroupSizes";
 	public static final String	OPEN_LAST_FILE							= "OpenLastFile";
+    public static final String STOP_ON_DIRECTION_CHANGE 				= "StopOnDirectionChange";
 
 	// Digital Data
 	public static final String	ACTIVATION_TIME							= "DefaultActivationTime";

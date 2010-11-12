@@ -56,6 +56,7 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
@@ -493,6 +494,13 @@ public class LocomotiveWidget extends JPanel implements
 		protected void doPerformAction
 			(LocomotiveControlface locomotiveControl, Locomotive myLocomotive)
 			throws LocomotiveException {
+            if (Preferences.getInstance().getBooleanValue
+                (PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
+                && locomotiveControl.getCurrentSpeed(myLocomotive) != 0) {
+                locomotiveControl.setSpeed
+                    (myLocomotive, 0, 
+                     locomotiveControl.getFunctions(myLocomotive));
+            }
 			locomotiveControl.toggleDirection(myLocomotive);
 		}
 	}
@@ -520,6 +528,13 @@ public class LocomotiveWidget extends JPanel implements
 			try {
 				LocomotiveControlface locomotiveControl = AdHocRailway
 						.getInstance().getLocomotiveControl();
+	            if (Preferences.getInstance().getBooleanValue
+	            	(PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
+	                 && locomotiveControl.getCurrentSpeed(myLocomotive) != 0) {
+	            	locomotiveControl.setSpeed
+	            		(myLocomotive, 0, 
+	                     locomotiveControl.getFunctions(myLocomotive));
+	            }
 				locomotiveControl.toggleDirection(myLocomotive);
 				speedBar.requestFocus();
 				updateWidget();

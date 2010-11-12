@@ -121,6 +121,7 @@ public class Preferences implements PreferencesKeys {
 		setBooleanValue(OPEN_LAST_FILE, false);
 		setIntValue(DEFAULT_TURNOUT_BUS, 1);
 		setIntValue(DEFAULT_LOCOMOTIVE_BUS, 1);
+		setBooleanValue(STOP_ON_DIRECTION_CHANGE, false);
 
         configFile = new File(System.getProperty("user.home") + File.separator
                 + ".adhocrailway.conf");
