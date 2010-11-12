@@ -333,8 +333,10 @@ public class LocomotiveConfigurationDialog extends JDialog {
 			LocomotiveConfig locomotiveConfig = new LocomotiveConfig(
 					LocomotiveConfigurationDialog.this, newLocomotive);
 			if (locomotiveConfig.isOkPressed()) {
-//				selectedLocomotiveGroup.getLocomotives().add(newLocomotive);
-//				locomotivePersistence.addLocomotive(newLocomotive);
+                selectedLocomotiveGroup.getLocomotives().add(newLocomotive);
+                LocomotivePersistenceIface locomotivePersistence = AdHocRailway
+                    .getInstance().getLocomotivePersistence();
+                locomotivePersistence.addLocomotive(newLocomotive);
 			}
 			List<Locomotive> locomotives = new ArrayList<Locomotive>(
 					selectedLocomotiveGroup.getLocomotives());
