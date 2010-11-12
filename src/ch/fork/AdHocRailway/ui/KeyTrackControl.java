@@ -25,6 +25,7 @@ import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
+import javax.swing.InputMap;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
@@ -37,6 +38,8 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.StaticTurnoutWidget;
 
@@ -104,38 +107,20 @@ public class KeyTrackControl extends SimpleInternalFrame {
 					+ Integer.toString(i)), WHEN_IN_FOCUSED_WINDOW);
 
 		}
-		registerKeyboardAction(new NumberEnteredAction(), ".", KeyStroke
-				.getKeyStroke(KeyEvent.VK_PERIOD, 0), WHEN_IN_FOCUSED_WINDOW);
-		registerKeyboardAction(new SwitchingAction(), "\\", KeyStroke
-				.getKeyStroke(92, 0), WHEN_IN_FOCUSED_WINDOW);
-		registerKeyboardAction(new NumberEnteredAction(), ".", KeyStroke
-				.getKeyStroke(110, 0), WHEN_IN_FOCUSED_WINDOW);
-		registerKeyboardAction(new SwitchingAction(), "\n", KeyStroke
-				.getKeyStroke("ENTER"), WHEN_IN_FOCUSED_WINDOW);
-
-		registerKeyboardAction(new SwitchingAction(), "+", KeyStroke
-				.getKeyStroke(KeyEvent.VK_ADD, 0), WHEN_IN_FOCUSED_WINDOW);
-		registerKeyboardAction(new SwitchingAction(), "+", KeyStroke
-				.getKeyStroke(KeyEvent.VK_DOLLAR, 0), WHEN_IN_FOCUSED_WINDOW);
-
-		registerKeyboardAction(new SwitchingAction(), "/", KeyStroke
-				.getKeyStroke(KeyEvent.VK_DIVIDE, 0), WHEN_IN_FOCUSED_WINDOW);
-
-		registerKeyboardAction(new SwitchingAction(), "*", KeyStroke
-				.getKeyStroke(KeyEvent.VK_MULTIPLY, 0), WHEN_IN_FOCUSED_WINDOW);
-
-		registerKeyboardAction(new SwitchingAction(), "-", KeyStroke
-				.getKeyStroke(KeyEvent.VK_SUBTRACT, 0), WHEN_IN_FOCUSED_WINDOW);
-
-		registerKeyboardAction(new SwitchingAction(), "/", KeyStroke
-				.getKeyStroke(KeyEvent.VK_I, 0), WHEN_IN_FOCUSED_WINDOW);
-
-		registerKeyboardAction(new SwitchingAction(), "*", KeyStroke
-				.getKeyStroke(KeyEvent.VK_O, 0), WHEN_IN_FOCUSED_WINDOW);
-
-		registerKeyboardAction(new SwitchingAction(), "-", KeyStroke
-				.getKeyStroke(KeyEvent.VK_P, 0), WHEN_IN_FOCUSED_WINDOW);
-
+		KeyBoardLayout kbl = Preferences.getInstance().getKeyBoardLayout();
+		InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+		getActionMap().put("RouteNumberEntered", new PeriodEnteredAction());
+		kbl.assignKeys(inputMap, "RouteNumberEntered");
+		getActionMap().put("CurvedLeft", new CurvedLeftAction());
+		kbl.assignKeys(inputMap, "CurvedLeft");
+		getActionMap().put("CurvedRight", new CurvedRightAction());
+		kbl.assignKeys(inputMap, "CurvedRight");
+		getActionMap().put("Straight", new StraightAction());
+		kbl.assignKeys(inputMap, "Straight");
+		getActionMap().put("EnableRoute", new EnableRouteAction());
+		kbl.assignKeys(inputMap, "EnableRoute");
+		getActionMap().put("DisableRoute", new DisableRouteAction());
+		kbl.assignKeys(inputMap, "DisableRoute");
 	}
 
 	private void updateHistory(Object obj) {
@@ -175,125 +160,138 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		repaint();
 	}
 
-	private class NumberEnteredAction extends AbstractAction {
+    private class NumberEnteredAction extends AbstractAction {
 
-		public void actionPerformed(ActionEvent e) {
-			if (e.getActionCommand() == ".") {
-				routeMode = true;
-				digitDisplay.setPeriod(true);
-			} else {
-				enteredNumberKeys.append(e.getActionCommand());
-				String switchNumberAsString = enteredNumberKeys.toString();
-				int switchNumber = Integer.parseInt(switchNumberAsString);
-				if (switchNumber > 999) {
-					digitDisplay.reset();
-					enteredNumberKeys = new StringBuffer();
-					return;
-				}
-				digitDisplay.setNumber(switchNumber);
-			}
-		}
-	}
+        public void actionPerformed(ActionEvent e) {
+            enteredNumberKeys.append(e.getActionCommand());
+            String switchNumberAsString = enteredNumberKeys.toString();
+            int switchNumber = Integer.parseInt(switchNumberAsString);
+            if (switchNumber > 999) {
+                digitDisplay.reset();
+                enteredNumberKeys = new StringBuffer();
+                return;
+            }
+            digitDisplay.setNumber(switchNumber);
+        }
+    }
 
-	private class SwitchingAction extends AbstractAction {
-		public void actionPerformed(ActionEvent e) {
+    private class PeriodEnteredAction extends AbstractAction {
 
-			try {
-				RouteControlIface routeControl = AdHocRailway.getInstance()
-						.getRouteControl();
-				TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
-						.getTurnoutControl();
+        public void actionPerformed(ActionEvent e) {
+            routeMode = true;
+            digitDisplay.setPeriod(true);
+        }
+    }
 
-				String enteredNumberAsString = enteredNumberKeys.toString();
-				if (enteredNumberKeys.toString().equals("")) {
-					if (historyStack.size() == 0)
-						return;
-					Object obj = historyStack.removeFirst();
-					if (obj instanceof Turnout) {
-						Turnout t = (Turnout) obj;
-						turnoutControl.setDefaultState(t);
-					} else if (obj instanceof Route) {
-						Route r = (Route) obj;
-						routeControl.disableRoute(r);
-					} else {
-						return;
-					}
-					historyWidgets.removeFirst();
-					updateHistory();
-				} else {
-					int enteredNumber = Integer.parseInt(enteredNumberAsString);
-					if (routeMode) {
-						handleRouteChange(e, enteredNumber);
-					} else {
-						handleSwitchChange(e, enteredNumber);
-					}
-				}
+    private abstract class SwitchingAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
 
-			} catch (RouteException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
-			} catch (TurnoutException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
-			}
-			enteredNumberKeys = new StringBuffer();
-			routeMode = false;
-			digitDisplay.reset();
-		}
+            try {
+                RouteControlIface routeControl = AdHocRailway.getInstance()
+                        .getRouteControl();
+                TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
+                        .getTurnoutControl();
 
-		private void handleSwitchChange(ActionEvent e, int enteredNumber)
-				throws TurnoutException {
-			TurnoutPersistenceIface turnoutPersistence = AdHocRailway
-					.getInstance().getTurnoutPersistence();
-			Turnout searchedTurnout = null;
-			searchedTurnout = turnoutPersistence
-					.getTurnoutByNumber(enteredNumber);
-			if (searchedTurnout == null) {
-				return;
-			}
-			TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
-					.getTurnoutControl();
+                String enteredNumberAsString = enteredNumberKeys.toString();
+                if (enteredNumberKeys.toString().equals("")) {
+                    if (historyStack.size() == 0)
+                        return;
+                    Object obj = historyStack.removeFirst();
+                    if (obj instanceof Turnout) {
+                        Turnout t = (Turnout) obj;
+                        turnoutControl.setDefaultState(t);
+                    } else if (obj instanceof Route) {
+                        Route r = (Route) obj;
+                        routeControl.disableRoute(r);
+                    } else {
+                        return;
+                    }
+                    historyWidgets.removeFirst();
+                    updateHistory();
+                } else {
+                    int enteredNumber = Integer.parseInt(enteredNumberAsString);
+                    if (routeMode) {
+                        handleRouteChange(e, enteredNumber);
+                    } else {
+                        handleSwitchChange(e, enteredNumber);
+                    }
+                }
 
-			if (e.getActionCommand().equals("/")) {
-				turnoutControl.setCurvedLeft(searchedTurnout);
-			} else if (e.getActionCommand().equals("*")) {
-				turnoutControl.setStraight(searchedTurnout);
-			} else if (e.getActionCommand().equals("-")) {
-				turnoutControl.setCurvedRight(searchedTurnout);
-			} else if (e.getActionCommand().equals("+")) {
-				if (!searchedTurnout.isThreeWay()) {
-					turnoutControl.setNonDefaultState(searchedTurnout);
-				}
-			} else if (e.getActionCommand().equals("bs")) {
-				if (!searchedTurnout.isThreeWay()) {
-					turnoutControl.setNonDefaultState(searchedTurnout);
-				}
-			} else if (e.getActionCommand().equals("\n")) {
-				turnoutControl.setDefaultState(searchedTurnout);
-			}
-			updateHistory(searchedTurnout);
-		}
+            } catch (RouteException e1) {
+                ExceptionProcessor.getInstance().processException(e1);
+            } catch (TurnoutException e1) {
+                ExceptionProcessor.getInstance().processException(e1);
+            }
+            enteredNumberKeys = new StringBuffer();
+            routeMode = false;
+            digitDisplay.reset();
+        }
 
-		private void handleRouteChange(ActionEvent e, int enteredNumber)
-				throws TurnoutException, RouteException {
-			Route searchedRoute = null;
+        private void handleSwitchChange(ActionEvent e, int enteredNumber)
+                throws TurnoutException {
+            TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+                    .getInstance().getTurnoutPersistence();
+            Turnout searchedTurnout = null;
+            searchedTurnout = turnoutPersistence
+                    .getTurnoutByNumber(enteredNumber);
+            if (searchedTurnout == null) {
+                return;
+            }
+            TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
+                    .getTurnoutControl();
 
-			RouteControlIface routeControl = AdHocRailway.getInstance()
-					.getRouteControl();
-			RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
-					.getRoutePersistence();
-			searchedRoute = routePersistence.getRouteByNumber(enteredNumber);
-			if (searchedRoute == null) {
-				return;
-			}
-			if (e.getActionCommand().equals("+")
-					|| e.getActionCommand().equals("bs")) {
-				routeControl.enableRoute(searchedRoute);
-			} else if (e.getActionCommand().equals("\n")) {
-				routeControl.disableRoute(searchedRoute);
-			} else if (e.getActionCommand().equals("\\")) {
-				routeControl.enableRoute(searchedRoute);
-			}
-			updateHistory(searchedRoute);
-		}
-	}
+            if (this instanceof CurvedLeftAction) {
+                turnoutControl.setCurvedLeft(searchedTurnout);
+            } else if (this instanceof StraightAction) {
+                turnoutControl.setStraight(searchedTurnout);
+            } else if (this instanceof CurvedRightAction) {
+                turnoutControl.setCurvedRight(searchedTurnout);
+            } else if (this instanceof EnableRouteAction) {
+                if (!searchedTurnout.isThreeWay()) {
+                    turnoutControl.setNonDefaultState(searchedTurnout);
+                }
+            } else if (this instanceof DisableRouteAction) {
+                if (!searchedTurnout.isThreeWay()) {
+                    turnoutControl.setDefaultState(searchedTurnout);
+                }
+            }
+            updateHistory(searchedTurnout);
+        }
 
+        private void handleRouteChange(ActionEvent e, int enteredNumber)
+                throws TurnoutException, RouteException {
+            Route searchedRoute = null;
+
+            RouteControlIface routeControl = AdHocRailway.getInstance()
+                    .getRouteControl();
+            RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
+                    .getRoutePersistence();
+            searchedRoute = routePersistence.getRouteByNumber(enteredNumber);
+            if (searchedRoute == null) {
+                return;
+            }
+            if (this instanceof EnableRouteAction) {
+                routeControl.enableRoute(searchedRoute);
+            } else if (this instanceof DisableRouteAction) {
+                routeControl.disableRoute(searchedRoute);
+            }
+            updateHistory(searchedRoute);
+        }
+    }
+
+    private class CurvedLeftAction extends SwitchingAction {
+    }
+    
+    private class StraightAction extends SwitchingAction {
+    }
+    
+    private class CurvedRightAction extends SwitchingAction {
+    }
+    
+    private class EnableRouteAction extends SwitchingAction {
+    }
+    
+    private class DisableRouteAction extends SwitchingAction {
+    }
+    
 }

@@ -82,8 +82,9 @@ public class LocomotiveControlPanel extends JPanel {
 		SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame("Trains");
 		locomotivesFrame.add(controlPanel, BorderLayout.CENTER);
 		add(locomotivesFrame, BorderLayout.NORTH);
-		registerKeyboardAction(new LocomotiveStopAction(), "", KeyStroke
-				.getKeyStroke(KeyEvent.VK_SPACE, 0), WHEN_IN_FOCUSED_WINDOW);
+		getActionMap().put("LocomotiveStop", new LocomotiveStopAction());
+		Preferences.getInstance().getKeyBoardLayout().assignKeys
+			(getInputMap(WHEN_IN_FOCUSED_WINDOW), "LocomotiveStop");
 	}
 
 	public void update() {
@@ -101,9 +102,8 @@ public class LocomotiveControlPanel extends JPanel {
 		}
 		for (int i = 0; i < Preferences.getInstance().getIntValue(
 				PreferencesKeys.LOCOMOTIVE_CONTROLES); i++) {
-			LocomotiveWidget w = new LocomotiveWidget(keyBindings[i][0],
-					keyBindings[i][1], keyBindings[i][2], AdHocRailway
-							.getInstance());
+			LocomotiveWidget w 
+				= new LocomotiveWidget(i, AdHocRailway.getInstance());
 			w.updateLocomotiveGroups();
 			controlPanel.add(w);
 			locomotiveWidgets.add(w);

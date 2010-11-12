@@ -34,6 +34,7 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -53,6 +54,8 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
+import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
@@ -85,8 +88,7 @@ public class LocomotiveWidget extends JPanel implements
 
 	private Locomotive					myLocomotive;
 
-	private int							accelerateKey, deccelerateKey,
-			toggleDirectionKey;
+	private int							number;
 
 	private FunctionToggleButton[]		functionToggleButtons;
 
@@ -98,12 +100,9 @@ public class LocomotiveWidget extends JPanel implements
 
 	private Object						defaultDisabledComboColor;
 
-	public LocomotiveWidget(int accelerateKey, int deccelerateKey,
-			int toggleDirectionKey, JFrame frame) {
+	public LocomotiveWidget(int number, JFrame frame) {
 		super();
-		this.accelerateKey = accelerateKey;
-		this.deccelerateKey = deccelerateKey;
-		this.toggleDirectionKey = toggleDirectionKey;
+		this.number = number;
 		this.frame = frame;
 		defaultDisabledComboColor = UIManager
 				.get("ComboBox.disabledForeground");
@@ -233,15 +232,17 @@ public class LocomotiveWidget extends JPanel implements
 	}
 
 	private void initKeyboardActions() {
-		registerKeyboardAction(new LocomotiveControlAction(), "accelerate",
-				KeyStroke.getKeyStroke(accelerateKey, 0),
-				WHEN_IN_FOCUSED_WINDOW);
-		registerKeyboardAction(new LocomotiveControlAction(), "deccelerate",
-				KeyStroke.getKeyStroke(deccelerateKey, 0),
-				WHEN_IN_FOCUSED_WINDOW);
-		registerKeyboardAction(new LocomotiveControlAction(),
-				"toggle_direction", KeyStroke.getKeyStroke(toggleDirectionKey,
-						0), WHEN_IN_FOCUSED_WINDOW);
+		KeyBoardLayout kbl = Preferences.getInstance().getKeyBoardLayout();
+		InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+		getActionMap().put
+			("Accelerate" + number, new LocomotiveAccelerateAction());
+		kbl.assignKeys(inputMap, "Accelerate" + number);
+		getActionMap().put
+			("Deccelerate" + number, new LocomotiveDeccelerateAction());
+		kbl.assignKeys(inputMap, "Deccelerate" + number);
+		getActionMap().put
+			("ToggleDirection" + number, new LocomotiveToggleDirectionAction());
+		kbl.assignKeys(inputMap, "ToggleDirection" + number);
 	}
 
 	private boolean isFree() {
@@ -440,7 +441,7 @@ public class LocomotiveWidget extends JPanel implements
 		}
 	}
 
-	private class LocomotiveControlAction extends AbstractAction {
+	private abstract class LocomotiveControlAction extends AbstractAction {
 
 		private long	time	= 0;
 
@@ -450,13 +451,7 @@ public class LocomotiveWidget extends JPanel implements
 			try {
 				LocomotiveControlface locomotiveControl = AdHocRailway
 						.getInstance().getLocomotiveControl();
-				if (e.getActionCommand().equals("accelerate")) {
-					locomotiveControl.increaseSpeed(myLocomotive);
-				} else if (e.getActionCommand().equals("deccelerate")) {
-					locomotiveControl.decreaseSpeed(myLocomotive);
-				} else if (e.getActionCommand().equals("toggle_direction")) {
-					locomotiveControl.toggleDirection(myLocomotive);
-				}
+				doPerformAction(locomotiveControl, myLocomotive);
 				if (time == 0) {
 					time = System.currentTimeMillis();
 				} else {
@@ -468,8 +463,40 @@ public class LocomotiveWidget extends JPanel implements
 			}
 
 		}
+		
+		protected abstract void doPerformAction
+			(LocomotiveControlface locomotiveControl, Locomotive myLocomotive)
+			throws LocomotiveException;
 	}
 
+	private class LocomotiveAccelerateAction extends LocomotiveControlAction {
+		@Override
+		protected void doPerformAction
+			(LocomotiveControlface locomotiveControl, Locomotive myLocomotive)
+			throws LocomotiveException {
+			locomotiveControl.increaseSpeed(myLocomotive);
+		}
+	}
+	    
+	private class LocomotiveDeccelerateAction extends LocomotiveControlAction {
+		@Override
+		protected void doPerformAction
+			(LocomotiveControlface locomotiveControl, Locomotive myLocomotive)
+			throws LocomotiveException {
+			locomotiveControl.decreaseSpeed(myLocomotive);
+		}
+	}
+	    
+	private class LocomotiveToggleDirectionAction
+		extends LocomotiveControlAction {
+		@Override
+		protected void doPerformAction
+			(LocomotiveControlface locomotiveControl, Locomotive myLocomotive)
+			throws LocomotiveException {
+			locomotiveControl.toggleDirection(myLocomotive);
+		}
+	}
+	    
 	private class StopAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
 			if (myLocomotive == null)

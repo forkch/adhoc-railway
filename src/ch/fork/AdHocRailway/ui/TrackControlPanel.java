@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -133,8 +134,16 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 					.toString(i - 1), stroke, WHEN_IN_FOCUSED_WINDOW);
 
 		}
-//		registerKeyboardAction(new TurnoutRouteChangeAction(), "§", KeyStroke
-//				.getKeyStroke(KeyEvent.VK_DEAD_TILDE, 0), WHEN_IN_FOCUSED_WINDOW);
+        getActionMap().put("NextSelected", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                if (trackControlPane.getSelectedIndex() == 0)
+                    trackControlPane.setSelectedIndex(1);
+                else
+                    trackControlPane.setSelectedIndex(0);
+            }
+        });
+        Preferences.getInstance().getKeyBoardLayout().assignKeys
+            (getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW), "NextSelected");
 	}
 
 	private void initToolBar() {

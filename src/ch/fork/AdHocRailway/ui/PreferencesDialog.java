@@ -22,6 +22,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -145,8 +147,11 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		
 
 		keyBoardLayoutComboBox = new JComboBox();
-		keyBoardLayoutComboBox.addItem("Swiss German");
-		keyBoardLayoutComboBox.addItem("English");
+		Set<String> sortedLayoutNames = new TreeSet<String>
+			(Preferences.getInstance().getKeyBoardLayoutNames());
+		for (String name: sortedLayoutNames) {
+			keyBoardLayoutComboBox.addItem(name);
+		}
 
 		writeLog = new JCheckBox();
 		fullscreen = new JCheckBox();

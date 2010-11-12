@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -50,6 +51,8 @@ import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
@@ -320,38 +323,28 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 
 			}
 			for (JPanel p : panels) {
-				p.registerKeyboardAction(new SwitchingAction(route), "\\",
-						KeyStroke.getKeyStroke(92, 0),
-						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-				p.registerKeyboardAction(new SwitchingAction(route), "\n",
-						KeyStroke.getKeyStroke("ENTER"),
-						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
-				p.registerKeyboardAction(new SwitchingAction(route), "+",
-						KeyStroke.getKeyStroke(KeyEvent.VK_ADD, 0),
-						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
-				p.registerKeyboardAction(new SwitchingAction(route), "bs",
-						KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0),
-						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
-				p.registerKeyboardAction(new SwitchingAction(route), "/",
-						KeyStroke.getKeyStroke(KeyEvent.VK_DIVIDE, 0),
-						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
-				p.registerKeyboardAction(new SwitchingAction(route), "*",
-						KeyStroke.getKeyStroke(KeyEvent.VK_MULTIPLY, 0),
-						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
-				p.registerKeyboardAction(new SwitchingAction(route), "-",
-						KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, 0),
-						JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+                KeyBoardLayout kbl 
+                	= Preferences.getInstance().getKeyBoardLayout();
+                InputMap inputMap = p.getInputMap
+                	(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+                p.getActionMap().put("CurvedLeft", new CurvedLeftAction(route));
+                kbl.assignKeys(inputMap, "CurvedLeft");
+                p.getActionMap().put
+                	("CurvedRight", new CurvedRightAction(route));
+                kbl.assignKeys(inputMap, "CurvedRight");
+                p.getActionMap().put("Straight", new StraightAction(route));
+                kbl.assignKeys(inputMap, "Straight");
+                p.getActionMap().put
+                	("EnableRoute", new EnableRouteAction(route));
+                kbl.assignKeys(inputMap, "EnableRoute");
+                p.getActionMap().put
+                	("DisableRoute", new DisableRouteAction(route));
+                kbl.assignKeys(inputMap, "DisableRoute");
 			}
-
 		}
 	}
 
-	private class SwitchingAction extends AbstractAction {
+	private abstract class SwitchingAction extends AbstractAction {
 		private Route	route;
 
 		public SwitchingAction(Route route) {
@@ -385,17 +378,16 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 											.createImageIcon("messagebox_critical.png"));
 				} else {
 					SRCPTurnoutState routedState = null;
-					if (e.getActionCommand().equals("/")) {
+					if (this instanceof CurvedLeftAction) {
 						// ThreeWay LEFT
 						routedState = SRCPTurnoutState.LEFT;
-					} else if (e.getActionCommand().equals("*")) {
+					} else if (this instanceof StraightAction) {
 						// ThreeWay STRAIGHT
 						routedState = SRCPTurnoutState.STRAIGHT;
-					} else if (e.getActionCommand().equals("-")) {
+					} else if (this instanceof CurvedRightAction) {
 						// ThreeWay RIGHT
 						routedState = SRCPTurnoutState.RIGHT;
-					} else if (e.getActionCommand().equals("+")
-							|| e.getActionCommand().equals("bs")) {
+					} else if (this instanceof EnableRouteAction) {
 						// CURVED
 						if (!turnout.isThreeWay()) {
 							switch (turnout.getDefaultStateEnum()) {
@@ -409,7 +401,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 						} else {
 							routedState = SRCPTurnoutState.LEFT;
 						}
-					} else if (e.getActionCommand().equals("\n")) {
+					} else if (this instanceof DisableRouteAction) {
 						// STRAIGHT
 						routedState = turnout.getDefaultStateEnum();
 					}
@@ -448,6 +440,36 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 		}
 	}
 
+    private class CurvedLeftAction extends SwitchingAction {
+        public CurvedLeftAction(Route route) {
+            super(route);
+        }
+    }
+    
+    private class StraightAction extends SwitchingAction {
+        public StraightAction(Route route) {
+            super(route);
+        }
+    }
+    
+    private class CurvedRightAction extends SwitchingAction {
+        public CurvedRightAction(Route route) {
+            super(route);
+        }
+    }
+    
+    private class EnableRouteAction extends SwitchingAction {
+        public EnableRouteAction(Route route) {
+            super(route);
+        }
+    }
+    
+    private class DisableRouteAction extends SwitchingAction {
+        public DisableRouteAction(Route route) {
+            super(route);
+        }
+    }
+    
 	private class NumberEnteredAction extends AbstractAction {
 
 		public void actionPerformed(ActionEvent e) {

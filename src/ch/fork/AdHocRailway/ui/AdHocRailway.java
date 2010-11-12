@@ -21,6 +21,8 @@ package ch.fork.AdHocRailway.ui;
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -41,7 +43,6 @@ import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -52,7 +53,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
@@ -155,8 +155,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private SplashWindow				splash;
 
-	private JTabbedPane					trackControl;
-
 	private JPanel						mainPanel;
 	private JPanel						toolbarPanel;
 	public File							actualFile;
@@ -178,6 +176,13 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
+        /*
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        */
 		}
 		instance = this;
 		splash = new SplashWindow(createImageIcon("splash.png"), this, 500, 11);
@@ -274,7 +279,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			new ConnectAction().actionPerformed(null);
 		// EnablerDisabler.setEnable(false, trackControlPanel);
 		// EnablerDisabler.setEnable(false, locomotiveControlPanel);
-		initKeyboardActions();
 
 		setSize(1000, 700);
 
@@ -319,22 +323,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		hostnameLabel.setText(preferences.getStringValue("Hostname"));
 	}
 
-	private void initKeyboardActions() {
-		if (trackControl != null) {
-			trackControl.registerKeyboardAction(new AbstractAction() {
-
-				public void actionPerformed(ActionEvent e) {
-					if (trackControl.getSelectedIndex() == 0)
-						trackControl.setSelectedIndex(1);
-					else
-						trackControl.setSelectedIndex(0);
-				}
-
-			}, "", KeyStroke.getKeyStroke(KeyEvent.VK_BACK_QUOTE, 0),
-					JComponent.WHEN_IN_FOCUSED_WINDOW);
-		}
-	}
-
 	public void updateGUI() {
 		if (!fileMode) {
 			HibernatePersistence.disconnect();
@@ -342,8 +330,20 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 		updateTurnouts();
 		updateLocomotives();
+        disableNavigationKeys(mainPanel);
+        mainPanel.requestFocus();
 	}
 
+	private void disableNavigationKeys (Component comp) {
+		comp.setFocusTraversalKeysEnabled(false);
+		if (comp instanceof Container) {
+			Component[] children = ((Container)comp).getComponents();
+			for (int i = 0; i < children.length; i++) {
+				disableNavigationKeys(children[i]);
+			}
+		}
+	}
+    
 	private void updateLocomotives() {
 		locomotivePersistence.reload();
 		locomotiveControl.update();
@@ -888,7 +888,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 				// EnablerDisabler.setEnable(true, trackControlPanel);
 				// EnablerDisabler.setEnable(true, locomotiveControlPanel);
-				initKeyboardActions();
 				// updateGUI();
 				updateCommandHistory("Connected to server " + host
 						+ " on port " + port);
