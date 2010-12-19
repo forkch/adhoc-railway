@@ -37,6 +37,7 @@ import java.net.ConnectException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.Set;
 
 import javax.persistence.PersistenceException;
 import javax.swing.AbstractAction;
@@ -99,6 +100,11 @@ import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.SERVER;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
+import de.dermoba.srcp.model.power.SRCPPowerControl;
+import de.dermoba.srcp.model.power.SRCPPowerState;
+import de.dermoba.srcp.model.power.SRCPPowerSupply;
+import de.dermoba.srcp.model.power.SRCPPowerSupplyChangeListener;
+import de.dermoba.srcp.model.power.SRCPPowerSupplyException;
 
 public class AdHocRailway extends JFrame implements CommandDataListener,
 		InfoDataListener, PreferencesKeys {
@@ -119,6 +125,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private LocomotivePersistenceIface	locomotivePersistence;
 
+    private SRCPPowerControl powerControl;
+    
 	private SRCPLockControl				lockControl;
 
 	private RouteControlIface			routeControl;
@@ -146,6 +154,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private JMenuItem					daemonDisconnectItem;
 
 	private JMenuItem					daemonResetItem;
+
+    private JMenuItem daemonPowerOnItem;
+
+    private JMenuItem daemonPowerOffItem;
 
 	private JButton						toggleFullscreenButton;
 
@@ -185,7 +197,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         */
 		}
 		instance = this;
-		splash = new SplashWindow(createImageIcon("splash.png"), this, 500, 11);
+		splash = new SplashWindow(createImageIcon("splash.png"), this, 500, 12);
 		setIconImage(createImageIcon("RailControl.png").getImage());
 
 		initProceeded("Loading Persistence Layer (Preferences)");
@@ -242,6 +254,23 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			String url = "jdbc:mysql://" + host + "/" + database;
 			setTitle(AdHocRailway.TITLE + " [" + url + "]");
 		}
+        initProceeded("Loading Control Layer (Power Supplies)");
+        powerControl = SRCPPowerControl.getInstance();
+        powerControl.addPowerSupplyChangeListener
+            (new SRCPPowerSupplyChangeListener() {
+            @Override
+            public void powerSupplyChanged(SRCPPowerSupply powerSupply) {
+                if (daemonPowerOnItem != null) {
+                    daemonPowerOnItem.setEnabled
+                        (!powerControl.isCommonState(SRCPPowerState.ON));
+                }
+                if (daemonPowerOffItem != null) {
+                    daemonPowerOffItem.setEnabled
+                        (!powerControl.isCommonState(SRCPPowerState.OFF));
+                }
+            }
+        });
+        
 		initProceeded("Loading Control Layer (Locomotives)");
 		locomotiveControl = SRCPLocomotiveControlAdapter.getInstance();
 		locomotiveControl.setLocomotivePersistence(locomotivePersistence);
@@ -872,6 +901,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				session.getCommandChannel().addCommandDataListener(
 						AdHocRailway.this);
 				session.getInfoChannel().addInfoDataListener(AdHocRailway.this);
+                powerControl.setSession(session);
 				((SRCPTurnoutControlAdapter) turnoutControl)
 						.setSession(session);
 				((SRCPLocomotiveControlAdapter) locomotiveControl)
@@ -930,6 +960,44 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 	}
 
+    private class PowerOnAction extends AbstractAction {
+        public PowerOnAction() {
+            super("Power On");
+        }
+
+        /* (non-Javadoc)
+         * @see java.awt.event.ActionListener
+         * #actionPerformed(java.awt.event.ActionEvent)
+         */
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            try {
+                powerControl.setAllStates(SRCPPowerState.ON);
+            } catch (SRCPPowerSupplyException e) {
+                ExceptionProcessor.getInstance().processException(e);
+            }
+        }
+    }
+    
+    private class PowerOffAction extends AbstractAction {
+        public PowerOffAction() {
+            super("Power Off");
+        }
+
+        /* (non-Javadoc)
+         * @see java.awt.event.ActionListener
+         * #actionPerformed(java.awt.event.ActionEvent)
+         */
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            try {
+                powerControl.setAllStates(SRCPPowerState.OFF);
+            } catch (SRCPPowerSupplyException e) {
+                ExceptionProcessor.getInstance().processException(e);
+            }
+        }
+    }
+    
 	private class ResetAction extends AbstractAction {
 
 		public ResetAction() {
@@ -1078,12 +1146,21 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		daemonConnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
 				ActionEvent.CTRL_MASK));
 		daemonDisconnectItem = new JMenuItem(new DisconnectAction());
+        daemonPowerOnItem = new JMenuItem(new PowerOnAction());
+        assignAccelerator(daemonPowerOnItem, "PowerOn");
+        daemonPowerOnItem.setEnabled(true);
+        daemonPowerOffItem = new JMenuItem(new PowerOffAction());
+        assignAccelerator(daemonPowerOffItem, "PowerOff");
+        daemonPowerOffItem.setEnabled(true);
 		daemonResetItem = new JMenuItem(new ResetAction());
 		daemonDisconnectItem.setEnabled(false);
 		daemonResetItem.setEnabled(false);
 		daemonMenu.add(daemonConnectItem);
 		daemonMenu.add(daemonDisconnectItem);
 		daemonMenu.add(new JSeparator());
+        daemonMenu.add(daemonPowerOnItem);
+        daemonMenu.add(daemonPowerOffItem);
+        daemonMenu.add(new JSeparator());
 		daemonMenu.add(daemonResetItem);
 
 		/* VIEW */
@@ -1103,6 +1180,17 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		// addMenu(helpMenu);
 		setJMenuBar(menuBar);
 	}
+
+    /**
+     * 
+     */
+    private void assignAccelerator(JMenuItem item, String actionName) {
+        Set<KeyStroke> strokes 
+            = preferences.getKeyBoardLayout().getKeys(actionName);
+        if (strokes != null && strokes.size() > 0) {
+            item.setAccelerator(strokes.iterator().next());
+        }
+    }
 
 	public void addMenu(JMenu menu) {
 		menuBar.add(menu);
