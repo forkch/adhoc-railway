@@ -18,9 +18,9 @@ communicate with a srcp-server.
 AdHoc-Railway works with files or a database as datastorage.
 
 If you want to use a database as datastorage install a MySQL-server, create a 
-database and execute the SQL-Script adhocrailway.sql in the etc/ directory
+database and execute the SQL-Script adhocrailway.sql in the db/ directory
 
-Adjust the database settings accordingly in the file adhocrailway.conf. Below is an example:
+Adjust the database settings accordingly in the file adhocrailway.conf (copy adhocrailway.conf.sample). Below is an example:
 UseDatabase=true
 DatabaseHost=localhost
 DatabaseName=adhocrailway

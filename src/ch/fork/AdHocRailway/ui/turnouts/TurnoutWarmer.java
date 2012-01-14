@@ -18,19 +18,13 @@
 
 package ch.fork.AdHocRailway.ui.turnouts;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 
@@ -45,8 +39,6 @@ import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
 import de.dermoba.srcp.client.SRCPSession;
-import de.dermoba.srcp.common.exception.SRCPException;
-import de.dermoba.srcp.devices.GA;
 
 public class TurnoutWarmer extends ConfigurationDialog {
 	private SRCPSession session;

@@ -102,8 +102,6 @@ import de.dermoba.srcp.devices.SERVER;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.power.SRCPPowerControl;
 import de.dermoba.srcp.model.power.SRCPPowerState;
-import de.dermoba.srcp.model.power.SRCPPowerSupply;
-import de.dermoba.srcp.model.power.SRCPPowerSupplyChangeListener;
 import de.dermoba.srcp.model.power.SRCPPowerSupplyException;
 
 public class AdHocRailway extends JFrame implements CommandDataListener,
@@ -197,11 +195,75 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
         */
 		}
 		instance = this;
-		splash = new SplashWindow(createImageIcon("splash.png"), this, 500, 12);
+		splash = new SplashWindow(createImageIcon("splash.png"), this, 500, 11);
 		setIconImage(createImageIcon("RailControl.png").getImage());
 
 		initProceeded("Loading Persistence Layer (Preferences)");
 		preferences = Preferences.getInstance();
+		
+		boolean useDatabase = loadPersistenceLayer();
+		
+		loadControlLayer();
+
+		initProceeded("Creating GUI ...");
+		initGUI();
+		logger.info("Finished Creating GUI");
+
+		if (preferences.getBooleanValue(OPEN_LAST_FILE)) {
+			String lastFile = preferences.getStringValue(LAST_OPENED_FILE);
+			if (lastFile != null && !lastFile.equals("") && !useDatabase) {
+
+				new OpenFileAction().openFile(new File(preferences
+						.getStringValue(LAST_OPENED_FILE)));
+			} else if (useDatabase) {
+				updateGUI();
+			}
+		} else {
+			updateGUI();
+		}
+		if (preferences.getBooleanValue(AUTOCONNECT))
+			new ConnectAction().actionPerformed(null);
+		
+		
+		// EnablerDisabler.setEnable(false, trackControlPanel);
+		// EnablerDisabler.setEnable(false, locomotiveControlPanel);
+
+		setSize(1000, 700);
+
+		TutorialUtils.locateOnOpticalScreenCenter(this);
+
+		initProceeded("RailControl started");
+		updateCommandHistory("RailControl started");
+		setVisible(true);
+	}
+
+	public static AdHocRailway getInstance() {
+		return instance;
+	}
+
+	private void loadControlLayer() {
+		powerControl = SRCPPowerControl.getInstance();
+		
+		initProceeded("Loading Control Layer (Locomotives)");
+		locomotiveControl = SRCPLocomotiveControlAdapter.getInstance();
+		locomotiveControl.setLocomotivePersistence(locomotivePersistence);
+		locomotiveControl.update();
+
+		initProceeded("Loading Control Layer (Turnouts)");
+		turnoutControl = SRCPTurnoutControlAdapter.getInstance();
+		turnoutControl.setPersistence(turnoutPersistence);
+		turnoutControl.update();
+
+		initProceeded("Loading Control Layer (Routes)");
+		routeControl = SRCPRouteControlAdapter.getInstance();
+		routeControl.setRoutePersistence(routePersistence);
+		routeControl.update();
+
+		initProceeded("Loading Control Layer (Locks)");
+		lockControl = SRCPLockControl.getInstance();
+	}
+
+	private boolean loadPersistenceLayer() {
 		boolean useDatabase = preferences
 				.getBooleanValue(PreferencesKeys.USE_DATABASE);
 
@@ -254,72 +316,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			String url = "jdbc:mysql://" + host + "/" + database;
 			setTitle(AdHocRailway.TITLE + " [" + url + "]");
 		}
-        initProceeded("Loading Control Layer (Power Supplies)");
-        powerControl = SRCPPowerControl.getInstance();
-        powerControl.addPowerSupplyChangeListener
-            (new SRCPPowerSupplyChangeListener() {
-            @Override
-            public void powerSupplyChanged(SRCPPowerSupply powerSupply) {
-                if (daemonPowerOnItem != null) {
-                    daemonPowerOnItem.setEnabled
-                        (!powerControl.isCommonState(SRCPPowerState.ON));
-                }
-                if (daemonPowerOffItem != null) {
-                    daemonPowerOffItem.setEnabled
-                        (!powerControl.isCommonState(SRCPPowerState.OFF));
-                }
-            }
-        });
-        
-		initProceeded("Loading Control Layer (Locomotives)");
-		locomotiveControl = SRCPLocomotiveControlAdapter.getInstance();
-		locomotiveControl.setLocomotivePersistence(locomotivePersistence);
-		locomotiveControl.update();
-
-		initProceeded("Loading Control Layer (Turnouts)");
-		turnoutControl = SRCPTurnoutControlAdapter.getInstance();
-		turnoutControl.setPersistence(turnoutPersistence);
-		turnoutControl.update();
-
-		initProceeded("Loading Control Layer (Routes)");
-		routeControl = SRCPRouteControlAdapter.getInstance();
-		routeControl.setRoutePersistence(routePersistence);
-		routeControl.update();
-
-		initProceeded("Loading Control Layer (Locks)");
-		lockControl = SRCPLockControl.getInstance();
-
-		initProceeded("Creating GUI ...");
-		initGUI();
-
-		if (preferences.getBooleanValue(OPEN_LAST_FILE)) {
-			String lastFile = preferences.getStringValue(LAST_OPENED_FILE);
-			if (lastFile != null && !lastFile.equals("") && !useDatabase) {
-
-				new OpenFileAction().openFile(new File(preferences
-						.getStringValue(LAST_OPENED_FILE)));
-			} else if (useDatabase) {
-				updateGUI();
-			}
-		} else {
-			updateGUI();
-		}
-		if (preferences.getBooleanValue(AUTOCONNECT))
-			new ConnectAction().actionPerformed(null);
-		// EnablerDisabler.setEnable(false, trackControlPanel);
-		// EnablerDisabler.setEnable(false, locomotiveControlPanel);
-
-		setSize(1000, 700);
-
-		TutorialUtils.locateOnOpticalScreenCenter(this);
-
-		initProceeded("RailControl started");
-		updateCommandHistory("RailControl started");
-		setVisible(true);
-	}
-
-	public static AdHocRailway getInstance() {
-		return instance;
+		return useDatabase;
 	}
 
 	private void initGUI() {
@@ -354,8 +351,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	public void updateGUI() {
 		if (!fileMode) {
-			HibernatePersistence.disconnect();
-			HibernatePersistence.connect();
+			//HibernatePersistence.disconnect();
+			//HibernatePersistence.connect();
 		}
 		updateTurnouts();
 		updateLocomotives();
@@ -969,7 +966,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
          * @see java.awt.event.ActionListener
          * #actionPerformed(java.awt.event.ActionEvent)
          */
-        @Override
         public void actionPerformed(ActionEvent arg0) {
             try {
                 powerControl.setAllStates(SRCPPowerState.ON);
@@ -988,7 +984,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
          * @see java.awt.event.ActionListener
          * #actionPerformed(java.awt.event.ActionEvent)
          */
-        @Override
         public void actionPerformed(ActionEvent arg0) {
             try {
                 powerControl.setAllStates(SRCPPowerState.OFF);

@@ -41,7 +41,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -67,39 +66,39 @@ import com.jgoodies.binding.list.ArrayListModel;
 
 public class LocomotiveWidget extends JPanel implements
 		LocomotiveChangeListener {
-	private static final long			serialVersionUID	= 1L;
+	private static final long serialVersionUID = 1L;
 
-	private JComboBox					locomotiveComboBox;
+	private JComboBox locomotiveComboBox;
 
-	private JComboBox					locomotiveGroupComboBox;
+	private JComboBox locomotiveGroupComboBox;
 
-	private JLabel						desc;
+	private JLabel desc;
 
-	private JProgressBar				speedBar;
+	private JProgressBar speedBar;
 
-	private JButton						increaseSpeed;
+	private JButton increaseSpeed;
 
-	private JButton						decreaseSpeed;
+	private JButton decreaseSpeed;
 
-	private JButton						stopButton;
+	private JButton stopButton;
 
-	private JButton						directionButton;
+	private JButton directionButton;
 
-	private LockToggleButton			lockButton;
+	private LockToggleButton lockButton;
 
-	private Locomotive					myLocomotive;
+	private Locomotive myLocomotive;
 
-	private int							number;
+	private int number;
 
-	private FunctionToggleButton[]		functionToggleButtons;
+	private FunctionToggleButton[] functionToggleButtons;
 
-	private LocomotiveSelectAction		locomotiveSelectAction;
+	private LocomotiveSelectAction locomotiveSelectAction;
 
-	private LocomotiveGroupSelectAction	groupSelectAction;
+	private LocomotiveGroupSelectAction groupSelectAction;
 
-	private JFrame						frame;
+	private JFrame frame;
 
-	private Object						defaultDisabledComboColor;
+	private Object defaultDisabledComboColor;
 
 	public LocomotiveWidget(int number, JFrame frame) {
 		super();
@@ -235,14 +234,14 @@ public class LocomotiveWidget extends JPanel implements
 	private void initKeyboardActions() {
 		KeyBoardLayout kbl = Preferences.getInstance().getKeyBoardLayout();
 		InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
-		getActionMap().put
-			("Accelerate" + number, new LocomotiveAccelerateAction());
+		getActionMap().put("Accelerate" + number,
+				new LocomotiveAccelerateAction());
 		kbl.assignKeys(inputMap, "Accelerate" + number);
-		getActionMap().put
-			("Deccelerate" + number, new LocomotiveDeccelerateAction());
+		getActionMap().put("Deccelerate" + number,
+				new LocomotiveDeccelerateAction());
 		kbl.assignKeys(inputMap, "Deccelerate" + number);
-		getActionMap().put
-			("ToggleDirection" + number, new LocomotiveToggleDirectionAction());
+		getActionMap().put("ToggleDirection" + number,
+				new LocomotiveToggleDirectionAction());
 		kbl.assignKeys(inputMap, "ToggleDirection" + number);
 	}
 
@@ -362,16 +361,22 @@ public class LocomotiveWidget extends JPanel implements
 				.getLocomotiveControl();
 		if (myLocomotive == null)
 			return;
-		double speedInPercent = ((double) locomotiveControl
+		float speedInPercent = ((float) locomotiveControl
 				.getCurrentSpeed(myLocomotive))
-				/ ((double) myLocomotive.getLocomotiveType().getDrivingSteps());
-		if (speedInPercent > 0.9) {
+				/ ((float) myLocomotive.getLocomotiveType().getDrivingSteps());
+
+		float hue = (1.0f - speedInPercent) * 0.3f;
+		Color speedColor = Color.getHSBColor(hue, 1.0f, 1.0f);
+
+		/*if (speedInPercent > 0.9) {
 			speedBar.setForeground(new Color(255, 0, 0));
 		} else if (speedInPercent > 0.7) {
 			speedBar.setForeground(new Color(255, 255, 0));
 		} else {
 			speedBar.setForeground(new Color(0, 255, 0));
-		}
+		}*/
+		
+		speedBar.setForeground(speedColor);
 		speedBar.setMinimum(0);
 		speedBar.setMaximum(myLocomotive.getLocomotiveType().getDrivingSteps());
 		speedBar.setValue(locomotiveControl.getCurrentSpeed(myLocomotive));
@@ -417,7 +422,7 @@ public class LocomotiveWidget extends JPanel implements
 	}
 
 	private class LocomotiveFunctionAction extends AbstractAction {
-		private int	function;
+		private int function;
 
 		public LocomotiveFunctionAction(int function) {
 			this.function = function;
@@ -444,7 +449,7 @@ public class LocomotiveWidget extends JPanel implements
 
 	private abstract class LocomotiveControlAction extends AbstractAction {
 
-		private long	time	= 0;
+		private long time = 0;
 
 		public void actionPerformed(ActionEvent e) {
 			if (myLocomotive == null)
@@ -464,47 +469,43 @@ public class LocomotiveWidget extends JPanel implements
 			}
 
 		}
-		
-		protected abstract void doPerformAction
-			(LocomotiveControlface locomotiveControl, Locomotive myLocomotive)
-			throws LocomotiveException;
+
+		protected abstract void doPerformAction(
+				LocomotiveControlface locomotiveControl, Locomotive myLocomotive)
+				throws LocomotiveException;
 	}
 
 	private class LocomotiveAccelerateAction extends LocomotiveControlAction {
 		@Override
-		protected void doPerformAction
-			(LocomotiveControlface locomotiveControl, Locomotive myLocomotive)
-			throws LocomotiveException {
+		protected void doPerformAction(LocomotiveControlface locomotiveControl,
+				Locomotive myLocomotive) throws LocomotiveException {
 			locomotiveControl.increaseSpeed(myLocomotive);
 		}
 	}
-	    
+
 	private class LocomotiveDeccelerateAction extends LocomotiveControlAction {
 		@Override
-		protected void doPerformAction
-			(LocomotiveControlface locomotiveControl, Locomotive myLocomotive)
-			throws LocomotiveException {
+		protected void doPerformAction(LocomotiveControlface locomotiveControl,
+				Locomotive myLocomotive) throws LocomotiveException {
 			locomotiveControl.decreaseSpeed(myLocomotive);
 		}
 	}
-	    
-	private class LocomotiveToggleDirectionAction
-		extends LocomotiveControlAction {
+
+	private class LocomotiveToggleDirectionAction extends
+			LocomotiveControlAction {
 		@Override
-		protected void doPerformAction
-			(LocomotiveControlface locomotiveControl, Locomotive myLocomotive)
-			throws LocomotiveException {
-            if (Preferences.getInstance().getBooleanValue
-                (PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
-                && locomotiveControl.getCurrentSpeed(myLocomotive) != 0) {
-                locomotiveControl.setSpeed
-                    (myLocomotive, 0, 
-                     locomotiveControl.getFunctions(myLocomotive));
-            }
+		protected void doPerformAction(LocomotiveControlface locomotiveControl,
+				Locomotive myLocomotive) throws LocomotiveException {
+			if (Preferences.getInstance().getBooleanValue(
+					PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
+					&& locomotiveControl.getCurrentSpeed(myLocomotive) != 0) {
+				locomotiveControl.setSpeed(myLocomotive, 0,
+						locomotiveControl.getFunctions(myLocomotive));
+			}
 			locomotiveControl.toggleDirection(myLocomotive);
 		}
 	}
-	    
+
 	private class StopAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
 			if (myLocomotive == null)
@@ -528,13 +529,12 @@ public class LocomotiveWidget extends JPanel implements
 			try {
 				LocomotiveControlface locomotiveControl = AdHocRailway
 						.getInstance().getLocomotiveControl();
-	            if (Preferences.getInstance().getBooleanValue
-	            	(PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
-	                 && locomotiveControl.getCurrentSpeed(myLocomotive) != 0) {
-	            	locomotiveControl.setSpeed
-	            		(myLocomotive, 0, 
-	                     locomotiveControl.getFunctions(myLocomotive));
-	            }
+				if (Preferences.getInstance().getBooleanValue(
+						PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
+						&& locomotiveControl.getCurrentSpeed(myLocomotive) != 0) {
+					locomotiveControl.setSpeed(myLocomotive, 0,
+							locomotiveControl.getFunctions(myLocomotive));
+				}
 				locomotiveControl.toggleDirection(myLocomotive);
 				speedBar.requestFocus();
 				updateWidget();

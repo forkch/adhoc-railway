@@ -81,7 +81,7 @@
 	<!-- =================================================================== -->
 	<!-- RELEASE                                                             -->
 	<!-- =================================================================== -->
-	<target name="makerelease" description="Generates a release">
+	<target name="makerelease" depends="clean-all" description="Generates a release">
 		<antcall target="bin"/>
 		<antcall target="src"/>
 	</target>
@@ -114,14 +114,15 @@
 	<!-- =================================================================== -->
 	<!-- Zip targets                                                         -->
 	<!-- =================================================================== -->
-	<target name="bin" depends="clean-all, jar"
+	<target name="bin" depends="jar"
 		description="Builds the ZIP file containing all stuff">
 		<property name="bindir" value="${release.dir}/AdHoc-Railway-${release}-bin"/>
 		<delete file="AdHoc-Railway-${release}-bin.zip"/>
+		<delete file="AdHoc-Railway-${release}-bin.tar.bz2"/>
 		<mkdir dir=""/>
 		<copy todir="${bindir}">
 			<fileset dir="."
-				includes="ChangeLog, README, COPYING, TODO"
+				includes="ChangeLog, README, COPYING, TODO, adhocrailway.conf.sample"
 				excludes="**/.svn/"/>
 		</copy>
 		<copy todir="${bindir}">
@@ -149,14 +150,15 @@
 		<delete file="ChangeLog"/>
 	</target>
 	
-	<target name="src" depends="clean-all, javadoc"
+	<target name="src" depends="javadoc"
 		description="Builds the ZIP file containing all stuff">
 		<property name="srcdir" value="${release.dir}/AdHoc-Railway-${release}-src"/>
 		<delete file="AdHoc-Railway-${release}-src.zip"/>
+			<delete file="AdHoc-Railway-${release}-src.tar.bz2"/>
 		
 		<copy todir="${srcdir}">
 			<fileset dir="."
-				includes="ChangeLog, README, COPYING, TODO, build.xml,
+				includes="ChangeLog, README, COPYING, TODO, adhocrailway.conf.sample build.xml,
         build.properties"
 				excludes="**/.svn/"/>
 		</copy>
@@ -191,6 +193,11 @@
 	<target name="clean" description="Removes generated class files">
 		<delete dir="${build.dir}"/>
 		<delete dir="${release.dir}"/>
+		<delete file="AdHoc-Railway-${release}.jar"/>
+		<delete file="AdHoc-Railway-${release}-src.zip"/>
+			<delete file="AdHoc-Railway-${release}-src.tar.bz2"/>
+		<delete file="AdHoc-Railway-${release}-bin.zip"/>
+		<delete file="AdHoc-Railway-${release}-bin.tar.bz2"/>
 	</target>
 	<target name="clean-javadoc" description="Removes generated Javadoc files">
 		<delete dir="${javadoc.dir}"/>

@@ -22,10 +22,12 @@ import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
 
 import javax.swing.JOptionPane;
 
-public class ExceptionProcessor {
-	private ErrorPanel					errorPanel;
+import de.dermoba.srcp.common.exception.SRCPException;
 
-	private static ExceptionProcessor	instance;
+public class ExceptionProcessor {
+	private ErrorPanel errorPanel;
+
+	private static ExceptionProcessor instance;
 
 	private ExceptionProcessor(ErrorPanel errorPanel) {
 		this.errorPanel = errorPanel;
@@ -44,25 +46,19 @@ public class ExceptionProcessor {
 
 	public void processException(Exception e) {
 		e.printStackTrace();
-		if (e.getCause() != null) {
-			errorPanel.setErrorTextIcon(e.getMessage() + "\n"+ e.getCause()
-					.getMessage(), ImageTools
-					.createImageIcon("messagebox_critical.png"));
-		} else {
-			errorPanel.setErrorTextIcon(e.getMessage(), ImageTools
-					.createImageIcon("messagebox_critical.png"));
-		}
+
+		processException(e.getMessage(), e);
+
 	}
 
 	public void processException(String msg, Exception e) {
 		e.printStackTrace();
-		if (e.getCause() != null) {
-			errorPanel.setErrorTextIcon(msg, e.getMessage(), ImageTools
-					.createImageIcon("messagebox_critical.png"));
-		} else {
-			errorPanel.setErrorTextIcon(e.getMessage(), ImageTools
-					.createImageIcon("messagebox_critical.png"));
-		}
+
+		if(e instanceof SRCPException) 
+			msg = "SRCP: " + msg;
+		errorPanel.setErrorTextIcon(msg, e.getMessage(),
+				ImageTools.createImageIcon("messagebox_critical.png"));
+
 	}
 
 	public void processExceptionDialog(Exception e) {

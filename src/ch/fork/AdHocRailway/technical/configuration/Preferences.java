@@ -123,21 +123,20 @@ public class Preferences implements PreferencesKeys {
 		setIntValue(DEFAULT_LOCOMOTIVE_BUS, 1);
 		setBooleanValue(STOP_ON_DIRECTION_CHANGE, false);
 
-        configFile = new File(System.getProperty("user.home") + File.separator
-                + ".adhocrailway.conf");
-        if (configFile.exists()) {
-            props = new Properties();
-            try {
-                logger.info("found .adhocrailway.conf in users home directory");
-                props.load(new FileInputStream(configFile));
-                for (Object key : props.keySet()) {
-                    setStringValue(key.toString(),
-                            props.getProperty(key.toString()).toString());
-                }
-            } catch (FileNotFoundException e) {
-            } catch (IOException e) {
+		boolean found = findConfigFile();
+		if(!found)
+			throw new ConfigurationException("No config file found");
+		props = new Properties();
+        try {
+            props.load(new FileInputStream(configFile));
+            for (Object key : props.keySet()) {
+                setStringValue(key.toString(),
+                        props.getProperty(key.toString()).toString());
             }
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
         }
+        
         keyBoardLayouts = new HashMap<String, KeyBoardLayout>();
         Map<KeyBoardLayout,String> pendingBaseLinks 
             = new HashMap<KeyBoardLayout, String>();
@@ -153,6 +152,23 @@ public class Preferences implements PreferencesKeys {
              : pendingBaseLinks.entrySet()) {
             entry.getKey().setBase(keyBoardLayouts.get(entry.getValue()));
         }
+	}
+
+	private boolean findConfigFile() {
+		configFile = new File("./adhocrailway.conf");
+		if (configFile.exists()) {
+            logger.info("found adhocrailway.conf in current directory");
+            return true;
+        }
+		
+		
+        configFile = new File(System.getProperty("user.home") + File.separator
+                + ".adhocrailway.conf");
+        if (configFile.exists()) {
+            logger.info("found .adhocrailway.conf in user home directory");
+            return true;
+        }
+        return false;
 	}
 
     private KeyBoardLayout parseLayout
@@ -247,4 +263,57 @@ public class Preferences implements PreferencesKeys {
         return keyBoardLayouts
             .get(getStringValue(PreferencesKeys.KEYBOARD_LAYOUT));        
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((configFile == null) ? 0 : configFile.hashCode());
+		result = prime * result
+				+ ((hostnames == null) ? 0 : hostnames.hashCode());
+		result = prime * result
+				+ ((keyBoardLayouts == null) ? 0 : keyBoardLayouts.hashCode());
+		result = prime * result
+				+ ((preferences == null) ? 0 : preferences.hashCode());
+		result = prime * result + ((props == null) ? 0 : props.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Preferences other = (Preferences) obj;
+		if (configFile == null) {
+			if (other.configFile != null)
+				return false;
+		} else if (!configFile.equals(other.configFile))
+			return false;
+		if (hostnames == null) {
+			if (other.hostnames != null)
+				return false;
+		} else if (!hostnames.equals(other.hostnames))
+			return false;
+		if (keyBoardLayouts == null) {
+			if (other.keyBoardLayouts != null)
+				return false;
+		} else if (!keyBoardLayouts.equals(other.keyBoardLayouts))
+			return false;
+		if (preferences == null) {
+			if (other.preferences != null)
+				return false;
+		} else if (!preferences.equals(other.preferences))
+			return false;
+		if (props == null) {
+			if (other.props != null)
+				return false;
+		} else if (!props.equals(other.props))
+			return false;
+		return true;
+	}
 }

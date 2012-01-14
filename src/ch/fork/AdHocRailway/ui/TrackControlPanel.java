@@ -44,11 +44,11 @@ import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
@@ -317,19 +317,19 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 							.getInstance().getTurnoutPersistence();
 					TurnoutControlIface turnoutControl = AdHocRailway
 							.getInstance().getTurnoutControl();
-
+					int delay = Preferences.getInstance().getIntValue(
+							PreferencesKeys.ROUTING_DELAY);
 					for (Turnout t : turnoutPersistence.getAllTurnouts()) {
-						for (int i = 0; i < 15; i++) {
+						/*for (int i = 0; i < 15; i++) {
 							turnoutControl.toggle(t);
 							Thread
 									.sleep(3 * Preferences
 											.getInstance()
 											.getIntValue(
 													PreferencesKeys.ROUTING_DELAY));
-						}
+						}*/
 						turnoutControl.setDefaultState(t);
-						Thread.sleep(3 * Preferences.getInstance().getIntValue(
-								PreferencesKeys.ROUTING_DELAY));
+						Thread.sleep(3 * delay);
 					}
 				} catch (TurnoutException e1) {
 					ExceptionProcessor.getInstance().processException(e1);

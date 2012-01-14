@@ -1,27 +1,29 @@
 #
-#Sat Mar 29 13:07:50 CET 2008
-UseFixedTurnoutAndRouteGroupSizes=true
-Portnumber=12345
+#Wed Nov 24 19:37:33 CET 2010
+UseFixedTurnoutAndRouteGroupSizes=false
+DefaultTurnoutBus=1
 DefaultLockDuration=0
 DatabaseHost=localhost
-TabbedTrack=false
-UseFixedTurnoutGroupSizes=true
-SwitchControlesAmount=9
-LastOpenedFile=/home/fork/svn/AdHoc-Railway/samples/weekend_2007_routes_0.4.conf
+TabbedTrack=true
+SwitchControlesAmount=5
+LastOpenedFile=
 Hostname=localhost
-DatabaseUser=adhocrailway
-DatabaseName=adhocrailway
+StopOnDirectionChange=false
+DatabaseUser=
+DatabaseName=
 Autoconnect=false
 RouteControlesAmount=5
 LocomotiveControlesAmount=4
-Port=12345
+Port=4303
 WriteLog=true
+UseDatabase=false
 KeyBoardLayout=Swiss German
-UseDatabase=true
-LocomotivesControlesAmount=5
-DatabasePWD=adhocrailway
-Interface6051=true
-DefaultRoutingDelay=250
+DatabasePWD=
+KeyBoardLayout.de_ch=Swiss German;;SPACE\:LocomotiveStop;A\:Accelerate0;Y\:Deccelerate0;Q\:ToggleDirection0;S\:Accelerate1;X\:Deccelerate1;W\:ToggleDirection1;D\:Accelerate2;C\:Deccelerate2;E\:ToggleDirection2;F\:Accelerate3;V\:Deccelerate3;R\:ToggleDirection3;G\:Accelerate4;B\:Deccelerate4;T\:ToggleDirection4;H\:Accelerate5;N\:Deccelerate5;Z\:ToggleDirection5;J\:Accelerate6;M\:Deccelerate6;U\:ToggleDirection6;K\:Accelerate7;COMMA\:Deccelerate7;I\:ToggleDirection7;L\:Accelerate8;DECIMAL\:Deccelerate8;O\:ToggleDirection8;COLON\:Accelerate9;MINUS\:Deccelerate9;P\:ToggleDirection9;PERIOD\:RouteNumberEntered;DECIMAL\:RouteNumberEntered;BACK_SLASH\:EnableRoute;ENTER\:DisableRoute;ADD\:EnableRoute;BACK_SPACE\:EnableRoute;DIVIDE\:CurvedLeft;MULTIPLY\:Straight;SUBTRACT\:CurvedRight;BACK_QUOTE\:NextSelected
+Interface6051=false
+DefaultLocomotiveBus=1
+KeyBoardLayout.en=English;;SPACE\:LocomotiveStop;A\:Accelerate0;Z\:Deccelerate0;Q\:ToggleDirection0;S\:Accelerate1;X\:Deccelerate1;W\:ToggleDirection1;D\:Accelerate2;C\:Deccelerate2;E\:ToggleDirection2;F\:Accelerate3;V\:Deccelerate3;R\:ToggleDirection3;G\:Accelerate4;B\:Deccelerate4;T\:ToggleDirection4;H\:Accelerate5;N\:Deccelerate5;Y\:ToggleDirection5;J\:Accelerate6;M\:Deccelerate6;U\:ToggleDirection6;K\:Accelerate7;COMMA\:Deccelerate7;I\:ToggleDirection7;L\:Accelerate8;DECIMAL\:Deccelerate8;O\:ToggleDirection8;COLON\:Accelerate9;MINUS\:Deccelerate9;P\:ToggleDirection9;PERIOD\:RouteNumberEntered;DECIMAL\:RouteNumberEntered;BACK_SLASH\:EnableRoute;ENTER\:DisableRoute;ADD\:EnableRoute;BACK_SPACE\:EnableRoute;DIVIDE\:CurvedLeft;MULTIPLY\:Straight;SUBTRACT\:CurvedRight;BACK_QUOTE\:NextSelected
+DefaultRoutingDelay=150
 OpenLastFile=true
 DefaultActivationTime=50
-Fullscreen=true
+Fullscreen=false

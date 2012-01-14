@@ -58,6 +58,7 @@ public abstract class HibernatePersistence {
 				.getStringValue(PreferencesKeys.DATABASE_USER));
 		configOverrides.put("hibernate.connection.password", preferences
 				.getStringValue(PreferencesKeys.DATABASE_PWD));
+		
 		String host = preferences.getStringValue(PreferencesKeys.DATABASE_HOST);
 		
 		
