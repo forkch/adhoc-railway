@@ -191,7 +191,7 @@
 	<!-- Clean targets                                                       -->
 	<!-- =================================================================== -->
 	<target name="clean" description="Removes generated class files">
-		<delete dir="${build.dir}"/>
+		<!--delete dir="${build.dir}"/-->
 		<delete dir="${release.dir}"/>
 		<delete file="AdHoc-Railway-${release}.jar"/>
 		<delete file="AdHoc-Railway-${release}-src.zip"/>

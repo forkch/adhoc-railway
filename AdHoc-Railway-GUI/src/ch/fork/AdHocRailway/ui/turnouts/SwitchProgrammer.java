@@ -52,9 +52,8 @@ public class SwitchProgrammer extends ConfigurationDialog {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					int address = Integer.parseInt(e.getActionCommand());
-					GA ga = new GA(session);
+					GA ga = new GA(session,1);
 					ga.setAddress(address);
-					ga.setBus(1);
 					try {
 						ga.set(0, 1, 1000);
 					} catch (SRCPException e1) {
