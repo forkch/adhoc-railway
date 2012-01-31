@@ -8,7 +8,11 @@
 
 #define MODE_SOLENOID 0
 #define MODE_LOCO 1
+
+#define GREEN_LED PC0
+#define RED_LED PC1
 unsigned char pwm_mode = 0;
+unsigned char isLocoCommand = 1;
 
 #define MAX_COMMAND_QUEUE 1
 #define MAX_SOLENOID_QUEUE 20
@@ -25,9 +29,19 @@ typedef struct LocoData {
 	char isNewProtocol :1;
 };
 
-unsigned char portData[8];
+uint8_t currentLocoIdx = 79;
+/*typedef struct LocoRefresh {
+ struct LocoData* locoData;
+ struct LocoRefresh* next;
+ struct LocoRefresh* previous;
+ };
+
+ struct LocoRefresh locoRefreshStart;
+ struct LocoRefresh locoRefreshEnd;
+ */
 
 struct LocoData locoData[80];
+struct LocoData* newLoco = 0;
 
 typedef struct SolenoidData {
 	unsigned char address;
@@ -37,18 +51,26 @@ typedef struct SolenoidData {
 	char deactivate :1;
 };
 
+uint8_t debugCounter = 0;
+
 struct SolenoidData solenoidData[MAX_SOLENOID_QUEUE];
+
 uint8_t solenoidDataIdxInsert = 0;
 uint8_t solenoidDataIdxPop = 0;
+
+unsigned char portData[8];
+unsigned char deltaSpeedData[16];
 
 volatile unsigned char pwmQueueIdx = 0;
 unsigned char commandQueue[2][54];
 
 volatile uint8_t actualBit = 0;
 
-unsigned char cmd[4];
+unsigned char cmd[5];
 unsigned char prepareNextData = 1;
-
+uint8_t stop = 0;
+uint8_t newSolenoid = 0;
+uint8_t maetthusEnpreller = 0;
 
 /****** Funtion Declarations ******/
 void initPWM();
@@ -68,7 +90,6 @@ void initLocoData();
 void prepareDataForPWM();
 void processData();
 
-
 int main() {
 
 	DDRD = (1 << PD0) | (1 << PD1) | (1 << PD2) | (1 << PD3); /* Output */
@@ -83,13 +104,10 @@ int main() {
 	initLocoData();
 	initPortData();
 
-	TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
-
-	//SOLENDOID FREQUENCY
+	//Loco FREQUENCY
+	pwm_mode = MODE_LOCO;
 	TCCR1A &= ~(1 << COM1A1); // DEACTIVATE PWM
-	ICR1H = 0x00;
-	ICR1L = 0xCC; // counting to TOP takes
-	pwm_mode = MODE_SOLENOID;
+	ICR1 = 0x192; // counting to TOP takes
 	TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
 
 	sei();
@@ -97,13 +115,36 @@ int main() {
 	//Do this forever
 	while (1) {
 
+		/*unsigned char cmdAvail = 0;
+		if (PINC & (1 << PC3) && stop == 0) {
+			cmdAvail = 1;
+			cmd[0] = 'w';
+			cmd[1] = 0x20;
+			cmd[2] = 0x0;
+			stop = 1;
+			_delay_ms(10);
+		} else if ((PINC & (1 << PC3)) == 0 && stop == 1) {
+			stop = 0;
+			_delay_ms(10);
+		}*/
+
+		debugCounter++;
+
 		unsigned char cmdAvail = checkForNewCommand();
 
-		if (cmdAvail) {
+		if (cmdAvail == 1) {
 			processData(cmd);
 		}
 
-		if (prepareNextData)
+		/*transmitUSART('m');
+		 transmitUSART(' ');
+		 transmitUSART(debugCounter);
+		 transmitUSART(' ');
+		 transmitUSART(' ');
+		 transmitUSART(prepareNextData + 48);
+		 transmitUSART('\n');*/
+
+		if (prepareNextData == 1)
 			prepareDataForPWM();
 
 		// TODO: check for timer timeout
@@ -113,10 +154,8 @@ int main() {
 	return 0;
 }
 
-
 void processData() {
 	if (cmd[0] == 'w') {
-
 		//solenoid
 		uint8_t t = cmd[1] - 1;
 		unsigned char address = locoData[t].address;
@@ -131,20 +170,49 @@ void processData() {
 		solenoidDataIdxInsert++;
 		solenoidDataIdxInsert = solenoidDataIdxInsert % MAX_SOLENOID_QUEUE;
 
-	} else {
-		//TODO: loco
+		newSolenoid = 1;
+		/*transmitUSART('w');
+		 transmitUSART('\n');*/
+	} else if (cmd[0] == 'l') {
+		// loco
+		//unsigned char functions = 0;
+		//unsigned char config = cmd[4];
 
+		unsigned char address = cmd[1];
+		int8_t speed = cmd[2];
+		uint8_t t = address - 1;
+		//locoData[t].active = (config >> 7) & 1;
+		//locoData[t].isNewProtocol = (config >> 6) & 1;
+		locoData[t].active = 1;
+		locoData[t].isNewProtocol = 0;
+		if (locoData[t].isNewProtocol) {
+			// NEW protocol
+		} else {
+			// OLD protocol (DELTA)
+
+			if (speed < 0) {
+				locoData[t].speed = deltaSpeedData[1];
+			} else if (speed == 0) {
+				locoData[t].speed = deltaSpeedData[0];
+			} else {
+				locoData[t].speed = deltaSpeedData[speed + 2];
+			}
+		}
+		newLoco = &locoData[t];
+
+		transmitUSART('l');
+		transmitUSART('\n');
 	}
-
 }
 
 void prepareDataForPWM() {
 
-	if (solenoidDataIdxInsert != solenoidDataIdxPop) {
+	unsigned char queueIdxLoc = 0; // = (pwmQueueIdx + 1) % 2;
+
+	//if (solenoidDataIdxInsert != solenoidDataIdxPop) {
+	if (newSolenoid == 1) {
+
 		// there is a new solenoid to handle!!
-
-		unsigned char queueIdxLoc = (pwmQueueIdx + 1) % 2;
-
 		unsigned char address = solenoidData[solenoidDataIdxPop].address;
 		unsigned char port = solenoidData[solenoidDataIdxPop].port;
 
@@ -181,17 +249,128 @@ void prepareDataForPWM() {
 		commandQueue[queueIdxLoc][52] = 2;
 		commandQueue[queueIdxLoc][53] = 2;
 
-		solenoidData[solenoidDataIdxPop].active = 1;
+		//solenoidData[solenoidDataIdxPop].active = 1;
+		//solenoidDataIdxPop++;
+		//solenoidDataIdxPop = solenoidDataIdxPop % MAX_SOLENOID_QUEUE;
+		pwm_mode = MODE_SOLENOID;
+		isLocoCommand = 0;
+		newSolenoid = 0;
+	} else {
+		struct LocoData* actualLoco = 0;
 
-		solenoidDataIdxPop++;
-		solenoidDataIdxPop = solenoidDataIdxPop % MAX_SOLENOID_QUEUE;
+		if (newLoco != 0) {
+			// there's a new loco command
+			actualLoco = newLoco;
+			newLoco = 0;
+		} else {
+			// do a loco refresh
+			uint8_t i = (currentLocoIdx + 1) % 80;
 
-		prepareNextData = 0;
+			while (1) {
+				//transmitUSART('s');
+				if (locoData[i].active == 1) {
+					currentLocoIdx = i;
+					actualLoco = &locoData[i];
+					break;
+				}
+				i = (i + 1) % 80;
+			}
+
+		}
+		if (actualLoco != 0) {
+			unsigned char address = actualLoco->address;
+			unsigned char speed = actualLoco->speed;
+
+			// address
+			for (uint8_t i = 0; i < 8; i++)
+				commandQueue[queueIdxLoc][i] = (address >> (7 - i)) & 1;
+
+			// function
+			commandQueue[queueIdxLoc][8] = 0;
+			commandQueue[queueIdxLoc][9] = 0;
+
+			// speed
+			for (uint8_t i = 0; i < 8; i++)
+				commandQueue[queueIdxLoc][10 + i] = (speed >> (7 - i)) & 1;
+
+			// pause
+			commandQueue[queueIdxLoc][18] = 2;
+			commandQueue[queueIdxLoc][19] = 2;
+			commandQueue[queueIdxLoc][20] = 2;
+			commandQueue[queueIdxLoc][21] = 2;
+			commandQueue[queueIdxLoc][22] = 2;
+			commandQueue[queueIdxLoc][23] = 2;
+
+			for (uint8_t i = 0; i < 24; i++)
+				commandQueue[queueIdxLoc][24 + i] =
+						commandQueue[queueIdxLoc][i];
+
+			commandQueue[queueIdxLoc][48] = 2;
+			commandQueue[queueIdxLoc][49] = 2;
+			commandQueue[queueIdxLoc][50] = 2;
+			commandQueue[queueIdxLoc][51] = 2;
+			commandQueue[queueIdxLoc][52] = 2;
+			commandQueue[queueIdxLoc][53] = 2;
+			pwm_mode = MODE_LOCO;
+			isLocoCommand = 1;
+		}
 	}
+
+	prepareNextData = 0;
+
 }
 
+void flash_twice_green() {
+	PORTC |= (1 << GREEN_LED);
+	_delay_ms(100);
+	PORTC &= ~(1 << GREEN_LED);
+	_delay_ms(100);
+	PORTC |= (1 << GREEN_LED);
+	_delay_ms(100);
+	PORTC &= ~(1 << GREEN_LED);
+}
+void flash_once_green() {
+	PORTC |= (1 << GREEN_LED);
+	_delay_ms(200);
+	PORTC &= ~(1 << GREEN_LED);
+	_delay_ms(200);
+}
+void flash_once_green_quick() {
+	PORTC |= (1 << GREEN_LED);
+	PORTC &= ~(1 << GREEN_LED);
+}
+void flash_once_red_quick() {
+	PORTC |= (1 << RED_LED);
+	PORTC &= ~(1 << RED_LED);
+}
+void flash_twice_red() {
+	PORTC |= (1 << RED_LED);
+	_delay_ms(100);
+	PORTC &= ~(1 << RED_LED);
+	_delay_ms(100);
+	PORTC |= (1 << RED_LED);
+	_delay_ms(100);
+	PORTC &= ~(1 << RED_LED);
+	_delay_ms(100);
+}
+void flash_once_red() {
+	PORTC |= (1 << RED_LED);
+	_delay_ms(100);
+	PORTC &= ~(1 << RED_LED);
+}
 
-
+void red_led_on() {
+	PORTC |= (1 << RED_LED);
+}
+void red_led_off() {
+	PORTC &= ~(1 << RED_LED);
+}
+void green_led_on() {
+	PORTC |= (1 << GREEN_LED);
+}
+void green_led_off() {
+	PORTC &= ~(1 << GREEN_LED);
+}
 /********* UART CODE **************/
 
 void initUSART(unsigned int ubrr) {
@@ -199,8 +378,7 @@ void initUSART(unsigned int ubrr) {
 	UBRRH = (unsigned char) (ubrr >> 8);
 	UBRRL = (unsigned char) ubrr;
 
-	/* Enable receiver and transmitter */
-	UCSRB = (1 << RXEN) | (1 << TXEN);
+	/* Enable receiver and transmitter */UCSRB = (1 << RXEN) | (1 << TXEN);
 	/* Set frame format: 8data, 2stop bit */
 	UCSRC = (1 << URSEL) | (1 << USBS) | (1 << UCSZ0) | (1 << UCSZ1);
 }
@@ -219,6 +397,7 @@ unsigned char receiveUSART(void) {
 		;
 
 	/* Get and return received data from buffer */
+
 	return UDR;
 }
 
@@ -227,20 +406,26 @@ unsigned char checkForNewCommand() {
 		return 0;
 	}
 
-	unsigned char b;
-
-	for (uint8_t i = 0; i < 4; i++) {
-		b = receiveUSART();
-		cmd[i] = b;
+	unsigned char b = receiveUSART();
+	cmd[0] = b;
+	if (b == 'w') {
+		for (uint8_t i = 1; i < 3; i++) {
+			b = receiveUSART();
+			cmd[i] = b;
+		}
+	} else if (b == 'l') {
+		for (uint8_t i = 1; i < 5; i++) {
+			b = receiveUSART();
+			cmd[i] = b;
+		}
 	}
 
 	return 1;
 }
 
-
 /********* PWM CODE **************/
 
-ISR(TIMER1_COMPA_vect) {
+ISR( TIMER1_COMPA_vect) {
 
 	if (prepareNextData == 1 && actualBit == 0) {
 		setSolenoidWait();
@@ -248,30 +433,51 @@ ISR(TIMER1_COMPA_vect) {
 	}
 
 	if (actualBit == 0) {
-		pwmQueueIdx = (pwmQueueIdx + 1) % 2;
-		prepareNextData = 1;
+//		if (pwmQueueIdx == 0)
+//			pwmQueueIdx = 1;
+//		else
+//			pwmQueueIdx = 0;
+//		pwmQueueIdx = (pwmQueueIdx + 1) % 2;
+		//pwmQueueIdx = 0;
+
+		//uint8_t pwmQueueIdxLoc = pwmQueueIdx;
+		//pwmQueueIdxLoc = (pwmQueueIdxLoc + 1) % 2;
+
+		if (pwm_mode == MODE_SOLENOID) {
+			//SOLENDOID FREQUENCY
+			//TCCR1A &= ~(1 << COM1A1); // DEACTIVATE PWM
+			ICR1H = 0x00;
+			ICR1L = 0xCC; // counting to TOP takes
+			//TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
+		} else {
+			//LOCO FREQUENCY
+			//TCCR1A &= ~(1 << COM1A1); // DEACTIVATE PWM
+			ICR1 = 0x198;
+			//TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
+		}
+
 	}
 
 	if (actualBit > 53) {
 		setSolenoidWait();
 		actualBit = 0;
+		prepareNextData = 1;
 		return;
 	}
 
-	unsigned char b = commandQueue[pwmQueueIdx][actualBit];
+	unsigned char b = commandQueue[0][actualBit];
 
 	if (b == 0) {
-		pwm_mode == MODE_SOLENOID ? setSolenoid0() : setLoco0();
+		isLocoCommand == 0 ? setSolenoid0() : setLoco0();
 	} else if (b == 1) {
-		pwm_mode == MODE_SOLENOID ? setSolenoid1() : setLoco1();
+		isLocoCommand == 0 ? setSolenoid1() : setLoco1();
 	} else if (b == 2) {
-		pwm_mode == MODE_SOLENOID ? setSolenoidWait() : setLocoWait();
+		isLocoCommand == 0 ? setSolenoidWait() : setLocoWait();
 	}
 
 	actualBit++;
 
 }
-
 
 void initPWM() {
 
@@ -322,7 +528,6 @@ void setLocoWait() {
 	OCR1A = 0;
 }
 
-
 /******* INIT DATA *********/
 
 void initPortData() {
@@ -338,6 +543,28 @@ void initPortData() {
 
 }
 void initLocoData() {
+
+	/*locoRefreshStart.locoData = 0;
+	 locoRefreshStart.next = &locoRefreshEnd;
+	 locoRefreshEnd.previous = &locoRefreshStart;*/
+
+	deltaSpeedData[0] = 0;
+	deltaSpeedData[1] = 192;
+	deltaSpeedData[2] = 48;
+	deltaSpeedData[3] = 240;
+	deltaSpeedData[4] = 12;
+	deltaSpeedData[5] = 204;
+	deltaSpeedData[6] = 60;
+	deltaSpeedData[7] = 252;
+	deltaSpeedData[8] = 3;
+	deltaSpeedData[9] = 195;
+	deltaSpeedData[10] = 51;
+	deltaSpeedData[11] = 243;
+	deltaSpeedData[12] = 15;
+	deltaSpeedData[13] = 207;
+	deltaSpeedData[14] = 63;
+	deltaSpeedData[15] = 255;
+
 	locoData[0].address = 192;
 	locoData[1].address = 128;
 	locoData[2].address = 48;
@@ -419,685 +646,10 @@ void initLocoData() {
 	locoData[77].address = 42;
 	locoData[78].address = 234;
 	locoData[79].address = 0;
-}
 
-
-#define TEST -1
-#if TEST == 0
-//Pause, Bin 1, Pause, Bin 0,...
-ISR(TIMER1_COMPA_vect) {
-	if (cycle == 0) {
-		setSolenoidWait();
-		cycle = 1;
-	} else if (cycle == 1) {
-		setSolenoid1();
-		cycle = 2;
-	} else if (cycle == 2) {
-		setSolenoidWait();
-		cycle = 3;
-	} else if (cycle == 3) {
-		setSolenoid0();
-		cycle = 0;
+	for (uint8_t i = 0; i < 80; i++) {
+		locoData[i].active = 0;
 	}
+	locoData[0].active = 1;
 }
 
-#elif TEST == 1
-//Pause, Tern 0, Pause,...
-ISR(TIMER1_COMPA_vect) {
-	if (cycle == 0) {
-		setSolenoidWait();
-		cycle = 1;
-	} else if (cycle == 1) {
-		setSolenoid0();
-		cycle = 2;
-	} else if (cycle == 2) {
-		setSolenoid0();
-		cycle = 3;
-	} else if (cycle == 3) {
-		setSolenoidWait();
-		cycle = 0;
-	}
-}
-#elif TEST == 2
-
-//Pause, Tern 1, Pause,...
-ISR(TIMER1_COMPA_vect) {
-	if (cycle == 0) {
-		setSolenoidWait();
-		cycle = 1;
-	} else if (cycle == 1) {
-		setSolenoid1();
-		cycle = 2;
-	} else if (cycle == 2) {
-		setSolenoid1();
-		cycle = 3;
-	} else if (cycle == 3) {
-		setSolenoidWait();
-		cycle = 0;
-	}
-}
-
-#elif TEST == 3
-//Pause, Tern OPEN, Pause,...
-ISR(TIMER1_COMPA_vect) {
-	if (cycle == 0) {
-		setSolenoidWait();
-		cycle = 1;
-	} else if (cycle == 1) {
-		setSolenoid1();
-		cycle = 2;
-	} else if (cycle == 2) {
-		setSolenoid0();
-		cycle = 0;
-	}
-}
-#elif TEST == 4
-
-ISR(TIMER1_COMPA_vect) {
-
-//HUGE SWITCH JUST FOR TESTING!!!!
-	switch (cycle) {
-
-		case 0:
-		setSolenoid1(); // ADDR1 OPEN
-		break;
-		case 1:
-		setSolenoid0();
-		break;
-		case 2:
-		setSolenoid1();// ADDR2 1
-		break;
-		case 3:
-		setSolenoid1();
-		break;
-		case 4:
-		setSolenoid0();// ADDR3 0
-		break;
-		case 5:
-		setSolenoid0();
-		break;
-		case 6:
-		setSolenoid1();// ADDR4 1
-		break;
-		case 7:
-		setSolenoid1();
-		break;
-		case 8:
-		setSolenoid0();// ADDR5 0
-		break;
-		case 9:
-		setSolenoid0();
-		break;
-		case 10:
-		setSolenoid0();// D1 0
-		break;
-		case 11:
-		setSolenoid0();
-		break;
-		case 12:
-		setSolenoid0();// D2 0
-		break;
-		case 13:
-		setSolenoid0();
-		break;
-		case 14:
-		setSolenoid0();// D3 0
-		break;
-		case 15:
-		setSolenoid0();
-		break;
-		case 16:
-		setSolenoid1();// ON 1
-		break;
-		case 17:
-		setSolenoid1();
-		break;
-		case 18:
-		setSolenoidWait();
-		break;
-		case 19:
-		setSolenoidWait();
-		break;
-		case 20:
-		setSolenoidWait();
-		break;
-		case 21:
-		setSolenoidWait();
-		break;
-		case 22:
-		setSolenoidWait();
-		break;
-		case 23:
-		setSolenoidWait();
-		cycle = 0;
-		//STOP PWM
-//		TCCR1A &= ~(1 << COM1A1);
-		return;
-	}
-	cycle++;
-}
-
-#elif TEST == 5
-
-ISR(TIMER1_COMPA_vect) {
-
-//HUGE SWITCH JUST FOR TESTING!!!!
-	switch (cycle) {
-
-		case 0:
-		setSolenoid1(); // ADDR1 OPEN
-		break;
-		case 1:
-		setSolenoid0();
-		break;
-		case 2:
-		setSolenoid1();// ADDR2 1
-		break;
-		case 3:
-		setSolenoid1();
-		break;
-		case 4:
-		setSolenoid0();// ADDR3 0
-		break;
-		case 5:
-		setSolenoid0();
-		break;
-		case 6:
-		setSolenoid1();// ADDR4 1
-		break;
-		case 7:
-		setSolenoid1();
-		break;
-		case 8:
-		setSolenoid0();// ADDR5 0
-		break;
-		case 9:
-		setSolenoid0();
-		break;
-		case 10:
-		setSolenoid1();// D1 0
-		break;
-		case 11:
-		setSolenoid1();
-		break;
-		case 12:
-		setSolenoid0();// D2 0
-		break;
-		case 13:
-		setSolenoid0();
-		break;
-		case 14:
-		setSolenoid0();// D3 0
-		break;
-		case 15:
-		setSolenoid0();
-		break;
-		case 16:
-		setSolenoid1();// ON 1
-		break;
-		case 17:
-		setSolenoid1();
-		break;
-		case 18:
-		setSolenoidWait();
-		break;
-		case 19:
-		setSolenoidWait();
-		break;
-		case 20:
-		setSolenoidWait();
-		break;
-		case 21:
-		setSolenoidWait();
-		break;
-		case 22:
-		setSolenoidWait();
-		break;
-		case 23:
-		setSolenoidWait();
-		cycle = 0;
-		return;
-	}
-	cycle++;
-}
-
-#elif TEST == 6
-
-ISR(TIMER1_COMPA_vect) {
-
-//HUGE SWITCH JUST FOR TESTING!!!!
-	switch (cycle) {
-
-		case 0:
-		setSolenoid1(); // ADDR1 OPEN
-		break;
-		case 1:
-		setSolenoid0();
-		break;
-		case 2:
-		setSolenoid1();// ADDR2 1
-		break;
-		case 3:
-		setSolenoid1();
-		break;
-		case 4:
-		setSolenoid0();// ADDR3 0
-		break;
-		case 5:
-		setSolenoid0();
-		break;
-		case 6:
-		setSolenoid1();// ADDR4 1
-		break;
-		case 7:
-		setSolenoid1();
-		break;
-		case 8:
-		setSolenoid0();// ADDR5 0
-		break;
-		case 9:
-		setSolenoid0();
-		break;
-		case 10:
-		if (!previousPin) {
-			setSolenoid1(); // D1 1
-		} else {
-			setSolenoid0(); // D1 0
-		}
-		break;
-		case 11:
-		if (!previousPin) {
-			setSolenoid1(); // D1 1
-		} else {
-			setSolenoid0(); // D1 0
-		}
-		break;
-		case 12:
-		setSolenoid0(); // D2 0
-		break;
-		case 13:
-		setSolenoid0();
-		break;
-		case 14:
-		setSolenoid0();// D3 0
-		break;
-		case 15:
-		setSolenoid0();
-		break;
-		case 16:
-		setSolenoid0();// ON 1
-		break;
-		case 17:
-		setSolenoid0();
-		break;
-		case 18:
-		setSolenoidWait();
-		break;
-		case 19:
-		setSolenoidWait();
-		break;
-		case 20:
-		setSolenoidWait();
-		break;
-		case 21:
-		setSolenoidWait();
-		break;
-		case 22:
-		setSolenoidWait();
-		break;
-		case 23:
-		setSolenoidWait();
-		case 24:
-		setSolenoid1();// ADDR1 OPEN
-		break;
-		case 25:
-		setSolenoid0();
-		break;
-		case 26:
-		setSolenoid1();// ADDR2 1
-		break;
-		case 27:
-		setSolenoid1();
-		break;
-		case 28:
-		setSolenoid0();// ADDR3 0
-		break;
-		case 29:
-		setSolenoid0();
-		break;
-		case 30:
-		setSolenoid1();// ADDR4 1
-		break;
-		case 31:
-		setSolenoid1();
-		break;
-		case 32:
-		setSolenoid0();// ADDR5 0
-		break;
-		case 33:
-		setSolenoid0();
-		break;
-		case 34:
-		if (previousPin) {
-			setSolenoid1(); // D1 1
-		} else {
-			setSolenoid0(); // D1 0
-		}
-		break;
-		case 35:
-		if (previousPin) {
-			setSolenoid1(); // D1 1
-		} else {
-			setSolenoid0(); // D1 0
-		}
-		break;
-		case 36:
-		setSolenoid0(); // D2 0
-		break;
-		case 37:
-		setSolenoid0();
-		break;
-		case 38:
-		setSolenoid0();// D3 0
-		break;
-		case 39:
-		setSolenoid0();
-		break;
-		case 40:
-		setSolenoid1();// ON 1
-		break;
-		case 41:
-		setSolenoid1();
-		break;
-		case 42:
-		setSolenoidWait();
-		break;
-		case 43:
-		setSolenoidWait();
-		break;
-		case 44:
-		setSolenoidWait();
-		break;
-		case 45:
-		setSolenoidWait();
-		break;
-		case 46:
-		setSolenoidWait();
-		break;
-		case 47:
-		setSolenoidWait();
-		cycle = 0;
-		return;
-	}
-	cycle++;
-}
-#endif
-/*testData1[0] = 1;
- testData1[1] = 0;
- testData1[2] = 1;
- testData1[3] = 1;
- testData1[4] = 0;
- testData1[5] = 0;
- testData1[6] = 1;
- testData1[7] = 1;
- testData1[8] = 0;
- testData1[9] = 0;
- testData1[10] = 0;
- testData1[11] = 0;
- testData1[12] = 0;
- testData1[13] = 0;
- testData1[14] = 0;
- testData1[15] = 0;
- testData1[16] = 1;
- testData1[17] = 1;
- testData1[18] = 2;
- testData1[19] = 2;
- testData1[20] = 2;
- testData1[21] = 2;
- testData1[22] = 2;
- testData1[23] = 2;
-
- testData1[24] = testData1[0];
- testData1[25] = testData1[1];
- testData1[26] = testData1[2];
- testData1[27] = testData1[3];
- testData1[28] = testData1[4];
- testData1[29] = testData1[5];
- testData1[30] = testData1[6];
- testData1[31] = testData1[7];
- testData1[32] = testData1[8];
- testData1[33] = testData1[9];
- testData1[34] = testData1[10];
- testData1[35] = testData1[11];
- testData1[36] = testData1[12];
- testData1[37] = testData1[13];
- testData1[38] = testData1[14];
- testData1[39] = testData1[15];
- testData1[40] = testData1[16];
- testData1[41] = testData1[17];
- testData1[42] = testData1[18];
- testData1[43] = testData1[19];
- testData1[44] = testData1[20];
- testData1[45] = testData1[21];
- testData1[46] = testData1[22];
- testData1[47] = testData1[23];
-
- testData1[0 + 48] = 1;
- testData1[1 + 48] = 0;
- testData1[2 + 48] = 1;
- testData1[3 + 48] = 1;
- testData1[4 + 48] = 0;
- testData1[5 + 48] = 0;
- testData1[6 + 48] = 1;
- testData1[7 + 48] = 1;
- testData1[8 + 48] = 0;
- testData1[9 + 48] = 0;
- testData1[10 + 48] = 1;
- testData1[11 + 48] = 1;
- testData1[12 + 48] = 0;
- testData1[13 + 48] = 0;
- testData1[14 + 48] = 0;
- testData1[15 + 48] = 0;
- testData1[16 + 48] = 1;
- testData1[17 + 48] = 1;
- testData1[18 + 48] = 2;
- testData1[19 + 48] = 2;
- testData1[20 + 48] = 2;
- testData1[21 + 48] = 2;
- testData1[22 + 48] = 2;
- testData1[23 + 48] = 2;
-
- testData1[24 + 48] = testData1[0 + 48];
- testData1[25 + 48] = testData1[1 + 48];
- testData1[26 + 48] = testData1[2 + 48];
- testData1[27 + 48] = testData1[3 + 48];
- testData1[28 + 48] = testData1[4 + 48];
- testData1[29 + 48] = testData1[5 + 48];
- testData1[30 + 48] = testData1[6 + 48];
- testData1[31 + 48] = testData1[7 + 48];
- testData1[32 + 48] = testData1[8 + 48];
- testData1[33 + 48] = testData1[9 + 48];
- testData1[34 + 48] = testData1[10 + 48];
- testData1[35 + 48] = testData1[11 + 48];
- testData1[36 + 48] = testData1[12 + 48];
- testData1[37 + 48] = testData1[13 + 48];
- testData1[38 + 48] = testData1[14 + 48];
- testData1[39 + 48] = testData1[15 + 48];
- testData1[40 + 48] = testData1[16 + 48];
- testData1[41 + 48] = testData1[17 + 48];
- testData1[42 + 48] = testData1[18 + 48];
- testData1[43 + 48] = testData1[19 + 48];
- testData1[44 + 48] = testData1[20 + 48];
- testData1[45 + 48] = testData1[21 + 48];
- testData1[46 + 48] = testData1[22 + 48];
- testData1[47 + 48] = testData1[23 + 48];*/
-
-/*unsigned char data1[13] = { 0, 2, 1, 0, 1, 0, 0, 0, 0, 1, 3, 3, 3 };
- unsigned char data2[13] = { 0, 2, 1, 0, 1, 0, 1, 0, 0, 1, 3, 3, 3 };
- unsigned char data3[13] = { 0, 2, 1, 0, 1, 0, 0, 1, 0, 1, 3, 3, 3 };
- unsigned char data4[13] = { 0, 2, 1, 0, 1, 0, 1, 1, 0, 1, 3, 3, 3 };
-
- _delay_ms(500);
-
- offset = 48;
- fillData(data1);
- actualBit = 0;
-
- _delay_ms(500);
-
- offset = 48;
- fillData(data2);
- actualBit = 0;
-
- _delay_ms(500);
- offset = 0;
- fillData(data3);
- actualBit = 0;
-
- _delay_ms(500);
-
- offset = 48;
- fillData(data4);
- actualBit = 0;*/
-
-/*_delay_ms(1000);
- unsigned char dataLoco[13] = { 1, 0, 2, 2, 0, 0, 1, 1, 0, 0, 3, 3, 3 };
-
- offset = 0;
- fillData(dataLoco);
-
- if (dataLoco[0] == MODE_SOLENOID) {
- //SOLENDOID FREQUENCY
- TCCR1A &= ~(1 << COM1A1); // DEACTIVATE PWM
- ICR1H = 0x00;
- ICR1L = 0xCC; // counting to TOP takes
- pwm_mode = MODE_SOLENOID;
- TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
-
- actualBit = 0;
-
- } else {
- //LOCO FREQUENCY
- TCCR1A &= ~(1 << COM1A1);
- ICR1 = 408;
- pwm_mode = MODE_LOCO;
- TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
-
- actualBit = 0;
-
- while (actualBit != -1) {
- }
- _delay_ms(2);
-
-
- }*/
-
-//TCCR1A &= ~(1 << COM1A1); // DEACTIVATE PWM
-/*enqueueData(data1);
- enqueueData(data3);
- actualBit = 0;
- TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
-
-
- while (1) {
- }*/
-
-/*void enqueueData(unsigned char* data) {
-
- for (uint8_t i = 0; i < 12; i++) {
- uint8_t pos = (2 * i);
- uint8_t pos1 = pos + 1;
- uint8_t pos2 = pos + 24;
- uint8_t pos21 = pos1 + 24;
-
- uint8_t j = i + 1;
- unsigned char d = data[j];
- if (d == 0) {
- // ternary 0
- commandQueue[0][pos] = 0;
- commandQueue[0][pos1] = 0;
- commandQueue[0][pos2] = 0;
- commandQueue[0][pos21] = 0;
- } else if (d == 1) {
- // ternary 1
- commandQueue[0][pos] = 1;
- commandQueue[0][pos1] = 1;
- commandQueue[0][pos2] = 1;
- commandQueue[0][pos21] = 1;
- } else if (d == 2) {
- // ternary open
- commandQueue[0][pos] = 1;
- commandQueue[0][pos1] = 0;
- commandQueue[0][pos2] = 1;
- commandQueue[0][pos21] = 0;
- } else {
- // ternary wait
- commandQueue[0][pos] = 2;
- commandQueue[0][pos1] = 2;
- commandQueue[0][pos2] = 2;
- commandQueue[0][pos21] = 2;
- }
- }
-
- for (uint8_t i = 48; i < 54; i++) {
-
- commandQueue[0][i] = 2;
- }
- //cmdQueueIndex = (cmdQueueIndex + 1) % MAX_COMMAND_QUEUE;
- }*/
-
-/*commandQueue[queueIdxLoc][0] = 1;
- commandQueue[queueIdxLoc][1] = 0;
- commandQueue[queueIdxLoc][2] = 1;
- commandQueue[queueIdxLoc][3] = 1;
- commandQueue[queueIdxLoc][4] = 0;
- commandQueue[queueIdxLoc][5] = 0;
- commandQueue[queueIdxLoc][6] = 1;
- commandQueue[queueIdxLoc][7] = 1;
- commandQueue[queueIdxLoc][8] = 0;
- commandQueue[queueIdxLoc][9] = 0;
- commandQueue[queueIdxLoc][10] = 0;
- commandQueue[queueIdxLoc][11] = 0;
- commandQueue[queueIdxLoc][12] = 0;
- commandQueue[queueIdxLoc][13] = 0;
- commandQueue[queueIdxLoc][14] = 0;
- commandQueue[queueIdxLoc][15] = 0;
- commandQueue[queueIdxLoc][16] = 1;
- commandQueue[queueIdxLoc][17] = 1;
- commandQueue[queueIdxLoc][18] = 2;
- commandQueue[queueIdxLoc][19] = 2;
- commandQueue[queueIdxLoc][20] = 2;
- commandQueue[queueIdxLoc][21] = 2;
- commandQueue[queueIdxLoc][22] = 2;
- commandQueue[queueIdxLoc][23] = 2;
-
- commandQueue[queueIdxLoc][24] = 1;
- commandQueue[queueIdxLoc][25] = 0;
- commandQueue[queueIdxLoc][26] = 1;
- commandQueue[queueIdxLoc][27] = 1;
- commandQueue[queueIdxLoc][28] = 0;
- commandQueue[queueIdxLoc][29] = 0;
- commandQueue[queueIdxLoc][30] = 1;
- commandQueue[queueIdxLoc][31] = 1;
- commandQueue[queueIdxLoc][32] = 0;
- commandQueue[queueIdxLoc][33] = 0;
- commandQueue[queueIdxLoc][34] = 0;
- commandQueue[queueIdxLoc][35] = 0;
- commandQueue[queueIdxLoc][36] = 0;
- commandQueue[queueIdxLoc][37] = 0;
- commandQueue[queueIdxLoc][38] = 0;
- commandQueue[queueIdxLoc][39] = 0;
- commandQueue[queueIdxLoc][40] = 1;
- commandQueue[queueIdxLoc][41] = 1;
- commandQueue[queueIdxLoc][42] = 2;
- commandQueue[queueIdxLoc][43] = 2;
- commandQueue[queueIdxLoc][44] = 2;
- commandQueue[queueIdxLoc][45] = 2;
- commandQueue[queueIdxLoc][46] = 2;
- commandQueue[queueIdxLoc][47] = 2;
- commandQueue[queueIdxLoc][48] = 2;
- commandQueue[queueIdxLoc][49] = 2;
- commandQueue[queueIdxLoc][50] = 2;
- commandQueue[queueIdxLoc][51] = 2;
- commandQueue[queueIdxLoc][52] = 2;
- commandQueue[queueIdxLoc][53] = 2;*/
