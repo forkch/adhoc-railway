@@ -263,19 +263,20 @@ public class XMLImporter_0_4 extends DefaultHandler implements ContentHandler {
 		String name = attributes.getValue("name");
 		String desc = attributes.getValue("desc");
 		String type = attributes.getValue("type");
+		String image = attributes.getValue("image");
 		int bus = Integer.parseInt(attributes.getValue("bus"));
 		int address = Integer.parseInt(attributes.getValue("address"));
 		if (type.toUpperCase().equals("DELTA")) {
 			LocomotiveType locomotiveType = locomotivePersistence
 					.getLocomotiveTypeByName("DELTA");
 			actualLocomotive = new Locomotive(0, actualLocomotiveGroup,
-					locomotiveType, name, desc, "", address, bus);
+					locomotiveType, name, desc, image, address, bus);
 			locomotiveType.getLocomotives().add(actualLocomotive);
 		} else if (type.toUpperCase().equals("DIGITAL")) {
 			LocomotiveType locomotiveType = locomotivePersistence
 					.getLocomotiveTypeByName("DIGITAL");
 			actualLocomotive = new Locomotive(0, actualLocomotiveGroup,
-					locomotiveType, name, desc, "", address, bus);
+					locomotiveType, name, desc, image, address, bus);
 			locomotiveType.getLocomotives().add(actualLocomotive);
 		}
 	}

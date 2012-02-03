@@ -21,8 +21,12 @@ package ch.fork.AdHocRailway.ui.locomotives.configuration;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +35,17 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileFilter;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
+import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
 import ch.fork.AdHocRailway.ui.UIConstants;
 
@@ -54,27 +62,29 @@ import com.jgoodies.forms.layout.FormLayout;
 import de.dermoba.srcp.model.turnouts.MMTurnout;
 
 public class LocomotiveConfig extends JDialog implements PropertyChangeListener {
-	private boolean							okPressed;
+	private boolean okPressed;
 
-	private JTextField						nameTextField;
+	private JTextField nameTextField;
 
-	private JSpinner						busTextField;
+	private JSpinner busTextField;
 
-	private JSpinner						addressTextField;
+	private JSpinner addressTextField;
 
-	private JTextField						descTextField;
+	private JTextField descTextField;
 
-	private JTextField						imageTextField;
+	private JTextField imageTextField;
 
-	private JComboBox						locomotiveTypeComboBox;
+	private JComboBox locomotiveTypeComboBox;
 
-	private PresentationModel<Locomotive>	presentationModel;
+	private PresentationModel<Locomotive> presentationModel;
 
-	private JButton							okButton;
+	private JButton okButton;
 
-	private JButton							cancelButton;
+	private JButton cancelButton;
 
-	private boolean							cancelPressed;
+	private boolean cancelPressed;
+
+	private JLabel imageLabel;
 
 	public LocomotiveConfig(Frame owner, Locomotive myLocomotive) {
 		super(owner, "Locomotive Config", true);
@@ -104,8 +114,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private void initComponents() {
 
-		LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance()
-				.getLocomotivePersistence();
+		LocomotivePersistenceIface locomotivePersistence = AdHocRailway
+				.getInstance().getLocomotivePersistence();
 		nameTextField = BasicComponentFactory.createTextField(presentationModel
 				.getModel(Locomotive.PROPERTYNAME_NAME));
 		nameTextField.setColumns(10);
@@ -118,6 +128,62 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 				.createTextField(presentationModel
 						.getModel(Locomotive.PROPERTYNAME_IMAGE));
 		imageTextField.setColumns(10);
+		
+		
+		
+		imageLabel = new JLabel();
+		imageLabel.setHorizontalAlignment(JLabel.CENTER);
+		String image = presentationModel.getBean().getImage();
+
+		if (image != null && !image.isEmpty()
+				&& new File("locoimages/" + image).exists()) {
+			imageLabel.setIcon(ImageTools
+					.createImageIconFileSystem("locoimages/" + image));
+		}
+		
+imageTextField.addMouseListener(new MouseAdapter() {
+			
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				JFileChooser chooser = new JFileChooser("locoimages");
+				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				chooser.setFileFilter(new FileFilter() {
+					
+					@Override
+					public String getDescription() {
+						return "*.png";
+					}
+					
+					@Override
+					public boolean accept(File f) {
+						if(f.isDirectory())
+							return true;
+						if(f.getName().matches(".*\\.png"))
+							return true;
+						return false;
+					}
+				});
+				
+				int ret = chooser.showOpenDialog(LocomotiveConfig.this);
+				if(ret == JFileChooser.APPROVE_OPTION) {
+					presentationModel.getBean().setImage(chooser.getSelectedFile().getName());
+					String image = presentationModel.getBean().getImage();
+
+					if (image != null && !image.isEmpty()
+							&& new File("locoimages/" + image).exists()) {
+						imageLabel.setIcon(ImageTools
+								.createImageIconFileSystem("locoimages/" + image));
+						pack();
+					}else{
+						imageLabel.setIcon(null);
+						pack();
+					}
+				}
+				
+			}
+		});
 
 		busTextField = new JSpinner();
 		busTextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
@@ -154,7 +220,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow",
-				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 10dlu,p:grow");
+				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 10dlu,p:grow");
 		layout.setColumnGroups(new int[][] { { 1, 5 }, { 3, 7 } });
 		layout.setRowGroups(new int[][] { { 3, 5, 7, 9 } });
 
@@ -173,8 +239,10 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		builder.addLabel("Image", cc.xy(1, 7));
 		builder.add(imageTextField, cc.xy(3, 7));
 
-		builder.addLabel("Type", cc.xy(1, 9));
-		builder.add(locomotiveTypeComboBox, cc.xy(3, 9));
+		builder.add(imageLabel, cc.xyw(1, 9,3));
+
+		builder.addLabel("Type", cc.xy(1, 11));
+		builder.add(locomotiveTypeComboBox, cc.xy(3, 11));
 
 		builder.addSeparator("Interface", cc.xyw(5, 1, 3));
 
@@ -205,8 +273,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 		public void actionPerformed(ActionEvent e) {
 			Locomotive locomotive = presentationModel.getBean();
-			LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance()
-			.getLocomotivePersistence();
+			LocomotivePersistenceIface locomotivePersistence = AdHocRailway
+					.getInstance().getLocomotivePersistence();
 			if (locomotive.getId() == 0) {
 				locomotivePersistence.addLocomotive(locomotive);
 			} else {
@@ -245,8 +313,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private boolean validate(Locomotive locomotive, PropertyChangeEvent event) {
 
-		LocomotivePersistenceIface locomotivePersistence = AdHocRailway.getInstance()
-				.getLocomotivePersistence();
+		LocomotivePersistenceIface locomotivePersistence = AdHocRailway
+				.getInstance().getLocomotivePersistence();
 		boolean validate = true;
 		if (event == null
 				|| event.getPropertyName().equals(Locomotive.PROPERTYNAME_NAME)) {

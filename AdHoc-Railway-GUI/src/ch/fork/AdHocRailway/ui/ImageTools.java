@@ -25,5 +25,8 @@ public class ImageTools {
 	public static ImageIcon createImageIcon(String icon) {
 		return new ImageIcon(ClassLoader.getSystemResource(icon));
 	}
+	public static ImageIcon createImageIconFileSystem(String icon) {
+		return new ImageIcon(icon);
+	}
 
 }

@@ -30,6 +30,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.File;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -100,6 +101,8 @@ public class LocomotiveWidget extends JPanel implements
 
 	private Object defaultDisabledComboColor;
 
+	private JLabel imageLabel;
+
 	public LocomotiveWidget(int number, JFrame frame) {
 		super();
 		this.number = number;
@@ -154,9 +157,34 @@ public class LocomotiveWidget extends JPanel implements
 		controlPanel.add(speedBar, BorderLayout.EAST);
 		JPanel functionsPanel = initFunctionsControl();
 		JPanel speedControlPanel = initSpeedControl();
+
+		imageLabel = new  JLabel();
+		imageLabel.setHorizontalAlignment(JLabel.CENTER);
+		
 		controlPanel.add(functionsPanel, BorderLayout.WEST);
 		controlPanel.add(speedControlPanel, BorderLayout.CENTER);
+		controlPanel.add(imageLabel, BorderLayout.SOUTH);
+
+		setLocomotiveImage();
+		
 		return controlPanel;
+	}
+
+	/** 
+	 * @param imageLabel
+	 */
+	public void setLocomotiveImage() {
+		if(myLocomotive == null)
+			return;
+		String image = myLocomotive.getImage();
+
+		if (image != null && !image.isEmpty()
+				&& new File("locoimages/" + image).exists()) {
+			imageLabel.setIcon(ImageTools
+					.createImageIconFileSystem("locoimages/" + image));
+		}else{
+			imageLabel.setIcon(null);
+		}
 	}
 
 	private JPanel initFunctionsControl() {
@@ -407,6 +435,7 @@ public class LocomotiveWidget extends JPanel implements
 						.createImageIcon("locomotives/locked_by_enemy.png"));
 			}
 		}
+		setLocomotiveImage();
 		if (isFree()) {
 			locomotiveGroupComboBox.setEnabled(true);
 			locomotiveComboBox.setEnabled(true);

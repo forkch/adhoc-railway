@@ -34,10 +34,10 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 
 public class XMLExporter_0_4 {
 
-	private StringBuffer				sb;
-	private TurnoutPersistenceIface		turnoutPersistence;
-	private LocomotivePersistenceIface	locomotivePersistence;
-	private RoutePersistenceIface		routePersistence;
+	private StringBuffer sb;
+	private TurnoutPersistenceIface turnoutPersistence;
+	private LocomotivePersistenceIface locomotivePersistence;
+	private RoutePersistenceIface routePersistence;
 
 	public XMLExporter_0_4(TurnoutPersistenceIface turnoutPersistence,
 			LocomotivePersistenceIface locomotivePersistence,
@@ -50,7 +50,7 @@ public class XMLExporter_0_4 {
 
 	public String export() {
 		sb = new StringBuffer();
-		sb.append("<?xml version=\"1.0\"?>\n");
+		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<RailControl xmlns=\"http://www.fork.ch/RailControl\" "
 				+ "ExporterVersion=\"0.4\">\n");
 
@@ -69,7 +69,8 @@ public class XMLExporter_0_4 {
 
 			sb.append("<SwitchGroup ");
 			sb.append(" name=\"" + sg.getName() + "\" ");
-			sb.append(" turnoutNumberOffset=\"" + sg.getTurnoutNumberOffset() + "\" ");
+			sb.append(" turnoutNumberOffset=\"" + sg.getTurnoutNumberOffset()
+					+ "\" ");
 			sb.append(" turnoutAmount=\"" + sg.getTurnoutNumberAmount() + "\" ");
 			sb.append(">\n");
 			exportSwitches(sg);
@@ -104,8 +105,10 @@ public class XMLExporter_0_4 {
 		for (RouteGroup rg : routePersistence.getAllRouteGroups()) {
 
 			sb.append("<RouteGroup name=\"" + rg.getName() + "\"");
-			sb.append(" routeNumberOffset=\"" + rg.getRouteNumberOffset() + "\" ");
-			sb.append(" routeNumberAmount=\"" + rg.getRouteNumberAmount() + "\"");
+			sb.append(" routeNumberOffset=\"" + rg.getRouteNumberOffset()
+					+ "\" ");
+			sb.append(" routeNumberAmount=\"" + rg.getRouteNumberAmount()
+					+ "\"");
 			sb.append(" >\n");
 			exportRoutes(rg);
 			sb.append("</RouteGroup>\n");
@@ -138,7 +141,7 @@ public class XMLExporter_0_4 {
 				sb.append("<Locomotive name=\"" + l.getName() + "\" type=\""
 						+ l.getLocomotiveType().getTypeName() + "\" bus=\""
 						+ l.getBus() + "\" address=\"" + l.getAddress()
-						+ "\" desc=\"" + l.getDescription() + "\" />\n");
+						+ "\" desc=\"" + l.getDescription() + "\" image=\"" + l.getImage() + "\"/>\n");
 			}
 			sb.append("</LocomotiveGroup>\n");
 

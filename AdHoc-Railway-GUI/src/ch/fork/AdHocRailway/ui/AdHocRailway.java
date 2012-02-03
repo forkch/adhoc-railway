@@ -31,9 +31,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.ConnectException;
+import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
@@ -602,9 +602,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			XMLExporter_0_4 exporter = new XMLExporter_0_4(turnoutPersistence,
 					locomotivePersistence, routePersistence);
 			String xml = exporter.export();
-			FileWriter fw = new FileWriter(file);
-			fw.write(xml);
-			fw.close();
+			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file),"UTF-8");
+			out.write(xml);
+			out.close();
 			actualFile = file;
 		} catch (FileNotFoundException e1) {
 			ExceptionProcessor.getInstance().processException(e1);
