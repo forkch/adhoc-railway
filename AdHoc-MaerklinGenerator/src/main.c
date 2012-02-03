@@ -2,15 +2,20 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-#define FOSC 16000000
-#define BAUD 115200
-#define MYUBRR FOSC/16/BAUD-1
+#include "pwm.h"
+#include "spi.h"
+#include "uart.h"
+
+#define GREEN_LED PC4
+#define RED_LED PC5
+#define RED_GREEN_PORT PORTC
+#define RED_GREEN_DDR DDRC
+#define SWITCH PD7
+#define SWITCH_PORT PIND
 
 #define MODE_SOLENOID 0
 #define MODE_LOCO 1
 
-#define GREEN_LED PC0
-#define RED_LED PC1
 unsigned char pwm_mode = 0;
 unsigned char isLocoCommand = 1;
 
@@ -30,15 +35,6 @@ typedef struct LocoData {
 };
 
 uint8_t currentLocoIdx = 79;
-/*typedef struct LocoRefresh {
- struct LocoData* locoData;
- struct LocoRefresh* next;
- struct LocoRefresh* previous;
- };
-
- struct LocoRefresh locoRefreshStart;
- struct LocoRefresh locoRefreshEnd;
- */
 
 struct LocoData locoData[80];
 struct LocoData* newLoco = 0;
@@ -70,19 +66,8 @@ unsigned char cmd[5];
 unsigned char prepareNextData = 1;
 uint8_t stop = 0;
 uint8_t newSolenoid = 0;
-uint8_t maetthusEnpreller = 0;
 
 /****** Funtion Declarations ******/
-void initPWM();
-void setPWMOutput(uint16_t duty);
-void setSolenoid0();
-void setSolenoid1();
-void setSolenoidWait();
-void setLoco0();
-void setLoco1();
-void setLocoWait();
-void initUSART(unsigned int ubrr);
-void transmitUSART(unsigned char data);
 unsigned char receiveUSART(void);
 unsigned char checkForNewCommand();
 void initPortData();
@@ -92,8 +77,20 @@ void processData();
 
 int main() {
 
-	DDRD = (1 << PD0) | (1 << PD1) | (1 << PD2) | (1 << PD3); /* Output */
-	DDRC |= (1 << PC0) | (1 << PC1) | (1 << PC2);
+	SPI_MasterInit();
+	SPI_MasterTransmitDebug(0);
+
+	//DDRD |= (1 << PD0) | (1 << PD1) | (1 << PD2) | (1 << PD3); /* Output */
+
+	RED_GREEN_DDR |= (1 << GREEN_LED) | (1 << RED_LED);
+
+
+	_delay_ms(100);
+	for (uint8_t i = 1; i < 64;) {
+		SPI_MasterTransmitGO(i);
+		i = i * 2;
+		_delay_ms(100);
+	}
 
 	//Initialize PWM Channel 1
 	initPWM();
@@ -112,21 +109,20 @@ int main() {
 
 	sei();
 
+	uint8_t i = 1;
+
 	//Do this forever
 	while (1) {
 
-		/*unsigned char cmdAvail = 0;
-		if (PINC & (1 << PC3) && stop == 0) {
-			cmdAvail = 1;
-			cmd[0] = 'w';
-			cmd[1] = 0x20;
-			cmd[2] = 0x0;
-			stop = 1;
+		if (SWITCH_PORT & (1 << SWITCH)) {
+
 			_delay_ms(10);
-		} else if ((PINC & (1 << PC3)) == 0 && stop == 1) {
-			stop = 0;
-			_delay_ms(10);
-		}*/
+			green_led_off();
+			red_led_on();
+		} else {
+			red_led_off();
+			green_led_on();
+		}
 
 		debugCounter++;
 
@@ -135,14 +131,6 @@ int main() {
 		if (cmdAvail == 1) {
 			processData(cmd);
 		}
-
-		/*transmitUSART('m');
-		 transmitUSART(' ');
-		 transmitUSART(debugCounter);
-		 transmitUSART(' ');
-		 transmitUSART(' ');
-		 transmitUSART(prepareNextData + 48);
-		 transmitUSART('\n');*/
 
 		if (prepareNextData == 1)
 			prepareDataForPWM();
@@ -171,8 +159,8 @@ void processData() {
 		solenoidDataIdxInsert = solenoidDataIdxInsert % MAX_SOLENOID_QUEUE;
 
 		newSolenoid = 1;
-		/*transmitUSART('w');
-		 transmitUSART('\n');*/
+		transmitUSART('w');
+		 transmitUSART('\n');
 	} else if (cmd[0] == 'l') {
 		// loco
 		//unsigned char functions = 0;
@@ -209,8 +197,8 @@ void prepareDataForPWM() {
 
 	unsigned char queueIdxLoc = 0; // = (pwmQueueIdx + 1) % 2;
 
-	//if (solenoidDataIdxInsert != solenoidDataIdxPop) {
-	if (newSolenoid == 1) {
+	if (solenoidDataIdxInsert != solenoidDataIdxPop) {
+		//if (newSolenoid == 1) {
 
 		// there is a new solenoid to handle!!
 		unsigned char address = solenoidData[solenoidDataIdxPop].address;
@@ -249,9 +237,9 @@ void prepareDataForPWM() {
 		commandQueue[queueIdxLoc][52] = 2;
 		commandQueue[queueIdxLoc][53] = 2;
 
-		//solenoidData[solenoidDataIdxPop].active = 1;
-		//solenoidDataIdxPop++;
-		//solenoidDataIdxPop = solenoidDataIdxPop % MAX_SOLENOID_QUEUE;
+		solenoidData[solenoidDataIdxPop].active = 1;
+		solenoidDataIdxPop++;
+		solenoidDataIdxPop = solenoidDataIdxPop % MAX_SOLENOID_QUEUE;
 		pwm_mode = MODE_SOLENOID;
 		isLocoCommand = 0;
 		newSolenoid = 0;
@@ -320,86 +308,7 @@ void prepareDataForPWM() {
 
 }
 
-void flash_twice_green() {
-	PORTC |= (1 << GREEN_LED);
-	_delay_ms(100);
-	PORTC &= ~(1 << GREEN_LED);
-	_delay_ms(100);
-	PORTC |= (1 << GREEN_LED);
-	_delay_ms(100);
-	PORTC &= ~(1 << GREEN_LED);
-}
-void flash_once_green() {
-	PORTC |= (1 << GREEN_LED);
-	_delay_ms(200);
-	PORTC &= ~(1 << GREEN_LED);
-	_delay_ms(200);
-}
-void flash_once_green_quick() {
-	PORTC |= (1 << GREEN_LED);
-	PORTC &= ~(1 << GREEN_LED);
-}
-void flash_once_red_quick() {
-	PORTC |= (1 << RED_LED);
-	PORTC &= ~(1 << RED_LED);
-}
-void flash_twice_red() {
-	PORTC |= (1 << RED_LED);
-	_delay_ms(100);
-	PORTC &= ~(1 << RED_LED);
-	_delay_ms(100);
-	PORTC |= (1 << RED_LED);
-	_delay_ms(100);
-	PORTC &= ~(1 << RED_LED);
-	_delay_ms(100);
-}
-void flash_once_red() {
-	PORTC |= (1 << RED_LED);
-	_delay_ms(100);
-	PORTC &= ~(1 << RED_LED);
-}
 
-void red_led_on() {
-	PORTC |= (1 << RED_LED);
-}
-void red_led_off() {
-	PORTC &= ~(1 << RED_LED);
-}
-void green_led_on() {
-	PORTC |= (1 << GREEN_LED);
-}
-void green_led_off() {
-	PORTC &= ~(1 << GREEN_LED);
-}
-/********* UART CODE **************/
-
-void initUSART(unsigned int ubrr) {
-	/* Set baud rate */
-	UBRRH = (unsigned char) (ubrr >> 8);
-	UBRRL = (unsigned char) ubrr;
-
-	/* Enable receiver and transmitter */UCSRB = (1 << RXEN) | (1 << TXEN);
-	/* Set frame format: 8data, 2stop bit */
-	UCSRC = (1 << URSEL) | (1 << USBS) | (1 << UCSZ0) | (1 << UCSZ1);
-}
-
-void transmitUSART(unsigned char data) {
-	/* Wait for empty transmit buffer */
-	while (!(UCSRA & (1 << UDRE)))
-		;
-	/* Put data into buffer, sends the data */
-	UDR = data;
-}
-
-unsigned char receiveUSART(void) {
-	/* Wait for data to be received */
-	while (!(UCSRA & (1 << RXC)))
-		;
-
-	/* Get and return received data from buffer */
-
-	return UDR;
-}
 
 unsigned char checkForNewCommand() {
 	if (!(UCSRA & (1 << RXC))) {
@@ -444,16 +353,12 @@ ISR( TIMER1_COMPA_vect) {
 		//pwmQueueIdxLoc = (pwmQueueIdxLoc + 1) % 2;
 
 		if (pwm_mode == MODE_SOLENOID) {
-			//SOLENDOID FREQUENCY
-			//TCCR1A &= ~(1 << COM1A1); // DEACTIVATE PWM
+			//SOLENDOID
 			ICR1H = 0x00;
-			ICR1L = 0xCC; // counting to TOP takes
-			//TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
+			ICR1L = 0xCC; // counting to TOP=204
 		} else {
 			//LOCO FREQUENCY
-			//TCCR1A &= ~(1 << COM1A1); // DEACTIVATE PWM
-			ICR1 = 0x198;
-			//TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
+			ICR1 = 0x198;// counting to TOP=408
 		}
 
 	}
@@ -479,54 +384,11 @@ ISR( TIMER1_COMPA_vect) {
 
 }
 
-void initPWM() {
 
-	DDRB |= (1 << PB1);
 
-	TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS11);
-	ICR1H = 0x00;
-	ICR1L = 0xCC; // counting to TOP takes
+/********* UART CODE **************/
 
-	TIMSK |= (1 << OCIE1A);
 
-	OCR1AH = 0x00;
-	TCCR1A = (1 << WGM11); //fast PWM with Prescaler = 8
-}
-
-void setPWMOutput(uint16_t duty) {
-	PORTC |= (1 << PC2);
-	OCR1A = duty;
-}
-
-void setSolenoid0() {
-	PORTC |= (1 << PC2);
-	OCR1A = 24;
-}
-
-void setSolenoid1() {
-	PORTC |= (1 << PC2);
-	OCR1A = 180;
-}
-
-void setSolenoidWait() {
-	PORTC &= ~(1 << PC2);
-	OCR1A = 0;
-}
-
-void setLoco0() {
-	PORTC |= (1 << PC2);
-	OCR1A = 48;
-
-}
-void setLoco1() {
-	PORTC |= (1 << PC2);
-	OCR1A = 260;
-}
-
-void setLocoWait() {
-	PORTC &= ~(1 << PC2);
-	OCR1A = 0;
-}
 
 /******* INIT DATA *********/
 
@@ -653,3 +515,57 @@ void initLocoData() {
 	locoData[0].active = 1;
 }
 
+
+
+void flash_twice_green() {
+	RED_GREEN_PORT |= (1 << GREEN_LED);
+	_delay_ms(100);
+	RED_GREEN_PORT &= ~(1 << GREEN_LED);
+	_delay_ms(100);
+	RED_GREEN_PORT |= (1 << GREEN_LED);
+	_delay_ms(100);
+	RED_GREEN_PORT &= ~(1 << GREEN_LED);
+}
+void flash_once_green() {
+	RED_GREEN_PORT |= (1 << GREEN_LED);
+	_delay_ms(100);
+	RED_GREEN_PORT &= ~(1 << GREEN_LED);
+	_delay_ms(100);
+}
+void flash_once_green_quick() {
+	RED_GREEN_PORT |= (1 << GREEN_LED);
+	RED_GREEN_PORT &= ~(1 << GREEN_LED);
+}
+void flash_once_red_quick() {
+	RED_GREEN_PORT |= (1 << RED_LED);
+	RED_GREEN_PORT &= ~(1 << RED_LED);
+}
+void flash_twice_red() {
+	RED_GREEN_PORT |= (1 << RED_LED);
+	_delay_ms(100);
+	RED_GREEN_PORT &= ~(1 << RED_LED);
+	_delay_ms(100);
+	RED_GREEN_PORT |= (1 << RED_LED);
+	_delay_ms(100);
+	RED_GREEN_PORT &= ~(1 << RED_LED);
+	_delay_ms(100);
+}
+void flash_once_red() {
+	RED_GREEN_PORT |= (1 << RED_LED);
+	_delay_ms(100);
+	RED_GREEN_PORT &= ~(1 << RED_LED);
+	_delay_ms(100);
+}
+
+void red_led_on() {
+	RED_GREEN_PORT |= (1 << RED_LED);
+}
+void red_led_off() {
+	RED_GREEN_PORT &= ~(1 << RED_LED);
+}
+void green_led_on() {
+	RED_GREEN_PORT |= (1 << GREEN_LED);
+}
+void green_led_off() {
+	RED_GREEN_PORT &= ~(1 << GREEN_LED);
+}

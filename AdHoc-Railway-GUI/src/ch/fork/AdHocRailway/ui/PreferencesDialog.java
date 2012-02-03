@@ -198,7 +198,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		defaultActivationTimeModel = new SpinnerNumberModel(50, 50, 1000, 10);
 		defaultActivationTime = new JSpinner(defaultActivationTimeModel);
 
-		defaultRoutingDelayModel = new SpinnerNumberModel(250, 100, 1000, 10);
+		defaultRoutingDelayModel = new SpinnerNumberModel(250, 10, 1000, 10);
 		defaultRoutingDelay = new JSpinner(defaultRoutingDelayModel);
 
 		defaultLockDurationModel = new SpinnerNumberModel(0, 0, 60, 1);
