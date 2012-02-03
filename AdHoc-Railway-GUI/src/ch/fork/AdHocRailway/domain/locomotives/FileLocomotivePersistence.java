@@ -43,7 +43,7 @@ public class FileLocomotivePersistence extends CachingLocomotivePersistence {
 			LocomotiveType deltaType = new LocomotiveType(0, "DELTA");
 			deltaType.setDrivingSteps(14);
 			deltaType.setStepping(4);
-			deltaType.setFunctionCount(4);
+			deltaType.setFunctionCount(0);
 			addLocomotiveType(deltaType);
 		}
 

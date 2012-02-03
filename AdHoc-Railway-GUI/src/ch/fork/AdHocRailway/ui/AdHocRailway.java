@@ -185,13 +185,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
-			/*
-			try {
-			    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} catch (Exception e) {
-			    e.printStackTrace();
-			}
-			*/
+			
 		}
 		instance = this;
 		splash = new SplashWindow(createImageIcon("splash.png"), this, 500, 11);

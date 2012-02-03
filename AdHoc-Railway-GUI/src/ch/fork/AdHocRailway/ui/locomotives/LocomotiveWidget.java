@@ -435,6 +435,13 @@ public class LocomotiveWidget extends JPanel implements
 						.createImageIcon("locomotives/locked_by_enemy.png"));
 			}
 		}
+		
+		if(myLocomotive.getLocomotiveType().getFunctionCount() == 0) {
+			for(FunctionToggleButton b : functionToggleButtons) {
+				b.setEnabled(false);
+			}
+		}
+		
 		setLocomotiveImage();
 		if (isFree()) {
 			locomotiveGroupComboBox.setEnabled(true);
