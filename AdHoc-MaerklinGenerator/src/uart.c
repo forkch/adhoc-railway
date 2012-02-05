@@ -8,7 +8,7 @@
 #include "uart.h"
 
 
-void initUSART(unsigned int ubrr) {
+void uart_init_poll(unsigned int ubrr) {
 	/* Set baud rate */
 	UBRRH = (unsigned char) (ubrr >> 8);
 	UBRRL = (unsigned char) ubrr;
@@ -18,7 +18,7 @@ void initUSART(unsigned int ubrr) {
 	UCSRC = (1 << URSEL) | (1 << USBS) | (1 << UCSZ0) | (1 << UCSZ1);
 }
 
-void transmitUSART(unsigned char data) {
+void uart_transmit_poll(unsigned char data) {
 	/* Wait for empty transmit buffer */
 	while (!(UCSRA & (1 << UDRE)))
 		;
@@ -26,7 +26,7 @@ void transmitUSART(unsigned char data) {
 	UDR = data;
 }
 
-unsigned char receiveUSART(void) {
+unsigned char uart_receive_poll(void) {
 	/* Wait for data to be received */
 	while (!(UCSRA & (1 << RXC)))
 		;

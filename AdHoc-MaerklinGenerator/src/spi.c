@@ -14,7 +14,6 @@
 
 void SPI_MasterInit(void) {
 
-
 	SS_PORT_DDR |= (1 << SS_GO) | (1 << SS_SHORT) | (1 << SS_DBG_LED);
 
 	/* Set MOSI and SCK output, all others input */

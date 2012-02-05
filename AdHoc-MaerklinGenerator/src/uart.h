@@ -16,8 +16,8 @@
 #define BAUD 115200
 #define MYUBRR FOSC/16/BAUD-1
 
-void initUSART(unsigned int ubrr);
-void transmitUSART(unsigned char data);
+void uart_init_poll(unsigned int ubrr);
+void uart_transmit_poll(unsigned char data);
 
 
 #endif /* UART_H_ */

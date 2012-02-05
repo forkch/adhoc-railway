@@ -5,16 +5,15 @@
 #include "pwm.h"
 #include "spi.h"
 #include "uart.h"
-
-#define GREEN_LED PC4
-#define RED_LED PC5
-#define RED_GREEN_PORT PORTC
-#define RED_GREEN_DDR DDRC
-#define SWITCH PD7
-#define SWITCH_PORT PIND
+#include "debug.h"
+#include "uart_interrupt.h"
+#include "fifo.h"
 
 #define MODE_SOLENOID 0
 #define MODE_LOCO 1
+
+#define TIMER0_PRESCALER      (1 << CS02) | (1 << CS00)
+volatile unsigned char timer0_interrupt = 0;
 
 unsigned char pwm_mode = 0;
 unsigned char isLocoCommand = 1;
@@ -53,6 +52,7 @@ struct SolenoidData solenoidData[MAX_SOLENOID_QUEUE];
 
 uint8_t solenoidDataIdxInsert = 0;
 uint8_t solenoidDataIdxPop = 0;
+int8_t solenoidToDeactivate = -1;
 
 unsigned char portData[8];
 unsigned char deltaSpeedData[16];
@@ -64,26 +64,25 @@ volatile uint8_t actualBit = 0;
 
 unsigned char cmd[5];
 unsigned char prepareNextData = 1;
-uint8_t stop = 0;
 uint8_t newSolenoid = 0;
 
 /****** Funtion Declarations ******/
-unsigned char receiveUSART(void);
+unsigned char uart_receive_poll(void);
 unsigned char checkForNewCommand();
+unsigned char checkForNewCommandPoll();
 void initPortData();
 void initLocoData();
 void prepareDataForPWM();
 void processData();
+void process_solenoid_cmd(unsigned char*);
+void process_loco_cmd(unsigned char*);
 
 int main() {
 
+	debug_init();
+
 	SPI_MasterInit();
 	SPI_MasterTransmitDebug(0);
-
-	//DDRD |= (1 << PD0) | (1 << PD1) | (1 << PD2) | (1 << PD3); /* Output */
-
-	RED_GREEN_DDR |= (1 << GREEN_LED) | (1 << RED_LED);
-
 
 	_delay_ms(100);
 	for (uint8_t i = 1; i < 64;) {
@@ -94,8 +93,10 @@ int main() {
 
 	//Initialize PWM Channel 1
 	initPWM();
-	initUSART(8);
 
+	uart_init_poll(8);
+
+	//uart_init();
 	setSolenoidWait();
 
 	initLocoData();
@@ -107,35 +108,61 @@ int main() {
 	ICR1 = 0x192; // counting to TOP takes
 	TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
 
+	// init Timer0
+	TIMSK |= (1 << TOIE0); // interrupt enable - here overflow
+	TCCR0 |= TIMER0_PRESCALER; // use defined prescaler value
+
 	sei();
 
-	uint8_t i = 1;
+	for (int i = 0; i < MAX_SOLENOID_QUEUE; i++) {
+
+		solenoidData[i].timerDetected = 0;
+		solenoidData[i].active= 0;
+	}
 
 	//Do this forever
 	while (1) {
 
-		if (SWITCH_PORT & (1 << SWITCH)) {
+		/*if (SWITCH_PORT & (1 << SWITCH)) {
 
-			_delay_ms(10);
-			green_led_off();
-			red_led_on();
-		} else {
-			red_led_off();
-			green_led_on();
-		}
+		 green_led_off();
+		 red_led_on();
+		 } else {
+		 red_led_off();
+		 green_led_on();
+		 }*/
+		debug_init();
 
 		debugCounter++;
 
-		unsigned char cmdAvail = checkForNewCommand();
+		unsigned char cmdAvail = checkForNewCommandPoll();
 
 		if (cmdAvail == 1) {
 			processData(cmd);
 		}
 
-		if (prepareNextData == 1)
-			prepareDataForPWM();
 
 		// TODO: check for timer timeout
+		if (timer0_interrupt == 0) {
+			//green_led_on();
+
+			for (int i = 0; i < MAX_SOLENOID_QUEUE; i++) {
+				if (solenoidData[i].active
+						&& solenoidData[i].timerDetected == 0) {
+					solenoidData[i].timerDetected = 1;
+				} else if (solenoidData[i].active
+						&& solenoidData[i].timerDetected == 1) {
+					solenoidToDeactivate = i;
+					//flash_once_green();
+				}
+
+			}
+
+		} else {
+			//green_led_off();
+		}
+		if (prepareNextData == 1)
+			prepareDataForPWM();
 
 	}
 	cli();
@@ -145,59 +172,69 @@ int main() {
 void processData() {
 	if (cmd[0] == 'w') {
 		//solenoid
-		uint8_t t = cmd[1] - 1;
-		unsigned char address = locoData[t].address;
-		unsigned char port = portData[cmd[2]];
-
-		solenoidData[solenoidDataIdxInsert].address = address;
-		solenoidData[solenoidDataIdxInsert].port = port;
-		solenoidData[solenoidDataIdxInsert].active = 0;
-		solenoidData[solenoidDataIdxInsert].timerDetected = 0;
-		solenoidData[solenoidDataIdxInsert].deactivate = 0;
-
-		solenoidDataIdxInsert++;
-		solenoidDataIdxInsert = solenoidDataIdxInsert % MAX_SOLENOID_QUEUE;
-
-		newSolenoid = 1;
-		transmitUSART('w');
-		 transmitUSART('\n');
+		process_solenoid_cmd(cmd);
+		uart_transmit_poll('w');
+		uart_transmit_poll('\n');
 	} else if (cmd[0] == 'l') {
 		// loco
-		//unsigned char functions = 0;
-		//unsigned char config = cmd[4];
-
-		unsigned char address = cmd[1];
-		int8_t speed = cmd[2];
-		uint8_t t = address - 1;
-		//locoData[t].active = (config >> 7) & 1;
-		//locoData[t].isNewProtocol = (config >> 6) & 1;
-		locoData[t].active = 1;
-		locoData[t].isNewProtocol = 0;
-		if (locoData[t].isNewProtocol) {
-			// NEW protocol
-		} else {
-			// OLD protocol (DELTA)
-
-			if (speed < 0) {
-				locoData[t].speed = deltaSpeedData[1];
-			} else if (speed == 0) {
-				locoData[t].speed = deltaSpeedData[0];
-			} else {
-				locoData[t].speed = deltaSpeedData[speed + 2];
-			}
-		}
-		newLoco = &locoData[t];
-
-		transmitUSART('l');
-		transmitUSART('\n');
+		process_loco_cmd(cmd);
+		uart_transmit_poll('l');
+		uart_transmit_poll('\n');
 	}
+}
+
+void process_solenoid_cmd(unsigned char* solenoid_cmd) {
+	uint8_t t = solenoid_cmd[1] - 1;
+	unsigned char address = locoData[t].address;
+	unsigned char port = portData[solenoid_cmd[2]];
+	//unsigned char activate = solenoid_cmd[3];
+
+	solenoidData[solenoidDataIdxInsert].address = address;
+	solenoidData[solenoidDataIdxInsert].port = port;
+	solenoidData[solenoidDataIdxInsert].active = 0;
+	solenoidData[solenoidDataIdxInsert].timerDetected = 0;
+	solenoidData[solenoidDataIdxInsert].deactivate = 0;
+
+	solenoidDataIdxInsert++;
+	solenoidDataIdxInsert = solenoidDataIdxInsert % MAX_SOLENOID_QUEUE;
+
+	_delay_ms(100);
+	newSolenoid = 1;
+}
+
+void process_loco_cmd(unsigned char* loco_cmd) {
+	unsigned char functions = loco_cmd[3];
+	unsigned char config = loco_cmd[4];
+
+	unsigned char address = loco_cmd[1];
+	int8_t speed = loco_cmd[2];
+	uint8_t t = address - 1;
+	locoData[t].active = (config >> 7) & 1;
+	locoData[t].isNewProtocol = (config >> 6) & 1;
+	locoData[t].active = 1;
+	locoData[t].isNewProtocol = 0;
+	if (locoData[t].isNewProtocol) {
+		// NEW protocol
+	} else {
+		// OLD protocol (DELTA)
+
+		if (speed < 0) {
+			locoData[t].speed = deltaSpeedData[1];
+		} else if (speed == 0) {
+			locoData[t].speed = deltaSpeedData[0];
+		} else {
+			locoData[t].speed = deltaSpeedData[speed + 2];
+		}
+	}
+	newLoco = &locoData[t];
+
 }
 
 void prepareDataForPWM() {
 
 	unsigned char queueIdxLoc = 0; // = (pwmQueueIdx + 1) % 2;
 
-	if (solenoidDataIdxInsert != solenoidDataIdxPop) {
+	if (solenoidDataIdxInsert != solenoidDataIdxPop && solenoidToDeactivate == -1) {
 		//if (newSolenoid == 1) {
 
 		// there is a new solenoid to handle!!
@@ -216,8 +253,11 @@ void prepareDataForPWM() {
 		for (uint8_t i = 0; i < 6; i++)
 			commandQueue[queueIdxLoc][10 + i] = (port >> (5 - i)) & 1;
 
+		// activate port
 		commandQueue[queueIdxLoc][16] = 1;
 		commandQueue[queueIdxLoc][17] = 1;
+		solenoidData[solenoidDataIdxPop].active = 1;
+		solenoidData[solenoidDataIdxPop].timerDetected = 0;
 
 		// pause
 		commandQueue[queueIdxLoc][18] = 2;
@@ -237,9 +277,57 @@ void prepareDataForPWM() {
 		commandQueue[queueIdxLoc][52] = 2;
 		commandQueue[queueIdxLoc][53] = 2;
 
-		solenoidData[solenoidDataIdxPop].active = 1;
 		solenoidDataIdxPop++;
 		solenoidDataIdxPop = solenoidDataIdxPop % MAX_SOLENOID_QUEUE;
+		pwm_mode = MODE_SOLENOID;
+		isLocoCommand = 0;
+		newSolenoid = 0;
+
+		//flash_once_red();
+
+	} else if (solenoidToDeactivate != -1) {
+		//if (newSolenoid  == 1) {
+
+		// there is a new solenoid to deactivate!!
+		unsigned char address = solenoidData[solenoidToDeactivate].address;
+		unsigned char port = solenoidData[solenoidToDeactivate].port;
+
+		// address
+		for (uint8_t i = 0; i < 8; i++)
+			commandQueue[queueIdxLoc][i] = (address >> (7 - i)) & 1;
+
+		// unused
+		commandQueue[queueIdxLoc][8] = 0;
+		commandQueue[queueIdxLoc][9] = 0;
+
+		// port
+		for (uint8_t i = 0; i < 6; i++)
+			commandQueue[queueIdxLoc][10 + i] = (port >> (5 - i)) & 1;
+
+		// if active deactivate port
+		commandQueue[queueIdxLoc][16] = 0;
+		commandQueue[queueIdxLoc][17] = 0;
+		solenoidData[solenoidToDeactivate].active = 0;
+		solenoidData[solenoidToDeactivate].timerDetected = 0;
+
+		// pause
+		commandQueue[queueIdxLoc][18] = 2;
+		commandQueue[queueIdxLoc][19] = 2;
+		commandQueue[queueIdxLoc][20] = 2;
+		commandQueue[queueIdxLoc][21] = 2;
+		commandQueue[queueIdxLoc][22] = 2;
+		commandQueue[queueIdxLoc][23] = 2;
+
+		for (uint8_t i = 0; i < 24; i++)
+			commandQueue[queueIdxLoc][24 + i] = commandQueue[queueIdxLoc][i];
+
+		commandQueue[queueIdxLoc][48] = 2;
+		commandQueue[queueIdxLoc][49] = 2;
+		commandQueue[queueIdxLoc][50] = 2;
+		commandQueue[queueIdxLoc][51] = 2;
+		commandQueue[queueIdxLoc][52] = 2;
+		commandQueue[queueIdxLoc][53] = 2;
+		solenoidToDeactivate = -1;
 		pwm_mode = MODE_SOLENOID;
 		isLocoCommand = 0;
 		newSolenoid = 0;
@@ -308,28 +396,41 @@ void prepareDataForPWM() {
 
 }
 
-
-
 unsigned char checkForNewCommand() {
+
+	return 1;
+}
+
+unsigned char checkForNewCommandPoll() {
+
 	if (!(UCSRA & (1 << RXC))) {
 		return 0;
 	}
 
-	unsigned char b = receiveUSART();
+	unsigned char b = uart_receive_poll();
 	cmd[0] = b;
 	if (b == 'w') {
 		for (uint8_t i = 1; i < 3; i++) {
-			b = receiveUSART();
+			b = uart_receive_poll();
 			cmd[i] = b;
 		}
 	} else if (b == 'l') {
 		for (uint8_t i = 1; i < 5; i++) {
-			b = receiveUSART();
+			b = uart_receive_poll();
 			cmd[i] = b;
 		}
 	}
 
+	//flash_twice_red();
+
 	return 1;
+}
+
+// *** Interrupt Service Routine *****************************************
+
+// Timer0 overflow interrupt handler (~65ms 4MHz@1024 precale factor)
+ISR(TIMER0_OVF_vect) {
+	timer0_interrupt = (timer0_interrupt + 1) % 4;
 }
 
 /********* PWM CODE **************/
@@ -358,7 +459,7 @@ ISR( TIMER1_COMPA_vect) {
 			ICR1L = 0xCC; // counting to TOP=204
 		} else {
 			//LOCO FREQUENCY
-			ICR1 = 0x198;// counting to TOP=408
+			ICR1 = 0x198; // counting to TOP=408
 		}
 
 	}
@@ -383,12 +484,6 @@ ISR( TIMER1_COMPA_vect) {
 	actualBit++;
 
 }
-
-
-
-/********* UART CODE **************/
-
-
 
 /******* INIT DATA *********/
 
@@ -515,57 +610,3 @@ void initLocoData() {
 	locoData[0].active = 1;
 }
 
-
-
-void flash_twice_green() {
-	RED_GREEN_PORT |= (1 << GREEN_LED);
-	_delay_ms(100);
-	RED_GREEN_PORT &= ~(1 << GREEN_LED);
-	_delay_ms(100);
-	RED_GREEN_PORT |= (1 << GREEN_LED);
-	_delay_ms(100);
-	RED_GREEN_PORT &= ~(1 << GREEN_LED);
-}
-void flash_once_green() {
-	RED_GREEN_PORT |= (1 << GREEN_LED);
-	_delay_ms(100);
-	RED_GREEN_PORT &= ~(1 << GREEN_LED);
-	_delay_ms(100);
-}
-void flash_once_green_quick() {
-	RED_GREEN_PORT |= (1 << GREEN_LED);
-	RED_GREEN_PORT &= ~(1 << GREEN_LED);
-}
-void flash_once_red_quick() {
-	RED_GREEN_PORT |= (1 << RED_LED);
-	RED_GREEN_PORT &= ~(1 << RED_LED);
-}
-void flash_twice_red() {
-	RED_GREEN_PORT |= (1 << RED_LED);
-	_delay_ms(100);
-	RED_GREEN_PORT &= ~(1 << RED_LED);
-	_delay_ms(100);
-	RED_GREEN_PORT |= (1 << RED_LED);
-	_delay_ms(100);
-	RED_GREEN_PORT &= ~(1 << RED_LED);
-	_delay_ms(100);
-}
-void flash_once_red() {
-	RED_GREEN_PORT |= (1 << RED_LED);
-	_delay_ms(100);
-	RED_GREEN_PORT &= ~(1 << RED_LED);
-	_delay_ms(100);
-}
-
-void red_led_on() {
-	RED_GREEN_PORT |= (1 << RED_LED);
-}
-void red_led_off() {
-	RED_GREEN_PORT &= ~(1 << RED_LED);
-}
-void green_led_on() {
-	RED_GREEN_PORT |= (1 << GREEN_LED);
-}
-void green_led_off() {
-	RED_GREEN_PORT &= ~(1 << GREEN_LED);
-}
