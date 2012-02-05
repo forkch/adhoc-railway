@@ -84,7 +84,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.technical.configuration.exporter.XMLExporter_0_4;
+import ch.fork.AdHocRailway.technical.configuration.exporter.XMLExporter_1_0;
 import ch.fork.AdHocRailway.technical.configuration.importer.XMLImporter;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
@@ -593,7 +593,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private void saveFile(File file) {
 		try {
-			XMLExporter_0_4 exporter = new XMLExporter_0_4(turnoutPersistence,
+			XMLExporter_1_0 exporter = new XMLExporter_1_0(turnoutPersistence,
 					locomotivePersistence, routePersistence);
 			String xml = exporter.export();
 			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file),"UTF-8");

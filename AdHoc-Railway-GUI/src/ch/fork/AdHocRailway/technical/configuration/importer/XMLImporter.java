@@ -120,6 +120,12 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 				logger.info("AdHoc-Railway Configuration (Schema Version 0.4) loaded ("
 						+ filename + ")");
 				return;
+			} else if (version == 1.0) {
+				new XMLImporter_1_0(filename, turnoutPersistence,
+						locomotivePersistence, routePersistence);
+				logger.info("AdHoc-Railway Configuration (Schema Version 1.0) loaded ("
+						+ filename + ")");
+				return;
 			}
 			supported = false;
 			return;

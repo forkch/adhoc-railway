@@ -48,6 +48,10 @@ public class XMLExporter {
 			export = new XMLExporter_0_4(turnoutPersistence,
 					locomotivePersistence, routePersistence).export();
 			logger.info("AdHoc-Railway Config Version 0.4 exported");
+		} else if (version == 1.0) {
+			export = new XMLExporter_1_0(turnoutPersistence,
+					locomotivePersistence, routePersistence).export();
+			logger.info("AdHoc-Railway Config Version 1.0 exported");
 		} else {
 			throw new ConfigurationException(
 					Constants.ERR_VERSION_NOT_SUPPORTED);
