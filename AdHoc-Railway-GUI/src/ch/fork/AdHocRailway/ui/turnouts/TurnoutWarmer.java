@@ -20,6 +20,9 @@ package ch.fork.AdHocRailway.ui.turnouts;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
@@ -46,6 +49,7 @@ public class TurnoutWarmer extends ConfigurationDialog {
 	private JToggleButton warmButton;
 	private TurnoutPersistenceIface turnoutPersistence;
 	private TurnoutControlIface turnoutControl;
+	private TurnoutWarmupThread t;
 
 	public TurnoutWarmer(JFrame owner, SRCPSession session) {
 		super(owner, "Switch Programmer");
@@ -64,13 +68,37 @@ public class TurnoutWarmer extends ConfigurationDialog {
 		mainPanel.add(turnoutNumberField);
 		mainPanel.add(warmButton);
 		addMainComponent(mainPanel);
+
+		okButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				if (t != null)
+					t.stopWarmup();
+			}
+
+		});
+		cancelButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				if (t != null)
+					t.stopWarmup();
+			}
+
+		});
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent arg0) {
+				if (t != null)
+					t.stopWarmup();
+			}
+			
+		});
+
 		pack();
 		TutorialUtils.locateOnOpticalScreenCenter(this);
 		setVisible(true);
 	}
 
 	class WarmupAction extends AbstractAction {
-		private TurnoutWarmupThread t;
 
 		public WarmupAction() {
 			super("Start");
@@ -107,7 +135,7 @@ public class TurnoutWarmer extends ConfigurationDialog {
 							.getTurnoutByNumber((Integer) turnoutNumberField
 									.getValue());
 					turnoutControl.toggle(turnout);
-					Thread.sleep(3 * Preferences.getInstance().getIntValue(
+					Thread.sleep(Preferences.getInstance().getIntValue(
 							PreferencesKeys.ROUTING_DELAY));
 				}
 				System.out.println("DONE");
