@@ -1,18 +1,27 @@
-Loco-Command
-1. Byte: 'l'
-2.,3. Byte: address e.g. "44"
-4.,5. Byte: Speed e.g. "12"
-6. Byte: Function (e.g. '1' or '0')
-7. Byte: F1 (e.g. '1' or '0')
-8. Byte: F2 (e.g. '1' or '0')
-9. Byte: F3 (e.g. '1' or '0')
-10. Byte: F4 (e.g. '1' or '0')
-11. Byte: active (e.g. '1' or '0')
-12. Byte: zero byte
+L: Lok Befehl
+Syntax: L {Lok#, [Speed], [FL], [Dir], [F1], [F2], [F3], [F4]}
+Parameter:
+        Lok#: Lokadresse (1 .. 10239)
+        Speed: Geschwindigkeit (0 .. 127: 0 = Stop, 1 = Em.Stop)
+        FL: Front-Light (0 = aus, 1 = ein)
+        Dir: Direction (0 oder r = rückwärts, 1 oder f = vorwärts)
+        Fn: Funktionsausgang n (0 = aus, 1 = ein)
+Antwort: "L 'Lok#' 'Speed' 'Dir' 'FL' 'F4_F1' 'Speed_internes_Format'" 
+Unabhängig vom Lokformat wird die Geschwindigkeit immer im Bereich von 0 bis 127 angegeben. OpenDCC rechnet diese Geschwindigkeit intern auf die jeweiligen Fahrstufen der Lok um. Es gilt folgender Algorithmus (dieser ist indentisch zu Tams EasyControl und Intellibox; es wird jeweils als integer gerechnet):
+Geschwindigkeit 0 bleibt 0.
+DCC, 14 Fahrstufen: V = (Speed - 2) / 9 + 1;
+DCC, 28 Fahrstufen: V = (Speed - 2) * 2 / 9 + 1;
+DCC, 128 Fahrstufen: V = (Speed - 1);
 
-Solenoid-Command
-1. Byte: 'w'
-2.,3. Byte: address e.g. "44"
-4. Byte: port number e.g. '1' - '8'
-5. Byte: activate = 1/deactivate = 0
- 
+T: Turnout (Weiche oder Signalschaltbefehl)
+Syntax: T {Trnt#, [Color], [Status]}
+Parameter: 
+        Trnt#: Weichen-Nummer (1 .. 2040)
+        Color: 0 oder 'r' = Rot / Abzweig, 1 oder 'g' = Grün / gerade aus
+        Status: 1 = ein, 0 oder nicht angegeben = aus
+Aktion: OpenDCC sendet z.Z. sowohl den Status on als auch den Status off Befehl auf den Ausgang.
+Bei aktiver Weichenrückmeldung passiert folgendes: Bei Status on wird der Befehl durchgereicht; bei Status Off wird auch der Befehl durchgereicht, allerdings wird danach der Acknowledge-Eingang abgefragt. Ein rückmeldefähiger Weichendecoder quittiert damit den vorangegangen Schaltbefehl und zeigt durch den ACK-Puls an, dass die Weiche in korrekter Lage liegt. Fehlt dieser Rückmeldepuls, so wird ein S88-Event generiert.
+Hinweis: Die IB sendet den Weichenbefehl 1 als Decoder 1, Output 0 ab. Das ist m.E. eine falsche Interpretation der NMRA, die Decoder beginnen bei 0. Broadcast ist hier 511.
+Aktion: Schaltet die Weiche entsprechend oder gibt den Status der Weiche aus.
+Beispiel: "T 5 g 0"
+Antwort bei Abfragebefehl: (z.B. "T 1"): "T 'Trnt#' 'Status'". Status ist hier immer der Soll-Status (also die letzte bekannte Schaltposition, eine ev. Rückmeldung von der Weiche wird hier nicht verarbeitet. Diese wird als S88-Event direkt an den PC weitergereicht. (Dieses Verhalten wurde so von PC-Programmherstellern gewünscht, diese wollen die Auswertung und Reaktion selbst durchführen.)

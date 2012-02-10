@@ -21,6 +21,8 @@ void initPWM() {
 
 	OCR1AH = 0x00;
 	TCCR1A = (1 << WGM11); //fast PWM with Prescaler = 8
+
+	setSolenoidWait();
 }
 
 void setPWMOutput(uint16_t duty) {

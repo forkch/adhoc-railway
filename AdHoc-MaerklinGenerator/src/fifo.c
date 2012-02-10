@@ -33,7 +33,16 @@ int fifo_get_nowait (fifo_t *f)
 	return (int) _inline_fifo_get (f);
 }
 
+int fifo_peek_nowait (fifo_t *f)
+{
+	if (!f->count)		return -1;
+
+	return (int) _inline_fifo_peek (f);
+}
+
 
 uint8_t fifo_get_size(fifo_t *f) {
 	return f->count;
 }
+
+

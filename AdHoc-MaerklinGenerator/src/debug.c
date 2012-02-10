@@ -19,12 +19,13 @@ void flash_twice_green() {
 	RED_GREEN_PORT |= (1 << GREEN_LED);
 	_delay_ms(100);
 	RED_GREEN_PORT &= ~(1 << GREEN_LED);
+	_delay_ms(100);
 }
 void flash_once_green() {
 	RED_GREEN_PORT |= (1 << GREEN_LED);
-	_delay_ms(100);
+	_delay_ms(50);
 	RED_GREEN_PORT &= ~(1 << GREEN_LED);
-	_delay_ms(100);
+	_delay_ms(50);
 }
 void flash_once_green_quick() {
 	RED_GREEN_PORT |= (1 << GREEN_LED);
@@ -46,9 +47,9 @@ void flash_twice_red() {
 }
 void flash_once_red() {
 	RED_GREEN_PORT |= (1 << RED_LED);
-	_delay_ms(100);
+	_delay_ms(10);
 	RED_GREEN_PORT &= ~(1 << RED_LED);
-	_delay_ms(100);
+	_delay_ms(50);
 }
 
 void red_led_on() {

@@ -12,11 +12,15 @@
 #include <avr/io.h>
 
 
+unsigned char checkForNewCommand();
+
 extern void uart_init (void);
 extern int uart_putc (const uint8_t);
 extern uint8_t uart_getc_wait (void);
 extern int uart_getc_nowait (void);
 extern uint8_t uart_get_inbuf_size(void);
+extern uint8_t uart_peek_inbuf(void);
+extern void uart_clear_inbuf(void);
 
 static inline void uart_flush (void)
 {
