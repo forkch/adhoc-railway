@@ -774,10 +774,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
-					"Really exit ?", "Exit", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE,
-					createImageIcon("messagebox_warning.png"));
+			//int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
+			//		"Really exit ?", "Exit", JOptionPane.YES_NO_OPTION,
+			//		JOptionPane.QUESTION_MESSAGE,
+			//		createImageIcon("messagebox_warning.png"));
+			int result = JOptionPane.YES_OPTION;
 			if (result == JOptionPane.YES_OPTION) {
 
 				try {

@@ -8,7 +8,6 @@
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
-
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -30,5 +29,6 @@ void red_led_on();
 void red_led_off();
 void green_led_on();
 void green_led_off();
+void send_number(unsigned int);
 
 #endif /* DEBUG_H_ */

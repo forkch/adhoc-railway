@@ -11,18 +11,16 @@ void initPWM() {
 
 	PWM_HELP_OUTPUT_DDR |= (1 << PWM_HELP_OUTPUT);
 
-	DDRB |= (1 << PB1);
-
+	PWM_OUTPUT_DDR |= (1 << PWM_OUTPUT_PIN);
+	//fast PWM with Prescaler = 8
+	TCCR1A = (1 << COM1A1) | (1 << WGM11);
 	TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS11);
+
 	ICR1H = 0x00;
 	ICR1L = 0xCC; // counting to TOP takes
 
-	TIMSK |= (1 << OCIE1A);
+	TIMSK1 |= (1 << OCIE1A);
 
-	OCR1AH = 0x00;
-	TCCR1A = (1 << WGM11); //fast PWM with Prescaler = 8
-
-	setSolenoidWait();
 }
 
 void setPWMOutput(uint16_t duty) {

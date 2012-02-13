@@ -10,14 +10,15 @@
 
 
 #define DDR_SPI DDRB
-#define DD_MOSI PB3
-#define DD_SCK PB5
+#define DD_MOSI PB5
+#define DD_MISO PB6
+#define DD_SCK PB7
 
+#define SS_PORT PORTC
+#define SS_PORT_DDR DDRC
 #define SS_GO PC1
 #define SS_SHORT PC2
 #define SS_DBG_LED PC3
-#define SS_PORT PORTC
-#define SS_PORT_DDR DDRC
 
 
 void SPI_MasterInit();
