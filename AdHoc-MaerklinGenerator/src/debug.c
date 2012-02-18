@@ -65,20 +65,3 @@ void green_led_on() {
 void green_led_off() {
 	RED_GREEN_PORT &= ~(1 << GREEN_LED);
 }
-
-void send_number(unsigned int my_val) {
-
-	unsigned char digit;
-	uart_puts("LKSDF");
-	for(int i = 0; i < 8; i++)
-	{
-		uart_putc('q');
-
-	}
-	for (signed int i = 8; i >= 0; i -= 4) {
-uart_putc('q');
-		digit = (my_val >> i) & 0x0f; // eine hex-Stelle extrahieren
-		digit = (digit > 9) ? (digit + 'A' - 10) : (digit + '0'); // in ASCII - Zeichen	konvertieren
-		uart_putc( digit); // oder was immer die UART-Funktion in Deinem compiler ist
-	}
-}

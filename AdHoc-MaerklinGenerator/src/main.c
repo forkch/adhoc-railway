@@ -1,7 +1,9 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <string.h>
 #include <stdlib.h>
+
 
 #include "pwm.h"
 #include "spi.h"
@@ -80,6 +82,7 @@ void prepareDataForPWM();
 void processData();
 void process_solenoid_cmd(char*);
 void process_loco_cmd(unsigned char*);
+void send_number(unsigned int my_val);
 
 int main() {
 	flash_twice_red();
@@ -170,7 +173,7 @@ void process_solenoid_cmd(char* solenoid_cmd) {
 	uint8_t number = 0;
 	uint8_t port = 0;
 	char* token;
-	unsigned char delimiter[] = " ,;";
+	char delimiter[] = " ,;";
 
 #ifdef DEBUG
 	uart_puts("New Solenoid Command: ");
@@ -196,7 +199,7 @@ void process_solenoid_cmd(char* solenoid_cmd) {
 			uint8_t color = 0;
 			if (*token == 'g' || color == '1') {
 				color = 1;
-			} else if (*token = 'r' || color == '0')
+			} else if (*token == 'r' || color == '0')
 				color = 0;
 
 			port = (unsigned char) (number - 1) % 4;
@@ -207,7 +210,8 @@ void process_solenoid_cmd(char* solenoid_cmd) {
 
 		}
 
-		token = strtok(0, delimiter);
+		token = strtok(NULL, delimiter);
+		counter++;
 	}
 
 #ifdef DEBUG
@@ -623,4 +627,22 @@ __attribute__((section(".init1")));
 void wdt_init(void) {
 	MCUSR = 0;
 	wdt_disable();
+}
+
+
+void send_number(unsigned int my_val) {
+
+	unsigned char digit;
+	uart_puts("LKSDF");
+	for(int i = 0; i < 8; i++)
+	{
+		uart_putc('q');
+
+	}
+	for (signed int i = 8; i >= 0; i -= 4) {
+uart_putc('q');
+		digit = (my_val >> i) & 0x0f; // eine hex-Stelle extrahieren
+		digit = (digit > 9) ? (digit + 'A' - 10) : (digit + '0'); // in ASCII - Zeichen	konvertieren
+		uart_putc( digit); // oder was immer die UART-Funktion in Deinem compiler ist
+	}
 }

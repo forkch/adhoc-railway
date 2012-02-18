@@ -21,6 +21,8 @@ fifo_t infifo;
 uint8_t outbuf[BUFSIZE_OUT];
 fifo_t outfifo;
 
+typedef enum IB_CMD {BINARY_MODE, ASCII_MODE, INVALID};
+
 unsigned char cmdReceived = 0;
 
 extern unsigned char cmd[64];
@@ -37,11 +39,16 @@ unsigned char checkForNewCommand() {
 		cmd[counter] = c;
 		counter ++;
 	}
-
-	cmd[counter] = 0x0;
 	cmdReceived = 0;
 
-	return 1;
+
+	cmd[counter] = 0x0;
+	if(cmd[0] != 'X')
+		return INVALID;
+	if(cmd[1] > 0x80)
+		return BINARY_MODE;
+	return ASCII_MODE;
+
 }
 
 unsigned char checkForNewCommand1() {
