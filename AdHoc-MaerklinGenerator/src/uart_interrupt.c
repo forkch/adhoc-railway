@@ -21,7 +21,9 @@ fifo_t infifo;
 uint8_t outbuf[BUFSIZE_OUT];
 fifo_t outfifo;
 
-typedef enum IB_CMD {BINARY_MODE, ASCII_MODE, INVALID};
+typedef enum IB_CMD {
+	BINARY_MODE, ASCII_MODE, INVALID
+};
 
 unsigned char cmdReceived = 0;
 
@@ -32,21 +34,24 @@ unsigned char checkForNewCommand() {
 	if (!cmdReceived)
 		return 0;
 
-	unsigned char c;
+//	flash_once_green();
+
+	unsigned char c= uart_getc_wait();;
 	uint8_t counter = 0;
-	while (uart_get_inbuf_size() > 0) {
-		c = uart_getc_wait();
+	while (c != 0x0d) {
 		cmd[counter] = c;
-		counter ++;
+		counter++;
+		c = uart_getc_wait();
 	}
 	cmdReceived = 0;
 
-
 	cmd[counter] = 0x0;
-	if(cmd[0] != 'X')
+	if (cmd[0] != 'X')
 		return INVALID;
-	if(cmd[1] > 0x80)
+
+	if (cmd[1] > 0x80) {
 		return BINARY_MODE;
+	}
 	return ASCII_MODE;
 
 }
@@ -56,7 +61,6 @@ unsigned char checkForNewCommand1() {
 	if (!cmdReceived)
 		return 0;
 
-	flash_once_red();
 	unsigned char c = uart_getc_wait();
 
 	cmd[0] = c;
@@ -127,8 +131,6 @@ ISR (USART0_RX_vect) {
 
 	if (c == 0x0D) { //complete command received
 		cmdReceived = 1;
-	}else {
-		cmdReceived = 0;
 	}
 
 	//TODO: XOff when fifo is nearly full!!
@@ -147,8 +149,8 @@ ISR (SIG_USART_DATA) {
 int uart_puts(const char* str) {
 	uint8_t i = 0;
 	int ret = 0;
-	while(*(str+i) != 0x0) {
-		ret = fifo_put(&outfifo, *(str+i));
+	while (*(str + i) != 0x0) {
+		ret = fifo_put(&outfifo, *(str + i));
 		i++;
 	}
 	UCSR0B |= (1 << UDRIE0);

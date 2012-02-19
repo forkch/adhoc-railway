@@ -1,0 +1,73 @@
+<html>
+
+<head>
+<title>X-TRAIN....extended Lok-Tuning!</title>
+<meta name="keywords" content="xtrain, x-train, HO, M&auml;rklin, Märklin, C-Sinus, CSINUS, c-sinus Motor, Digitaldecoder, Digital-Decoder, Delta-Dekoder, Deltadecoder, Decoder, mfx, 6080, 6090, 60901, 60902, 60903, 60904, 60959, 60212, 60921, 60922, 60923, 60924, Handregler, Mobilstation, Unit, 6021, Lok, Umbau, Lokumbau, Rauchgenerator, Dampfgenerator, Delta Booster, Dampflok, Dampflokomotive, Diesellok, Diesellokomotive, E-Lok, D-Lok, Elektolokomotive, Elektrolok, Lokomotive, Soundmodul, Modelleisenbahn, Wagen, Wagons, mfx Decoder, 6603, 66031, 66032, 66415, 701.22A, 701.22B, 701.40, 701.43A, 701.21, DIP Schalter, Funktionen, Beleuchtung, Doppel A-Licht, Rangiergang, Rangierlicht, Telex, Tender, Tender-Telex, Löten, L&ouml;ten, Datenblätter, Elektronik, Adressen, Digitaladressen, Ersatzteile, Trommelanker, SFCM, LFCM, DCM, Allstrommotor, Kabelfraben, RAL-Farben, Epochen, Lokomotiven Umbau, Kleine Helfer, Schaltpäne, Schaltpl&auml;ne, Eisenbahn, Modellbahn, Supern, Altern, patinieren, Märklin System, ">
+<meta name="description" content="Umbau und Tuning von Märklin HO Lokomotiven, Digital - Delta Decoder, Soundmodule und Supern." >
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="content-language" content="de">
+<meta name="title" content="">
+<meta name="author" content="Reinhard Bobzin">
+<meta name="publisher" content="ReBoNet, Deutschland / Germany">
+<meta name="copyright" content="ReBoNet, Deutschland / Germany">
+<meta name="revisit-after" content="7 days">
+<meta name="expires" content="0">
+<meta name="robots" content="index,follow">
+<meta name="language" content="de">
+<link rel="SHORTCUT ICON" href="http://www.x-train.de/images/xtrain.ico">
+<link rel="icon" href="http://www.x-train.de/images/xtrain.ico" type="image/ico">
+<SCRIPT LANGUAGE="JavaScript">
+var speed = 40;
+var pause = 2000;
+
+var timer = null;
+
+var array = new Array();
+array[0] = "          +++  X-TRAIN....extended Lok-Tuning!  +++";
+array[1] = "          =>> Umbauten von Lokomotiven, Decodern und Soundmodulen.";
+array[2] = "          +++  X-TRAIN....extended Lok-Tuning!  +++";
+array[3] = "          =>> Ideen und Tips für Ihre Modelleisenbahn!";
+array[4] = "          +++  X-TRAIN....extended Lok-Tuning!  +++";
+array[5] = "          =>> Veredeln von Lokomotiven und Wagons";
+
+var count=0;
+var point=0;
+
+function show()
+ {
+   var text = array[count];
+   if (point < text.length) 
+ {
+   if (text.charAt(point) == " ") point++;                        
+   var Message = text.substring(0, point + 1); 
+   window.status = Message; point++; 
+   timer = setTimeout("show()", speed);
+ } 
+ else 
+ {
+   point = 0;
+   if (++count == array.length) count = 0;
+   timer = setTimeout("show()", pause);
+ }
+}
+show()
+</SCRIPT>
+
+
+</head>
+
+<frameset framespacing="0" border="false" frameborder="0" cols="194,*">
+  <frame name="Links" scrolling="no" noresize target="ROben" src="pages/navi.php">
+  <frameset rows="100,88%">
+    <frame name="ROben" target="RUnten" src="pages/top.php" scrolling="no" noresize>
+    <frame name="Hauptframe" src="pages/main.php" scrolling="auto" target="_self">
+  </frameset>
+  <noframes>
+  <body topmargin="0" leftmargin="0">
+  <p>X-TRAIN....extended Lok-Tuning</p>
+  <br>Umbau und Tuning von Märklin HO Lokomotiven, Digital - Delta Decoder, Soundmodule und Supern.
+  <p>&nbsp;</p>
+  </body>
+  </noframes>
+</frameset>
+</html>

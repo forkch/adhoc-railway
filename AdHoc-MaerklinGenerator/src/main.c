@@ -4,85 +4,17 @@
 #include <string.h>
 #include <stdlib.h>
 
-
+#include "main.h"
 #include "pwm.h"
 #include "spi.h"
 #include "debug.h"
 #include "uart_interrupt.h"
 #include "fifo.h"
-
-#define DEBUG
-
-#define MODE_SOLENOID 0
-#define MODE_LOCO 1
-#define SOLENOID_WAIT 10
-
-#define TIMER0_PRESCALER      (1 << CS02) | (1 << CS00)
-volatile unsigned char timer0_interrupt = 1;
-
-unsigned char pwm_mode = 0;
-unsigned char isLocoCommand = 1;
-
-#define MAX_COMMAND_QUEUE 1
-#define MAX_SOLENOID_QUEUE 20
-
-typedef struct LocoData {
-	unsigned char address;
-	unsigned char speed;
-	unsigned char direction;
-	unsigned char function :1;
-	unsigned char f1 :1;
-	unsigned char f2 :1;
-	unsigned char f3 :1;
-	unsigned char f4 :1;
-	char active :1;
-	char isNewProtocol :1;
-};
-
-uint8_t currentLocoIdx = 79;
+#include "ib_parser.h"
 
 struct LocoData locoData[80];
-struct LocoData* newLoco = 0;
-
-typedef struct SolenoidData {
-	unsigned char address;
-	unsigned char port;
-	char active :1;
-	char timerDetected :1;
-	char deactivate :1;
-};
-
-uint16_t locoCmdsSent = 0;
-
-uint8_t debugCounter = 0;
-
 struct SolenoidData solenoidData[MAX_SOLENOID_QUEUE];
-
-uint8_t solenoidDataIdxInsert = 0;
-uint8_t solenoidDataIdxPop = 0;
-int8_t solenoidToDeactivate = -1;
-uint8_t previousSolenoidDecoder = 0;
-
-unsigned char portData[8];
-unsigned char deltaSpeedData[16];
-
-volatile unsigned char pwmQueueIdx = 0;
-unsigned char commandQueue[2][54];
-
-volatile uint8_t actualBit = 0;
-
-unsigned char cmd[64];
-unsigned char prepareNextData = 1;
-uint8_t newSolenoid = 0;
-
-/****** Funtion Declarations ******/
-void initPortData();
-void initLocoData();
-void prepareDataForPWM();
-void processData();
-void process_solenoid_cmd(char*);
-void process_loco_cmd(unsigned char*);
-void send_number(unsigned int my_val);
+int solenoidDataIdxInsert;
 
 int main() {
 	flash_twice_red();
@@ -115,7 +47,8 @@ int main() {
 
 	sei();
 
-	uart_puts("AdHoc-Maerklin Generator V0.1\n");
+	log_info("AdHoc-Maerklin Generator V0.1");
+	log_info("Have Fun :-)\n");
 
 	flash_twice_green();
 	flash_twice_red();
@@ -129,7 +62,7 @@ int main() {
 		unsigned char cmdAvail = checkForNewCommand();
 
 		if (cmdAvail == 1) {
-			processData(cmd);
+			processASCIIData(cmd);
 		}
 
 		if (timer0_interrupt == 0) {
@@ -154,106 +87,33 @@ int main() {
 	return 0;
 }
 
-void processData() {
+void processASCIIData() {
 
-	if (cmd[0] == 'T') {
-		//solenoid
-		flash_twice_green();
-		process_solenoid_cmd(cmd);
-	} else if (cmd[0] == 'L') {
-		// loco
-		flash_twice_red();
-		process_loco_cmd(cmd);
+#ifdef DEBUG
+	log_debug("Command received");
+	log_debug(cmd);
+#endif
+
+	uint8_t ret = parse_ib_cmd(cmd);
+
+	if (!ret) {
+#ifdef DEBUG
+		log_error("Command not recognized\n");
+#endif
+		return;
 	}
 }
 
-void process_solenoid_cmd(char* solenoid_cmd) {
-
-	uint8_t address = 0;
-	uint8_t number = 0;
-	uint8_t port = 0;
-	char* token;
-	char delimiter[] = " ,;";
-
-#ifdef DEBUG
-	uart_puts("New Solenoid Command: ");
-	uart_puts(solenoid_cmd);
-#endif
-	token = strtok(solenoid_cmd, delimiter);
-
-	int counter = 0;
-	while (token != 0) {
-
-#ifdef DEBUG
-		uart_puts("Token: ");
-		uart_puts(token);
-		uart_puts("\n");
-#endif
-		if (counter == 1) { //address
-
-			number = atoi(*token);
-
-			address = (unsigned char) ceilf(number / 4.f);
-		} else if (counter == 2) {
-
-			uint8_t color = 0;
-			if (*token == 'g' || color == '1') {
-				color = 1;
-			} else if (*token == 'r' || color == '0')
-				color = 0;
-
-			port = (unsigned char) (number - 1) % 4;
-			port *= 2;
-			port += color;
-
-		} else if (counter == 3) {
-
-		}
-
-		token = strtok(NULL, delimiter);
-		counter++;
-	}
-
-#ifdef DEBUG
-
-	uart_puts("Address: ");
-	send_number(address);
-	for (int i = 0; i < 8; i++) {
-		uart_putc('q');
-
-	}
-	uart_puts("\n");
-#endif
-
-//	uint16_t number = 0;
-//	uint8_t color = 0;
-//	uint8_t status = 0;
-//
-//	unsigned char decoderAddr = (unsigned char) ceilf(number / 4.f);
-//	unsigned char portNr = (unsigned char) (number - 1) % 4;
-//	portNr *= 2;
-//	portNr += color;
-//
-//	for (uint8_t i = 0; i < decoderAddr; i++)
-//		flash_once_green();
-
-//	uint8_t t = solenoid_cmd[1] - 1;
-//	unsigned char address = locoData[t].address;
-//	unsigned char port = portData[solenoid_cmd[2]];
-//	unsigned char activate = solenoid_cmd[3];
-
-	solenoidData[solenoidDataIdxInsert].address = address;
-	solenoidData[solenoidDataIdxInsert].port = port;
-	solenoidData[solenoidDataIdxInsert].active = 0;
-	solenoidData[solenoidDataIdxInsert].timerDetected = 0;
-	solenoidData[solenoidDataIdxInsert].deactivate = 0;
-
+void enqueue_solenoid() {
 	solenoidDataIdxInsert++;
 	solenoidDataIdxInsert = solenoidDataIdxInsert % MAX_SOLENOID_QUEUE;
 
 	newSolenoid = 1;
 }
 
+void enqueue_loco(uint8_t loco_idx) {
+	newLoco = &locoData[loco_idx];
+}
 void process_loco_cmd(unsigned char* loco_cmd) {
 
 	unsigned char address = loco_cmd[1];
@@ -280,8 +140,6 @@ void process_loco_cmd(unsigned char* loco_cmd) {
 			locoData[t].speed = deltaSpeedData[speed + 2];
 		}
 	}
-	newLoco = &locoData[t];
-
 }
 
 void prepareDataForPWM() {
@@ -303,6 +161,13 @@ void prepareDataForPWM() {
 		if (locoCmdsSent == SOLENOID_WAIT
 				|| address != previousSolenoidDecoder) {
 			previousSolenoidDecoder = address;
+
+			/*send_nl();
+			 send_number(address);
+			 send_nl();
+			 send_number(port);
+			 send_nl();
+			 */
 			// address
 			for (uint8_t i = 0; i < 8; i++)
 				commandQueue[queueIdxLoc][i] = (address >> (7 - i)) & 1;
@@ -629,20 +494,3 @@ void wdt_init(void) {
 	wdt_disable();
 }
 
-
-void send_number(unsigned int my_val) {
-
-	unsigned char digit;
-	uart_puts("LKSDF");
-	for(int i = 0; i < 8; i++)
-	{
-		uart_putc('q');
-
-	}
-	for (signed int i = 8; i >= 0; i -= 4) {
-uart_putc('q');
-		digit = (my_val >> i) & 0x0f; // eine hex-Stelle extrahieren
-		digit = (digit > 9) ? (digit + 'A' - 10) : (digit + '0'); // in ASCII - Zeichen	konvertieren
-		uart_putc( digit); // oder was immer die UART-Funktion in Deinem compiler ist
-	}
-}

@@ -65,3 +65,106 @@ void green_led_on() {
 void green_led_off() {
 	RED_GREEN_PORT &= ~(1 << GREEN_LED);
 }
+
+
+void logit(char* msg) {
+	uart_puts(msg);
+	send_nl();
+}
+void logit2(char* msg, char* msg2) {
+	uart_puts(msg);
+	uart_puts(msg2);
+	send_nl();
+}
+void logit3(char* msg, uint8_t number) {
+	uart_puts(msg);
+	send_number(number);
+	send_nl();
+}
+
+void log_debug(char* msg) {
+	uart_flush();
+	uart_puts("DEBUG: ");
+	logit(msg);
+}
+
+void log_debug2(char* msg, char* msg2) {
+	uart_flush();
+	uart_puts("DEBUG: ");
+	logit2(msg, msg2);
+}
+void log_debug3(char* msg, uint8_t number) {
+	uart_flush();
+	uart_puts("DEBUG: ");
+	logit3(msg, number);
+}
+
+void log_error(char* msg) {
+	uart_flush();
+	uart_puts("ERROR: ");
+	logit(msg);
+}
+
+void log_error2(char* msg, char* msg2) {
+	uart_flush();
+	uart_puts("ERROR: ");
+	logit2(msg, msg2);
+}
+void log_error3(char* msg, uint8_t number) {
+	uart_flush();
+	uart_puts("ERROR: ");
+	logit3(msg, number);
+}
+
+void log_info(char* msg) {
+	uart_flush();
+	uart_puts("INFO: ");
+	logit(msg);
+}
+
+void log_info2(char* msg, char* msg2) {
+	uart_flush();
+	uart_puts("INFO: ");
+	logit2(msg, msg2);
+}
+void log_info3(char* msg, uint8_t number) {
+	uart_flush();
+	uart_puts("INFO: ");
+	logit3(msg, number);
+}
+
+void send_nl() {
+	uart_putc('\n');
+	uart_flush();
+}
+
+void send_number(unsigned int my_val) {
+	send_number_dec(my_val);
+	uart_puts(" [");
+	send_number_hex(my_val);
+	uart_puts("]");
+	uart_flush();
+}
+void send_number_dec(unsigned int my_val) {
+
+	char buffer[4];
+	buffer[0] = ' ';
+	buffer[1] = ' ';
+	buffer[2] = ' ';
+	buffer[3] = ' ';
+
+	itoa(my_val, buffer, 10);
+	uart_puts(buffer);
+}
+
+void send_number_hex(unsigned int my_val) {
+
+	unsigned char digit;
+	uart_puts("0x");
+	for (signed int i = 4; i >= 0; i -= 4) {
+		digit = (my_val >> i) & 0x0f; // eine hex-Stelle extrahieren
+		digit = (digit > 9) ? (digit + 'A' - 10) : (digit + '0'); // in ASCII - Zeichen	konvertieren
+		uart_putc(digit); // oder was immer die UART-Funktion in Deinem compiler ist
+	}
+	uart_flush();
+}

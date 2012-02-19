@@ -1,0 +1,1484 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.51 [en] (Win95; I) [Netscape]">
+   <title> New M&auml;rklin Motorola Format </title>
+</head>
+<body>
+
+<hr>
+<center>
+<h2>
+THE MANUAL OF THE</h2></center>
+
+<center>
+<h2>
+NEW M&Auml;RKLIN-MOTOROLA FORMAT</h2></center>
+
+<center>
+<h4>
+&copy;Andrea Scorzoni, 1995-2000</h4></center>
+
+<hr>
+<h3>
+<u>FOREWORD</u></h3>
+This is version 3.7 of the manual on the "New Motorola format" introduced
+by M&auml;rklin in 1994 with the Control Unit 6021. As you will see, the
+new format has only a few features in common with the standard trinary
+Motorola format (145026 format). Moreover, this manual does not describe
+in detail the old format, since a lot of literature is available on it.
+<p>After receiving this document, M&auml;rklin Export Directorate told
+me that they had not time (at least up to now) to publish an official document
+describing the new M&auml;rklin-Motorola format. I hope this document will
+help both you, reader, and them, M&auml;rklin officials.
+<p>The format described in this document has been thoroughly verified and
+tested.
+<p>Quite obviously, I'm not responsible for anything that might happen
+to your rolling stock when using the information contained in this document.
+This document is likely to contain typing and logical errors. Please check
+it. I'm waiting for your feedback's and reactions.
+<p>Should you use this information in written documents, please refer to
+the source of it:
+<p>Andrea Scorzoni, via Agucchi 169, 40131, Bologna, Italy.
+<p>e-mail address (office): <b>scorzoni@diei.unipg.it</b>
+<p>home page (office): <b>http://www.diei.unipg.it/STAFF/scorzoni.htm</b>
+<p>Many thanks are due to Stefano Chiti-Batelli for extensive testing and
+verification of the format described in this document. The help of Rob
+Hamerling is also gratefully acknowledged, for a better understanding of
+the data stream issued by the 6021. Thanks also to other friends from the
+M&auml;rklin Mailing list.&nbsp;<a NAME="Contents"></a>
+<hr>
+<h3>
+<u>CONTENTS</u></h3>
+
+<ul>
+<li>
+<b><a href="#4dip">Function of the 4 DIP switches of the 6021</a></b></li>
+
+<li>
+<b><a href="#def">Definitions</a></b></li>
+
+<li>
+<b><a href="#trit_description">About the trits of a packet</a></b></li>
+
+<li>
+<b><a href="#address_description">Address part of a packet</a></b></li>
+
+<li>
+<b><a href="#idle_state">Idle state</a></b></li>
+
+<li>
+<b><a href="#bit_description">Bits for locomotives in the new Motorola
+format</a></b></li>
+
+<li>
+<b><a href="#packets">Description of the sequence of packets</a></b></li>
+
+<li>
+<b><a href="#details">Details on the last 8 binary pulses of a packet</a></b></li>
+
+<li>
+<b><a href="#DIP3">Function of DIP switch No.3 - Pauses between packets</a></b></li>
+
+<li>
+<b><a href="#questions">Questions and answers</a></b></li>
+</ul>
+
+<hr>
+<h3>
+<a NAME="4dip"></a><u>FUNCTION OF THE 4 DIP SWITCHES OF THE 6021:</u></h3>
+
+<dl>
+<dt>
+DIP SW. #1)</dt>
+
+<dd>
+[OFF]/[ON] ->[OLD&amp;NEW] /[ONLY-NEW] extended function decoder codes
+and [OLD&amp;NEW] /[ONLY-NEW] "reverse direction" information.</dd>
+
+<br>To keep compatibility with old-fashioned decoders (from Zy to 701.13
+through LME) use #1 OFF (see later);
+<dt>
+DIP SW. #2)</dt>
+
+<dd>
+[OFF]/[ON] ->[OLD]/[NEW] Motorola format; Direction arrows on the Control
+80f (6036) turn on.</dd>
+
+<dt>
+DIP SW. #3)</dt>
+
+<dd>
+Only for new Motorola format. It increases the speed at which info is sent
+to the track. In other words it decreases the time intervals between series
+of 18 pulses. Incompatible with some chips before 701.13 (it doesn't work,
+e.g., with some chips LME03, LME=Lenz M&auml;rklin Electronics)</dd>
+
+<dt>
+DIP SW. #4)</dt>
+
+<dd>
+Voltage stabilization at +/-12 Volt.</dd>
+</dl>
+If #1 OFF and #2 ON you actually have a mixture between new Motorola format
+and old function decoder format. The additional functions f1,f2,f3,f4 are
+working both with old decoders (e.g. digital crane decoder) and new ones
+(e.g. additional functions of the c95).
+<br>Please take into account that the 6021 reads the DIP switches only
+during the "power on" cycle or after a "reset" ("stop" and "go" pressed
+at the same time for about half a second). Therefore, changing the position
+of the DIP switches during normal operation has no effect.
+<br><a href="#Contents">Return to the Table of Contents</a>
+<hr>
+<h3>
+<a NAME="def"></a><u>DEFINITIONS.</u></h3>
+
+<ul>
+<li>
+base frequency (locos): it's based on a serial transmission at 38400 baud.</li>
+
+<li>
+base clock duration (locos): 26 us (microseconds) = 1/38400 (approx.)</li>
+
+<br>Comment: this is the clock frequency of the old 6020
+<li>
+double frequency (solenoid and old function decoders): 76800 baud</li>
+
+<li>
+half clock duration (solenoid and old function decoders): 13 us</li>
+
+<li>
+base pulse duration (locos): 8 x (base clock duration) = 208 us</li>
+
+<li>
+half pulse duration (solenoids): 8 x (half clock duration) = 104 us</li>
+
+<li>
+binary "1": a long pulse</li>
+
+<pre>&nbsp;&nbsp;&nbsp; -------
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -
+&nbsp;&nbsp;&nbsp; 12345678</pre>
+
+<li>
+binary "0": a short pulse</li>
+
+<pre>&nbsp;&nbsp;&nbsp; -
+&nbsp;&nbsp;&nbsp;&nbsp; -------
+&nbsp;&nbsp;&nbsp; 12345678</pre>
+
+<li>
+trinary "1": a pair of long pulses</li>
+
+<pre>&nbsp;&nbsp;&nbsp; ------- -------
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -
+&nbsp;&nbsp;&nbsp; 1234567812345678</pre>
+
+<li>
+trinary "0": a pair of short pulses</li>
+
+<pre>&nbsp;&nbsp;&nbsp; -&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -
+&nbsp;&nbsp;&nbsp;&nbsp; ------- -------
+&nbsp;&nbsp;&nbsp; 1234567812345678</pre>
+
+<li>
+trinary "OPEN": a long pulse followed by a short pulse</li>
+
+<pre>&nbsp;&nbsp;&nbsp; ------- -
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - -------
+&nbsp;&nbsp;&nbsp; 1234567812345678</pre>
+
+<li>
+packet: a sequence of 18 binary pulses (Motorola format) or of 9 trinary
+pulses ("trits"). Each packet is followed by a pause where no pulse is
+issued.</li>
+
+<li>
+double packet: a sequence of 2 packets (+ 2 pauses) for error control.
+In practice, a double packet consists of a packet, a pause (t1), the repetition
+of the same packet and a final pause (t2). For an explanation of t1 and
+t2 please refer to a following <u><a href="#DIP3">section</a></u></li>
+
+<li>
+auxiliary function: direction-dependent function of M&auml;rklin decoders.
+It can be switched on by means of the button "function" of the M&auml;rklin
+Control Units.</li>
+
+<li>
+additional or extended functions: direction-independent functions. They
+can be switched on/off by means of the buttons f1,f2,f3,f4 of the M&auml;rklin
+Control Units.</li>
+</ul>
+<a href="#Contents">Return to the Table of Contents</a>
+<hr>
+<h3>
+<a NAME="trit_description"></a><u>ABOUT THE TRITS OF A PACKET</u></h3>
+A packet is made of 18 binary pulses or 9 trits. Depending on the type
+of device addressed, the following packets and trit subsets are used:
+<pre>locos: A1 A2 A3 A4 F S1 S2 S3 S4&nbsp; (standard frequency,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; old and new Maerklin Motorola protocol)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -> A1 A2 A3 A4 address part (trinary)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -> F&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; auxiliary function trit used in binary mode:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the function is ON in the case of two long pulses,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OFF when two short pulses are used
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -> S1 S2 S3 S4 speed and reverse function in the old Motorola
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protocol (used in binary mode);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; speed, direction of travel and status of
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; additional functions f1...f4 in the new
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Maerklin-Motorola protocol.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; S1 S2 S3 S4 are no longer binary
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; or trinary (see later).
+
+solenoids: A1 A2 A3 A4 0 D0 D1 D2 S&nbsp; (double frequency,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; old and new Maerklin Motorola protocol)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -> A1 A2 A3 A4 address part (trinary);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -> "0"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fixed trit;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -> D2 D1 D0&nbsp;&nbsp;&nbsp; binary trits used to address the particular port
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; of the k83. Range: 0...7; D2=MSB, D0=LSB.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -> S&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; status of the k83: "1"=on, "0"=switch off all
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the k83, no matter what D2 D1 D0 are.
+
+additional functions decoders: A1 A2 A3 A4 1 F1 F2 F3 F4
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (double frequency, old Maerklin Motorola protocol)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -> A1 A2 A3 A4 address part (trinary);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -> "1"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fixed trit;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -> F1 F2 F3 F4 binary trits used to switch on and off the
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4 functions f1...f4, respectively.
+
+
+
+
+</pre>
+<a href="#Contents">Return to the Table of Contents</a>
+<hr>
+<h3>
+<a NAME="address_description"></a><u>ADDRESS PART "A1 A2 A3 A4" OF A PACKET</u></h3>
+"A1 A2 A3 A4" are trits, i.e. they are used as trinary bits. 3^4=81 addresses
+are possible. Only 80 addresses are actually used for locos and old function
+decoders and only 64 addresses are used for solenoid devices.
+<br>The trinary addresses can be recognized in the DIP switch setting of
+locomotives that is enclosed in all M&auml;rklin Digital publications.
+There are 8 DIP switches, numbered from 1 to 8.
+<pre>-> 1,3,5,7 are connection to ground of the 4 address
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inputs of the decoders;
+-> 2,4,6,8 are connection to Vcc of the 4 address
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inputs of the decoders;
+
+</pre>
+If these address inputs are left unconnected, the decoders interpret this
+as an "open".
+<br>For example, -2--5-7- means:
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -2&nbsp; 1st trit&nbsp;&nbsp; = 1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --&nbsp; 2nd trit = open
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5-&nbsp; 3rd trit&nbsp;&nbsp; = 0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 7-&nbsp; 4th trit&nbsp;&nbsp; = 0
+
+</pre>
+Please note that in the M&auml;rklin Motorola protocol the trinary address
+"0000" is defined as "80" while the address "open open open open" of locos
+and function decoders is used to transmit the "idle state" packets (see
+next section).
+<pre>Example: address 34:
+34:3=11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; remainder: 1
+11:3= 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; remainder: 2
+&nbsp;3:3= 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; remainder: 0
+&nbsp;1:3= 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; remainder: 1
+
+Then: 34=1*27+0*9+2*3+1*1
+
+
+</pre>
+The trinary format of 34 is 1021, i.e. "1" "0" "open" "1". In the Motorola
+format they are actually sent with a reversed sequence, i.e.:
+<pre>"1" "open" "0" "1" (trits) or
+11 10 00 11 (bits)
+-2 -- 5- -8 (Maerklin DIP switch)
+A1 A2 A3 A4
+
+
+
+
+</pre>
+<a href="#Contents">Return to the Table of Contents</a>
+<hr>
+<h3>
+<a NAME="idle_state"></a><u>IDLE STATE</u></h3>
+The idle state is forced on power-on or after a reset.
+<br>In the old Motorola protocol the idle state forces a continuous negative
+voltage on the track (red socket negative with respect to brown socket).
+<br>In the new M&auml;rklin-Motorola protocol the idle state causes a continuous
+transmission of packets in which the address part is the non-used address
+of the M&auml;rklin Digital, i.e. four "open" trits, and the data part
+is 5 "zero" trits.
+<br>Please note that this address is actually an "80" in trinary code,
+while the address "80" of locos and function decoders is coded with a sequence
+of 4 "zero" trits.
+<br>The idle mode ends as soon as the first "true" packet for locos is
+sent.
+<br><a href="#Contents">Return to the Table of Contents</a>
+<hr>
+<h3>
+<a NAME="bit_description"></a><u>BITS FOR LOCOMOTIVES IN THE NEW MOTOROLA
+FORMAT</u></h3>
+When DIP switch No.2 in the Control Unit is ON, the new Motorola format
+appears on the tracks.
+<br>In the new Motorola format:
+<ul>
+<li>
+the first 4 trits (4 couples of pulses) are trinary as usual, code values
+"0...80" of which:</li>
+
+<br>- value "0" is what M&auml;rklin calls loco 80 (or: loco 80 is encoded
+as 0);
+<br>- value "80" is used for "idle" state of the 6021;
+<li>
+the 5th one is again used as a binary pair (two equal pulses, two long
+or two short)</li>
+
+<li>
+the last 4 "trits" (4 couples of pulses) were previously used as binary
+pairs, so that they were actually 2^4=16 different combinations. Now they
+are used as 8 different pulses or bits (2^8=256). I mean that now if you
+think of 4 couples of pulses, you can find also a "short-long" couple that
+before was forbidden! (only long-long, short-short and long-short were
+allowed in the standard trinary Motorola format). Unfortunately, not all
+combinations can be used for compatibility with the previous system.</li>
+</ul>
+Summarizing, the first 10 binary pulses of the new "Motorola" format are
+exactly the same as for the old one. For example, two long binary pulses
+at 9th and 10th place (5th trinary pulse = 1) mean "function on". Only
+the last 8 binary pulses are different in the new protocol.
+<br><a href="#Contents">Return to the Table of Contents</a>
+<hr>
+<h3>
+<a NAME="packets"></a><u>DESCRIPTION OF THE SEQUENCE OF PACKETS</u></h3>
+The new format sends the following sequence FOR ONE LOCO:
+<pre>- 2x double packet specifying speed and direction;&nbsp;&nbsp; (*)
+- 2x double packet specifying status of additional function f1;
+- 2x double packet specifying speed and direction;&nbsp;&nbsp; [same as (*)]
+- 2x double packet specifying status of additional function f2;
+- 2x double packet specifying speed and direction;&nbsp;&nbsp; [same as (*)]
+- 2x double packet specifying status of additional function f3;
+- 2x double packet specifying speed and direction;&nbsp;&nbsp; [same as (*)]
+- 2x double packet specifying status of additional function f4;
+
+</pre>
+In case of TWO LOCOS the format is:
+<pre>- 2x double packet specifying speed and direction;&nbsp;&nbsp; (1st loco)
+- 2x double packet specifying status of additional function f1; (1st loco)
+- 2x double packet specifying speed and direction;&nbsp;&nbsp; (2nd loco)
+- 2x double packet specifying status of additional function f1; (2nd loco)
+- 2x double packet specifying speed and direction;&nbsp;&nbsp; (1st loco)
+- 2x double packet specifying status of additional function f2; (1st loco)
+- 2x double packet specifying speed and direction;&nbsp;&nbsp; (2nd loco)
+- 2x double packet specifying status of additional function f2; (2nd loco)
+...
+
+</pre>
+and so on.
+<br>The reason why more than one packet is issued for the same information
+is the electrical noise always present when an electrical signal is picked-up
+by a rotating wheel. For error control, a decoder reacts only when it detects
+two identical packets. The decoder is very lucky in case it is able to
+understand two consecutive packets. Usually it needs more than two packets,
+typically 4 or even more.
+<br>There is no limit to the number of locomotives in the refresh cycle.
+This means that up to 80 locomotives can be refreshed at the same time.
+When DIP switch #1 and #2 are ON the refresh cycle is very time consuming
+(see also section <a href="#DIP3">FUNCTION OF DIP SWITCH No.3</a>). When
+DIP switch #1 and #2 are OFF, since in this situation there are only 4
+packets per locomotive, a complete cycle for all 80 locos takes much less
+time (slightly over 2 seconds).
+<br>The refresh cycle is in reverse sequence: when activating addresses
+in the sequence 1,2,3,4,5 the repeat cycle shows: 5,4,3,2,1.
+<p>Let us have a look at the data stream issued by the 6021 as a consequence
+of a particular command. The following paragraphs have been compiled with
+the help of a "sniffer" program written by Rob Hamerling. For more information
+please refer to
+<a href="http://users.capitolonline.nl/~nlco5907/mklsoft.html">Rob's
+home page</a>
+<br>When changing the speed of a loco, the 6021 sends 16 identical packets
+(8 double packets) with the new information and then resumes the refresh
+cycle.
+<br>When sending "reverse direction" information, the 6021 (with DIP switch
+#2 ON) issues 16 "change direction" packets of the new type (8 double packets).
+When DIP switch #1 is OFF it also issues 12 "change direction" packets
+of the old type (6 double packets).
+<br>When pushing the FX (F1...F4) button the 6021 interrupts its packet
+refresh cycle and sends 12 identical packets (6 double packets) with the
+FX ON code to the selected locomotive decoder before resuming the normal
+refresh cycle.
+<br><a href="#Contents">Return to the Table of Contents</a>
+<h3>
+<a NAME="details"></a><u>DETAILS ON THE LAST 8 BINARY PULSES OF A PACKET.</u></h3>
+In the following I'll discuss only the last 8 binary pulses. Previously
+they were interpreted as 4 trinary pulses, but only "0" and "1" values
+were considered, so that they were actually 4 binary digits, giving rise
+to the 16 (2^4) operational levels of the M&auml;rklin Digital system.
+From now on I'll consider them as 8 binary pulses (2^8=256 possible combinations).
+<p>Let's call them: A E B F C G D H
+<p>In the old Motorola format these bits were actually AABBCCDD (E=A, F=B,
+G=C, D=H, 16 combinations) and, thinking about trits
+<br>&nbsp;
+<p><a NAME="TABLE1"></a>
+<center><table BORDER BORDERCOLOR="#000000" >
+<tr>
+<td WIDTH="129">
+<center>reversed -> D C B A</center>
+</td>
+
+<td WIDTH="80">
+<center>operat. level</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>1 1 1 1</center>
+</td>
+
+<td WIDTH="80">
+<center>14</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>1 1 1 0</center>
+</td>
+
+<td WIDTH="80">
+<center>13</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>...</center>
+</td>
+
+<td WIDTH="80">
+<center>...</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>0 0 1 1</center>
+</td>
+
+<td WIDTH="80">
+<center>2</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>0 0 1 0</center>
+</td>
+
+<td WIDTH="80">
+<center>1</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>0 0 0 1</center>
+</td>
+
+<td WIDTH="80">
+<center>reverse</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>0 0 0 0</center>
+</td>
+
+<td WIDTH="80">
+<center>stop</center>
+</td>
+</tr>
+</table></center>
+
+<center>
+<p>Table 1</center>
+
+<p>To better analyze the new M&auml;rklin-Motorola format, let's split
+these bits as follows:
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A&nbsp;&nbsp; B&nbsp;&nbsp; C&nbsp;&nbsp; D
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; E&nbsp;&nbsp; F&nbsp;&nbsp; G&nbsp;&nbsp; H
+
+</pre>
+The operating level is always present in the A B C D pulses, and it is
+compatible with the old format
+<br>&nbsp;
+<p><a NAME="TABLE2"></a>
+<center><table BORDER BORDERCOLOR="#000000" >
+<tr>
+<td WIDTH="129">
+<center>reversed -> D C B A</center>
+</td>
+
+<td WIDTH="80">
+<center>operat. level</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>1 1 1 1</center>
+</td>
+
+<td WIDTH="80">
+<center>14</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>1 1 1 0</center>
+</td>
+
+<td WIDTH="80">
+<center>13</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>...</center>
+</td>
+
+<td WIDTH="80">
+<center>...</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>0 0 1 1</center>
+</td>
+
+<td WIDTH="80">
+<center>2</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>0 0 1 0</center>
+</td>
+
+<td WIDTH="80">
+<center>1</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>(0 0 0 1)</center>
+</td>
+
+<td WIDTH="80">
+<center>(reverse)</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>0 0 0 0</center>
+</td>
+
+<td WIDTH="80">
+<center>stop</center>
+</td>
+</tr>
+</table></center>
+
+<center>
+<p>Table 2</center>
+
+<p>Note that, from the theoretical point of view, the code "0 0 0 1" is
+not needed, in the new format (it's obsolete!). However, for backwards
+compatibility, when DIP switch #2 is ON the 6021 issues 16 packets with
+a mixture of "old reverse information (DCBA=0001) and absolute direction
+information (HGFE different from DCBA). Moreover, when DIP switch #2 is
+ON and DIP switch #1 is OFF ("New Motorola Format" WITH backwards compatibility
+with LME decoders), before the 16 packets just described the 6021 issues
+12 old Motorola "11 00 00 00" packets (reverse direction).
+<p>The only thing that changes in the sequences of double packets described
+above is the content of EFGH.
+<h4>
+<a NAME="details1"></a>CASE OF A DOUBLE PACKET SPECIFYING SPEED AND DIRECTION</h4>
+In the case of double packet specifying speed and direction, the values
+of EFGH depend on the operating level
+<br>&nbsp;
+<p><a NAME="TABLE3"></a>
+<center><table BORDER=2 >
+<tr>
+<td WIDTH="129">
+<center>operating level</center>
+</td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>-14 to -7</center>
+</td>
+
+<td WIDTH="80">
+<center>1 0 1 0</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>-6 to -0</center>
+</td>
+
+<td WIDTH="80">
+<center>1 0 1 1</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>+0 to +6</center>
+</td>
+
+<td WIDTH="80">
+<center>0 1 0 1</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>+7 to +14</center>
+</td>
+
+<td WIDTH="80">
+<center>0 1 0 0</center>
+</td>
+</tr>
+</table></center>
+
+<center>
+<p>Table 3</center>
+
+<p>Note that "+0" means speed=0 and forward direction, "-0" means speed=0
+and reverse direction. "-6 to -0" and "+6 to +0" include the reverse direction
+code "0 0 0 1".
+<br>Moreover, following these settings the last 8 bits of a packet cannot
+be confused with the same bits of the old protocol. In fact it is impossible
+to have a sequence AABBCCDD since the relationship between H and the most
+significant bit of the speed set (D) is always such that:
+<center>
+<p>H = <b>NOT</b>(D)</center>
+
+<p>The total number of combinations used for sending information on speed
+and direction is 32, i.e. the total number of speeds from -14 to +14 plus
+2 combinations for reversing direction of travel, still used for compatibility
+with M&auml;rklin decoders conforming to the old protocol.
+<br>&nbsp;
+<h4>
+<a NAME="details2"></a>CASE OF A DOUBLE PACKET SPECIFYING SPEED AND STATUS
+OF F1...F4</h4>
+Standard values
+<br>&nbsp;
+<p><a NAME="TABLE4"></a>
+<center><table BORDER=2 >
+<tr>
+<td WIDTH="129"></td>
+
+<td WIDTH="80">
+<center>f1</center>
+</td>
+
+<td WIDTH="80">
+<center>f2</center>
+</td>
+
+<td WIDTH="80">
+<center>f3</center>
+</td>
+
+<td WIDTH="80">
+<center>f4</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129"></td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>standard values</center>
+</td>
+
+<td WIDTH="80">
+<center>1 1 0 f</center>
+</td>
+
+<td WIDTH="80">
+<center>0 0 1 f</center>
+</td>
+
+<td WIDTH="80">
+<center>0 1 1 f</center>
+</td>
+
+<td WIDTH="80">
+<center>1 1 1 f</center>
+</td>
+</tr>
+</table></center>
+
+<center>
+<p>Table 4a</center>
+
+<p>The value of the variable "f" in the last bit (H) of all columns is
+dependent on the status of the additional function: OFF: f="0"; ON: f="1".
+<br>Please note that only 6 possible combinations of the three bits EFG
+are used when joining Table 3 AND Table 4a.
+<br>On the other hand, since the bit "f" can be both "0" and "1" depending
+on the status of the extended function, it is not possible to assure that
+the resulting combination AEBFCGDH does not conflict with the case AABBCCDD
+(old Motorola protocol).
+<br>For this reason some exceptions can be found to the format of Table
+4a. These exceptions are for compatibility with the old format. In fact,
+e.g., in the case of operating level 2 and additional function f1, with
+EFGH=1100 we could have:
+<pre>&nbsp;&nbsp;&nbsp; A&nbsp;&nbsp; B&nbsp;&nbsp; C&nbsp;&nbsp; D
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; E&nbsp;&nbsp; F&nbsp;&nbsp; G&nbsp;&nbsp; H
+&nbsp;&nbsp;&nbsp; 1 1 1 1 0 0 0 0
+
+</pre>
+which is the old operating level "2".
+<br>The exceptions are shown in Table 4b.
+<br>&nbsp;
+<center><table BORDER=2 >
+<tr>
+<td WIDTH="129"></td>
+
+<td WIDTH="80">
+<center>f1 OFF</center>
+</td>
+
+<td WIDTH="80">
+<center>f1 ON</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129"></td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>standard values</center>
+</td>
+
+<td WIDTH="80">
+<center>1 1 0 0</center>
+</td>
+
+<td WIDTH="80">
+<center>1 1 0 1</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>operating level</center>
+</td>
+
+<td WIDTH="80"></td>
+
+<td WIDTH="80"></td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>2</center>
+</td>
+
+<td WIDTH="80">
+<center>1 0 1 0</center>
+</td>
+
+<td WIDTH="80">
+<center>normal</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>10</center>
+</td>
+
+<td WIDTH="80">
+<center>normal</center>
+</td>
+
+<td WIDTH="80">
+<center>0 1 0 1</center>
+</td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+<center><table BORDER=2 >
+<tr>
+<td WIDTH="129"></td>
+
+<td WIDTH="80">
+<center>f2 OFF</center>
+</td>
+
+<td WIDTH="80">
+<center>f2 ON</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129"></td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>standard values</center>
+</td>
+
+<td WIDTH="80">
+<center>0 0 1 0</center>
+</td>
+
+<td WIDTH="80">
+<center>0 0 1 1</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>operating level</center>
+</td>
+
+<td WIDTH="80"></td>
+
+<td WIDTH="80"></td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>3</center>
+</td>
+
+<td WIDTH="80">
+<center>1 0 1 0</center>
+</td>
+
+<td WIDTH="80">
+<center>normal</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>11</center>
+</td>
+
+<td WIDTH="80">
+<center>normal</center>
+</td>
+
+<td WIDTH="80">
+<center>0 1 0 1</center>
+</td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+<center><table BORDER=2 >
+<tr>
+<td WIDTH="129"></td>
+
+<td WIDTH="80">
+<center>f3 OFF</center>
+</td>
+
+<td WIDTH="80">
+<center>f3 ON</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129"></td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>standard values</center>
+</td>
+
+<td WIDTH="80">
+<center>0 1 1 0</center>
+</td>
+
+<td WIDTH="80">
+<center>0 1 1 1</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>operating level</center>
+</td>
+
+<td WIDTH="80"></td>
+
+<td WIDTH="80"></td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>5</center>
+</td>
+
+<td WIDTH="80">
+<center>1 0 1 0</center>
+</td>
+
+<td WIDTH="80">
+<center>normal</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>13</center>
+</td>
+
+<td WIDTH="80">
+<center>normal</center>
+</td>
+
+<td WIDTH="80">
+<center>0 1 0 1</center>
+</td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+<center><table BORDER=2 >
+<tr>
+<td WIDTH="129"></td>
+
+<td WIDTH="80">
+<center>f4 OFF</center>
+</td>
+
+<td WIDTH="80">
+<center>f4 ON</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129"></td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+
+<td WIDTH="80">
+<center>E F G H</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>standard values</center>
+</td>
+
+<td WIDTH="80">
+<center>1 1 1 0</center>
+</td>
+
+<td WIDTH="80">
+<center>1 1 1 1</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>operating level</center>
+</td>
+
+<td WIDTH="80"></td>
+
+<td WIDTH="80"></td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>6</center>
+</td>
+
+<td WIDTH="80">
+<center>1 0 1 0</center>
+</td>
+
+<td WIDTH="80">
+<center>normal</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="129">
+<center>14</center>
+</td>
+
+<td WIDTH="80">
+<center>normal</center>
+</td>
+
+<td WIDTH="80">
+<center>0 1 0 1</center>
+</td>
+</tr>
+</table></center>
+
+<center>
+<p>Table 4b</center>
+
+<p>Please note that the EFGH combinations 1010 and 0101 are normally used
+to indicate the direction of travel in the packet that specify speed and
+direction. However, the normal meaning of EFGH=1010 is "negative direction
+of travel, speed between -14 and -7", while in the case of Table 4b it
+is used for speeds 2,3,5,6. Similarly, EFGH=0101 normally means "positive
+direction, speed between 0 and 6", but in Table 4b it is used for the operating
+levels 10,11,13,14. For these reasons the M&auml;rklin-Motorola protocol
+is completely consistent.
+<br>The total number of combinations of 8 bits used for sending information
+on the status of the extended functions is:
+<br>(No. of functions) x (No. of operating levels) x (ON/OFF) = 4 x 16
+x 2 = 128
+<br>In this computations I also included as operating levels the ABCD binary
+value used for reversing direction of travel. This is for compatibility
+with M&auml;rklin decoders conforming to the old protocol.
+<h4>
+EXAMPLE</h4>
+Loco #34, function ON, speed -4, aux. function f1 ON and f2,f3,f4 OFF.
+<pre><a href="#address_description">Address part</a>: 11 10 00 11
+Function: 11
+
+1st packet has:
+Speed (from <a href="#TABLE2">Table 2</a>):&nbsp;&nbsp;&nbsp;&nbsp; A&nbsp;&nbsp; B&nbsp;&nbsp; C&nbsp;&nbsp; D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp; 0&nbsp;&nbsp; 1&nbsp;&nbsp; 0
+from <a href="#TABLE3">Table 3</a>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; E&nbsp;&nbsp; F&nbsp;&nbsp; G&nbsp;&nbsp; H&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp; 0&nbsp;&nbsp; 1&nbsp;&nbsp; 1
+
+2nd packet has:
+Speed (from <a href="#TABLE2">Table 2</a>):&nbsp;&nbsp;&nbsp;&nbsp; A&nbsp;&nbsp; B&nbsp;&nbsp; C&nbsp;&nbsp; D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp; 0&nbsp;&nbsp; 1&nbsp;&nbsp; 0
+from <a href="#TABLE4">Table 4</a>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; E&nbsp;&nbsp; F&nbsp;&nbsp; G&nbsp;&nbsp; H&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp; 1&nbsp;&nbsp; 0&nbsp;&nbsp; 1
+
+</pre>
+etc.
+<p>The complete set of packets for loco #34 is:
+<pre>4x&nbsp; [11 10 00 11 11 11 00 11 01]&nbsp; speed
+4x&nbsp; [11 10 00 11 11 11 01 10 01]&nbsp; speed &amp; f1 ON
+4x&nbsp; [11 10 00 11 11 11 00 11 01]&nbsp; speed
+4x&nbsp; [11 10 00 11 11 10 00 11 00]&nbsp; speed &amp; f2 OFF
+4x&nbsp; [11 10 00 11 11 11 00 11 01]&nbsp; speed
+4x&nbsp; [11 10 00 11 11 10 01 11 00]&nbsp; speed &amp; f3 OFF
+4x&nbsp; [11 10 00 11 11 11 00 11 01]&nbsp; speed
+4x&nbsp; [11 10 00 11 11 11 01 11 00]&nbsp; speed &amp; f4 OFF
+
+</pre>
+With "4x" I mean "twice a double packet"
+<br><a href="#Contents">Return to the Table of Contents</a>
+<hr>
+<h3>
+<a NAME="DIP3"></a><u>FUNCTION OF DIP SWITCH No.3 - PAUSES BETWEEN PACKETS</u></h3>
+2x double packet
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ---&nbsp; ---&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ---&nbsp; ---&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ---
+#3 OFF&nbsp; ----------&nbsp;&nbsp; --&nbsp;&nbsp; -------&nbsp;&nbsp; --&nbsp;&nbsp; ----------&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t1&nbsp;&nbsp;&nbsp;&nbsp; t2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t3
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ---&nbsp; --- ---&nbsp; ---
+#3 ON&nbsp;&nbsp; -&nbsp;&nbsp; --&nbsp;&nbsp; -&nbsp;&nbsp; --&nbsp;&nbsp; -...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t2&nbsp;&nbsp; t1&nbsp;&nbsp; t2&nbsp; t1&nbsp; t2
+
+</pre>
+t1, t2 and t3 are pauses between packets.
+<p><b>Case of 6021</b>
+<br>If DIP switch No.3 is OFF, t1=1525 us, t2=4025 us and t3=6025 us
+<br>If DIP switch No.3 is ON, t1=1525 us and t2=1025 us
+<br>When #3=OFF then t1 &lt; t2 and t1 &lt; t3; when #3=ON then t1 > t2.
+In the latter case, the average voltage on the track is nearer to zero
+than in the former. An average voltage near to zero is good for 2-rail
+systems, since if the loco-decoder is standard-mounted (common of the lamps
+connected to the brown wire of the decoder), reversing the loco on the
+track doesn't change that much the light intensity. With "reversing" I
+mean "take the loco off the track with your hands, swap left and right
+side and place the loco back on the track".
+<br>Note: C80/81 decoders equipped with LME03 chips do not work with DIP
+No.3 ON. Moreover, they do not work with t1=1525 us, t2=t3=4025 us.
+<p><b>Case of 6022</b> (old Control Units with internal 145026 encoder)
+<br>t1=1.25 ms and t2 alternates between about 4 ms and 6 ms.
+<p>Let's calculate the total duration of a double packet in a 6021, including
+pauses.
+<pre>The 1st repetition of 18 bits lasts:
+(1/38400 * 8 clocks * 2 bits * 9 trits) s = 3.75 ms
+
+One double packet lasts:
+(3.75 + 1.525 + 3.75 + 4.025) ms = 13.05 ms (long&nbsp; pauses, DIP #3 OFF,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; only t1 and t2 considered)
+(3.75 + 1.525 + 3.75 + 6.025) ms = 15.05 ms (long&nbsp; pauses, DIP #3 OFF,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; only t1 and t3 considered)
+(3.75 + 1.525 + 3.75 + 1.025) ms = 10.05 ms (short pauses, DIP #3 ON)
+
+One 2x double packet lasts:
+(13.05 + 15.05) ms = 28.1 ms (long&nbsp; pauses, DIP #3 OFF)
+(10.05 * 2) ms&nbsp;&nbsp;&nbsp;&nbsp; = 20.1 ms (short pauses, DIP #3 ON)
+
+A complete information for one loco lasts:
+(28.1 * 8) ms = 224.8 ms (long&nbsp; pauses, DIP #3 OFF)
+(20.1 * 8) ms = 160.8 ms (short pauses, DIP #3 ON)
+
+A complete information for 80 locos lasts:
+(224.8 * 80) ms = 17.98 s (long&nbsp; pauses, DIP #3 OFF)
+(160.8 * 80) ms = 12.86 s (short pauses, DIP #3 ON)
+
+
+</pre>
+And now let's try to justify the different t1 and t2 (and t3) values. The
+Motorola encoder 145026 standardized t1 to 3 trit times, i.e. 1248 us.
+This should be the "regular" t1, as issued by the old 6020 and 6022. On
+the other hand, the data sheet of the 145026 sets the "dead time discriminator"
+of the chip (the maximum value of our "t1") to slightly more than 4 trit
+times (1742 us against the exact "4 trit times" of 1664 us). Old Central
+Units (6020 and 6022) have t1=1.25 ms and follow the directives of the
+145026 data sheet. On the other hand, the pause t1 of the 6021 (about 1.5
+ms) is still compatible with the 145026 directives (but on the edge of
+incompatibility).
+<br><a href="#Contents">Return to the Table of Contents</a>
+<hr>
+<h3>
+<a NAME="questions"></a><u>QUESTIONS AND ANSWERS</u></h3>
+Question #1:
+<br>If I understand you correctly the LENZ and M&auml;rklin system are
+not compatible. e.g. a LENZ extended function decoder does not work with
+the M&auml;rklin Motorola system?
+<br>Answer:
+<br>That's it. Lenz function decoders only work with the Lenz protocol,
+while "Motorola" function decoders only work with the Motorola format.
+The problem is further complicated by the fact that there are now TWO Motorola
+function decoders!
+<br>(I'm just waiting for the moment in which a loco/function decoder will
+understand both M&auml;rklin and Lenz protocols. It's possible with the
+Ultra Large Scale Integration!)
+<br>1) the former type of extended function decoder was mounted in some
+Digital coaches and in the Digital crane from M&auml;rklin. It works ONLY
+if the new Control Unit has Dip switch No.1 OFF. It works exactly with
+the format and "double frequency" of the k83 (6083), but one "trit" (or,
+better, pulse pair) is different. Moreover it has latches to store the
+info, which is not sent continuously, but only when a f1...f4 key is pressed
+(or when a command comes from the Interface). M&auml;rklin does not sell
+this type of decoders (but it is going to sell function decoders in the
+New Motorola Format). You can purchase this type of decoders for example
+from Modeltreno, via Cipriani 6, 40131 Bologna, Italy, fax: +39-51-524114.
+(but they are not miniaturized and can only fit in coaches)
+<br>2) The new format is sent by the new Control Unit when dip switch No.2
+is ON. Presently, it only works with the 701.17 chips mounted on the c95
+(6095). The on/off status of the extended functions is continuously sent
+with this new Motorola protocol. It's likely that this will be the future
+standard protocol and that next miniaturized c90s will have the possibility
+to use the 4 additional functions.
+<p>Question #2:
+<br>Is the new protocol only used for locos, or does it also apply to the
+switches (k83) (or put in another way: can I use my Elektor decoders with
+the new protocol)?
+<br>Answer:
+<br>The new protocol is used only for locos and function decoders, M&auml;rklin
+keeps compatibility with the thousands of k83 they sold up to now. So you
+can use the Elektor decoders or whatever compatible you want (see Modeltreno
+66001 decoders)
+<p>Question #3:
+<br>What locodecoders have the implementation of the new protocol, are
+the Delta decoders compatible with the new protocol?
+<br>Answer:
+<br>All the decoders with Zymos, LME03, 701.13 and 701.17 chips are compatible
+with the new protocol. This is due to the fact that they actually interpret
+only the 1st pulse of the 4 couples that give the info on the speed/reverse.
+(you know that with the old Motorola protocol the couples are composed
+by two equal pulses, two long or two short pulses). Even the 1st type of
+decoders (non surface mount) work properly with the new protocol). Anyway,
+please note that for these decoders the change of direction needs a packet
+of the old protocol (AABBCCDD=11000000).
+<br>New Delta and c95 decoders have a 701.17 chip and old Delta have a
+701.13. Then, presently only new Delta, c95s and new 6090x decoders correctly
+interpret the information on the absolute direction of travel (new c90s
+issued in 1998 have the 701.17 chip on board).
+<p>Question #4:
+<br>Do you need 2 decoder chips to control 4 extra functions AND control
+the loco speed, or have the new chips implementation for both (as in the
+I-Gauge decoders).
+<br>Answer:
+<br>I partially answered this question above. In the new format no need
+of two decoder chips. Only a problem of room (c95 are quite big!). Anyway,
+the 701.17 has the implementation for both and will be mounted on next
+version of c90. It is likely that the next c90 will have at least f1 and
+f2 capability. In the old protocol you need two different decoders.
+<p>Question #5:
+<br>What about old central units?
+<br>Answer:
+<br>The old Central Units are not able to drive the four functions of a
+c95
+<p>Question #6:
+<br>How can I use old and new function decoders together?
+<br>Answer:
+<br>Use DIP switches #1=OFF, #2=ON
+<p>Question #7:
+<br>How can I use old and new locodecoders together?
+<br>Answer:
+<br>Same as before: use DIP switches #1=OFF, #2=ON. This causes a "mixed-mode"
+protocol. When reversing the direction of travel, the packet for reversing
+the direction in the old Motorola format ("11000000") is sent before the
+new absolute direction information in mixed-mode ("1E0F0G0H0"). Hence all
+types of decoders are able to change their direction.
+<br>For those who want to build their own controller, please notice that
+when a reverse information ("0 0 0 1") is issued and at the same time the
+information on the absolute direction does not change (this is nonsense
+for a 6021), then the new decoders (701.17 chip) don't change direction
+and the old ones do change their direction.
+<p>Question #8:
+<br>has anyone tested the new MKL-Format (switch 1 and 2 at Control 80f
+ON) in a computer controlled layout with a lot of locos in action?
+<br>Answer:
+<br>yes, everything works fine, much better than in the case of the old
+6020, which had no "refresh" sequence. I commonly use DIGIPET 4.01 and
+its timetable system. The "refresh" cycle is also useful in case you forgot
+to install the 1.5 kOhm resistor in the sectioned track of a semaphore
+(provided the loco wakes up in the correct direction, in the case of a
+decoder based on a M&auml;rklin chip older than 701.17)
+<p>Question #9:
+<br>Has anyone tested a double traction via computer with this format?
+I think there should be some troubles when there are more than 3 trains
+(the more trains the trouble should happen) in action and the computer
+tries to stop many of them. "Parallel" action to many trains can be a problem!
+<br>Answer:
+<br>I think you are referring to the possible delay between one loco and
+the other of the double traction. Please take into account that whenever
+you send a command with the Interface or a Control 80, the same command
+is "immediately" issued on the track without waiting for the turn of that
+loco. In other words, the normal "refresh" sequence issued by the Control
+Unit is stopped when a new command is entered. Just after the new command
+is executed, the "refresh" sequence starts again.
+<p>Question #10:
+<br>When switch 2 is on, what does actually "understand" a loco decoder?
+Is it the simple double packet or does the decoder need to wait for a complete
+information refresh cycle in order to change its settings?
+<br>Answer:
+<br>The minimum "atomic" component which is understood by a decoder is
+one double packet and not a complete refresh block. This due to the fact
+that the 6021 must be compatible with the old decoders (with the ZyMOS
+chip) and, conversely, the new decoders must also be compatible with the
+very first 6020. In a self made system, after each double packet one could
+send any "double packet" type, even with a different address.
+<p>Question #11:
+<br>What is not mentioned in the manual is the way how the new protocol
+is controlled from the computer via an Interface. Can one use the 'old'
+Interface?
+<br>Answer:
+<br>yes, of course, but the "new" 6051 Interface is exactly identical to
+the 6050 (excluding the cable and the diskette)
+<p>Question #12:
+<br>Again on the Interface 6050/51. I assume speed control has not changed,
+but how about reverse direction command? Do I still have to send a '15'
+command to instruct the Control Unit to change direction?
+<br>Answer:
+<br>unfortunately yes! The standard 6050 protocol does not include any
+"absolute direction" command.
+<p>Question #13:
+<br>You write: "However, for backwards compatibility, when DIP switch #2
+is ON ("New Motorola Format"), the 6021 issues some old Motorola "0 0 0
+1" packets (reverse direction) in addition to the information of the new
+format, even in the case of DIP switch #1 ON." But, with my LME03 decoder
+the loco does not change direction with both DIP switch #1 and #2 ON. Why?
+<br>Answer:
+<br>Let's start from some definitions. M&auml;rklin produced different
+types of decoders. Let's indicate them with the relative decoder chip.
+<ul>
+<li>
+Zy (both in through hole and SMD)</li>
+
+<li>
+LME (Lenz M&auml;rklin Electronics)</li>
+
+<li>
+701.13</li>
+
+<li>
+701.17</li>
+
+<li>
+...</li>
+
+<br>&nbsp;</ul>
+Let's suppose to switch DIP#1 ON and DIP#2 ON (both ON) in the 6021. The
+decoders behave differently. In particular
+<ul>
+<li>
+Zy, 701.13 and 701.17 change direction after a "click" (reverse direction).</li>
+
+<li>
+LME does not change direction after a "click" (as you reported).</li>
+</ul>
+Now let's make the following experiment
+<ul>
+<li>
+take control of a decoder;</li>
+
+<li>
+lift the loco from the track;</li>
+
+<li>
+"click" (reverse direction) on the 6021 (without the loco!)</li>
+
+<li>
+re-position the loco on the track and look what's going on increasing its
+speed.</li>
+</ul>
+Results of the experiment
+<ul>
+<li>
+Zy, LME and 701.13 do not change direction.</li>
+
+<li>
+701.17 changes direction.</li>
+</ul>
+Solution of the problem.
+<br>When DIP#1 is OFF the 6021 issues 6 "standard reverse direction" double
+packets in the old Motorola format and 8 "reverse direction" double packets
+of the new type (a mixture between "speed = reverse" in the old format
+and "direction = EFGH" in the new format). When DIP#1 is ON the "reverse
+direction" packets are only of the new type. The explanation of the different
+behaviour (when DIP#1 is ON) of Zy and 701.13 on one side and LME on the
+other side is that LME decoders decode both bits of each trit, while Zy
+and 701.13 decode only the first bit. Therefore the LME decoders are not
+able to decode the "direction = EFGH" packet in the new format. This could
+look like a bug of the LME decoders. Actually, it is not a real bug, since
+at that time the "New Motorola Format" was not known. And this is the reason
+why M&auml;rklin's advice is to keep DIP#1 OFF for H0 models (backwards
+compatibility above all!!!).
+<p>Question #14:
+<br>Why are my decoders reacting on a Function decoder command from a 6050/51
+Interface with a delay of some seconds? Why doesn't this occur when pressing
+the f1...f4 keys on a 6021?
+<br>Answer:
+<br>This refers to the behaviour of the 6021 when receiving a function-decoder
+command via the Interface: the 6021 accepts the new function setting but
+does not interrupt the repeat cycle and does not transmit the "normal"
+6 double packets as when pushing an Fx (x=1...4) button (don't ask me why).
+Therefore in the worst case of 80 locomotives in the refresh cycle one
+could wait 18.3 seconds before having Fx switched ON!
+<p><a href="#Contents">Return to the Table of Contents</a>
+<p><a href="http://www.modeltreno.it/dig_infi.html">A beginner's guide
+on Digital systems</a>
+<p>--- end of text ---
+<!-- START Digilander F -->
+<SCRIPT LANGUAGE="Javascript">
+<!--
+if ( typeof(bsl1_boot) != 'undefined'  ) {
+        setTimeout("bsl1_boot()",100);
+}
+var rs_DLR=1;
+var rs_DLRERR=0;
+//-->
+</SCRIPT>
+<SCRIPT LANGUAGE="Javascript" SRC="http://digilander.libero.it/_ad/digi_ad_13.js">
+</SCRIPT>
+<!-- END Digilander F -->
+<!-- START Nielsen//NetRatings SiteCensus V5.3 -->
+<!-- COPYRIGHT 2007 Nielsen//NetRatings -->
+<script language="JavaScript"><!--
+var _rsCI="Libero-it";
+var _rsCG="0";
+var _rsDN="//secure-it.imrworldwide.com/";
+var _rsCC=0;
+var _rsIP=1;
+var _rsPLfl=0;
+var w0=1;
+var refR=escape(document.referrer);
+if (refR.length>=252) refR=refR.substring(0,252)+"...";
+//--></script>
+<script language="JavaScript1.1"><!--
+var w0=0;
+if ( rs_DLRERR == 1 ) { _rsCI="liberors-it"; } 
+
+if (rs_DLR) document.write('<script type="text/javascript" src="//secure-it.imrworldwide.com/v53.js"></script>');
+//--></script>
+<script language="JavaScript"><!--
+if ( rs_DLRERR == 1 ) {
+	document.write('<div><img src="//secure-it.imrworldwide.com/cgi-bin/m?ci=liberors-it&amp;cg=0" style="display:none" alt=""/></div>');
+}else{
+	if( w0 && rs_DLR){
+   		document.write('<div><img src="//secure-it.imrworldwide.com/cgi-bin/m?ci=Libero-it&amp;cg=0" style="display:none" alt=""/></div>');
+	}
+}
+document.write("<COMMENT>");
+//-->
+</script>
+<noscript>
+<div><img src="//secure-it.imrworldwide.com/cgi-bin/m?ci=Libero-it&amp;cg=0" style="display:none" alt=""/></div>
+</noscript>
+</COMMENT>
+<!-- END Nielsen//NetRatings SiteCensus V5.3 -->
+</body>
+</html>

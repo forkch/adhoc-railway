@@ -1,0 +1,2186 @@
+<html>
+<head>
+<title>Märklin DIGITAL ADRESSEN >> www.X-TRAIN.de <<</title>
+<meta name="name" value="Märklin Decoder Adressen">
+<meta name="name2" value="Liste">
+<link rel="stylesheet" type="text/css" href="../../code/xtrain.css">
+
+</head>
+
+<body onload="DIP();">
+
+
+
+
+<script language="JavaScript"><!--
+var buf1 = 0
+var buf2 = 0
+var buf3 = 0
+var buf4 = 0
+var buf5 = 0
+var buf6 = 0
+var buf7 = 0
+var buf8 = 0
+var digi1 = 0
+var digi2 = 0
+var digi3 = 0
+var digi4 = 0
+var digi5 = 0
+var digi6 = 0
+var digi7 = 0
+var digi8 = 0
+var digi = 80
+var digiout = "NO AD"
+
+
+function Reset()
+{
+buf1 = 0;
+buf2 = 0;
+buf3 = 0;
+buf4 = 0;
+buf5 = 0;
+buf6 = 0;
+buf7 = 0;
+buf8 = 0;
+digi1 = 0;
+digi2 = 0;
+digi3 = 0;
+digi4 = 0;
+digi5 = 0;
+digi6 = 0;
+digi7 = 0;
+digi8 = 0;
+digi = 80;
+digiout = "NO AD";
+dip_on1.src='../../images/decoder/dip_off.gif';
+dip_on2.src='../../images/decoder/dip_off.gif';
+dip_on3.src='../../images/decoder/dip_off.gif';
+dip_on4.src='../../images/decoder/dip_off.gif';
+dip_on5.src='../../images/decoder/dip_off.gif';
+dip_on6.src='../../images/decoder/dip_off.gif';
+dip_on7.src='../../images/decoder/dip_off.gif';
+dip_on8.src='../../images/decoder/dip_off.gif';
+DIP();
+}
+
+
+
+function DIP(dpno)
+{ 
+
+if (digi == "ERROR")
+  digi = 80; 
+
+switch (dpno) 
+{
+case 1: 
+  if (buf1 == 0)
+  {
+   dip_on1.src='../../images/decoder/dip_on.gif'
+   buf1= 1
+   digi -= 2
+  }
+  else
+  {
+   dip_on1.src='../../images/decoder/dip_off.gif'
+   buf1= 0
+   digi += 2
+  }
+  break
+case 2: 
+  if (buf2 == 0)
+  {
+   dip_on2.src='../../images/decoder/dip_on.gif'
+   buf2= 1
+   digi -= 1
+  }
+  else
+  {
+   dip_on2.src='../../images/decoder/dip_off.gif'
+   buf2= 0
+   digi += 1
+  }
+  break
+case 3: 
+  if (buf3 == 0)
+  {
+   dip_on3.src='../../images/decoder/dip_on.gif'
+   buf3= 1
+   digi -= 6
+  }
+  else
+  {
+   dip_on3.src='../../images/decoder/dip_off.gif'
+   buf3= 0
+   digi += 6
+  }
+  break
+case 4: 
+  if (buf4 == 0)
+  {
+   dip_on4.src='../../images/decoder/dip_on.gif'
+   buf4= 1
+   digi -= 3
+  }
+  else
+  {
+   dip_on4.src='../../images/decoder/dip_off.gif'
+   buf4= 0
+   digi += 3
+  }
+  break
+case 5: 
+  if (buf5 == 0)
+  {
+   dip_on5.src='../../images/decoder/dip_on.gif'
+   buf5= 1
+   digi -= 18
+  }
+  else
+  {
+   dip_on5.src='../../images/decoder/dip_off.gif'
+   buf5= 0
+   digi += 18
+  }
+  break
+case 6: 
+  if (buf6 == 0)
+  {
+   dip_on6.src='../../images/decoder/dip_on.gif'
+   buf6= 1
+   digi -= 9
+  }
+  else
+  {
+   dip_on6.src='../../images/decoder/dip_off.gif'
+   buf6= 0
+   digi += 9
+  }
+  break
+case 7: 
+  if (buf7 == 0)
+  {
+   dip_on7.src='../../images/decoder/dip_on.gif'
+   buf7= 1
+   digi -= 54
+  }
+  else
+  {
+   dip_on7.src='../../images/decoder/dip_off.gif'
+   buf7= 0
+   digi += 54
+  }
+  break
+case 8: 
+  if (buf8 == 0)
+  {
+   dip_on8.src='../../images/decoder/dip_on.gif'
+   buf8= 1
+   digi -= 27
+  }
+  else
+  {
+   dip_on8.src='../../images/decoder/dip_off.gif'
+   buf8= 0
+   digi += 27
+  }
+break
+}
+
+digiout=digi
+
+if (digi > 80 || digi < 0)
+  digiout = "ERROR"; 
+
+if (digi == 0)
+  digiout = "80"; 
+  
+if (buf1 == 1 && buf2 == 1)
+  digiout = "ERR 1/2";   
+  
+if (buf3 == 1 && buf4 == 1)
+  digiout = "ERR 3/4"; 
+
+if (buf5 == 1 && buf6 == 1)
+  digiout = "ERR 5/6"; 
+  
+if (buf7 == 1 && buf8 == 1)
+  digiout = "ERR 7/8"; 
+  
+if (buf1 == 0 && buf2 == 0 && buf3 == 0 && buf4 == 0 && buf5 == 0 && buf6 == 0 && buf7 == 0 && buf8 == 0)
+  digiout = "NO AD"; 
+    
+document.form1.digiad.value = digiout;
+}
+
+//--></script>
+
+
+<center>
+<p class="hframe">Märklin DIGITAL ADRESSEN</p>
+
+
+<table class=frame>
+ <tr>
+   <td class=hsframe colspan="32">
+    Lokdecoder? Und wissen die Adresse nicht?.
+   </td>
+  </tr>
+
+   <tr>
+      <td class=tframe style="width: 274">Auf dem DIP-Switch können Sie 
+      Schalterstellungen ihres Lokdecoders eintragen und nachsehen welche 
+      Adresse Ihre Lokomotive hat.&nbsp;
+      </td>
+      <td width="150" background="../../images/decoder/8dip_dump.gif">
+      <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="150" id="AutoNumber2">
+        <tr>
+          <td width="150" height="34" colspan="17"></td>
+        </tr>
+        <tr>
+          <td width="16" height="17"></td>
+          <td width="9" height="17">
+              <a onclick="DIP(1);">
+              <img border="0" src="../../images/decoder/dip_off.gif" name="dip_on1" width="9" height="17"></a></td>
+          <td width="7" height="17"></td>
+          <td width="9" height="17">
+              <a onclick="DIP(2);">
+              <img border="0" src="../../images/decoder/dip_off.gif" name="dip_on2" width="9" height="17"></a></td>
+          <td width="7" height="17"></td>
+          <td width="9" height="17">
+              <a onclick="DIP(3);">
+              <img border="0" src="../../images/decoder/dip_off.gif" name="dip_on3" width="9" height="17"></a></td>
+          <td width="7" height="17"></td>
+          <td width="9" height="17">
+              <a onclick="DIP(4);">
+              <img border="0" src="../../images/decoder/dip_off.gif" name="dip_on4" width="9" height="17"></a></td>
+          <td width="7" height="17"></td>
+          <td width="9" height="17">
+              <a onclick="DIP(5);">
+              <img border="0" src="../../images/decoder/dip_off.gif" name="dip_on5" width="9" height="17"></a></td>
+          <td width="7" height="17"></td>
+          <td width="9" height="17">
+              <a onclick="DIP(6);">
+              <img border="0" src="../../images/decoder/dip_off.gif" name="dip_on6" width="9" height="17"></a></td>
+          <td width="7" height="17"></td>
+          <td width="9" height="17">
+              <a onclick="DIP(7);">
+              <img border="0" src="../../images/decoder/dip_off.gif" name="dip_on7" width="9" height="17"></a></td>
+          <td width="7" height="17"></td>
+          <td width="9" height="17">
+              <a onclick="DIP(8);">
+              <img border="0" src="../../images/decoder/dip_off.gif" name="dip_on8" width="9" height="17"></a></td>
+          <td width="16" height="17"></td>
+        </tr>
+        <tr>
+          <td width="152" height="43" colspan="17"></td>
+        </tr>
+      </table>
+      </td>
+    <td class=boxh style="width: 274">
+  
+  <form name="form1">
+   <b><font color="#663300" size="3">Digitaladresse:</font></b> <input name="digiad" align="center" size="6" type="digi">
+  </form>
+  <form>
+   <a onclick="Reset();">
+   <input type="reset" class="button" name="ende" Value="RESET">
+  </form>
+  </td>
+ </tr>
+</table>
+
+<table>
+  <tr>
+   <td class=hr5 colspan="3">
+   </td>
+  </tr>
+</table>
+
+<table class=frame>
+ <tr>
+  <td class=hsframe colspan="32">
+   Hier habe ich alle 80 digitalen Adressen aufgelistet.
+  </td>
+ </tr>
+ <tr>
+  <td class=iframe colspan="32">
+    Die <b>Delta Adressen</b> sind gesondert markiert.
+  </td>
+ </tr>
+ <tr>
+  <td class=boxdf colspan="32">
+   <br><img border="0" src="../../images/decoder/8dip.gif" width="152" height="96"><p></p>
+  </td>
+ </tr>
+ <tr>
+  <td class=iframe colspan="32">
+    DA = Digitale Adresse;&nbsp;&nbsp; die obere Zahlenreihe = Decoderschalter;&nbsp;&nbsp; gelistet Zahl = ON
+  </td>
+ </tr>
+ <tr>
+  <table class=boxwf x:str border="0" cellpadding="0" cellspacing="0" width="700" style="border-collapse: collapse; ">
+    <colgroup>
+      <col width="26" style="width: 15pt"><col width="19" style="width: 15pt">
+      <col width="23" span="8" style="width: 15pt">
+      <col width="26" style="width: 15pt"><col width="26" style="width: 15pt">
+      <col width="19" style="width: 15pt">
+      <col width="23" span="8" style="width: 15pt">
+      <col width="26" style="width: 15pt"><col width="26" style="width: 15pt">
+      <col width="19" style="width: 15pt">
+      <col width="23" span="8" style="width: 15pt">
+    </colgroup>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" width="26" style="height: 13,5pt; width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900">
+      DA</td>
+      <td width="19" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      &nbsp;</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      1</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      2</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      3</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      4</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      5</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      6</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      7</td>
+      <td style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      8</td>
+      <td style="width: 10; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      &nbsp;</td>
+      <td width="26" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      DA</td>
+      <td width="19" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      &nbsp;</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      1</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      2</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      3</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      4</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      5</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      6</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      7</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      8</td>
+      <td width="26" style="width: 15pt; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      &nbsp;</td>
+      <td width="26" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      DA</td>
+      <td width="19" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      &nbsp;</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      1</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      2</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      3</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      4</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      5</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      6</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: medium none; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      7</td>
+      <td width="23" style="width: 15pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: 1.0pt solid windowtext; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FF9900; height:13,5pt">
+      8</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      &nbsp;</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      01</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      3</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      5</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      28</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      3</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      5</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      55</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      3</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      5</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      02</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      3</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      5</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      7</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      29</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      3</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      5</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      56</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      3</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      5</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      03</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      1</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      5</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      30</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      1</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      5</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      57</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      1</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      5</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      04</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>2</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      4</td>
+      <td class=digitab>
+      5</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      7</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      31</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      2</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      4</td>
+      <td class=digitab>
+      5</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      58</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      2</td>
+      <td class=digitab>
+      4</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      5</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      05</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      5</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      32</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      5</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      59</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      5</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      06</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>
+      1</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      5</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      7</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      33</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>
+      1</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      5</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" bgcolor="#FF9900">
+      60</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt" bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">
+      1</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">
+      5</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt" bgcolor="#FF9900">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      07</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      5</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      34</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      5</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      61</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      5</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      08</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      5</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      7</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      35</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      5</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      62</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      5</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      09</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      1</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      3</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      36</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      1</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      3</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      63</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      1</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      3</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      10</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      2</td>
+      <td class=digitab>
+      3</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      6</td>
+      <td class=digitab>
+      7</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      37</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      2</td>
+      <td class=digitab>
+      3</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      6</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      64</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      2</td>
+      <td class=digitab>
+      3</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      6</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      11</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      3</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      38</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      3</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      65</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      3</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      12</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>
+      1</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      4</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      6</td>
+      <td class=digitab>
+      7</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      39</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>
+      1</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      4</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      6</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      66</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>
+      1</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      4</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      6</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      13</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      40</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      67</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      14</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      4</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      6</td>
+      <td class=digitab>
+      7</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      41</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      4</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      6</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      68</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      4</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      6</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      15</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      1</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      42</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      1</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      69</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      1</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      16</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      2</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      6</td>
+      <td class=digitab>
+      7</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      43</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      2</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      6</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      70</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      2</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      6</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      17</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      44</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      71</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      6</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      18</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>
+      1</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      3</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      7</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      45</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>
+      1</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      3</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" bgcolor="#FF9900">
+      72</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt" bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">
+      1</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">
+      3</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt" bgcolor="#FF9900">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      19</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      3</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      46</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      3</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      73</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      3</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      20</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      3</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      7</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      47</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      3</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      74</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      3</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      21</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      1</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      48</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      1</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      75</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      1</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      22</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      2</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      4</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      7</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      49</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      2</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      4</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      76</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      2</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      4</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      23</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      50</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      77</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      4</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" bgcolor="#FF9900">
+      24</td>
+      <td class=digitab bgcolor="#FF9900" style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">
+      1</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">
+      7</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" bgcolor="#FF9900" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      51</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>
+      1</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" bgcolor="#FF9900">
+      78</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt" bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">
+      1</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt" bgcolor="#FF9900">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      25</td>
+      <td class=digitab2 style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      7</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt" width="10">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      52</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; height:13,5pt">
+      79</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      2</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td class=digitab2>
+      &nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt; height:13,5pt">
+      &nbsp;</td>
+    </tr>
+    <tr height="17" style="height: 12.75pt">
+      <td height="17" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px">
+      26</td>
+      <td class=digitab style="width: 10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      7</td>
+      <td class=digitab>&nbsp;</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" width="10">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt">
+      53</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      &nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>&nbsp;</td>
+      <td class=digitab>
+      8</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt">&nbsp;</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: .5pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; height:13,5pt" bgcolor="#FF9900">
+      80</td>
+      <td style="color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:10; height:13,5pt" bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">
+      1</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">
+      3</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">
+      5</td>
+      <td class=digitab bgcolor="#FF9900">&nbsp;</td>
+      <td class=digitab bgcolor="#FF9900">
+      7</td>
+      <td style="text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: medium none; border-right: 1.0pt solid windowtext; border-top: medium none; border-bottom: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px; width:15pt; height:13,5pt" bgcolor="#FF9900">
+      &nbsp;</td>
+    </tr>
+    <tr height="18" style="height: 13.5pt">
+      <td height="18" style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      27</td>
+      <td class=digitabb style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitabb>
+      1</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      3</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      5</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      8</td>
+      <td class=digitabb width="10">
+      &nbsp;</td>
+      <td style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      54</td>
+      <td class=digitabb style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitabb>
+      1</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      3</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      5</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-left: 1.0pt solid windowtext; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99">
+      &nbsp;</td>
+      <td class=digitabb style="width: 10; height:13,5pt">
+      &nbsp;</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td class=digitabb>
+      &nbsp;</td>
+      <td style="height: 13,5pt; text-align: center; color: windowtext; font-size: 10.0pt; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border-right: .5pt solid windowtext; border-top: medium none; border-bottom: 1.0pt solid windowtext; padding-left: 1px; padding-right: 1px; padding-top: 1px; background: #FFCC99; width:15pt">
+      &nbsp;</td>
+    </tr>
+  </table>
+
+ <table>
+  <tr>
+   <td class=hr5>
+   </td>
+  </tr>
+ </table>
+ <table>
+  <tr>
+   <td class=iframe>
+    Die Digitaladressen vom Delta Decoder ohne Modifikationen.
+   </td>
+  </tr>
+  <tr>
+   <td class=boxdf>
+    <br><img border="0" src="../../images/decoder/4dip.gif" width="90" height="98"><p></p>
+   </td>
+  </tr>
+ </table>
+ 
+ <table class=boxhf width="700">
+  <tr>
+    <td class=boxtbf>Address</td>
+    <td class=boxtbf>DIB 1</td>
+    <td class=boxtbf>DIB 2</td>
+    <td class=boxtbf>DIB 3</td>
+    <td class=boxtbf>DIB 4</td>
+    <td class=boxtbf>Delta</td>
+    <td class=boxtbf>Delta-Control</td>
+  </tr>
+  <tr>
+    <td class=boxthf>2</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>2</td>
+    <td class=boxthf>3</td>
+    <td class=boxthf>4</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class=boxtdf>6</td>
+    <td class=boxtdf>
+    1</td>
+    <td class=boxtdf>&nbsp;</td>
+    <td class=boxtdf>
+    3</td>
+    <td class=boxtdf>
+    4</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class=boxthf>8</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>3</td>
+    <td class=boxthf>4</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class=boxtdf>18</td>
+    <td class=boxtdf>
+    1</td>
+    <td class=boxtdf>
+    2</td>
+    <td class=boxtdf>&nbsp;</td>
+    <td class=boxtdf>
+    4</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class=boxthf>20</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>2</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>4</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class=boxtdf style="background-color: #FF9900">24</td>
+    <td class=boxtdf>
+    1</td>
+    <td class=boxtdf>&nbsp;</td>
+    <td class=boxtdf>&nbsp;</td>
+    <td class=boxtdf>
+    4</td>
+    <td class=boxtdf style="background-color: #C0C0C0">4</td>
+    <td class=boxtdf style="background-color: #C0C0C0">
+    E-Lok</td>
+  </tr>
+  <tr>
+    <td class=boxthf>26</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>4</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class=boxtdf>54</td>
+    <td class=boxtdf>
+    1</td>
+    <td class=boxtdf>
+    2</td>
+    <td class=boxtdf>
+    3</td>
+    <td class=boxtdf>&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class=boxthf>56</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>2</td>
+    <td class=boxthf>3</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class=boxtdf style="background-color: #FF9900">60</td>
+    <td class=boxtdf>
+    1</td>
+    <td class=boxtdf>&nbsp;</td>
+    <td class=boxtdf>
+    3</td>
+    <td class=boxtdf>&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">3</td>
+    <td class=boxtdf style="background-color: #C0C0C0">
+    Triebwagen</td>
+  </tr>
+  <tr>
+    <td class=boxthf>62</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>3</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class=boxtdf style="background-color: #FF9900">72</td>
+    <td class=boxtdf>
+    1</td>
+    <td class=boxtdf>
+    2</td>
+    <td class=boxtdf>&nbsp;</td>
+    <td class=boxtdf>&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">2</td>
+    <td class=boxtdf style="background-color: #C0C0C0">
+    Diesel</td>
+  </tr>
+  <tr>
+    <td class=boxthf>74</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>2</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxthf>&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class=boxtdf style="background-color: #FF9900">78</td>
+    <td class=boxtdf>
+    1</td>
+    <td class=boxtdf>&nbsp;</td>
+    <td class=boxtdf>&nbsp;</td>
+    <td class=boxtdf>&nbsp;</td>
+    <td class=boxtdf style="background-color: #C0C0C0">1</td>
+    <td class=boxtdf style="background-color: #C0C0C0">
+    Dampf</td>
+  </tr>
+  <tr>
+    <td class=boxtdf style="background-color: #FF9900">80</td>
+    <td class=boxthf>1</td>
+    <td class=boxthf>2</td>
+    <td class=boxthf>3</td>
+    <td class=boxthf>4</td>
+    <td class=boxtdf style="background-color: #C0C0C0">5</td>
+    <td class=boxtdf style="background-color: #C0C0C0">
+    Pilot</td>
+   </tr>
+  </table>  
+   
+ <table>
+  <tr>
+   <td class=hr5 colspan="3">
+   </td>
+  </tr>
+ <tr>
+  <td class=boxdf colspan="3">
+    <table>
+      <tr>
+      <td width="300" align="center">
+   <a href="../../tools/download.php?path=../archiv/&datei=Digital_Adressen.pdf">
+   <img border="0" src="../../images/disk.gif" alt="Download" width="32" height="25"></a>
+         </td>
+         <td width="300" align="center">
+   <a href="javascript:self.print()">
+   <img border="0" src="../../images/druck.gif" alt="Seite drucken" width="32" height="29"></a>
+         </td>
+        </tr>
+      </table>   
+  </tr>
+</table>
+
+<br />
+<hr class=hr1>
+
+
+  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="700" id="AutoNumber1">
+    <tr>
+      <td width="33%" align="center"><a target="_parent" href="../../pages/home.htm">
+      <img border="0" src="../../images/home.gif" width="83" height="50"></a></td>
+      <td width="33%" align="center">&nbsp;</td>
+      <td width="34%" align="center"><a href="javascript:history.back();">
+      <img src="../../images/zurueck.gif" width="129" height="45" border="0" alt="Zurück"></a>
+     </td>
+    </tr>
+  </table>
+  </center>
+
+</body>
+</html>
