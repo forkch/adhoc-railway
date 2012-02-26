@@ -49,6 +49,7 @@ struct SolenoidData solenoidData[MAX_SOLENOID_QUEUE];
 int solenoidDataIdxInsert = 0;
 unsigned char portData[8];
 unsigned char deltaSpeedData[16];
+unsigned char mm2SpeedData[16];
 
 /****** Funtion Declarations ******/
 void initPortData();

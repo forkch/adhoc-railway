@@ -34,7 +34,6 @@ unsigned char checkForNewCommand() {
 	if (!cmdReceived)
 		return 0;
 
-//	flash_once_green();
 
 	unsigned char c= uart_getc_wait();;
 	uint8_t counter = 0;

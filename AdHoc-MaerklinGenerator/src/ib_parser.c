@@ -170,7 +170,6 @@ uint8_t ib_loco_set_cmd(char** tokens) {
 		// NEW protocol
 	} else {
 		// OLD protocol (DELTA)
-
 		if (direction != locoData[t].direction) {
 			locoData[t].speed = deltaSpeedData[1];
 			locoData[t].direction = direction;

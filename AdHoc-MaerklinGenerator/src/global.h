@@ -43,5 +43,6 @@ extern int solenoidDataIdxInsert;
 
 extern unsigned char portData[8];
 extern unsigned char deltaSpeedData[16];
+extern unsigned char mm2SpeedData[16];
 
 #endif /* GLOBAL_H_ */

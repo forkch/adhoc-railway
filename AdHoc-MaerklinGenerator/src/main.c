@@ -20,7 +20,7 @@ int main() {
 	flash_twice_red();
 	debug_init();
 
-	SPI_MasterInit();
+	SPI_MasterInitOutput();
 
 	initLocoData();
 	initPortData();
@@ -50,14 +50,16 @@ int main() {
 	log_info("AdHoc-Maerklin Generator V0.1");
 	log_info("Have Fun :-)\n");
 
+
+	SPI_MasterTransmitDebug(0b10101010);
 	flash_twice_green();
 	flash_twice_red();
 	flash_twice_green();
+	SPI_MasterTransmitDebug(~0b10101010);
 
 	//Do this forever
 	while (1) {
 
-		debugCounter++;
 
 		unsigned char cmdAvail = checkForNewCommand();
 
@@ -82,6 +84,10 @@ int main() {
 		if (prepareNextData == 1)
 			prepareDataForPWM();
 
+
+		//check shorts
+		unsigned char shorts = SPI_MasterReceiveShort();
+		SPI_MasterTransmitDebug(shorts);
 	}
 	cli();
 	return 0;
@@ -372,10 +378,6 @@ void initPortData() {
 }
 void initLocoData() {
 
-	/*locoRefreshStart.locoData = 0;
-	 locoRefreshStart.next = &locoRefreshEnd;
-	 locoRefreshEnd.previous = &locoRefreshStart;*/
-
 	deltaSpeedData[0] = 0;
 	deltaSpeedData[1] = 192;
 	deltaSpeedData[2] = 48;
@@ -392,6 +394,23 @@ void initLocoData() {
 	deltaSpeedData[13] = 207;
 	deltaSpeedData[14] = 63;
 	deltaSpeedData[15] = 255;
+
+	mm2SpeedData[0] = 0;
+	mm2SpeedData[1] = 0;
+	mm2SpeedData[2] = 0;
+	mm2SpeedData[3] = 0;
+	mm2SpeedData[4] = 0;
+	mm2SpeedData[5] = 0;
+	mm2SpeedData[6] = 0;
+	mm2SpeedData[7] = 0;
+	mm2SpeedData[8] = 0;
+	mm2SpeedData[9] = 0;
+	mm2SpeedData[10] = 0;
+	mm2SpeedData[11] = 0;
+	mm2SpeedData[12] = 0;
+	mm2SpeedData[13] = 0;
+	mm2SpeedData[14] = 0;
+	mm2SpeedData[15] = 0;
 
 	locoData[0].address = 192;
 	locoData[1].address = 128;

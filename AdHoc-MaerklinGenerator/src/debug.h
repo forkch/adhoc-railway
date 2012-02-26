@@ -18,6 +18,7 @@
 #define RED_GREEN_DDR DDRC
 #define SWITCH PD7
 #define SWITCH_PORT PIND
+
 void debug_init();
 void flash_twice_green();
 void flash_once_green();
