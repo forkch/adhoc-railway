@@ -34,6 +34,7 @@ void green_led_off();
 void logit(char*);
 void logit2(char*,char*);
 void logit3(char*,uint8_t);
+void logit_binary(char*, unsigned char);
 
 void log_debug(char*);
 void log_error(char*);
@@ -46,6 +47,10 @@ void log_info2(char*,char*);
 void log_debug3(char*,uint8_t);
 void log_error3(char*,uint8_t);
 void log_info3(char*,uint8_t);
+
+void log_debug_binary(char*,uint8_t);
+void log_error_binary(char*,uint8_t);
+void log_info_binary(char*,uint8_t);
 
 void send_nl();
 void send_number(unsigned int);

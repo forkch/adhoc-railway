@@ -33,7 +33,7 @@ uint8_t parse_ib_cmd(char* cmd) {
 	tokens[j] = strtok(cmd, delimiter);
 
 #ifdef DEBUG
-	uart_puts("Token ");
+	uart_puts("DEBUG: Token ");
 	send_number_dec(j);
 	uart_puts(": ");
 	if (tokens[j] == NULL)
@@ -62,11 +62,11 @@ uint8_t parse_ib_cmd(char* cmd) {
 
 	uint8_t ret;
 	if (strcasecmp(tokens[0], "XT") == 0) {
-		ret = ib_solenoid_cmd(tokens);
+		ret = ib_solenoid_cmd(tokens, j);
 	} else if (strcasecmp(tokens[0], "XL") == 0) {
-		ret = ib_loco_set_cmd(tokens);
+		ret = ib_loco_set_cmd(tokens, j);
 	} else if (strcasecmp(tokens[0], "XLS") == 0) {
-		ret = ib_loco_config_cmd(tokens);
+		ret = ib_loco_config_cmd(tokens, j);
 	} else {
 		ret = 0;
 	}
@@ -75,12 +75,16 @@ uint8_t parse_ib_cmd(char* cmd) {
 	return ret;
 }
 
-uint8_t ib_solenoid_cmd(char** tokens) {
+uint8_t ib_solenoid_cmd(char** tokens, uint8_t nTokens) {
 
 	uint8_t address = 0;
 	uint8_t port = 0;
 	uint8_t number = 0;
 
+	if (nTokens != 3) {
+		log_error("Command format: XT [turnoutnumber] [r|g|0|1]");
+		return 0;
+	}
 #ifdef DEBUG
 	log_debug("New Solenoid Command");
 #endif
@@ -120,11 +124,14 @@ uint8_t ib_solenoid_cmd(char** tokens) {
 
 }
 
-uint8_t ib_loco_config_cmd(char** tokens) {
+uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
 
 	uint8_t number = 0;
 	char protocol[4];
-
+	if (nTokens != 3) {
+		log_error("Command format: XLS [loconumber] [mm|mm2]");
+		return 0;
+	}
 #ifdef DEBUG
 	log_debug("New Loco Config Command");
 #endif
@@ -149,7 +156,7 @@ uint8_t ib_loco_config_cmd(char** tokens) {
 
 }
 
-uint8_t ib_loco_set_cmd(char** tokens) {
+uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 
 	uint8_t number = 0;
 	uint8_t t = 0;
@@ -157,6 +164,10 @@ uint8_t ib_loco_set_cmd(char** tokens) {
 	uint8_t direction = 0;
 	uint8_t functions = 0;
 
+	if (nTokens != 4) {
+		log_error("Command format: XL [loconumber] [speed] [direction]");
+		return 0;
+	}
 #ifdef DEBUG
 	log_debug("New Loco Set Command");
 #endif
@@ -166,18 +177,42 @@ uint8_t ib_loco_set_cmd(char** tokens) {
 	t = number - 1;
 
 	locoData[t].active = 1;
-	if (locoData[t].isNewProtocol) {
-		// NEW protocol
+
+	if (direction != locoData[t].direction) {
+		locoData[t].speed = mmChangeDirection;
+		locoData[t].direction = direction;
 	} else {
-		// OLD protocol (DELTA)
-		if (direction != locoData[t].direction) {
-			locoData[t].speed = deltaSpeedData[1];
-			locoData[t].direction = direction;
-		} else if (speed == 0 || speed == 1) {
-			locoData[t].speed = deltaSpeedData[0];
+		locoData[t].speed = deltaSpeedData[speed];
+	}
+
+	if (!locoData[t].isNewProtocol) {
+#ifdef DEBUG
+		log_debug("Protocol: MM");
+#endif
+	} else {
+#ifdef DEBUG
+		log_debug("Protocol: MM2");
+#endif
+		// NEW MM protocol change bits E F G H
+		unsigned char efgh = 0xFF;
+		unsigned char mask = 0b10101010;
+		if (direction == 0) {
+			if (speed <= 14 && speed >= 7) {
+				efgh = 0b00110011;
+			} else if (speed <= 6 && speed >= 0) {
+				efgh = 0b11110011;
+			}
 		} else {
-			locoData[t].speed = deltaSpeedData[speed + 2];
+			if (speed <= 14 && speed >= 7) {
+				efgh = 0b00001100;
+			} else if (speed <= 6 && speed >= 0) {
+				efgh = 0b11001100;
+			}
 		}
+
+		// merge new E F G H values
+		unsigned char abcd = locoData[t].speed;
+		locoData[t].speed = abcd ^ ((abcd ^ efgh) & mask);
 	}
 
 #ifdef DEBUG

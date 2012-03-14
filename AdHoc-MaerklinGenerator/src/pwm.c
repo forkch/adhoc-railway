@@ -17,8 +17,8 @@ void initPWM() {
 	TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS11);
 
 	ICR1H = 0x00;
-	ICR1L = 0xCC; // counting to TOP takes
-
+//	ICR1L = 0xCC; // counting to TOP takes
+	ICR1L = SOLENOID_TOP;
 	TIMSK1 |= (1 << OCIE1A);
 
 }
@@ -30,12 +30,14 @@ void setPWMOutput(uint16_t duty) {
 
 void setSolenoid0() {
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
-	OCR1A = 24;
+//	OCR1A = 24;
+	OCR1A = SOLENOID_0;
 }
 
 void setSolenoid1() {
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
-	OCR1A = 180;
+//	OCR1A = 180;
+	OCR1A = SOLENOID_1;
 }
 
 void setSolenoidWait() {
@@ -45,12 +47,14 @@ void setSolenoidWait() {
 
 void setLoco0() {
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
-	OCR1A = 48;
+//	OCR1A = 48;
+	OCR1A = LOCO_0;
 
 }
 void setLoco1() {
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
-	OCR1A = 260;
+//	OCR1A = 260;
+	OCR1A = LOCO_1;
 }
 
 void setLocoWait() {

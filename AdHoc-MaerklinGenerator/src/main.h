@@ -33,7 +33,16 @@ int8_t solenoidToDeactivate = -1;
 uint8_t previousSolenoidDecoder = 0;
 
 volatile unsigned char pwmQueueIdx = 0;
-unsigned char commandQueue[2][54];
+
+#define MM_PACKET_LENGTH 18
+#define MM_INTER_PACKET_PAUSE 6
+#define MM_INTER_DOUBLE_PACKET_PAUSE 6
+
+#define MM_DOUBLE_PACKET_LENGTH 2*MM_PACKET_LENGTH+MM_INTER_PACKET_PAUSE
+
+#define MM_COMMAND_LENGTH MM_DOUBLE_PACKET_LENGTH + MM_INTER_DOUBLE_PACKET_PAUSE
+
+unsigned char commandQueue[2][MM_COMMAND_LENGTH];
 
 volatile uint8_t actualBit = 0;
 
@@ -49,16 +58,17 @@ struct SolenoidData solenoidData[MAX_SOLENOID_QUEUE];
 int solenoidDataIdxInsert = 0;
 unsigned char portData[8];
 unsigned char deltaSpeedData[16];
-unsigned char mm2SpeedData[16];
+unsigned char mmChangeDirection = 192;
 
 /****** Funtion Declarations ******/
 void initPortData();
 void initLocoData();
 void prepareDataForPWM();
+void finish_mm_command();
 void processASCIIData();
-void process_solenoid_cmd(char*);
-void process_loco_cmd(unsigned char*);
 void enqueue_solenoid();
 void enqueue_loco(uint8_t);
+
+void all_loco();
 
 #endif /* MAIN_H_ */

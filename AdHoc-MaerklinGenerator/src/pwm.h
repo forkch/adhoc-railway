@@ -19,6 +19,21 @@
 #define PWM_OUTPUT_PORT PORTD
 #define PWM_OUTPUT_DDR DDRD
 
+//#define SOLENOID_TOP 208
+//#define LOCO_TOP 416
+//#define SOLENOID_0 182
+//#define SOLENOID_1 26
+//#define LOCO_0 364
+//#define LOCO_1 52
+
+
+#define SOLENOID_TOP 208
+#define LOCO_TOP 416
+#define SOLENOID_1 182
+#define SOLENOID_0 26
+#define LOCO_1 364
+#define LOCO_0 52
+
 
 void initPWM();
 void setPWMOutput(uint16_t duty);

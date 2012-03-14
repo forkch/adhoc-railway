@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "main.h"
+#include "booster.h"
 #include "pwm.h"
 #include "spi.h"
 #include "debug.h"
@@ -31,7 +32,8 @@ int main() {
 	//Loco FREQUENCY
 	pwm_mode = MODE_LOCO;
 	TCCR1A &= ~(1 << COM1A1); // DEACTIVATE PWM
-	ICR1 = 0x192; // counting to TOP takes
+//	ICR1 = 0x192; // counting to TOP takes
+	ICR1 = LOCO_TOP;
 	TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
 
 	//init Timer0
@@ -50,16 +52,20 @@ int main() {
 	log_info("AdHoc-Maerklin Generator V0.1");
 	log_info("Have Fun :-)\n");
 
-
 	SPI_MasterTransmitDebug(0b10101010);
-	flash_twice_green();
-	flash_twice_red();
-	flash_twice_green();
+	/*flash_twice_green();
+	 flash_twice_red();
+	 flash_twice_green();*/
 	SPI_MasterTransmitDebug(~0b10101010);
+
+	log_debug3("MM_PACKET_LENGTH: ", MM_PACKET_LENGTH);
+	log_debug3("MM_INTER_PACKET_PAUSE: ", MM_INTER_PACKET_PAUSE);
+	log_debug3("MM_DOUBLE_PACKET_LENGTH: ", MM_DOUBLE_PACKET_LENGTH);
+	log_debug3("MM_INTER_DOUBLE_PACKET_PAUSE: ", MM_INTER_DOUBLE_PACKET_PAUSE);
+	log_debug3("MM_COMMAND_LENGTH: ", MM_COMMAND_LENGTH);
 
 	//Do this forever
 	while (1) {
-
 
 		unsigned char cmdAvail = checkForNewCommand();
 
@@ -84,10 +90,8 @@ int main() {
 		if (prepareNextData == 1)
 			prepareDataForPWM();
 
-
 		//check shorts
-		unsigned char shorts = SPI_MasterReceiveShort();
-		SPI_MasterTransmitDebug(shorts);
+		check_shorts();
 	}
 	cli();
 	return 0;
@@ -120,34 +124,14 @@ void enqueue_solenoid() {
 void enqueue_loco(uint8_t loco_idx) {
 	newLoco = &locoData[loco_idx];
 }
-void process_loco_cmd(unsigned char* loco_cmd) {
+void all_loco() {
 
-	unsigned char address = loco_cmd[1];
-	unsigned char speed = loco_cmd[2];
-	unsigned char direction = loco_cmd[3];
-	unsigned char functions = loco_cmd[4];
-	unsigned char config = loco_cmd[5];
+	for (uint8_t i = 0; i < 80; i++) {
+		locoData[i].active = 1;
+		locoData[i].speed = 0b11001101;
 
-	uint8_t t = address - 1;
-	locoData[t].active = (config >> 7) & 1;
-	locoData[t].isNewProtocol = (config >> 6) & 1;
-	locoData[t].active = 1;
-	locoData[t].isNewProtocol = 0;
-	if (locoData[t].isNewProtocol) {
-		// NEW protocol
-	} else {
-		// OLD protocol (DELTA)
-
-		if (direction != locoData[t].direction) {
-			locoData[t].speed = deltaSpeedData[1];
-		} else if (speed == 0) {
-			locoData[t].speed = deltaSpeedData[0];
-		} else {
-			locoData[t].speed = deltaSpeedData[speed + 2];
-		}
 	}
 }
-
 void prepareDataForPWM() {
 
 	unsigned char queueIdxLoc = 0; // = (pwmQueueIdx + 1) % 2;
@@ -168,12 +152,6 @@ void prepareDataForPWM() {
 				|| address != previousSolenoidDecoder) {
 			previousSolenoidDecoder = address;
 
-			/*send_nl();
-			 send_number(address);
-			 send_nl();
-			 send_number(port);
-			 send_nl();
-			 */
 			// address
 			for (uint8_t i = 0; i < 8; i++)
 				commandQueue[queueIdxLoc][i] = (address >> (7 - i)) & 1;
@@ -200,24 +178,8 @@ void prepareDataForPWM() {
 				solenoidData[solenoidIdx].timerDetected = 0;
 			}
 
-			// pause
-			commandQueue[queueIdxLoc][18] = 2;
-			commandQueue[queueIdxLoc][19] = 2;
-			commandQueue[queueIdxLoc][20] = 2;
-			commandQueue[queueIdxLoc][21] = 2;
-			commandQueue[queueIdxLoc][22] = 2;
-			commandQueue[queueIdxLoc][23] = 2;
+			finish_mm_command();
 
-			for (uint8_t i = 0; i < 24; i++)
-				commandQueue[queueIdxLoc][24 + i] =
-						commandQueue[queueIdxLoc][i];
-
-			commandQueue[queueIdxLoc][48] = 2;
-			commandQueue[queueIdxLoc][49] = 2;
-			commandQueue[queueIdxLoc][50] = 2;
-			commandQueue[queueIdxLoc][51] = 2;
-			commandQueue[queueIdxLoc][52] = 2;
-			commandQueue[queueIdxLoc][53] = 2;
 
 			if (solenoidToDeactivate == -1) {
 				// if new solenoid update stack
@@ -230,8 +192,8 @@ void prepareDataForPWM() {
 			isLocoCommand = 0;
 			newSolenoid = 0;
 			locoCmdsSent = 0;
-			//flash_once_red();
 
+			// notify PWM that we're finished preparing a new packet
 			prepareNextData = 0;
 			return;
 		}
@@ -239,25 +201,44 @@ void prepareDataForPWM() {
 	struct LocoData* actualLoco = 0;
 
 	if (newLoco != 0) {
+#ifdef DEBUG
+		log_debug("new loco");
+#endif
+
 		// there's a new loco command
+//
+//		unsigned char speed = newLoco->speed;
+//		// speed
+//		for (uint8_t i = 0; i < 8; i++) {
+//			if (((speed >> (7 - i)) & 1) == 0) {
+//				uart_putc('0');
+//			} else {
+//				uart_putc('1');
+//
+//			}
+//		}
+//		send_nl();
 		actualLoco = newLoco;
 		newLoco = 0;
 	} else {
 		// do a loco refresh
 		uint8_t i = (currentLocoIdx + 1) % 80;
 
+		// search next active loco in refresh queue
 		while (1) {
-			//transmitUSART('s');
 			if (locoData[i].active == 1) {
 				currentLocoIdx = i;
 				actualLoco = &locoData[i];
+				//log_debug3("refreshing loco " , i+1);
 				break;
 			}
 			i = (i + 1) % 80;
 		}
 
 	}
+
 	if (actualLoco != 0) {
+
 		unsigned char address = actualLoco->address;
 		unsigned char speed = actualLoco->speed;
 
@@ -266,42 +247,142 @@ void prepareDataForPWM() {
 			commandQueue[queueIdxLoc][i] = (address >> (7 - i)) & 1;
 
 		// function
-		commandQueue[queueIdxLoc][8] = 0;
-		commandQueue[queueIdxLoc][9] = 0;
+		commandQueue[queueIdxLoc][8] = 1;
+		commandQueue[queueIdxLoc][9] = 1;
 
 		// speed
 		for (uint8_t i = 0; i < 8; i++)
 			commandQueue[queueIdxLoc][10 + i] = (speed >> (7 - i)) & 1;
 
-		// pause
-		commandQueue[queueIdxLoc][18] = 2;
-		commandQueue[queueIdxLoc][19] = 2;
-		commandQueue[queueIdxLoc][20] = 2;
-		commandQueue[queueIdxLoc][21] = 2;
-		commandQueue[queueIdxLoc][22] = 2;
-		commandQueue[queueIdxLoc][23] = 2;
-
-		for (uint8_t i = 0; i < 24; i++)
-			commandQueue[queueIdxLoc][24 + i] = commandQueue[queueIdxLoc][i];
-
-		commandQueue[queueIdxLoc][48] = 2;
-		commandQueue[queueIdxLoc][49] = 2;
-		commandQueue[queueIdxLoc][50] = 2;
-		commandQueue[queueIdxLoc][51] = 2;
-		commandQueue[queueIdxLoc][52] = 2;
-		commandQueue[queueIdxLoc][53] = 2;
+		finish_mm_command();
+//
+//		// pause
+//		commandQueue[queueIdxLoc][18] = 2;
+//		commandQueue[queueIdxLoc][19] = 2;
+//		commandQueue[queueIdxLoc][20] = 2;
+//		commandQueue[queueIdxLoc][21] = 2;
+//		commandQueue[queueIdxLoc][22] = 2;
+//		commandQueue[queueIdxLoc][23] = 2;
+//
+//		for (uint8_t i = 0; i < 24; i++)
+//			commandQueue[queueIdxLoc][24 + i] = commandQueue[queueIdxLoc][i];
+//
+//		commandQueue[queueIdxLoc][48] = 2;
+//		commandQueue[queueIdxLoc][49] = 2;
+//		commandQueue[queueIdxLoc][50] = 2;
+//		commandQueue[queueIdxLoc][51] = 2;
+//		commandQueue[queueIdxLoc][52] = 2;
+//		commandQueue[queueIdxLoc][53] = 2;
 
 		pwm_mode = MODE_LOCO;
 		isLocoCommand = 1;
-		if (locoCmdsSent == SOLENOID_WAIT) {
-			//flash_once_green();
-		}
 		locoCmdsSent = (locoCmdsSent + 1) % (SOLENOID_WAIT + 1);
+
+		if (speed == 1) {
+
+			log_debug("STATIC SPEED");
+			// static loco command 24
+//			commandQueue[queueIdxLoc][0] = 0;
+//			commandQueue[queueIdxLoc][1] = 0;
+//
+//			commandQueue[queueIdxLoc][2] = 1;
+//			commandQueue[queueIdxLoc][3] = 0;
+//
+//			commandQueue[queueIdxLoc][4] = 1;
+//			commandQueue[queueIdxLoc][5] = 0;
+//
+//			commandQueue[queueIdxLoc][6] = 0;
+//			commandQueue[queueIdxLoc][7] = 0;
+
+			// static loco command 77
+			commandQueue[queueIdxLoc][0] = 1;
+			commandQueue[queueIdxLoc][1] = 0;
+
+			commandQueue[queueIdxLoc][2] = 1;
+			commandQueue[queueIdxLoc][3] = 1;
+
+			commandQueue[queueIdxLoc][4] = 1;
+			commandQueue[queueIdxLoc][5] = 0;
+
+			commandQueue[queueIdxLoc][6] = 1;
+			commandQueue[queueIdxLoc][7] = 1;
+
+			//function
+			commandQueue[queueIdxLoc][8] = 1;
+			commandQueue[queueIdxLoc][9] = 1;
+
+			// speed
+			commandQueue[queueIdxLoc][10] = 1;
+			commandQueue[queueIdxLoc][11] = 1;
+			commandQueue[queueIdxLoc][12] = 0;
+			commandQueue[queueIdxLoc][13] = 0;
+			commandQueue[queueIdxLoc][14] = 1;
+			commandQueue[queueIdxLoc][15] = 1;
+			commandQueue[queueIdxLoc][16] = 0;
+			commandQueue[queueIdxLoc][17] = 1;
+
+			finish_mm_command();
+
+//			// pause
+//			commandQueue[queueIdxLoc][18] = 2;
+//			commandQueue[queueIdxLoc][19] = 2;
+//			commandQueue[queueIdxLoc][20] = 2;
+//			commandQueue[queueIdxLoc][21] = 2;
+//			commandQueue[queueIdxLoc][22] = 2;
+//			commandQueue[queueIdxLoc][23] = 2;
+//			commandQueue[queueIdxLoc][24] = 2;
+//
+//			for (uint8_t i = 0; i < 24; i++)
+//				commandQueue[queueIdxLoc][24 + i] =
+//						commandQueue[queueIdxLoc][i];
+//
+//			commandQueue[queueIdxLoc][48] = 2;
+//			commandQueue[queueIdxLoc][49] = 2;
+//			commandQueue[queueIdxLoc][50] = 2;
+//			commandQueue[queueIdxLoc][51] = 2;
+//			commandQueue[queueIdxLoc][52] = 2;
+//			commandQueue[queueIdxLoc][53] = 2;
+		}
 	}
 
+	// notify PWM that we're finished preparing a new packet
 	prepareNextData = 0;
 
 }
+
+void finish_mm_command() {
+	unsigned char queueIdxLoc = 0; // = (pwmQueueIdx + 1) % 2;
+
+	// pause
+	for (uint8_t i = 0; i < MM_INTER_PACKET_PAUSE; i++) {
+		commandQueue[queueIdxLoc][MM_PACKET_LENGTH + i] = 2;
+	}
+
+//			commandQueue[queueIdxLoc][18] = 2;
+//			commandQueue[queueIdxLoc][19] = 2;
+//			commandQueue[queueIdxLoc][20] = 2;
+//			commandQueue[queueIdxLoc][21] = 2;
+//			commandQueue[queueIdxLoc][22] = 2;
+//			commandQueue[queueIdxLoc][23] = 2;
+
+	//copy packet
+	for (uint8_t i = 0; i < MM_PACKET_LENGTH; i++)
+		commandQueue[queueIdxLoc][MM_PACKET_LENGTH
+				+ MM_INTER_PACKET_PAUSE + i] =
+				commandQueue[queueIdxLoc][i];
+
+	// add intra double packet pause
+	for (uint8_t i = 0; i < MM_INTER_DOUBLE_PACKET_PAUSE; i++) {
+		commandQueue[queueIdxLoc][MM_DOUBLE_PACKET_LENGTH + i] = 2;
+	}
+//			commandQueue[queueIdxLoc][48] = 2;
+//			commandQueue[queueIdxLoc][49] = 2;
+//			commandQueue[queueIdxLoc][50] = 2;
+//			commandQueue[queueIdxLoc][51] = 2;
+//			commandQueue[queueIdxLoc][52] = 2;
+//			commandQueue[queueIdxLoc][53] = 2;
+}
+
 
 // *** Interrupt Service Routine *****************************************
 
@@ -320,23 +401,15 @@ ISR( TIMER1_COMPA_vect) {
 	}
 
 	if (actualBit == 0) {
-		//		if (pwmQueueIdx == 0)
-		//			pwmQueueIdx = 1;
-		//		else
-		//			pwmQueueIdx = 0;
-		//		pwmQueueIdx = (pwmQueueIdx + 1) % 2;
-		//pwmQueueIdx = 0;
-
-		//uint8_t pwmQueueIdxLoc = pwmQueueIdx;
-		//pwmQueueIdxLoc = (pwmQueueIdxLoc + 1) % 2;
-
 		if (pwm_mode == MODE_SOLENOID) {
 			//SOLENDOID
-			ICR1H = 0x00;
-			ICR1L = 0xCC; // counting to TOP=204
+//			ICR1H = 0x00;
+//			ICR1L = 0xCC; // counting to TOP=204
+			ICR1 = SOLENOID_TOP;
 		} else {
 			//	//LOCO FREQUENCY
-			ICR1 = 0x198; // counting to TOP=408
+//			ICR1 = 0x198; // counting to TOP=408
+			ICR1 = LOCO_TOP;
 		}
 
 	}
@@ -378,39 +451,22 @@ void initPortData() {
 }
 void initLocoData() {
 
-	deltaSpeedData[0] = 0;
-	deltaSpeedData[1] = 192;
-	deltaSpeedData[2] = 48;
-	deltaSpeedData[3] = 240;
-	deltaSpeedData[4] = 12;
-	deltaSpeedData[5] = 204;
-	deltaSpeedData[6] = 60;
-	deltaSpeedData[7] = 252;
-	deltaSpeedData[8] = 3;
-	deltaSpeedData[9] = 195;
-	deltaSpeedData[10] = 51;
-	deltaSpeedData[11] = 243;
-	deltaSpeedData[12] = 15;
-	deltaSpeedData[13] = 207;
-	deltaSpeedData[14] = 63;
-	deltaSpeedData[15] = 255;
-
-	mm2SpeedData[0] = 0;
-	mm2SpeedData[1] = 0;
-	mm2SpeedData[2] = 0;
-	mm2SpeedData[3] = 0;
-	mm2SpeedData[4] = 0;
-	mm2SpeedData[5] = 0;
-	mm2SpeedData[6] = 0;
-	mm2SpeedData[7] = 0;
-	mm2SpeedData[8] = 0;
-	mm2SpeedData[9] = 0;
-	mm2SpeedData[10] = 0;
-	mm2SpeedData[11] = 0;
-	mm2SpeedData[12] = 0;
-	mm2SpeedData[13] = 0;
-	mm2SpeedData[14] = 0;
-	mm2SpeedData[15] = 0;
+	deltaSpeedData[0] = 0; // STOP
+	deltaSpeedData[1] = 48; // 1
+	deltaSpeedData[2] = 240; // 2
+	deltaSpeedData[3] = 12;
+	deltaSpeedData[4] = 204;
+	deltaSpeedData[5] = 60;
+	deltaSpeedData[6] = 252;
+	deltaSpeedData[7] = 3;
+	deltaSpeedData[8] = 195;
+	deltaSpeedData[9] = 51;
+	deltaSpeedData[10] = 243;
+	deltaSpeedData[11] = 15;
+	deltaSpeedData[12] = 207;
+	deltaSpeedData[13] = 63;
+	deltaSpeedData[14] = 255; //14
+	deltaSpeedData[15] = 1; //DEBUG
 
 	locoData[0].address = 192;
 	locoData[1].address = 128;

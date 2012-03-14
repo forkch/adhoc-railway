@@ -66,7 +66,6 @@ void green_led_off() {
 	RED_GREEN_PORT &= ~(1 << GREEN_LED);
 }
 
-
 void logit(char* msg) {
 	uart_puts(msg);
 	send_nl();
@@ -79,6 +78,21 @@ void logit2(char* msg, char* msg2) {
 void logit3(char* msg, uint8_t number) {
 	uart_puts(msg);
 	send_number(number);
+	send_nl();
+}
+
+void logit_binary(char* msg, unsigned char number) {
+	uart_puts(msg);
+
+	for (uint8_t i = 0; i < 8; i++) {
+		if (((number >> (7 - i)) & 1) == 0) {
+			uart_putc('0');
+		} else {
+			uart_putc('1');
+
+		}
+	}
+
 	send_nl();
 }
 
