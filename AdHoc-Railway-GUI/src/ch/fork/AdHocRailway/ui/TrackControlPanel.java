@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.ui;
 
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
+import static ch.fork.AdHocRailway.ui.ImageTools.createImageIconFromIconSet;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -301,7 +302,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		public TurnoutsStraightAction() {
 			super("Set all turnouts straight\u2026",
-					createImageIcon("switch.png"));
+					createImageIconFromIconSet("switch.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -357,7 +358,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 							"Rearranging Turnout and Route numbers",
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.QUESTION_MESSAGE,
-							createImageIcon("messagebox_info.png"));
+							createImageIconFromIconSet("messagebox_info.png"));
 			if (result == JOptionPane.OK_OPTION) {
 				TurnoutPersistenceIface turnoutPersistence = AdHocRailway
 						.getInstance().getTurnoutPersistence();
@@ -373,7 +374,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private class AddTurnoutsAction extends AbstractAction {
 		public AddTurnoutsAction() {
-			super("Add Turnouts\u2026", createImageIcon("filenew.png"));
+			super("Add Turnouts\u2026", createImageIconFromIconSet("filenew.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -381,7 +382,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
 						"Please configure a group first", "Add Turnouts",
 						JOptionPane.INFORMATION_MESSAGE,
-						createImageIcon("messagebox_info.png"));
+						createImageIconFromIconSet("messagebox_info.png"));
 				return;
 			}
 			TurnoutConfig config = null;
@@ -434,7 +435,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		public TurnoutProgrammerAction() {
 			super("Turnout Decoder Programmer\u2026",
-					createImageIcon("switch_programmer.png"));
+					createImageIconFromIconSet("switch_programmer.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {

@@ -192,7 +192,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 		addTurnoutButton = new JButton(new AddTurnoutAction());
 		removeTurnoutButton = new JButton(new RemoveTurnoutAction());
 
-		okButton = new JButton("OK");
+		okButton = new JButton("OK", ImageTools.createImageIconFromIconSet("ok.png"));
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -325,7 +325,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 
 	private class AddTurnoutGroupAction extends AbstractAction {
 		public AddTurnoutGroupAction() {
-			super("Add Group", ImageTools.createImageIcon("add.png"));
+			super("Add Group", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -363,7 +363,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 
 	private class RemoveTurnoutGroupAction extends AbstractAction {
 		public RemoveTurnoutGroupAction() {
-			super("Remove Group", ImageTools.createImageIcon("remove.png"));
+			super("Remove Group", ImageTools.createImageIconFromIconSet("remove.png"));
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -395,7 +395,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 
 	private class AddTurnoutAction extends AbstractAction {
 		public AddTurnoutAction() {
-			super("Add", ImageTools.createImageIcon("add.png"));
+			super("Add", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -451,7 +451,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 	private class RemoveTurnoutAction extends AbstractAction {
 
 		public RemoveTurnoutAction() {
-			super("Remove", ImageTools.createImageIcon("remove.png"));
+			super("Remove", ImageTools.createImageIconFromIconSet("remove.png"));
 			;
 		}
 

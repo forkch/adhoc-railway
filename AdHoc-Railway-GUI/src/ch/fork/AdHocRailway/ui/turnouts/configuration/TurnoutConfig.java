@@ -44,6 +44,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
+import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
@@ -175,7 +176,6 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 
 		List<TurnoutType> turnoutTypes = new ArrayList<TurnoutType>(
 				turnoutPersistence.getAllTurnoutTypes());
-		System.out.println(turnoutTypes);
 
 		ValueModel turnoutTypeModel = presentationModel
 				.getModel(Turnout.PROPERTYNAME_TURNOUT_TYPE);
@@ -447,7 +447,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	class ApplyChangesAction extends AbstractAction {
 
 		public ApplyChangesAction() {
-			super("OK");
+			super("OK", ImageTools.createImageIconFromIconSet("ok.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -470,7 +470,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	class CancelAction extends AbstractAction {
 
 		public CancelAction() {
-			super("Cancel");
+			super("Cancel", ImageTools.createImageIconFromIconSet("cancel.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {

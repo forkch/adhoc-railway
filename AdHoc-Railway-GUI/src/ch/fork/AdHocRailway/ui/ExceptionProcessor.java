@@ -57,7 +57,7 @@ public class ExceptionProcessor {
 		if(e instanceof SRCPException) 
 			msg = "SRCP: " + msg;
 		errorPanel.setErrorTextIcon(msg, e.getMessage(),
-				ImageTools.createImageIcon("messagebox_critical.png"));
+				ImageTools.createImageIconFromIconSet("messagebox_critical.png"));
 
 	}
 
@@ -68,6 +68,6 @@ public class ExceptionProcessor {
 		}
 		JOptionPane.showMessageDialog(AdHocRailway.getInstance(), exceptionMsg,
 				"Error", JOptionPane.ERROR_MESSAGE,
-				createImageIcon("messagebox_critical.png"));
+				ImageTools.createImageIconFromIconSet("messagebox_critical.png"));
 	}
 }

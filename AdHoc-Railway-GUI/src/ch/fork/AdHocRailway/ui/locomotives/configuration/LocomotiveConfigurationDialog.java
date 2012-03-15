@@ -163,7 +163,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 		addLocomotiveButton = new JButton(new AddLocomotiveAction());
 		removeLocomotiveButton = new JButton(new RemoveLocomotiveAction());
 
-		okButton = new JButton("OK");
+		okButton = new JButton("OK", ImageTools.createImageIconFromIconSet("ok.png"));
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -279,7 +279,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 	private class AddLocomotiveGroupAction extends AbstractAction {
 
 		public AddLocomotiveGroupAction() {
-			super("Add", ImageTools.createImageIcon("add.png"));
+			super("Add", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -296,7 +296,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 	private class RemoveLocomotiveGroupAction extends AbstractAction {
 		public RemoveLocomotiveGroupAction() {
-			super("Remove", ImageTools.createImageIcon("remove.png"));
+			super("Remove", ImageTools.createImageIconFromIconSet("remove.png"));
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -321,7 +321,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 	private class AddLocomotiveAction extends AbstractAction {
 		public AddLocomotiveAction() {
-			super("Add", ImageTools.createImageIcon("add.png"));
+			super("Add", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -368,7 +368,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 	private class RemoveLocomotiveAction extends AbstractAction {
 		public RemoveLocomotiveAction() {
-			super("Remove", ImageTools.createImageIcon("remove.png"));
+			super("Remove", ImageTools.createImageIconFromIconSet("remove.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {

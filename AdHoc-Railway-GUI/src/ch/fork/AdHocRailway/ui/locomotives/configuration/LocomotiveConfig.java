@@ -268,7 +268,7 @@ imageTextField.addMouseListener(new MouseAdapter() {
 	class ApplyChangesAction extends AbstractAction {
 
 		public ApplyChangesAction() {
-			super("OK");
+			super("OK", ImageTools.createImageIconFromIconSet("ok.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -289,7 +289,7 @@ imageTextField.addMouseListener(new MouseAdapter() {
 	class CancelAction extends AbstractAction {
 
 		public CancelAction() {
-			super("Cancel");
+			super("Cancel", ImageTools.createImageIconFromIconSet("cancel.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {

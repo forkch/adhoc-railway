@@ -107,14 +107,14 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		builder.addSeparator("Database", cc.xy(4, 6));
 		builder.add(createDatabaseTab(), cc.xy(4, 8));
 
-		JButton okButton = new JButton("OK");
+		JButton okButton = new JButton("OK", ImageTools.createImageIconFromIconSet("ok.png"));
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				okPressed = true;
 				PreferencesDialog.this.setVisible(false);
 			}
 		});
-		JButton cancelButton = new JButton("Cancel");
+		JButton cancelButton = new JButton("Cancel", ImageTools.createImageIconFromIconSet("cancel.png"));
 		cancelPressed = false;
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

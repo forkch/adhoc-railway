@@ -167,7 +167,7 @@ public class RoutesConfigurationDialog extends JDialog {
 		addRouteButton = new JButton(new AddRouteAction());
 		removeRouteButton = new JButton(new RemoveRouteAction());
 
-		okButton = new JButton("OK");
+		okButton = new JButton("OK", ImageTools.createImageIconFromIconSet("ok.png"));
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -281,7 +281,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	private class AddRouteGroupAction extends AbstractAction {
 
 		public AddRouteGroupAction() {
-			super("Add Group", ImageTools.createImageIcon("add.png"));
+			super("Add Group", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -319,7 +319,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	private class RemoveRouteGroupAction extends AbstractAction {
 
 		public RemoveRouteGroupAction() {
-			super("Remove Group", ImageTools.createImageIcon("remove.png"));
+			super("Remove Group", ImageTools.createImageIconFromIconSet("remove.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -357,7 +357,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	private class AddRouteAction extends AbstractAction {
 
 		public AddRouteAction() {
-			super("Add Route", ImageTools.createImageIcon("add.png"));
+			super("Add Route", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -429,7 +429,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	private class RemoveRouteAction extends AbstractAction {
 
 		public RemoveRouteAction() {
-			super("Remove Route", ImageTools.createImageIcon("remove.png"));
+			super("Remove Route", ImageTools.createImageIconFromIconSet("remove.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {

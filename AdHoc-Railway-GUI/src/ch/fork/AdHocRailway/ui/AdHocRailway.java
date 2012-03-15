@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.ui;
 
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
+import static ch.fork.AdHocRailway.ui.ImageTools.createImageIconFromIconSet;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -188,8 +189,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			
 		}
 		instance = this;
-		splash = new SplashWindow(createImageIcon("splash.png"), this, 500, 11);
-		setIconImage(createImageIcon("RailControl.png").getImage());
+		splash = new SplashWindow(createImageIconFromIconSet("splash.png"), this, 500, 11);
+		setIconImage(createImageIconFromIconSet("RailControl.png").getImage());
 
 		initProceeded("Loading Persistence Layer (Preferences)");
 		
@@ -424,7 +425,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class NewFileAction extends AbstractAction {
 
 		public NewFileAction() {
-			super("New\u2026", createImageIcon("filenew.png"));
+			super("New\u2026", createImageIconFromIconSet("filenew.png"));
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -436,7 +437,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 						"Do you want to save the actual configuration?",
 						"Export to database", JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE,
-						createImageIcon("messagebox_info.png"));
+						createImageIconFromIconSet("messagebox_info.png"));
 				if (result == JOptionPane.YES_OPTION) {
 					new SaveAction().actionPerformed(null);
 				}
@@ -468,7 +469,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class OpenFileAction extends AbstractAction {
 
 		public OpenFileAction() {
-			super("Open\u2026", createImageIcon("fileopen.png"));
+			super("Open\u2026", createImageIconFromIconSet("fileopen.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -529,7 +530,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class OpenDatabaseAction extends AbstractAction {
 
 		public OpenDatabaseAction() {
-			super("Open Database\u2026", createImageIcon("database.png"));
+			super("Open Database\u2026", createImageIconFromIconSet("database.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -579,7 +580,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private class SaveAction extends AbstractAction {
 		public SaveAction() {
-			super("Save", createImageIcon("filesave.png"));
+			super("Save", createImageIconFromIconSet("filesave.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -610,7 +611,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private class SaveAsAction extends AbstractAction {
 		public SaveAsAction() {
-			super("Save as\u2026", createImageIcon("filesave.png"));
+			super("Save as\u2026", createImageIconFromIconSet("filesave.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -664,7 +665,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 							+ "Do you really want to proceed ?",
 					"Export to database", JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE,
-					createImageIcon("messagebox_warning.png"));
+					createImageIconFromIconSet("messagebox_warning.png"));
 			if (result == JOptionPane.YES_OPTION) {
 				Thread t = new Thread(new Runnable() {
 					public void run() {
@@ -748,7 +749,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 							+ "Do you really want to proceed ?",
 					"Export to database", JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE,
-					createImageIcon("messagebox_warning.png"));
+					createImageIconFromIconSet("messagebox_warning.png"));
 			if (result == JOptionPane.YES_OPTION) {
 
 				try {
@@ -770,7 +771,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class ExitAction extends AbstractAction {
 
 		public ExitAction() {
-			super("Exit", createImageIcon("exit.png"));
+			super("Exit", createImageIconFromIconSet("exit.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -810,7 +811,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class TurnoutAction extends AbstractAction {
 
 		public TurnoutAction() {
-			super("Turnouts\u2026", createImageIcon("switch.png"));
+			super("Turnouts\u2026", createImageIconFromIconSet("switch.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -826,7 +827,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class RoutesAction extends AbstractAction {
 
 		public RoutesAction() {
-			super("Routes\u2026", createImageIcon("route_edit.png"));
+			super("Routes\u2026", createImageIconFromIconSet("route_edit.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -842,7 +843,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class LocomotivesAction extends AbstractAction {
 
 		public LocomotivesAction() {
-			super("Locomotives\u2026", createImageIcon("locomotive.png"));
+			super("Locomotives\u2026", createImageIconFromIconSet("locomotive.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -858,7 +859,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class PreferencesAction extends AbstractAction {
 
 		public PreferencesAction() {
-			super("Preferences\u2026", createImageIcon("package_settings.png"));
+			super("Preferences\u2026", createImageIconFromIconSet("package_settings.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -880,7 +881,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class ConnectAction extends AbstractAction {
 
 		public ConnectAction() {
-			super("Connect", createImageIcon("daemonconnect.png"));
+			super("Connect", createImageIconFromIconSet("daemonconnect.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -924,7 +925,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class DisconnectAction extends AbstractAction {
 
 		public DisconnectAction() {
-			super("Disconnect", createImageIcon("daemondisconnect.png"));
+			super("Disconnect", createImageIconFromIconSet("daemondisconnect.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -990,7 +991,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class ResetAction extends AbstractAction {
 
 		public ResetAction() {
-			super("Reset", createImageIcon("daemonreset.png"));
+			super("Reset", createImageIconFromIconSet("daemonreset.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -1006,7 +1007,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class RefreshAction extends AbstractAction {
 
 		public RefreshAction() {
-			super("Refresh", createImageIcon("reload.png"));
+			super("Refresh", createImageIconFromIconSet("reload.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -1017,7 +1018,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class ToggleFullscreenAction extends AbstractAction {
 
 		public ToggleFullscreenAction() {
-			super("ToggleFullscreen", createImageIcon("window_fullscreen.png"));
+			super("ToggleFullscreen", createImageIconFromIconSet("window_fullscreen.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -1029,7 +1030,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				setSize(1000, 700);
 				setVisible(true);
 				toggleFullscreenButton
-						.setIcon(createImageIcon("window_fullscreen.png"));
+						.setIcon(createImageIconFromIconSet("window_fullscreen.png"));
 				fullscreen = false;
 			} else {
 				dispose();
@@ -1039,7 +1040,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
 				setVisible(true);
 				toggleFullscreenButton
-						.setIcon(createImageIcon("window_nofullscreen.png"));
+						.setIcon(createImageIconFromIconSet("window_nofullscreen.png"));
 				fullscreen = true;
 			}
 		}

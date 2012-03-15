@@ -253,7 +253,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 	private class AddRouteItemAction extends AbstractAction {
 
 		public AddRouteItemAction() {
-			super("Add Turnout", ImageTools.createImageIcon("add.png"));
+			super("Add Turnout", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -267,7 +267,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 		private JWindow	numberDisplayDialog;
 
 		public RecordRouteAction() {
-			super("Record", ImageTools.createImageIcon("record_off.png"));
+			super("Record", ImageTools.createImageIconFromIconSet("record_off.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -281,7 +281,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 									"Error",
 									JOptionPane.ERROR_MESSAGE,
 									ImageTools
-											.createImageIcon("messagebox_critical.png"));
+											.createImageIconFromIconSet("messagebox_critical.png"));
 					return;
 				}
 				
@@ -292,13 +292,13 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 
 				//TutorialUtils.locateOnOpticalScreenLeft3rd(numberDisplayDialog);
 				recordRouteButton.setIcon(ImageTools
-						.createImageIcon("record.png"));
+						.createImageIconFromIconSet("record.png"));
 				initKeyboardActions(selectedRoute);
 				//numberDisplayDialog.setVisible(true);
 				recording = true;
 			} else {
 				recordRouteButton.setIcon(ImageTools
-						.createImageIcon("record_off.png"));
+						.createImageIconFromIconSet("record_off.png"));
 				recording = false;
 				numberDisplayDialog.setVisible(false);
 			}
@@ -374,7 +374,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 									"Error",
 									JOptionPane.ERROR_MESSAGE,
 									ImageTools
-											.createImageIcon("messagebox_critical.png"));
+											.createImageIconFromIconSet("messagebox_critical.png"));
 				} else {
 					SRCPTurnoutState routedState = null;
 					if (this instanceof CurvedLeftAction) {
@@ -489,7 +489,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 	private class RemoveRouteItemAction extends AbstractAction {
 
 		public RemoveRouteItemAction() {
-			super("Remove Turnout", ImageTools.createImageIcon("remove.png"));
+			super("Remove Turnout", ImageTools.createImageIconFromIconSet("remove.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
