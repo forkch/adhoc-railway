@@ -48,7 +48,7 @@ uint8_t parse_ib_cmd(char* cmd) {
 		j++;
 		tokens[j] = strtok(NULL, delimiter);
 
-#ifdef DEBUG
+#ifdef DEBUG_EXTREME
 		uart_puts("Token ");
 		send_number_dec(j);
 		uart_puts(": ");
@@ -113,11 +113,12 @@ uint8_t ib_solenoid_cmd(char** tokens, uint8_t nTokens) {
 
 #endif
 
-	solenoidData[solenoidDataIdxInsert].address = locoData[address - 1].address;
-	solenoidData[solenoidDataIdxInsert].port = portData[port];
-	solenoidData[solenoidDataIdxInsert].active = 0;
-	solenoidData[solenoidDataIdxInsert].timerDetected = 0;
-	solenoidData[solenoidDataIdxInsert].deactivate = 0;
+	solenoidQueue[solenoidQueueIdxEnter].address =
+			locoData[address - 1].address;
+	solenoidQueue[solenoidQueueIdxEnter].port = portData[port];
+	solenoidQueue[solenoidQueueIdxEnter].active = 0;
+	solenoidQueue[solenoidQueueIdxEnter].timerDetected = 0;
+	solenoidQueue[solenoidQueueIdxEnter].deactivate = 0;
 
 	enqueue_solenoid();
 	return 1;
@@ -162,64 +163,124 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 	uint8_t t = 0;
 	uint8_t speed = 0;
 	uint8_t direction = 0;
-	uint8_t functions = 0;
+	uint8_t fl;
+	uint8_t f1;
+	uint8_t f2;
+	uint8_t f3;
+	uint8_t f4;
 
-	if (nTokens != 4) {
-		log_error("Command format: XL [loconumber] [speed] [direction]");
+	if (nTokens != 9) {
+		log_error(
+				"Command format: XL [loconumber] [speed] [fl] [direction] [F1] [F2] [F3] [F4]");
 		return 0;
 	}
 #ifdef DEBUG
 	log_debug("New Loco Set Command");
 #endif
+
 	number = atoi(tokens[1]);
 	speed = atoi(tokens[2]);
-	direction = atoi(tokens[3]);
+	fl = atoi(tokens[3]);
+	direction = atoi(tokens[4]);
+	f1 = atoi(tokens[5]);
+	f2 = atoi(tokens[6]);
+	f3 = atoi(tokens[7]);
+	f4 = atoi(tokens[8]);
+
 	t = number - 1;
 
 	locoData[t].active = 1;
+	locoData[t].repetitions = LOCO_REPETITIONS;
+	locoData[t].refreshState = 0;
+	locoData[t].speed = speed;
 
 	if (direction != locoData[t].direction) {
-		locoData[t].speed = mmChangeDirection;
+		locoData[t].encodedSpeed = mmChangeDirection;
 		locoData[t].direction = direction;
 	} else {
-		locoData[t].speed = deltaSpeedData[speed];
+		locoData[t].encodedSpeed = deltaSpeedData[speed];
 	}
 
-	if (!locoData[t].isNewProtocol) {
-#ifdef DEBUG
-		log_debug("Protocol: MM");
-#endif
-	} else {
-#ifdef DEBUG
-		log_debug("Protocol: MM2");
-#endif
+	if (locoData[t].isNewProtocol) {
 		// NEW MM protocol change bits E F G H
 		unsigned char efgh = 0xFF;
-		unsigned char mask = 0b10101010;
+		unsigned char mask = 0b01010101;
 		if (direction == 0) {
 			if (speed <= 14 && speed >= 7) {
-				efgh = 0b00110011;
+				efgh = 0b11001100;
 			} else if (speed <= 6 && speed >= 0) {
-				efgh = 0b11110011;
+				efgh = 0b11001111;
 			}
 		} else {
 			if (speed <= 14 && speed >= 7) {
-				efgh = 0b00001100;
+				efgh = 0b00110000;
 			} else if (speed <= 6 && speed >= 0) {
-				efgh = 0b11001100;
+				efgh = 0b00110011;
 			}
 		}
 
+		locoData[t].fl = fl != 0;
+		locoData[t].f1 = f1 != 0;
+		locoData[t].f2 = f2 != 0;
+		locoData[t].f3 = f3 != 0;
+		locoData[t].f4 = f4 != 0;
+
 		// merge new E F G H values
-		unsigned char abcd = locoData[t].speed;
-		locoData[t].speed = abcd ^ ((abcd ^ efgh) & mask);
+		unsigned char abcd = locoData[t].encodedSpeed;
+		locoData[t].encodedSpeed = abcd ^ ((abcd ^ efgh) & mask);
+
+#ifdef DEBUG_EXTREME
+		log_debug("MASK");
+		for (uint8_t i = 0; i < 8; i++) {
+			if ((mask >> (7 - i)) & 1)
+				uart_putc('1');
+			else
+				uart_putc('0');
+		}
+		send_nl();
+
+		log_debug("ABCD");
+		for (uint8_t i = 0; i < 8; i++) {
+			if ((abcd >> (7 - i)) & 1)
+				uart_putc('1');
+			else
+				uart_putc('0');
+		}
+		send_nl();
+
+		log_debug("EFGH");
+		for (uint8_t i = 0; i < 8; i++) {
+			if ((efgh >> (7 - i)) & 1)
+				uart_putc('1');
+			else
+				uart_putc('0');
+		}
+		send_nl();
+#endif
 	}
+
+#ifdef DEBUG_EXTREME
+	log_debug("SPEED");
+	for (uint8_t i = 0; i < 8; i++) {
+		if ((locoData[t].encodedSpeed >> (7 - i)) & 1)
+			uart_putc('1');
+		else
+			uart_putc('0');
+	}
+	send_nl();
+#endif
 
 #ifdef DEBUG
 	log_debug3("Loco Number: ", number);
+	locoData[t].isNewProtocol == 1 ?
+			log_debug("Protocol: MM2") : log_debug("Protocol: MM");
 	log_debug3("Loco Speed: ", speed);
+	log_debug3("Loco FL: ", fl);
 	log_debug3("Loco Direction: ", direction);
-	log_debug3("Loco Functions: ", functions);
+	log_debug3("Loco F1: ", f1);
+	log_debug3("Loco F2: ", f2);
+	log_debug3("Loco F3: ", f3);
+	log_debug3("Loco F4: ", f4);
 	log_debug3("Loco isNewProtocol: ", locoData[t].isNewProtocol);
 
 #endif

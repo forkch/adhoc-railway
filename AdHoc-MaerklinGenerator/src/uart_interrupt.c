@@ -13,11 +13,11 @@
 
 // FIFO-Objekte und Puffer für die Ein- und Ausgabe
 
-#define BUFSIZE_IN  0x40
+#define BUFSIZE_IN  64
 uint8_t inbuf[BUFSIZE_IN];
 fifo_t infifo;
 
-#define BUFSIZE_OUT 0x40
+#define BUFSIZE_OUT 128
 uint8_t outbuf[BUFSIZE_OUT];
 fifo_t outfifo;
 
@@ -27,7 +27,7 @@ typedef enum IB_CMD {
 
 unsigned char cmdReceived = 0;
 
-extern unsigned char cmd[64];
+extern unsigned char cmd[128];
 
 unsigned char checkForNewCommand() {
 
@@ -55,37 +55,6 @@ unsigned char checkForNewCommand() {
 
 }
 
-unsigned char checkForNewCommand1() {
-
-	if (!cmdReceived)
-		return 0;
-
-	unsigned char c = uart_getc_wait();
-
-	cmd[0] = c;
-	if (c == 'w') {
-		for (int i = 1; i < 3; i++) {
-			cmd[i] = uart_getc_wait();
-		}
-		cmd[3] = 0x0;
-		uart_getc_wait();
-		cmdReceived = 0;
-		return 1;
-	}
-	if (c == 'l') {
-		for (int i = 1; i < 6; i++) {
-			cmd[i] = uart_getc_wait();
-		}
-		cmd[6] = 0x0;
-		uart_getc_wait();
-		cmdReceived = 0;
-		return 1;
-	}
-
-	cmdReceived = 0;
-	return 0;
-
-}
 
 void uart_init(void) {
 	uint8_t sreg = SREG;

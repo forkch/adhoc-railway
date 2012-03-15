@@ -9,18 +9,24 @@
 #define GLOBAL_H_
 
 #define DEBUG
+//#define DEBUG_EXTREME
+
+#define LOCO_REPETITIONS 2
 
 typedef struct LocoData {
 	unsigned char address;
+	unsigned char encodedSpeed;
 	unsigned char speed;
 	unsigned char direction;
-	unsigned char function :1;
+	unsigned char fl :1;
 	unsigned char f1 :1;
 	unsigned char f2 :1;
 	unsigned char f3 :1;
 	unsigned char f4 :1;
 	char active :1;
 	char isNewProtocol :1;
+	unsigned char refreshState;
+	unsigned char repetitions;
 };
 
 
@@ -38,8 +44,8 @@ typedef struct SolenoidData {
 extern struct LocoData locoData[80];
 extern struct LocoData* newLoco;
 
-extern struct SolenoidData solenoidData[MAX_SOLENOID_QUEUE];
-extern int solenoidDataIdxInsert;
+extern struct SolenoidData solenoidQueue[MAX_SOLENOID_QUEUE];
+extern int solenoidQueueIdxEnter;
 
 extern unsigned char portData[8];
 extern unsigned char deltaSpeedData[16];

@@ -22,14 +22,17 @@ unsigned char isLocoCommand = 1;
 
 #define MAX_COMMAND_QUEUE 1
 
-uint8_t currentLocoIdx = 79;
+uint8_t currentRefreshCycleLocoIdx = 79;
 
 uint16_t locoCmdsSent = 0;
 
 uint8_t debugCounter = 0;
 
-uint8_t solenoidDataIdxPop = 0;
-int8_t solenoidToDeactivate = -1;
+int solenoidQueueIdxEnter = 0;
+uint8_t solenoidQueueIdxFront = 0;
+
+uint8_t deactivatingSolenoid = 0;
+uint8_t solenoidToDeactivate = 0;
 uint8_t previousSolenoidDecoder = 0;
 
 volatile unsigned char pwmQueueIdx = 0;
@@ -53,9 +56,17 @@ uint8_t newSolenoid = 0;
 // define forward declarations
 struct LocoData locoData[80];
 struct LocoData* newLoco = 0;
+int newLocoIdx = -1;
 
-struct SolenoidData solenoidData[MAX_SOLENOID_QUEUE];
-int solenoidDataIdxInsert = 0;
+uint8_t locoHiPrioQueue[80];
+uint8_t locoHiPrioQueueEnter = 0;
+uint8_t locoHiPrioQueueFront = 0;
+
+uint8_t locoLoPrioQueue[80];
+uint8_t locoLoPrioQueueEnter = 0;
+uint8_t locoLoPrioQueueFront = 0;
+
+struct SolenoidData solenoidQueue[MAX_SOLENOID_QUEUE];
 unsigned char portData[8];
 unsigned char deltaSpeedData[16];
 unsigned char mmChangeDirection = 192;
@@ -64,10 +75,22 @@ unsigned char mmChangeDirection = 192;
 void initPortData();
 void initLocoData();
 void prepareDataForPWM();
+inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc, uint8_t refresh);
+inline void sendSolenoidPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc);
 void finish_mm_command();
 void processASCIIData();
 void enqueue_solenoid();
 void enqueue_loco(uint8_t);
+
+inline uint8_t solenoidQueueEmpty() {
+	return solenoidQueueIdxEnter == solenoidQueueIdxFront;
+}
+
+inline void solenoidQueuePop() {
+	solenoidQueueIdxFront++;
+	solenoidQueueIdxFront = solenoidQueueIdxFront % MAX_SOLENOID_QUEUE;
+
+}
 
 void all_loco();
 
