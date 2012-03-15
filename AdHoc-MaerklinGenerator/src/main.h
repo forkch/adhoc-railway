@@ -10,6 +10,7 @@
 
 #include "global.h"
 
+
 #define MODE_SOLENOID 0
 #define MODE_LOCO 1
 #define SOLENOID_WAIT 10

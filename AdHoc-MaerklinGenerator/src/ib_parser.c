@@ -10,10 +10,11 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "ib_parser.h"
 #include "global.h"
 #include "debug.h"
 #include "uart_interrupt.h"
-#include "ib_parser.h"
+#include "booster.h"
 
 uint8_t parse_ib_cmd(char* cmd) {
 	char cmdCopy[64];
@@ -32,47 +33,118 @@ uint8_t parse_ib_cmd(char* cmd) {
 	int j = 0;
 	tokens[j] = strtok(cmd, delimiter);
 
-#ifdef DEBUG
-	uart_puts("DEBUG: Token ");
-	send_number_dec(j);
-	uart_puts(": ");
-	if (tokens[j] == NULL)
-		uart_puts("EOL");
-	else
-		uart_puts(tokens[j]);
-	uart_puts("\n");
-#endif
+//#ifdef DEBUG_EXTREME
+//	uart_puts("DEBUG: Token ");
+//	send_number_dec(j);
+//	uart_puts(": ");
+//	if (tokens[j] == NULL)
+//		uart_puts("EOL");
+//	else
+//		uart_puts(tokens[j]);
+//	uart_puts("\n");
+//#endif
 
 	while (tokens[j] != NULL) {
 
 		j++;
 		tokens[j] = strtok(NULL, delimiter);
 
-#ifdef DEBUG_EXTREME
-		uart_puts("Token ");
-		send_number_dec(j);
-		uart_puts(": ");
-		if (tokens[j] == NULL)
-			uart_puts("EOL");
-		else
-			uart_puts(tokens[j]);
-		uart_puts("\n");
-#endif
+		//#ifdef DEBUG_EXTREME
+//		uart_puts("Token ");
+//		send_number_dec(j);
+//		uart_puts(": ");
+//		if (tokens[j] == NULL)
+//		uart_puts("EOL");
+//		else
+//		uart_puts(tokens[j]);
+//		uart_puts("\n");
+//#endif
 	}
 
 	uint8_t ret;
-	if (strcasecmp(tokens[0], "XT") == 0) {
+	if (strcasecmp(tokens[0], "XGO") == 0 || strcasecmp(tokens[0], "X!") == 0) {
+		ret = ib_go_cmd(tokens, j);
+	} else if (strcasecmp(tokens[0], "XSTOP") == 0
+			|| strcasecmp(tokens[0], "X.") == 0) {
+		ret = ib_stop_cmd(tokens, j);
+	} else if (strcasecmp(tokens[0], "XT") == 0) {
 		ret = ib_solenoid_cmd(tokens, j);
 	} else if (strcasecmp(tokens[0], "XL") == 0) {
 		ret = ib_loco_set_cmd(tokens, j);
 	} else if (strcasecmp(tokens[0], "XLS") == 0) {
 		ret = ib_loco_config_cmd(tokens, j);
+	} else if (strcasecmp(tokens[0], "XDB") == 0) {
+		ret = ib_debug_level_cmd(tokens, j);
 	} else {
 		ret = 0;
 	}
 
 	free(tokens);
 	return ret;
+}
+
+uint8_t ib_go_cmd(char** tokens, uint8_t nTokens) {
+
+	uint8_t number = 0;
+
+	if (nTokens != 1 && nTokens != 2) {
+		log_error("Command format: GO [boosternumber]");
+		return 0;
+	}
+#ifdef DEBUG
+	log_debug("New Go Command");
+#endif
+
+	if (nTokens == 1) {
+		//turn on ALL boosters
+
+#ifdef DEBUG
+		log_debug("turn on ALL boosters");
+#endif
+		go_all_boosters();
+
+	} else {
+#ifdef DEBUG
+		log_debug3("turn on booster ", number);
+#endif
+		number = atoi(tokens[1]);
+		go_booster(number);
+	}
+
+	return 1;
+
+}
+
+uint8_t ib_stop_cmd(char** tokens, uint8_t nTokens) {
+
+	uint8_t address = 0;
+	uint8_t port = 0;
+	uint8_t number = 0;
+
+	if (nTokens != 1 && nTokens != 2) {
+		log_error("Command format: STOP [boosternumber]");
+		return 0;
+	}
+#ifdef DEBUG
+	log_debug("New Stop Command");
+#endif
+
+	if (nTokens == 1) {
+		//turn off ALL boosters
+
+#ifdef DEBUG
+		log_debug("turn off ALL boosters");
+#endif
+		stop_all_boosters();
+
+	} else {
+#ifdef DEBUG
+		log_debug3("turn off booster ", number);
+#endif
+		number = atoi(tokens[1]);
+		stop_booster(number);
+	}
+	return 1;
 }
 
 uint8_t ib_solenoid_cmd(char** tokens, uint8_t nTokens) {
@@ -82,7 +154,7 @@ uint8_t ib_solenoid_cmd(char** tokens, uint8_t nTokens) {
 	uint8_t number = 0;
 
 	if (nTokens != 3) {
-		log_error("Command format: XT [turnoutnumber] [r|g|0|1]");
+		log_error("Command format: XT turnoutnumber r|g|0|1");
 		return 0;
 	}
 #ifdef DEBUG
@@ -171,7 +243,7 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 
 	if (nTokens != 9) {
 		log_error(
-				"Command format: XL [loconumber] [speed] [fl] [direction] [F1] [F2] [F3] [F4]");
+				"Command format: XL loconumber speed fl direction F1 F2 F3 F4");
 		return 0;
 	}
 #ifdef DEBUG
@@ -190,7 +262,7 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 	t = number - 1;
 
 	locoData[t].active = 1;
-	locoData[t].repetitions = LOCO_REPETITIONS;
+	locoData[t].repetitions = LOCOCMD_REPETITIONS;
 	locoData[t].refreshState = 0;
 	locoData[t].speed = speed;
 
@@ -233,27 +305,27 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 		log_debug("MASK");
 		for (uint8_t i = 0; i < 8; i++) {
 			if ((mask >> (7 - i)) & 1)
-				uart_putc('1');
+			uart_putc('1');
 			else
-				uart_putc('0');
+			uart_putc('0');
 		}
 		send_nl();
 
 		log_debug("ABCD");
 		for (uint8_t i = 0; i < 8; i++) {
 			if ((abcd >> (7 - i)) & 1)
-				uart_putc('1');
+			uart_putc('1');
 			else
-				uart_putc('0');
+			uart_putc('0');
 		}
 		send_nl();
 
 		log_debug("EFGH");
 		for (uint8_t i = 0; i < 8; i++) {
 			if ((efgh >> (7 - i)) & 1)
-				uart_putc('1');
+			uart_putc('1');
 			else
-				uart_putc('0');
+			uart_putc('0');
 		}
 		send_nl();
 #endif
@@ -263,9 +335,9 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 	log_debug("SPEED");
 	for (uint8_t i = 0; i < 8; i++) {
 		if ((locoData[t].encodedSpeed >> (7 - i)) & 1)
-			uart_putc('1');
+		uart_putc('1');
 		else
-			uart_putc('0');
+		uart_putc('0');
 	}
 	send_nl();
 #endif
@@ -290,3 +362,16 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 
 }
 
+uint8_t ib_debug_level_cmd(char** tokens, uint8_t nTokens) {
+
+	if (nTokens != 2) {
+		log_error("Command format: XDB 0-4");
+		return 0;
+	}
+
+	debugLevel = atoi(tokens[1]);
+#ifdef DEBUG
+	log_debug("New Debug Level Command");
+#endif
+	return 1;
+}

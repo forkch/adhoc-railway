@@ -34,8 +34,8 @@ unsigned char checkForNewCommand() {
 	if (!cmdReceived)
 		return 0;
 
-
-	unsigned char c= uart_getc_wait();;
+	unsigned char c = uart_getc_wait();
+	;
 	uint8_t counter = 0;
 	while (c != 0x0d) {
 		cmd[counter] = c;
@@ -54,7 +54,6 @@ unsigned char checkForNewCommand() {
 	return ASCII_MODE;
 
 }
-
 
 void uart_init(void) {
 	uint8_t sreg = SREG;
@@ -112,6 +111,13 @@ ISR (SIG_USART_DATA) {
 		UDR0 = _inline_fifo_get(&outfifo);
 	else
 		UCSR0B &= ~(1 << UDRIE0);
+}
+
+void replys(const char* s) {
+	uart_puts(s);
+}
+void reply(const uint8_t c) {
+	uart_putc(c);
 }
 
 int uart_puts(const char* str) {

@@ -1,6 +1,6 @@
 #include <avr/io.h>
-#include <util/delay.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -13,6 +13,7 @@
 #include "fifo.h"
 #include "ib_parser.h"
 
+unsigned char debugLevel = DEBUG_DEBUG;
 struct LocoData locoData[80];
 struct SolenoidData solenoidQueue[MAX_SOLENOID_QUEUE];
 int solenoidQueueIdxEnter;
@@ -51,11 +52,7 @@ int main() {
 	log_info("AdHoc-Maerklin Generator V0.1");
 	log_info("Have Fun :-)\n");
 
-	SPI_MasterTransmitDebug(0b10101010);
-	/*flash_twice_green();
-	 flash_twice_red();
-	 flash_twice_green();*/
-	SPI_MasterTransmitDebug(~0b10101010);
+	SPI_MasterTransmitDebug(0x00);
 
 	log_debug3("MM_PACKET_LENGTH: ", MM_PACKET_LENGTH);
 	log_debug3("MM_INTER_PACKET_PAUSE: ", MM_INTER_PACKET_PAUSE);
@@ -63,6 +60,7 @@ int main() {
 	log_debug3("MM_INTER_DOUBLE_PACKET_PAUSE: ", MM_INTER_DOUBLE_PACKET_PAUSE);
 	log_debug3("MM_COMMAND_LENGTH: ", MM_COMMAND_LENGTH);
 
+	replys("ready\n");
 	//Do this forever
 	while (1) {
 
@@ -354,7 +352,7 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 //		}
 		if (actualLoco->repetitions > 1) {
 		} else {
-			actualLoco->refreshState = (actualLoco->refreshState + 1) % 8;
+			//actualLoco->refreshState = (actualLoco->refreshState + 1) % 8;
 		}
 
 		// speed

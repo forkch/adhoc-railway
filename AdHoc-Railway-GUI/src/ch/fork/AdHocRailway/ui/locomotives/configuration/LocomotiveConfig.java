@@ -128,9 +128,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 				.createTextField(presentationModel
 						.getModel(Locomotive.PROPERTYNAME_IMAGE));
 		imageTextField.setColumns(10);
-		
-		
-		
+
 		imageLabel = new JLabel();
 		imageLabel.setHorizontalAlignment(JLabel.CENTER);
 		String image = presentationModel.getBean().getImage();
@@ -140,48 +138,49 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 			imageLabel.setIcon(ImageTools
 					.createImageIconFileSystem("locoimages/" + image));
 		}
-		
-imageTextField.addMouseListener(new MouseAdapter() {
-			
-			
+
+		imageTextField.addMouseListener(new MouseAdapter() {
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+
 				JFileChooser chooser = new JFileChooser("locoimages");
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				chooser.setFileFilter(new FileFilter() {
-					
+
 					@Override
 					public String getDescription() {
 						return "*.png";
 					}
-					
+
 					@Override
 					public boolean accept(File f) {
-						if(f.isDirectory())
+						if (f.isDirectory())
 							return true;
-						if(f.getName().matches(".*\\.png"))
+						if (f.getName().matches(".*\\.png"))
 							return true;
 						return false;
 					}
 				});
-				
+
 				int ret = chooser.showOpenDialog(LocomotiveConfig.this);
-				if(ret == JFileChooser.APPROVE_OPTION) {
-					presentationModel.getBean().setImage(chooser.getSelectedFile().getName());
+				if (ret == JFileChooser.APPROVE_OPTION) {
+					presentationModel.getBean().setImage(
+							chooser.getSelectedFile().getName());
 					String image = presentationModel.getBean().getImage();
 
 					if (image != null && !image.isEmpty()
 							&& new File("locoimages/" + image).exists()) {
 						imageLabel.setIcon(ImageTools
-								.createImageIconFileSystem("locoimages/" + image));
+								.createImageIconFileSystem("locoimages/"
+										+ image));
 						pack();
-					}else{
+					} else {
 						imageLabel.setIcon(null);
 						pack();
 					}
 				}
-				
+
 			}
 		});
 
@@ -207,7 +206,7 @@ imageTextField.addMouseListener(new MouseAdapter() {
 		locomotiveTypeComboBox = BasicComponentFactory
 				.createComboBox(new SelectionInList<LocomotiveType>(
 						locomotiveTypes, locomotiveTypeModel));
-		locomotiveTypeComboBox.setSelectedIndex(0);
+		//locomotiveTypeComboBox.setSelectedIndex(0);
 
 		presentationModel.getBean().addPropertyChangeListener(this);
 		validate(presentationModel.getBean(), null);
@@ -239,7 +238,7 @@ imageTextField.addMouseListener(new MouseAdapter() {
 		builder.addLabel("Image", cc.xy(1, 7));
 		builder.add(imageTextField, cc.xy(3, 7));
 
-		builder.add(imageLabel, cc.xyw(1, 9,3));
+		builder.add(imageLabel, cc.xyw(1, 9, 3));
 
 		builder.addLabel("Type", cc.xy(1, 11));
 		builder.add(locomotiveTypeComboBox, cc.xy(3, 11));

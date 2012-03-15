@@ -42,14 +42,14 @@ public class FileLocomotivePersistence extends CachingLocomotivePersistence {
 		if (getLocomotiveTypeByName("DELTA") == null) {
 			LocomotiveType deltaType = new LocomotiveType(0, "DELTA");
 			deltaType.setDrivingSteps(14);
-			deltaType.setStepping(4);
+			deltaType.setStepping(2);
 			deltaType.setFunctionCount(0);
 			addLocomotiveType(deltaType);
 		}
 
 		if (getLocomotiveTypeByName("DIGITAL") == null) {
 			LocomotiveType digitalType = new LocomotiveType(0, "DIGITAL");
-			digitalType.setDrivingSteps(28);
+			digitalType.setDrivingSteps(14);
 			digitalType.setStepping(2);
 			digitalType.setFunctionCount(5);
 			addLocomotiveType(digitalType);

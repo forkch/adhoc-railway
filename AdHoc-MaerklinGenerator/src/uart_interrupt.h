@@ -15,6 +15,8 @@
 
 unsigned char checkForNewCommand();
 
+extern void replys(const char*);
+extern void reply(const uint8_t);
 extern void uart_init (void);
 extern int uart_putc (const uint8_t);
 extern int uart_puts(const char*);

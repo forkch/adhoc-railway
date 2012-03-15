@@ -7,6 +7,7 @@
 
 #include "debug.h"
 #include "uart_interrupt.h"
+#include "global.h"
 
 void debug_init() {
 	RED_GREEN_DDR |= (1 << GREEN_LED) | (1 << RED_LED);
@@ -96,55 +97,97 @@ void logit_binary(char* msg, unsigned char number) {
 	send_nl();
 }
 
-void log_debug(char* msg) {
-	uart_flush();
-	uart_puts("DEBUG: ");
-	logit(msg);
-}
-
-void log_debug2(char* msg, char* msg2) {
-	uart_flush();
-	uart_puts("DEBUG: ");
-	logit2(msg, msg2);
-}
-void log_debug3(char* msg, uint8_t number) {
-	uart_flush();
-	uart_puts("DEBUG: ");
-	logit3(msg, number);
-}
-
 void log_error(char* msg) {
-	uart_flush();
-	uart_puts("ERROR: ");
-	logit(msg);
+	if (debugLevel >= DEBUG_ERROR) {
+		uart_flush();
+		uart_puts("ERROR: ");
+		logit(msg);
+	}
 }
 
 void log_error2(char* msg, char* msg2) {
-	uart_flush();
-	uart_puts("ERROR: ");
-	logit2(msg, msg2);
+	if (debugLevel >= DEBUG_ERROR) {
+		uart_flush();
+		uart_puts("ERROR: ");
+		logit2(msg, msg2);
+	}
 }
 void log_error3(char* msg, uint8_t number) {
-	uart_flush();
-	uart_puts("ERROR: ");
-	logit3(msg, number);
+	if (debugLevel >= DEBUG_ERROR) {
+		uart_flush();
+		uart_puts("ERROR: ");
+		logit3(msg, number);
+	}
+}
+
+void log_warn(char* msg) {
+	if (debugLevel >= DEBUG_WARN) {
+		uart_flush();
+		uart_puts("WARN: ");
+		logit(msg);
+	}
+}
+
+void log_warn2(char* msg, char* msg2) {
+	if (debugLevel >= DEBUG_WARN) {
+		uart_flush();
+		uart_puts("WARN: ");
+		logit2(msg, msg2);
+	}
+}
+void log_warn3(char* msg, uint8_t number) {
+	if (debugLevel >= DEBUG_WARN) {
+		uart_flush();
+		uart_puts("WARN: ");
+		logit3(msg, number);
+	}
 }
 
 void log_info(char* msg) {
-	uart_flush();
-	uart_puts("INFO: ");
-	logit(msg);
+	if (debugLevel >= DEBUG_INFO) {
+		uart_flush();
+		uart_puts("INFO: ");
+		logit(msg);
+	}
 }
 
 void log_info2(char* msg, char* msg2) {
-	uart_flush();
-	uart_puts("INFO: ");
-	logit2(msg, msg2);
+	if (debugLevel >= DEBUG_INFO) {
+		uart_flush();
+		uart_puts("INFO: ");
+		logit2(msg, msg2);
+	}
 }
 void log_info3(char* msg, uint8_t number) {
-	uart_flush();
-	uart_puts("INFO: ");
-	logit3(msg, number);
+	if (debugLevel >= DEBUG_INFO) {
+		uart_flush();
+		uart_puts("INFO: ");
+		logit3(msg, number);
+	}
+}
+
+void log_debug(char* msg) {
+	if (debugLevel >= DEBUG_DEBUG) {
+		uart_flush();
+		uart_puts("DEBUG: ");
+		logit(msg);
+	}
+}
+
+void log_debug2(char* msg, char* msg2) {
+	if (debugLevel >= DEBUG_DEBUG) {
+		uart_flush();
+		uart_puts("DEBUG: ");
+		logit2(msg, msg2);
+	}
+}
+
+void log_debug3(char* msg, uint8_t number) {
+	if (debugLevel >= DEBUG_DEBUG) {
+		uart_flush();
+		uart_puts("DEBUG: ");
+		logit3(msg, number);
+	}
 }
 
 void send_nl() {
