@@ -121,6 +121,7 @@ public class XMLImporter_1_0 extends DefaultHandler implements ContentHandler {
 		 */
 
 		parseDocument(filename);
+
 	}
 
 	private void parseDocument(String filename) {

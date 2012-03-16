@@ -69,6 +69,8 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 		turnoutPersistence.clear();
 		locomotivePersistence.clear();
 		parseDocument(filename);
+		System.out.println("Turnoutcount: " + turnoutPersistence.getAllTurnouts().size());
+		System.out.println("Lococount: " + locomotivePersistence.getAllLocomotives().size());
 		if (!supported) {
 			throw new ConfigurationException(
 					Constants.ERR_VERSION_NOT_SUPPORTED);

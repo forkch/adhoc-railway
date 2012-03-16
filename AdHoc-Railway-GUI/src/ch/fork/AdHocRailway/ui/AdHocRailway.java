@@ -63,6 +63,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
@@ -89,6 +91,7 @@ import ch.fork.AdHocRailway.technical.configuration.exporter.XMLExporter_1_0;
 import ch.fork.AdHocRailway.technical.configuration.importer.XMLImporter;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
+import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
 
@@ -171,6 +174,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private RoutePersistenceIface routePersistence;
 	private JProgressBar progressBar;
 	public boolean fileMode;
+	private PowerControlPanel powerControlPanel;
 
 	public AdHocRailway() {
 		this(null);
@@ -186,14 +190,15 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
-			
+
 		}
 		instance = this;
-		splash = new SplashWindow(createImageIconFromIconSet("splash.png"), this, 500, 11);
+		splash = new SplashWindow(createImageIconFromIconSet("splash.png"),
+				this, 500, 11);
 		setIconImage(createImageIconFromIconSet("RailControl.png").getImage());
 
 		initProceeded("Loading Persistence Layer (Preferences)");
-		
+
 		preferences = Preferences.getInstance();
 
 		boolean useDatabase = loadPersistenceLayer();
@@ -328,9 +333,16 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		trackControlPanel = new TrackControlPanel();
 		locomotiveControlPanel = new LocomotiveControlPanel();
+		powerControlPanel = new PowerControlPanel();
+		
+		MigLayout southPanelLayout = new MigLayout("", "[grow][]", "[]");
+
+		JPanel southPanel = new JPanel(southPanelLayout);
+		southPanel.add(locomotiveControlPanel);
+		southPanel.add(powerControlPanel);
 
 		mainPanel.add(trackControlPanel, BorderLayout.CENTER);
-		mainPanel.add(locomotiveControlPanel, BorderLayout.SOUTH);
+		mainPanel.add(southPanel, BorderLayout.SOUTH);
 		add(mainPanel, BorderLayout.CENTER);
 
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -530,7 +542,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class OpenDatabaseAction extends AbstractAction {
 
 		public OpenDatabaseAction() {
-			super("Open Database\u2026", createImageIconFromIconSet("database.png"));
+			super("Open Database\u2026",
+					createImageIconFromIconSet("database.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -597,7 +610,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			XMLExporter_1_0 exporter = new XMLExporter_1_0(turnoutPersistence,
 					locomotivePersistence, routePersistence);
 			String xml = exporter.export();
-			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file),"UTF-8");
+			OutputStreamWriter out = new OutputStreamWriter(
+					new FileOutputStream(file), "UTF-8");
 			out.write(xml);
 			out.close();
 			actualFile = file;
@@ -775,10 +789,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			//int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
-			//		"Really exit ?", "Exit", JOptionPane.YES_NO_OPTION,
-			//		JOptionPane.QUESTION_MESSAGE,
-			//		createImageIcon("messagebox_warning.png"));
+			// int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
+			// "Really exit ?", "Exit", JOptionPane.YES_NO_OPTION,
+			// JOptionPane.QUESTION_MESSAGE,
+			// createImageIcon("messagebox_warning.png"));
 			int result = JOptionPane.YES_OPTION;
 			if (result == JOptionPane.YES_OPTION) {
 
@@ -843,7 +857,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class LocomotivesAction extends AbstractAction {
 
 		public LocomotivesAction() {
-			super("Locomotives\u2026", createImageIconFromIconSet("locomotive.png"));
+			super("Locomotives\u2026",
+					createImageIconFromIconSet("locomotive.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -859,7 +874,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class PreferencesAction extends AbstractAction {
 
 		public PreferencesAction() {
-			super("Preferences\u2026", createImageIconFromIconSet("package_settings.png"));
+			super("Preferences\u2026",
+					createImageIconFromIconSet("package_settings.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -925,7 +941,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class DisconnectAction extends AbstractAction {
 
 		public DisconnectAction() {
-			super("Disconnect", createImageIconFromIconSet("daemondisconnect.png"));
+			super("Disconnect",
+					createImageIconFromIconSet("daemondisconnect.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -1018,7 +1035,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private class ToggleFullscreenAction extends AbstractAction {
 
 		public ToggleFullscreenAction() {
-			super("ToggleFullscreen", createImageIconFromIconSet("window_fullscreen.png"));
+			super("ToggleFullscreen",
+					createImageIconFromIconSet("window_fullscreen.png"));
 		}
 
 		public void actionPerformed(ActionEvent e) {

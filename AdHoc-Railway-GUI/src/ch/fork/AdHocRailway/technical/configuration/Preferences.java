@@ -210,7 +210,9 @@ public class Preferences implements PreferencesKeys {
 	}
 
 	public String getStringValue(String key) {
-		return preferences.get(key);
+		if (preferences.containsKey(key))
+			return preferences.get(key);
+		return "";
 	}
 
 	public void setIntValue(String key, int value) {
@@ -218,7 +220,9 @@ public class Preferences implements PreferencesKeys {
 	}
 
 	public int getIntValue(String key) {
-		return Integer.parseInt(preferences.get(key));
+		if (preferences.containsKey(key))
+			return Integer.parseInt(preferences.get(key));
+		return 0;
 	}
 
 	public void setBooleanValue(String key, boolean value) {
@@ -226,7 +230,9 @@ public class Preferences implements PreferencesKeys {
 	}
 
 	public boolean getBooleanValue(String key) {
-		return Boolean.parseBoolean(preferences.get(key));
+		if (preferences.containsKey(key))
+			return Boolean.parseBoolean(preferences.get(key));
+		return false;
 	}
 
 	public List<String> getHostnames() {

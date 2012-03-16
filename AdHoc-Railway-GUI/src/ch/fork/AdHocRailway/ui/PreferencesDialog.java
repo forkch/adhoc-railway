@@ -45,40 +45,42 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class PreferencesDialog extends JDialog implements PreferencesKeys {
-	private JSpinner			defaultActivationTime;
-	private JSpinner			defaultRoutingDelay;
-	private JSpinner			defaultLockDuration;
-	private SpinnerNumberModel	defaultActivationTimeModel;
-	private SpinnerNumberModel	defaultRoutingDelayModel;
-	private SpinnerNumberModel	defaultLockDurationModel;
-	private JSpinner			locomotiveControlNumber;
-	private JSpinner			switchControlNumber;
-	private JSpinner			routeControlNumber;
-	private JSpinner			defaultTurnoutBus;
-	private JSpinner			defaultLocomotiveBus;
-	private SpinnerNumberModel	locomotiveControlNumberModel;
-	private SpinnerNumberModel	switchControlNumberModel;
-	private JTextField			hostnameTextField;
-	private JTextField			portnumberTextField;
-	private JComboBox			keyBoardLayoutComboBox;
-	private JCheckBox			interface6051;
-	private JCheckBox			writeLog;
-	private JCheckBox			fullscreen;
-	private JCheckBox			tabbedTrackCheckBox;
-	private JCheckBox			fixedTurnoutGroupSizesCheckBox;
+	private JSpinner defaultActivationTime;
+	private JSpinner defaultRoutingDelay;
+	private JSpinner defaultLockDuration;
+	private SpinnerNumberModel defaultActivationTimeModel;
+	private SpinnerNumberModel defaultRoutingDelayModel;
+	private SpinnerNumberModel defaultLockDurationModel;
+	private JSpinner locomotiveControlNumber;
+	private JSpinner switchControlNumber;
+	private JSpinner routeControlNumber;
+	private JSpinner defaultTurnoutBus;
+	private JSpinner defaultLocomotiveBus;
+	private SpinnerNumberModel locomotiveControlNumberModel;
+	private SpinnerNumberModel switchControlNumberModel;
+	private JTextField hostnameTextField;
+	private JTextField portnumberTextField;
+	private JComboBox keyBoardLayoutComboBox;
+	private JCheckBox interface6051;
+	private JCheckBox writeLog;
+	private JCheckBox fullscreen;
+	private JCheckBox tabbedTrackCheckBox;
+	private JCheckBox fixedTurnoutGroupSizesCheckBox;
 
-	private boolean				okPressed;
-	private boolean				cancelPressed;
-	private JCheckBox			autoconnectCheckBox;
-	private SpinnerNumberModel	routeControlNumberModel;
-	private JTextField			databaseHostField;
-	private JTextField			databaseNameField;
-	private JTextField			databaseUserField;
-	private JTextField			databasePasswordField;
-	private JCheckBox			useDatabaseCheckBox;
-	private JCheckBox			openLastFileCheckBox;
-	private SpinnerNumberModel	defaultTurnoutBusModel;
-	private SpinnerNumberModel	defaultLocomotiveBusModel;
+	private boolean okPressed;
+	private boolean cancelPressed;
+	private JCheckBox autoconnectCheckBox;
+	private SpinnerNumberModel routeControlNumberModel;
+	private JTextField databaseHostField;
+	private JTextField databaseNameField;
+	private JTextField databaseUserField;
+	private JTextField databasePasswordField;
+	private JCheckBox useDatabaseCheckBox;
+	private JCheckBox openLastFileCheckBox;
+	private SpinnerNumberModel defaultTurnoutBusModel;
+	private SpinnerNumberModel defaultLocomotiveBusModel;
+	private SpinnerNumberModel numberOfBoostersModel;
+	private JSpinner numberOfBoosters;
 
 	public PreferencesDialog(JFrame owner) {
 		super(owner, "Preferences", true);
@@ -107,14 +109,16 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		builder.addSeparator("Database", cc.xy(4, 6));
 		builder.add(createDatabaseTab(), cc.xy(4, 8));
 
-		JButton okButton = new JButton("OK", ImageTools.createImageIconFromIconSet("ok.png"));
+		JButton okButton = new JButton("OK",
+				ImageTools.createImageIconFromIconSet("ok.png"));
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				okPressed = true;
 				PreferencesDialog.this.setVisible(false);
 			}
 		});
-		JButton cancelButton = new JButton("Cancel", ImageTools.createImageIconFromIconSet("cancel.png"));
+		JButton cancelButton = new JButton("Cancel",
+				ImageTools.createImageIconFromIconSet("cancel.png"));
 		cancelPressed = false;
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -122,8 +126,9 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				PreferencesDialog.this.setVisible(false);
 			}
 		});
-		builder.add(ButtonBarFactory.buildRightAlignedBar(okButton,
-				cancelButton), cc.xyw(2, 10, 3));
+		builder.add(
+				ButtonBarFactory.buildRightAlignedBar(okButton, cancelButton),
+				cc.xyw(2, 10, 3));
 
 		add(builder.getPanel());
 		loadPreferences();
@@ -142,14 +147,13 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		routeControlNumberModel = new SpinnerNumberModel(7, 1, 10, 1);
 		routeControlNumber = new JSpinner(routeControlNumberModel);
-		
+
 		fixedTurnoutGroupSizesCheckBox = new JCheckBox();
-		
 
 		keyBoardLayoutComboBox = new JComboBox();
-		Set<String> sortedLayoutNames = new TreeSet<String>
-			(Preferences.getInstance().getKeyBoardLayoutNames());
-		for (String name: sortedLayoutNames) {
+		Set<String> sortedLayoutNames = new TreeSet<String>(Preferences
+				.getInstance().getKeyBoardLayoutNames());
+		for (String name : sortedLayoutNames) {
 			keyBoardLayoutComboBox.addItem(name);
 		}
 
@@ -187,7 +191,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		builder.addLabel("Fixed Turnout- and Route-Group sizes", cc.xy(1, 15));
 		builder.add(fixedTurnoutGroupSizesCheckBox, cc.xy(3, 15));
-		
+
 		builder.addLabel("Open last file", cc.xy(1, 17));
 		builder.add(openLastFileCheckBox, cc.xy(3, 17));
 
@@ -195,6 +199,10 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	}
 
 	private JPanel createDigitalDataTab() {
+
+		numberOfBoostersModel = new SpinnerNumberModel(1, 0, 32, 1);
+		numberOfBoosters = new JSpinner(numberOfBoostersModel);
+
 		defaultActivationTimeModel = new SpinnerNumberModel(50, 50, 1000, 10);
 		defaultActivationTime = new JSpinner(defaultActivationTimeModel);
 
@@ -210,27 +218,32 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		interface6051 = new JCheckBox();
 
-		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
+		FormLayout layout = new FormLayout(
+				"right:pref, 3dlu, fill:pref",
+				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
-		builder.addLabel("Default Turnout Bus", cc.xy(1, 1));
-		builder.add(defaultTurnoutBus, cc.xy(3, 1));
-		
-		builder.addLabel("Default Locomotive Bus", cc.xy(1, 3));
-		builder.add(defaultLocomotiveBus, cc.xy(3, 3));
-		
-		builder.addLabel("Solenoid activation time [ms]", cc.xy(1, 5));
-		builder.add(defaultActivationTime, cc.xy(3, 5));
 
-		builder.addLabel("Routing delay [ms]", cc.xy(1, 7));
-		builder.add(defaultRoutingDelay, cc.xy(3, 7));
+		builder.addLabel("Number of Boosters", cc.xy(1, 1));
+		builder.add(numberOfBoosters, cc.xy(3, 1));
 
-		builder.addLabel("Lock time (0 means forever) [s]", cc.xy(1, 9));
-		builder.add(defaultLockDuration, cc.xy(3, 9));
+		builder.addLabel("Default Turnout Bus", cc.xy(1, 3));
+		builder.add(defaultTurnoutBus, cc.xy(3, 3));
 
-		builder.addLabel("Interface 6051 attached", cc.xy(1, 11));
-		builder.add(interface6051, cc.xy(3, 11));
+		builder.addLabel("Default Locomotive Bus", cc.xy(1, 5));
+		builder.add(defaultLocomotiveBus, cc.xy(3, 5));
+
+		builder.addLabel("Solenoid activation time [ms]", cc.xy(1, 7));
+		builder.add(defaultActivationTime, cc.xy(3, 7));
+
+		builder.addLabel("Routing delay [ms]", cc.xy(1, 9));
+		builder.add(defaultRoutingDelay, cc.xy(3, 9));
+
+		builder.addLabel("Lock time (0 means forever) [s]", cc.xy(1, 11));
+		builder.add(defaultLockDuration, cc.xy(3, 11));
+
+		builder.addLabel("Interface 6051 attached", cc.xy(1, 13));
+		builder.add(interface6051, cc.xy(3, 13));
 
 		return builder.getPanel();
 	}
@@ -313,11 +326,14 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		writeLog.setSelected(p.getBooleanValue(LOGGING));
 		fullscreen.setSelected(p.getBooleanValue(FULLSCREEN));
 		tabbedTrackCheckBox.setSelected(p.getBooleanValue(TABBED_TRACK));
-		fixedTurnoutGroupSizesCheckBox.setSelected(p.getBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES));
+		fixedTurnoutGroupSizesCheckBox.setSelected(p
+				.getBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES));
 		openLastFileCheckBox.setSelected(p.getBooleanValue(OPEN_LAST_FILE));
 
+		numberOfBoostersModel.setValue(p.getIntValue(NUMBER_OF_BOOSTERS));
 		defaultTurnoutBusModel.setValue(p.getIntValue(DEFAULT_TURNOUT_BUS));
-		defaultLocomotiveBusModel.setValue(p.getIntValue(DEFAULT_LOCOMOTIVE_BUS));
+		defaultLocomotiveBusModel.setValue(p
+				.getIntValue(DEFAULT_LOCOMOTIVE_BUS));
 		defaultActivationTimeModel.setValue(p.getIntValue(ACTIVATION_TIME));
 		defaultRoutingDelayModel.setValue(p.getIntValue(ROUTING_DELAY));
 		defaultLockDurationModel.setValue(p.getIntValue(LOCK_DURATION));
@@ -347,13 +363,16 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		p.setBooleanValue(LOGGING, writeLog.isSelected());
 		p.setBooleanValue(FULLSCREEN, fullscreen.isSelected());
 		p.setBooleanValue(TABBED_TRACK, tabbedTrackCheckBox.isSelected());
-		p.setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES, fixedTurnoutGroupSizesCheckBox.isSelected());
+		p.setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES,
+				fixedTurnoutGroupSizesCheckBox.isSelected());
 		p.setBooleanValue(OPEN_LAST_FILE, openLastFileCheckBox.isSelected());
 
+		p.setIntValue(NUMBER_OF_BOOSTERS, numberOfBoostersModel.getNumber()
+				.intValue());
 		p.setIntValue(DEFAULT_TURNOUT_BUS, defaultTurnoutBusModel.getNumber()
 				.intValue());
-		p.setIntValue(DEFAULT_LOCOMOTIVE_BUS, defaultLocomotiveBusModel.getNumber()
-				.intValue());
+		p.setIntValue(DEFAULT_LOCOMOTIVE_BUS, defaultLocomotiveBusModel
+				.getNumber().intValue());
 		p.setIntValue(ACTIVATION_TIME, defaultActivationTimeModel.getNumber()
 				.intValue());
 		p.setIntValue(ROUTING_DELAY, defaultRoutingDelayModel.getNumber()
@@ -370,9 +389,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		p.setStringValue(DATABASE_HOST, (String) databaseHostField.getText());
 		p.setStringValue(DATABASE_NAME, (String) databaseNameField.getText());
 		p.setStringValue(DATABASE_USER, (String) databaseUserField.getText());
-		p
-				.setStringValue(DATABASE_PWD, (String) databasePasswordField
-						.getText());
+		p.setStringValue(DATABASE_PWD, (String) databasePasswordField.getText());
 		try {
 			p.save();
 		} catch (FileNotFoundException e) {
