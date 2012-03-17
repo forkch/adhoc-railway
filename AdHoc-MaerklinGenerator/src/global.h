@@ -8,7 +8,7 @@
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
-#define DEBUG
+//#define DEBUG
 //#define DEBUG_EXTREME
 
 #define DEBUG_OFF 0

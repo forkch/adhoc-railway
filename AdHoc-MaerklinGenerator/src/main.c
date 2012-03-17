@@ -78,7 +78,7 @@ int main() {
 				if (solenoidQueue[i].active
 						&& solenoidQueue[i].timerDetected == 0) {
 
-					// fairly recent solenoid command...deferr deactivation to next cycle
+					// fairly recent solenoid command...defer deactivation to next cycle
 					solenoidQueue[i].timerDetected = 1;
 				} else if (solenoidQueue[i].active
 						&& solenoidQueue[i].timerDetected == 1) {
@@ -127,6 +127,7 @@ void enqueue_solenoid() {
 void enqueue_loco(uint8_t loco_idx) {
 	newLocoIdx = loco_idx;
 }
+
 void all_loco() {
 
 	for (uint8_t i = 0; i < 80; i++) {
@@ -135,8 +136,10 @@ void all_loco() {
 
 	}
 }
+
 void prepareDataForPWM() {
 
+	TCCR1A &= ~(1 << COM1A1); // DEACTIVATE PWM
 	unsigned char queueIdxLoc = (pwmQueueIdx + 1) % 2;
 
 	// handle NEW loco command with highest priority
@@ -144,11 +147,18 @@ void prepareDataForPWM() {
 		sendLocoPacket(newLocoIdx, queueIdxLoc, 0);
 
 		newLocoIdx = -1;
+
+		pwm_mode = MODE_LOCO;
+		// notify PWM that we're finished preparing a new packet
+		prepareNextData = 0;
+		ICR1 = LOCO_TOP;
+		TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
 		return;
 	}
 
 	if (!solenoidQueueEmpty() || deactivatingSolenoid) {
 
+		_delay_us(50);
 		// set index accordingly (solenoid to switch or to deactivate)
 		uint8_t solenoidIdx =
 				deactivatingSolenoid == 1 ?
@@ -158,6 +168,11 @@ void prepareDataForPWM() {
 		|| !deactivatingSolenoid) { // or if its a new solenoid command
 
 			sendSolenoidPacket(solenoidIdx, queueIdxLoc);
+			pwm_mode = MODE_SOLENOID;
+			// notify PWM that we're finished preparing a new packet
+			prepareNextData = 0;
+			ICR1 = SOLENOID_TOP;
+			TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
 			return;
 		}
 	}
@@ -177,6 +192,11 @@ void prepareDataForPWM() {
 	}
 
 	sendLocoPacket(locoToRefresh, queueIdxLoc, 1);
+	pwm_mode = MODE_LOCO;
+	// notify PWM that we're finished preparing a new packet
+	prepareNextData = 0;
+	ICR1 = LOCO_TOP;
+	TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
 
 }
 
@@ -274,83 +294,7 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 
 			encodedSpeed = abcd ^ ((abcd ^ efgh) & mask);
 
-//			if (actualLocoIdx == 76) {
-//
-//				if (actualLoco->refreshState == 1) {
-//					log_debug("F1");
-//				}
-//				if (actualLoco->refreshState == 3) {
-//					log_debug("F2");
-//				}
-//				if (actualLoco->refreshState == 5) {
-//					log_debug("F3");
-//				}
-//				if (actualLoco->refreshState == 7) {
-//					log_debug("F4");
-//				}
-//
-//				log_debug("MASK");
-//				for (uint8_t i = 0; i < 8; i++) {
-//					if ((mask >> (7 - i)) & 1)
-//						uart_putc('1');
-//					else
-//						uart_putc('0');
-//				}
-//				send_nl();
-//
-//				log_debug("ABCD");
-//				for (uint8_t i = 0; i < 8; i++) {
-//					if ((abcd >> (7 - i)) & 1)
-//						uart_putc('1');
-//					else
-//						uart_putc('0');
-//				}
-//				send_nl();
-//
-//				log_debug("EFGH");
-//				for (uint8_t i = 0; i < 8; i++) {
-//					if ((efgh >> (7 - i)) & 1)
-//						uart_putc('1');
-//					else
-//						uart_putc('0');
-//				}
-//				send_nl();
-//
-//				log_debug("encodedSpeed");
-//				for (uint8_t i = 0; i < 8; i++) {
-//					if ((encodedSpeed >> (7 - i)) & 1)
-//						uart_putc('1');
-//					else
-//						uart_putc('0');
-//				}
-//				send_nl();
-//			}
-
 		}
-
-//		if (actualLocoIdx == 76) {
-//
-//			if (actualLoco->refreshState == 1) {
-//				log_debug("F1");
-//			}else if (actualLoco->refreshState == 3) {
-//				log_debug("F2");
-//			}else if (actualLoco->refreshState == 5) {
-//				log_debug("F3");
-//			}else if (actualLoco->refreshState == 7) {
-//				log_debug("F4");
-//			}else {
-//				log_debug("SPEED");
-//			}
-//
-//			uart_puts("encodedSpeed ");
-//			for (uint8_t i = 0; i < 8; i++) {
-//				if ((encodedSpeed >> (7 - i)) & 1)
-//					uart_putc('1');
-//				else
-//					uart_putc('0');
-//			}
-//			send_nl();
-//		}
 
 		actualLoco->refreshState = (actualLoco->refreshState + 1) % 8;
 
@@ -366,12 +310,9 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 			}
 		}
 
-		pwm_mode = MODE_LOCO;
 		isLocoCommand = 1;
 		locoCmdsSent = (locoCmdsSent + 1) % (SOLENOID_WAIT + 1);
 	}
-// notify PWM that we're finished preparing a new packet
-	prepareNextData = 0;
 }
 
 inline void sendSolenoidPacket(uint8_t solenoidIdx, uint8_t queueIdxLoc) {
@@ -379,8 +320,6 @@ inline void sendSolenoidPacket(uint8_t solenoidIdx, uint8_t queueIdxLoc) {
 	unsigned char address = solenoidQueue[solenoidIdx].address;
 	unsigned char port = solenoidQueue[solenoidIdx].port;
 
-	//unsigned char *commandQueue = commandQueue1;
-//			queueIdxLoc == 0 ? commandQueue1 : commandQueue2;
 	// address
 	for (uint8_t i = 0; i < 8; i++)
 		commandQueue[i] = (address >> (7 - i)) & 1;
@@ -395,10 +334,9 @@ inline void sendSolenoidPacket(uint8_t solenoidIdx, uint8_t queueIdxLoc) {
 
 	if (!deactivatingSolenoid) {
 		// new command --> activate port
-//#ifdef DEBUG
-//		log_debug3("activating decoder ", address);
-//#endif
-		_delay_us(50);
+#ifdef DEBUG
+		log_debug3("activating decoder ", address);
+#endif
 
 		commandQueue[16] = 1;
 		commandQueue[17] = 1;
@@ -425,17 +363,15 @@ inline void sendSolenoidPacket(uint8_t solenoidIdx, uint8_t queueIdxLoc) {
 		deactivatingSolenoid = 0;
 	}
 
-	pwm_mode = MODE_SOLENOID;
 	locoCmdsSent = 0;
 
+	//pwm_mode = MODE_SOLENOID;
 	// notify PWM that we're finished preparing a new packet
-	prepareNextData = 0;
+	//prepareNextData = 0;
 }
 
 void finish_mm_command(uint8_t queueIdxLoc) {
 
-	//unsigned char *commandQueue =
-	//		queueIdxLoc == 0 ? commandQueue1 : commandQueue2;
 // pause
 	for (uint8_t i = 0; i < MM_INTER_PACKET_PAUSE; i++) {
 		commandQueue[MM_PACKET_LENGTH + i] = 2;
@@ -464,15 +400,13 @@ ISR( TIMER0_OVF_vect) {
 
 ISR( TIMER1_COMPA_vect) {
 
-	cli();
-	if (prepareNextData == 1 && actualBit == 0) {
-		setSolenoidWait();
-		sei();
-		return;
-	}
+	//if (prepareNextData == 1 && actualBit == 0) {
+	//	setSolenoidWait();
+	//	return;
+	//}
 
 	uint8_t commandLength = MM_COMMAND_LENGTH * LOCOCMD_REPETITIONS;
-	if (actualBit == 0) {
+	/*if (actualBit == 0) {
 		//pwmQueueIdx = (pwmQueueIdx + 1) % 2;
 		//prepareNextData = 1;
 		if (pwm_mode == MODE_SOLENOID) {
@@ -483,18 +417,15 @@ ISR( TIMER1_COMPA_vect) {
 			//LOCO FREQUENCY
 			ICR1 = LOCO_TOP;
 		}
-	}
+	}*/
 
 	if (actualBit > commandLength) {
 		setSolenoidWait();
 		actualBit = 0;
 		prepareNextData = 1;
-		sei();
 		return;
 	}
 
-	//unsigned char *commandQueue =
-	//		pwmQueueIdx == 0 ? commandQueue1 : commandQueue2;
 	unsigned char b = commandQueue[actualBit];
 
 	if (b == 0) {
@@ -506,7 +437,6 @@ ISR( TIMER1_COMPA_vect) {
 	}
 
 	actualBit++;
-	sei();
 
 }
 
