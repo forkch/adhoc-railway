@@ -262,7 +262,6 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 	t = number - 1;
 
 	locoData[t].active = 1;
-	locoData[t].repetitions = LOCOCMD_REPETITIONS;
 	locoData[t].refreshState = 0;
 	locoData[t].speed = speed;
 

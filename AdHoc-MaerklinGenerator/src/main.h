@@ -42,16 +42,20 @@ volatile unsigned char pwmQueueIdx = 0;
 #define MM_INTER_PACKET_PAUSE 6
 #define MM_INTER_DOUBLE_PACKET_PAUSE 6
 
-#define MM_DOUBLE_PACKET_LENGTH 2*MM_PACKET_LENGTH+MM_INTER_PACKET_PAUSE
+#define MM_DOUBLE_PACKET_LENGTH (2*MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE)
 
-#define MM_COMMAND_LENGTH MM_DOUBLE_PACKET_LENGTH + MM_INTER_DOUBLE_PACKET_PAUSE
+#define MM_COMMAND_LENGTH (MM_DOUBLE_PACKET_LENGTH + MM_INTER_DOUBLE_PACKET_PAUSE)
 
-unsigned char commandQueue[2][MM_COMMAND_LENGTH];
+#define LOCOCMD_REPETITIONS 2
 
-volatile uint8_t actualBit = 0;
+unsigned char commandQueue[MM_COMMAND_LENGTH*LOCOCMD_REPETITIONS];
+//unsigned char commandQueue1[MM_COMMAND_LENGTH*LOCOCMD_REPETITIONS];
+//unsigned char commandQueue2[MM_COMMAND_LENGTH*LOCOCMD_REPETITIONS];
+
+volatile uint16_t actualBit = 0;
 
 char cmd[64];
-unsigned char prepareNextData = 1;
+volatile unsigned char prepareNextData = 1;
 uint8_t newSolenoid = 0;
 
 // define forward declarations
@@ -78,7 +82,7 @@ void initLocoData();
 void prepareDataForPWM();
 inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc, uint8_t refresh);
 inline void sendSolenoidPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc);
-void finish_mm_command();
+void finish_mm_command(uint8_t queueIdxLoc);
 void processASCIIData();
 void enqueue_solenoid();
 void enqueue_loco(uint8_t);

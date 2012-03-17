@@ -15,6 +15,8 @@ void init_boosters() {
 		booster_state[i].active = 0;
 		booster_state[i].shortcut = 0;
 	}
+
+	stop_all_boosters();
 }
 void check_shorts() {
 
@@ -32,6 +34,7 @@ void stop_booster(int nr) {
 
 	unsigned char stateForSPI = get_booster_spi_state();
 	SPI_MasterTransmitDebug(stateForSPI);
+	SPI_MasterTransmitGO(stateForSPI);
 
 }
 
@@ -41,6 +44,7 @@ void go_booster(int nr) {
 
 	unsigned char stateForSPI = get_booster_spi_state();
 	SPI_MasterTransmitDebug(stateForSPI);
+	SPI_MasterTransmitGO(stateForSPI);
 }
 
 void stop_all_boosters() {
@@ -51,6 +55,7 @@ void stop_all_boosters() {
 
 	unsigned char stateForSPI = get_booster_spi_state();
 	SPI_MasterTransmitDebug(stateForSPI);
+	SPI_MasterTransmitGO(stateForSPI);
 
 }
 
@@ -62,4 +67,5 @@ void go_all_boosters() {
 
 	unsigned char stateForSPI = get_booster_spi_state();
 	SPI_MasterTransmitDebug(stateForSPI);
+	SPI_MasterTransmitGO(stateForSPI);
 }

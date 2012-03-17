@@ -26,14 +26,30 @@
 //#define LOCO_0 364
 //#define LOCO_1 52
 
+//#define SOLENOID_TOP 208
+//#define LOCO_TOP 416
+//#define SOLENOID_1 182
+//#define SOLENOID_0 26
+//#define LOCO_1 364
+//#define LOCO_0 52
 
-#define SOLENOID_TOP 208
-#define LOCO_TOP 416
-#define SOLENOID_1 182
-#define SOLENOID_0 26
-#define LOCO_1 364
-#define LOCO_0 52
+//#define SOLENOID_1 228
+//#define SOLENOID_0 33
+//#define LOCO_1 455
+//#define LOCO_0 65
 
+#define LOCO_INCREMENT 20
+#define LOCO_BASE 65
+#define SOLENOID_INCREMENT 0
+#define SOLENOID_BASE 33
+
+uint16_t LOCO_0;
+uint16_t LOCO_1;
+uint16_t LOCO_TOP;
+
+uint16_t SOLENOID_0;
+uint16_t SOLENOID_1;
+uint16_t SOLENOID_TOP;
 
 void initPWM();
 void setPWMOutput(uint16_t duty);
@@ -43,6 +59,5 @@ void setSolenoidWait();
 void setLoco0();
 void setLoco1();
 void setLocoWait();
-
 
 #endif /* PWM_H_ */

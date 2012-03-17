@@ -20,7 +20,6 @@
 extern unsigned char debugLevel;
 
 #define BOOSTER_COUNT 8
-#define LOCOCMD_REPETITIONS 4
 
 typedef struct LocoData {
 	unsigned char address;
@@ -35,7 +34,6 @@ typedef struct LocoData {
 	char active :1;
 	char isNewProtocol :1;
 	unsigned char refreshState;
-	unsigned char repetitions;
 };
 
 extern struct LocoData locoData[80];

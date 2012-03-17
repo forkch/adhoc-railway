@@ -24,6 +24,7 @@ int main() {
 
 	SPI_MasterInitOutput();
 
+	init_boosters();
 	initLocoData();
 	initPortData();
 
@@ -49,17 +50,18 @@ int main() {
 
 	sei();
 
+#ifdef DEBUG
 	log_info("AdHoc-Maerklin Generator V0.1");
 	log_info("Have Fun :-)\n");
-
-	SPI_MasterTransmitDebug(0x00);
 
 	log_debug3("MM_PACKET_LENGTH: ", MM_PACKET_LENGTH);
 	log_debug3("MM_INTER_PACKET_PAUSE: ", MM_INTER_PACKET_PAUSE);
 	log_debug3("MM_DOUBLE_PACKET_LENGTH: ", MM_DOUBLE_PACKET_LENGTH);
 	log_debug3("MM_INTER_DOUBLE_PACKET_PAUSE: ", MM_INTER_DOUBLE_PACKET_PAUSE);
 	log_debug3("MM_COMMAND_LENGTH: ", MM_COMMAND_LENGTH);
-
+	log_debug3("MM_COMMAND_LENGTH*LOCOCMD_REPETITIONS: ",
+			MM_COMMAND_LENGTH * LOCOCMD_REPETITIONS);
+#endif
 	replys("ready\n");
 	//Do this forever
 	while (1) {
@@ -83,6 +85,7 @@ int main() {
 
 					// deactivate solenoid
 					deactivatingSolenoid = 1;
+
 					solenoidToDeactivate = i;
 
 				}
@@ -134,18 +137,13 @@ void all_loco() {
 }
 void prepareDataForPWM() {
 
-	unsigned char queueIdxLoc = 0;
+	unsigned char queueIdxLoc = (pwmQueueIdx + 1) % 2;
 
 	// handle NEW loco command with highest priority
 	if (newLocoIdx != -1) {
-		log_debug3("New Loco", newLocoIdx);
 		sendLocoPacket(newLocoIdx, queueIdxLoc, 0);
 
-		if (locoData[newLocoIdx].repetitions > 1) {
-			locoData[newLocoIdx].repetitions--;
-		} else {
-			newLocoIdx = -1;
-		}
+		newLocoIdx = -1;
 		return;
 	}
 
@@ -153,7 +151,7 @@ void prepareDataForPWM() {
 
 		// set index accordingly (solenoid to switch or to deactivate)
 		uint8_t solenoidIdx =
-				deactivatingSolenoid ?
+				deactivatingSolenoid == 1 ?
 						solenoidToDeactivate : solenoidQueueIdxFront;
 
 		if (locoCmdsSent == SOLENOID_WAIT // wait a number of loco commands until a solenoid is deactivated
@@ -191,13 +189,16 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 		unsigned char encodedSpeed = actualLoco->encodedSpeed;
 		unsigned char speed = actualLoco->speed;
 
+		//unsigned char *commandQueue =
+		//		queueIdxLoc == 0 ? commandQueue1 : commandQueue2;
+
 		// address
 		for (uint8_t i = 0; i < 8; i++)
-			commandQueue[queueIdxLoc][i] = (address >> (7 - i)) & 1;
+			commandQueue[i] = (address >> (7 - i)) & 1;
 
 		// function
-		commandQueue[queueIdxLoc][8] = actualLoco->fl;
-		commandQueue[queueIdxLoc][9] = actualLoco->fl;
+		commandQueue[8] = actualLoco->fl;
+		commandQueue[9] = actualLoco->fl;
 
 		if (refresh == 0 || actualLoco->isNewProtocol == 0
 				|| (actualLoco->refreshState % 2) == 0) {
@@ -350,16 +351,20 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 //			}
 //			send_nl();
 //		}
-		if (actualLoco->repetitions > 1) {
-		} else {
-			//actualLoco->refreshState = (actualLoco->refreshState + 1) % 8;
-		}
+
+		actualLoco->refreshState = (actualLoco->refreshState + 1) % 8;
 
 		// speed
 		for (uint8_t i = 0; i < 8; i++)
-			commandQueue[queueIdxLoc][10 + i] = (encodedSpeed >> (7 - i)) & 1;
+			commandQueue[10 + i] = (encodedSpeed >> (7 - i)) & 1;
 
-		finish_mm_command();
+		finish_mm_command(queueIdxLoc);
+
+		for (uint8_t i = 1; i < LOCOCMD_REPETITIONS; i++) {
+			for (uint8_t j = 0; j < MM_COMMAND_LENGTH; j++) {
+				commandQueue[i * MM_COMMAND_LENGTH + j] = commandQueue[j];
+			}
+		}
 
 		pwm_mode = MODE_LOCO;
 		isLocoCommand = 1;
@@ -374,41 +379,49 @@ inline void sendSolenoidPacket(uint8_t solenoidIdx, uint8_t queueIdxLoc) {
 	unsigned char address = solenoidQueue[solenoidIdx].address;
 	unsigned char port = solenoidQueue[solenoidIdx].port;
 
+	//unsigned char *commandQueue = commandQueue1;
+//			queueIdxLoc == 0 ? commandQueue1 : commandQueue2;
 	// address
 	for (uint8_t i = 0; i < 8; i++)
-		commandQueue[queueIdxLoc][i] = (address >> (7 - i)) & 1;
+		commandQueue[i] = (address >> (7 - i)) & 1;
 
 	// unused
-	commandQueue[queueIdxLoc][8] = 0;
-	commandQueue[queueIdxLoc][9] = 0;
+	commandQueue[8] = 0;
+	commandQueue[9] = 0;
 
 	// port
 	for (uint8_t i = 0; i < 6; i++)
-		commandQueue[queueIdxLoc][10 + i] = (port >> (5 - i)) & 1;
+		commandQueue[10 + i] = (port >> (5 - i)) & 1;
 
 	if (!deactivatingSolenoid) {
 		// new command --> activate port
-		log_debug3("activating decoder ", solenoidIdx);
-		commandQueue[queueIdxLoc][16] = 1;
-		commandQueue[queueIdxLoc][17] = 1;
+//#ifdef DEBUG
+//		log_debug3("activating decoder ", address);
+//#endif
+		_delay_us(50);
+
+		commandQueue[16] = 1;
+		commandQueue[17] = 1;
 		solenoidQueue[solenoidIdx].active = 1;
 		solenoidQueue[solenoidIdx].timerDetected = 0;
 	} else {
 		// active solenoid --> deactivate port
+#ifdef DEBUG
 		log_debug3("deactivating decoder ", solenoidIdx);
-		commandQueue[queueIdxLoc][16] = 0;
-		commandQueue[queueIdxLoc][17] = 0;
+#endif
+		commandQueue[16] = 0;
+		commandQueue[17] = 0;
 		solenoidQueue[solenoidIdx].active = 0;
 		solenoidQueue[solenoidIdx].timerDetected = 0;
 	}
 
-	finish_mm_command();
+	finish_mm_command(queueIdxLoc);
 
 	if (!deactivatingSolenoid) {
 		// if new solenoid update queue
 		solenoidQueuePop();
 	} else {
-		// switch of deactivation
+		// switch off deactivation
 		deactivatingSolenoid = 0;
 	}
 
@@ -419,23 +432,25 @@ inline void sendSolenoidPacket(uint8_t solenoidIdx, uint8_t queueIdxLoc) {
 	prepareNextData = 0;
 }
 
-void finish_mm_command() {
-	unsigned char queueIdxLoc = 0; // = (pwmQueueIdx + 1) % 2;
+void finish_mm_command(uint8_t queueIdxLoc) {
 
+	//unsigned char *commandQueue =
+	//		queueIdxLoc == 0 ? commandQueue1 : commandQueue2;
 // pause
 	for (uint8_t i = 0; i < MM_INTER_PACKET_PAUSE; i++) {
-		commandQueue[queueIdxLoc][MM_PACKET_LENGTH + i] = 2;
+		commandQueue[MM_PACKET_LENGTH + i] = 2;
 	}
 
 //copy packet
 	for (uint8_t i = 0; i < MM_PACKET_LENGTH; i++)
-		commandQueue[queueIdxLoc][MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE + i] =
-				commandQueue[queueIdxLoc][i];
+		commandQueue[MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE + i] =
+				commandQueue[i];
 
 // add intra double packet pause
 	for (uint8_t i = 0; i < MM_INTER_DOUBLE_PACKET_PAUSE; i++) {
-		commandQueue[queueIdxLoc][MM_DOUBLE_PACKET_LENGTH + i] = 2;
+		commandQueue[MM_DOUBLE_PACKET_LENGTH + i] = 2;
 	}
+
 }
 
 // *** Interrupt Service Routines *****************************************
@@ -449,30 +464,38 @@ ISR( TIMER0_OVF_vect) {
 
 ISR( TIMER1_COMPA_vect) {
 
+	cli();
 	if (prepareNextData == 1 && actualBit == 0) {
 		setSolenoidWait();
+		sei();
 		return;
 	}
 
+	uint8_t commandLength = MM_COMMAND_LENGTH * LOCOCMD_REPETITIONS;
 	if (actualBit == 0) {
+		//pwmQueueIdx = (pwmQueueIdx + 1) % 2;
+		//prepareNextData = 1;
 		if (pwm_mode == MODE_SOLENOID) {
 			//SOLENDOID
 			ICR1 = SOLENOID_TOP;
+			commandLength = MM_COMMAND_LENGTH;
 		} else {
-			//	//LOCO FREQUENCY
+			//LOCO FREQUENCY
 			ICR1 = LOCO_TOP;
 		}
-
 	}
 
-	if (actualBit > MM_COMMAND_LENGTH) {
+	if (actualBit > commandLength) {
 		setSolenoidWait();
 		actualBit = 0;
 		prepareNextData = 1;
+		sei();
 		return;
 	}
 
-	unsigned char b = commandQueue[0][actualBit];
+	//unsigned char *commandQueue =
+	//		pwmQueueIdx == 0 ? commandQueue1 : commandQueue2;
+	unsigned char b = commandQueue[actualBit];
 
 	if (b == 0) {
 		pwm_mode == MODE_SOLENOID ? setSolenoid0() : setLoco0();
@@ -483,6 +506,7 @@ ISR( TIMER1_COMPA_vect) {
 	}
 
 	actualBit++;
+	sei();
 
 }
 
@@ -605,7 +629,6 @@ void initLocoData() {
 		locoData[i].active = 0;
 		locoData[i].direction = 0;
 		locoData[i].refreshState = 0;
-		locoData[i].repetitions = 0;
 	}
 	locoData[0].active = 1;
 }

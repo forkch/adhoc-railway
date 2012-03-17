@@ -38,7 +38,7 @@ void SPI_MasterInitInput(void) {
 
 void SPI_MasterTransmitDebug(unsigned char cData) {
 	/* Start transmission */
-	SPDR = (cData ^ 0xf0);
+	SPDR = (cData);
 	/* Wait for transmission complete */
 	while (!(SPSR & (1 << SPIF)))
 		;
