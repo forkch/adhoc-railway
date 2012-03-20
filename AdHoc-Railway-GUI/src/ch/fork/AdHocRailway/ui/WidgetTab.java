@@ -38,120 +38,29 @@ public class WidgetTab extends JPanel {
 
 	public WidgetTab(int maxCols) {
 
-		this.maxCols = maxCols;
-		layout = new GridBagLayout();
+		//this.maxCols = maxCols;
+		//layout = new GridBagLayout();
 		// setLayout(layout);
 		setLayout(new BetterFlowLayout(FlowLayout.LEADING));
-		currentRow = 0;
-		currentCol = 0;
-		gbc = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 5, 5);
-		gbc.gridx = currentRow;
-		gbc.gridy = currentCol;
+		//currentRow = 0;
+		//currentCol = 0;
+		//gbc = new GridBagConstraints();
+		//gbc.insets = new Insets(5, 5, 5, 5);
+		//gbc.gridx = currentRow;
+		//gbc.gridy = currentCol;
 	}
 
 	public void addWidget(JPanel widget) {
 		add(widget);
-		if (currentCol == maxCols) {
-			currentRow++;
-			currentCol = 0;
-		}
-		gbc.gridx = currentCol;
-		gbc.gridy = currentRow;
-		layout.setConstraints(widget, gbc);
-		currentCol++;
+		//if (currentCol == maxCols) {
+		//	currentRow++;
+		//	currentCol = 0;
+		//}
+		//gbc.gridx = currentCol;
+		//gbc.gridy = currentRow;
+		//layout.setConstraints(widget, gbc);
+		//currentCol++;
 	}
 
-	static class BetterFlowLayout extends FlowLayout {
-
-		public BetterFlowLayout() {
-
-			super();
-
-		}
-
-		public BetterFlowLayout(int align) {
-
-			super(align);
-
-		}
-
-		public BetterFlowLayout(int align, int hgap, int vgap) {
-
-			super(align, hgap, vgap);
-
-		}
-
-		@Override
-		public Dimension preferredLayoutSize(Container target) {
-
-			return betterPreferredSize(target);
-
-		}
-
-		@Override
-		public Dimension minimumLayoutSize(Container target) {
-
-			return betterPreferredSize(target);
-
-		}
-
-		public Dimension betterPreferredSize(Container target) {
-
-			synchronized (target.getTreeLock()) {
-
-				Insets insets = target.getInsets();
-
-				int maxwidth = target.getWidth()
-						- (insets.left + insets.right + getHgap() * 2);
-
-				int nmembers = target.getComponentCount();
-
-				int x = 0, y = insets.top + getVgap();
-
-				int rowh = 0;
-
-				for (int i = 0; i < nmembers; i++) {
-
-					Component m = target.getComponent(i);
-
-					if (m.isVisible()) {
-
-						Dimension d = m.getPreferredSize();
-
-						m.setSize(d.width, d.height);
-
-						if ((x == 0) || ((x + d.width) <= maxwidth)) {
-
-							if (x > 0) {
-
-								x += getHgap();
-
-							}
-
-							x += d.width;
-
-							rowh = Math.max(rowh, d.height);
-
-						} else {
-
-							x = d.width;
-
-							y += getVgap() + rowh;
-
-							rowh = d.height;
-
-						}
-
-					}
-
-				}
-
-				return new Dimension(maxwidth, y + rowh + getVgap());
-
-			}
-
-		}
-
-	}
+	
 }

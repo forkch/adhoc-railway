@@ -35,6 +35,7 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -46,6 +47,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
+
+import net.miginfocom.swing.MigLayout;
 
 import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
@@ -102,6 +105,8 @@ public class LocomotiveWidget extends JPanel implements
 	private Object defaultDisabledComboColor;
 
 	private JLabel imageLabel;
+	private ImageIcon emptyLocoIcon = ImageTools
+			.createImageIconFileSystem("locoimages/empty.png");
 
 	public LocomotiveWidget(int number, JFrame frame) {
 		super();
@@ -114,12 +119,16 @@ public class LocomotiveWidget extends JPanel implements
 	}
 
 	private void initGUI() {
-		setLayout(new BorderLayout(10, 10));
+		// setLayout(new BorderLayout(10, 10));
 		setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-		setPreferredSize(new Dimension(200, 250));
-		JPanel selectionPanel = initSelectionPanel();
+		// setPreferredSize(new Dimension(200, 310));
+
+		setLayout(new MigLayout("wrap 3"));
+
+		initSelectionPanel();
 		JPanel controlPanel = initControlPanel();
-		JPanel centerPanel = new JPanel(new BorderLayout());
+		
+
 		if (myLocomotive != null) {
 			desc = new JLabel(myLocomotive.getDescription(),
 					SwingConstants.CENTER);
@@ -128,53 +137,52 @@ public class LocomotiveWidget extends JPanel implements
 		}
 
 		addMouseListener(new MouseAction());
-		centerPanel.add(controlPanel, BorderLayout.CENTER);
-		centerPanel.add(desc, BorderLayout.NORTH);
-		add(centerPanel, BorderLayout.CENTER);
-		add(selectionPanel, BorderLayout.NORTH);
+
+		imageLabel = new JLabel(emptyLocoIcon);
+		imageLabel.setHorizontalAlignment(JLabel.CENTER);
+		
+		add(controlPanel, "span 3, grow");
+		add(imageLabel, "span 3, grow");
 
 		addMouseWheelListener(new WheelControl());
 
 	}
 
-	private JPanel initSelectionPanel() {
-		JPanel selectionPanel = new JPanel(new BorderLayout(5, 5));
+	private void initSelectionPanel() {
 		locomotiveGroupComboBox = new JComboBox();
 		locomotiveGroupComboBox.setFocusable(false);
 		groupSelectAction = new LocomotiveGroupSelectAction();
 		locomotiveComboBox = new JComboBox();
 		locomotiveComboBox.setFocusable(false);
 		locomotiveSelectAction = new LocomotiveSelectAction();
-		selectionPanel.add(locomotiveGroupComboBox, BorderLayout.NORTH);
-		selectionPanel.add(locomotiveComboBox, BorderLayout.SOUTH);
-		return selectionPanel;
+
+		add(locomotiveGroupComboBox, "span 3, grow");
+		add(locomotiveComboBox, "span 3, grow");
+
 	}
 
 	private JPanel initControlPanel() {
-		JPanel controlPanel = new JPanel(new BorderLayout(10, 10));
+		JPanel controlPanel = new JPanel(new MigLayout("fill"));
+
 		speedBar = new JProgressBar(JProgressBar.VERTICAL);
 		speedBar.setPreferredSize(new Dimension(20, 200));
-		controlPanel.add(speedBar, BorderLayout.EAST);
 		JPanel functionsPanel = initFunctionsControl();
 		JPanel speedControlPanel = initSpeedControl();
 
-		imageLabel = new  JLabel();
-		imageLabel.setHorizontalAlignment(JLabel.CENTER);
-		
-		controlPanel.add(functionsPanel, BorderLayout.WEST);
-		controlPanel.add(speedControlPanel, BorderLayout.CENTER);
-		controlPanel.add(imageLabel, BorderLayout.SOUTH);
+		controlPanel.add(functionsPanel, "grow, west");
+		controlPanel.add(speedControlPanel, "grow");
+		controlPanel.add(speedBar, "east");
 
 		setLocomotiveImage();
-		
+
 		return controlPanel;
 	}
 
-	/** 
+	/**
 	 * @param imageLabel
 	 */
 	public void setLocomotiveImage() {
-		if(myLocomotive == null)
+		if (myLocomotive == null)
 			return;
 		String image = myLocomotive.getImage();
 
@@ -182,17 +190,14 @@ public class LocomotiveWidget extends JPanel implements
 				&& new File("locoimages/" + image).exists()) {
 			imageLabel.setIcon(ImageTools
 					.createImageIconFileSystem("locoimages/" + image));
-		}else{
-			imageLabel.setIcon(null);
+		} else {
+			imageLabel.setIcon(emptyLocoIcon);
 		}
 	}
 
 	private JPanel initFunctionsControl() {
 		JPanel functionsPanel = new JPanel();
-		BoxLayout bl = new BoxLayout(functionsPanel, BoxLayout.PAGE_AXIS);
-		functionsPanel.setLayout(bl);
-		Dimension size = new Dimension(60, 30);
-		Insets margin = new Insets(2, 2, 2, 2);
+		functionsPanel.setLayout(new MigLayout("wrap 1, fill"));
 
 		FunctionToggleButton functionButton = new FunctionToggleButton("Fn");
 		FunctionToggleButton f1Button = new FunctionToggleButton("F1");
@@ -203,11 +208,9 @@ public class LocomotiveWidget extends JPanel implements
 				f1Button, f2Button, f3Button, f4Button };
 
 		for (int i = 0; i < functionToggleButtons.length; i++) {
-			functionToggleButtons[i].setMargin(margin);
-			functionToggleButtons[i].setMaximumSize(size);
 			functionToggleButtons[i]
 					.addActionListener(new LocomotiveFunctionAction(i));
-			functionsPanel.add(functionToggleButtons[i]);
+			functionsPanel.add(functionToggleButtons[i], "height 30");
 		}
 		return functionsPanel;
 	}
@@ -215,10 +218,7 @@ public class LocomotiveWidget extends JPanel implements
 	private JPanel initSpeedControl() {
 
 		JPanel speedControlPanel = new JPanel();
-		BoxLayout bl = new BoxLayout(speedControlPanel, BoxLayout.PAGE_AXIS);
-		speedControlPanel.setLayout(bl);
-		Dimension size = new Dimension(60, 30);
-		Insets margin = new Insets(2, 2, 2, 2);
+		speedControlPanel.setLayout(new MigLayout("wrap 1, fill"));
 
 		increaseSpeed = new JButton("+");
 		decreaseSpeed = new JButton("-");
@@ -227,7 +227,7 @@ public class LocomotiveWidget extends JPanel implements
 				createImageIcon("locomotives/forward.png"));
 		lockButton = new LockToggleButton("");
 
-		increaseSpeed.setMaximumSize(size);
+		/*increaseSpeed.setMaximumSize(size);
 		decreaseSpeed.setMaximumSize(size);
 		stopButton.setMaximumSize(size);
 		directionButton.setMaximumSize(size);
@@ -237,7 +237,7 @@ public class LocomotiveWidget extends JPanel implements
 		decreaseSpeed.setMargin(margin);
 		stopButton.setMargin(margin);
 		directionButton.setMargin(margin);
-		lockButton.setMargin(margin);
+		lockButton.setMargin(margin);*/
 
 		increaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
 		decreaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -251,11 +251,11 @@ public class LocomotiveWidget extends JPanel implements
 		directionButton.addActionListener(new ToggleDirectionAction());
 		lockButton.addActionListener(new LockAction());
 
-		speedControlPanel.add(increaseSpeed);
-		speedControlPanel.add(decreaseSpeed);
-		speedControlPanel.add(stopButton);
-		speedControlPanel.add(directionButton);
-		speedControlPanel.add(lockButton);
+		speedControlPanel.add(increaseSpeed, "height 30, width 50");
+		speedControlPanel.add(decreaseSpeed, "height 30, width 50");
+		speedControlPanel.add(stopButton, "height 30, width 50");
+		speedControlPanel.add(directionButton, "height 30, width 50");
+		speedControlPanel.add(lockButton, "height 30, width 50");
 		return speedControlPanel;
 	}
 
@@ -396,14 +396,13 @@ public class LocomotiveWidget extends JPanel implements
 		float hue = (1.0f - speedInPercent) * 0.3f;
 		Color speedColor = Color.getHSBColor(hue, 1.0f, 1.0f);
 
-		/*if (speedInPercent > 0.9) {
-			speedBar.setForeground(new Color(255, 0, 0));
-		} else if (speedInPercent > 0.7) {
-			speedBar.setForeground(new Color(255, 255, 0));
-		} else {
-			speedBar.setForeground(new Color(0, 255, 0));
-		}*/
-		
+		/*
+		 * if (speedInPercent > 0.9) { speedBar.setForeground(new Color(255, 0,
+		 * 0)); } else if (speedInPercent > 0.7) { speedBar.setForeground(new
+		 * Color(255, 255, 0)); } else { speedBar.setForeground(new Color(0,
+		 * 255, 0)); }
+		 */
+
 		speedBar.setForeground(speedColor);
 		speedBar.setMinimum(0);
 		speedBar.setMaximum(myLocomotive.getLocomotiveType().getDrivingSteps());
@@ -435,13 +434,13 @@ public class LocomotiveWidget extends JPanel implements
 						.createImageIcon("locomotives/locked_by_enemy.png"));
 			}
 		}
-		
-		if(myLocomotive.getLocomotiveType().getFunctionCount() == 0) {
-			for(FunctionToggleButton b : functionToggleButtons) {
+
+		if (myLocomotive.getLocomotiveType().getFunctionCount() == 0) {
+			for (FunctionToggleButton b : functionToggleButtons) {
 				b.setEnabled(false);
 			}
 		}
-		
+
 		setLocomotiveImage();
 		if (isFree()) {
 			locomotiveGroupComboBox.setEnabled(true);

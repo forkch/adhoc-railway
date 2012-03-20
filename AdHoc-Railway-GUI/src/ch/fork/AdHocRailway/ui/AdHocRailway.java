@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -103,6 +104,7 @@ import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.SERVER;
+import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.power.SRCPPowerControl;
 import de.dermoba.srcp.model.power.SRCPPowerState;
@@ -193,8 +195,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		}
 		instance = this;
-		splash = new SplashWindow(createImageIconFromIconSet("splash.png"),
-				this, 500, 11);
+		// splash = new SplashWindow(createImageIconFromIconSet("splash.png"),
+		// this, 500, 11);
 		setIconImage(createImageIconFromIconSet("RailControl.png").getImage());
 
 		initProceeded("Loading Persistence Layer (Preferences)");
@@ -227,9 +229,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		// EnablerDisabler.setEnable(false, trackControlPanel);
 		// EnablerDisabler.setEnable(false, locomotiveControlPanel);
 
-		setSize(1000, 700);
-
-		TutorialUtils.locateOnOpticalScreenCenter(this);
+		setSize(1200, 1024);
+		// pack();
+		toFront();
+		// TutorialUtils.locateOnOpticalScreenCenter(this);
 
 		initProceeded("RailControl started");
 		updateCommandHistory("RailControl started");
@@ -275,7 +278,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				System.out.println("connect()");
 				fileMode = false;
 			} catch (Exception e) {
-				splash.setVisible(false);
+				// splash.setVisible(false);
 				fileMode = true;
 				JOptionPane
 						.showMessageDialog(
@@ -334,13 +337,13 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		trackControlPanel = new TrackControlPanel();
 		locomotiveControlPanel = new LocomotiveControlPanel();
 		powerControlPanel = new PowerControlPanel();
-		
-		MigLayout southPanelLayout = new MigLayout("", "[grow][]", "[]");
 
-		JPanel southPanel = new JPanel(southPanelLayout);
-		southPanel.add(locomotiveControlPanel);
-		southPanel.add(powerControlPanel);
+		MigLayout southPanelLayout = new MigLayout("debug");
 
+		JPanel southPanel = new JPanel(new BorderLayout());
+		southPanel.add(locomotiveControlPanel, BorderLayout.WEST);
+		southPanel.add(powerControlPanel, BorderLayout.CENTER);
+		powerControlPanel.setConnected(false);
 		mainPanel.add(trackControlPanel, BorderLayout.CENTER);
 		mainPanel.add(southPanel, BorderLayout.SOUTH);
 		add(mainPanel, BorderLayout.CENTER);
@@ -360,6 +363,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			// HibernatePersistence.disconnect();
 			// HibernatePersistence.connect();
 		}
+
+		updatePower();
 		updateTurnouts();
 		updateLocomotives();
 		disableNavigationKeys(mainPanel);
@@ -376,6 +381,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 	}
 
+	private void updatePower() {
+		powerControlPanel.update();
+	}
 	private void updateLocomotives() {
 		locomotivePersistence.reload();
 		locomotiveControl.update();
@@ -414,7 +422,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private void initProceeded(String message) {
 		logger.info(message);
-		splash.nextStep(message);
+		// splash.nextStep(message);
 	}
 
 	private class CommandHistoryUpdater implements Runnable {
@@ -924,6 +932,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				connectToolBarButton.setEnabled(false);
 				disconnectToolBarButton.setEnabled(true);
 
+				powerControlPanel.setConnected(true);
+
 				// EnablerDisabler.setEnable(true, trackControlPanel);
 				// EnablerDisabler.setEnable(true, locomotiveControlPanel);
 				// updateGUI();
@@ -961,6 +971,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				daemonResetItem.setEnabled(false);
 				connectToolBarButton.setEnabled(true);
 				disconnectToolBarButton.setEnabled(false);
+				powerControlPanel.setConnected(false);
 				updateCommandHistory("Disconnected from server " + host
 						+ " on port " + port);
 			} catch (SRCPException e1) {
@@ -974,7 +985,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Power On");
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.awt.event.ActionListener
 		 * #actionPerformed(java.awt.event.ActionEvent)
 		 */
@@ -982,6 +995,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			try {
 				powerControl.setAllStates(SRCPPowerState.ON);
 			} catch (SRCPPowerSupplyException e) {
+				ExceptionProcessor.getInstance().processException(e);
+			} catch (SRCPModelException e) {
 				ExceptionProcessor.getInstance().processException(e);
 			}
 		}
@@ -992,7 +1007,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Power Off");
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.awt.event.ActionListener
 		 * #actionPerformed(java.awt.event.ActionEvent)
 		 */
@@ -1000,6 +1017,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			try {
 				powerControl.setAllStates(SRCPPowerState.OFF);
 			} catch (SRCPPowerSupplyException e) {
+				ExceptionProcessor.getInstance().processException(e);
+			} catch (SRCPModelException e) {
 				ExceptionProcessor.getInstance().processException(e);
 			}
 		}

@@ -78,6 +78,7 @@ public class LocomotiveControlPanel extends JPanel {
 		FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.CENTER, 10, 0);
 		controlPanel = new JPanel(controlPanelLayout);
 		controlPanel.setLayout(controlPanelLayout);
+		
 		SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame("Trains");
 		locomotivesFrame.add(controlPanel, BorderLayout.CENTER);
 		add(locomotivesFrame, BorderLayout.NORTH);
@@ -107,8 +108,8 @@ public class LocomotiveControlPanel extends JPanel {
 			controlPanel.add(w);
 			locomotiveWidgets.add(w);
 		}
-		revalidate();
-		repaint();
+		//revalidate();
+		//repaint();
 	}
 
 	private class LocomotiveStopAction extends AbstractAction implements
