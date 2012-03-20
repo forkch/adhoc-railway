@@ -8,6 +8,8 @@
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
+#define PWM2
+#define DEVEL_BOARD
 //#define DEBUG
 //#define DEBUG_EXTREME
 
@@ -24,7 +26,8 @@ extern unsigned char debugLevel;
 typedef struct LocoData {
 	unsigned char address;
 	unsigned char encodedSpeed;
-	unsigned char speed;
+	unsigned char deltaSpeed;
+	unsigned char numericSpeed;
 	unsigned char direction;
 	unsigned char fl :1;
 	unsigned char f1 :1;

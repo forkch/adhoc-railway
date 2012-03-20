@@ -19,12 +19,17 @@ struct SolenoidData solenoidQueue[MAX_SOLENOID_QUEUE];
 int solenoidQueueIdxEnter;
 
 int main() {
-	flash_twice_red();
 	debug_init();
 
-	SPI_MasterInitOutput();
+	// start UART
+	uart_init();
 
+	SPI_MasterInitOutput();
+	SPI_MasterTransmitDebug(0x00);
+
+	sei();
 	init_boosters();
+	cli();
 	initLocoData();
 	initPortData();
 
@@ -33,9 +38,24 @@ int main() {
 
 	//Loco FREQUENCY
 	pwm_mode = MODE_LOCO;
-	TCCR1A &= ~(1 << COM1A1); // DEACTIVATE PWM
-	ICR1 = LOCO_TOP;
-	TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
+
+#ifdef PWM2
+	OCR1AH = (uint8_t) (LOCO_TOP >> 8);
+	OCR1AL = (uint8_t) LOCO_TOP;
+
+	setLocoWait();
+
+	TIMSK1 |= (1 << OCIE1B);
+	TCCR1A |= (1 << COM1B1); // ACTIVATE PWM
+#else
+			ICR1H = (uint8_t) (LOCO_TOP >> 8);
+			ICR1L = (uint8_t) LOCO_TOP;
+
+			setLocoWait();
+
+			//TIMSK1 |= (1 << OCIE1A);
+			TCCR1A |= (1 << COM1A1);// ACTIVATE PWM
+#endif
 
 	//init Timer0
 	TIMSK0 |= (1 << TOIE0); // interrupt enable - here overflow
@@ -45,8 +65,6 @@ int main() {
 		solenoidQueue[i].timerDetected = 0;
 		solenoidQueue[i].active = 0;
 	}
-	// start UART
-	uart_init();
 
 	sei();
 
@@ -62,7 +80,8 @@ int main() {
 	log_debug3("MM_COMMAND_LENGTH*LOCOCMD_REPETITIONS: ",
 			MM_COMMAND_LENGTH * LOCOCMD_REPETITIONS);
 #endif
-	replys("ready\n");
+
+	replys("XRS\r");
 	//Do this forever
 	while (1) {
 
@@ -92,11 +111,13 @@ int main() {
 			}
 		} else {
 		}
-		if (prepareNextData == 1)
+		if (prepareNextData == 1) {
 			prepareDataForPWM();
+		}
 
 		//check shorts
 		check_shorts();
+
 	}
 	cli();
 	return 0;
@@ -139,7 +160,6 @@ void all_loco() {
 
 void prepareDataForPWM() {
 
-	TCCR1A &= ~(1 << COM1A1); // DEACTIVATE PWM
 	unsigned char queueIdxLoc = (pwmQueueIdx + 1) % 2;
 
 	// handle NEW loco command with highest priority
@@ -151,14 +171,13 @@ void prepareDataForPWM() {
 		pwm_mode = MODE_LOCO;
 		// notify PWM that we're finished preparing a new packet
 		prepareNextData = 0;
-		ICR1 = LOCO_TOP;
-		TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
+
 		return;
 	}
 
 	if (!solenoidQueueEmpty() || deactivatingSolenoid) {
 
-		_delay_us(50);
+		//_delay_ms(1);
 		// set index accordingly (solenoid to switch or to deactivate)
 		uint8_t solenoidIdx =
 				deactivatingSolenoid == 1 ?
@@ -170,9 +189,8 @@ void prepareDataForPWM() {
 			sendSolenoidPacket(solenoidIdx, queueIdxLoc);
 			pwm_mode = MODE_SOLENOID;
 			// notify PWM that we're finished preparing a new packet
+			_delay_ms(1);
 			prepareNextData = 0;
-			ICR1 = SOLENOID_TOP;
-			TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
 			return;
 		}
 	}
@@ -195,8 +213,6 @@ void prepareDataForPWM() {
 	pwm_mode = MODE_LOCO;
 	// notify PWM that we're finished preparing a new packet
 	prepareNextData = 0;
-	ICR1 = LOCO_TOP;
-	TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
 
 }
 
@@ -207,10 +223,8 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 		struct LocoData* actualLoco = &locoData[actualLocoIdx];
 		unsigned char address = actualLoco->address;
 		unsigned char encodedSpeed = actualLoco->encodedSpeed;
-		unsigned char speed = actualLoco->speed;
-
-		//unsigned char *commandQueue =
-		//		queueIdxLoc == 0 ? commandQueue1 : commandQueue2;
+		unsigned char deltaSpeed = actualLoco->deltaSpeed;
+		unsigned char speed = actualLoco->numericSpeed;
 
 		// address
 		for (uint8_t i = 0; i < 8; i++)
@@ -225,19 +239,22 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 			// do nothing
 		} else {
 
-			unsigned char abcd = encodedSpeed;
+			unsigned char abcd = deltaSpeed;
 			unsigned char efgh = 0xFF;
 			unsigned char mask = 0b01010101;
 
 			switch (actualLoco->refreshState) {
 			case 1: // F1
 				if (actualLoco->f1 == 1) { //ON
+
+					//log_debug("F1 ON");
 					if (speed != 10) {
 						efgh = 0b11110011;
 					} else {
 						efgh = 0b00110011;
 					}
 				} else {
+					//log_debug("F1 OFF");
 					if (speed != 2) {
 						efgh = 0b11110000;
 					} else {
@@ -247,12 +264,14 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 				break;
 			case 3: // F2
 				if (actualLoco->f2 == 1) { //ON
+					//log_debug("F2 ON");
 					if (speed != 11) {
 						efgh = 0b00001111;
 					} else {
 						efgh = 0b00110011;
 					}
 				} else {
+					//log_debug("F2 OFF");
 					if (speed != 3) {
 						efgh = 0b00001100;
 					} else {
@@ -262,12 +281,14 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 				break;
 			case 5: // F3
 				if (actualLoco->f3 == 1) { //ON
+					//log_debug("F1 ON");
 					if (speed != 13) {
 						efgh = 0b00111111;
 					} else {
 						efgh = 0b00110011;
 					}
 				} else {
+					//log_debug("F3 OFF");
 					if (speed != 5) {
 						efgh = 0b00111100;
 					} else {
@@ -277,6 +298,7 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 				break;
 			case 7: // F4
 				if (actualLoco->f4 == 1) { //ON
+					//log_debug("F4 ON");
 					if (speed != 14) {
 						efgh = 0b11111111;
 					} else {
@@ -284,6 +306,7 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 					}
 				} else {
 					if (speed != 14) {
+						//log_debug("F4 OFF");
 						efgh = 0b11111100;
 					} else {
 						efgh = 0b11001100;
@@ -291,8 +314,45 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 				}
 				break;
 			}
-
 			encodedSpeed = abcd ^ ((abcd ^ efgh) & mask);
+
+			/*if (actualLoco->f1 == 1 && actualLoco->refreshState == 1) {
+
+			 log_debug("MASK");
+			 for (uint8_t i = 0; i < 8; i++) {
+			 if ((mask >> (7 - i)) & 1)
+			 uart_putc('1');
+			 else
+			 uart_putc('0');
+			 }
+			 send_nl();
+
+			 log_debug("ABCD");
+			 for (uint8_t i = 0; i < 8; i++) {
+			 if ((abcd >> (7 - i)) & 1)
+			 uart_putc('1');
+			 else
+			 uart_putc('0');
+			 }
+			 send_nl();
+
+			 log_debug("EFGH");
+			 for (uint8_t i = 0; i < 8; i++) {
+			 if ((efgh >> (7 - i)) & 1)
+			 uart_putc('1');
+			 else
+			 uart_putc('0');
+			 }
+			 send_nl();
+			 log_debug("SPEED");
+			 for (uint8_t i = 0; i < 8; i++) {
+			 if ((encodedSpeed >> (7 - i)) & 1)
+			 uart_putc('1');
+			 else
+			 uart_putc('0');
+			 }
+			 send_nl();
+			 }*/
 
 		}
 
@@ -310,7 +370,6 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 			}
 		}
 
-		isLocoCommand = 1;
 		locoCmdsSent = (locoCmdsSent + 1) % (SOLENOID_WAIT + 1);
 	}
 }
@@ -365,9 +424,6 @@ inline void sendSolenoidPacket(uint8_t solenoidIdx, uint8_t queueIdxLoc) {
 
 	locoCmdsSent = 0;
 
-	//pwm_mode = MODE_SOLENOID;
-	// notify PWM that we're finished preparing a new packet
-	//prepareNextData = 0;
 }
 
 void finish_mm_command(uint8_t queueIdxLoc) {
@@ -398,30 +454,51 @@ ISR( TIMER0_OVF_vect) {
 
 /********* PWM CODE **************/
 
-ISR( TIMER1_COMPA_vect) {
+#ifdef PWM2
+ISR( TIMER1_COMPB_vect) {
+#else
+	ISR( TIMER1_COMPA_vect) {
+#endif
 
-	//if (prepareNextData == 1 && actualBit == 0) {
-	//	setSolenoidWait();
-	//	return;
-	//}
+	if (prepareNextData == 1 && actualBit == 0) {
+		setSolenoidWait();
+		return;
+	}
 
-	uint8_t commandLength = MM_COMMAND_LENGTH * LOCOCMD_REPETITIONS;
-	/*if (actualBit == 0) {
+	if (reprogrammed == 0) {
 		//pwmQueueIdx = (pwmQueueIdx + 1) % 2;
 		//prepareNextData = 1;
 		if (pwm_mode == MODE_SOLENOID) {
 			//SOLENDOID
-			ICR1 = SOLENOID_TOP;
+#ifdef PWM2
+			OCR1AH = (uint8_t) (SOLENOID_TOP >> 8);
+			OCR1AL = (uint8_t) (SOLENOID_TOP);
+#else
+			ICR1H = (uint8_t) (SOLENOID_TOP >> 8);
+			ICR1L = (uint8_t) (SOLENOID_TOP);
+#endif
 			commandLength = MM_COMMAND_LENGTH;
+			reprogrammed = 1;
+			return;
 		} else {
 			//LOCO FREQUENCY
-			ICR1 = LOCO_TOP;
+#ifdef PWM2
+			OCR1AH = (uint8_t) (LOCO_TOP >> 8);
+			OCR1AL = (uint8_t) (LOCO_TOP);
+#else
+			ICR1H = (uint8_t) (LOCO_TOP >> 8);
+			ICR1L = (uint8_t) (LOCO_TOP);
+#endif
+			commandLength = MM_COMMAND_LENGTH * LOCOCMD_REPETITIONS;
+			reprogrammed = 1;
+			return;
 		}
-	}*/
+	}
 
 	if (actualBit > commandLength) {
 		setSolenoidWait();
 		actualBit = 0;
+		reprogrammed = 0;
 		prepareNextData = 1;
 		return;
 	}
@@ -565,13 +642,13 @@ void initLocoData() {
 //----------------------------------------------------------------------------
 // wdt_init - Watchdog Init used to disable the CPU watchdog
 //         placed in Startcode, no call needed
-#include <avr/wdt.h>
-
-void wdt_init(void) __attribute__((naked))
-__attribute__((section(".init1")));
-
-void wdt_init(void) {
-	MCUSR = 0;
-	wdt_disable();
-}
+//#include <avr/wdt.h>
+//
+//void wdt_init(void) __attribute__((naked))
+//__attribute__((section(".init1")));
+//
+//void wdt_init(void) {
+//	MCUSR = 0;
+//	wdt_disable();
+//}
 

@@ -19,7 +19,6 @@
 volatile unsigned char timer0_interrupt = 1;
 
 unsigned char pwm_mode = 0;
-unsigned char isLocoCommand = 1;
 
 #define MAX_COMMAND_QUEUE 1
 
@@ -52,7 +51,9 @@ unsigned char commandQueue[MM_COMMAND_LENGTH*LOCOCMD_REPETITIONS];
 //unsigned char commandQueue1[MM_COMMAND_LENGTH*LOCOCMD_REPETITIONS];
 //unsigned char commandQueue2[MM_COMMAND_LENGTH*LOCOCMD_REPETITIONS];
 
-volatile uint16_t actualBit = 0;
+uint8_t commandLength;
+uint8_t reprogrammed = 0;
+volatile uint8_t actualBit = 0;
 
 char cmd[64];
 volatile unsigned char prepareNextData = 1;

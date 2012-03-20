@@ -263,13 +263,15 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 
 	locoData[t].active = 1;
 	locoData[t].refreshState = 0;
-	locoData[t].speed = speed;
+	locoData[t].numericSpeed = speed;
 
 	if (direction != locoData[t].direction) {
 		locoData[t].encodedSpeed = mmChangeDirection;
+		locoData[t].deltaSpeed = mmChangeDirection;
 		locoData[t].direction = direction;
 	} else {
 		locoData[t].encodedSpeed = deltaSpeedData[speed];
+		locoData[t].deltaSpeed = deltaSpeedData[speed];
 	}
 
 	if (locoData[t].isNewProtocol) {

@@ -20,7 +20,9 @@ struct BoosterState booster_state[BOOSTER_COUNT];
 
 void init_boosters();
 void check_shorts();
+void report_boosterstate();
 void stop_booster(int nr);
+void stop_booster_short(int nr);
 void go_booster(int nr);
 void stop_all_boosters();
 void go_all_boosters();

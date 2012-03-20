@@ -107,6 +107,7 @@ ISR (USART0_RX_vect) {
 // Ist das Zeichen fertig ausgegeben, wird ein neuer SIG_UART_DATA-IRQ getriggert
 // Ist die FIFO leer, deaktiviert die ISR ihren eigenen IRQ.
 ISR (SIG_USART_DATA) {
+
 	if (outfifo.count > 0)
 		UDR0 = _inline_fifo_get(&outfifo);
 	else
@@ -115,6 +116,8 @@ ISR (SIG_USART_DATA) {
 
 void replys(const char* s) {
 	uart_puts(s);
+	uart_putc('\r');
+	uart_flush();
 }
 void reply(const uint8_t c) {
 	uart_putc(c);

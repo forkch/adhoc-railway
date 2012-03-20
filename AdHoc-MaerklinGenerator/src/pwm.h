@@ -19,13 +19,7 @@
 #define PWM_OUTPUT_PORT PORTD
 #define PWM_OUTPUT_DDR DDRD
 
-//#define SOLENOID_TOP 208
-//#define LOCO_TOP 416
-//#define SOLENOID_0 182
-//#define SOLENOID_1 26
-//#define LOCO_0 364
-//#define LOCO_1 52
-
+// 16MHz
 //#define SOLENOID_TOP 208
 //#define LOCO_TOP 416
 //#define SOLENOID_1 182
@@ -33,19 +27,30 @@
 //#define LOCO_1 364
 //#define LOCO_0 52
 
+// 20 MHz
 //#define SOLENOID_1 228
 //#define SOLENOID_0 33
 //#define LOCO_1 455
 //#define LOCO_0 65
 
+
+// 16MHz
 #define LOCO_INCREMENT 20
-#define LOCO_BASE 65
+#define LOCO_BASE 52
 #define SOLENOID_INCREMENT 0
-#define SOLENOID_BASE 33
+#define SOLENOID_BASE 26
+
+// 20MHz
+//#define LOCO_INCREMENT 20
+//#define LOCO_BASE 65
+//#define SOLENOID_INCREMENT 0
+//#define SOLENOID_BASE 33
 
 uint16_t LOCO_0;
 uint16_t LOCO_1;
 uint16_t LOCO_TOP;
+uint16_t PWM_WAIT;
+
 
 uint16_t SOLENOID_0;
 uint16_t SOLENOID_1;
