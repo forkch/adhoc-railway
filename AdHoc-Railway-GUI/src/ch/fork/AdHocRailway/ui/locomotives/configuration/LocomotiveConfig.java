@@ -21,9 +21,9 @@ package ch.fork.AdHocRailway.ui.locomotives.configuration;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -37,14 +37,18 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
+
+import net.miginfocom.swing.MigLayout;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
+import ch.fork.AdHocRailway.ui.ImagePreviewPanel;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
 import ch.fork.AdHocRailway.ui.UIConstants;
@@ -86,6 +90,10 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private JLabel imageLabel;
 
+	private JPanel imageChoserPanel;
+
+	private JButton chooseImageButton;
+
 	public LocomotiveConfig(Frame owner, Locomotive myLocomotive) {
 		super(owner, "Locomotive Config", true);
 		this.presentationModel = new PresentationModel<Locomotive>(myLocomotive);
@@ -118,16 +126,42 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 				.getInstance().getLocomotivePersistence();
 		nameTextField = BasicComponentFactory.createTextField(presentationModel
 				.getModel(Locomotive.PROPERTYNAME_NAME));
-		nameTextField.setColumns(10);
+		nameTextField.setColumns(30);
 
 		descTextField = BasicComponentFactory.createTextField(presentationModel
 				.getModel(Locomotive.PROPERTYNAME_DESCRIPTION));
-		descTextField.setColumns(10);
+		descTextField.setColumns(30);
 
+		imageChoserPanel = new JPanel(new MigLayout("fill"));
+		
 		imageTextField = BasicComponentFactory
 				.createTextField(presentationModel
 						.getModel(Locomotive.PROPERTYNAME_IMAGE));
-		imageTextField.setColumns(10);
+		imageTextField.setColumns(30);
+
+		
+
+//		imageTextField.addMouseListener(new MouseAdapter() {
+//
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//
+//				chooseLocoImage();
+//
+//			}
+//		});
+		
+		chooseImageButton = new JButton("Choose...");
+		chooseImageButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				chooseLocoImage();
+			}
+		});
+		
+		imageChoserPanel.add(imageTextField, "grow");
+		imageChoserPanel.add(chooseImageButton);
 
 		imageLabel = new JLabel();
 		imageLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -138,51 +172,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 			imageLabel.setIcon(ImageTools
 					.createImageIconFileSystem("locoimages/" + image));
 		}
-
-		imageTextField.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-
-				JFileChooser chooser = new JFileChooser("locoimages");
-				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				chooser.setFileFilter(new FileFilter() {
-
-					@Override
-					public String getDescription() {
-						return "*.png";
-					}
-
-					@Override
-					public boolean accept(File f) {
-						if (f.isDirectory())
-							return true;
-						if (f.getName().matches(".*\\.png"))
-							return true;
-						return false;
-					}
-				});
-
-				int ret = chooser.showOpenDialog(LocomotiveConfig.this);
-				if (ret == JFileChooser.APPROVE_OPTION) {
-					presentationModel.getBean().setImage(
-							chooser.getSelectedFile().getName());
-					String image = presentationModel.getBean().getImage();
-
-					if (image != null && !image.isEmpty()
-							&& new File("locoimages/" + image).exists()) {
-						imageLabel.setIcon(ImageTools
-								.createImageIconFileSystem("locoimages/"
-										+ image));
-						pack();
-					} else {
-						imageLabel.setIcon(null);
-						pack();
-					}
-				}
-
-			}
-		});
 
 		busTextField = new JSpinner();
 		busTextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
@@ -235,13 +224,13 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		builder.addLabel("Description", cc.xy(1, 5));
 		builder.add(descTextField, cc.xy(3, 5));
 
-		builder.addLabel("Image", cc.xy(1, 7));
-		builder.add(imageTextField, cc.xy(3, 7));
+		builder.addLabel("Type", cc.xy(1, 7));
+		builder.add(locomotiveTypeComboBox, cc.xy(3, 7));
+		
+		builder.addLabel("Image", cc.xy(1, 9));
+		builder.add(chooseImageButton, cc.xy(3, 9));
 
-		builder.add(imageLabel, cc.xyw(1, 9, 3));
-
-		builder.addLabel("Type", cc.xy(1, 11));
-		builder.add(locomotiveTypeComboBox, cc.xy(3, 11));
+		builder.add(imageLabel, cc.xyw(1, 11, 3));
 
 		builder.addSeparator("Interface", cc.xyw(5, 1, 3));
 
@@ -382,5 +371,52 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner
 				.getEditor();
 		editor.getTextField().setBackground(color);
+	}
+
+	/**
+	 * 
+	 */
+	public void chooseLocoImage() {
+		JFileChooser chooser = new JFileChooser("locoimages");
+		
+		ImagePreviewPanel preview = new ImagePreviewPanel();
+		chooser.setAccessory(preview);
+		chooser.addPropertyChangeListener(preview);
+		
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		chooser.setFileFilter(new FileFilter() {
+
+			@Override
+			public String getDescription() {
+				return "*.png";
+			}
+
+			@Override
+			public boolean accept(File f) {
+				if (f.isDirectory())
+					return true;
+				if (f.getName().matches(".*\\.png"))
+					return true;
+				return false;
+			}
+		});
+
+		int ret = chooser.showOpenDialog(LocomotiveConfig.this);
+		if (ret == JFileChooser.APPROVE_OPTION) {
+			presentationModel.getBean().setImage(
+					chooser.getSelectedFile().getName());
+			String image = presentationModel.getBean().getImage();
+
+			if (image != null && !image.isEmpty()
+					&& new File("locoimages/" + image).exists()) {
+				imageLabel.setIcon(ImageTools
+						.createImageIconFileSystem("locoimages/"
+								+ image));
+				pack();
+			} else {
+				imageLabel.setIcon(null);
+				pack();
+			}
+		}
 	}
 }

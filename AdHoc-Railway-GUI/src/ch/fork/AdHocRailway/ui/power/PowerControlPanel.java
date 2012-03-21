@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 
 import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
@@ -153,6 +154,7 @@ public class PowerControlPanel extends JPanel implements
 
 			JToggleButton boosterButton = new JToggleButton("Booster "
 					+ (i + 1), stopIcon);
+			boosterButton.setHorizontalAlignment(SwingConstants.LEADING);
 			ToggleBoosterAction action = new ToggleBoosterAction();
 			boosterButton.addActionListener(action);
 			powerControlPanel.add(boosterButton, "grow");

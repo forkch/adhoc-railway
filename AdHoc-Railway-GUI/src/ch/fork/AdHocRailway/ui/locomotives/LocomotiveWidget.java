@@ -123,7 +123,7 @@ public class LocomotiveWidget extends JPanel implements
 		setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		// setPreferredSize(new Dimension(200, 310));
 
-		setLayout(new MigLayout("wrap 3"));
+		setLayout(new MigLayout("debug, wrap 3"));
 
 		initSelectionPanel();
 		JPanel controlPanel = initControlPanel();
@@ -142,7 +142,7 @@ public class LocomotiveWidget extends JPanel implements
 		imageLabel.setHorizontalAlignment(JLabel.CENTER);
 		
 		add(controlPanel, "span 3, grow");
-		add(imageLabel, "span 3, grow");
+		add(imageLabel, "span 3, grow, width 200, height 60");
 
 		addMouseWheelListener(new WheelControl());
 
@@ -156,22 +156,22 @@ public class LocomotiveWidget extends JPanel implements
 		locomotiveComboBox.setFocusable(false);
 		locomotiveSelectAction = new LocomotiveSelectAction();
 
-		add(locomotiveGroupComboBox, "span 3, grow");
-		add(locomotiveComboBox, "span 3, grow");
+		add(locomotiveGroupComboBox, "span 3, grow, width 200");
+		add(locomotiveComboBox, "span 3, grow, width 200");
 
 	}
 
 	private JPanel initControlPanel() {
-		JPanel controlPanel = new JPanel(new MigLayout("fill"));
+		JPanel controlPanel = new JPanel(new MigLayout("debug, fill"));
 
 		speedBar = new JProgressBar(JProgressBar.VERTICAL);
-		speedBar.setPreferredSize(new Dimension(20, 200));
+		
 		JPanel functionsPanel = initFunctionsControl();
 		JPanel speedControlPanel = initSpeedControl();
 
 		controlPanel.add(functionsPanel, "grow, west");
 		controlPanel.add(speedControlPanel, "grow");
-		controlPanel.add(speedBar, "east");
+		controlPanel.add(speedBar, "east, width 30");
 
 		setLocomotiveImage();
 
@@ -210,7 +210,7 @@ public class LocomotiveWidget extends JPanel implements
 		for (int i = 0; i < functionToggleButtons.length; i++) {
 			functionToggleButtons[i]
 					.addActionListener(new LocomotiveFunctionAction(i));
-			functionsPanel.add(functionToggleButtons[i], "height 30");
+			functionsPanel.add(functionToggleButtons[i], "height 30, width 60");
 		}
 		return functionsPanel;
 	}
@@ -251,11 +251,11 @@ public class LocomotiveWidget extends JPanel implements
 		directionButton.addActionListener(new ToggleDirectionAction());
 		lockButton.addActionListener(new LockAction());
 
-		speedControlPanel.add(increaseSpeed, "height 30, width 50");
-		speedControlPanel.add(decreaseSpeed, "height 30, width 50");
-		speedControlPanel.add(stopButton, "height 30, width 50");
-		speedControlPanel.add(directionButton, "height 30, width 50");
-		speedControlPanel.add(lockButton, "height 30, width 50");
+		speedControlPanel.add(increaseSpeed, "height 30, growx");
+		speedControlPanel.add(decreaseSpeed, "height 30, growx");
+		speedControlPanel.add(stopButton, "height 30, growx");
+		speedControlPanel.add(directionButton, "height 30, growx");
+		speedControlPanel.add(lockButton, "height 30, growx");
 		return speedControlPanel;
 	}
 
@@ -451,9 +451,9 @@ public class LocomotiveWidget extends JPanel implements
 			locomotiveGroupComboBox.setEnabled(false);
 			locomotiveComboBox.setEnabled(false);
 		}
-		setPreferredSize(new Dimension(200, 250));
-		revalidate();
-		repaint();
+//		setPreferredSize(new Dimension(200, 250));
+//		revalidate();
+//		repaint();
 	}
 
 	private class LocomotiveFunctionAction extends AbstractAction {
