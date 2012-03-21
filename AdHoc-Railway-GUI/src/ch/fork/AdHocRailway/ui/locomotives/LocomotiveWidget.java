@@ -123,7 +123,7 @@ public class LocomotiveWidget extends JPanel implements
 		setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		// setPreferredSize(new Dimension(200, 310));
 
-		setLayout(new MigLayout("debug, wrap 3"));
+		setLayout(new MigLayout("wrap 3"));
 
 		initSelectionPanel();
 		JPanel controlPanel = initControlPanel();
@@ -162,7 +162,7 @@ public class LocomotiveWidget extends JPanel implements
 	}
 
 	private JPanel initControlPanel() {
-		JPanel controlPanel = new JPanel(new MigLayout("debug, fill"));
+		JPanel controlPanel = new JPanel(new MigLayout("fill"));
 
 		speedBar = new JProgressBar(JProgressBar.VERTICAL);
 		
