@@ -47,6 +47,8 @@ import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImagePreviewPanel;
 import ch.fork.AdHocRailway.ui.ImageTools;
@@ -271,6 +273,9 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 			okPressed = true;
 			LocomotiveConfig.this.setVisible(false);
+
+			if(Preferences.getInstance().getBooleanValue(PreferencesKeys.AUTOSAVE))
+			AdHocRailway.getInstance().saveActualFile();
 		}
 	}
 

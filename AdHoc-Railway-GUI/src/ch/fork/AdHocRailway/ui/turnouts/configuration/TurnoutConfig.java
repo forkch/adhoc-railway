@@ -43,6 +43,8 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.TutorialUtils;
@@ -464,6 +466,8 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 			turnout.removePropertyChangeListener(TurnoutConfig.this);
 			TurnoutConfig.this.setVisible(false);
 
+			if(Preferences.getInstance().getBooleanValue(PreferencesKeys.AUTOSAVE))
+			AdHocRailway.getInstance().saveActualFile();
 		}
 	}
 

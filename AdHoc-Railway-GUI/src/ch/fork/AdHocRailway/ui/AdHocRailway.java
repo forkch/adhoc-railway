@@ -608,9 +608,13 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			if (actualFile == null) {
 				new SaveAsAction().actionPerformed(null);
 			}
-			saveFile(AdHocRailway.this.actualFile);
+			saveActualFile();
 		}
 
+	}
+	
+	public void saveActualFile() {
+		saveFile(AdHocRailway.this.actualFile);
 	}
 
 	private void saveFile(File file) {

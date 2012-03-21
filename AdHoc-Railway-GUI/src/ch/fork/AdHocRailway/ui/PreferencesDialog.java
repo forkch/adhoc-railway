@@ -66,6 +66,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private JCheckBox fullscreen;
 	private JCheckBox tabbedTrackCheckBox;
 	private JCheckBox fixedTurnoutGroupSizesCheckBox;
+	private JCheckBox autoSave;
 
 	private boolean okPressed;
 	private boolean cancelPressed;
@@ -160,11 +161,13 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		writeLog = new JCheckBox();
 		fullscreen = new JCheckBox();
 		tabbedTrackCheckBox = new JCheckBox();
+		autoSave = new JCheckBox();
 		openLastFileCheckBox = new JCheckBox();
+		
 
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, fill:pref",
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
+				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 
@@ -192,8 +195,11 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		builder.addLabel("Fixed Turnout- and Route-Group sizes", cc.xy(1, 15));
 		builder.add(fixedTurnoutGroupSizesCheckBox, cc.xy(3, 15));
 
-		builder.addLabel("Open last file", cc.xy(1, 17));
-		builder.add(openLastFileCheckBox, cc.xy(3, 17));
+		builder.addLabel("Autosave", cc.xy(1, 17));
+		builder.add(autoSave, cc.xy(3, 17));
+		
+		builder.addLabel("Open last file", cc.xy(1, 19));
+		builder.add(openLastFileCheckBox, cc.xy(3, 19));
 
 		return builder.getPanel();
 	}
@@ -328,6 +334,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		tabbedTrackCheckBox.setSelected(p.getBooleanValue(TABBED_TRACK));
 		fixedTurnoutGroupSizesCheckBox.setSelected(p
 				.getBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES));
+		autoSave.setSelected(p.getBooleanValue(AUTOSAVE));
 		openLastFileCheckBox.setSelected(p.getBooleanValue(OPEN_LAST_FILE));
 
 		numberOfBoostersModel.setValue(p.getIntValue(NUMBER_OF_BOOSTERS));
@@ -366,6 +373,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		p.setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES,
 				fixedTurnoutGroupSizesCheckBox.isSelected());
 		p.setBooleanValue(OPEN_LAST_FILE, openLastFileCheckBox.isSelected());
+		p.setBooleanValue(AUTOSAVE, autoSave.isSelected());
 
 		p.setIntValue(NUMBER_OF_BOOSTERS, numberOfBoostersModel.getNumber()
 				.intValue());

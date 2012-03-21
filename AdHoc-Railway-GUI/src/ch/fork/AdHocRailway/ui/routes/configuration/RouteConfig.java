@@ -52,6 +52,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
@@ -528,6 +529,8 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 			okPressed = true;
 			route.removePropertyChangeListener(RouteConfig.this);
 			RouteConfig.this.setVisible(false);
+			if(Preferences.getInstance().getBooleanValue(PreferencesKeys.AUTOSAVE))
+			AdHocRailway.getInstance().saveActualFile();
 
 		}
 	}
