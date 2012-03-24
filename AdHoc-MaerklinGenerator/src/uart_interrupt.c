@@ -9,7 +9,9 @@
 #include <avr/interrupt.h>
 #include "uart_interrupt.h"
 #include "fifo.h" // erklärt im Artikel "FIFO mit avr-gcc"
-#define BAUDRATE 57600
+//#define BAUDRATE 57600
+//#define BAUDRATE 115200
+//#define BAUDRATE 230400
 
 // FIFO-Objekte und Puffer für die Ein- und Ausgabe
 
@@ -25,7 +27,7 @@ typedef enum IB_CMD {
 	BINARY_MODE, ASCII_MODE, INVALID
 };
 
-unsigned char cmdReceived = 0;
+volatile unsigned char cmdReceived = 0;
 
 extern unsigned char cmd[128];
 
@@ -57,7 +59,13 @@ unsigned char checkForNewCommand() {
 
 void uart_init(void) {
 	uint8_t sreg = SREG;
-	uint16_t ubrr = (uint16_t) ((uint32_t) F_CPU / (16UL * BAUDRATE) - 1);
+	//Berechung der Baudrate f�r UBR, Rechnung nicht korrekt, fehlt richtiges Runden am Schluss
+	// ACHTUNG: wenn U2X0 = 1 wird Baudrate verdoppelt
+	//uint16_t ubrr = (uint16_t) ((uint32_t) F_CPU / (16UL * BAUDRATE) - 1);
+//	uint16_t ubrr = (uint16_t) ((uint32_t) F_CPU / (16UL * BAUDRATE) );
+
+	//FIXME hardcoded
+	uint16_t ubrr = 8;
 
 	UBRR0H = (uint8_t) (ubrr >> 8);
 	UBRR0L = (uint8_t) (ubrr);
@@ -65,7 +73,7 @@ void uart_init(void) {
 	// Interrupts kurz deaktivieren
 	cli();
 
-	// UART Receiver und Transmitter anschalten, Receive-Interrupt aktivieren
+	// UART Receiver und Transmitter anschalten, Receive-Interrupt aktivieren, Transmit-Interrupt aktivieren
 	// Data mode 8N1, asynchron
 	UCSR0B = (1 << RXEN0) | (1 << TXEN0) | (1 << RXCIE0);
 
@@ -79,8 +87,8 @@ void uart_init(void) {
 		UDR0;
 	} while (UCSR0A & (1 << RXC0));
 
-	// Rücksetzen von Receive und Transmit Complete-Flags
-	UCSR0A = (1 << RXC0) | (1 << TXC0);
+	// Rücksetzen von Receive und Transmit Complete-Flags, Double USART Transmission Speed mit U2X0
+	UCSR0A = (1 << RXC0) | (1 << TXC0) | (1 << U2X0);
 	UCSR0B |= (1 << UDRIE0);
 	// Global Interrupt-Flag wieder herstellen
 	SREG = sreg;
@@ -106,8 +114,7 @@ ISR (USART0_RX_vect) {
 // Ein Zeichen aus der Ausgabe-FIFO lesen und ausgeben
 // Ist das Zeichen fertig ausgegeben, wird ein neuer SIG_UART_DATA-IRQ getriggert
 // Ist die FIFO leer, deaktiviert die ISR ihren eigenen IRQ.
-ISR (SIG_USART_DATA) {
-
+ISR (USART0_UDRE_vect){
 	if (outfifo.count > 0)
 		UDR0 = _inline_fifo_get(&outfifo);
 	else

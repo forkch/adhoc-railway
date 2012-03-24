@@ -8,9 +8,12 @@
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
+//#define MM_OSCI
+#define activePrepare_OSCI
+
 #define PWM2
 #define DEVEL_BOARD
-#define DEBUG
+//#define DEBUG
 //#define DEBUG_EXTREME
 
 #define DEBUG_OFF 0

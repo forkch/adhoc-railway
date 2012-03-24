@@ -28,23 +28,33 @@ void initPWM() {
 	PWM_OUTPUT_DDR |= (1 << PWM_OUTPUT_PIN);
 #endif
 
-	//fast PWM with Prescaler = 8
+	//fast PWM with Prescaler = 1
 #ifdef PWM2
 	TCCR1A = (1 << WGM11)| (1<<WGM10);
-	TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS11);
+	TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS10);
 #else
 	TCCR1A = (1 << WGM11);
-	TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS11);
+	TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS10);
 #endif
 
-	// OLD
+
 #ifdef PWM2
-	OCR1AH = (uint8_t) (SOLENOID_TOP) >> 8;
-	OCR1AL = (uint8_t) (SOLENOID_TOP);
+	OCR1AH = (uint8_t) (LOCO_TOP) >> 8;
+	OCR1AL = (uint8_t) (LOCO_TOP);
 #else
-	ICR1H = (uint8_t) (SOLENOID_TOP >> 8);
-	ICR1L = (uint8_t) (SOLENOID_TOP);
+	ICR1H = (uint8_t) (LOCO_TOP >> 8);
+	ICR1L = (uint8_t) (LOCO_TOP);
 #endif
+
+//	setLocoWait();
+//
+//#ifdef PWM2
+//	TIMSK1 |= (1 << OCIE1B);
+//	TCCR1A |= (1 << COM1B1); // ACTIVATE PWM
+//#else
+//	//TIMSK1 |= (1 << OCIE1A);
+//	TCCR1A |= (1 << COM1A1);// ACTIVATE PWM
+//#endif
 
 }
 
