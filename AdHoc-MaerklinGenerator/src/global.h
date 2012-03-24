@@ -10,7 +10,7 @@
 
 #define PWM2
 #define DEVEL_BOARD
-//#define DEBUG
+#define DEBUG
 //#define DEBUG_EXTREME
 
 #define DEBUG_OFF 0

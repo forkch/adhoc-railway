@@ -53,7 +53,7 @@ int main() {
 
 			setLocoWait();
 
-			//TIMSK1 |= (1 << OCIE1A);
+			TIMSK1 |= (1 << OCIE1A);
 			TCCR1A |= (1 << COM1A1);// ACTIVATE PWM
 #endif
 
@@ -305,7 +305,7 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 						efgh = 0b00110011;
 					}
 				} else {
-					if (speed != 14) {
+					if (speed != 6) {
 						//log_debug("F4 OFF");
 						efgh = 0b11111100;
 					} else {
@@ -316,47 +316,13 @@ inline void sendLocoPacket(uint8_t actualLocoIdx, uint8_t queueIdxLoc,
 			}
 			encodedSpeed = abcd ^ ((abcd ^ efgh) & mask);
 
-			/*if (actualLoco->f1 == 1 && actualLoco->refreshState == 1) {
-
-			 log_debug("MASK");
-			 for (uint8_t i = 0; i < 8; i++) {
-			 if ((mask >> (7 - i)) & 1)
-			 uart_putc('1');
-			 else
-			 uart_putc('0');
-			 }
-			 send_nl();
-
-			 log_debug("ABCD");
-			 for (uint8_t i = 0; i < 8; i++) {
-			 if ((abcd >> (7 - i)) & 1)
-			 uart_putc('1');
-			 else
-			 uart_putc('0');
-			 }
-			 send_nl();
-
-			 log_debug("EFGH");
-			 for (uint8_t i = 0; i < 8; i++) {
-			 if ((efgh >> (7 - i)) & 1)
-			 uart_putc('1');
-			 else
-			 uart_putc('0');
-			 }
-			 send_nl();
-			 log_debug("SPEED");
-			 for (uint8_t i = 0; i < 8; i++) {
-			 if ((encodedSpeed >> (7 - i)) & 1)
-			 uart_putc('1');
-			 else
-			 uart_putc('0');
-			 }
-			 send_nl();
-			 }*/
-
 		}
 
-		actualLoco->refreshState = (actualLoco->refreshState + 1) % 8;
+		if (actualLoco->refreshState < 7) {
+			actualLoco->refreshState = (actualLoco->refreshState + 1) % 8;
+		}else {
+			actualLoco->refreshState = 8;
+		}
 
 		// speed
 		for (uint8_t i = 0; i < 8; i++)

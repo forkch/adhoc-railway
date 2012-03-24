@@ -33,24 +33,26 @@
 //#define LOCO_1 455
 //#define LOCO_0 65
 
-
 // 16MHz
-#define LOCO_INCREMENT 20
+#ifdef DEVEL_BOARD
+#define LOCO_INCREMENT 0
 #define LOCO_BASE 52
 #define SOLENOID_INCREMENT 0
 #define SOLENOID_BASE 26
+#else
 
 // 20MHz
-//#define LOCO_INCREMENT 20
-//#define LOCO_BASE 65
-//#define SOLENOID_INCREMENT 0
-//#define SOLENOID_BASE 33
+#define LOCO_INCREMENT 20
+#define LOCO_BASE 65
+#define SOLENOID_INCREMENT 0
+#define SOLENOID_BASE 33
+
+#endif
 
 uint16_t LOCO_0;
 uint16_t LOCO_1;
 uint16_t LOCO_TOP;
 uint16_t PWM_WAIT;
-
 
 uint16_t SOLENOID_0;
 uint16_t SOLENOID_1;
