@@ -8,11 +8,18 @@
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+#include <string.h>
+#include <stdlib.h>
+
+
 //#define MM_OSCI
 #define activePrepare_OSCI
 
 #define PWM2
-#define DEVEL_BOARD
+//#define DEVEL_BOARD
 //#define DEBUG
 //#define DEBUG_EXTREME
 
@@ -25,6 +32,19 @@
 extern unsigned char debugLevel;
 
 #define BOOSTER_COUNT 8
+
+
+#define MM_PACKET_LENGTH 18
+#define MM_INTER_PACKET_PAUSE 6
+#define MM_INTER_DOUBLE_PACKET_PAUSE 160
+
+#define MM_DOUBLE_PACKET_LENGTH (2*MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE)
+
+#define MM_COMMAND_LENGTH (MM_DOUBLE_PACKET_LENGTH + MM_INTER_DOUBLE_PACKET_PAUSE)
+
+#define LOCOCMD_REPETITIONS 2
+#define SOLENOIDCMD_REPETITIONS 2
+
 
 typedef struct LocoData {
 	unsigned char address;
@@ -55,7 +75,7 @@ typedef struct SolenoidData {
 	char deactivate :1;
 };
 
-#define MAX_SOLENOID_QUEUE 10
+#define MAX_SOLENOID_QUEUE 5
 
 
 extern struct SolenoidData solenoidQueue[MAX_SOLENOID_QUEUE];

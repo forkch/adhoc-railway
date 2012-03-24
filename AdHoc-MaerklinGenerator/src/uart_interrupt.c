@@ -65,8 +65,11 @@ void uart_init(void) {
 //	uint16_t ubrr = (uint16_t) ((uint32_t) F_CPU / (16UL * BAUDRATE) );
 
 	//FIXME hardcoded
+#ifdef DEVEL_BOARD
 	uint16_t ubrr = 8;
-
+#else
+	uint16_t ubrr = 10;
+#endif
 	UBRR0H = (uint8_t) (ubrr >> 8);
 	UBRR0L = (uint8_t) (ubrr);
 

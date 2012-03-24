@@ -10,8 +10,9 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "ib_parser.h"
 #include "global.h"
+#include "main.h"
+#include "ib_parser.h"
 #include "debug.h"
 #include "uart_interrupt.h"
 #include "booster.h"
@@ -155,6 +156,7 @@ uint8_t ib_solenoid_cmd(char** tokens, uint8_t nTokens) {
 
 	if (nTokens != 3) {
 		log_error("Command format: XT turnoutnumber r|g|0|1");
+		//SPI_MasterTransmitDebug();
 		return 0;
 	}
 #ifdef DEBUG
@@ -261,6 +263,29 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 
 	t = number - 1;
 
+	newLocoSpeed = 0;
+	newLocoFunction = 0;
+
+	log_debug3("numericSpeed ", locoData[t].numericSpeed);
+	log_debug3("speed ", speed);
+
+	if ((locoData[t].numericSpeed != speed) || locoData[t].fl != fl)
+		newLocoSpeed = 1;
+	else
+		newLocoSpeed = 0;
+
+	if (locoData[t].f1 != f1)
+		newLocoFunction = 1;
+
+	if (locoData[t].f2 != f2)
+		newLocoFunction = 2;
+
+	if (locoData[t].f3 != f3)
+		newLocoFunction = 3;
+
+	if (locoData[t].f4 != f4)
+		newLocoFunction = 4;
+
 	locoData[t].active = 1;
 	locoData[t].refreshState = 0;
 	locoData[t].numericSpeed = speed;
@@ -268,6 +293,7 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 	if (direction != locoData[t].direction) {
 		locoData[t].encodedSpeed = mmChangeDirection;
 		locoData[t].deltaSpeed = mmChangeDirection;
+
 		locoData[t].direction = direction;
 	} else {
 		locoData[t].encodedSpeed = deltaSpeedData[speed];
@@ -302,51 +328,12 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 		unsigned char abcd = locoData[t].encodedSpeed;
 		locoData[t].encodedSpeed = abcd ^ ((abcd ^ efgh) & mask);
 
-#ifdef DEBUG_EXTREME
-		log_debug("MASK");
-		for (uint8_t i = 0; i < 8; i++) {
-			if ((mask >> (7 - i)) & 1)
-			uart_putc('1');
-			else
-			uart_putc('0');
-		}
-		send_nl();
-
-		log_debug("ABCD");
-		for (uint8_t i = 0; i < 8; i++) {
-			if ((abcd >> (7 - i)) & 1)
-			uart_putc('1');
-			else
-			uart_putc('0');
-		}
-		send_nl();
-
-		log_debug("EFGH");
-		for (uint8_t i = 0; i < 8; i++) {
-			if ((efgh >> (7 - i)) & 1)
-			uart_putc('1');
-			else
-			uart_putc('0');
-		}
-		send_nl();
-#endif
 	}
-
-#ifdef DEBUG_EXTREME
-	log_debug("SPEED");
-	for (uint8_t i = 0; i < 8; i++) {
-		if ((locoData[t].encodedSpeed >> (7 - i)) & 1)
-		uart_putc('1');
-		else
-		uart_putc('0');
-	}
-	send_nl();
-#endif
 
 #ifdef DEBUG
 	log_debug3("Loco Number: ", number);
 	locoData[t].isNewProtocol == 1 ?
-			log_debug("Protocol: MM2") : log_debug("Protocol: MM");
+	log_debug("Protocol: MM2") : log_debug("Protocol: MM");
 	log_debug3("Loco Speed: ", speed);
 	log_debug3("Loco FL: ", fl);
 	log_debug3("Loco Direction: ", direction);

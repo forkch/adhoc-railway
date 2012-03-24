@@ -40,7 +40,8 @@ void SPI_MasterTransmitDebug(unsigned char cData) {
 #ifdef DEVEL_BOARD
 	cData ^= 0xF0;
 #endif
-	/* Start transmission */SPDR = (cData);
+	/* Start transmission */
+	SPDR = (cData);
 	/* Wait for transmission complete */
 	while (!(SPSR & (1 << SPIF)))
 		;
