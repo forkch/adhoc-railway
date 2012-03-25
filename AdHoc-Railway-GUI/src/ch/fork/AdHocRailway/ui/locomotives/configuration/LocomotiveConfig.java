@@ -118,7 +118,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 	private void initGUI() {
 		buildPanel();
 		pack();
-		TutorialUtils.locateOnOpticalScreenCenter(this);
+		setLocationRelativeTo(getParent());
 		setVisible(true);
 	}
 

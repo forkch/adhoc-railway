@@ -120,7 +120,7 @@ public class LocomotiveWidget extends JPanel implements
 
 	private void initGUI() {
 		// setLayout(new BorderLayout(10, 10));
-		setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
 		// setPreferredSize(new Dimension(200, 310));
 
 		setLayout(new MigLayout("wrap 3"));
@@ -151,6 +151,8 @@ public class LocomotiveWidget extends JPanel implements
 	private void initSelectionPanel() {
 		locomotiveGroupComboBox = new JComboBox();
 		locomotiveGroupComboBox.setFocusable(false);
+		locomotiveGroupComboBox.setFont(locomotiveGroupComboBox.getFont().deriveFont(14));
+		
 		groupSelectAction = new LocomotiveGroupSelectAction();
 		locomotiveComboBox = new JComboBox();
 		locomotiveComboBox.setFocusable(false);
@@ -385,6 +387,7 @@ public class LocomotiveWidget extends JPanel implements
 	}
 
 	protected void updateWidget() {
+		System.out.println("updateWidget()");
 		LocomotiveControlface locomotiveControl = AdHocRailway.getInstance()
 				.getLocomotiveControl();
 		if (myLocomotive == null)
@@ -438,6 +441,10 @@ public class LocomotiveWidget extends JPanel implements
 		if (myLocomotive.getLocomotiveType().getFunctionCount() == 0) {
 			for (FunctionToggleButton b : functionToggleButtons) {
 				b.setEnabled(false);
+			}
+		} else {
+			for (FunctionToggleButton b : functionToggleButtons) {
+				b.setEnabled(true);
 			}
 		}
 

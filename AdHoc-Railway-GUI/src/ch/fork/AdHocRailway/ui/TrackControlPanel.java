@@ -128,13 +128,14 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	}
 
 	private void initKeyboardActions() {
-		for (int i = 1; i <= 12; i++) {
+		/*for (int i = 1; i <= 12; i++) {
 			KeyStroke stroke = KeyStroke
 					.getKeyStroke("F" + Integer.toString(i));
 			registerKeyboardAction(new GroupChangeAction(), Integer
 					.toString(i - 1), stroke, WHEN_IN_FOCUSED_WINDOW);
 
-		}
+		}*/
+		
         getActionMap().put("NextSelected", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 if (trackControlPane.getSelectedIndex() == 0)

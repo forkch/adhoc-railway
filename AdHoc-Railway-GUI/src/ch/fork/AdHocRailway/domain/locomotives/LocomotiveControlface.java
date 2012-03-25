@@ -105,4 +105,6 @@ public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 
 	public void update();
 
+	public abstract void emergencyStop(Locomotive myLocomotive) throws LocomotiveException;
+
 }

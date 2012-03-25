@@ -134,7 +134,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		add(builder.getPanel());
 		loadPreferences();
 		pack();
-		TutorialUtils.locateOnOpticalScreenCenter(this);
+		setLocationRelativeTo(getParent());
 		setVisible(true);
 		savePreferences();
 	}

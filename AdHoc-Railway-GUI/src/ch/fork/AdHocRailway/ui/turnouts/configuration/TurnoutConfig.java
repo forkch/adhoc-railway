@@ -121,7 +121,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 		buildPanel();
 		address1TextField.requestFocusInWindow();
 		pack();
-		TutorialUtils.locateOnOpticalScreenCenter(this);
+		setLocationRelativeTo(getParent());
 		setVisible(true);
 	}
 

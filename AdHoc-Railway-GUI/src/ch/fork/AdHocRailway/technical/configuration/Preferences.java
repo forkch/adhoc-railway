@@ -80,7 +80,17 @@ public class Preferences implements PreferencesKeys {
 				+ ";BACK_SPACE:EnableRoute"
 				+ ";DIVIDE:CurvedLeft"
 				+ ";MULTIPLY:Straight"
-				+ ";SUBTRACT:CurvedRight" + ";BACK_QUOTE:NextSelected");
+				+ ";SUBTRACT:CurvedRight"
+				+ ";BACK_QUOTE:NextSelected"
+				+ ";F1:ToggleBooster0"
+				+ ";F2:ToggleBooster1"
+				+ ";F3:ToggleBooster2"
+				+ ";F4:ToggleBooster3"
+				+ ";F5:ToggleBooster4"
+				+ ";F6:ToggleBooster5"
+				+ ";F7:ToggleBooster6"
+				+ ";F8:ToggleBooster7"
+				+ ";ESCAPE:TurnOffAllBooster");
 		setStringValue(KEYBOARD_LAYOUT + ".en", "English" // Display name
 				+ ";" // Base layout none
 				+ ";SPACE:LocomotiveStop"
@@ -102,7 +112,17 @@ public class Preferences implements PreferencesKeys {
 				+ ";BACK_SPACE:EnableRoute"
 				+ ";DIVIDE:CurvedLeft"
 				+ ";MULTIPLY:Straight"
-				+ ";SUBTRACT:CurvedRight" + ";BACK_QUOTE:NextSelected");
+				+ ";SUBTRACT:CurvedRight"
+				+ ";BACK_QUOTE:NextSelected"
+				+ ";F1:ToggleBooster0"
+				+ ";F2:ToggleBooster1"
+				+ ";F3:ToggleBooster2"
+				+ ";F4:ToggleBooster3"
+				+ ";F5:ToggleBooster4"
+				+ ";F6:ToggleBooster5"
+				+ ";F7:ToggleBooster6"
+				+ ";F8:ToggleBooster7"
+				+ ";ESCAPE:TurnOffAllBooster");
 		setBooleanValue(INTERFACE_6051, false);
 		setIntValue(TURNOUT_CONTROLES, 5);
 		setIntValue(ROUTE_CONTROLES, 5);

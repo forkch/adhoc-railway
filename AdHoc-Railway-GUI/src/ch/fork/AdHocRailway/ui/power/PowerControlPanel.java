@@ -11,12 +11,16 @@ import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.xml.transform.Source;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
@@ -46,9 +50,9 @@ public class PowerControlPanel extends JPanel implements
 	public PowerControlPanel() {
 		super();
 
-		stopIcon = ImageTools.createImageIconFromIconSet("stop_32.png");
-		goIcon = ImageTools.createImageIconFromIconSet("go_32.png");
-		shortcutIcon = ImageTools.createImageIconFromIconSet("shortcut_32.png");
+		stopIcon = ImageTools.createImageIconFromIconSet("stop_22.png");
+		goIcon = ImageTools.createImageIconFromIconSet("go_22.png");
+		shortcutIcon = ImageTools.createImageIconFromIconSet("shortcut_22.png");
 
 		powerControl.addPowerSupplyChangeListener(this);
 		initGUI();
@@ -141,8 +145,8 @@ public class PowerControlPanel extends JPanel implements
 				Preferences.NUMBER_OF_BOOSTERS);
 		powerControlPanel.removeAll();
 
-		allBoostersOn = new JButton("All Boosters On", goIcon);
-		allBoostersOff = new JButton("All Boosters Off", stopIcon);
+		allBoostersOn = new JButton("Boosters On", goIcon);
+		allBoostersOff = new JButton("Boosters Off", stopIcon);
 
 		allBoostersOn.addActionListener(new AllBoostersOnAction());
 		allBoostersOff.addActionListener(new AllBoostersOffAction());
@@ -162,6 +166,64 @@ public class PowerControlPanel extends JPanel implements
 			numberToPowerToggleButtons.put(i, boosterButton);
 			numberToActionListener.put(i, action);
 			powerToggleButtonsToNumber.put(boosterButton, i);
+		}
+
+		initKeyboardActions();
+	}
+
+	private void initKeyboardActions() {
+
+		InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+		KeyStroke[] keys = inputMap.keys();
+		if (keys != null) {
+			for (KeyStroke ks : keys)
+				getInputMap().remove(ks);
+		}
+
+		KeyBoardLayout kbl = Preferences.getInstance().getKeyBoardLayout();
+
+		for (int i = 0; i < numberOfBoosters; i++) {
+			getActionMap().put("ToggleBooster" + i,
+					new ToggleBoosterKeyAction(i));
+			kbl.assignKeys(inputMap, "ToggleBooster" + i);
+		}
+
+		getActionMap().put("TurnOffAllBoosters", new AllBoostersOffAction());
+		kbl.assignKeys(inputMap, "TurnOffAllBoosters");
+	}
+
+	private void toogleBooster(int boosterNumber, boolean on) {
+
+		JToggleButton source = numberToPowerToggleButtons.get(boosterNumber);
+
+		Set<SRCPPowerSupply> powerSupplies = powerControl
+				.getKnownPowerSupplies();
+		SRCPPowerSupply bus1Supply = null;
+		for (SRCPPowerSupply supply : powerSupplies) {
+			if (supply.getBus() == 1) {
+				bus1Supply = supply;
+			}
+		}
+
+		if (bus1Supply == null) {
+			return;
+		}
+		try {
+			if (on) {
+
+				powerControl.setState(bus1Supply, SRCPPowerState.ON, ""
+						+ boosterNumber);
+
+				source.setIcon(goIcon);
+			} else {
+				powerControl.setState(bus1Supply, SRCPPowerState.OFF, ""
+						+ boosterNumber);
+				source.setIcon(stopIcon);
+			}
+		} catch (SRCPPowerSupplyException e) {
+			ExceptionProcessor.getInstance().processException(e);
+		} catch (SRCPModelException e) {
+			ExceptionProcessor.getInstance().processException(e);
 		}
 	}
 
@@ -193,7 +255,7 @@ public class PowerControlPanel extends JPanel implements
 		public void actionPerformed(ActionEvent e) {
 
 			try {
-				powerControl.getInstance().setAllStates(SRCPPowerState.OFF);
+				powerControl.setAllStates(SRCPPowerState.OFF);
 			} catch (SRCPPowerSupplyException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
 			} catch (SRCPModelException e1) {
@@ -212,37 +274,26 @@ public class PowerControlPanel extends JPanel implements
 		public void actionPerformed(ActionEvent arg0) {
 			JToggleButton source = (JToggleButton) arg0.getSource();
 
-			Set<SRCPPowerSupply> powerSupplies = powerControl
-					.getKnownPowerSupplies();
-			System.out.println(powerSupplies);
-			SRCPPowerSupply bus1Supply = null;
-			for (SRCPPowerSupply supply : powerSupplies) {
-				if (supply.getBus() == 1) {
-					bus1Supply = supply;
-				}
-			}
-
 			int boosterNumber = powerToggleButtonsToNumber.get(source);
-			if (bus1Supply == null) {
-				return;
-			}
-			try {
-				if (source.isSelected()) {
 
-					powerControl.setState(bus1Supply, SRCPPowerState.ON, ""
-							+ boosterNumber);
+			toogleBooster(boosterNumber, source.isSelected());
+		}
+	}
 
-					source.setIcon(goIcon);
-				} else {
-					powerControl.setState(bus1Supply, SRCPPowerState.OFF, ""
-							+ boosterNumber);
-					source.setIcon(stopIcon);
-				}
-			} catch (SRCPPowerSupplyException e) {
-				ExceptionProcessor.getInstance().processException(e);
-			} catch (SRCPModelException e) {
-				ExceptionProcessor.getInstance().processException(e);
-			}
+	class ToggleBoosterKeyAction extends AbstractAction {
+
+		private int boosterNumber;
+
+		public ToggleBoosterKeyAction(int number) {
+			super();
+			this.boosterNumber = number;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+
+			JToggleButton source = numberToPowerToggleButtons.get(boosterNumber);
+			toogleBooster(boosterNumber, !source.isSelected());
 		}
 	}
 }

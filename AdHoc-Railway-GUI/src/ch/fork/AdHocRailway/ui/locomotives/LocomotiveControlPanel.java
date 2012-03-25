@@ -75,7 +75,7 @@ public class LocomotiveControlPanel extends JPanel {
 	private void initGUI() {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.CENTER, 10, 0);
+		FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.CENTER, 5, 0);
 		controlPanel = new JPanel(controlPanelLayout);
 		controlPanel.setLayout(controlPanelLayout);
 		
@@ -94,12 +94,12 @@ public class LocomotiveControlPanel extends JPanel {
 
 		controlPanel.removeAll();
 		locomotiveWidgets.clear();
-		if (Preferences.getInstance().getStringValue(
+		/*if (Preferences.getInstance().getStringValue(
 				PreferencesKeys.KEYBOARD_LAYOUT).equals("Swiss German")) {
 			keyBindings = keyBindingsDE;
 		} else {
 			keyBindings = keyBindingsUS;
-		}
+		}*/
 		for (int i = 0; i < Preferences.getInstance().getIntValue(
 				PreferencesKeys.LOCOMOTIVE_CONTROLES); i++) {
 			LocomotiveWidget w 
@@ -130,7 +130,8 @@ public class LocomotiveControlPanel extends JPanel {
 					if (locomotiveControl.isLocked(myLocomotive)
 							&& !locomotiveControl.isLockedByMe(myLocomotive))
 						continue;
-					locomotiveControl.setSpeed(myLocomotive, 0, null);
+					locomotiveControl.emergencyStop(myLocomotive);
+					//locomotiveControl.setSpeed(myLocomotive, 0, null);
 					widget.updateWidget();
 				}
 			} catch (LocomotiveException e3) {

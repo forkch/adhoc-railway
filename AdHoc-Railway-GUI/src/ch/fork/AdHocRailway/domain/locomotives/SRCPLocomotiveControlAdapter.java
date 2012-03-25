@@ -138,6 +138,17 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		}
 	}
 
+	@Override
+	public void emergencyStop(Locomotive locomotive) throws LocomotiveException {
+		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
+		try {
+			locomotiveControl.emergencyStop(sLocomotive);
+		} catch (SRCPModelException e) {
+			throw new LocomotiveException("Locomotive Error", e);
+		}
+	}
+
 	public void toggleDirection(Locomotive locomotive)
 			throws LocomotiveException {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap

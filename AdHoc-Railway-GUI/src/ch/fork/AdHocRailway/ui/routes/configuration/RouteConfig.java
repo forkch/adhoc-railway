@@ -116,7 +116,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 		// usedRouteNumbers.remove(presentationModel.getBean().getNumber());
 		buildPanel();
 		pack();
-		TutorialUtils.locateOnOpticalScreenCenter(this);
+		setLocationRelativeTo(getParent());
 		setVisible(true);
 	}
 

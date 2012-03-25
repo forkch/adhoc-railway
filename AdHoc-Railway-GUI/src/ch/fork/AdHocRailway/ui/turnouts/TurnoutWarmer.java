@@ -90,11 +90,11 @@ public class TurnoutWarmer extends ConfigurationDialog {
 				if (t != null)
 					t.stopWarmup();
 			}
-			
+
 		});
 
 		pack();
-		TutorialUtils.locateOnOpticalScreenCenter(this);
+		setLocationRelativeTo(getParent());
 		setVisible(true);
 	}
 

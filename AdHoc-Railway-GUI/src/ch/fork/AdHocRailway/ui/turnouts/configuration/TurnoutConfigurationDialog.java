@@ -103,7 +103,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 	private void initGUI() {
 		buildPanel();
 		pack();
-		TutorialUtils.locateOnOpticalScreenCenter(this);
+		setLocationRelativeTo(getParent());
 		setVisible(true);
 	}
 
