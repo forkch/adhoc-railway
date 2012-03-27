@@ -79,6 +79,10 @@ int main() {
 
 	sei();
 
+#ifdef SEND_STOP_ALL_LOCO_ON_INIT
+	sendStopAllLoco();
+#endif
+
 #ifdef DEBUG
 	log_info("-----------------------------");
 	log_info("AdHoc-Maerklin Generator V0.1");
@@ -693,6 +697,7 @@ void initPortData() {
 	portData[7] = 63;
 
 }
+
 void initLocoData() {
 
 	deltaSpeedData[0] = 0; // STOP
@@ -796,12 +801,9 @@ void initLocoData() {
 
 	for (uint8_t i = 0; i < 80; i++) {
 
-#ifdef ACTIVATE_ALL_LOCOS_MM2_ON_INIT
-		locoData[i].active = 1;
-		locoData[i].isNewProtocol = 1;
-#else
 		locoData[i].active = 0;
-#endif
+		locoData[i].isNewProtocol = 1;
+		locoData[i].encodedSpeed = 17; // direction=1 , speed=0
 		locoData[i].deltaSpeed = deltaSpeedData[0];
 		locoData[i].fl = 0;
 		locoData[i].f1 = 0;
@@ -810,53 +812,69 @@ void initLocoData() {
 		locoData[i].f4 = 0;
 		locoData[i].direction = 1;
 		locoData[i].refreshState = 0;
+
 	}
+
+	locoData[1].isNewProtocol = 0;
+	locoData[5].isNewProtocol = 0;
+	locoData[7].isNewProtocol = 0;
+	locoData[17].isNewProtocol = 0;
+	locoData[19].isNewProtocol = 0;
+	locoData[23].isNewProtocol = 0;
+	locoData[25].isNewProtocol = 0;
+	locoData[53].isNewProtocol = 0;
+	locoData[55].isNewProtocol = 0;
+	locoData[59].isNewProtocol = 0;
+	locoData[61].isNewProtocol = 0;
+	locoData[71].isNewProtocol = 0;
+	locoData[73].isNewProtocol = 0;
+	locoData[77].isNewProtocol = 0;
+	locoData[79].isNewProtocol = 0;
 
 #ifdef ACTIVATE_DELTALOCOS_ON_INIT
 	// dirty: Deltas are active from the start
-	locoData[1].active = 1;
-	locoData[5].active = 1;
-	locoData[7].active = 1;
-	locoData[17].active = 1;
-	locoData[19].active = 1;
-	locoData[23].active = 1;
-	locoData[25].active = 1;
-	locoData[53].active = 1;
-	locoData[55].active = 1;
-	locoData[59].active = 1;
-	locoData[61].active = 1;
-	locoData[71].active = 1;
-	locoData[73].active = 1;
-	locoData[77].active = 1;
-	locoData[79].active = 1;
-#else
-	//locoData[78].active = 1;
+	initActiveLocoData(1, 0);
+	initActiveLocoData(5, 0);
+	initActiveLocoData(7, 0);
+	initActiveLocoData(17, 0);
+	initActiveLocoData(19, 0);
+	initActiveLocoData(23, 0);
+	initActiveLocoData(25, 0);
+	initActiveLocoData(53, 0);
+	initActiveLocoData(55, 0);
+	initActiveLocoData(59, 0);
+	initActiveLocoData(61, 0);
+	initActiveLocoData(71, 0);
+	initActiveLocoData(73, 0);
+	initActiveLocoData(77, 0);
+	initActiveLocoData(79, 0);
 
-	uint8_t t = 77;
+#else
+	initActiveLocoData(78, 1);
+
+#endif
+
+}
+
+void initActiveLocoData(uint8_t number, unsigned char isNewProtocol){
+
 	uint8_t speed = 0;
 	uint8_t direction = 1;
-	uint8_t fl = 0;
-	uint8_t f1 = 0;
-	uint8_t f2 = 0;
-	uint8_t f3 = 0;
-	uint8_t f4 = 0;
 
-	locoData[t].isNewProtocol = 1;
-	locoData[t].active = 1;
-	locoData[t].refreshState = 0;
-	locoData[t].numericSpeed = speed;
+	locoData[number].isNewProtocol = isNewProtocol!=0;
+	locoData[number].active = 1;
+	locoData[number].refreshState = 0;
+	locoData[number].numericSpeed = 0;
+	locoData[number].direction = direction;
+	locoData[number].encodedSpeed = speed;
+	locoData[number].deltaSpeed = speed;
+	locoData[number].fl = 0;
+	locoData[number].f1 = 0;
+	locoData[number].f2 = 0;
+	locoData[number].f3 = 0;
+	locoData[number].f4 = 0;
 
-	if (direction != locoData[t].direction) {
-		locoData[t].encodedSpeed = mmChangeDirection;
-		locoData[t].deltaSpeed = mmChangeDirection;
-
-		locoData[t].direction = direction;
-	} else {
-		locoData[t].encodedSpeed = deltaSpeedData[speed];
-		locoData[t].deltaSpeed = deltaSpeedData[speed];
-	}
-
-	if (locoData[t].isNewProtocol) {
+	if (locoData[number].isNewProtocol) {
 		// NEW MM protocol change bits E F G H
 		unsigned char efgh = 0xFF;
 		unsigned char mask = 0b01010101;
@@ -874,23 +892,85 @@ void initLocoData() {
 			}
 		}
 
-		locoData[t].fl = fl != 0;
-		locoData[t].f1 = f1 != 0;
-		locoData[t].f2 = f2 != 0;
-		locoData[t].f3 = f3 != 0;
-		locoData[t].f4 = f4 != 0;
-
 		// merge new E F G H values
-		unsigned char abcd = locoData[t].encodedSpeed;
-		locoData[t].encodedSpeed = abcd ^ ((abcd ^ efgh) & mask);
+		unsigned char abcd = locoData[number].encodedSpeed;
+		locoData[number].encodedSpeed = abcd ^ ((abcd ^ efgh) & mask);
+	}
+}
+
+
+
+void sendStopAllLoco() {
+
+	unsigned char queueIdxLoc;
+
+	//alle Loks stoppen
+	for (uint8_t i = 0; i < 80; i++) {
+		queueIdxLoc = (pwmQueueIdx + 1) % 2;
+		sendLocoPacket(i, queueIdxLoc, 0, 0);
+		pwm_mode[queueIdxLoc] = MODE_LOCO;
+		// notify PWM that we're finished preparing a new packet
+		prepareNextData = 0;
+		while (prepareNextData == 0){
+			;
+		}
 	}
 
-#endif
+	//alle F1 ausschalten
+	newLocoFunction = 1;
+	for (uint8_t i = 0; i < 80; i++) {
+		queueIdxLoc = (pwmQueueIdx + 1) % 2;
+		sendLocoPacket(i, queueIdxLoc, 0, 1);
+		pwm_mode[queueIdxLoc] = MODE_LOCO;
+		// notify PWM that we're finished preparing a new packet
+		prepareNextData = 0;
+		while (prepareNextData == 0){
+			;
+		}
+	}
 
+	//alle F2 ausschalten
+	newLocoFunction = 2;
+	for (uint8_t i = 0; i < 80; i++) {
+		queueIdxLoc = (pwmQueueIdx + 1) % 2;
+		sendLocoPacket(i, queueIdxLoc, 0, 1);
+		pwm_mode[queueIdxLoc] = MODE_LOCO;
+		// notify PWM that we're finished preparing a new packet
+		prepareNextData = 0;
+		while (prepareNextData == 0){
+			;
+		}
+	}
 
+	//alle F3 ausschalten
+	newLocoFunction = 3;
+	for (uint8_t i = 0; i < 80; i++) {
+		queueIdxLoc = (pwmQueueIdx + 1) % 2;
+		sendLocoPacket(i, queueIdxLoc, 0, 1);
+		pwm_mode[queueIdxLoc] = MODE_LOCO;
+		// notify PWM that we're finished preparing a new packet
+		prepareNextData = 0;
+		while (prepareNextData == 0){
+			;
+		}
+	}
 
+	//alle F4 ausschalten
+	newLocoFunction = 4;
+	for (uint8_t i = 0; i < 80; i++) {
+		queueIdxLoc = (pwmQueueIdx + 1) % 2;
+		sendLocoPacket(i, queueIdxLoc, 0, 1);
+		pwm_mode[queueIdxLoc] = MODE_LOCO;
+		// notify PWM that we're finished preparing a new packet
+		prepareNextData = 0;
+		while (prepareNextData == 0){
+			;
+		}
+	}
 
+	newLocoFunction = 0;
 }
+
 //----------------------------------------------------------------------------
 // wdt_init - Watchdog Init used to disable the CPU watchdog
 //         placed in Startcode, no call needed

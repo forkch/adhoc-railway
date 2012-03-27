@@ -97,6 +97,8 @@ inline void init() {
 
 void initPortData();
 void initLocoData();
+void initActiveLocoData(uint8_t number, unsigned char isNewProtocol);
+void sendStopAllLoco();
 void prepareDataForPWM();
 void sendLocoPacket(uint8_t actualLocoIdx, unsigned char queueIdxLoc,
 		uint8_t isRefreshCycle, uint8_t updateFunction);

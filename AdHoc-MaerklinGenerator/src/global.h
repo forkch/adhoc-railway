@@ -17,10 +17,11 @@
 //Ausgabe der Zustand der Booster auf die Debug-LEDs
 #define DEBUG_BOOSTER_STATE
 
+//Beim Init werden alle Loks gestoppt und die Funktionen zurückgesetzt
+//#define SEND_STOP_ALL_LOCO_ON_INIT
+
 //damit DeltaLocos mit im Decoder gespeichertem Speed beim Starten gestoppt werden
 //#define ACTIVATE_DELTALOCOS_ON_INIT
-
-//#define ACTIVATE_ALL_LOCOS_MM2_ON_INIT
 
 //Testen einer Weiche, es wird abwechselnd Port 0 und 1 gesetzt.
 //#define AUTO_SOLENOID
