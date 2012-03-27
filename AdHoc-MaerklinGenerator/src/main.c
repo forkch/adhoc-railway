@@ -11,9 +11,9 @@ unsigned char debugLevel = DEBUG_DEBUG;
 struct LocoData locoData[80];
 struct SolenoidData solenoidQueue[MAX_SOLENOID_QUEUE];
 int solenoidQueueIdxEnter;
-volatile char SolenoidTESTport;
 
 int main() {
+
 	init();
 	debug_init();
 
@@ -35,6 +35,9 @@ int main() {
 	//Loco FREQUENCY
 	pwm_mode[0] = MODE_LOCO;
 	pwm_mode[1] = MODE_LOCO;
+
+	locoCommandLength[0] = LOCOCMD_REPETITIONS;
+	locoCommandLength[1] = LOCOCMD_REPETITIONS;
 
 #ifdef PWM2
 	OCR1AH = (uint8_t) (LOCO_TOP >> 8);
@@ -58,14 +61,14 @@ int main() {
 	TIMSK0 |= (1 << TOIE0); // interrupt enable - here overflow
 	TCCR0B |= TIMER0_PRESCALER; // use defined prescaler value
 
-#ifdef MM_OSCI
-	OCR2A = (uint8_t) OSCI_TOP;
-	TCCR2A = (1 << WGM21); // CTC Mode
-	TIMSK2 = (1 << OCIE2A);// interrupt enable - here CompareA
-	//TCCR2B = (1 << CS20)  | (1 << CS21)  | (1 << CS22); // prescaling 1024
+#ifdef AUTO_SOLENOID
+	OCR2A = (uint8_t) AUTO_SOLENOID_TOP;
+	TCCR2A = (1 << WGM21);  // CTC Mode
+	TIMSK2 = (1 << OCIE2A); // interrupt enable - here CompareA
+	TCCR2B = (1 << CS20)  | (1 << CS21)  | (1 << CS22); // prescaling 1024
 	//TCCR2B = (1 << CS21) | (1 << CS22); // prescaling 256
 	//TCCR2B = (1 << CS20) | (1 << CS22); // prescaling 128
-	TCCR2B = (1 << CS20) | (1 << CS21);// prescaling 32
+	//TCCR2B = (1 << CS20)  | (1 << CS21); // prescaling 32
 	//TCCR2B = (1 << CS21); // prescaling 8
 #endif
 
@@ -97,18 +100,6 @@ int main() {
 	//Do this forever
 	while (1) {
 
-#ifdef MM_OSCI
-		if (newOsciData == 1) {
-			logit(OsciData);
-			//log_info3("OSCI: ", newOsciData);
-			newOsciData = 0;
-		} else if(newOsciData > 1) {
-			log_info3("OSCIERROR: ", newOsciData);
-			newOsciData = 0;
-		}
-#endif
-
-#ifdef activePrepare_OSCI
 
 		unsigned char cmdAvail = checkForNewCommand();
 
@@ -116,14 +107,12 @@ int main() {
 			processASCIIData(cmd);
 		}
 
-		//Verz√∂gerung Weichen-Deaktivierung in 13ms-Schritten
-
+		//Verzögerung Weichen-Deaktivierung in 13ms-Schritten
 #ifdef AUTO_SOLENOID
-		if (timer0_interrupt > 140) {
+		if (timer0_interrupt > 40) {
 #else
-		if (timer0_interrupt > 10) {
+		if (timer0_interrupt > 15) {
 #endif
-
 			timer0_interrupt = 0;
 			for (int i = 0; i < MAX_SOLENOID_QUEUE; i++) {
 				if (solenoidQueue[i].active
@@ -139,8 +128,9 @@ int main() {
 					deactivatingSolenoid = 1;
 
 					solenoidToDeactivate = i;
-
+					break;
 				}
+
 			}
 		}
 
@@ -149,9 +139,7 @@ int main() {
 		}
 
 		//check shorts
-		//check_shorts();
-
-#endif
+		check_shorts();
 
 	}
 	cli();
@@ -184,91 +172,116 @@ void enqueue_loco(uint8_t loco_idx) {
 	newLocoIdx = loco_idx;
 }
 
-void all_loco() {
-
-	for (uint8_t i = 0; i < 80; i++) {
-		locoData[i].active = 1;
-		locoData[i].encodedSpeed = 0b11001101;
-
-	}
-}
+//void all_loco() {
+//
+//	for (uint8_t i = 0; i < 80; i++) {
+//		locoData[i].active = 1;
+//		locoData[i].encodedSpeed = 0b11001101;
+//
+//	}
+//}
 
 void prepareDataForPWM() {
 
 	unsigned char queueIdxLoc = (pwmQueueIdx + 1) % 2;
 
-	// handle NEW loco command with highest priority
-	if (newLocoIdx != -1) {
+	if (StartOneLocoRefresh == 0){
 
-		if (newLocoSpeed == 1 || newLocoFunction != 0) {
-			log_debug("here");
-			// is there something new
-			if (newLocoSpeed == 1) {
-				log_debug3("newLocoSpeed: ", newLocoSpeed);
-				sendLocoPacket(newLocoIdx, queueIdxLoc, 0, 0);
-			} else if (newLocoSpeed == 0 && newLocoFunction != 0) {
-				log_debug3("newLocoFunction: ", newLocoFunction);
-				sendLocoPacket(newLocoIdx, queueIdxLoc, 0, newLocoFunction);
+		if (StartSecondSolenoidTransmition == 0){
+
+			// handle NEW loco command with highest priority
+			if (newLocoIdx != -1) {
+
+				if (newLocoSpeed == 1 || newLocoFunction != 0) {
+					//log_debug("here");
+					// is there something new
+					if (newLocoSpeed == 1) {
+						//log_debug3("newLocoSpeed: ", newLocoSpeed);
+						sendLocoPacket(newLocoIdx, queueIdxLoc, 0, 0);
+					} else if (newLocoSpeed == 0 && newLocoFunction != 0) {
+						//log_debug3("newLocoFunction: ", newLocoFunction);
+						sendLocoPacket(newLocoIdx, queueIdxLoc, 0, newLocoFunction);
+					}
+
+					newLocoIdx = -1;
+					newLocoSpeed = 0;
+					newLocoFunction = 0;
+
+					pwm_mode[queueIdxLoc] = MODE_LOCO;
+					// notify PWM that we're finished preparing a new packet
+					prepareNextData = 0;
+					return;
+				} else {
+					newLocoIdx = -1;
+					newLocoSpeed = 0;
+					newLocoFunction = 0;
+
+				}
+			}
+		}
+
+		if (!solenoidQueueEmpty() || deactivatingSolenoid) {
+
+			// set index accordingly (solenoid to switch or to deactivate)
+			uint8_t solenoidIdx =
+					deactivatingSolenoid == 1 ?
+							solenoidToDeactivate : solenoidQueueIdxFront;
+
+			if (StartOneLocoRefresh == 0 && StartSecondSolenoidTransmition == 0){
+				StartOneLocoRefresh = 1;
+			} else {
+				StartSecondSolenoidTransmition = 0;
 			}
 
-			newLocoIdx = -1;
-			newLocoSpeed = 0;
-			newLocoFunction = 0;
-
-			pwm_mode[queueIdxLoc] = MODE_LOCO;
+			sendSolenoidPacket(solenoidIdx, queueIdxLoc);
+			pwm_mode[queueIdxLoc] = MODE_SOLENOID;
 			// notify PWM that we're finished preparing a new packet
+
 			prepareNextData = 0;
 			return;
-		} else {
-			newLocoIdx = -1;
-			newLocoSpeed = 0;
-			newLocoFunction = 0;
-
 		}
-	}
-
-	if (!solenoidQueueEmpty() || deactivatingSolenoid) {
-
-		// set index accordingly (solenoid to switch or to deactivate)
-		uint8_t solenoidIdx =
-				deactivatingSolenoid == 1 ?
-						solenoidToDeactivate : solenoidQueueIdxFront;
-
-		sendSolenoidPacket(solenoidIdx, queueIdxLoc);
-		pwm_mode[queueIdxLoc] = MODE_SOLENOID;
-		// notify PWM that we're finished preparing a new packet
-
-		prepareNextData = 0;
-		return;
 	}
 
 	// do a loco refresh
 	uint8_t locoToRefresh = -1;
 	uint8_t i = (currentRefreshCycleLocoIdx + 1) % 80;
-	uint8_t startIdx = currentRefreshCycleLocoIdx;
+	uint8_t startIdx = i;
 
-	// search next active loco in refresh queue
-	while (1) {
-		if (locoData[i].active == 1) {
-			currentRefreshCycleLocoIdx = i;
-			locoToRefresh = i;
-			break;
+	if (functionRefreshSent == 0){
+		// search next active loco in refresh queue
+		while (1) {
+			if (i == 0){
+				currentRefreshCycleFunction = (currentRefreshCycleFunction + 1) % 4;
+			}
+			if (locoData[i].active == 1) {
+				currentRefreshCycleLocoIdx = i;
+				locoToRefresh = i;
+				break;
+			}
+			i = (i + 1) % 80;
+			if (i == startIdx)
+				break;
 		}
-		i = (i + 1) % 80;
-		if (i == startIdx) {
-			break;
-		}
+
+	} else {
+		locoToRefresh = currentRefreshCycleLocoIdx;
 	}
+
 
 	sendLocoPacket(locoToRefresh, queueIdxLoc, 1, 0);
 	pwm_mode[queueIdxLoc] = MODE_LOCO;
+
+	if (StartOneLocoRefresh > 0){
+		StartOneLocoRefresh = 0;
+		StartSecondSolenoidTransmition = 1;
+	}
 	// notify PWM that we're finished preparing a new packet
 	prepareNextData = 0;
 
 }
 
 void sendLocoPacket(uint8_t actualLocoIdx, unsigned char queueIdxLoc,
-		uint8_t isRefreshCycle, uint8_t refreshFunction) {
+		uint8_t isRefreshCycle, uint8_t updateFunction) {
 	if (actualLocoIdx != -1) {
 
 		struct LocoData* actualLoco = &locoData[actualLocoIdx];
@@ -285,92 +298,87 @@ void sendLocoPacket(uint8_t actualLocoIdx, unsigned char queueIdxLoc,
 		commandQueue[queueIdxLoc][8] = actualLoco->fl;
 		commandQueue[queueIdxLoc][9] = actualLoco->fl;
 
+		// REFRESH
 		if (isRefreshCycle == 1) {
-			// REFRESH
+
+			// NEW PROTOCOL
 			if (actualLoco->isNewProtocol == 1) {
 
-				if ((actualLoco->refreshState % 2) != 0) {
+				// zuerst Funktion schicken
+				if (functionRefreshSent == 0) {
+					functionRefreshSent = 1;
 					uint8_t function = 0;
-					switch (actualLoco->refreshState) {
-					case 1:
+					switch (currentRefreshCycleFunction){
+					case 0: //old 1
 						function = 1;
 						break;
-					case 3:
+					case 1:  //old 3
 						function = 2;
 						break;
-					case 5:
+					case 2:  //old 5
 						function = 3;
 						break;
-					case 7:
+					case 3:  //old 7
 						function = 4;
 						break;
 					}
-
 					encodedSpeed = encodeFunction(actualLoco, deltaSpeed, speed,
 							function);
+				} else {
+					functionRefreshSent = 0;
 				}
+
+			// DELTA PROTOCOL
+			} else {
+				encodedSpeed = deltaSpeed;
 			}
+
+		// NEW LOCO SPEED OR FUNCTION
 		} else {
-			// NEW LOCO SPEED OR FUNCTION
-			if (actualLoco->isNewProtocol == 1) {
 
-				if (refreshFunction != 0) {
-					encodedSpeed = encodeFunction(actualLoco, deltaSpeed, speed,
+			// NEW FUNCTION
+			if ((actualLoco->isNewProtocol == 1) && (updateFunction != 0)) {
+				encodedSpeed = encodeFunction(actualLoco, deltaSpeed, speed,
 							newLocoFunction);
-				}
+			// NEW SPEED DELTA PROTOCOL
+			} else if (actualLoco->isNewProtocol != 1) {
+				encodedSpeed = deltaSpeed;
 			}
-
 		}
-//		if (isRefreshCycle == 0 || actualLoco->isNewProtocol == 0
-//				|| (actualLoco->isNewProtocol == 1
-//						&& (actualLoco->refreshState % 2) == 0)) {
-//
-//			if (actualLoco->isNewProtocol == 1) {
-//				if (refreshFunction != 0) {
-//					//refresh Function
-//					encodedSpeed = encodeFunction(actualLoco, deltaSpeed, speed,
-//							newLocoFunction);
-//					log_debug("new function");
-//				} else {
-//					log_debug("new loco");
-//
-//				}
-//			}
-//		} else {
-//			uint8_t function = 0;
-//			switch (actualLoco->refreshState) {
-//			case 1:
-//				function = 1;
-//				break;
-//			case 3:
-//				function = 2;
-//				break;
-//			case 5:
-//				function = 3;
-//				break;
-//			case 7:
-//				function = 4;
-//				break;
-//			}
-//
-//			encodedSpeed = encodeFunction(actualLoco, deltaSpeed, speed,
-//					function);
-//		}
-
-		actualLoco->refreshState = (actualLoco->refreshState + 1) % 8;
 
 		// speed
 		for (uint8_t i = 0; i < 8; i++)
 			commandQueue[queueIdxLoc][10 + i] = (encodedSpeed >> (7 - i)) & 1;
 
-		finish_mm_command(queueIdxLoc);
+		finish_mm_command_Loco(queueIdxLoc);
 
+#ifdef NEW_LOCOCMD_EXTENDED
+		if (!isRefreshCycle){
+			for (uint8_t i = 1; i < NEW_LOCOCMD_REPETITIONS; i++) {
+				for (uint8_t j = 0; j < MM_COMMAND_LENGTH_LOCO; j++) {
+					commandQueue[queueIdxLoc][i * MM_COMMAND_LENGTH_LOCO + j] =
+							commandQueue[queueIdxLoc][j];
+				}
+			}
+			locoCommandLength[queueIdxLoc] = MM_COMMAND_LENGTH_LOCO * NEW_LOCOCMD_REPETITIONS;
+		} else {
+			for (uint8_t i = 1; i < LOCOCMD_REPETITIONS; i++) {
+				for (uint8_t j = 0; j < MM_COMMAND_LENGTH_LOCO; j++) {
+					commandQueue[queueIdxLoc][i * MM_COMMAND_LENGTH_LOCO + j] =
+							commandQueue[queueIdxLoc][j];
+				}
+			}
+			locoCommandLength[queueIdxLoc] =  MM_COMMAND_LENGTH_LOCO * LOCOCMD_REPETITIONS;
+		}
+#else
 		for (uint8_t i = 1; i < LOCOCMD_REPETITIONS; i++) {
-			for (uint8_t j = 0; j < MM_COMMAND_LENGTH; j++) {
-				commandQueue[queueIdxLoc][i * MM_COMMAND_LENGTH + j] =
+			for (uint8_t j = 0; j < MM_COMMAND_LENGTH_LOCO; j++) {
+				commandQueue[queueIdxLoc][i * MM_COMMAND_LENGTH_LOCO + j] =
 						commandQueue[queueIdxLoc][j];
 			}
 		}
+		locoCommandLength[queueIdxLoc] =  MM_COMMAND_LENGTH_LOCO * LOCOCMD_REPETITIONS;
+#endif
 
 	}
 }
@@ -495,71 +503,112 @@ void sendSolenoidPacket(uint8_t solenoidIdx, unsigned char queueIdxLoc) {
 		solenoidQueue[solenoidIdx].timerDetected = 0;
 	}
 
-	finish_mm_command(queueIdxLoc);
+	// Doppelpacket inkl. Pausen erstellen
+	finish_mm_command_Solenoid(queueIdxLoc);
 
+	// Doppelpacket-Repetitionen erstellen
 	for (uint8_t i = 1; i < SOLENOIDCMD_REPETITIONS; i++) {
-		for (uint8_t j = 0; j < MM_COMMAND_LENGTH; j++) {
-			commandQueue[queueIdxLoc][i * MM_COMMAND_LENGTH + j] =
+		for (uint8_t j = 0; j < MM_COMMAND_LENGTH_SOLENOID; j++) {
+			commandQueue[queueIdxLoc][i * MM_COMMAND_LENGTH_SOLENOID + j] =
 					commandQueue[queueIdxLoc][j];
 		}
 	}
 
-	if (!deactivatingSolenoid) {
-		// if new solenoid update queue
-		solenoidQueuePop();
-	} else {
-		// switch off deactivation
-		deactivatingSolenoid = 0;
+	// End-Pause erstellen
+	for (uint8_t i = 0; i < MM_END_PAUSE_SOLENOID; i++) {
+		commandQueue[queueIdxLoc][(MM_COMMAND_LENGTH_SOLENOID * SOLENOIDCMD_REPETITIONS) + i] = 2;
 	}
 
+	if (StartOneLocoRefresh == 0){
+
+		if (!deactivatingSolenoid) {
+			// if new solenoid update queue
+			solenoidQueuePop();
+		} else {
+			// switch off deactivation
+			deactivatingSolenoid = 0;
+		}
+
+	}
 //	locoCmdsSent = 0;
 
 }
 
-void finish_mm_command(unsigned char queueIdxLoc) {
+void finish_mm_command_Loco(unsigned char queueIdxLoc) {
 
 // pause
-	for (uint8_t i = 0; i < MM_INTER_PACKET_PAUSE; i++) {
+	for (uint8_t i = 0; i < MM_INTER_PACKET_PAUSE_LOCO; i++) {
 		commandQueue[queueIdxLoc][MM_PACKET_LENGTH + i] = 2;
 	}
 
-//copy packet
+// copy packet
 	for (uint8_t i = 0; i < MM_PACKET_LENGTH; i++)
-		commandQueue[queueIdxLoc][MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE + i] =
+		commandQueue[queueIdxLoc][MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE_LOCO + i] =
 				commandQueue[queueIdxLoc][i];
 
 // add intra double packet pause
-	for (uint8_t i = 0; i < MM_INTER_DOUBLE_PACKET_PAUSE; i++) {
-		commandQueue[queueIdxLoc][MM_DOUBLE_PACKET_LENGTH + i] = 2;
+	for (uint8_t i = 0; i < MM_INTER_DOUBLE_PACKET_PAUSE_LOCO; i++) {
+		commandQueue[queueIdxLoc][MM_DOUBLE_PACKET_LENGTH_LOCO + i] = 2;
 	}
 
 }
+
+void finish_mm_command_Solenoid(unsigned char queueIdxLoc) {
+
+// pause
+	for (uint8_t i = 0; i < MM_INTER_PACKET_PAUSE_SOLENOID; i++) {
+		commandQueue[queueIdxLoc][MM_PACKET_LENGTH + i] = 2;
+	}
+
+// copy packet
+	for (uint8_t i = 0; i < MM_PACKET_LENGTH; i++)
+		commandQueue[queueIdxLoc][MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE_SOLENOID + i] =
+				commandQueue[queueIdxLoc][i];
+
+// add intra double packet pause
+	for (uint8_t i = 0; i < MM_INTER_DOUBLE_PACKET_PAUSE_SOLENOID; i++) {
+		commandQueue[queueIdxLoc][MM_DOUBLE_PACKET_LENGTH_SOLENOID + i] = 2;
+	}
+
+}
+
+
+//
+//void finish_mm_command(unsigned char queueIdxLoc) {
+//
+//// pause
+//	for (uint8_t i = 0; i < MM_INTER_PACKET_PAUSE_LOCO; i++) {
+//		commandQueue[queueIdxLoc][MM_PACKET_LENGTH + i] = 2;
+//	}
+//
+////copy packet
+//	for (uint8_t i = 0; i < MM_PACKET_LENGTH; i++)
+//		commandQueue[queueIdxLoc][MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE_LOCO + i] =
+//				commandQueue[queueIdxLoc][i];
+//
+//// add intra double packet pause
+//	for (uint8_t i = 0; i < MM_INTER_DOUBLE_PACKET_PAUSE_LOCO; i++) {
+//		commandQueue[queueIdxLoc][MM_DOUBLE_PACKET_LENGTH_LOCO + i] = 2;
+//	}
+//
+//}
+
+
 
 // *** Interrupt Service Routines *****************************************
-
-#ifdef MM_OSCI
-// Timer2 sendet Zustand des Eingangs
-ISR( TIMER2_COMPA_vect) {
-	if ( PINA & (1<<PINA0) ) {
-		OsciData[actualData] = '1';
-	} else {
-		OsciData[actualData] = '0';
-	}
-	actualData++;
-	if(actualData > OSCI_DATA_LENGTH) {
-		newOsciData++;
-		actualData = 0;
-	}
-}
-#endif
 
 // Timer0 overflow interrupt handler (13ms 20MHz / Timer0Prescaler 1024)
 ISR( TIMER0_OVF_vect) {
 	timer0_interrupt++;
+}
 
 #ifdef AUTO_SOLENOID
-	if (timer0_interrupt == 100) {
-		solenoidQueue[solenoidQueueIdxEnter].address = locoData[31].address;
+// Timer2 für AutoSolenoid
+ISR( TIMER2_COMPA_vect){
+	timer2_interrupt++;
+	if (timer2_interrupt == 250) {
+		timer2_interrupt = 0;
+		solenoidQueue[solenoidQueueIdxEnter].address = locoData[AUTO_SOLENOID_ADDRESS - 1].address;
 		solenoidQueue[solenoidQueueIdxEnter].port = portData[SolenoidTESTport];
 		solenoidQueue[solenoidQueueIdxEnter].active = 0;
 		solenoidQueue[solenoidQueueIdxEnter].timerDetected = 0;
@@ -567,8 +616,8 @@ ISR( TIMER0_OVF_vect) {
 		enqueue_solenoid();
 		SolenoidTESTport = (SolenoidTESTport + 1) % 2;
 	}
-#endif
 }
+#endif
 
 /********* PWM CODE **************/
 
@@ -584,10 +633,8 @@ ISR( TIMER1_COMPB_vect) {
 	}
 
 	if (actualBit == 0) {
-#ifdef activePrepare_OSCI
 		pwmQueueIdx = (pwmQueueIdx + 1) % 2;
 		prepareNextData = 1;
-#endif
 		if (pwm_mode[pwmQueueIdx] == MODE_SOLENOID) {
 			//SOLENOID
 #ifdef PWM2
@@ -599,7 +646,9 @@ ISR( TIMER1_COMPB_vect) {
 			TCNT1H = 0;
 			TCNT1L = 0;
 #endif
-			commandLength = MM_COMMAND_LENGTH * SOLENOIDCMD_REPETITIONS;
+
+			commandLength = (MM_COMMAND_LENGTH_SOLENOID * SOLENOIDCMD_REPETITIONS) + MM_END_PAUSE_SOLENOID;
+
 		} else {
 			//LOCO FREQUENCY
 #ifdef PWM2
@@ -611,7 +660,7 @@ ISR( TIMER1_COMPB_vect) {
 			TCNT1H = 0;
 			TCNT1L = 0;
 #endif
-			commandLength = MM_COMMAND_LENGTH * LOCOCMD_REPETITIONS;
+			commandLength = locoCommandLength[pwmQueueIdx];
 		}
 	}
 
@@ -746,7 +795,13 @@ void initLocoData() {
 	locoData[79].address = 0;
 
 	for (uint8_t i = 0; i < 80; i++) {
+
+#ifdef ACTIVATE_ALL_LOCOS_MM2_ON_INIT
+		locoData[i].active = 1;
+		locoData[i].isNewProtocol = 1;
+#else
 		locoData[i].active = 0;
+#endif
 		locoData[i].deltaSpeed = deltaSpeedData[0];
 		locoData[i].fl = 0;
 		locoData[i].f1 = 0;
@@ -756,8 +811,8 @@ void initLocoData() {
 		locoData[i].direction = 1;
 		locoData[i].refreshState = 0;
 	}
-	//locoData[0].active = 1;
 
+#ifdef ACTIVATE_DELTALOCOS_ON_INIT
 	// dirty: Deltas are active from the start
 	locoData[1].active = 1;
 	locoData[5].active = 1;
@@ -774,6 +829,67 @@ void initLocoData() {
 	locoData[73].active = 1;
 	locoData[77].active = 1;
 	locoData[79].active = 1;
+#else
+	//locoData[78].active = 1;
+
+	uint8_t t = 77;
+	uint8_t speed = 0;
+	uint8_t direction = 1;
+	uint8_t fl = 0;
+	uint8_t f1 = 0;
+	uint8_t f2 = 0;
+	uint8_t f3 = 0;
+	uint8_t f4 = 0;
+
+	locoData[t].isNewProtocol = 1;
+	locoData[t].active = 1;
+	locoData[t].refreshState = 0;
+	locoData[t].numericSpeed = speed;
+
+	if (direction != locoData[t].direction) {
+		locoData[t].encodedSpeed = mmChangeDirection;
+		locoData[t].deltaSpeed = mmChangeDirection;
+
+		locoData[t].direction = direction;
+	} else {
+		locoData[t].encodedSpeed = deltaSpeedData[speed];
+		locoData[t].deltaSpeed = deltaSpeedData[speed];
+	}
+
+	if (locoData[t].isNewProtocol) {
+		// NEW MM protocol change bits E F G H
+		unsigned char efgh = 0xFF;
+		unsigned char mask = 0b01010101;
+		if (direction == 0) {
+			if (speed <= 14 && speed >= 7) {
+				efgh = 0b11001100;
+			} else if (speed <= 6 && speed >= 0) {
+				efgh = 0b11001111;
+			}
+		} else {
+			if (speed <= 14 && speed >= 7) {
+				efgh = 0b00110000;
+			} else if (speed <= 6 && speed >= 0) {
+				efgh = 0b00110011;
+			}
+		}
+
+		locoData[t].fl = fl != 0;
+		locoData[t].f1 = f1 != 0;
+		locoData[t].f2 = f2 != 0;
+		locoData[t].f3 = f3 != 0;
+		locoData[t].f4 = f4 != 0;
+
+		// merge new E F G H values
+		unsigned char abcd = locoData[t].encodedSpeed;
+		locoData[t].encodedSpeed = abcd ^ ((abcd ^ efgh) & mask);
+	}
+
+#endif
+
+
+
+
 }
 //----------------------------------------------------------------------------
 // wdt_init - Watchdog Init used to disable the CPU watchdog

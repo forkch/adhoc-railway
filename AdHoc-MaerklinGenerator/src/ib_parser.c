@@ -118,8 +118,8 @@ uint8_t ib_go_cmd(char** tokens, uint8_t nTokens) {
 
 uint8_t ib_stop_cmd(char** tokens, uint8_t nTokens) {
 
-	uint8_t address = 0;
-	uint8_t port = 0;
+	//uint8_t address = 0;  unused
+	//uint8_t port = 0;    unused
 	uint8_t number = 0;
 
 	if (nTokens != 1 && nTokens != 2) {
@@ -266,9 +266,6 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 	newLocoSpeed = 0;
 	newLocoFunction = 0;
 
-	log_debug3("numericSpeed ", locoData[t].numericSpeed);
-	log_debug3("speed ", speed);
-
 	if ((locoData[t].numericSpeed != speed) || locoData[t].fl != fl)
 		newLocoSpeed = 1;
 	else
@@ -288,14 +285,17 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 
 	locoData[t].active = 1;
 	locoData[t].refreshState = 0;
-	locoData[t].numericSpeed = speed;
 
-	if (direction != locoData[t].direction) {
+	// Richtungsänderung nur wenn letzter Speed == 0
+	if ((direction != locoData[t].direction) && (locoData[t].numericSpeed == 0)) {
 		locoData[t].encodedSpeed = mmChangeDirection;
 		locoData[t].deltaSpeed = mmChangeDirection;
 
 		locoData[t].direction = direction;
-	} else {
+
+	// Neuer Speed wenn Richtung gleich oder wenn Speed 0 ist (Nothalt)
+	} else if ((direction == locoData[t].direction) || (speed == 0)){
+		locoData[t].numericSpeed = speed;
 		locoData[t].encodedSpeed = deltaSpeedData[speed];
 		locoData[t].deltaSpeed = deltaSpeedData[speed];
 	}
@@ -304,7 +304,7 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 		// NEW MM protocol change bits E F G H
 		unsigned char efgh = 0xFF;
 		unsigned char mask = 0b01010101;
-		if (direction == 0) {
+		if (locoData[t].direction == 0) {
 			if (speed <= 14 && speed >= 7) {
 				efgh = 0b11001100;
 			} else if (speed <= 6 && speed >= 0) {
@@ -318,17 +318,17 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 			}
 		}
 
-		locoData[t].fl = fl != 0;
-		locoData[t].f1 = f1 != 0;
-		locoData[t].f2 = f2 != 0;
-		locoData[t].f3 = f3 != 0;
-		locoData[t].f4 = f4 != 0;
-
 		// merge new E F G H values
 		unsigned char abcd = locoData[t].encodedSpeed;
 		locoData[t].encodedSpeed = abcd ^ ((abcd ^ efgh) & mask);
 
 	}
+
+	locoData[t].fl = fl != 0;
+	locoData[t].f1 = f1 != 0;
+	locoData[t].f2 = f2 != 0;
+	locoData[t].f3 = f3 != 0;
+	locoData[t].f4 = f4 != 0;
 
 #ifdef DEBUG
 	log_debug3("Loco Number: ", number);

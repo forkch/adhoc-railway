@@ -44,9 +44,9 @@
 
 // 20MHz
 #define LOCO_INCREMENT 0
-#define LOCO_BASE 520	//65
+#define LOCO_BASE 505 // 505@19.8kHz / 520@19.2kHz
 #define SOLENOID_INCREMENT 0
-#define SOLENOID_BASE 260 //33
+#define SOLENOID_BASE 247   // 247@40.5kHz / 306@32.7kHz / 260@38.4kHz
 #endif
 
 uint16_t LOCO_0;

@@ -10,11 +10,6 @@
 
 #include "global.h"
 
-#define OSCI_TOP 3
-
-#define OSCI_DATA_LENGTH 200
-volatile unsigned char OsciData[OSCI_DATA_LENGTH];
-volatile unsigned char newOsciData;
 volatile uint16_t actualData;
 
 #define MODE_SOLENOID 0
@@ -24,8 +19,10 @@ volatile uint16_t actualData;
 #define TIMER0_PRESCALER      (1 << CS02) | (1 << CS00)
 
 volatile unsigned char timer0_interrupt;
+volatile unsigned char timer2_interrupt;
 
 uint8_t currentRefreshCycleLocoIdx;
+uint8_t currentRefreshCycleFunction;
 
 int solenoidQueueIdxEnter;
 uint8_t solenoidQueueIdxFront;
@@ -33,13 +30,21 @@ uint8_t solenoidQueueIdxFront;
 uint8_t deactivatingSolenoid;
 uint8_t solenoidToDeactivate;
 
+unsigned char StartOneLocoRefresh;
+unsigned char StartSecondSolenoidTransmition;
+unsigned char functionRefreshSent;
+
+volatile uint16_t locoCommandLength[2];
 volatile unsigned char pwm_mode[2];
 volatile unsigned char pwmQueueIdx;
 volatile uint16_t actualBit;
 uint16_t commandLength;
 volatile unsigned char prepareNextData;
 
-volatile unsigned char commandQueue[2][MM_COMMAND_LENGTH * LOCOCMD_REPETITIONS];
+// ACHTUNG: Queue-Gršsse!!
+volatile unsigned char commandQueue[2][MM_COMMAND_LENGTH_LOCO * NEW_LOCOCMD_REPETITIONS];
+//volatile unsigned char commandQueue[2][MM_COMMAND_LENGTH_SOLENOID * SOLENOIDCMD_REPETITIONS];
+//volatile unsigned char commandQueue[2][MM_COMMAND_LENGTH_LOCO * LOCOCMD_REPETITIONS];
 
 char cmd[64]; // RS232 Input
 
@@ -54,15 +59,17 @@ unsigned char portData[8];
 unsigned char deltaSpeedData[16];
 unsigned char mmChangeDirection;
 
+volatile unsigned char SolenoidTESTport;
+
 /****** Funtion Declarations ******/
 inline void init() {
 
-	newOsciData = 0;
 	actualData = 0;
 
 	timer0_interrupt = 0;
 
 	currentRefreshCycleLocoIdx = 79;
+	currentRefreshCycleFunction = 0;
 
 	solenoidQueueIdxEnter = 0;
 	solenoidQueueIdxFront = 0;
@@ -80,17 +87,27 @@ inline void init() {
 	newLocoSpeed = 0;
 	newLocoFunction = 0;
 	mmChangeDirection = 192;
+
+	SolenoidTESTport = AUTO_SOLENOID_PORT;
+
+	StartOneLocoRefresh = 0;
+	StartSecondSolenoidTransmition = 0;
+	functionRefreshSent = 0;
 }
 
 void initPortData();
 void initLocoData();
 void prepareDataForPWM();
 void sendLocoPacket(uint8_t actualLocoIdx, unsigned char queueIdxLoc,
-		uint8_t isRefreshCycle, uint8_t refreshFunction);
+		uint8_t isRefreshCycle, uint8_t updateFunction);
 void sendSolenoidPacket(uint8_t actualLocoIdx, unsigned char queueIdxLoc);
 uint8_t encodeFunction(struct LocoData* actualLoco, unsigned char deltaSpeed,
 		unsigned char speed, uint8_t function);
-void finish_mm_command(unsigned char queueIdxLoc);
+
+void finish_mm_command_Loco(unsigned char queueIdxLoc);
+void finish_mm_command_Solenoid(unsigned char queueIdxLoc);
+//void finish_mm_command(unsigned char queueIdxLoc);
+
 void processASCIIData();
 void enqueue_solenoid();
 void enqueue_loco(uint8_t);

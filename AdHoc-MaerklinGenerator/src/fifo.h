@@ -15,10 +15,10 @@
 typedef struct
 {
 	uint8_t volatile count;       // # Zeichen im Puffer
-	uint8_t size;                 // Puffer-Gr√∂√üe
+	uint8_t size;                 // Puffer-Grösse
 	uint8_t *pread;               // Lesezeiger
 	uint8_t *pwrite;              // Schreibzeiger
-	uint8_t read2end, write2end;  // # Zeichen bis zum √úberlauf Lese-/Schreibzeiger
+	uint8_t read2end, write2end;  // # Zeichen bis zum Überlauf Lese-/Schreibzeiger
 } fifo_t;
 
 extern void fifo_init (fifo_t*, uint8_t* buf, const uint8_t size);

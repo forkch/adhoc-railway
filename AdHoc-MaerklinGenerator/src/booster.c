@@ -55,7 +55,9 @@ void stop_booster(int nr) {
 	booster_state[nr].shortcut = 0;
 
 	unsigned char stateForSPI = get_booster_spi_state();
-	//SPI_MasterTransmitDebug(stateForSPI);
+#ifdef DEBUG_BOOSTER_STATE
+	SPI_MasterTransmitDebug(stateForSPI);
+#endif
 	SPI_MasterTransmitGO(stateForSPI);
 	report_boosterstate();
 }
@@ -64,7 +66,9 @@ void stop_booster_short(int nr) {
 	booster_state[nr].active = 0;
 	unsigned char stateForSPI = get_booster_spi_state();
 
-	//SPI_MasterTransmitDebug(stateForSPI);
+#ifdef DEBUG_BOOSTER_STATE
+	SPI_MasterTransmitDebug(stateForSPI);
+#endif
 	SPI_MasterTransmitGO(stateForSPI);
 
 }
@@ -75,7 +79,9 @@ void go_booster(int nr) {
 	booster_state[nr].shortcut = 0;
 
 	unsigned char stateForSPI = get_booster_spi_state();
-	//SPI_MasterTransmitDebug(stateForSPI);
+#ifdef DEBUG_BOOSTER_STATE
+	SPI_MasterTransmitDebug(stateForSPI);
+#endif
 	SPI_MasterTransmitGO(stateForSPI);
 	report_boosterstate();
 }
@@ -88,7 +94,9 @@ void stop_all_boosters() {
 	}
 
 	unsigned char stateForSPI = get_booster_spi_state();
-	//SPI_MasterTransmitDebug(stateForSPI);
+#ifdef DEBUG_BOOSTER_STATE
+	SPI_MasterTransmitDebug(stateForSPI);
+#endif
 	SPI_MasterTransmitGO(stateForSPI);
 	replys("Pwr off");
 	report_boosterstate();
@@ -103,7 +111,9 @@ void go_all_boosters() {
 	}
 
 	unsigned char stateForSPI = get_booster_spi_state();
-	//SPI_MasterTransmitDebug(stateForSPI);
+#ifdef DEBUG_BOOSTER_STATE
+	SPI_MasterTransmitDebug(stateForSPI);
+#endif
 	SPI_MasterTransmitGO(stateForSPI);
 	replys("Pwr on");
 	report_boosterstate();
