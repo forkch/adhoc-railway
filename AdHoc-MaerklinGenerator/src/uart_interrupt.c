@@ -42,8 +42,15 @@ unsigned char checkForNewCommand() {
 	while (c != 0x0d) {
 		cmd[counter] = c;
 		counter++;
+
+		if (counter >= BUFSIZE_IN){
+			fifo_init(&infifo, inbuf, BUFSIZE_IN);
+			break;
+		}
+
 		c = uart_getc_wait();
 	}
+
 	cmdReceived = 0;
 
 	cmd[counter] = 0x0;
