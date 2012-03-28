@@ -16,14 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `baehnle09`
---
-
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `baehnle09` /*!40100 DEFAULT CHARACTER SET latin1 */;
-
-USE `baehnle09`;
-
---
 -- Table structure for table `locomotive`
 --
 

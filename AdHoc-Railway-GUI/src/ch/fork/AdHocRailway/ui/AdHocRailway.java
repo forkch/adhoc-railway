@@ -195,8 +195,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		}
 		instance = this;
-		// splash = new SplashWindow(createImageIconFromIconSet("splash.png"),
-		// this, 500, 11);
+		splash = new SplashWindow(createImageIconFromIconSet("splash.png"),
+				this, 500, 11);
 		setIconImage(createImageIconFromIconSet("RailControl.png").getImage());
 
 		initProceeded("Loading Persistence Layer (Preferences)");
@@ -210,6 +210,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		initProceeded("Creating GUI ...");
 		initGUI();
 		logger.info("Finished Creating GUI");
+		splash.setVisible(false);
 
 		if (preferences.getBooleanValue(OPEN_LAST_FILE)) {
 			String lastFile = preferences.getStringValue(LAST_OPENED_FILE);
@@ -278,7 +279,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				System.out.println("connect()");
 				fileMode = false;
 			} catch (Exception e) {
-				// splash.setVisible(false);
+				splash.setVisible(false);
 				fileMode = true;
 				JOptionPane
 						.showMessageDialog(
@@ -384,6 +385,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private void updatePower() {
 		powerControlPanel.update();
 	}
+
 	private void updateLocomotives() {
 		locomotivePersistence.reload();
 		locomotiveControl.update();
@@ -422,7 +424,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private void initProceeded(String message) {
 		logger.info(message);
-		// splash.nextStep(message);
+		splash.nextStep(message);
 	}
 
 	private class CommandHistoryUpdater implements Runnable {
@@ -612,9 +614,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 
 	}
-	
+
 	public void saveActualFile() {
-		saveFile(AdHocRailway.this.actualFile);
+		if (fileMode)
+			saveFile(AdHocRailway.this.actualFile);
 	}
 
 	private void saveFile(File file) {
@@ -845,7 +848,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 					AdHocRailway.this);
 			if (switchConfigDialog.isOkPressed()) {
 				updateTurnouts();
-				updateCommandHistory("Turnout configuration changed");
+				// updateCommandHistory("Turnout configuration changed");
 			}
 		}
 	}
@@ -861,7 +864,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 					AdHocRailway.this);
 			if (routesConfig.isOkPressed()) {
 				updateTurnouts();
-				updateCommandHistory("Routes configuration changed");
+				// updateCommandHistory("Routes configuration changed");
 			}
 		}
 	}
@@ -878,7 +881,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 					AdHocRailway.this);
 			if (locomotiveConfigDialog.isOkPressed()) {
 				updateLocomotives();
-				updateCommandHistory("Locomotive configuration changed");
+				// updateCommandHistory("Locomotive configuration changed");
 			}
 		}
 	}

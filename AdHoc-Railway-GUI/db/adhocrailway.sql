@@ -70,7 +70,16 @@ CREATE TABLE `locomotive_type` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
+----
+-- Dumping data for table `locomotive_type`
 --
+
+LOCK TABLES `locomotive_type` WRITE;
+/*!40000 ALTER TABLE `locomotive_type` DISABLE KEYS */;
+INSERT INTO `locomotive_type` VALUES (1,'DELTA',14,4,4),(2,'DIGITAL',28,5,2);
+/*!40000 ALTER TABLE `locomotive_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
 -- Table structure for table `route`
 --
 
