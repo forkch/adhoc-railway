@@ -87,6 +87,16 @@ extern struct LocoData locoData[80];
 extern struct LocoData* newLoco;
 extern unsigned char mmChangeDirection;
 
+typedef struct NewLoco {
+	int newLocoIdx;
+	uint8_t newLocoSpeed;
+	uint8_t newLocoFunction;
+};
+
+#define MAX_NEW_LOCO_QUEUE 200
+
+extern struct NewLoco newLocoQueue[MAX_NEW_LOCO_QUEUE];
+extern int newLocoQueueIdxEnter;
 
 typedef struct SolenoidData {
 	unsigned char address;
@@ -96,7 +106,7 @@ typedef struct SolenoidData {
 	char deactivate :1;
 };
 
-#define MAX_SOLENOID_QUEUE 50
+#define MAX_SOLENOID_QUEUE 100
 
 
 extern struct SolenoidData solenoidQueue[MAX_SOLENOID_QUEUE];

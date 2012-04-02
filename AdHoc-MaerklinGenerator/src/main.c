@@ -77,6 +77,12 @@ int main() {
 		solenoidQueue[i].active = 0;
 	}
 
+	for (int i = 0; i < MAX_NEW_LOCO_QUEUE; i++) {
+			newLocoQueue[i].newLocoIdx = -1;
+			newLocoQueue[i].newLocoSpeed = 0;
+			newLocoQueue[i].newLocoFunction = -1;
+	}
+
 	sei();
 
 #ifdef SEND_STOP_ALL_LOCO_ON_INIT
@@ -89,14 +95,14 @@ int main() {
 	log_info("Have Fun :-)\n");
 
 	log_debug3("MM_PACKET_LENGTH: ", MM_PACKET_LENGTH);
-	log_debug3("MM_INTER_PACKET_PAUSE: ", MM_INTER_PACKET_PAUSE);
-	log_debug3("MM_DOUBLE_PACKET_LENGTH: ", MM_DOUBLE_PACKET_LENGTH);
-	log_debug3("MM_INTER_DOUBLE_PACKET_PAUSE: ", MM_INTER_DOUBLE_PACKET_PAUSE);
-	log_debug3("MM_COMMAND_LENGTH: ", MM_COMMAND_LENGTH);
-	log_debug3("MM_COMMAND_LENGTH*LOCOCMD_REPETITIONS: ",
-			MM_COMMAND_LENGTH * LOCOCMD_REPETITIONS);
-	log_debug3("MM_COMMAND_LENGTH*SOLENOIDCMD_REPETITIONS: ",
-			MM_COMMAND_LENGTH * SOLENOIDCMD_REPETITIONS);
+//	log_debug3("MM_INTER_PACKET_PAUSE: ", MM_INTER_PACKET_PAUSE);
+//	log_debug3("MM_DOUBLE_PACKET_LENGTH: ", MM_DOUBLE_PACKET_LENGTH);
+//	log_debug3("MM_INTER_DOUBLE_PACKET_PAUSE: ", MM_INTER_DOUBLE_PACKET_PAUSE);
+//	log_debug3("MM_COMMAND_LENGTH: ", MM_COMMAND_LENGTH);
+//	log_debug3("MM_COMMAND_LENGTH*LOCOCMD_REPETITIONS: ",
+//			MM_COMMAND_LENGTH * LOCOCMD_REPETITIONS);
+//	log_debug3("MM_COMMAND_LENGTH*SOLENOIDCMD_REPETITIONS: ",
+//			MM_COMMAND_LENGTH * SOLENOIDCMD_REPETITIONS);
 #endif
 
 	replys("XRS\r");
@@ -115,7 +121,7 @@ int main() {
 #ifdef AUTO_SOLENOID
 		if (timer0_interrupt > 40) {
 #else
-		if (timer0_interrupt > 15) {
+		if (timer0_interrupt > 20) {
 #endif
 			timer0_interrupt = 0;
 			for (int i = 0; i < MAX_SOLENOID_QUEUE; i++) {
@@ -173,7 +179,10 @@ void enqueue_solenoid() {
 }
 
 void enqueue_loco(uint8_t loco_idx) {
-	newLocoIdx = loco_idx;
+	//newLocoIdx = loco_idx;
+	newLocoQueue[newLocoQueueIdxEnter].newLocoIdx = loco_idx;
+	newLocoQueueIdxEnter++;
+	newLocoQueueIdxEnter = newLocoQueueIdxEnter % MAX_NEW_LOCO_QUEUE;
 }
 
 //void all_loco() {
@@ -194,32 +203,36 @@ void prepareDataForPWM() {
 		if (StartSecondSolenoidTransmition == 0){
 
 			// handle NEW loco command with highest priority
-			if (newLocoIdx != -1) {
+//			if (newLocoIdx != -1) {
+			if (!newLocoQueueEmpty()){
 
-				if (newLocoSpeed == 1 || newLocoFunction != 0) {
+				if (newLocoQueue[newLocoQueueIdxFront].newLocoSpeed == 1
+					|| newLocoQueue[newLocoQueueIdxFront].newLocoFunction != 0) {
 					//log_debug("here");
 					// is there something new
-					if (newLocoSpeed == 1) {
+					if (newLocoQueue[newLocoQueueIdxFront].newLocoSpeed == 1) {
 						//log_debug3("newLocoSpeed: ", newLocoSpeed);
-						sendLocoPacket(newLocoIdx, queueIdxLoc, 0, 0);
-					} else if (newLocoSpeed == 0 && newLocoFunction != 0) {
+						sendLocoPacket(newLocoQueue[newLocoQueueIdxFront].newLocoIdx, queueIdxLoc, 0, 0);
+					} else if (newLocoQueue[newLocoQueueIdxFront].newLocoSpeed == 0
+							&& newLocoQueue[newLocoQueueIdxFront].newLocoFunction != 0) {
 						//log_debug3("newLocoFunction: ", newLocoFunction);
-						sendLocoPacket(newLocoIdx, queueIdxLoc, 0, newLocoFunction);
+						sendLocoPacket(newLocoQueue[newLocoQueueIdxFront].newLocoIdx, queueIdxLoc, 0, newLocoFunction);
 					}
 
-					newLocoIdx = -1;
-					newLocoSpeed = 0;
-					newLocoFunction = 0;
+//					newLocoIdx = -1;
+//					newLocoSpeed = 0;
+//					newLocoFunction = 0;
 
 					pwm_mode[queueIdxLoc] = MODE_LOCO;
 					// notify PWM that we're finished preparing a new packet
 					prepareNextData = 0;
 					return;
 				} else {
-					newLocoIdx = -1;
-					newLocoSpeed = 0;
-					newLocoFunction = 0;
+//					newLocoIdx = -1;
+//					newLocoSpeed = 0;
+//					newLocoFunction = 0;
 
+					newLocoQueuePop();
 				}
 			}
 		}
@@ -348,11 +361,20 @@ void sendLocoPacket(uint8_t actualLocoIdx, unsigned char queueIdxLoc,
 			} else if (actualLoco->isNewProtocol != 1) {
 				encodedSpeed = deltaSpeed;
 			}
+
+			newLocoQueuePop();
+
 		}
 
 		// speed
 		for (uint8_t i = 0; i < 8; i++)
 			commandQueue[queueIdxLoc][10 + i] = (encodedSpeed >> (7 - i)) & 1;
+
+		if (actualLoco->deltaSpeed == mmChangeDirection){
+			actualLoco->deltaSpeed = 0;
+			actualLoco->numericSpeed = 0;
+			actualLoco->encodedSpeed = 0;
+		}
 
 		finish_mm_command_Loco(queueIdxLoc);
 

@@ -168,10 +168,10 @@ uint8_t ib_solenoid_cmd(char** tokens, uint8_t nTokens) {
 
 	uint8_t color = 0;
 	if (strcasecmp(tokens[2], "g") == 0 || strcasecmp(tokens[2], "1") == 0) {
-		color = 1;
+		color = 0;
 	} else if (strcasecmp(tokens[2], "r") == 0
 			|| strcasecmp(tokens[2], "0") == 0) {
-		color = 0;
+		color = 1;
 	} else {
 		return 0;
 	}
@@ -263,25 +263,35 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 
 	t = number - 1;
 
-	newLocoSpeed = 0;
-	newLocoFunction = 0;
+	//newLocoSpeed = 0;
+	//newLocoFunction = 0;
+	newLocoQueue[newLocoQueueIdxEnter].newLocoSpeed = 0;
+	newLocoQueue[newLocoQueueIdxEnter].newLocoFunction = 0;
+	newLocoQueue[newLocoQueueIdxEnter].newLocoIdx = -1;
 
-	if ((locoData[t].numericSpeed != speed) || locoData[t].fl != fl)
-		newLocoSpeed = 1;
+	if ((locoData[t].numericSpeed != speed) || locoData[t].fl != fl
+			|| (locoData[t].direction != direction))
+		//newLocoSpeed = 1;
+		newLocoQueue[newLocoQueueIdxEnter].newLocoSpeed = 1;
 	else
-		newLocoSpeed = 0;
+		//newLocoSpeed = 0;
+		newLocoQueue[newLocoQueueIdxEnter].newLocoSpeed = 0;
 
 	if (locoData[t].f1 != f1)
-		newLocoFunction = 1;
+		//newLocoFunction = 1;
+		newLocoQueue[newLocoQueueIdxEnter].newLocoFunction = 1;
 
 	if (locoData[t].f2 != f2)
-		newLocoFunction = 2;
+		//newLocoFunction = 2;
+		newLocoQueue[newLocoQueueIdxEnter].newLocoFunction = 2;
 
 	if (locoData[t].f3 != f3)
-		newLocoFunction = 3;
+		//newLocoFunction = 3;
+		newLocoQueue[newLocoQueueIdxEnter].newLocoFunction = 3;
 
 	if (locoData[t].f4 != f4)
-		newLocoFunction = 4;
+		//newLocoFunction = 4;
+		newLocoQueue[newLocoQueueIdxEnter].newLocoFunction = 4;
 
 	locoData[t].active = 1;
 	locoData[t].refreshState = 0;
@@ -344,6 +354,7 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 	log_debug3("Loco isNewProtocol: ", locoData[t].isNewProtocol);
 
 #endif
+
 	enqueue_loco(t);
 
 	return 1;

@@ -54,6 +54,11 @@ int newLocoIdx;
 uint8_t newLocoSpeed;
 uint8_t newLocoFunction;
 
+struct NewLoco newLocoQueue[MAX_NEW_LOCO_QUEUE];
+
+int newLocoQueueIdxEnter;
+uint8_t newLocoQueueIdxFront;
+
 struct SolenoidData solenoidQueue[MAX_SOLENOID_QUEUE];
 unsigned char portData[8];
 unsigned char deltaSpeedData[16];
@@ -73,6 +78,9 @@ inline void init() {
 
 	solenoidQueueIdxEnter = 0;
 	solenoidQueueIdxFront = 0;
+
+	newLocoQueueIdxEnter  = 0;
+	newLocoQueueIdxFront = 0;
 
 	deactivatingSolenoid = 0;
 	solenoidToDeactivate = 0;
@@ -124,6 +132,15 @@ inline void solenoidQueuePop() {
 
 }
 
+inline uint8_t newLocoQueueEmpty() {
+	return newLocoQueueIdxEnter == newLocoQueueIdxFront;
+}
+
+inline void newLocoQueuePop() {
+	newLocoQueueIdxFront++;
+	newLocoQueueIdxFront = newLocoQueueIdxFront % MAX_NEW_LOCO_QUEUE;
+
+}
 void all_loco();
 
 #endif /* MAIN_H_ */
