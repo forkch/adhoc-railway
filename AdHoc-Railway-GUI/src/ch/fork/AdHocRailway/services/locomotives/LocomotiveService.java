@@ -3,7 +3,7 @@
  * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
  * website   : http://sourceforge.net/projects/adhocrailway
- * version   : $Id$
+ * version   : $Id: LocomotivePersistenceIface.java 199 2012-01-14 23:46:24Z fork_ch $
  * 
  *----------------------------------------------------------------------*/
 
@@ -16,17 +16,17 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.domain.locomotives;
+package ch.fork.AdHocRailway.services.locomotives;
 
 import java.util.SortedSet;
 
-import com.jgoodies.binding.list.ArrayListModel;
+import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceException;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 
-public interface LocomotivePersistenceIface {
-	public abstract ArrayListModel<Locomotive> getAllLocomotives()
-			throws LocomotivePersistenceException;
-
-	public abstract Locomotive getLocomotiveByBusAddress(int bus, int address)
+public interface LocomotiveService {
+	public abstract SortedSet<Locomotive> getAllLocomotives()
 			throws LocomotivePersistenceException;
 
 	public abstract void addLocomotive(Locomotive locomotive)
@@ -38,7 +38,7 @@ public interface LocomotivePersistenceIface {
 	public abstract void updateLocomotive(Locomotive locomotive)
 			throws LocomotivePersistenceException;
 
-	public abstract ArrayListModel<LocomotiveGroup> getAllLocomotiveGroups()
+	public abstract SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
 			throws LocomotivePersistenceException;
 
 	public abstract void addLocomotiveGroup(LocomotiveGroup group)
@@ -53,18 +53,14 @@ public interface LocomotivePersistenceIface {
 	public abstract SortedSet<LocomotiveType> getAllLocomotiveTypes()
 			throws LocomotivePersistenceException;
 
-	public abstract LocomotiveType getLocomotiveTypeByName(String typeName)
-			throws LocomotivePersistenceException;
-
-	public abstract void addLocomotiveType(LocomotiveType defaultType)
+	public abstract void addLocomotiveType(LocomotiveType type)
 			throws LocomotivePersistenceException;
 
 	public abstract void deleteLocomotiveType(LocomotiveType type)
 			throws LocomotivePersistenceException;
 
 	public abstract void clear() throws LocomotivePersistenceException;
+
 	public abstract void flush();
-	
-	public abstract void reload();
 
 }

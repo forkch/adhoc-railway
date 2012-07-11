@@ -26,22 +26,22 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
+import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 
 public class XMLExporter_0_4 {
 
 	private StringBuffer sb;
-	private TurnoutPersistenceIface turnoutPersistence;
+	private TurnoutManger turnoutPersistence;
 	private LocomotivePersistenceIface locomotivePersistence;
-	private RoutePersistenceIface routePersistence;
+	private RouteManager routePersistence;
 
-	public XMLExporter_0_4(TurnoutPersistenceIface turnoutPersistence,
+	public XMLExporter_0_4(TurnoutManger turnoutPersistence,
 			LocomotivePersistenceIface locomotivePersistence,
-			RoutePersistenceIface routePersistence) {
+			RouteManager routePersistence) {
 		this.turnoutPersistence = turnoutPersistence;
 		this.locomotivePersistence = locomotivePersistence;
 		this.routePersistence = routePersistence;

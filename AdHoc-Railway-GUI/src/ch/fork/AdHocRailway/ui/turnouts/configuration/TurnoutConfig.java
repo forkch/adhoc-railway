@@ -41,13 +41,12 @@ import javax.swing.JTextField;
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
-import ch.fork.AdHocRailway.ui.TutorialUtils;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 
@@ -110,7 +109,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	}
 
 	private void initGUI() {
-		TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance()
+		TurnoutManger turnoutPersistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
 		usedTurnoutNumbers = new HashSet<Integer>();
 		for (int number : turnoutPersistence.getUsedTurnoutNumbers()) {
@@ -126,7 +125,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	}
 
 	private void initComponents() {
-		TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance()
+		TurnoutManger turnoutPersistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
 		numberTextField = new JSpinner();
 		numberTextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
@@ -454,7 +453,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 
 		public void actionPerformed(ActionEvent e) {
 
-			TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+			TurnoutManger turnoutPersistence = AdHocRailway
 					.getInstance().getTurnoutPersistence();
 			Turnout turnout = presentationModel.getBean();
 			if (turnout.getId() == 0) {

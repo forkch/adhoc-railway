@@ -26,7 +26,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
@@ -40,7 +40,7 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		Turnout currentTurnout;
 		iconLabel.setText("");
-		TurnoutPersistenceIface persistence = AdHocRailway.getInstance()
+		TurnoutManger persistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
 		currentTurnout = persistence.getTurnoutByNumber(Integer
 				.valueOf((Integer) table.getValueAt(row, 0)));

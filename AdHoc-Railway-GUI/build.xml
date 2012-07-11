@@ -8,6 +8,7 @@
 	<property name="src.dir" value="src"/>
 	<property name="lib.dir" value="lib"/>
 	<property name="db.dir" value="db"/>
+	<property name="locoimages.dir" value="locoimages"/>
 	<property name="samples.dir" value="samples"/>
 	<property name="build.dir" value="build"/>
 	<property name="javadoc.dir" value="javadoc"/>
@@ -64,7 +65,7 @@
 	<!-- =================================================================== -->
 	<target name="compile" depends="copy_images"
 		description="Compiles all Java sources">
-		<javac destdir="${build.dir}" classpathref="compile.class.path"
+		<javac destdir="${build.dir}" target="1.5" source="1.5" classpathref="compile.class.path"
 			deprecation="off">
 			<src path="${src.dir}"/>
 			<include name="**/*.java"/>
@@ -109,6 +110,7 @@
 			<fileset dir="${build.dir}/" includes="**/*.png"/>
 			<metainf dir="${etc.dir}/META-INF" includes="*"/>
 		</jar>
+		
 	</target>
 	
 	<!-- =================================================================== -->
@@ -141,6 +143,9 @@
 		</copy>
 		<copy todir="${bindir}/${db.dir}">
 			<fileset dir="${db.dir}"  excludes="**/.svn/"/>
+		</copy>
+		<copy todir="${bindir}/${locoimages.dir}">
+			<fileset dir="${locoimages.dir}"  excludes="**/.svn/"/>
 		</copy>
 		<tar destfile="AdHoc-Railway-${release}-bin.tar.bz2" basedir="${release.dir}"
       compression="bzip2"

@@ -29,7 +29,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 
 	private static SRCPLocomotiveControlAdapter					instance;
 
-	private LocomotivePersistenceIface							persistence;
+	private LocomotiveManager							persistence;
 	private Map<Locomotive, SRCPLocomotive>						locomotiveSRCPLocomotiveMap;
 	private Map<SRCPLocomotive, Locomotive>						SRCPLocomotiveLocomotiveMap;
 	private Map<SRCPLocomotive, List<LocomotiveChangeListener>>	listeners;
@@ -49,6 +49,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		return instance;
 	}
 
+	@Override
 	public void decreaseSpeed(Locomotive locomotive) throws LocomotiveException {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
 				.get(locomotive);
@@ -60,6 +61,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 
 	}
 
+	@Override
 	public void decreaseSpeedStep(Locomotive locomotive)
 			throws LocomotiveException {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
@@ -72,24 +74,28 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 
 	}
 
+	@Override
 	public int getCurrentSpeed(Locomotive locomotive) {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
 				.get(locomotive);
 		return sLocomotive.getCurrentSpeed();
 	}
 
+	@Override
 	public SRCPLocomotiveDirection getDirection(Locomotive locomotive) {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
 				.get(locomotive);
 		return sLocomotive.getDirection();
 	}
 
+	@Override
 	public boolean[] getFunctions(Locomotive locomotive) {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
 				.get(locomotive);
 		return sLocomotive.getFunctions();
 	}
 
+	@Override
 	public void increaseSpeed(Locomotive locomotive) throws LocomotiveException {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
 				.get(locomotive);
@@ -100,6 +106,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		}
 	}
 
+	@Override
 	public void increaseSpeedStep(Locomotive locomotive)
 			throws LocomotiveException {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
@@ -111,6 +118,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		}
 	}
 
+	@Override
 	public void setFunctions(Locomotive locomotive, boolean[] functions)
 			throws LocomotiveException {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
@@ -122,11 +130,13 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		}
 	}
 
-	public void setLocomotivePersistence(LocomotivePersistenceIface persistence) {
+	@Override
+	public void setLocomotivePersistence(LocomotiveManager persistence) {
 		this.persistence = persistence;
 
 	}
 
+	@Override
 	public void setSpeed(Locomotive locomotive, int speed, boolean[] functions)
 			throws LocomotiveException {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
@@ -149,6 +159,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		}
 	}
 
+	@Override
 	public void toggleDirection(Locomotive locomotive)
 			throws LocomotiveException {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
@@ -160,6 +171,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		}
 	}
 
+	@Override
 	public void update() {
 		locomotiveSRCPLocomotiveMap.clear();
 		SRCPLocomotiveLocomotiveMap.clear();
@@ -191,6 +203,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		locomotiveControl.setSession(session);
 	}
 
+	@Override
 	public boolean acquireLock(Locomotive locomotive) throws LockingException {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
 				.get(locomotive);
@@ -203,6 +216,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		}
 	}
 
+	@Override
 	public boolean isLocked(Locomotive locomotive) throws LockingException {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
 				.get(locomotive);
@@ -218,6 +232,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		}
 	}
 
+	@Override
 	public boolean isLockedByMe(Locomotive locomotive) throws LockingException {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
 				.get(locomotive);
@@ -234,6 +249,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		}
 	}
 
+	@Override
 	public boolean releaseLock(Locomotive locomotive) throws LockingException {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
 				.get(locomotive);
@@ -246,6 +262,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		}
 	}
 
+	@Override
 	public void addLocomotiveChangeListener(Locomotive locomotive,
 			LocomotiveChangeListener listener) {
 		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
@@ -257,14 +274,17 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		listeners.get(sLocomotive).add(listener);
 	}
 
+	@Override
 	public void removeAllLocomotiveChangeListener() {
 		listeners.clear();
 	}
 
+	@Override
 	public void locomotiveChanged(SRCPLocomotive changedLocomotive) {
 		informListeners(changedLocomotive);
 	}
 
+	@Override
 	public void lockChanged(Object changedLock, boolean locked) {
 		SRCPLocomotive changedLocomotive = (SRCPLocomotive) changedLock;
 		informListeners(changedLocomotive);

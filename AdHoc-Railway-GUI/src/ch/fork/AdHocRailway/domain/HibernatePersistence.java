@@ -34,17 +34,17 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public abstract class HibernatePersistence {
-	private static Logger					logger		= Logger
-																.getLogger(HibernatePersistence.class);
-	protected static EntityManagerFactory	emf;
-	protected static EntityManager			em;
-	private static Preferences				preferences	= Preferences
-																.getInstance();
-	private static Map	configOverrides;
+	private static Logger logger = Logger.getLogger(HibernatePersistence.class);
+	protected static EntityManagerFactory emf;
+	protected static EntityManager em;
+	private static Preferences preferences = Preferences.getInstance();
+	@SuppressWarnings("rawtypes")
+	private static Map configOverrides;
 
 	public HibernatePersistence() {
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void setup() {
 		if (emf != null) {
 			logger.info("Closing existing EntityManagerFactory");
@@ -54,14 +54,13 @@ public abstract class HibernatePersistence {
 
 		logger.info("Setting up new EntityManagerFactory");
 		configOverrides = new HashMap();
-		configOverrides.put("hibernate.connection.username", preferences
-				.getStringValue(PreferencesKeys.DATABASE_USER));
-		configOverrides.put("hibernate.connection.password", preferences
-				.getStringValue(PreferencesKeys.DATABASE_PWD));
-		
+		configOverrides.put("hibernate.connection.username",
+				preferences.getStringValue(PreferencesKeys.DATABASE_USER));
+		configOverrides.put("hibernate.connection.password",
+				preferences.getStringValue(PreferencesKeys.DATABASE_PWD));
+
 		String host = preferences.getStringValue(PreferencesKeys.DATABASE_HOST);
-		
-		
+
 		String database = preferences
 				.getStringValue(PreferencesKeys.DATABASE_NAME);
 		String url = "jdbc:mysql://" + host + "/" + database;
@@ -104,7 +103,6 @@ public abstract class HibernatePersistence {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public static EntityManager getEntityManager() {
 		return em;
 	}

@@ -16,12 +16,10 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.domain.routes;
+package ch.fork.AdHocRailway.services.routes;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -30,46 +28,29 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
-import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.routes.Route;
+import ch.fork.AdHocRailway.domain.routes.RouteGroup;
+import ch.fork.AdHocRailway.domain.routes.RouteItem;
+import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
 
-import com.jgoodies.binding.list.ArrayListModel;
+public class HibernateRouteService implements RouteService {
+	private static Logger logger = Logger
+			.getLogger(HibernateRouteService.class);
+	private static RouteService instance;
 
-public class HibernateRoutePersistence extends CachingRoutePersistence {
-	private static Logger					logger	= Logger
-															.getLogger(HibernateRoutePersistence.class);
-	private static RoutePersistenceIface	instance;
-
-	private HibernateRoutePersistence() {
-		super();
-		super.clear();
+	private HibernateRouteService() {
 		logger.info("HibernateRoutePersistence loaded");
 
-		updateRouteCache();
-		updateRouteGroupCache();
 	}
 
-	public static RoutePersistenceIface getInstance() {
+	public static RouteService getInstance() {
 		if (instance == null) {
-			instance = new HibernateRoutePersistence();
+			instance = new HibernateRouteService();
 		}
 		return instance;
 	}
 
-	private void updateRouteCache() {
-		
-		for (Route r : getAllRoutesDB()) {
-			super.addRoute(r);
-		}
-	}
-
-
-	private void updateRouteGroupCache() {
-		
-		for (RouteGroup rg : getAllRouteGroupsDB()) {
-			super.addRouteGroup(rg);
-		}
-	}
-
+	@Override
 	public void clear() throws RoutePersistenceException {
 		logger.debug("clear()");
 		EntityManager em = HibernatePersistence.getEntityManager();
@@ -77,8 +58,6 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 			em.createNativeQuery("TRUNCATE TABLE route_item").executeUpdate();
 			em.createNativeQuery("TRUNCATE TABLE route").executeUpdate();
 			em.createNativeQuery("TRUNCATE TABLE route_group").executeUpdate();
-			
-			super.clear();
 
 			em.getTransaction().commit();
 			HibernatePersistence.disconnect();
@@ -102,28 +81,33 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 	public void preload() {
 	}
 
-	public ArrayListModel<Route> getAllRoutes()
-			throws RoutePersistenceException {
-		// logger.debug("getAllRoutes()");
-		if (super.getAllRoutes().isEmpty()) {
-			updateRouteCache();
-		}
-		return super.getAllRoutes();
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#getAllRoutes()
+	 * @see
+	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#getAllRoutes()
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	public SortedSet<Route> getAllRoutesDB() {
+	public List<Route> getAllRoutes() {
 		logger.debug("getAllRoutesDB()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
-			List<Route> routes = em.createQuery("from Route").getResultList();
+			List<HibernateRoute> hRoutes = em
+					.createQuery("from HibernateRoute").getResultList();
 			HibernatePersistence.flush();
-			return new TreeSet<Route>(routes);
+
+			ArrayList<Route> routes = new ArrayList<Route>();
+			for (HibernateRoute hRoute : hRoutes) {
+				Route route = HibernateRouteMapper.map(hRoute);
+				route.setRouteGroupId(hRoute.getRouteGroup().getId());
+				for (HibernateRouteItem hItem : hRoute.getRouteItems()) {
+					route.addRouteItemId(hItem.getId());
+
+				}
+				routes.add(route);
+			}
+			return routes;
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
@@ -138,32 +122,19 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#getRouteByNumber(int)
+	 * @see
+	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#addRoute(ch.
+	 * fork.AdHocRailway.domain.routes.Route)
 	 */
-	@SuppressWarnings("unchecked")
-	public Route getRouteByNumber(int number) throws RoutePersistenceException {
-		logger.debug("getRouteByNumber()");
-		return super.getRouteByNumber(number);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#addRoute(ch.fork.AdHocRailway.domain.routes.Route)
-	 */
+	@Override
 	public void addRoute(Route route) throws RoutePersistenceException {
 		logger.debug("addRoute(" + route + ")");
 		EntityManager em = HibernatePersistence.getEntityManager();
 
-		if (route.getRouteGroup() == null) {
-			throw new RoutePersistenceException("Route has no associated Group");
-		}
 		try {
-			route.getRouteGroup().getRoutes().add(route);
 			em.persist(route);
 
 			HibernatePersistence.flush();
-			super.addRoute(route);
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
@@ -178,33 +149,17 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRoute(ch.fork.AdHocRailway.domain.routes.Route)
+	 * @see
+	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRoute(
+	 * ch.fork.AdHocRailway.domain.routes.Route)
 	 */
+	@Override
 	public void deleteRoute(Route route) throws RoutePersistenceException {
 		logger.debug("deleteRoute(" + route + ")");
 		EntityManager em = HibernatePersistence.getEntityManager();
-		if (!route.getRouteItems().isEmpty()) {
-			SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>(route
-					.getRouteItems());
-			for (RouteItem routeitem : routeItems) {
-				deleteRouteItem(routeitem);
-			}
-			// throw new RoutePersistenceException(
-			// "Cannot delete Route-Group with associated Route-Items");
-		}
 		try {
-			RouteGroup group = route.getRouteGroup();
-			group.getRoutes().remove(route);
-
-			Set<RouteItem> routeItems = route.getRouteItems();
-			for (RouteItem ri : routeItems) {
-				route.getRouteItems().remove(ri);
-				em.remove(ri);
-			}
 			em.remove(route);
-
 			HibernatePersistence.flush();
-			super.deleteRoute(route);
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
@@ -219,15 +174,17 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRoute(ch.fork.AdHocRailway.domain.routes.Route)
+	 * @see
+	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRoute(
+	 * ch.fork.AdHocRailway.domain.routes.Route)
 	 */
+	@Override
 	public void updateRoute(Route route) throws RoutePersistenceException {
 		logger.debug("updateRoute(" + route + ")");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.merge(route);
 			HibernatePersistence.flush();
-			super.updateRoute(route);
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
@@ -239,30 +196,29 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		}
 	}
 
-	public ArrayListModel<RouteGroup> getAllRouteGroups()
-			throws RoutePersistenceException {
-		// logger.debug("getAllRouteGroups()");
-		if (super.getAllRouteGroups().isEmpty()) {
-			updateRouteGroupCache();
-		}
-		return super.getAllRouteGroups();
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#getAllRouteGroups()
+	 * @see
+	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#getAllRouteGroups
+	 * ()
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	public SortedSet<RouteGroup> getAllRouteGroupsDB()
+	public List<RouteGroup> getAllRouteGroups()
 			throws RoutePersistenceException {
 		logger.debug("getAllRouteGroupsDB()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
-			List<RouteGroup> routeGroups = em.createQuery("from RouteGroup")
-					.getResultList();
+			List<HibernateRouteGroup> hRouteGroups = em.createQuery(
+					"from HibernateRouteGroup").getResultList();
 
-			return new TreeSet<RouteGroup>(routeGroups);
+			ArrayList<RouteGroup> routeGroups = new ArrayList<RouteGroup>();
+			for (HibernateRouteGroup hGroup : hRouteGroups) {
+				RouteGroup group = HibernateRouteMapper.map(hGroup);
+				routeGroups.add(group);
+			}
+			return routeGroups;
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
@@ -277,15 +233,17 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#addRouteGroup(ch.fork.AdHocRailway.domain.routes.RouteGroup)
+	 * @see
+	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#addRouteGroup
+	 * (ch.fork.AdHocRailway.domain.routes.RouteGroup)
 	 */
+	@Override
 	public void addRouteGroup(RouteGroup routeGroup)
 			throws RoutePersistenceException {
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.persist(routeGroup);
 			HibernatePersistence.flush();
-			super.addRouteGroup(routeGroup);
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
@@ -300,8 +258,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRouteGroup(ch.fork.AdHocRailway.domain.routes.RouteGroup)
+	 * @see
+	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRouteGroup
+	 * (ch.fork.AdHocRailway.domain.routes.RouteGroup)
 	 */
+	@Override
 	public void deleteRouteGroup(RouteGroup routeGroup)
 			throws RoutePersistenceException {
 		EntityManager em = HibernatePersistence.getEntityManager();
@@ -312,7 +273,6 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		try {
 			em.remove(routeGroup);
 			HibernatePersistence.flush();
-			super.deleteRouteGroup(routeGroup);
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
@@ -327,14 +287,43 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRouteGroup(ch.fork.AdHocRailway.domain.routes.RouteGroup)
+	 * @see
+	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRouteGroup
+	 * (ch.fork.AdHocRailway.domain.routes.RouteGroup)
 	 */
+	@Override
 	public void updateRouteGroup(RouteGroup routeGroup) {
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.merge(routeGroup);
 			HibernatePersistence.flush();
-			super.updateRouteGroup(routeGroup);
+		} catch (HibernateException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new RoutePersistenceException("Database Error", x);
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<RouteItem> getAllRouteItems() throws RoutePersistenceException {
+		logger.debug("getAllRouteGroupsDB()");
+		EntityManager em = HibernatePersistence.getEntityManager();
+		try {
+			List<HibernateRouteItem> hRouteGroups = em.createQuery(
+					"from HibernateRouteItem").getResultList();
+
+			ArrayList<RouteItem> routeItems = new ArrayList<RouteItem>();
+			for (HibernateRouteItem hItem : hRouteGroups) {
+				RouteItem item = HibernateRouteMapper.map(hItem);
+				item.setTurnoutId(hItem.getTurnout().getId());
+				routeItems.add(item);
+			}
+			return routeItems;
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
@@ -349,27 +338,19 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#addRouteItem(ch.fork.AdHocRailway.domain.routes.RouteItem)
+	 * @see
+	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#addRouteItem
+	 * (ch.fork.AdHocRailway.domain.routes.RouteItem)
 	 */
+	@Override
 	public void addRouteItem(RouteItem item) throws RoutePersistenceException {
 		EntityManager em = HibernatePersistence.getEntityManager();
 
-		if (item.getTurnout() == null) {
-			throw new RoutePersistenceException(
-					"Route has no associated Turnout");
-		}
 		try {
-			item.getTurnout().getRouteItems().add(item);
-
-			if (item.getRoute() == null) {
-				throw new RoutePersistenceException(
-						"Route has no associated Route");
-			}
 			item.getRoute().getRouteItems().add(item);
 			em.persist(item);
 
 			HibernatePersistence.flush();
-			super.addRouteItem(item);
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
@@ -384,22 +365,18 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRouteItem(ch.fork.AdHocRailway.domain.routes.RouteItem)
+	 * @see
+	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRouteItem
+	 * (ch.fork.AdHocRailway.domain.routes.RouteItem)
 	 */
+	@Override
 	public void deleteRouteItem(RouteItem item)
 			throws RoutePersistenceException {
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
-			Turnout turnout = item.getTurnout();
-			turnout.getRouteItems().remove(item);
-
-			Route route = item.getRoute();
-			route.getRouteItems().remove(item);
-
 			em.remove(item);
 
 			HibernatePersistence.flush();
-			super.deleteRouteItem(item);
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
@@ -414,8 +391,11 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRouteItem(ch.fork.AdHocRailway.domain.routes.RouteItem)
+	 * @see
+	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRouteItem
+	 * (ch.fork.AdHocRailway.domain.routes.RouteItem)
 	 */
+	@Override
 	public void updateRouteItem(RouteItem item)
 			throws RoutePersistenceException {
 		EntityManager em = HibernatePersistence.getEntityManager();
@@ -423,7 +403,6 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 			em.merge(item);
 			em.refresh(item.getRoute());
 			HibernatePersistence.flush();
-			super.updateRouteItem(item);
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
@@ -435,38 +414,9 @@ public class HibernateRoutePersistence extends CachingRoutePersistence {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#getNextFreeRouteNumber()
-	 */
-	public int getNextFreeRouteNumber() {
-		return super.getNextFreeRouteNumber();
-	}
-	
+	@Override
 	public void flush() {
 		HibernatePersistence.flush();
-	}
-
-	public void reload() {
-		
-//		EntityManager em = HibernatePersistence.getEntityManager();
-//		try {
-//			for(RouteGroup g : getAllRouteGroups()) {
-//				em.refresh(g);
-//			}
-//		} catch (HibernateException x) {
-//			em.close();
-//			HibernatePersistence.connect();
-//			throw new RoutePersistenceException("Database Error", x);
-//		} catch (PersistenceException x) {
-//			em.close();
-//			HibernatePersistence.connect();
-//			throw new RoutePersistenceException("Database Error", x);
-//		}
-		super.clear();
-		logger.info("HibernateRoutePersistence reloaded");
-
 	}
 
 }

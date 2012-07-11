@@ -21,7 +21,7 @@ import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 public class SRCPRouteControlAdapter implements RouteControlIface,
 		SRCPRouteChangeListener {
 	private static SRCPRouteControlAdapter	instance;
-	private RoutePersistenceIface			persistence;
+	private RouteManager			persistence;
 	private Map<Route, SRCPRoute>			routesSRCPRoutesMap;
 
 	private Map<SRCPRoute, Route>			SRCPRoutesRoutesMap;
@@ -93,7 +93,7 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 		listeners.remove(listener);
 	}
 
-	public void setRoutePersistence(RoutePersistenceIface routePersistence) {
+	public void setRoutePersistence(RouteManager routePersistence) {
 		this.persistence = routePersistence;
 	}
 

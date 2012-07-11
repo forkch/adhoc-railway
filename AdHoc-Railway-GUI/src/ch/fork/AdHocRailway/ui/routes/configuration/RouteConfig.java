@@ -46,17 +46,16 @@ import javax.swing.table.TableColumn;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
+import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
-import ch.fork.AdHocRailway.ui.TutorialUtils;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.AbstractTableAdapter;
@@ -360,9 +359,9 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 			System.out.println(enteredNumber);
 			Turnout turnout;
 			try {
-				RoutePersistenceIface routePersistence = AdHocRailway
+				RouteManager routePersistence = AdHocRailway
 						.getInstance().getRoutePersistence();
-				TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+				TurnoutManger turnoutPersistence = AdHocRailway
 						.getInstance().getTurnoutPersistence();
 				turnout = turnoutPersistence.getTurnoutByNumber(enteredNumber);
 				System.out.println(turnout);
@@ -498,7 +497,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 			RouteItem routeItem = routeItemModel.getSelection();
 			if (routeItem == null)
 				return;
-			RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
+			RouteManager routePersistence = AdHocRailway.getInstance()
 					.getRoutePersistence();
 			routePersistence.deleteRouteItem(routeItem);
 			List<RouteItem> routeItems = new ArrayList<RouteItem>(selectedRoute
@@ -518,7 +517,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
+			RouteManager routePersistence = AdHocRailway.getInstance()
 					.getRoutePersistence();
 			Route route = presentationModel.getBean();
 			if (route.getId() == 0) {

@@ -20,7 +20,7 @@ package ch.fork.AdHocRailway.domain.routes;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
-public interface RoutePersistenceIface {
+public interface RouteManager {
 
 	public abstract ArrayListModel<Route> getAllRoutes()
 			throws RoutePersistenceException;
@@ -61,13 +61,13 @@ public interface RoutePersistenceIface {
 			throws RoutePersistenceException;
 
 	public int getNextFreeRouteNumberOfGroup(RouteGroup routeGroup);
-	
+
 	public void enlargeRouteGroups();
-	
 
 	public abstract void clear() throws RoutePersistenceException;
+
 	public abstract void flush();
-	
+
 	public abstract void reload();
 
 }

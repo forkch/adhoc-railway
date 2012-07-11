@@ -34,20 +34,19 @@ import javax.swing.SpinnerNumberModel;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
-import ch.fork.AdHocRailway.ui.TutorialUtils;
 import de.dermoba.srcp.client.SRCPSession;
 
 public class TurnoutWarmer extends ConfigurationDialog {
 	private SRCPSession session;
 	private JSpinner turnoutNumberField;
 	private JToggleButton warmButton;
-	private TurnoutPersistenceIface turnoutPersistence;
+	private TurnoutManger turnoutPersistence;
 	private TurnoutControlIface turnoutControl;
 	private TurnoutWarmupThread t;
 

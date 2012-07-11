@@ -110,6 +110,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 	private class MouseAction extends MouseAdapter {
 
+		@Override
 		public void mouseClicked(MouseEvent e) {
 			try {
 				RouteControlIface routeControl = AdHocRailway.getInstance()
@@ -144,10 +145,12 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		}
 	}
 
+	@Override
 	public void routeChanged(Route changedRoute) {
 		if (route.equals(changedRoute)) {
 			SwingUtilities.invokeLater(new Runnable() {
 
+				@Override
 				public void run() {
 					RouteControlIface routeControl = AdHocRailway.getInstance()
 							.getRouteControl();
@@ -167,10 +170,12 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		}
 	}
 
+	@Override
 	public void nextSwitchRouted(Route changedRoute) {
 		if (route.equals(changedRoute)) {
 			SwingUtilities.invokeLater(new Runnable() {
 
+				@Override
 				public void run() {
 					//routingProgress.setValue(routingProgress.getValue() + 1);
 					RouteWidget.this.revalidate();
@@ -180,10 +185,12 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		}
 	}
 
+	@Override
 	public void nextSwitchDerouted(Route changedRoute) {
 		if (route.equals(changedRoute)) {
 			SwingUtilities.invokeLater(new Runnable() {
 
+				@Override
 				public void run() {
 					//routingProgress.setValue(routingProgress.getValue() - 1);
 					RouteWidget.this.revalidate();

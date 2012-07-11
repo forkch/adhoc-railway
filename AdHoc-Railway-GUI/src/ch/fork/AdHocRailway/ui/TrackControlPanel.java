@@ -18,7 +18,6 @@
 
 package ch.fork.AdHocRailway.ui;
 
-import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIconFromIconSet;
 
 import java.awt.BorderLayout;
@@ -38,18 +37,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
+import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
@@ -207,7 +205,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		turnoutControl.removeAllTurnoutChangeListener();
 
-		TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance()
+		TurnoutManger turnoutPersistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
 
 		for (TurnoutGroup turnoutGroup : turnoutPersistence
@@ -244,7 +242,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		RouteControlIface routeControl = AdHocRailway.getInstance()
 				.getRouteControl();
 		routeControl.removeAllRouteChangeListeners();
-		RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
+		RouteManager routePersistence = AdHocRailway.getInstance()
 				.getRoutePersistence();
 
 		for (RouteGroup routeGroup : routePersistence.getAllRouteGroups()) {
@@ -277,7 +275,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				if (selectedSwitchGroup == turnoutGroupsTabbedPane
 						.getSelectedIndex())
 					return;
-				TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+				TurnoutManger turnoutPersistence = AdHocRailway
 						.getInstance().getTurnoutPersistence();
 				if (selectedSwitchGroup < turnoutPersistence
 						.getAllTurnoutGroups().size()) {
@@ -286,7 +284,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				}
 			} else if (trackControlPane.getSelectedIndex() == 1) {
 				int selectedRouteGroup = Integer.parseInt(e.getActionCommand());
-				RoutePersistenceIface routePersistence = AdHocRailway
+				RouteManager routePersistence = AdHocRailway
 						.getInstance().getRoutePersistence();
 				System.out.println("here" + selectedRouteGroup);
 
@@ -315,7 +313,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 			public void run() {
 				try {
-					TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+					TurnoutManger turnoutPersistence = AdHocRailway
 							.getInstance().getTurnoutPersistence();
 					TurnoutControlIface turnoutControl = AdHocRailway
 							.getInstance().getTurnoutControl();
@@ -361,9 +359,9 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 							JOptionPane.QUESTION_MESSAGE,
 							createImageIconFromIconSet("messagebox_info.png"));
 			if (result == JOptionPane.OK_OPTION) {
-				TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+				TurnoutManger turnoutPersistence = AdHocRailway
 						.getInstance().getTurnoutPersistence();
-				RoutePersistenceIface routePersistence = AdHocRailway
+				RouteManager routePersistence = AdHocRailway
 						.getInstance().getRoutePersistence();
 
 				turnoutPersistence.enlargeTurnoutGroups();
@@ -393,7 +391,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			TurnoutGroup selectedTurnoutGroup = indexToTurnoutGroup
 					.get(selectedGroupPane);
 			int nextNumber = 0;
-			TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+			TurnoutManger turnoutPersistence = AdHocRailway
 					.getInstance().getTurnoutPersistence();
 			if (Preferences.getInstance().getBooleanValue(
 					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {

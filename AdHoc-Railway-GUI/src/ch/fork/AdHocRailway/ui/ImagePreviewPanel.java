@@ -25,7 +25,8 @@ public class ImagePreviewPanel extends JPanel
         bg = getBackground();
     }
     
-    public void propertyChange(PropertyChangeEvent e) {
+    @Override
+	public void propertyChange(PropertyChangeEvent e) {
         String propertyName = e.getPropertyName();
         
         // Make sure we are responding to the right event.
@@ -86,7 +87,8 @@ public class ImagePreviewPanel extends JPanel
         image = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
     }
     
-    public void paintComponent(Graphics g) {
+    @Override
+	public void paintComponent(Graphics g) {
         g.setColor(bg);
         
         /*

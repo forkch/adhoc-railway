@@ -25,7 +25,7 @@ import com.jgoodies.binding.list.ArrayListModel;
 
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
 
-public interface TurnoutPersistenceIface {
+public interface TurnoutManger {
 
 	public abstract ArrayListModel<Turnout> getAllTurnouts();
 

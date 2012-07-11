@@ -38,7 +38,7 @@ public interface RouteControlIface {
 	public abstract void previousDeviceToDefault() throws RouteException;
 
 	public abstract void setRoutePersistence(
-			RoutePersistenceIface routePersistence);
+			RouteManager routePersistence);
 
 	public abstract boolean isRouteEnabled(Route route);
 

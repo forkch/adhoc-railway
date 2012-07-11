@@ -22,17 +22,17 @@ import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.routes.RouteManager;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 
 public class XMLExporter {
 	private static Logger	logger	= Logger.getLogger(XMLExporter.class);
 
 	public String export(double version,
-			TurnoutPersistenceIface turnoutPersistence,
+			TurnoutManger turnoutPersistence,
 			LocomotivePersistenceIface locomotivePersistence,
-			RoutePersistenceIface routePersistence)
+			RouteManager routePersistence)
 			throws ConfigurationException {
 
 		String export = "";

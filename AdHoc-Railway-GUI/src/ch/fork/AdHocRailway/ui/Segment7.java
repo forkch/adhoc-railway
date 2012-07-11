@@ -80,18 +80,22 @@ public class Segment7 extends JPanel {
 		enableEvents(AWTEvent.KEY_EVENT_MASK);
 	}
 
+	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(6 * 11, 5 * 20);
 	}
 
+	@Override
 	public Dimension getMinimumSize() {
 		return new Dimension(6 * 11, 5 * 20);
 	}
 
+	@Override
 	public boolean isFocusTraversable() {
 		return true;
 	}
 
+	@Override
 	public void paint(Graphics g) {
 
 		Graphics2D g2d = (Graphics2D) g;

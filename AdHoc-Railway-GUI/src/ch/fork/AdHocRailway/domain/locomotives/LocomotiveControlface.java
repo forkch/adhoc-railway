@@ -25,7 +25,7 @@ import de.dermoba.srcp.model.locomotives.SRCPLocomotiveDirection;
 public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 
 	public abstract void setLocomotivePersistence(
-			LocomotivePersistenceIface persistence);
+			LocomotiveManager persistence);
 
 	/**
 	 * Toggles the direction of the Locomotive

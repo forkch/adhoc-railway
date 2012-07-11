@@ -32,21 +32,20 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 public class ErrorPanel extends JPanel {
 
-	private JTextArea	errorTextArea;
-	private JLabel		iconLabel;
-	private Color		defaultColor;
-	private int			pause	= 5000;
-	private float		alpha	= 1.0f;
-	boolean				active	= true;
-	private String		cause;
-	private String		text;
-	private Icon		icon;
+	private JTextArea errorTextArea;
+	private JLabel iconLabel;
+	private Color defaultColor;
+	private final int pause = 5000;
+	private float alpha = 1.0f;
+	boolean active = true;
+	private String cause;
+	private String text;
+	private Icon icon;
 
 	public ErrorPanel() {
 		initGUI();
@@ -68,10 +67,6 @@ public class ErrorPanel extends JPanel {
 
 		p.add(iconLabel, BorderLayout.WEST);
 		p.add(errorTextArea, BorderLayout.CENTER);
-		JScrollPane pane = new JScrollPane(p,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		// pane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
 		add(p);
 	}
 
@@ -104,6 +99,7 @@ public class ErrorPanel extends JPanel {
 	}
 
 	private class ErrorConfirmAction extends MouseAdapter {
+		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
 				SwingUtilities.invokeLater(closerRunner);
@@ -124,42 +120,42 @@ public class ErrorPanel extends JPanel {
 		g2.setComposite(alphaCompositge);
 	}
 
-	final Runnable	waitRunner		= new Runnable() {
-										public void run() {
-											try {
-												Thread.sleep(pause);
-												Thread closer = new Thread(
-														closerRunner);
-												closer.start();
-											} catch (Exception e) {
-												e.printStackTrace();
-												// can catch
-												// InvocationTargetException
-												// can catch
-												// InterruptedException
-											}
-										}
-									};
+	final Runnable waitRunner = new Runnable() {
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(pause);
+				Thread closer = new Thread(closerRunner);
+				closer.start();
+			} catch (Exception e) {
+				e.printStackTrace();
+				// can catch
+				// InvocationTargetException
+				// can catch
+				// InterruptedException
+			}
+		}
+	};
 
-	final Runnable	closerRunner	= new Runnable() {
-										public void run() {
-											while (active) {
-												repaint();
-												ErrorPanel.this.alpha -= 0.05f;
-												if (ErrorPanel.this.alpha < 0.1f) {
-													active = false;
-												}
-												try {
-													Thread.sleep(50);
-												} catch (InterruptedException e) {
-													e.printStackTrace();
-												}
+	final Runnable closerRunner = new Runnable() {
+		@Override
+		public void run() {
+			while (active) {
+				repaint();
+				ErrorPanel.this.alpha -= 0.05f;
+				if (ErrorPanel.this.alpha < 0.1f) {
+					active = false;
+				}
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 
-											}
-											errorTextArea
-													.setBackground(ErrorPanel.this.defaultColor);
-											errorTextArea.setText("");
-											iconLabel.setIcon(null);
-										}
-									};
+			}
+			errorTextArea.setBackground(ErrorPanel.this.defaultColor);
+			errorTextArea.setText("");
+			iconLabel.setIcon(null);
+		}
+	};
 }

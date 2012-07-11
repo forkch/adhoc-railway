@@ -40,6 +40,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -77,6 +78,7 @@ public class KeyEventDemo extends JFrame implements KeyListener, ActionListener 
 		// Schedule a job for event dispatch thread:
 		// creating and showing this application's GUI.
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				createAndShowGUI();
 			}
@@ -131,21 +133,25 @@ public class KeyEventDemo extends JFrame implements KeyListener, ActionListener 
 	}
 
 	/** Handle the key typed event from the text field. */
+	@Override
 	public void keyTyped(KeyEvent e) {
 		displayInfo(e, "KEY TYPED: ");
 	}
 
 	/** Handle the key pressed event from the text field. */
+	@Override
 	public void keyPressed(KeyEvent e) {
 		displayInfo(e, "KEY PRESSED: ");
 	}
 
 	/** Handle the key released event from the text field. */
+	@Override
 	public void keyReleased(KeyEvent e) {
 		displayInfo(e, "KEY RELEASED: ");
 	}
 
 	/** Handle the button click. */
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		// Clear the text components.
 		displayArea.setText("");
@@ -177,7 +183,7 @@ public class KeyEventDemo extends JFrame implements KeyListener, ActionListener 
 
 		int modifiersEx = e.getModifiersEx();
 		String modString = "extended modifiers = " + modifiersEx;
-		String tmpString = KeyEvent.getModifiersExText(modifiersEx);
+		String tmpString = InputEvent.getModifiersExText(modifiersEx);
 		if (tmpString.length() > 0) {
 			modString += " (" + tmpString + ")";
 		} else {

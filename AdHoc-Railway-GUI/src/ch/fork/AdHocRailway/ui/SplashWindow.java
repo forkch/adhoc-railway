@@ -19,9 +19,7 @@
 package ch.fork.AdHocRailway.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -34,11 +32,11 @@ import javax.swing.SwingUtilities;
 
 public class SplashWindow extends JWindow {
 
-	private int				steps;
-	private int				waitTime;
-	private Icon			icon;
-	private JLabel			msgLabel;
-	private JProgressBar	progressBar;
+	private final int steps;
+	private final int waitTime;
+	private final Icon icon;
+	private JLabel msgLabel;
+	private JProgressBar progressBar;
 
 	public SplashWindow(Icon icon, Frame f, int waitTime, int steps) {
 		super(f);
@@ -48,6 +46,7 @@ public class SplashWindow extends JWindow {
 		initGUI();
 
 		addMouseListener(new MouseAdapter() {
+			@Override
 			public void mousePressed(MouseEvent e) {
 				setVisible(false);
 				dispose();
@@ -66,26 +65,24 @@ public class SplashWindow extends JWindow {
 		progressPanel.add(progressBar, BorderLayout.NORTH);
 		progressPanel.add(msgLabel, BorderLayout.SOUTH);
 		getContentPane().add(progressPanel, BorderLayout.SOUTH);
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension labelSize = l.getPreferredSize();
-		setLocation(screenSize.width / 2 - (labelSize.width / 2),
-				screenSize.height / 2 - (labelSize.height / 2));
 
 		pack();
 	}
 
 	public void nextStep(String msg) {
 		msgLabel.setText(msg);
-		progressBar.setValue(progressBar.getValue()+1);
+		progressBar.setValue(progressBar.getValue() + 1);
 		if (progressBar.getValue() == steps) {
 			final int pause = waitTime;
 			final Runnable closerRunner = new Runnable() {
+				@Override
 				public void run() {
 					setVisible(false);
 					dispose();
 				}
 			};
 			Runnable waitRunner = new Runnable() {
+				@Override
 				public void run() {
 					try {
 						Thread.sleep(pause);

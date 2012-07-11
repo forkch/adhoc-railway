@@ -101,10 +101,12 @@ public class StaticRouteWidget extends JPanel implements RouteChangeListener {
 		add(Box.createVerticalStrut(5));
 	}
 
+	@Override
 	public void routeChanged(Route changedRoute) {
 		if (route.equals(changedRoute)) {
 			SwingUtilities.invokeLater(new Runnable() {
 
+				@Override
 				public void run() {
 					RouteControlIface routeControl = AdHocRailway.getInstance()
 							.getRouteControl();
@@ -122,10 +124,12 @@ public class StaticRouteWidget extends JPanel implements RouteChangeListener {
 		}
 	}
 
+	@Override
 	public void nextSwitchRouted(Route changedRoute) {
 		if (route.equals(changedRoute)) {
 			SwingUtilities.invokeLater(new Runnable() {
 
+				@Override
 				public void run() {
 					routingProgress.setValue(routingProgress.getValue() + 1);
 					StaticRouteWidget.this.revalidate();
@@ -135,11 +139,13 @@ public class StaticRouteWidget extends JPanel implements RouteChangeListener {
 		}
 	}
 
+	@Override
 	public void nextSwitchDerouted(Route changedRoute) {
 
 		if (route.equals(changedRoute)) {
 			SwingUtilities.invokeLater(new Runnable() {
 
+				@Override
 				public void run() {
 					routingProgress.setValue(routingProgress.getValue() - 1);
 					StaticRouteWidget.this.revalidate();

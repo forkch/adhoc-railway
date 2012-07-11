@@ -32,11 +32,11 @@ import javax.swing.KeyStroke;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteException;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
+import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
@@ -228,7 +228,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
         private void handleSwitchChange(ActionEvent e, int enteredNumber)
                 throws TurnoutException {
-            TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+            TurnoutManger turnoutPersistence = AdHocRailway
                     .getInstance().getTurnoutPersistence();
             Turnout searchedTurnout = null;
             searchedTurnout = turnoutPersistence
@@ -263,7 +263,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
             RouteControlIface routeControl = AdHocRailway.getInstance()
                     .getRouteControl();
-            RoutePersistenceIface routePersistence = AdHocRailway.getInstance()
+            RouteManager routePersistence = AdHocRailway.getInstance()
                     .getRoutePersistence();
             searchedRoute = routePersistence.getRouteByNumber(enteredNumber);
             if (searchedRoute == null) {

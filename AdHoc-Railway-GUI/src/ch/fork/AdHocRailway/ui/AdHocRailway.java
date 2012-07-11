@@ -26,26 +26,25 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.Set;
 
 import javax.persistence.PersistenceException;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -55,6 +54,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JRootPane;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -64,32 +64,33 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
-import net.miginfocom.swing.MigLayout;
-
+import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
 import ch.fork.AdHocRailway.domain.locking.LockingException;
-import ch.fork.AdHocRailway.domain.locomotives.FileLocomotivePersistence;
-import ch.fork.AdHocRailway.domain.locomotives.HibernateLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControlAdapter;
-import ch.fork.AdHocRailway.domain.routes.FileRoutePersistence;
-import ch.fork.AdHocRailway.domain.routes.HibernateRoutePersistence;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
+import ch.fork.AdHocRailway.domain.routes.RouteManager;
+import ch.fork.AdHocRailway.domain.routes.RouteMangerImpl;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControlAdapter;
-import ch.fork.AdHocRailway.domain.turnouts.FileTurnoutPersistence;
-import ch.fork.AdHocRailway.domain.turnouts.HibernateTurnoutPersistence;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerImpl;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
+import ch.fork.AdHocRailway.domain.turnouts.XMLTurnoutService;
+import ch.fork.AdHocRailway.services.locomotives.HibernateLocomotiveService;
+import ch.fork.AdHocRailway.services.locomotives.XMLLocomotiveService;
+import ch.fork.AdHocRailway.services.routes.HibernateRouteService;
+import ch.fork.AdHocRailway.services.routes.XMLRouteService;
+import ch.fork.AdHocRailway.services.turnouts.HibernateTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.technical.configuration.exporter.XMLExporter_1_0;
-import ch.fork.AdHocRailway.technical.configuration.importer.XMLImporter;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
 import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
@@ -112,7 +113,7 @@ import de.dermoba.srcp.model.power.SRCPPowerSupplyException;
 
 public class AdHocRailway extends JFrame implements CommandDataListener,
 		InfoDataListener, PreferencesKeys {
-	private static Logger logger = Logger.getLogger(AdHocRailway.class);
+	public static Logger logger = Logger.getLogger(AdHocRailway.class);
 	private static final long serialVersionUID = 1L;
 	private static AdHocRailway instance;
 
@@ -122,11 +123,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private TurnoutControlIface turnoutControl;
 
-	private TurnoutPersistenceIface turnoutPersistence;
+	private TurnoutManger turnoutPersistence;
 
 	private LocomotiveControlface locomotiveControl;
 
-	private LocomotivePersistenceIface locomotivePersistence;
+	private LocomotiveManager locomotivePersistence;
 
 	private SRCPPowerControl powerControl;
 
@@ -148,9 +149,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private JButton disconnectToolBarButton;
 
-	private JComboBox commandHistory;
+	private JComboBox<String> commandHistory;
 
-	private DefaultComboBoxModel commandHistoryModel;
+	private DefaultComboBoxModel<String> commandHistoryModel;
 
 	private JMenuItem daemonConnectItem;
 
@@ -173,7 +174,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private JPanel mainPanel;
 	private JPanel toolbarPanel;
 	public File actualFile;
-	private RoutePersistenceIface routePersistence;
+	private RouteManager routePersistence;
 	private JProgressBar progressBar;
 	public boolean fileMode;
 	private PowerControlPanel powerControlPanel;
@@ -184,60 +185,72 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	public AdHocRailway(String file) {
 		super(TITLE);
-		// PlasticLookAndFeel.setMyCurrentTheme(settings.getSelectedTheme());
-		PlasticLookAndFeel
-				.setTabStyle(PlasticLookAndFeel.TAB_STYLE_DEFAULT_VALUE);
-		PlasticLookAndFeel.setHighContrastFocusColorsEnabled(false);
 		try {
+			PatternLayout layout = new PatternLayout(
+					"%r [%t] %-5p %c{1} - %m%n");
+			logger.addAppender(new FileAppender(layout, System
+					.getProperty("user.home")
+					+ File.separator
+					+ "adhocrailway.log"));
+			// PlasticLookAndFeel.setMyCurrentTheme(settings.getSelectedTheme());
+			PlasticLookAndFeel
+					.setTabStyle(PlasticLookAndFeel.TAB_STYLE_DEFAULT_VALUE);
+			PlasticLookAndFeel.setHighContrastFocusColorsEnabled(false);
+
 			UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
 
-		}
-		instance = this;
-		splash = new SplashWindow(createImageIconFromIconSet("splash.png"),
-				this, 500, 11);
-		setIconImage(createImageIconFromIconSet("RailControl.png").getImage());
+			instance = this;
+			splash = new SplashWindow(createImageIconFromIconSet("splash.png"),
+					this, 500, 11);
+			setIconImage(createImageIconFromIconSet("RailControl.png")
+					.getImage());
 
-		initProceeded("Loading Persistence Layer (Preferences)");
+			initProceeded("Loading Persistence Layer (Preferences)");
 
-		preferences = Preferences.getInstance();
+			preferences = Preferences.getInstance();
 
-		boolean useDatabase = loadPersistenceLayer();
+			boolean useDatabase = loadPersistenceLayer();
 
-		loadControlLayer();
+			loadControlLayer();
 
-		initProceeded("Creating GUI ...");
-		initGUI();
-		logger.info("Finished Creating GUI");
-		splash.setVisible(false);
+			initProceeded("Creating GUI ...");
+			initGUI();
+			logger.info("Finished Creating GUI");
+			splash.setVisible(false);
 
-		if (preferences.getBooleanValue(OPEN_LAST_FILE)) {
-			String lastFile = preferences.getStringValue(LAST_OPENED_FILE);
-			if (lastFile != null && !lastFile.equals("") && !useDatabase) {
+			if (preferences.getBooleanValue(OPEN_LAST_FILE)) {
+				String lastFile = preferences.getStringValue(LAST_OPENED_FILE);
+				if (lastFile != null && !lastFile.equals("") && !useDatabase) {
 
-				new OpenFileAction().openFile(new File(preferences
-						.getStringValue(LAST_OPENED_FILE)));
-			} else if (useDatabase) {
+					new OpenFileAction().openFile(new File(preferences
+							.getStringValue(LAST_OPENED_FILE)));
+				} else if (useDatabase) {
+					updateGUI();
+				}
+			} else {
 				updateGUI();
 			}
-		} else {
-			updateGUI();
+			if (preferences.getBooleanValue(AUTOCONNECT))
+				new ConnectAction().actionPerformed(null);
+
+			// EnablerDisabler.setEnable(false, trackControlPanel);
+			// EnablerDisabler.setEnable(false, locomotiveControlPanel);
+
+			setSize(1200, 1024);
+			// pack();
+			toFront();
+			// TutorialUtils.locateOnOpticalScreenCenter(this);
+
+			initProceeded("RailControl started");
+			updateCommandHistory("RailControl started");
+			setVisible(true);
+		} catch (UnsupportedLookAndFeelException e) {
+			logger.error(e.getMessage(), e);
+			ExceptionProcessor.getInstance().processException(e);
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+			ExceptionProcessor.getInstance().processException(e);
 		}
-		if (preferences.getBooleanValue(AUTOCONNECT))
-			new ConnectAction().actionPerformed(null);
-
-		// EnablerDisabler.setEnable(false, trackControlPanel);
-		// EnablerDisabler.setEnable(false, locomotiveControlPanel);
-
-		setSize(1200, 1024);
-		// pack();
-		toFront();
-		// TutorialUtils.locateOnOpticalScreenCenter(this);
-
-		initProceeded("RailControl started");
-		updateCommandHistory("RailControl started");
-		setVisible(true);
 	}
 
 	public static AdHocRailway getInstance() {
@@ -279,6 +292,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				System.out.println("connect()");
 				fileMode = false;
 			} catch (Exception e) {
+				e.printStackTrace();
 				splash.setVisible(false);
 				fileMode = true;
 				JOptionPane
@@ -293,23 +307,23 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			initProceeded("");
 		}
 		initProceeded("Loading Persistence Layer (Locomotives)");
-		if (useDatabase)
-			locomotivePersistence = HibernateLocomotivePersistence
-					.getInstance();
-		else
-			locomotivePersistence = FileLocomotivePersistence.getInstance();
+		// FIXME
+		// if (useDatabase)
+		locomotivePersistence = LocomotiveManagerImpl.getInstance();
+		// else
+		// locomotivePersistence = FileLocomotivePersistence.getInstance();
 
 		initProceeded("Loading Persistence Layer (Turnouts)");
-		if (useDatabase)
-			turnoutPersistence = HibernateTurnoutPersistence.getInstance();
-		else
-			turnoutPersistence = FileTurnoutPersistence.getInstance();
+		// if (useDatabase)
+		turnoutPersistence = TurnoutManagerImpl.getInstance();
+		// else
+		// turnoutPersistence = XMLTurnoutService.getInstance();
 
 		initProceeded("Loading Persistence Layer (Routes)");
-		if (useDatabase)
-			routePersistence = HibernateRoutePersistence.getInstance();
-		else
-			routePersistence = FileRoutePersistence.getInstance();
+		// if (useDatabase)
+		routePersistence = RouteMangerImpl.getInstance();
+		// else
+		// routePersistence = XMLRouteService.getInstance();
 
 		if (useDatabase) {
 			String host = preferences
@@ -339,8 +353,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		locomotiveControlPanel = new LocomotiveControlPanel();
 		powerControlPanel = new PowerControlPanel();
 
-		MigLayout southPanelLayout = new MigLayout("debug");
-
 		JPanel southPanel = new JPanel(new BorderLayout());
 		southPanel.add(locomotiveControlPanel, BorderLayout.WEST);
 		southPanel.add(powerControlPanel, BorderLayout.CENTER);
@@ -360,10 +372,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	}
 
 	public void updateGUI() {
-		if (!fileMode) {
-			// HibernatePersistence.disconnect();
-			// HibernatePersistence.connect();
-		}
 
 		updatePower();
 		updateTurnouts();
@@ -387,19 +395,20 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	}
 
 	private void updateLocomotives() {
-		locomotivePersistence.reload();
+		// locomotivePersistence.reload();
 		locomotiveControl.update();
 		locomotiveControlPanel.update();
 	}
 
 	private void updateTurnouts() {
-		turnoutPersistence.reload();
-		routePersistence.reload();
+		// turnoutPersistence.reload();
+		// routePersistence.reload();
 		turnoutControl.update();
 		routeControl.update();
 		trackControlPanel.update();
 	}
 
+	@Override
 	public void commandDataSent(String commandData) {
 		if (preferences.getBooleanValue(LOGGING)) {
 			// updateCommandHistory("To Server: " + commandData);
@@ -407,6 +416,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		logger.info("To Server: " + commandData.trim());
 	}
 
+	@Override
 	public void infoDataReceived(String infoData) {
 		if (preferences.getBooleanValue(LOGGING)) {
 			// updateCommandHistory("From Server: " + infoData);
@@ -416,7 +426,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	public void updateCommandHistory(String text) {
 		DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
-		String date = df.format(GregorianCalendar.getInstance().getTime());
+		String date = df.format(Calendar.getInstance().getTime());
 		String fullText = "[" + date + "]: " + text;
 		SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
 
@@ -429,12 +439,13 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private class CommandHistoryUpdater implements Runnable {
 
-		private String text;
+		private final String text;
 
 		public CommandHistoryUpdater(String text) {
 			this.text = text;
 		}
 
+		@Override
 		public void run() {
 			if (commandHistoryModel.getSize() > 100) {
 				commandHistoryModel.removeElementAt(100);
@@ -450,6 +461,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("New\u2026", createImageIconFromIconSet("filenew.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent arg0) {
 
 			if (fileMode) {
@@ -467,17 +479,17 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			} else {
 				HibernatePersistence.disconnect();
 			}
-			FileTurnoutPersistence.getInstance().clear();
-			FileLocomotivePersistence.getInstance().clear();
-			FileRoutePersistence.getInstance().clear();
+			XMLTurnoutService.getInstance().clear();
+			XMLLocomotiveService.getInstance().clear();
+			XMLRouteService.getInstance().clear();
 
 			hostnameLabel.setText(Preferences.getInstance().getStringValue(
 					PreferencesKeys.HOSTNAME));
-			turnoutPersistence = FileTurnoutPersistence.getInstance();
+			// turnoutPersistence = XMLTurnoutService.getInstance();
 			turnoutControl.setPersistence(turnoutPersistence);
-			locomotivePersistence = FileLocomotivePersistence.getInstance();
+			// locomotivePersistence = FileLocomotivePersistence.getInstance();
 			locomotiveControl.setLocomotivePersistence(locomotivePersistence);
-			routePersistence = FileRoutePersistence.getInstance();
+			// routePersistence = XMLRouteService.getInstance();
 			routeControl.setRoutePersistence(routePersistence);
 			setTitle(AdHocRailway.TITLE + " []");
 			actualFile = null;
@@ -494,6 +506,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Open\u2026", createImageIconFromIconSet("fileopen.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser fileChooser = new JFileChooser(new File("."));
 			int returnVal = fileChooser.showOpenDialog(AdHocRailway.this);
@@ -511,25 +524,26 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		public void openFile(final File file) {
 			Thread t = new Thread(new Runnable() {
+				@Override
 				public void run() {
 					try {
 						progressBar.setIndeterminate(true);
-						FileTurnoutPersistence.getInstance().clear();
-						FileLocomotivePersistence.getInstance().clear();
-						FileRoutePersistence.getInstance().clear();
+						XMLTurnoutService.getInstance().clear();
+						XMLLocomotiveService.getInstance().clear();
+						XMLRouteService.getInstance().clear();
 
-						new XMLImporter(file.getAbsolutePath());
+						// new XMLImporter(file.getAbsolutePath());
 
 						hostnameLabel.setText(Preferences.getInstance()
 								.getStringValue(PreferencesKeys.HOSTNAME));
-						turnoutPersistence = FileTurnoutPersistence
-								.getInstance();
+						// turnoutPersistence = FileTurnoutPersistence
+						// .getInstance();
 						turnoutControl.setPersistence(turnoutPersistence);
-						locomotivePersistence = FileLocomotivePersistence
-								.getInstance();
+						// locomotivePersistence = FileLocomotivePersistence
+						// .getInstance();
 						locomotiveControl
 								.setLocomotivePersistence(locomotivePersistence);
-						routePersistence = FileRoutePersistence.getInstance();
+						// routePersistence = XMLRouteService.getInstance();
 						routeControl.setRoutePersistence(routePersistence);
 						setTitle(AdHocRailway.TITLE + " ["
 								+ file.getAbsolutePath() + "]");
@@ -556,9 +570,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 					createImageIconFromIconSet("database.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 
 			Thread t = new Thread(new Runnable() {
+				@Override
 				public void run() {
 					try {
 						progressBar.setIndeterminate(true);
@@ -569,15 +585,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 						HibernatePersistence.connect();
 						hostnameLabel.setText(Preferences.getInstance()
 								.getStringValue(PreferencesKeys.HOSTNAME));
-						turnoutPersistence = HibernateTurnoutPersistence
-								.getInstance();
 						turnoutControl.setPersistence(turnoutPersistence);
-						locomotivePersistence = HibernateLocomotivePersistence
-								.getInstance();
+
 						locomotiveControl
 								.setLocomotivePersistence(locomotivePersistence);
-						routePersistence = HibernateRoutePersistence
-								.getInstance();
 						routeControl.setRoutePersistence(routePersistence);
 						String host = preferences
 								.getStringValue(PreferencesKeys.DATABASE_HOST);
@@ -606,6 +617,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Save", createImageIconFromIconSet("filesave.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (actualFile == null) {
 				new SaveAsAction().actionPerformed(null);
@@ -621,20 +633,15 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	}
 
 	private void saveFile(File file) {
-		try {
-			XMLExporter_1_0 exporter = new XMLExporter_1_0(turnoutPersistence,
-					locomotivePersistence, routePersistence);
-			String xml = exporter.export();
-			OutputStreamWriter out = new OutputStreamWriter(
-					new FileOutputStream(file), "UTF-8");
-			out.write(xml);
-			out.close();
-			actualFile = file;
-		} catch (FileNotFoundException e1) {
-			ExceptionProcessor.getInstance().processException(e1);
-		} catch (IOException e2) {
-			ExceptionProcessor.getInstance().processException(e2);
-		}
+		// XMLExporter_1_0 exporter = new
+		// XMLExporter_1_0(turnoutPersistence,
+		// locomotivePersistence, routePersistence);
+		// String xml = exporter.export();
+		// OutputStreamWriter out = new OutputStreamWriter(
+		// new FileOutputStream(file), "UTF-8");
+		// out.write(xml);
+		// out.close();
+		// actualFile = file;
 		updateCommandHistory("AdHoc-Railway Configuration saved (" + file + ")");
 	}
 
@@ -643,6 +650,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Save as\u2026", createImageIconFromIconSet("filesave.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 
 			JFileChooser fileChooser = new JFileChooser(new File("."));
@@ -663,6 +671,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Import Locomotives");
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 
 		}
@@ -674,6 +683,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Export Locomotives");
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 
 		}
@@ -685,6 +695,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Export to Database");
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			final int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
 					"All data in the database will be deleted prior "
@@ -697,6 +708,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 					createImageIconFromIconSet("messagebox_warning.png"));
 			if (result == JOptionPane.YES_OPTION) {
 				Thread t = new Thread(new Runnable() {
+					@Override
 					public void run() {
 						try {
 							progressBar.setIndeterminate(true);
@@ -705,11 +717,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 							HibernatePersistence.setup();
 							HibernatePersistence.connect();
 
-							new XMLImporter(actualFile.getAbsolutePath(),
-									HibernateTurnoutPersistence.getInstance(),
-									HibernateLocomotivePersistence
-											.getInstance(),
-									HibernateRoutePersistence.getInstance());
+							// FIXME reimplement
+							// new XMLImporter(actualFile.getAbsolutePath(),
+							// HibernateTurnoutPersistence.getInstance(),
+							// HibernateLocomotiveService.getInstance(),
+							// HibernateRoutePersistence.getInstance());
 
 							int result2 = JOptionPane
 									.showConfirmDialog(
@@ -731,16 +743,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 								hostnameLabel.setText(Preferences.getInstance()
 										.getStringValue(
 												PreferencesKeys.HOSTNAME));
-								turnoutPersistence = HibernateTurnoutPersistence
-										.getInstance();
 								turnoutControl
 										.setPersistence(turnoutPersistence);
-								locomotivePersistence = HibernateLocomotivePersistence
-										.getInstance();
 								locomotiveControl
 										.setLocomotivePersistence(locomotivePersistence);
-								routePersistence = HibernateRoutePersistence
-										.getInstance();
 								routeControl
 										.setRoutePersistence(routePersistence);
 
@@ -772,6 +778,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Clear Database");
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
 					"All data in the database will be deleted \n"
@@ -786,9 +793,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 					HibernatePersistence.setup();
 					HibernatePersistence.connect();
 
-					HibernateRoutePersistence.getInstance().clear();
-					HibernateTurnoutPersistence.getInstance().clear();
-					HibernateLocomotivePersistence.getInstance().clear();
+					HibernateRouteService.getInstance().clear();
+					HibernateTurnoutService.getInstance().clear();
+					HibernateLocomotiveService.getInstance().clear();
 				} catch (Exception x) {
 					ExceptionProcessor.getInstance().processException(x);
 				}
@@ -803,6 +810,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Exit", createImageIconFromIconSet("exit.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			// int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
 			// "Really exit ?", "Exit", JOptionPane.YES_NO_OPTION,
@@ -843,6 +851,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Turnouts\u2026", createImageIconFromIconSet("switch.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			TurnoutConfigurationDialog switchConfigDialog = new TurnoutConfigurationDialog(
 					AdHocRailway.this);
@@ -859,6 +868,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Routes\u2026", createImageIconFromIconSet("route_edit.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			RoutesConfigurationDialog routesConfig = new RoutesConfigurationDialog(
 					AdHocRailway.this);
@@ -876,6 +886,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 					createImageIconFromIconSet("locomotive.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			LocomotiveConfigurationDialog locomotiveConfigDialog = new LocomotiveConfigurationDialog(
 					AdHocRailway.this);
@@ -893,6 +904,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 					createImageIconFromIconSet("package_settings.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			PreferencesDialog p = new PreferencesDialog(AdHocRailway.this);
 			if (p.isOkPressed()) {
@@ -915,6 +927,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Connect", createImageIconFromIconSet("daemonconnect.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
 				String host = preferences.getStringValue(HOSTNAME);
@@ -962,6 +975,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 					createImageIconFromIconSet("daemondisconnect.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
 				String host = preferences.getStringValue(HOSTNAME);
@@ -998,6 +1012,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		 * @see java.awt.event.ActionListener
 		 * #actionPerformed(java.awt.event.ActionEvent)
 		 */
+		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
 				powerControl.setAllStates(SRCPPowerState.ON);
@@ -1020,6 +1035,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		 * @see java.awt.event.ActionListener
 		 * #actionPerformed(java.awt.event.ActionEvent)
 		 */
+		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
 				powerControl.setAllStates(SRCPPowerState.OFF);
@@ -1037,6 +1053,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Reset", createImageIconFromIconSet("daemonreset.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			SERVER serverDevice = new SERVER(session);
 			try {
@@ -1053,6 +1070,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			super("Refresh", createImageIconFromIconSet("reload.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			updateGUI();
 		}
@@ -1065,6 +1083,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 					createImageIconFromIconSet("window_fullscreen.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (fullscreen) {
 				dispose();
@@ -1312,8 +1331,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private JPanel initStatusBar() {
 		JPanel statusBarPanel = new JPanel();
-		commandHistoryModel = new DefaultComboBoxModel();
-		commandHistory = new JComboBox(commandHistoryModel);
+		commandHistoryModel = new DefaultComboBoxModel<String>();
+		commandHistory = new JComboBox<String>(commandHistoryModel);
 		commandHistory.setEditable(false);
 		commandHistory.setFocusable(false);
 
@@ -1345,11 +1364,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		return turnoutControl;
 	}
 
-	public TurnoutPersistenceIface getTurnoutPersistence() {
+	public TurnoutManger getTurnoutPersistence() {
 		return turnoutPersistence;
 	}
 
-	public LocomotivePersistenceIface getLocomotivePersistence() {
+	public LocomotiveManager getLocomotivePersistence() {
 		return locomotivePersistence;
 	}
 
@@ -1365,17 +1384,26 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		return session;
 	}
 
-	public RoutePersistenceIface getRoutePersistence() {
+	public RouteManager getRoutePersistence() {
 		return routePersistence;
 	}
 
+	@Override
 	public void commandDataReceived(String response) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void infoDataSent(String infoData) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void registerEscapeKey(Action action) {
+		KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+		JRootPane rootPane = getRootPane();
+		rootPane.registerKeyboardAction(action, stroke,
+				JComponent.WHEN_IN_FOCUSED_WINDOW);
 	}
 }

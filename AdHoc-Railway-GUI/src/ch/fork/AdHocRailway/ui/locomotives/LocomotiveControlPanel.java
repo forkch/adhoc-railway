@@ -21,7 +21,6 @@ package ch.fork.AdHocRailway.ui.locomotives;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,31 +39,8 @@ import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
 
 public class LocomotiveControlPanel extends JPanel {
 
-	private int[][]					keyBindingsUS	= new int[][] {
-			{ KeyEvent.VK_A, KeyEvent.VK_Z, KeyEvent.VK_Q },
-			{ KeyEvent.VK_S, KeyEvent.VK_X, KeyEvent.VK_W },
-			{ KeyEvent.VK_D, KeyEvent.VK_C, KeyEvent.VK_E },
-			{ KeyEvent.VK_F, KeyEvent.VK_V, KeyEvent.VK_R },
-			{ KeyEvent.VK_G, KeyEvent.VK_B, KeyEvent.VK_T },
-			{ KeyEvent.VK_H, KeyEvent.VK_N, KeyEvent.VK_Y },
-			{ KeyEvent.VK_J, KeyEvent.VK_M, KeyEvent.VK_U },
-			{ KeyEvent.VK_K, KeyEvent.VK_COMMA, KeyEvent.VK_I },
-			{ KeyEvent.VK_L, KeyEvent.VK_DECIMAL, KeyEvent.VK_O },
-			{ KeyEvent.VK_COLON, KeyEvent.VK_MINUS, KeyEvent.VK_P } };
-	private int[][]					keyBindingsDE	= new int[][] {
-			{ KeyEvent.VK_A, KeyEvent.VK_Y, KeyEvent.VK_Q },
-			{ KeyEvent.VK_S, KeyEvent.VK_X, KeyEvent.VK_W },
-			{ KeyEvent.VK_D, KeyEvent.VK_C, KeyEvent.VK_E },
-			{ KeyEvent.VK_F, KeyEvent.VK_V, KeyEvent.VK_R },
-			{ KeyEvent.VK_G, KeyEvent.VK_B, KeyEvent.VK_T },
-			{ KeyEvent.VK_H, KeyEvent.VK_N, KeyEvent.VK_Z },
-			{ KeyEvent.VK_J, KeyEvent.VK_M, KeyEvent.VK_U },
-			{ KeyEvent.VK_K, KeyEvent.VK_COMMA, KeyEvent.VK_I },
-			{ KeyEvent.VK_L, KeyEvent.VK_DECIMAL, KeyEvent.VK_O },
-			{ KeyEvent.VK_COLON, KeyEvent.VK_MINUS, KeyEvent.VK_P } };
-	private int[][]					keyBindings		= keyBindingsDE;
-	private List<LocomotiveWidget>	locomotiveWidgets;
-	private JPanel					controlPanel;
+	private final List<LocomotiveWidget> locomotiveWidgets;
+	private JPanel controlPanel;
 
 	public LocomotiveControlPanel() {
 		super();
@@ -78,13 +54,16 @@ public class LocomotiveControlPanel extends JPanel {
 		FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.CENTER, 5, 0);
 		controlPanel = new JPanel(controlPanelLayout);
 		controlPanel.setLayout(controlPanelLayout);
-		
+
 		SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame("Trains");
 		locomotivesFrame.add(controlPanel, BorderLayout.CENTER);
 		add(locomotivesFrame, BorderLayout.NORTH);
 		getActionMap().put("LocomotiveStop", new LocomotiveStopAction());
-		Preferences.getInstance().getKeyBoardLayout().assignKeys
-			(getInputMap(WHEN_IN_FOCUSED_WINDOW), "LocomotiveStop");
+		Preferences
+				.getInstance()
+				.getKeyBoardLayout()
+				.assignKeys(getInputMap(WHEN_IN_FOCUSED_WINDOW),
+						"LocomotiveStop");
 	}
 
 	public void update() {
@@ -94,31 +73,32 @@ public class LocomotiveControlPanel extends JPanel {
 
 		controlPanel.removeAll();
 		locomotiveWidgets.clear();
-		/*if (Preferences.getInstance().getStringValue(
-				PreferencesKeys.KEYBOARD_LAYOUT).equals("Swiss German")) {
-			keyBindings = keyBindingsDE;
-		} else {
-			keyBindings = keyBindingsUS;
-		}*/
+		/*
+		 * if (Preferences.getInstance().getStringValue(
+		 * PreferencesKeys.KEYBOARD_LAYOUT).equals("Swiss German")) {
+		 * keyBindings = keyBindingsDE; } else { keyBindings = keyBindingsUS; }
+		 */
 		for (int i = 0; i < Preferences.getInstance().getIntValue(
 				PreferencesKeys.LOCOMOTIVE_CONTROLES); i++) {
-			LocomotiveWidget w 
-				= new LocomotiveWidget(i, AdHocRailway.getInstance());
+			LocomotiveWidget w = new LocomotiveWidget(i,
+					AdHocRailway.getInstance());
 			w.updateLocomotiveGroups();
 			controlPanel.add(w);
 			locomotiveWidgets.add(w);
 		}
-		//revalidate();
-		//repaint();
+		// revalidate();
+		// repaint();
 	}
 
 	private class LocomotiveStopAction extends AbstractAction implements
 			Runnable {
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			Thread t = new Thread(this);
 			t.start();
 		}
 
+		@Override
 		public void run() {
 			try {
 				LocomotiveControlface locomotiveControl = AdHocRailway
@@ -131,7 +111,7 @@ public class LocomotiveControlPanel extends JPanel {
 							&& !locomotiveControl.isLockedByMe(myLocomotive))
 						continue;
 					locomotiveControl.emergencyStop(myLocomotive);
-					//locomotiveControl.setSpeed(myLocomotive, 0, null);
+					// locomotiveControl.setSpeed(myLocomotive, 0, null);
 					widget.updateWidget();
 				}
 			} catch (LocomotiveException e3) {

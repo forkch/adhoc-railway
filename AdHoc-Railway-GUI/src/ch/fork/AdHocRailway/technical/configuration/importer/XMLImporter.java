@@ -34,9 +34,9 @@ import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.locomotives.FileLocomotivePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
 import ch.fork.AdHocRailway.domain.routes.FileRoutePersistence;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.FileTurnoutPersistence;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.routes.RouteManager;
+import ch.fork.AdHocRailway.domain.turnouts.XMLTurnoutService;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 
 public class XMLImporter extends DefaultHandler implements ContentHandler {
@@ -45,20 +45,20 @@ public class XMLImporter extends DefaultHandler implements ContentHandler {
 															.getLogger(XMLImporter.class);
 	private String						filename;
 	private boolean						supported	= true;
-	private TurnoutPersistenceIface		turnoutPersistence;
+	private TurnoutManger		turnoutPersistence;
 	private LocomotivePersistenceIface	locomotivePersistence;
-	private RoutePersistenceIface		routePersistence;
+	private RouteManager		routePersistence;
 
 	public XMLImporter(String filename) throws ConfigurationException {
-		this(filename, FileTurnoutPersistence.getInstance(),
+		this(filename, XMLTurnoutService.getInstance(),
 				FileLocomotivePersistence.getInstance(),
-				FileRoutePersistence.getInstance());
+				XMLRouteService.getInstance());
 	}
 
 	public XMLImporter(String filename,
-			TurnoutPersistenceIface turnoutPersistence,
+			TurnoutManger turnoutPersistence,
 			LocomotivePersistenceIface locomotivePersistence,
-			RoutePersistenceIface routePersistence)
+			RouteManager routePersistence)
 			throws ConfigurationException {
 		this.filename = filename;
 		this.turnoutPersistence = turnoutPersistence;

@@ -46,15 +46,14 @@ import javax.swing.table.TableColumn;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.TableResizer;
-import ch.fork.AdHocRailway.ui.TutorialUtils;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.AbstractTableAdapter;
@@ -148,7 +147,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 	}
 
 	private void initComponents() {
-		TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance()
+		TurnoutManger turnoutPersistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
 		ArrayListModel<TurnoutGroup> turnoutGroups = turnoutPersistence
 				.getAllTurnoutGroups();
@@ -196,7 +195,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+					TurnoutManger turnoutPersistence = AdHocRailway
 							.getInstance().getTurnoutPersistence();
 					turnoutPersistence.flush();
 				} catch (TurnoutPersistenceException e1) {
@@ -335,7 +334,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 					"Add Turnout-Group", JOptionPane.QUESTION_MESSAGE);
 			if (newGroupName == null)
 				return;
-			TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+			TurnoutManger turnoutPersistence = AdHocRailway
 					.getInstance().getTurnoutPersistence();
 			TurnoutGroup newTurnoutGroup = new TurnoutGroup();
 			newTurnoutGroup.setName(newGroupName);
@@ -381,7 +380,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 							+ "' ?", "Remove Turnout-Group",
 					JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
-				TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+				TurnoutManger turnoutPersistence = AdHocRailway
 						.getInstance().getTurnoutPersistence();
 				previousSelectedGroup = null;
 				turnoutPersistence.deleteTurnoutGroup(groupToDelete);
@@ -408,7 +407,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 				return;
 			}
 			int nextNumber = 0;
-			TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+			TurnoutManger turnoutPersistence = AdHocRailway
 					.getInstance().getTurnoutPersistence();
 			if (Preferences.getInstance().getBooleanValue(
 					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
@@ -468,7 +467,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 				numbers[i] = (Integer) turnoutsTable.getValueAt(row, 0);
 				i++;
 			}
-			TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+			TurnoutManger turnoutPersistence = AdHocRailway
 					.getInstance().getTurnoutPersistence();
 			for (int number : numbers) {
 				turnoutPersistence.deleteTurnout(turnoutPersistence
@@ -489,7 +488,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 			// turnoutModel);
 			int row = turnoutsTable.getSelectedRow();
 			int number = (Integer) turnoutsTable.getValueAt(row, 0);
-			TurnoutPersistenceIface turnoutPersistence = AdHocRailway
+			TurnoutManger turnoutPersistence = AdHocRailway
 					.getInstance().getTurnoutPersistence();
 			PresentationModel<Turnout> model = new PresentationModel<Turnout>(
 					turnoutPersistence.getTurnoutByNumber(number));

@@ -41,12 +41,12 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
-import ch.fork.AdHocRailway.domain.turnouts.FileTurnoutPersistence;
+import ch.fork.AdHocRailway.domain.routes.RouteManager;
+import ch.fork.AdHocRailway.domain.turnouts.XMLTurnoutService;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
@@ -59,25 +59,25 @@ public class XMLImporter_1_0 extends DefaultHandler implements ContentHandler {
 	private Address						actualAddress;
 	private Address[]					actualAddresses;
 	private int							actualAddressCounter	= 0;
-	private TurnoutPersistenceIface		turnoutPersistence;
+	private TurnoutManger		turnoutPersistence;
 	private Locomotive					actualLocomotive;
 	private LocomotiveGroup				actualLocomotiveGroup;
 	private LocomotivePersistenceIface	locomotivePersistence;
-	private RoutePersistenceIface		routePersistence;
+	private RouteManager		routePersistence;
 	private RouteGroup					actualRouteGroup;
 	private Route						actualRoute;
 	private RouteItem					actualRouteItem;
 
 	public XMLImporter_1_0(String filename) {
-		this(filename, FileTurnoutPersistence.getInstance(),
-				FileLocomotivePersistence.getInstance(), FileRoutePersistence
+		this(filename, XMLTurnoutService.getInstance(),
+				FileLocomotivePersistence.getInstance(), XMLRouteService
 						.getInstance());
 	}
 
 	public XMLImporter_1_0(String filename,
-			TurnoutPersistenceIface turnoutPersistence,
+			TurnoutManger turnoutPersistence,
 			LocomotivePersistenceIface locomotivePersistence,
-			RoutePersistenceIface routePersistence) {
+			RouteManager routePersistence) {
 		this.preferences = Preferences.getInstance();
 		this.turnoutPersistence = turnoutPersistence;
 		this.locomotivePersistence = locomotivePersistence;

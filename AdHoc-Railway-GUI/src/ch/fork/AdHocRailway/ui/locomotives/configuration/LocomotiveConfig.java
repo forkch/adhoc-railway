@@ -22,8 +22,6 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -40,19 +38,18 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
 
 import net.miginfocom.swing.MigLayout;
-
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImagePreviewPanel;
 import ch.fork.AdHocRailway.ui.ImageTools;
-import ch.fork.AdHocRailway.ui.TutorialUtils;
 import ch.fork.AdHocRailway.ui.UIConstants;
 
 import com.jgoodies.binding.PresentationModel;
@@ -82,7 +79,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private JComboBox locomotiveTypeComboBox;
 
-	private PresentationModel<Locomotive> presentationModel;
+	private final PresentationModel<Locomotive> presentationModel;
 
 	private JButton okButton;
 
@@ -124,7 +121,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private void initComponents() {
 
-		LocomotivePersistenceIface locomotivePersistence = AdHocRailway
+		LocomotiveManager locomotivePersistence = AdHocRailway
 				.getInstance().getLocomotivePersistence();
 		nameTextField = BasicComponentFactory.createTextField(presentationModel
 				.getModel(Locomotive.PROPERTYNAME_NAME));
@@ -135,38 +132,36 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		descTextField.setColumns(30);
 
 		imageChoserPanel = new JPanel(new MigLayout("fill"));
-		
+
 		imageTextField = BasicComponentFactory
 				.createTextField(presentationModel
 						.getModel(Locomotive.PROPERTYNAME_IMAGE));
 		imageTextField.setColumns(30);
 
-		
+		// imageTextField.addMouseListener(new MouseAdapter() {
+		//
+		// @Override
+		// public void mouseClicked(MouseEvent e) {
+		//
+		// chooseLocoImage();
+		//
+		// }
+		// });
 
-//		imageTextField.addMouseListener(new MouseAdapter() {
-//
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//
-//				chooseLocoImage();
-//
-//			}
-//		});
-		
 		chooseImageButton = new JButton("Choose...");
 		chooseImageButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				chooseLocoImage();
 			}
 		});
-		
+
 		imageChoserPanel.add(imageTextField, "grow");
 		imageChoserPanel.add(chooseImageButton);
 
 		imageLabel = new JLabel();
-		imageLabel.setHorizontalAlignment(JLabel.CENTER);
+		imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		String image = presentationModel.getBean().getImage();
 
 		if (image != null && !image.isEmpty()
@@ -197,7 +192,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		locomotiveTypeComboBox = BasicComponentFactory
 				.createComboBox(new SelectionInList<LocomotiveType>(
 						locomotiveTypes, locomotiveTypeModel));
-		//locomotiveTypeComboBox.setSelectedIndex(0);
+		// locomotiveTypeComboBox.setSelectedIndex(0);
 
 		presentationModel.getBean().addPropertyChangeListener(this);
 		validate(presentationModel.getBean(), null);
@@ -228,7 +223,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 		builder.addLabel("Type", cc.xy(1, 7));
 		builder.add(locomotiveTypeComboBox, cc.xy(3, 7));
-		
+
 		builder.addLabel("Image", cc.xy(1, 9));
 		builder.add(chooseImageButton, cc.xy(3, 9));
 
@@ -261,9 +256,10 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 			super("OK", ImageTools.createImageIconFromIconSet("ok.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			Locomotive locomotive = presentationModel.getBean();
-			LocomotivePersistenceIface locomotivePersistence = AdHocRailway
+			LocomotiveManager locomotivePersistence = AdHocRailway
 					.getInstance().getLocomotivePersistence();
 			if (locomotive.getId() == 0) {
 				locomotivePersistence.addLocomotive(locomotive);
@@ -274,8 +270,9 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 			okPressed = true;
 			LocomotiveConfig.this.setVisible(false);
 
-			if(Preferences.getInstance().getBooleanValue(PreferencesKeys.AUTOSAVE))
-			AdHocRailway.getInstance().saveActualFile();
+			if (Preferences.getInstance().getBooleanValue(
+					PreferencesKeys.AUTOSAVE))
+				AdHocRailway.getInstance().saveActualFile();
 		}
 	}
 
@@ -285,6 +282,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 			super("Cancel", ImageTools.createImageIconFromIconSet("cancel.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			Locomotive locomotive = presentationModel.getBean();
 			locomotive.removePropertyChangeListener(LocomotiveConfig.this);
@@ -298,6 +296,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		return cancelPressed;
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		Locomotive locomotive = presentationModel.getBean();
 		if (!validate(locomotive, event))
@@ -306,7 +305,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private boolean validate(Locomotive locomotive, PropertyChangeEvent event) {
 
-		LocomotivePersistenceIface locomotivePersistence = AdHocRailway
+		LocomotiveManager locomotivePersistence = AdHocRailway
 				.getInstance().getLocomotivePersistence();
 		boolean validate = true;
 		if (event == null
@@ -383,11 +382,11 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 	 */
 	public void chooseLocoImage() {
 		JFileChooser chooser = new JFileChooser("locoimages");
-		
+
 		ImagePreviewPanel preview = new ImagePreviewPanel();
 		chooser.setAccessory(preview);
 		chooser.addPropertyChangeListener(preview);
-		
+
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setFileFilter(new FileFilter() {
 
@@ -415,8 +414,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 			if (image != null && !image.isEmpty()
 					&& new File("locoimages/" + image).exists()) {
 				imageLabel.setIcon(ImageTools
-						.createImageIconFileSystem("locoimages/"
-								+ image));
+						.createImageIconFileSystem("locoimages/" + image));
 				pack();
 			} else {
 				imageLabel.setIcon(null);

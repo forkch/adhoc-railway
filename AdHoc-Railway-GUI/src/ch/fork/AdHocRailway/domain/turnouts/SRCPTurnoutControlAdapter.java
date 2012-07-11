@@ -25,7 +25,7 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 
 	private static SRCPTurnoutControlAdapter	instance;
 
-	private TurnoutPersistenceIface				persistence;
+	private TurnoutManger				persistence;
 	private Map<Turnout, SRCPTurnout>			turnoutsSRCPTurnoutsMap;
 	private Map<SRCPTurnout, Turnout>			SRCPTurnoutsTurnoutsMap;
 	// private Map<SRCPTurnout, List<TurnoutChangeListener>> listeners;
@@ -249,11 +249,11 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 		listeners.remove(listener);
 	}
 
-	public TurnoutPersistenceIface getPersistence() {
+	public TurnoutManger getPersistence() {
 		return persistence;
 	}
 
-	public void setPersistence(TurnoutPersistenceIface persistence) {
+	public void setPersistence(TurnoutManger persistence) {
 		this.persistence = persistence;
 	}
 

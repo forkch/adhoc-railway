@@ -44,11 +44,13 @@ public class Address {
 		this.address = address;
 	}
 
+	@Override
 	public int hashCode() {
 		return Integer.valueOf(bus).hashCode() * 1000
 				+ Integer.valueOf(address).hashCode();
 	}
 
+	@Override
 	public boolean equals(Object anAddress) {
 		if (anAddress instanceof Address) {
 			Address ad = (Address) anAddress;
@@ -60,6 +62,7 @@ public class Address {
 		return false;
 	}
 
+	@Override
 	public String toString() {
 		return " bus: " + bus + " address: " + address + " : "
 				+ addressSwitched;

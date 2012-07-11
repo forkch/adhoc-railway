@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="ch/fork/AdHocRailway/technical/configuration/exporter/|ch/fork/AdHocRailway/technical/configuration/importer/" kind="src" path="src"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="src" path="etc"/>
 	<classpathentry kind="lib" path="lib/c3p0-0.9.1.jar"/>

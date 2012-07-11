@@ -1,7 +1,3 @@
 - Clients duerfen nicht unendlich kommandos senden koennen (queue)
-- Sofort Stopp von Lok's (Bremsverz. ausschalten via F4)
-- Switches should do a GET to determine their state after init, adapt jsrcpc
 
-
-- Defaultbus von Dreiwegweichen
-- Lok hinzufügen funzt nicht
+- Locomotive Widgets sollten Updates via SRCP nur akzeptieren, wenn sie nicht Ursprung der Änderung sind

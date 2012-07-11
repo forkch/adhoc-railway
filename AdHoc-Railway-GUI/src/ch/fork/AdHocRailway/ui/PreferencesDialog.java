@@ -60,7 +60,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private SpinnerNumberModel switchControlNumberModel;
 	private JTextField hostnameTextField;
 	private JTextField portnumberTextField;
-	private JComboBox keyBoardLayoutComboBox;
+	private JComboBox<String> keyBoardLayoutComboBox;
 	private JCheckBox interface6051;
 	private JCheckBox writeLog;
 	private JCheckBox fullscreen;
@@ -113,6 +113,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		JButton okButton = new JButton("OK",
 				ImageTools.createImageIconFromIconSet("ok.png"));
 		okButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				okPressed = true;
 				PreferencesDialog.this.setVisible(false);
@@ -122,6 +123,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				ImageTools.createImageIconFromIconSet("cancel.png"));
 		cancelPressed = false;
 		cancelButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				cancelPressed = true;
 				PreferencesDialog.this.setVisible(false);
@@ -151,7 +153,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		fixedTurnoutGroupSizesCheckBox = new JCheckBox();
 
-		keyBoardLayoutComboBox = new JComboBox();
+		keyBoardLayoutComboBox = new JComboBox<String>();
 		Set<String> sortedLayoutNames = new TreeSet<String>(Preferences
 				.getInstance().getKeyBoardLayoutNames());
 		for (String name : sortedLayoutNames) {
@@ -163,7 +165,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		tabbedTrackCheckBox = new JCheckBox();
 		autoSave = new JCheckBox();
 		openLastFileCheckBox = new JCheckBox();
-		
 
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, fill:pref",
@@ -197,7 +198,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		builder.addLabel("Autosave", cc.xy(1, 17));
 		builder.add(autoSave, cc.xy(3, 17));
-		
+
 		builder.addLabel("Open last file", cc.xy(1, 19));
 		builder.add(openLastFileCheckBox, cc.xy(3, 19));
 
@@ -389,15 +390,15 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				.intValue());
 		p.setBooleanValue(INTERFACE_6051, interface6051.isSelected());
 
-		p.setStringValue(HOSTNAME, (String) hostnameTextField.getText());
+		p.setStringValue(HOSTNAME, hostnameTextField.getText());
 		p.setIntValue(PORT, Integer.parseInt(portnumberTextField.getText()));
 		p.setBooleanValue(AUTOCONNECT, autoconnectCheckBox.isSelected());
 
 		p.setBooleanValue(USE_DATABASE, useDatabaseCheckBox.isSelected());
-		p.setStringValue(DATABASE_HOST, (String) databaseHostField.getText());
-		p.setStringValue(DATABASE_NAME, (String) databaseNameField.getText());
-		p.setStringValue(DATABASE_USER, (String) databaseUserField.getText());
-		p.setStringValue(DATABASE_PWD, (String) databasePasswordField.getText());
+		p.setStringValue(DATABASE_HOST, databaseHostField.getText());
+		p.setStringValue(DATABASE_NAME, databaseNameField.getText());
+		p.setStringValue(DATABASE_USER, databaseUserField.getText());
+		p.setStringValue(DATABASE_PWD, databasePasswordField.getText());
 		try {
 			p.save();
 		} catch (FileNotFoundException e) {

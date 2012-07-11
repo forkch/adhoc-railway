@@ -23,21 +23,21 @@ import java.util.Map;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceIface;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface;
+import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 
 public class XMLExporter_0_2 {
 
 	private StringBuffer				sb;
-	private TurnoutPersistenceIface		turnoutPersistence;
+	private TurnoutManger		turnoutPersistence;
 	private LocomotivePersistenceIface	locomotivePersistence;
 
-	public XMLExporter_0_2(TurnoutPersistenceIface turnoutPersistence,
+	public XMLExporter_0_2(TurnoutManger turnoutPersistence,
 			LocomotivePersistenceIface locomotivePersistence,
-			RoutePersistenceIface routePersistence) {
+			RouteManager routePersistence) {
 		this.turnoutPersistence = turnoutPersistence;
 		this.locomotivePersistence = locomotivePersistence;
 

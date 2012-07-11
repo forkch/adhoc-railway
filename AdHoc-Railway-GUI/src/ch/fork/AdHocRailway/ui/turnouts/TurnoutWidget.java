@@ -35,7 +35,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.UIConstants;
@@ -109,7 +109,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	}
 
 	private void validateTurnout() {
-		TurnoutPersistenceIface turnoutPersistence = AdHocRailway.getInstance()
+		TurnoutManger turnoutPersistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
 		boolean bus1Valid = true;
 		if (turnout.getBus1() == 0) {
