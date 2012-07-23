@@ -447,6 +447,7 @@ public class TurnoutManagerImpl implements TurnoutManger {
 		}
 		for (Turnout turnout : turnoutService.getAllTurnouts()) {
 			idToTurnout.put(turnout.getId(), turnout);
+			numberToTurnoutCache.put(turnout.getNumber(), turnout);
 
 			TurnoutGroup group = idToTurnoutGroup.get(turnout
 					.getTurnoutGroupId());

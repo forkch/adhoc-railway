@@ -44,4 +44,46 @@ public class HibernateTurnoutMapper {
 		return type;
 	}
 
+	public static HibernateTurnout map(Turnout turnout) {
+		HibernateTurnout hTurnout = new HibernateTurnout();
+
+		hTurnout.setId(turnout.getId());
+		hTurnout.setNumber(turnout.getNumber());
+		hTurnout.setBus1(turnout.getBus1());
+		hTurnout.setBus2(turnout.getBus2());
+		hTurnout.setAddress1(turnout.getAddress1());
+		hTurnout.setAddress1Switched(turnout.isAddress1Switched());
+		hTurnout.setAddress2(turnout.getAddress2());
+		hTurnout.setAddress2Switched(turnout.isAddress2Switched());
+		hTurnout.setDefaultState(turnout.getDefaultState());
+		hTurnout.setDefaultStateEnum(turnout.getDefaultStateEnum());
+		hTurnout.setDescription(turnout.getDescription());
+		hTurnout.setOrientation(turnout.getOrientation());
+
+		hTurnout.setTurnoutGroup(map(turnout.getTurnoutGroup()));
+		hTurnout.setTurnoutType(map(turnout.getTurnoutType()));
+
+		return hTurnout;
+	}
+
+	public static HibernateTurnoutGroup map(TurnoutGroup group) {
+		HibernateTurnoutGroup hTurnoutGroup = new HibernateTurnoutGroup();
+
+		hTurnoutGroup.setId(group.getId());
+		hTurnoutGroup.setName(group.getName());
+		hTurnoutGroup.setTurnoutNumberAmount(group.getTurnoutNumberAmount());
+		hTurnoutGroup.setTurnoutNumberOffset(group.getTurnoutNumberOffset());
+
+		return hTurnoutGroup;
+	}
+
+	public static HibernateTurnoutType map(TurnoutType type) {
+		HibernateTurnoutType hTurnoutType = new HibernateTurnoutType();
+
+		hTurnoutType.setId(type.getId());
+		hTurnoutType.setTypeName(type.getTypeName());
+
+		return hTurnoutType;
+	}
+
 }

@@ -20,7 +20,6 @@ package ch.fork.AdHocRailway.services.turnouts;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -31,19 +30,17 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
-import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 
 public class HibernateTurnoutService implements TurnoutService {
-	static Logger logger = Logger.getLogger(HibernateTurnoutService.class);
+	static Logger LOGGER = Logger.getLogger(HibernateTurnoutService.class);
 	private static HibernateTurnoutService instance;
 
 	private HibernateTurnoutService() {
-		logger.info("HibernateTurnoutPersistence loaded");
+		LOGGER.info("HibernateTurnoutPersistence loaded");
 	}
 
 	public static TurnoutService getInstance() {
@@ -55,7 +52,7 @@ public class HibernateTurnoutService implements TurnoutService {
 
 	@Override
 	public void clear() {
-		logger.debug("clear()");
+		LOGGER.debug("clear()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.createNativeQuery("TRUNCATE TABLE turnout").executeUpdate();
@@ -85,15 +82,14 @@ public class HibernateTurnoutService implements TurnoutService {
 	 */
 	@Override
 	public void addTurnout(Turnout turnout) throws TurnoutPersistenceException {
-		logger.debug("addTurnout()");
+		LOGGER.debug("addTurnout()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		if (turnout.getTurnoutGroup() == null) {
 			throw new TurnoutPersistenceException(
 					"Turnout has no associated Group");
 		}
-		turnout.getTurnoutGroup().getTurnouts().add(turnout);
 		try {
-			em.persist(turnout);
+			em.persist(HibernateTurnoutMapper.map(turnout));
 			HibernatePersistence.flush();
 		} catch (HibernateException x) {
 			em.close();
@@ -116,27 +112,33 @@ public class HibernateTurnoutService implements TurnoutService {
 	@Override
 	public void deleteTurnout(Turnout turnout)
 			throws TurnoutPersistenceException {
-		logger.debug("deleteTurnout()");
+		LOGGER.debug("deleteTurnout()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 
-		TurnoutGroup group = turnout.getTurnoutGroup();
-		group.getTurnouts().remove(turnout);
-
-		TurnoutType type = turnout.getTurnoutType();
-		type.getTurnouts().remove(turnout);
-
-		Set<RouteItem> routeItems = turnout.getRouteItems();
-		for (RouteItem ri : routeItems) {
-
-			Route route = ri.getRoute();
-			route.getRouteItems().remove(ri);
-			em.remove(ri);
-
-		}
 		try {
-			em.remove(turnout);
+
+			em.remove(getTurnoutById(turnout.getId()));
 			HibernatePersistence.flush();
 
+		} catch (HibernateException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
+		}
+	}
+
+	private HibernateTurnout getTurnoutById(int id) {
+		LOGGER.debug("getTurnoutById()");
+		EntityManager em = HibernatePersistence.getEntityManager();
+		try {
+			HibernateTurnout hTurnout = (HibernateTurnout) em.createQuery(
+					"from HibernateTurnout where id=" + id).getSingleResult();
+
+			return hTurnout;
 		} catch (HibernateException x) {
 			em.close();
 			HibernatePersistence.connect();
@@ -158,10 +160,12 @@ public class HibernateTurnoutService implements TurnoutService {
 	@Override
 	public void updateTurnout(Turnout turnout)
 			throws TurnoutPersistenceException {
-		logger.debug("updateTurnout()");
+		LOGGER.debug("updateTurnout()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
-			em.merge(turnout);
+			flush();
+			HibernateTurnout hTurnout = HibernateTurnoutMapper.map(turnout);
+			em.merge(hTurnout);
 			HibernatePersistence.flush();
 		} catch (HibernateException x) {
 			em.close();
@@ -184,10 +188,11 @@ public class HibernateTurnoutService implements TurnoutService {
 	@Override
 	public void addTurnoutGroup(TurnoutGroup group)
 			throws TurnoutPersistenceException {
-		logger.debug("addTurnoutGroup()");
+		LOGGER.debug("addTurnoutGroup()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
-			em.persist(group);
+			HibernateTurnoutGroup hGroup = HibernateTurnoutMapper.map(group);
+			em.persist(hGroup);
 
 			HibernatePersistence.flush();
 		} catch (HibernateException x) {
@@ -210,7 +215,7 @@ public class HibernateTurnoutService implements TurnoutService {
 	@Override
 	public void deleteTurnoutGroup(TurnoutGroup group)
 			throws TurnoutPersistenceException {
-		logger.debug("deleteTurnoutGroup()");
+		LOGGER.debug("deleteTurnoutGroup()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 
 		if (!group.getTurnouts().isEmpty()) {
@@ -219,11 +224,12 @@ public class HibernateTurnoutService implements TurnoutService {
 			for (Turnout turnout : turnouts) {
 				deleteTurnout(turnout);
 			}
-			// throw new TurnoutPersistenceException(
-			// "Cannot delete turnout group with associated turnouts");
 		}
 		try {
-			em.remove(group);
+
+			HibernateTurnoutGroup hGroup = HibernateTurnoutMapper.map(group);
+
+			em.remove(hGroup);
 			HibernatePersistence.flush();
 		} catch (HibernateException x) {
 			em.close();
@@ -245,7 +251,7 @@ public class HibernateTurnoutService implements TurnoutService {
 	@Override
 	public void updateTurnoutGroup(TurnoutGroup group)
 			throws TurnoutPersistenceException {
-		logger.debug("updateTurnoutGroup()");
+		LOGGER.debug("updateTurnoutGroup()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.merge(group);
@@ -264,7 +270,7 @@ public class HibernateTurnoutService implements TurnoutService {
 	@Override
 	public void addTurnoutType(TurnoutType type)
 			throws TurnoutPersistenceException {
-		logger.debug("addTurnoutType()");
+		LOGGER.debug("addTurnoutType()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			em.persist(type);
@@ -283,7 +289,7 @@ public class HibernateTurnoutService implements TurnoutService {
 	@Override
 	public void deleteTurnoutType(TurnoutType type)
 			throws TurnoutPersistenceException {
-		logger.debug("deleteTurnoutType()");
+		LOGGER.debug("deleteTurnoutType()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		if (!type.getTurnouts().isEmpty()) {
 			throw new TurnoutPersistenceException(
@@ -310,7 +316,7 @@ public class HibernateTurnoutService implements TurnoutService {
 
 	@Override
 	public List<Turnout> getAllTurnouts() {
-		logger.debug("getAllTurnoutsDB()");
+		LOGGER.debug("getAllTurnoutsDB()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			List<HibernateTurnout> hTurnouts = em.createQuery(
@@ -336,7 +342,7 @@ public class HibernateTurnoutService implements TurnoutService {
 
 	@Override
 	public List<TurnoutGroup> getAllTurnoutGroups() {
-		logger.debug("getAllTurnoutGroups()");
+		LOGGER.debug("getAllTurnoutGroups()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			List<HibernateTurnoutGroup> hTurnoutGroups = em.createQuery(
@@ -359,9 +365,29 @@ public class HibernateTurnoutService implements TurnoutService {
 		}
 	}
 
+	public HibernateTurnoutGroup getTurnoutGroupById(int id) {
+		LOGGER.debug("getTurnoutGroupById()");
+		EntityManager em = HibernatePersistence.getEntityManager();
+		try {
+			HibernateTurnoutGroup hTurnoutGroup = (HibernateTurnoutGroup) em
+					.createQuery("from HibernateTurnoutGroup where id=" + id)
+					.getSingleResult();
+
+			return hTurnoutGroup;
+		} catch (HibernateException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
+		} catch (PersistenceException x) {
+			em.close();
+			HibernatePersistence.connect();
+			throw new TurnoutPersistenceException("Database Error", x);
+		}
+	}
+
 	@Override
 	public SortedSet<TurnoutType> getAllTurnoutTypes() {
-		logger.debug("getAllTurnoutTypessDB()");
+		LOGGER.debug("getAllTurnoutTypessDB()");
 		EntityManager em = HibernatePersistence.getEntityManager();
 		try {
 			List<HibernateTurnoutType> hTurnoutTypes = em.createQuery(

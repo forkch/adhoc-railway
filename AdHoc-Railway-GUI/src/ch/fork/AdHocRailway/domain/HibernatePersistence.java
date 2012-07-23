@@ -118,6 +118,7 @@ public abstract class HibernatePersistence {
 			HibernatePersistence.getEntityManager().getTransaction().begin();
 			throw new TurnoutPersistenceException("Database Error", ex);
 		} catch (PersistenceException x) {
+			x.printStackTrace();
 			em.getTransaction().rollback();
 			em.close();
 			HibernatePersistence.connect();
