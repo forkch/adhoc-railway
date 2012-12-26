@@ -18,25 +18,34 @@
 
 package ch.fork.AdHocRailway.services.routes;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
+import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
+import ch.fork.AdHocRailway.services.HibernateUtil;
+import ch.fork.AdHocRailway.services.turnouts.HibernateTurnout;
 
 public class HibernateRouteService implements RouteService {
 	private static Logger logger = Logger
 			.getLogger(HibernateRouteService.class);
 	private static RouteService instance;
+
+	private final Map<Route, Integer> routeToIdMap = new HashMap<Route, Integer>();
+	private final Map<RouteItem, Integer> routeItemToIdMap = new HashMap<RouteItem, Integer>();
+	private final Map<RouteGroup, Integer> routeGroupToIdMap = new HashMap<RouteGroup, Integer>();
 
 	private HibernateRouteService() {
 		logger.info("HibernateRoutePersistence loaded");
@@ -51,366 +60,286 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void clear() throws RoutePersistenceException {
+	public void clear() throws RouteManagerException {
 		logger.debug("clear()");
-		EntityManager em = HibernatePersistence.getEntityManager();
+		Session session = HibernateUtil.openSession();
+		Transaction transaction = null;
 		try {
-			em.createNativeQuery("TRUNCATE TABLE route_item").executeUpdate();
-			em.createNativeQuery("TRUNCATE TABLE route").executeUpdate();
-			em.createNativeQuery("TRUNCATE TABLE route_group").executeUpdate();
+			transaction = session.beginTransaction();
+			session.createSQLQuery("TRUNCATE TABLE route_item").executeUpdate();
+			session.createSQLQuery("TRUNCATE TABLE route").executeUpdate();
+			session.createSQLQuery("TRUNCATE TABLE route_group")
+					.executeUpdate();
 
-			em.getTransaction().commit();
-			HibernatePersistence.disconnect();
-			HibernatePersistence.connect();
+			routeToIdMap.clear();
+			routeItemToIdMap.clear();
+			routeGroupToIdMap.clear();
+			transaction.commit();
 		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
+			transaction.rollback();
+			throw new RouteManagerException("Database Error", x);
+		} finally {
+			session.close();
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#preload()
-	 */
-	public void preload() {
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#getAllRoutes()
-	 */
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<Route> getAllRoutes() {
-		logger.debug("getAllRoutesDB()");
-		EntityManager em = HibernatePersistence.getEntityManager();
-		try {
-			List<HibernateRoute> hRoutes = em
-					.createQuery("from HibernateRoute").getResultList();
-			HibernatePersistence.flush();
-
-			ArrayList<Route> routes = new ArrayList<Route>();
-			for (HibernateRoute hRoute : hRoutes) {
-				Route route = HibernateRouteMapper.map(hRoute);
-				route.setRouteGroupId(hRoute.getRouteGroup().getId());
-				for (HibernateRouteItem hItem : hRoute.getRouteItems()) {
-					route.addRouteItemId(hItem.getId());
-
-				}
-				routes.add(route);
-			}
-			return routes;
-		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#addRoute(ch.
-	 * fork.AdHocRailway.domain.routes.Route)
-	 */
-	@Override
-	public void addRoute(Route route) throws RoutePersistenceException {
+	public void addRoute(Route route) throws RouteManagerException {
 		logger.debug("addRoute(" + route + ")");
-		EntityManager em = HibernatePersistence.getEntityManager();
 
+		Session session = HibernateUtil.openSession();
+		Transaction transaction = null;
 		try {
-			em.persist(route);
+			transaction = session.beginTransaction();
 
-			HibernatePersistence.flush();
+			HibernateRoute hRoute = HibernateRouteMapper.mapRoute(route);
+			Integer hRouteGroupId = route.getRouteGroup().getId();
+			HibernateRouteGroup hRouteGroup = (HibernateRouteGroup) session
+					.get(HibernateRouteGroup.class, hRouteGroupId);
+
+			hRouteGroup.getRoutes().add(hRoute);
+			hRoute.setRouteGroup(hRouteGroup);
+
+			Integer id = (Integer) session.save(hRoute);
+			route.setId(id);
+			routeToIdMap.put(route, id);
+			transaction.commit();
 		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
+			transaction.rollback();
+			throw new LocomotiveManagerException("Database Error", x);
+		} finally {
+			session.close();
+
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRoute(
-	 * ch.fork.AdHocRailway.domain.routes.Route)
-	 */
 	@Override
-	public void deleteRoute(Route route) throws RoutePersistenceException {
-		logger.debug("deleteRoute(" + route + ")");
-		EntityManager em = HibernatePersistence.getEntityManager();
+	public void deleteRoute(Route route) throws RouteManagerException {
+		logger.debug("deleteRoute()");
+		Session session = HibernateUtil.openSession();
+		Transaction transaction = null;
 		try {
-			em.remove(route);
-			HibernatePersistence.flush();
+			transaction = session.beginTransaction();
+
+			Integer id = route.getId();
+			HibernateRoute hRoute = (HibernateRoute) session.get(
+					HibernateRoute.class, id);
+			session.delete(hRoute);
+			routeToIdMap.remove(route);
+			transaction.commit();
 		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
+			transaction.rollback();
+			throw new LocomotiveManagerException("Database Error", x);
+		} finally {
+			session.close();
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRoute(
-	 * ch.fork.AdHocRailway.domain.routes.Route)
-	 */
 	@Override
-	public void updateRoute(Route route) throws RoutePersistenceException {
+	public void updateRoute(Route route) throws RouteManagerException {
 		logger.debug("updateRoute(" + route + ")");
-		EntityManager em = HibernatePersistence.getEntityManager();
+		Session session = HibernateUtil.openSession();
+		Transaction transaction = null;
 		try {
-			em.merge(route);
-			HibernatePersistence.flush();
+			transaction = session.beginTransaction();
+
+			Integer id = route.getId();
+			HibernateRoute hRoute = (HibernateRoute) session.get(
+					HibernateRoute.class, id);
+
+			HibernateRouteMapper.updateHibernateRoute(hRoute, route);
+			session.update(hRoute);
+			routeToIdMap.put(route, id);
+			transaction.commit();
 		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
+			transaction.rollback();
+			throw new RouteManagerException("Database Error", x);
+		} finally {
+			session.close();
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#getAllRouteGroups
-	 * ()
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<RouteGroup> getAllRouteGroups()
-			throws RoutePersistenceException {
-		logger.debug("getAllRouteGroupsDB()");
-		EntityManager em = HibernatePersistence.getEntityManager();
-		try {
-			List<HibernateRouteGroup> hRouteGroups = em.createQuery(
-					"from HibernateRouteGroup").getResultList();
-
-			ArrayList<RouteGroup> routeGroups = new ArrayList<RouteGroup>();
-			for (HibernateRouteGroup hGroup : hRouteGroups) {
-				RouteGroup group = HibernateRouteMapper.map(hGroup);
-				routeGroups.add(group);
-			}
-			return routeGroups;
-		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#addRouteGroup
-	 * (ch.fork.AdHocRailway.domain.routes.RouteGroup)
-	 */
 	@Override
 	public void addRouteGroup(RouteGroup routeGroup)
-			throws RoutePersistenceException {
-		EntityManager em = HibernatePersistence.getEntityManager();
+			throws RouteManagerException {
+		logger.debug("addRouteGroup");
+		Session session = HibernateUtil.openSession();
+		Transaction transaction = null;
 		try {
-			em.persist(routeGroup);
-			HibernatePersistence.flush();
+			transaction = session.beginTransaction();
+
+			HibernateRouteGroup hRouteGroup = HibernateRouteMapper
+					.map(routeGroup);
+			Integer id = (Integer) session.save(hRouteGroup);
+
+			routeGroup.setId(id);
+			routeGroupToIdMap.put(routeGroup, id);
+			transaction.commit();
 		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
+			transaction.rollback();
+			throw new LocomotiveManagerException("Database Error", x);
+		} finally {
+			session.close();
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRouteGroup
-	 * (ch.fork.AdHocRailway.domain.routes.RouteGroup)
-	 */
 	@Override
 	public void deleteRouteGroup(RouteGroup routeGroup)
-			throws RoutePersistenceException {
-		EntityManager em = HibernatePersistence.getEntityManager();
-		if (!routeGroup.getRoutes().isEmpty()) {
-			throw new RoutePersistenceException(
-					"Cannot delete Route-Group with associated Routes");
-		}
+			throws RouteManagerException {
+		logger.debug("deleteRouteGroup()");
+		Session session = HibernateUtil.openSession();
+		Transaction transaction = null;
 		try {
-			em.remove(routeGroup);
-			HibernatePersistence.flush();
+			transaction = session.beginTransaction();
+			Integer id = routeGroup.getId();
+
+			HibernateRouteGroup hRouteGroup = (HibernateRouteGroup) session
+					.get(HibernateRouteGroup.class, id);
+			session.delete(hRouteGroup);
+			routeGroupToIdMap.remove(routeGroup);
+			transaction.commit();
 		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
+			transaction.rollback();
+			throw new LocomotiveManagerException("Database Error", x);
+		} finally {
+			session.close();
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRouteGroup
-	 * (ch.fork.AdHocRailway.domain.routes.RouteGroup)
-	 */
 	@Override
 	public void updateRouteGroup(RouteGroup routeGroup) {
-		EntityManager em = HibernatePersistence.getEntityManager();
+		logger.debug("updateRouteGroup()");
+		Session session = HibernateUtil.openSession();
+		Transaction transaction = null;
 		try {
-			em.merge(routeGroup);
-			HibernatePersistence.flush();
+			transaction = session.beginTransaction();
+
+			Integer id = routeGroup.getId();
+			HibernateRouteGroup hRoute = (HibernateRouteGroup) session.get(
+					HibernateRouteGroup.class, id);
+
+			HibernateRouteMapper.updateHibernateRouteGroup(hRoute, routeGroup);
+			session.update(hRoute);
+			routeGroupToIdMap.put(routeGroup, id);
+			transaction.commit();
 		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
+			transaction.rollback();
+			throw new LocomotiveManagerException("Database Error", x);
+		} finally {
+			session.close();
 		}
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<RouteItem> getAllRouteItems() throws RoutePersistenceException {
+	@SuppressWarnings({ "rawtypes" })
+	public List<RouteGroup> getAllRouteGroups() throws RouteManagerException {
 		logger.debug("getAllRouteGroupsDB()");
-		EntityManager em = HibernatePersistence.getEntityManager();
+		Session session = HibernateUtil.openSession();
+		Transaction transaction = null;
 		try {
-			List<HibernateRouteItem> hRouteGroups = em.createQuery(
-					"from HibernateRouteItem").getResultList();
+			transaction = session.beginTransaction();
 
-			ArrayList<RouteItem> routeItems = new ArrayList<RouteItem>();
-			for (HibernateRouteItem hItem : hRouteGroups) {
-				RouteItem item = HibernateRouteMapper.map(hItem);
-				item.setTurnoutId(hItem.getTurnout().getId());
-				routeItems.add(item);
+			List hRouteGroups = session.createQuery("from HibernateRouteGroup")
+					.list();
+			List<RouteGroup> routeGroups = new LinkedList<RouteGroup>();
+			routeGroupToIdMap.clear();
+			for (Iterator iterator = hRouteGroups.iterator(); iterator
+					.hasNext();) {
+				HibernateRouteGroup hRouteGroup = (HibernateRouteGroup) iterator
+						.next();
+				RouteGroup routeGroup = HibernateRouteMapper
+						.mapHibernateRouteGroup(hRouteGroup);
+				routeGroups.add(routeGroup);
+				routeGroupToIdMap.put(routeGroup, hRouteGroup.getId());
 			}
-			return routeItems;
+			transaction.commit();
+
+			return routeGroups;
 		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
+			transaction.rollback();
+			throw new LocomotiveManagerException("Database Error", x);
+		} finally {
+			session.close();
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#addRouteItem
-	 * (ch.fork.AdHocRailway.domain.routes.RouteItem)
-	 */
 	@Override
-	public void addRouteItem(RouteItem item) throws RoutePersistenceException {
-		EntityManager em = HibernatePersistence.getEntityManager();
-
+	public void addRouteItem(RouteItem item) throws RouteManagerException {
+		logger.debug("addRouteItem");
+		Session session = HibernateUtil.openSession();
+		Transaction transaction = null;
 		try {
-			item.getRoute().getRouteItems().add(item);
-			em.persist(item);
+			transaction = session.beginTransaction();
 
-			HibernatePersistence.flush();
+			HibernateRouteItem hRouteItem = HibernateRouteMapper
+					.mapRouteItem(item);
+			Integer routeId = item.getRoute().getId();
+			HibernateRoute hRoute = (HibernateRoute) session.get(
+					HibernateRoute.class, routeId);
+			hRoute.getRouteItems().add(hRouteItem);
+			hRouteItem.setRoute(hRoute);
+
+			Integer turnoutId = item.getTurnout().getId();
+			HibernateTurnout hTurnout = (HibernateTurnout) session.get(
+					HibernateTurnout.class, turnoutId);
+			hTurnout.getRouteItems().add(hRouteItem);
+			hRouteItem.setTurnout(hTurnout);
+
+			Integer id = (Integer) session.save(hRouteItem);
+			item.setId(id);
+			routeItemToIdMap.put(item, id);
+			transaction.commit();
 		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
+			transaction.rollback();
+			throw new LocomotiveManagerException("Database Error", x);
+		} finally {
+			session.close();
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRouteItem
-	 * (ch.fork.AdHocRailway.domain.routes.RouteItem)
-	 */
 	@Override
-	public void deleteRouteItem(RouteItem item)
-			throws RoutePersistenceException {
-		EntityManager em = HibernatePersistence.getEntityManager();
+	public void deleteRouteItem(RouteItem item) throws RouteManagerException {
+		logger.debug("deleteRouteItem()");
+		Session session = HibernateUtil.openSession();
+		Transaction transaction = null;
 		try {
-			em.remove(item);
+			transaction = session.beginTransaction();
+			Integer id = item.getId();
 
-			HibernatePersistence.flush();
+			HibernateRouteItem hRouteItem = (HibernateRouteItem) session.get(
+					HibernateRouteItem.class, id);
+			session.delete(hRouteItem);
+			routeItemToIdMap.remove(item);
+			transaction.commit();
 		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
+			transaction.rollback();
+			throw new LocomotiveManagerException("Database Error", x);
+		} finally {
+			session.close();
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRouteItem
-	 * (ch.fork.AdHocRailway.domain.routes.RouteItem)
-	 */
 	@Override
-	public void updateRouteItem(RouteItem item)
-			throws RoutePersistenceException {
-		EntityManager em = HibernatePersistence.getEntityManager();
+	public void updateRouteItem(RouteItem item) throws RouteManagerException {
+		logger.debug("updateRouteGroup()");
+		Session session = HibernateUtil.openSession();
+		Transaction transaction = null;
 		try {
-			em.merge(item);
-			em.refresh(item.getRoute());
-			HibernatePersistence.flush();
+			transaction = session.beginTransaction();
+
+			Integer id = item.getId();
+			HibernateRouteItem hTurnout = (HibernateRouteItem) session.get(
+					HibernateRouteItem.class, id);
+
+			HibernateRouteMapper.updateHibernateRouteItem(hTurnout, item);
+			session.update(hTurnout);
+			routeItemToIdMap.put(item, id);
+			transaction.commit();
 		} catch (HibernateException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
-		} catch (PersistenceException x) {
-			em.close();
-			HibernatePersistence.connect();
-			throw new RoutePersistenceException("Database Error", x);
+			transaction.rollback();
+			throw new LocomotiveManagerException("Database Error", x);
+		} finally {
+			session.close();
 		}
 	}
 

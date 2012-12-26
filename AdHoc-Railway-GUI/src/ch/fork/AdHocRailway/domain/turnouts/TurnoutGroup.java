@@ -46,40 +46,32 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 
 	@Override
 	public int compareTo(TurnoutGroup o) {
-		if (this == o)
-			return 0;
-		if (o == null)
-			return -1;
-		// return name.compareTo(o.getName());
-		if (id > o.getId())
-			return 1;
-		else if (id < o.getId())
-			return -1;
-		else
-			return 0;
+		return name.compareTo(o.getName());
 	}
 
 	@Override
 	public int hashCode() {
-		final int PRIME = 31;
+		final int prime = 31;
 		int result = 1;
-		// result = PRIME * result + id;
-		result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + id;
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		final TurnoutGroup other = (TurnoutGroup) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
+		TurnoutGroup other = (TurnoutGroup) obj;
+		if (id != other.id) {
+			return false;
+		}
 		return true;
 	}
 
@@ -91,29 +83,19 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 	public TurnoutGroup() {
 	}
 
-	public TurnoutGroup(int id, String name, int turnoutNumberOffset,
+	public TurnoutGroup(String name, int turnoutNumberOffset,
 			int turnoutNumberAmount) {
-		this.id = id;
 		this.name = name;
 		this.turnoutNumberOffset = turnoutNumberOffset;
 		this.turnoutNumberAmount = turnoutNumberAmount;
 	}
 
-	public TurnoutGroup(int id, String name, int turnoutNumberOffset,
+	public TurnoutGroup(String name, int turnoutNumberOffset,
 			int turnoutNumberAmount, SortedSet<Turnout> turnouts) {
-		this.id = id;
 		this.name = name;
 		this.turnoutNumberOffset = turnoutNumberOffset;
 		this.turnoutNumberAmount = turnoutNumberAmount;
 		this.turnouts = turnouts;
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getName() {
@@ -157,6 +139,14 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 
 	public void addTurnout(Turnout turnout) {
 		this.turnouts.add(turnout);
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

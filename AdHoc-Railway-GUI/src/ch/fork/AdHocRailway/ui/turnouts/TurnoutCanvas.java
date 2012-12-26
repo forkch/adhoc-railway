@@ -32,13 +32,14 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class TurnoutCanvas extends JPanel {
-	protected Turnout		turnout;
-	protected SRCPTurnoutState	turnoutState	= SRCPTurnoutState.UNDEF;
+	protected Turnout turnout;
+	protected SRCPTurnoutState turnoutState = SRCPTurnoutState.UNDEF;
 
 	public TurnoutCanvas(Turnout turnout) {
 		this.turnout = turnout;
 	}
 
+	@Override
 	public void paintComponent(Graphics g) {
 		if (turnout.isDoubleCross()) {
 			paintDoubleCross(g);
@@ -54,7 +55,7 @@ public class TurnoutCanvas extends JPanel {
 	protected void rotate(Graphics g, BufferedImage img) {
 		Graphics2D g2 = (Graphics2D) g;
 		AffineTransform at = null;
-		switch (turnout.getOrientationEnum()) {
+		switch (turnout.getOrientation()) {
 		case NORTH:
 			at = AffineTransform.getRotateInstance(Math.PI / 2 * 3,
 					(56 + 1) / 2, (56 + 1) / 2);
@@ -86,9 +87,9 @@ public class TurnoutCanvas extends JPanel {
 				.getImage(), 0, 0, this);
 		switch (turnoutState) {
 		case STRAIGHT:
-			g3.drawImage(createImageIcon(
-					"switches/canvas/LED_middle_yellow.png").getImage(), 28, 0,
-					this);
+			g3.drawImage(
+					createImageIcon("switches/canvas/LED_middle_yellow.png")
+							.getImage(), 28, 0, this);
 			g3.drawImage(createImageIcon("switches/canvas/LED_up_white.png")
 					.getImage(), 28, 0, this);
 			break;
@@ -112,17 +113,17 @@ public class TurnoutCanvas extends JPanel {
 				.getImage(), 0, 0, this);
 		rotate(g, img);
 	}
-	
+
 	private void paintCutter(Graphics g) {
 		BufferedImage img = new BufferedImage(56, 35,
 				BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g3 = img.createGraphics();
-		g3.drawImage(createImageIcon("switches/cutter.png")
-				.getImage(), 0, 0, this);
-		
+		g3.drawImage(createImageIcon("switches/cutter.png").getImage(), 0, 0,
+				this);
+
 		rotate(g, img);
 	}
-	
+
 	private void paintDoubleCross(Graphics g) {
 		BufferedImage img = new BufferedImage(56, 35,
 				BufferedImage.TYPE_4BYTE_ABGR);
@@ -144,9 +145,9 @@ public class TurnoutCanvas extends JPanel {
 			break;
 		case RIGHT:
 		case LEFT:
-			g3.drawImage(createImageIcon(
-					"switches/canvas/LED_middle_yellow.png").getImage(), 0, 0,
-					this);
+			g3.drawImage(
+					createImageIcon("switches/canvas/LED_middle_yellow.png")
+							.getImage(), 0, 0, this);
 			g3.drawImage(createImageIcon("switches/canvas/LED_up_white.png")
 					.getImage(), 0, 17, this);
 			g3.drawImage(createImageIcon("switches/canvas/LED_up_yellow.png")
@@ -193,9 +194,9 @@ public class TurnoutCanvas extends JPanel {
 		case STRAIGHT:
 			g3.drawImage(createImageIcon("switches/canvas/LED_up_white.png")
 					.getImage(), 28, 0, this);
-			g3.drawImage(createImageIcon(
-					"switches/canvas/LED_middle_yellow.png").getImage(), 28, 0,
-					this);
+			g3.drawImage(
+					createImageIcon("switches/canvas/LED_middle_yellow.png")
+							.getImage(), 28, 0, this);
 			g3.drawImage(createImageIcon("switches/canvas/LED_down_white.png")
 					.getImage(), 28, 0, this);
 			g3.drawImage(
@@ -229,14 +230,17 @@ public class TurnoutCanvas extends JPanel {
 		rotate(g, img);
 	}
 
+	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(56, 56);
 	}
 
+	@Override
 	public Dimension getMinimumSize() {
 		return getPreferredSize();
 	}
 
+	@Override
 	public boolean isFocusTraversable() {
 		return true;
 	}

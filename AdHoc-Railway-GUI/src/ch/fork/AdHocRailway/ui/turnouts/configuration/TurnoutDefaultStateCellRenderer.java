@@ -25,11 +25,12 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.ImageTools;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class TurnoutDefaultStateCellRenderer extends DefaultTableCellRenderer {
 
+	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
 		JLabel iconLabel = (JLabel) super.getTableCellRendererComponent(table,
@@ -40,7 +41,7 @@ public class TurnoutDefaultStateCellRenderer extends DefaultTableCellRenderer {
 			return iconLabel;
 		}
 		iconLabel.setText("");
-		if (value.equals(SRCPTurnoutState.STRAIGHT)) {
+		if (value.equals(TurnoutState.STRAIGHT)) {
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/default_straight.png"));
 		} else {

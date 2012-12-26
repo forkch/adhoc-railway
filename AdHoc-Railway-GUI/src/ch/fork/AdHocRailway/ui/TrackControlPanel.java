@@ -42,12 +42,14 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutOrientation;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
@@ -55,8 +57,6 @@ import ch.fork.AdHocRailway.ui.turnouts.SwitchProgrammer;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWarmer;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
@@ -64,11 +64,11 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private JTabbedPane turnoutGroupsTabbedPane;
 
-	private Preferences preferences = Preferences.getInstance();
+	private final Preferences preferences = Preferences.getInstance();
 
 	private JTabbedPane trackControlPane;
 
-	private Map<Integer, TurnoutGroup> indexToTurnoutGroup;
+	private final Map<Integer, TurnoutGroup> indexToTurnoutGroup;
 
 	public TrackControlPanel() {
 		this.indexToTurnoutGroup = new HashMap<Integer, TurnoutGroup>();
@@ -126,24 +126,30 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	}
 
 	private void initKeyboardActions() {
-		/*for (int i = 1; i <= 12; i++) {
-			KeyStroke stroke = KeyStroke
-					.getKeyStroke("F" + Integer.toString(i));
-			registerKeyboardAction(new GroupChangeAction(), Integer
-					.toString(i - 1), stroke, WHEN_IN_FOCUSED_WINDOW);
+		/*
+		 * for (int i = 1; i <= 12; i++) { KeyStroke stroke = KeyStroke
+		 * .getKeyStroke("F" + Integer.toString(i)); registerKeyboardAction(new
+		 * GroupChangeAction(), Integer .toString(i - 1), stroke,
+		 * WHEN_IN_FOCUSED_WINDOW);
+		 * 
+		 * }
+		 */
 
-		}*/
-		
-        getActionMap().put("NextSelected", new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                if (trackControlPane.getSelectedIndex() == 0)
-                    trackControlPane.setSelectedIndex(1);
-                else
-                    trackControlPane.setSelectedIndex(0);
-            }
-        });
-        Preferences.getInstance().getKeyBoardLayout().assignKeys
-            (getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW), "NextSelected");
+		getActionMap().put("NextSelected", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (trackControlPane.getSelectedIndex() == 0) {
+					trackControlPane.setSelectedIndex(1);
+				} else {
+					trackControlPane.setSelectedIndex(0);
+				}
+			}
+		});
+		Preferences
+				.getInstance()
+				.getKeyBoardLayout()
+				.assignKeys(getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW),
+						"NextSelected");
 	}
 
 	private void initToolBar() {
@@ -205,7 +211,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		turnoutControl.removeAllTurnoutChangeListener();
 
-		TurnoutManger turnoutPersistence = AdHocRailway.getInstance()
+		TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
 
 		for (TurnoutGroup turnoutGroup : turnoutPersistence
@@ -268,15 +274,17 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private class GroupChangeAction extends AbstractAction {
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (trackControlPane.getSelectedIndex() == 0) {
 				int selectedSwitchGroup = Integer
 						.parseInt(e.getActionCommand());
 				if (selectedSwitchGroup == turnoutGroupsTabbedPane
-						.getSelectedIndex())
+						.getSelectedIndex()) {
 					return;
-				TurnoutManger turnoutPersistence = AdHocRailway
-						.getInstance().getTurnoutPersistence();
+				}
+				TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
+						.getTurnoutPersistence();
 				if (selectedSwitchGroup < turnoutPersistence
 						.getAllTurnoutGroups().size()) {
 					turnoutGroupsTabbedPane
@@ -284,8 +292,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 				}
 			} else if (trackControlPane.getSelectedIndex() == 1) {
 				int selectedRouteGroup = Integer.parseInt(e.getActionCommand());
-				RouteManager routePersistence = AdHocRailway
-						.getInstance().getRoutePersistence();
+				RouteManager routePersistence = AdHocRailway.getInstance()
+						.getRoutePersistence();
 				System.out.println("here" + selectedRouteGroup);
 
 				if (selectedRouteGroup < routePersistence.getAllRouteGroups()
@@ -304,6 +312,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 					createImageIconFromIconSet("switch.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			TurnoutStraighter s = new TurnoutStraighter();
 			s.start();
@@ -311,23 +320,22 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 		private class TurnoutStraighter extends Thread {
 
+			@Override
 			public void run() {
 				try {
-					TurnoutManger turnoutPersistence = AdHocRailway
+					TurnoutManager turnoutPersistence = AdHocRailway
 							.getInstance().getTurnoutPersistence();
 					TurnoutControlIface turnoutControl = AdHocRailway
 							.getInstance().getTurnoutControl();
 					int delay = Preferences.getInstance().getIntValue(
 							PreferencesKeys.ROUTING_DELAY);
 					for (Turnout t : turnoutPersistence.getAllTurnouts()) {
-						/*for (int i = 0; i < 15; i++) {
-							turnoutControl.toggle(t);
-							Thread
-									.sleep(3 * Preferences
-											.getInstance()
-											.getIntValue(
-													PreferencesKeys.ROUTING_DELAY));
-						}*/
+						/*
+						 * for (int i = 0; i < 15; i++) {
+						 * turnoutControl.toggle(t); Thread .sleep(3 *
+						 * Preferences .getInstance() .getIntValue(
+						 * PreferencesKeys.ROUTING_DELAY)); }
+						 */
 						turnoutControl.setDefaultState(t);
 						Thread.sleep(3 * delay);
 					}
@@ -346,6 +354,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			super("Rearranging Turnout and Route numbers (enlarge groups)");
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			int result = JOptionPane
 					.showConfirmDialog(
@@ -359,10 +368,10 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 							JOptionPane.QUESTION_MESSAGE,
 							createImageIconFromIconSet("messagebox_info.png"));
 			if (result == JOptionPane.OK_OPTION) {
-				TurnoutManger turnoutPersistence = AdHocRailway
-						.getInstance().getTurnoutPersistence();
-				RouteManager routePersistence = AdHocRailway
-						.getInstance().getRoutePersistence();
+				TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
+						.getTurnoutPersistence();
+				RouteManager routePersistence = AdHocRailway.getInstance()
+						.getRoutePersistence();
 
 				turnoutPersistence.enlargeTurnoutGroups();
 				routePersistence.enlargeRouteGroups();
@@ -373,9 +382,11 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private class AddTurnoutsAction extends AbstractAction {
 		public AddTurnoutsAction() {
-			super("Add Turnouts\u2026", createImageIconFromIconSet("filenew.png"));
+			super("Add Turnouts\u2026",
+					createImageIconFromIconSet("filenew.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (indexToTurnoutGroup.isEmpty()) {
 				JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
@@ -391,8 +402,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			TurnoutGroup selectedTurnoutGroup = indexToTurnoutGroup
 					.get(selectedGroupPane);
 			int nextNumber = 0;
-			TurnoutManger turnoutPersistence = AdHocRailway
-					.getInstance().getTurnoutPersistence();
+			TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
+					.getTurnoutPersistence();
 			if (Preferences.getInstance().getBooleanValue(
 					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
 				nextNumber = turnoutPersistence
@@ -418,10 +429,9 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 					PreferencesKeys.DEFAULT_TURNOUT_BUS));
 
 			newTurnout.setTurnoutGroup(selectedTurnoutGroup);
-			newTurnout.setDefaultStateEnum(SRCPTurnoutState.STRAIGHT);
-			newTurnout.setOrientationEnum(TurnoutOrientation.EAST);
-			newTurnout.setTurnoutType(turnoutPersistence
-					.getTurnoutType(SRCPTurnoutTypes.DEFAULT));
+			newTurnout.setDefaultState(TurnoutState.STRAIGHT);
+			newTurnout.setOrientation(TurnoutOrientation.EAST);
+			newTurnout.setTurnoutType(TurnoutType.DEFAULT);
 
 			config = new TurnoutConfig(AdHocRailway.getInstance(), newTurnout);
 			// } while (!config.isCancelPressed());
@@ -437,6 +447,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 					createImageIconFromIconSet("switch_programmer.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			new SwitchProgrammer(AdHocRailway.getInstance(), AdHocRailway
 					.getInstance().getSession());
@@ -450,6 +461,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			super("Turnout Warmer\u2026");
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			new TurnoutWarmer(AdHocRailway.getInstance(), AdHocRailway
 					.getInstance().getSession());

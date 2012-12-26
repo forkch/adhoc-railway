@@ -26,13 +26,14 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 
+	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
 		JLabel iconLabel = (JLabel) super.getTableCellRendererComponent(table,
@@ -40,14 +41,14 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		Turnout currentTurnout;
 		iconLabel.setText("");
-		TurnoutManger persistence = AdHocRailway.getInstance()
+		TurnoutManager persistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
 		currentTurnout = persistence.getTurnoutByNumber(Integer
 				.valueOf((Integer) table.getValueAt(row, 0)));
 		if (currentTurnout == null) {
 			return iconLabel;
 		}
-		SRCPTurnoutState routedState = (SRCPTurnoutState) value;
+		TurnoutState routedState = (TurnoutState) value;
 		String stateString = "";
 		switch (routedState) {
 		case STRAIGHT:

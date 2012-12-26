@@ -47,9 +47,10 @@ import javax.swing.table.TableColumn;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
+import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -68,25 +69,23 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
-
 public class RouteConfig extends JDialog implements PropertyChangeListener {
-	private boolean						okPressed;
-	private boolean						cancelPressed;
+	private boolean okPressed;
+	private boolean cancelPressed;
 
-	private PresentationModel<Route>	presentationModel;
-	private JButton						okButton;
-	private JButton						cancelButton;
-	private PanelBuilder				builder;
-	private JSpinner					routeNumberField;
-	private JTextField					routeNameField;
-	private SelectionInList<RouteItem>	routeItemModel;
-	private JTable						routeItemTable;
-	private JButton						addRouteItemButton;
-	private JButton						recordRouteButton;
-	public StringBuffer					enteredNumberKeys;
-	private JButton						removeRouteItemButton;
-	public ThreeDigitDisplay			digitDisplay;
+	private final PresentationModel<Route> presentationModel;
+	private JButton okButton;
+	private JButton cancelButton;
+	private PanelBuilder builder;
+	private JSpinner routeNumberField;
+	private JTextField routeNameField;
+	private SelectionInList<RouteItem> routeItemModel;
+	private JTable routeItemTable;
+	private JButton addRouteItemButton;
+	private JButton recordRouteButton;
+	public StringBuffer enteredNumberKeys;
+	private JButton removeRouteItemButton;
+	public ThreeDigitDisplay digitDisplay;
 
 	public RouteConfig(JDialog owner, Route myRoute) {
 		this(owner, new PresentationModel<Route>(myRoute));
@@ -123,14 +122,13 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 
 		routeNumberField = new JSpinner();
 		routeNumberField.setModel(SpinnerAdapterFactory.createNumberAdapter(
-				presentationModel.getModel(Route.PROPERTYNAME_NUMBER), 1, // defaultValue
+				presentationModel.getModel("number"), 1, // defaultValue
 				0, // minValue
 				1000, // maxValue
 				1)); // step
 
 		routeNameField = BasicComponentFactory
-				.createTextField(presentationModel
-						.getModel(Route.PROPERTYNAME_NAME));
+				.createTextField(presentationModel.getModel("name"));
 		routeNameField.setColumns(5);
 
 		routeItemModel = new SelectionInList<RouteItem>();
@@ -152,7 +150,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 		removeRouteItemButton = new JButton(new RemoveRouteItemAction());
 
 		digitDisplay = new ThreeDigitDisplay();
-		
+
 		okButton = new JButton(new ApplyChangesAction());
 		cancelButton = new JButton(new CancelAction());
 		presentationModel.getBean().addPropertyChangeListener(this);
@@ -194,27 +192,24 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 	}
 
 	// TableModel *************************************************************
-
-	/**
-	 * Describes how to present an Album in a JTable.
-	 */
 	private static final class RouteItemTableModel extends
 			AbstractTableAdapter<RouteItem> {
 
-		private static final String[]	COLUMNS	= { "Turnout Number",
-														"Routed Turnout State" };
+		private static final String[] COLUMNS = { "Turnout Number",
+				"Routed Turnout State" };
 
 		private RouteItemTableModel(ListModel listModel) {
 			super(listModel, COLUMNS);
 		}
 
+		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			RouteItem routeItem = getRow(rowIndex);
 			switch (columnIndex) {
 			case 0:
 				return routeItem.getTurnout().getNumber();
 			case 1:
-				return routeItem.getRoutedStateEnum();
+				return routeItem.getRoutedState();
 			default:
 				throw new IllegalStateException("Unknown column");
 			}
@@ -222,10 +217,12 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		Route route = presentationModel.getBean();
-		if (!validate(route))
+		if (!validate(route)) {
 			return;
+		}
 	}
 
 	private boolean validate(Route route) {
@@ -253,9 +250,11 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 	private class AddRouteItemAction extends AbstractAction {
 
 		public AddRouteItemAction() {
-			super("Add Turnout", ImageTools.createImageIconFromIconSet("add.png"));
+			super("Add Turnout", ImageTools
+					.createImageIconFromIconSet("add.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 
 		}
@@ -263,16 +262,18 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 
 	private class RecordRouteAction extends AbstractAction {
 
-		private boolean	recording;
-		private JWindow	numberDisplayDialog;
+		private boolean recording;
+		private JWindow numberDisplayDialog;
 
 		public RecordRouteAction() {
-			super("Record", ImageTools.createImageIconFromIconSet("record_off.png"));
+			super("Record", ImageTools
+					.createImageIconFromIconSet("record_off.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (!recording) {
-				Route selectedRoute = (Route) (presentationModel.getBean());
+				Route selectedRoute = (presentationModel.getBean());
 				if (selectedRoute == null) {
 					JOptionPane
 							.showMessageDialog(
@@ -284,23 +285,15 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 											.createImageIconFromIconSet("messagebox_critical.png"));
 					return;
 				}
-				
-				//numberDisplayDialog = new JWindow(RouteConfig.this);
-				//numberDisplayDialog.add(digitDisplay);
-				//numberDisplayDialog.pack();
-				//numberDisplayDialog.setAlwaysOnTop(true);
 
-				//TutorialUtils.locateOnOpticalScreenLeft3rd(numberDisplayDialog);
 				recordRouteButton.setIcon(ImageTools
 						.createImageIconFromIconSet("record.png"));
 				initKeyboardActions(selectedRoute);
-				//numberDisplayDialog.setVisible(true);
 				recording = true;
 			} else {
 				recordRouteButton.setIcon(ImageTools
 						.createImageIconFromIconSet("record_off.png"));
 				recording = false;
-				numberDisplayDialog.setVisible(false);
 			}
 		}
 
@@ -310,59 +303,63 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 			JPanel[] panels = new JPanel[] { routeItemPanel, digitDisplay };
 			for (int i = 0; i <= 10; i++) {
 				for (JPanel p : panels) {
-					p.registerKeyboardAction(new NumberEnteredAction(), Integer
-							.toString(i), KeyStroke.getKeyStroke(Integer
-							.toString(i)),
+					p.registerKeyboardAction(new NumberEnteredAction(),
+							Integer.toString(i),
+							KeyStroke.getKeyStroke(Integer.toString(i)),
 							JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-					p.registerKeyboardAction(new NumberEnteredAction(), Integer
-							.toString(i), KeyStroke.getKeyStroke("NUMPAD"
-							+ Integer.toString(i)),
+					p.registerKeyboardAction(
+							new NumberEnteredAction(),
+							Integer.toString(i),
+							KeyStroke.getKeyStroke("NUMPAD"
+									+ Integer.toString(i)),
 							JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 				}
 
 			}
 			for (JPanel p : panels) {
-                KeyBoardLayout kbl 
-                	= Preferences.getInstance().getKeyBoardLayout();
-                InputMap inputMap = p.getInputMap
-                	(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-                p.getActionMap().put("CurvedLeft", new CurvedLeftAction(route));
-                kbl.assignKeys(inputMap, "CurvedLeft");
-                p.getActionMap().put
-                	("CurvedRight", new CurvedRightAction(route));
-                kbl.assignKeys(inputMap, "CurvedRight");
-                p.getActionMap().put("Straight", new StraightAction(route));
-                kbl.assignKeys(inputMap, "Straight");
-                p.getActionMap().put
-                	("EnableRoute", new EnableRouteAction(route));
-                kbl.assignKeys(inputMap, "EnableRoute");
-                p.getActionMap().put
-                	("DisableRoute", new DisableRouteAction(route));
-                kbl.assignKeys(inputMap, "DisableRoute");
+				KeyBoardLayout kbl = Preferences.getInstance()
+						.getKeyBoardLayout();
+				InputMap inputMap = p
+						.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+				p.getActionMap().put("CurvedLeft", new CurvedLeftAction(route));
+				kbl.assignKeys(inputMap, "CurvedLeft");
+				p.getActionMap().put("CurvedRight",
+						new CurvedRightAction(route));
+				kbl.assignKeys(inputMap, "CurvedRight");
+				p.getActionMap().put("Straight", new StraightAction(route));
+				kbl.assignKeys(inputMap, "Straight");
+				p.getActionMap().put("EnableRoute",
+						new EnableRouteAction(route));
+				kbl.assignKeys(inputMap, "EnableRoute");
+				p.getActionMap().put("DisableRoute",
+						new DisableRouteAction(route));
+				kbl.assignKeys(inputMap, "DisableRoute");
 			}
 		}
 	}
 
 	private abstract class SwitchingAction extends AbstractAction {
-		private Route	route;
+		private final Route route;
 
 		public SwitchingAction(Route route) {
 			this.route = route;
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 
 			String enteredNumberAsString = enteredNumberKeys.toString();
-			if (enteredNumberAsString.equals(""))
+			if (enteredNumberAsString.equals("")) {
 				return;
+			}
 			int enteredNumber = Integer.parseInt(enteredNumberAsString);
 			System.out.println(enteredNumber);
 			Turnout turnout;
 			try {
-				RouteManager routePersistence = AdHocRailway
-						.getInstance().getRoutePersistence();
-				TurnoutManger turnoutPersistence = AdHocRailway
-						.getInstance().getTurnoutPersistence();
+				RouteManager routePersistence = AdHocRailway.getInstance()
+						.getRoutePersistence();
+				TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
+						.getTurnoutPersistence();
 				turnout = turnoutPersistence.getTurnoutByNumber(enteredNumber);
 				System.out.println(turnout);
 				if (turnout == null) {
@@ -376,33 +373,33 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 									ImageTools
 											.createImageIconFromIconSet("messagebox_critical.png"));
 				} else {
-					SRCPTurnoutState routedState = null;
+					TurnoutState routedState = null;
 					if (this instanceof CurvedLeftAction) {
 						// ThreeWay LEFT
-						routedState = SRCPTurnoutState.LEFT;
+						routedState = TurnoutState.LEFT;
 					} else if (this instanceof StraightAction) {
 						// ThreeWay STRAIGHT
-						routedState = SRCPTurnoutState.STRAIGHT;
+						routedState = TurnoutState.STRAIGHT;
 					} else if (this instanceof CurvedRightAction) {
 						// ThreeWay RIGHT
-						routedState = SRCPTurnoutState.RIGHT;
+						routedState = TurnoutState.RIGHT;
 					} else if (this instanceof EnableRouteAction) {
 						// CURVED
 						if (!turnout.isThreeWay()) {
-							switch (turnout.getDefaultStateEnum()) {
+							switch (turnout.getDefaultState()) {
 							case STRAIGHT:
-								routedState = SRCPTurnoutState.LEFT;
+								routedState = TurnoutState.LEFT;
 								break;
 							case LEFT:
-								routedState = SRCPTurnoutState.STRAIGHT;
+								routedState = TurnoutState.STRAIGHT;
 								break;
 							}
 						} else {
-							routedState = SRCPTurnoutState.LEFT;
+							routedState = TurnoutState.LEFT;
 						}
 					} else if (this instanceof DisableRouteAction) {
 						// STRAIGHT
-						routedState = turnout.getDefaultStateEnum();
+						routedState = turnout.getDefaultState();
 					}
 
 					RouteItem itemToRemove = null;
@@ -418,7 +415,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 					}
 					RouteItem i = new RouteItem();
 					i.setRoute(route);
-					i.setRoutedStateEnum(routedState);
+					i.setRoutedState(routedState);
 					i.setTurnout(turnout);
 
 					try {
@@ -426,7 +423,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 						List<RouteItem> routeItems = new ArrayList<RouteItem>(
 								route.getRouteItems());
 						routeItemModel.setList(routeItems);
-					} catch (RoutePersistenceException e1) {
+					} catch (RouteManagerException e1) {
 						e1.printStackTrace();
 					}
 				}
@@ -439,38 +436,39 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 		}
 	}
 
-    private class CurvedLeftAction extends SwitchingAction {
-        public CurvedLeftAction(Route route) {
-            super(route);
-        }
-    }
-    
-    private class StraightAction extends SwitchingAction {
-        public StraightAction(Route route) {
-            super(route);
-        }
-    }
-    
-    private class CurvedRightAction extends SwitchingAction {
-        public CurvedRightAction(Route route) {
-            super(route);
-        }
-    }
-    
-    private class EnableRouteAction extends SwitchingAction {
-        public EnableRouteAction(Route route) {
-            super(route);
-        }
-    }
-    
-    private class DisableRouteAction extends SwitchingAction {
-        public DisableRouteAction(Route route) {
-            super(route);
-        }
-    }
-    
+	private class CurvedLeftAction extends SwitchingAction {
+		public CurvedLeftAction(Route route) {
+			super(route);
+		}
+	}
+
+	private class StraightAction extends SwitchingAction {
+		public StraightAction(Route route) {
+			super(route);
+		}
+	}
+
+	private class CurvedRightAction extends SwitchingAction {
+		public CurvedRightAction(Route route) {
+			super(route);
+		}
+	}
+
+	private class EnableRouteAction extends SwitchingAction {
+		public EnableRouteAction(Route route) {
+			super(route);
+		}
+	}
+
+	private class DisableRouteAction extends SwitchingAction {
+		public DisableRouteAction(Route route) {
+			super(route);
+		}
+	}
+
 	private class NumberEnteredAction extends AbstractAction {
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 
 			enteredNumberKeys.append(e.getActionCommand());
@@ -489,19 +487,22 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 	private class RemoveRouteItemAction extends AbstractAction {
 
 		public RemoveRouteItemAction() {
-			super("Remove Turnout", ImageTools.createImageIconFromIconSet("remove.png"));
+			super("Remove Turnout", ImageTools
+					.createImageIconFromIconSet("remove.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
-			Route selectedRoute = (Route) (presentationModel.getBean());
+			Route selectedRoute = (presentationModel.getBean());
 			RouteItem routeItem = routeItemModel.getSelection();
-			if (routeItem == null)
+			if (routeItem == null) {
 				return;
+			}
 			RouteManager routePersistence = AdHocRailway.getInstance()
 					.getRoutePersistence();
 			routePersistence.deleteRouteItem(routeItem);
-			List<RouteItem> routeItems = new ArrayList<RouteItem>(selectedRoute
-					.getRouteItems());
+			List<RouteItem> routeItems = new ArrayList<RouteItem>(
+					selectedRoute.getRouteItems());
 			routeItemModel.setList(routeItems);
 		}
 	}
@@ -516,6 +517,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 			super("OK");
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			RouteManager routePersistence = AdHocRailway.getInstance()
 					.getRoutePersistence();
@@ -528,8 +530,10 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 			okPressed = true;
 			route.removePropertyChangeListener(RouteConfig.this);
 			RouteConfig.this.setVisible(false);
-			if(Preferences.getInstance().getBooleanValue(PreferencesKeys.AUTOSAVE))
-			AdHocRailway.getInstance().saveActualFile();
+			if (Preferences.getInstance().getBooleanValue(
+					PreferencesKeys.AUTOSAVE)) {
+				AdHocRailway.getInstance().saveActualFile();
+			}
 
 		}
 	}
@@ -540,6 +544,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 			super("Cancel");
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			Route route = presentationModel.getBean();
 			route.removePropertyChangeListener(RouteConfig.this);

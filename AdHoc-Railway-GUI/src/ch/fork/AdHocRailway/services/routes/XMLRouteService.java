@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
+import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
 
 public class XMLRouteService implements RouteService {
 	private static Logger logger = Logger.getLogger(XMLRouteService.class);
@@ -43,79 +43,70 @@ public class XMLRouteService implements RouteService {
 	}
 
 	@Override
-	public List<Route> getAllRoutes() throws RoutePersistenceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void addRoute(Route route) throws RoutePersistenceException {
+	public void addRoute(Route route) throws RouteManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void deleteRoute(Route route) throws RoutePersistenceException {
+	public void deleteRoute(Route route) throws RouteManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void updateRoute(Route route) throws RoutePersistenceException {
+	public void updateRoute(Route route) throws RouteManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public List<RouteGroup> getAllRouteGroups()
-			throws RoutePersistenceException {
+	public List<RouteGroup> getAllRouteGroups() throws RouteManagerException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void addRouteGroup(RouteGroup routeGroup)
-			throws RoutePersistenceException {
+			throws RouteManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void deleteRouteGroup(RouteGroup routeGroup)
-			throws RoutePersistenceException {
+			throws RouteManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void updateRouteGroup(RouteGroup routeGroup)
-			throws RoutePersistenceException {
+			throws RouteManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void addRouteItem(RouteItem item) throws RoutePersistenceException {
+	public void addRouteItem(RouteItem item) throws RouteManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void deleteRouteItem(RouteItem item)
-			throws RoutePersistenceException {
+	public void deleteRouteItem(RouteItem item) throws RouteManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void updateRouteItem(RouteItem item)
-			throws RoutePersistenceException {
+	public void updateRouteItem(RouteItem item) throws RouteManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void clear() throws RoutePersistenceException {
+	public void clear() throws RouteManagerException {
 		// TODO Auto-generated method stub
 
 	}
@@ -126,9 +117,4 @@ public class XMLRouteService implements RouteService {
 
 	}
 
-	@Override
-	public List<RouteItem> getAllRouteItems() throws RoutePersistenceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

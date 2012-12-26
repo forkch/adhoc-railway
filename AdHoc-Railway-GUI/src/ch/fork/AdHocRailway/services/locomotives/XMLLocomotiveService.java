@@ -25,8 +25,7 @@ import org.apache.log4j.Logger;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceException;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
 
 public class XMLLocomotiveService implements LocomotiveService {
 	private static XMLLocomotiveService instance;
@@ -71,85 +70,52 @@ public class XMLLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public SortedSet<Locomotive> getAllLocomotives()
-			throws LocomotivePersistenceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void addLocomotive(Locomotive locomotive)
-			throws LocomotivePersistenceException {
+			throws LocomotiveManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void deleteLocomotive(Locomotive locomotive)
-			throws LocomotivePersistenceException {
+			throws LocomotiveManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void updateLocomotive(Locomotive locomotive)
-			throws LocomotivePersistenceException {
+			throws LocomotiveManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
-			throws LocomotivePersistenceException {
+			throws LocomotiveManagerException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void addLocomotiveGroup(LocomotiveGroup group)
-			throws LocomotivePersistenceException {
+			throws LocomotiveManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void deleteLocomotiveGroup(LocomotiveGroup group)
-			throws LocomotivePersistenceException {
+			throws LocomotiveManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void updateLocomotiveGroup(LocomotiveGroup group)
-			throws LocomotivePersistenceException {
+			throws LocomotiveManagerException {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
-	public SortedSet<LocomotiveType> getAllLocomotiveTypes()
-			throws LocomotivePersistenceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void addLocomotiveType(LocomotiveType type)
-			throws LocomotivePersistenceException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deleteLocomotiveType(LocomotiveType type)
-			throws LocomotivePersistenceException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void flush() {
-		// TODO Auto-generated method stub
-
-	}
 }

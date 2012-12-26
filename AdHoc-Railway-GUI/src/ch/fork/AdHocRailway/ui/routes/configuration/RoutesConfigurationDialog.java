@@ -43,7 +43,7 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
+import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
@@ -62,28 +62,28 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class RoutesConfigurationDialog extends JDialog {
 
-	private JList						routeGroupList;
+	private JList routeGroupList;
 
-	private JButton						addRouteGroupButton;
+	private JButton addRouteGroupButton;
 
-	private JButton						removeRouteGroupButton;
+	private JButton removeRouteGroupButton;
 
-	private JList						routesList;
+	private JList routesList;
 
-	private JButton						addRouteButton;
+	private JButton addRouteButton;
 
-	private JButton						removeRouteButton;
+	private JButton removeRouteButton;
 
-	private SelectionInList<RouteGroup>	routeGroupModel;
-	private JButton						okButton;
-	protected boolean					okPressed;
-	private SelectionInList<Route>		routesModel;
-	private PresentationModel<Route>	routeModel;
-	private SelectionInList<RouteItem>	routeItemModel;
-	public StringBuffer					enteredNumberKeys;
-	private PanelBuilder				builder;
-	private RouteGroupConfigPanel		routeGroupConfig;
-	public ThreeDigitDisplay			digitDisplay;
+	private SelectionInList<RouteGroup> routeGroupModel;
+	private JButton okButton;
+	protected boolean okPressed;
+	private SelectionInList<Route> routesModel;
+	private PresentationModel<Route> routeModel;
+	private SelectionInList<RouteItem> routeItemModel;
+	public StringBuffer enteredNumberKeys;
+	private PanelBuilder builder;
+	private RouteGroupConfigPanel routeGroupConfig;
+	public ThreeDigitDisplay digitDisplay;
 
 	public RoutesConfigurationDialog(JFrame parent) {
 		super(parent, "Edit Routes", true);
@@ -143,8 +143,8 @@ public class RoutesConfigurationDialog extends JDialog {
 	private void initComponents() {
 		RouteManager routePersistence = AdHocRailway.getInstance()
 				.getRoutePersistence();
-		ArrayListModel<RouteGroup> routeGroups = routePersistence
-				.getAllRouteGroups();
+		ArrayListModel<RouteGroup> routeGroups = new ArrayListModel<RouteGroup>(
+				routePersistence.getAllRouteGroups());
 		routeGroupModel = new SelectionInList<RouteGroup>(
 				(ListModel) routeGroups);
 
@@ -166,14 +166,16 @@ public class RoutesConfigurationDialog extends JDialog {
 		addRouteButton = new JButton(new AddRouteAction());
 		removeRouteButton = new JButton(new RemoveRouteAction());
 
-		okButton = new JButton("OK", ImageTools.createImageIconFromIconSet("ok.png"));
+		okButton = new JButton("OK",
+				ImageTools.createImageIconFromIconSet("ok.png"));
 		okButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					RouteManager routePersistence = AdHocRailway
-							.getInstance().getRoutePersistence();
+					RouteManager routePersistence = AdHocRailway.getInstance()
+							.getRoutePersistence();
 					routePersistence.flush();
-				} catch (RoutePersistenceException e1) {
+				} catch (RouteManagerException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
 				} finally {
 					okPressed = true;
@@ -191,6 +193,7 @@ public class RoutesConfigurationDialog extends JDialog {
 		routesList.addListSelectionListener(new RouteSelectionHandler());
 		routesList.addMouseListener(new MouseAdapter() {
 
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2
 						&& e.getButton() == MouseEvent.BUTTON1) {
@@ -207,15 +210,19 @@ public class RoutesConfigurationDialog extends JDialog {
 	private final class RouteGroupSelectionHandler implements
 			ListSelectionListener {
 
+		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			if (e.getValueIsAdjusting())
+			if (e.getValueIsAdjusting()) {
 				return;
-			if (routeGroupList.getSelectedIndex() == -1)
+			}
+			if (routeGroupList.getSelectedIndex() == -1) {
 				routeGroupList.setSelectedIndex(0);
+			}
 			RouteGroup selectedGroup = (RouteGroup) routeGroupList
 					.getSelectedValue();
-			if (selectedGroup == null)
+			if (selectedGroup == null) {
 				return;
+			}
 			routesList.setSelectedIndex(-1);
 			routeGroupConfig.setRouteGroup(selectedGroup);
 			List<Route> routes = new ArrayList<Route>(selectedGroup.getRoutes());
@@ -228,14 +235,18 @@ public class RoutesConfigurationDialog extends JDialog {
 	 */
 	private final class RouteSelectionHandler implements ListSelectionListener {
 
+		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			if (e.getValueIsAdjusting())
+			if (e.getValueIsAdjusting()) {
 				return;
-			if (routesList.getSelectedIndex() == -1)
+			}
+			if (routesList.getSelectedIndex() == -1) {
 				routesList.setSelectedIndex(0);
+			}
 			Route selectedRoute = (Route) routesList.getSelectedValue();
-			if (selectedRoute == null)
+			if (selectedRoute == null) {
 				return;
+			}
 		}
 	}
 
@@ -283,14 +294,16 @@ public class RoutesConfigurationDialog extends JDialog {
 			super("Add Group", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			String newRouteGroupName = JOptionPane.showInputDialog(
 					RoutesConfigurationDialog.this,
 					"Enter the name of the new route group", "Add route group",
 					JOptionPane.QUESTION_MESSAGE);
 
-			if (newRouteGroupName == null || newRouteGroupName.equals(""))
+			if (newRouteGroupName == null || newRouteGroupName.equals("")) {
 				return;
+			}
 
 			RouteGroup newRouteGroup = new RouteGroup();
 			newRouteGroup.setName(newRouteGroupName);
@@ -318,9 +331,11 @@ public class RoutesConfigurationDialog extends JDialog {
 	private class RemoveRouteGroupAction extends AbstractAction {
 
 		public RemoveRouteGroupAction() {
-			super("Remove Group", ImageTools.createImageIconFromIconSet("remove.png"));
+			super("Remove Group", ImageTools
+					.createImageIconFromIconSet("remove.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			RouteGroup routeGroupToDelete = (RouteGroup) (routeGroupList
 					.getSelectedValue());
@@ -337,11 +352,11 @@ public class RoutesConfigurationDialog extends JDialog {
 					"Remove Route-Group", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
 				try {
-					RouteManager routePersistence = AdHocRailway
-							.getInstance().getRoutePersistence();
+					RouteManager routePersistence = AdHocRailway.getInstance()
+							.getRoutePersistence();
 					routePersistence.deleteRouteGroup(routeGroupToDelete);
 					routeGroupConfig.setRouteGroup(null);
-				} catch (RoutePersistenceException e1) {
+				} catch (RouteManagerException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
 				}
 			}
@@ -359,6 +374,7 @@ public class RoutesConfigurationDialog extends JDialog {
 			super("Add Route", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			RouteGroup selectedRouteGroup = (RouteGroup) (routeGroupList
 					.getSelectedValue());
@@ -372,8 +388,9 @@ public class RoutesConfigurationDialog extends JDialog {
 					RoutesConfigurationDialog.this,
 					"Enter the name of the new Route", "Add Route",
 					JOptionPane.QUESTION_MESSAGE);
-			if (newRouteName == null || newRouteName.equals(""))
+			if (newRouteName == null || newRouteName.equals("")) {
 				return;
+			}
 			int nextNumber = 0;
 			RouteManager routePersistence = AdHocRailway.getInstance()
 					.getRoutePersistence();
@@ -401,10 +418,10 @@ public class RoutesConfigurationDialog extends JDialog {
 			try {
 				routePersistence.addRoute(newRoute);
 
-				List<Route> routes = new ArrayList<Route>(selectedRouteGroup
-						.getRoutes());
+				List<Route> routes = new ArrayList<Route>(
+						selectedRouteGroup.getRoutes());
 				routesModel.setList(routes);
-			} catch (RoutePersistenceException e1) {
+			} catch (RouteManagerException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
 			}
 
@@ -412,6 +429,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	}
 
 	private class EditRouteAction extends AbstractAction {
+		@Override
 		public void actionPerformed(ActionEvent e) {
 
 			// PresentationModel<Turnout> model = new
@@ -419,8 +437,6 @@ public class RoutesConfigurationDialog extends JDialog {
 			// turnoutModel);
 			Route route = (Route) routesList.getSelectedValue();
 			PresentationModel<Route> model = new PresentationModel<Route>(route);
-			if (model == null)
-				return;
 			new RouteConfig(RoutesConfigurationDialog.this, model);
 		}
 	}
@@ -428,9 +444,11 @@ public class RoutesConfigurationDialog extends JDialog {
 	private class RemoveRouteAction extends AbstractAction {
 
 		public RemoveRouteAction() {
-			super("Remove Route", ImageTools.createImageIconFromIconSet("remove.png"));
+			super("Remove Route", ImageTools
+					.createImageIconFromIconSet("remove.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			RouteGroup selectedRouteGroup = (RouteGroup) (routeGroupList
 					.getSelectedValue());
@@ -447,15 +465,15 @@ public class RoutesConfigurationDialog extends JDialog {
 					JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
 				try {
-					RouteManager routePersistence = AdHocRailway
-							.getInstance().getRoutePersistence();
+					RouteManager routePersistence = AdHocRailway.getInstance()
+							.getRoutePersistence();
 					routePersistence.deleteRoute(routeToDelete);
 
 					List<Route> routes = new ArrayList<Route>(
 							selectedRouteGroup.getRoutes());
 					routesModel.setList(routes);
 					routesList.clearSelection();
-				} catch (RoutePersistenceException e1) {
+				} catch (RouteManagerException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
 				}
 			}

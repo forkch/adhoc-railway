@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,8 +40,9 @@ import javax.swing.JTextField;
 
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.Turnout.TurnoutOrientation;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutOrientation;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -61,30 +62,29 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import de.dermoba.srcp.model.turnouts.MMTurnout;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class TurnoutConfig extends JDialog implements PropertyChangeListener {
-	private boolean						okPressed;
-	private boolean						cancelPressed;
-	private JSpinner					numberTextField;
-	private JTextField					descTextField;
-	private JSpinner					bus1TextField;
-	private JSpinner					bus2TextField;
-	private JSpinner					address1TextField;
-	private JSpinner					address2TextField;
-	private JCheckBox					switched1Checkbox;
-	private JCheckBox					switched2Checkbox;
-	private JComboBox					turnoutTypeComboBox;
-	private JComboBox					turnoutDefaultStateComboBox;
-	private JComboBox					turnoutOrientationComboBox;
-	private Set<Integer>				usedTurnoutNumbers;
+	private boolean okPressed;
+	private boolean cancelPressed;
+	private JSpinner numberTextField;
+	private JTextField descTextField;
+	private JSpinner bus1TextField;
+	private JSpinner bus2TextField;
+	private JSpinner address1TextField;
+	private JSpinner address2TextField;
+	private JCheckBox switched1Checkbox;
+	private JCheckBox switched2Checkbox;
+	private JComboBox turnoutTypeComboBox;
+	private JComboBox turnoutDefaultStateComboBox;
+	private JComboBox turnoutOrientationComboBox;
+	private Set<Integer> usedTurnoutNumbers;
 
-	private PresentationModel<Turnout>	presentationModel;
-	private JButton						okButton;
-	private JButton						cancelButton;
-	private TurnoutWidget				testTurnoutWidget;
-	private PanelBuilder				builder;
-	private List<Turnout>				allTurnouts;
+	private final PresentationModel<Turnout> presentationModel;
+	private JButton okButton;
+	private JButton cancelButton;
+	private TurnoutWidget testTurnoutWidget;
+	private PanelBuilder builder;
+	private List<Turnout> allTurnouts;
 
 	public TurnoutConfig(JDialog owner, Turnout myTurnout) {
 		this(owner, new PresentationModel<Turnout>(myTurnout));
@@ -109,12 +109,13 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	}
 
 	private void initGUI() {
-		TurnoutManger turnoutPersistence = AdHocRailway.getInstance()
+		TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
 		usedTurnoutNumbers = new HashSet<Integer>();
 		for (int number : turnoutPersistence.getUsedTurnoutNumbers()) {
-			if (number != presentationModel.getBean().getNumber())
+			if (number != presentationModel.getBean().getNumber()) {
 				usedTurnoutNumbers.add(number);
+			}
 		}
 		allTurnouts = turnoutPersistence.getAllTurnouts();
 		buildPanel();
@@ -125,7 +126,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	}
 
 	private void initComponents() {
-		TurnoutManger turnoutPersistence = AdHocRailway.getInstance()
+		TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
 		numberTextField = new JSpinner();
 		numberTextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
@@ -175,8 +176,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 						.getModel(Turnout.PROPERTYNAME_ADDRESS2_SWITCHED),
 				"Inverted");
 
-		List<TurnoutType> turnoutTypes = new ArrayList<TurnoutType>(
-				turnoutPersistence.getAllTurnoutTypes());
+		List<TurnoutType> turnoutTypes = Arrays.asList(TurnoutType.values());
 
 		ValueModel turnoutTypeModel = presentationModel
 				.getModel(Turnout.PROPERTYNAME_TURNOUT_TYPE);
@@ -187,8 +187,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 		turnoutTypeComboBox
 				.addActionListener(new TurnoutTypeSelectionListener());
 
-		switch (presentationModel.getBean().getTurnoutType()
-				.getTurnoutTypeEnum()) {
+		switch (presentationModel.getBean().getTurnoutType()) {
 		case DEFAULT:
 		case DOUBLECROSS:
 		case CUTTER:
@@ -206,9 +205,9 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 		ValueModel defaultStateModel = presentationModel
 				.getModel(Turnout.PROPERTYNAME_DEFAULT_STATE);
 		turnoutDefaultStateComboBox = BasicComponentFactory
-				.createComboBox(new SelectionInList<SRCPTurnoutState>(
-						new SRCPTurnoutState[] { SRCPTurnoutState.STRAIGHT,
-								SRCPTurnoutState.LEFT }, defaultStateModel));
+				.createComboBox(new SelectionInList<TurnoutState>(
+						new TurnoutState[] { TurnoutState.STRAIGHT,
+								TurnoutState.LEFT }, defaultStateModel));
 		turnoutDefaultStateComboBox
 				.setRenderer(new TurnoutDefaultStateComboBoxCellRenderer());
 
@@ -219,8 +218,9 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 						TurnoutOrientation.values(), orientationModel));
 
 		testTurnoutWidget = new TurnoutWidget(presentationModel.getBean(), true);
-		if (!isTurnoutReadyToTest(presentationModel.getBean()))
+		if (!isTurnoutReadyToTest(presentationModel.getBean())) {
 			testTurnoutWidget.setEnabled(false);
+		}
 
 		okButton = new JButton(new ApplyChangesAction());
 		cancelButton = new JButton(new CancelAction());
@@ -289,10 +289,11 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 
 	class TurnoutTypeSelectionListener implements ActionListener {
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			TurnoutType selectedTurnoutType = (TurnoutType) turnoutTypeComboBox
 					.getSelectedItem();
-			switch (selectedTurnoutType.getTurnoutTypeEnum()) {
+			switch (selectedTurnoutType) {
 			case DEFAULT:
 			case DOUBLECROSS:
 				bus2TextField.setValue(0);
@@ -310,10 +311,12 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		Turnout turnout = presentationModel.getBean();
-		if (!validate(turnout))
+		if (!validate(turnout)) {
 			return;
+		}
 		if (!isTurnoutReadyToTest(turnout)) {
 			testTurnoutWidget.setEnabled(false);
 			return;
@@ -361,8 +364,9 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 			boolean unique1 = true;
 			for (Turnout t : allTurnouts) {
 				if (t.getBus1() == bus1 && t.getAddress1() == address1
-						&& !t.equals(turnout))
+						&& !t.equals(turnout)) {
 					unique1 = false;
+				}
 			}
 			if (!unique1) {
 				setSpinnerColor(bus1TextField, UIConstants.WARN_COLOR);
@@ -401,8 +405,9 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 						.intValue();
 				boolean unique2 = true;
 				for (Turnout t : allTurnouts) {
-					if (t.equals(turnout))
+					if (t.equals(turnout)) {
 						continue;
+					}
 					if ((t.getBus1() == bus2 && t.getAddress1() == address2)
 							|| (t.getBus2() == bus2 && t.getAddress2() == address2)) {
 						unique2 = false;
@@ -451,22 +456,25 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 			super("OK", ImageTools.createImageIconFromIconSet("ok.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			TurnoutManger turnoutPersistence = AdHocRailway
-					.getInstance().getTurnoutPersistence();
+			TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
+					.getTurnoutPersistence();
 			Turnout turnout = presentationModel.getBean();
-			if (turnout.getId() == 0) {
-				turnoutPersistence.addTurnout(turnout);
-			} else {
+			if (turnout.getId() != -1) {
 				turnoutPersistence.updateTurnout(turnout);
+			} else {
+				turnoutPersistence.addTurnout(turnout);
 			}
 			okPressed = true;
 			turnout.removePropertyChangeListener(TurnoutConfig.this);
 			TurnoutConfig.this.setVisible(false);
 
-			if(Preferences.getInstance().getBooleanValue(PreferencesKeys.AUTOSAVE))
-			AdHocRailway.getInstance().saveActualFile();
+			if (Preferences.getInstance().getBooleanValue(
+					PreferencesKeys.AUTOSAVE)) {
+				AdHocRailway.getInstance().saveActualFile();
+			}
 		}
 	}
 
@@ -476,6 +484,7 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 			super("Cancel", ImageTools.createImageIconFromIconSet("cancel.png"));
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			Turnout turnout = presentationModel.getBean();
 			turnout.removePropertyChangeListener(TurnoutConfig.this);

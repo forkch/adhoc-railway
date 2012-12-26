@@ -19,6 +19,8 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -37,81 +39,79 @@ public class LocomotiveManagerImpl implements LocomotiveManager {
 
 	private static LocomotiveManagerImpl instance;
 
-	private final Map<SRCPAddress, Locomotive> addressLocomotiveCache;
-	private final Map<String, LocomotiveType> locomotiveTypes;
-	private final Map<Integer, LocomotiveGroup> idToLocomotiveGroup;
-
-	private final Map<Integer, LocomotiveType> idToLocomotiveType;
-
-	private final LocomotiveService locomotiveService;
-
-	private final Map<Integer, Locomotive> idToLocomotive;
+	private final Map<SRCPAddress, Locomotive> addressLocomotiveCache = new HashMap<SRCPAddress, Locomotive>();
+	private final SortedSet<LocomotiveGroup> locomotiveGroups = new TreeSet<LocomotiveGroup>();
+	private final LocomotiveService locomotiveService = HibernateLocomotiveService
+			.getInstance();
+	private final LocomotiveGroup ALL_LOCOMOTIVE_GROUP = new LocomotiveGroup(
+			Integer.MIN_VALUE, "All");
 
 	private LocomotiveManagerImpl() {
 		LOGGER.info("LocomotiveManager loaded");
-		this.addressLocomotiveCache = new HashMap<SRCPAddress, Locomotive>();
-		this.idToLocomotive = new HashMap<Integer, Locomotive>();
-		this.idToLocomotiveGroup = new HashMap<Integer, LocomotiveGroup>();
-		this.idToLocomotiveType = new HashMap<Integer, LocomotiveType>();
-		this.locomotiveTypes = new HashMap<String, LocomotiveType>();
-
-		this.locomotiveService = HibernateLocomotiveService.getInstance();
 
 		reload();
 	}
 
 	public static LocomotiveManagerImpl getInstance() {
-		if (instance == null)
+		if (instance == null) {
 			instance = new LocomotiveManagerImpl();
+		}
 		return instance;
 	}
 
 	@Override
 	public void clear() {
-		idToLocomotive.clear();
 		addressLocomotiveCache.clear();
-		locomotiveTypes.clear();
-		idToLocomotiveGroup.clear();
-		idToLocomotiveType.clear();
-	}
-
-	public void preload() {
+		locomotiveGroups.clear();
+		ALL_LOCOMOTIVE_GROUP.getLocomotives().clear();
 	}
 
 	@Override
-	public ArrayListModel<Locomotive> getAllLocomotives() {
-		return new ArrayListModel<Locomotive>(idToLocomotive.values());
+	public List<Locomotive> getAllLocomotives() {
+		return new ArrayListModel<Locomotive>(addressLocomotiveCache.values());
 	}
 
 	@Override
 	public Locomotive getLocomotiveByBusAddress(int bus, int address) {
 		Locomotive locomotive = addressLocomotiveCache.get(new SRCPAddress(bus,
 				address, 0, 0));
-		if (locomotive != null)
+		if (locomotive != null) {
 			return locomotive;
-		throw new LocomotivePersistenceException("Locomotive with bus " + bus
+		}
+		throw new LocomotiveManagerException("Locomotive with bus " + bus
 				+ " and address " + address + " not found");
 	}
 
 	@Override
 	public void addLocomotive(Locomotive locomotive) {
-
+		if (locomotive.getLocomotiveGroup() == null) {
+			throw new LocomotiveManagerException(
+					"Locomotive has no associated Group");
+		}
+		locomotive.getLocomotiveGroup().getLocomotives().add(locomotive);
 		locomotiveService.addLocomotive(locomotive);
 
+		putInCache(locomotive);
+	}
+
+	private void putInCache(Locomotive locomotive) {
 		addressLocomotiveCache.put(new SRCPAddress(locomotive.getBus(),
 				locomotive.getAddress(), 0, 0), locomotive);
-		idToLocomotive.put(locomotive.getId(), locomotive);
+		ALL_LOCOMOTIVE_GROUP.getLocomotives().add(locomotive);
 	}
 
 	@Override
 	public void deleteLocomotive(Locomotive locomotive) {
 		locomotiveService.deleteLocomotive(locomotive);
 		locomotive.getLocomotiveGroup().getLocomotives().remove(locomotive);
-		locomotive.getLocomotiveType().getLocomotives().remove(locomotive);
 
-		idToLocomotive.remove(locomotive.getId());
+		removeFromCache(locomotive);
+
+	}
+
+	private void removeFromCache(Locomotive locomotive) {
 		addressLocomotiveCache.values().remove(locomotive);
-
+		ALL_LOCOMOTIVE_GROUP.getLocomotives().remove(locomotive);
 	}
 
 	@Override
@@ -121,36 +121,32 @@ public class LocomotiveManagerImpl implements LocomotiveManager {
 	}
 
 	@Override
-	public ArrayListModel<LocomotiveGroup> getAllLocomotiveGroups() {
-		return new ArrayListModel<LocomotiveGroup>(idToLocomotiveGroup.values());
-	}
-
-	@Override
-	public LocomotiveGroup getLocomotiveGroupById(int id) {
-		return idToLocomotiveGroup.get(id);
-	}
-
-	@Override
-	public LocomotiveType getLocomotiveTypeById(int id) {
-		return idToLocomotiveType.get(id);
+	public List<LocomotiveGroup> getAllLocomotiveGroups() {
+		LinkedList<LocomotiveGroup> allLocomotiveGroups = new LinkedList<LocomotiveGroup>();
+		allLocomotiveGroups.addFirst(ALL_LOCOMOTIVE_GROUP);
+		allLocomotiveGroups.addAll(locomotiveGroups);
+		return allLocomotiveGroups;
 	}
 
 	@Override
 	public void addLocomotiveGroup(LocomotiveGroup group) {
 		locomotiveService.addLocomotiveGroup(group);
-		idToLocomotiveGroup.put(group.getId(), group);
-
+		locomotiveGroups.add(group);
 	}
 
 	@Override
 	public void deleteLocomotiveGroup(LocomotiveGroup group)
-			throws LocomotivePersistenceException {
+			throws LocomotiveManagerException {
+		if (group.getId() == Integer.MIN_VALUE) {
+			throw new LocomotiveManagerException(
+					"Cannot delete ALL_LOCOMOTIVES_GROUP");
+		}
 		if (!group.getLocomotives().isEmpty()) {
-			throw new LocomotivePersistenceException(
+			throw new LocomotiveManagerException(
 					"Cannot delete locomotive group with associated locomotives");
 		}
 		locomotiveService.deleteLocomotiveGroup(group);
-		idToLocomotiveGroup.remove(group.getId());
+		locomotiveGroups.remove(group);
 	}
 
 	@Override
@@ -159,83 +155,13 @@ public class LocomotiveManagerImpl implements LocomotiveManager {
 	}
 
 	@Override
-	public SortedSet<LocomotiveType> getAllLocomotiveTypes() {
-		return new TreeSet<LocomotiveType>(locomotiveTypes.values());
-	}
-
-	@Override
-	public LocomotiveType getLocomotiveTypeByName(String typeName) {
-		for (LocomotiveType type : locomotiveTypes.values()) {
-			if (type.getTypeName().equals(typeName))
-				return type;
-		}
-		return null;
-	}
-
-	@Override
-	public void addLocomotiveType(LocomotiveType type) {
-		locomotiveService.addLocomotiveType(type);
-		locomotiveTypes.put(type.getTypeName(), type);
-		idToLocomotiveType.put(type.getId(), type);
-	}
-
-	@Override
-	public void deleteLocomotiveType(LocomotiveType type)
-			throws LocomotivePersistenceException {
-		if (!type.getLocomotives().isEmpty()) {
-			throw new LocomotivePersistenceException(
-					"Cannot delete locomotive type with associated locomotives");
-		}
-		locomotiveService.deleteLocomotiveType(type);
-		locomotiveTypes.values().remove(type);
-
-	}
-
-	@Override
-	@Deprecated
-	public void flush() throws LocomotivePersistenceException {
-		LOGGER.debug("flush()");
-	}
-
-	@Override
 	public void reload() {
+		clear();
 		for (LocomotiveGroup group : locomotiveService.getAllLocomotiveGroups()) {
-			idToLocomotiveGroup.put(group.getId(), group);
-		}
-		for (LocomotiveType type : locomotiveService.getAllLocomotiveTypes()) {
-			idToLocomotiveType.put(type.getId(), type);
-		}
-		for (Locomotive locomotive : locomotiveService.getAllLocomotives()) {
-			idToLocomotive.put(locomotive.getId(), locomotive);
-
-			LocomotiveType type = getLocomotiveTypeById(locomotive
-					.getLocomotiveTypeId());
-			LocomotiveGroup group = getLocomotiveGroupById(locomotive
-					.getLocomotiveGroupId());
-
-			if (type == null) {
-				LOGGER.error("locomotive type null of locomotive "
-						+ locomotive.getName());
-			} else {
-
-				LOGGER.debug("locomotive " + locomotive.getName()
-						+ " belongs to group " + group.getName());
-				locomotive.setLocomotiveGroup(group);
-				group.addLocomotive(locomotive);
-
+			locomotiveGroups.add(group);
+			for (Locomotive locomotive : group.getLocomotives()) {
+				putInCache(locomotive);
 			}
-			if (group == null) {
-				LOGGER.error("locomotive group null of locomotive "
-						+ locomotive.getName());
-			} else {
-				LOGGER.debug("locomotive " + locomotive.getName()
-						+ " has type " + type.getTypeName());
-
-				locomotive.setLocomotiveType(type);
-				type.addLocomotive(locomotive);
-
-			}
-
 		}
 	}
 }

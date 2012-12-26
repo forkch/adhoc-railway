@@ -18,53 +18,52 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-import com.jgoodies.binding.list.ArrayListModel;
+import java.util.List;
 
 public interface RouteManager {
 
-	public abstract ArrayListModel<Route> getAllRoutes()
-			throws RoutePersistenceException;
+	public abstract List<Route> getAllRoutes() throws RouteManagerException;
 
 	public abstract Route getRouteByNumber(int number)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
-	public abstract void addRoute(Route route) throws RoutePersistenceException;
+	public abstract void addRoute(Route route) throws RouteManagerException;
 
 	public abstract void deleteRoute(Route route)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract void updateRoute(Route route)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
-	public abstract ArrayListModel<RouteGroup> getAllRouteGroups()
-			throws RoutePersistenceException;
+	public abstract List<RouteGroup> getAllRouteGroups()
+			throws RouteManagerException;
 
 	public abstract void addRouteGroup(RouteGroup routeGroup)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract void deleteRouteGroup(RouteGroup routeGroup)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract void updateRouteGroup(RouteGroup routeGroup)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract void addRouteItem(RouteItem item)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract void deleteRouteItem(RouteItem item)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract void updateRouteItem(RouteItem item)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract int getNextFreeRouteNumber()
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public int getNextFreeRouteNumberOfGroup(RouteGroup routeGroup);
 
 	public void enlargeRouteGroups();
 
-	public abstract void clear() throws RoutePersistenceException;
+	public abstract void clear() throws RouteManagerException;
 
 	public abstract void flush();
 

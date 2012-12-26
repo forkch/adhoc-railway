@@ -18,7 +18,6 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -38,46 +37,49 @@ public class Route extends Model implements java.io.Serializable,
 
 	private SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>();
 
-	public static final String PROPERTYNAME_ID = "id";
-	public static final String PROPERTYNAME_ROUTE_GROUP = "routeGroup";
-	public static final String PROPERTYNAME_NUMBER = "number";
-	public static final String PROPERTYNAME_NAME = "name";
-	public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
-
 	private int routeGroupId;
 
 	private Set<Integer> routeItemIds;
 
 	@Override
 	public int compareTo(Route o) {
-		if (this == o)
+		if (this == o) {
 			return 0;
-		if (o == null)
+		}
+		if (o == null) {
 			return -1;
-		if (number > o.getNumber())
+		}
+		if (number > o.getNumber()) {
 			return 1;
-		else if (number == o.getNumber())
+		} else if (number == o.getNumber()) {
 			return 0;
-		else
+		} else {
 			return -1;
+		}
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 
 		final Route l = (Route) o;
-		if (!name.equals(l.getName()))
+		if (!name.equals(l.getName())) {
 			return false;
-		if (number != l.getNumber())
+		}
+		if (number != l.getNumber()) {
 			return false;
-		if (!routeGroup.equals(l.getRouteGroup()))
+		}
+		if (!routeGroup.equals(l.getRouteGroup())) {
 			return false;
-		if (!routeItems.equals(l.getRouteItems()))
+		}
+		if (!routeItems.equals(l.getRouteItems())) {
 			return false;
+		}
 
 		return true;
 	}
@@ -133,9 +135,7 @@ public class Route extends Model implements java.io.Serializable,
 	}
 
 	public void setNumber(int number) {
-		int old = this.number;
 		this.number = number;
-		firePropertyChange(PROPERTYNAME_NUMBER, old, number);
 	}
 
 	public String getName() {
@@ -143,9 +143,7 @@ public class Route extends Model implements java.io.Serializable,
 	}
 
 	public void setName(String name) {
-		String old = this.name;
 		this.name = name;
-		firePropertyChange(PROPERTYNAME_NAME, old, name);
 	}
 
 	public SortedSet<RouteItem> getRouteItems() {
@@ -165,13 +163,7 @@ public class Route extends Model implements java.io.Serializable,
 		return routeGroupId;
 	}
 
-	public void addRouteItemId(int routeItemId) {
-		routeItemIds = new HashSet<Integer>();
-		routeItemIds.add(routeItemId);
-
-	}
-
-	public Set<Integer> getRouteItemIds() {
-		return routeItemIds;
+	public void addRouteItem(RouteItem routeItem) {
+		routeItems.add(routeItem);
 	}
 }

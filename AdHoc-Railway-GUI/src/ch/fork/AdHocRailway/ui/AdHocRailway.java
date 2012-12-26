@@ -64,10 +64,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
 import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
@@ -76,18 +72,18 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
-import ch.fork.AdHocRailway.domain.routes.RouteMangerImpl;
+import ch.fork.AdHocRailway.domain.routes.RouteManagerImpl;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerImpl;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
-import ch.fork.AdHocRailway.domain.turnouts.XMLTurnoutService;
 import ch.fork.AdHocRailway.services.locomotives.HibernateLocomotiveService;
 import ch.fork.AdHocRailway.services.locomotives.XMLLocomotiveService;
 import ch.fork.AdHocRailway.services.routes.HibernateRouteService;
 import ch.fork.AdHocRailway.services.routes.XMLRouteService;
 import ch.fork.AdHocRailway.services.turnouts.HibernateTurnoutService;
+import ch.fork.AdHocRailway.services.turnouts.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -113,7 +109,7 @@ import de.dermoba.srcp.model.power.SRCPPowerSupplyException;
 
 public class AdHocRailway extends JFrame implements CommandDataListener,
 		InfoDataListener, PreferencesKeys {
-	public static Logger logger = Logger.getLogger(AdHocRailway.class);
+
 	private static final long serialVersionUID = 1L;
 	private static AdHocRailway instance;
 
@@ -123,7 +119,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private TurnoutControlIface turnoutControl;
 
-	private TurnoutManger turnoutPersistence;
+	private TurnoutManager turnoutPersistence;
 
 	private LocomotiveControlface locomotiveControl;
 
@@ -186,12 +182,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	public AdHocRailway(String file) {
 		super(TITLE);
 		try {
-			PatternLayout layout = new PatternLayout(
-					"%r [%t] %-5p %c{1} - %m%n");
-			logger.addAppender(new FileAppender(layout, System
-					.getProperty("user.home")
-					+ File.separator
-					+ "adhocrailway.log"));
+			/*
+			 * PatternLayout layout = new PatternLayout(
+			 * "%r [%t] %-5p %c{1} - %m%n"); logger.addAppender(new
+			 * FileAppender(layout, System .getProperty("user.home") +
+			 * File.separator + "adhocrailway.log"));
+			 */
 			// PlasticLookAndFeel.setMyCurrentTheme(settings.getSelectedTheme());
 			PlasticLookAndFeel
 					.setTabStyle(PlasticLookAndFeel.TAB_STYLE_DEFAULT_VALUE);
@@ -215,7 +211,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 			initProceeded("Creating GUI ...");
 			initGUI();
-			logger.info("Finished Creating GUI");
+			// logger.info("Finished Creating GUI");
 			splash.setVisible(false);
 
 			if (preferences.getBooleanValue(OPEN_LAST_FILE)) {
@@ -230,8 +226,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			} else {
 				updateGUI();
 			}
-			if (preferences.getBooleanValue(AUTOCONNECT))
+			if (preferences.getBooleanValue(AUTOCONNECT)) {
 				new ConnectAction().actionPerformed(null);
+			}
 
 			// EnablerDisabler.setEnable(false, trackControlPanel);
 			// EnablerDisabler.setEnable(false, locomotiveControlPanel);
@@ -245,10 +242,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			updateCommandHistory("RailControl started");
 			setVisible(true);
 		} catch (UnsupportedLookAndFeelException e) {
-			logger.error(e.getMessage(), e);
-			ExceptionProcessor.getInstance().processException(e);
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
+			// logger.error(e.getMessage(), e);
 			ExceptionProcessor.getInstance().processException(e);
 		}
 	}
@@ -286,10 +280,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		if (useDatabase) {
 			initProceeded("Connecting to database");
 			try {
-				HibernatePersistence.setup();
-				System.out.println("setup()");
-				HibernatePersistence.connect();
-				System.out.println("connect()");
+				// HibernatePersistence.setup();
+				// System.out.println("setup()");
+				// HibernatePersistence.connect();
+				// System.out.println("connect()");
 				fileMode = false;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -321,7 +315,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		initProceeded("Loading Persistence Layer (Routes)");
 		// if (useDatabase)
-		routePersistence = RouteMangerImpl.getInstance();
+		routePersistence = RouteManagerImpl.getInstance();
 		// else
 		// routePersistence = XMLRouteService.getInstance();
 
@@ -401,7 +395,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	}
 
 	private void updateTurnouts() {
-		// turnoutPersistence.reload();
+		turnoutPersistence.reload();
 		// routePersistence.reload();
 		turnoutControl.update();
 		routeControl.update();
@@ -413,7 +407,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		if (preferences.getBooleanValue(LOGGING)) {
 			// updateCommandHistory("To Server: " + commandData);
 		}
-		logger.info("To Server: " + commandData.trim());
+		// logger.info("To Server: " + commandData.trim());
 	}
 
 	@Override
@@ -421,7 +415,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		if (preferences.getBooleanValue(LOGGING)) {
 			// updateCommandHistory("From Server: " + infoData);
 		}
-		logger.info("From Server: " + infoData.trim());
+		// logger.info("From Server: " + infoData.trim());
 	}
 
 	public void updateCommandHistory(String text) {
@@ -433,7 +427,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	}
 
 	private void initProceeded(String message) {
-		logger.info(message);
+		// logger.info(message);
 		splash.nextStep(message);
 	}
 
@@ -628,8 +622,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	}
 
 	public void saveActualFile() {
-		if (fileMode)
+		if (fileMode) {
 			saveFile(AdHocRailway.this.actualFile);
+		}
 	}
 
 	private void saveFile(File file) {
@@ -789,9 +784,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			if (result == JOptionPane.YES_OPTION) {
 
 				try {
-					HibernatePersistence.disconnect();
-					HibernatePersistence.setup();
-					HibernatePersistence.connect();
 
 					HibernateRouteService.getInstance().clear();
 					HibernateTurnoutService.getInstance().clear();
@@ -1364,7 +1356,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		return turnoutControl;
 	}
 
-	public TurnoutManger getTurnoutPersistence() {
+	public TurnoutManager getTurnoutPersistence() {
 		return turnoutPersistence;
 	}
 

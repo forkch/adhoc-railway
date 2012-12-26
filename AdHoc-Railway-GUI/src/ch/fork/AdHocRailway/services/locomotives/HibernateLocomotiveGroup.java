@@ -42,8 +42,8 @@ import com.jgoodies.binding.beans.Model;
  */
 @Entity
 @Table(name = "locomotive_group", uniqueConstraints = {})
-public class HibernateLocomotiveGroup extends Model implements java.io.Serializable,
-		Comparable<HibernateLocomotiveGroup> {
+public class HibernateLocomotiveGroup extends Model implements
+		java.io.Serializable, Comparable<HibernateLocomotiveGroup> {
 
 	// Fields
 
@@ -56,14 +56,14 @@ public class HibernateLocomotiveGroup extends Model implements java.io.Serializa
 	@Sort(type = SortType.NATURAL)
 	private SortedSet<HibernateLocomotive> locomotives = new TreeSet<HibernateLocomotive>();
 
-	private static final String PROPERTYNAME_NAME = "name";
-
 	@Override
 	public int compareTo(HibernateLocomotiveGroup o) {
-		if (this == o)
+		if (this == o) {
 			return 0;
-		if (o == null)
+		}
+		if (o == null) {
 			return -1;
+		}
 		return name.compareTo(o.getName());
 	}
 
@@ -78,20 +78,26 @@ public class HibernateLocomotiveGroup extends Model implements java.io.Serializa
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		final HibernateLocomotiveGroup other = (HibernateLocomotiveGroup) obj;
-		if (id != other.id)
+		if (id != other.id) {
 			return false;
+		}
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -139,21 +145,22 @@ public class HibernateLocomotiveGroup extends Model implements java.io.Serializa
 	}
 
 	public void setName(String name) {
-		String old = this.name;
 		this.name = name;
-		firePropertyChange(PROPERTYNAME_NAME, old, name);
 	}
 
 	@Sort(type = SortType.NATURAL)
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "locomotiveGroup")
 	public SortedSet<HibernateLocomotive> getLocomotives() {
+
+		if (locomotives == null) {
+			locomotives = new TreeSet<HibernateLocomotive>();
+		}
 		return this.locomotives;
 	}
 
 	@Sort(type = SortType.NATURAL)
 	public void setLocomotives(SortedSet<HibernateLocomotive> locomotives) {
 		this.locomotives = locomotives;
-		// firePropertyChange(PROPERTYNAME_LOCOMOTIVES, old, locomotives);
 	}
 
 }

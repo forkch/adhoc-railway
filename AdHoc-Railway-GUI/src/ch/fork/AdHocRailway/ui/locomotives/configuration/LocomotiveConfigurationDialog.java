@@ -43,7 +43,7 @@ import javax.swing.event.ListSelectionListener;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceException;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
@@ -136,10 +136,10 @@ public class LocomotiveConfigurationDialog extends JDialog {
 	}
 
 	private void initComponents() {
-		LocomotiveManager locomotivePersistence = AdHocRailway
-				.getInstance().getLocomotivePersistence();
-		ArrayListModel<LocomotiveGroup> locomotiveGroups = locomotivePersistence
-				.getAllLocomotiveGroups();
+		LocomotiveManager locomotivePersistence = AdHocRailway.getInstance()
+				.getLocomotivePersistence();
+		ArrayListModel<LocomotiveGroup> locomotiveGroups = new ArrayListModel<LocomotiveGroup>(
+				locomotivePersistence.getAllLocomotiveGroups());
 		locomotiveGroupModel = new SelectionInList<LocomotiveGroup>(
 				(ListModel) locomotiveGroups);
 
@@ -197,14 +197,17 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			if (e.getValueIsAdjusting())
+			if (e.getValueIsAdjusting()) {
 				return;
-			if (locomotiveGroupList.getSelectedIndex() == -1)
+			}
+			if (locomotiveGroupList.getSelectedIndex() == -1) {
 				locomotiveGroupList.setSelectedIndex(0);
+			}
 			LocomotiveGroup selectedGroup = (LocomotiveGroup) locomotiveGroupList
 					.getSelectedValue();
-			if (selectedGroup == null)
+			if (selectedGroup == null) {
 				return;
+			}
 			List<Locomotive> locomotives = new ArrayList<Locomotive>(
 					selectedGroup.getLocomotives());
 			locomotiveModel.setList(locomotives);
@@ -305,7 +308,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 					LocomotiveManager locomotivePersistence = AdHocRailway
 							.getInstance().getLocomotivePersistence();
 					locomotivePersistence.deleteLocomotiveGroup(groupToDelete);
-				} catch (LocomotivePersistenceException e) {
+				} catch (LocomotiveManagerException e) {
 					ExceptionProcessor.getInstance().processException(e);
 				}
 			}
@@ -326,12 +329,6 @@ public class LocomotiveConfigurationDialog extends JDialog {
 			selectedLocomotiveGroup.getLocomotives().add(newLocomotive);
 			LocomotiveConfig locomotiveConfig = new LocomotiveConfig(
 					LocomotiveConfigurationDialog.this, newLocomotive);
-			if (locomotiveConfig.isOkPressed()) {
-				selectedLocomotiveGroup.getLocomotives().add(newLocomotive);
-				LocomotiveManager locomotivePersistence = AdHocRailway
-						.getInstance().getLocomotivePersistence();
-				locomotivePersistence.addLocomotive(newLocomotive);
-			}
 			List<Locomotive> locomotives = new ArrayList<Locomotive>(
 					selectedLocomotiveGroup.getLocomotives());
 			locomotiveModel.setList(locomotives);

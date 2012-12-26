@@ -35,7 +35,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.UIConstants;
@@ -45,25 +45,25 @@ import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
-	private static final long	serialVersionUID	= 1L;
+	private static final long serialVersionUID = 1L;
 
-	private Turnout				turnout;
+	private final Turnout turnout;
 
-	private JLabel				numberLabel;
+	private JLabel numberLabel;
 
-	private TurnoutCanvas		turnoutCanvas;
+	private TurnoutCanvas turnoutCanvas;
 
-	private GridBagLayout		turnoutWidgetLayout;
+	private GridBagLayout turnoutWidgetLayout;
 
-	private GridBagConstraints	turnoutWidgetConstraints;
+	private GridBagConstraints turnoutWidgetConstraints;
 
-	private SRCPTurnoutState	actualTurnoutState	= SRCPTurnoutState.UNDEF;
+	private SRCPTurnoutState actualTurnoutState = SRCPTurnoutState.UNDEF;
 
-	private boolean				widgetEnabled;
+	private boolean widgetEnabled;
 
-	private Color				defaultBackground;
+	private final Color defaultBackground;
 
-	private boolean				testMode;
+	private final boolean testMode;
 
 	public TurnoutWidget(Turnout turnout) {
 		this(turnout, false);
@@ -109,7 +109,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	}
 
 	private void validateTurnout() {
-		TurnoutManger turnoutPersistence = AdHocRailway.getInstance()
+		TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
 		boolean bus1Valid = true;
 		if (turnout.getBus1() == 0) {
@@ -135,8 +135,9 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			boolean unique1 = true;
 			for (Turnout t : turnoutPersistence.getAllTurnouts()) {
 				if (t.getBus1() == bus1 && t.getAddress1() == address1
-						&& !t.equals(turnout))
+						&& !t.equals(turnout)) {
 					unique1 = false;
+				}
 			}
 			if (!unique1) {
 				setBackground(UIConstants.WARN_COLOR);
@@ -166,11 +167,13 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 				int address2 = turnout.getAddress2();
 				boolean unique2 = true;
 				for (Turnout t : turnoutPersistence.getAllTurnouts()) {
-					if (t.equals(turnout))
+					if (t.equals(turnout)) {
 						continue;
+					}
 					if ((t.getBus1() == bus2 && t.getAddress1() == address2)
-							|| (t.getBus2() == bus2 && t.getAddress2() == address2))
+							|| (t.getBus2() == bus2 && t.getAddress2() == address2)) {
 						unique2 = false;
+					}
 				}
 				if (!unique2) {
 					setBackground(UIConstants.WARN_COLOR);
@@ -182,18 +185,21 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	}
 
 	private class MouseAction extends MouseAdapter {
+		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (!widgetEnabled)
+			if (!widgetEnabled) {
 				return;
+			}
 			TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
 					.getTurnoutControl();
 
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
 				try {
-					if (!testMode)
+					if (!testMode) {
 						turnoutControl.toggle(turnout);
-					else
+					} else {
 						turnoutControl.toggleTest(turnout);
+					}
 				} catch (TurnoutException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
 				}
@@ -205,8 +211,9 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		}
 
 		private void displaySwitchConfig() {
-			if (testMode)
+			if (testMode) {
 				return;
+			}
 			TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
 					.getTurnoutControl();
 
@@ -225,10 +232,12 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		return turnout;
 	}
 
+	@Override
 	public void turnoutChanged(Turnout changedTurnout, SRCPTurnoutState newState) {
 		if (turnout.equals(changedTurnout)) {
 			actualTurnoutState = newState;
 			SwingUtilities.invokeLater(new Runnable() {
+				@Override
 				public void run() {
 					numberLabel.setText(Integer.toString(turnout.getNumber()));
 					turnoutCanvas.setTurnoutState(actualTurnoutState);
@@ -240,6 +249,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		}
 	}
 
+	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
 
@@ -249,7 +259,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		if (!enabled) {
 			setBackground(new Color(255, 177, 177));
 		} else {
-			//setBackground(defaultBackground);
+			// setBackground(defaultBackground);
 			turnoutControl.addTurnoutChangeListener(turnout, this);
 		}
 		widgetEnabled = enabled;

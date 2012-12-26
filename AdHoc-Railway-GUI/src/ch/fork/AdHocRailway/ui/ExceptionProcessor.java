@@ -51,10 +51,11 @@ public class ExceptionProcessor {
 	public void processException(String msg, Exception e) {
 		e.printStackTrace();
 
-		AdHocRailway.logger.error(e.getMessage(), e);
+		// AdHocRailway.logger.error(e.getMessage(), e);
 
-		if (e instanceof SRCPException)
+		if (e instanceof SRCPException) {
 			msg = "SRCP: " + msg;
+		}
 		errorPanel.setErrorTextIcon(msg, e.getMessage(), ImageTools
 				.createImageIconFromIconSet("messagebox_critical.png"));
 

@@ -18,57 +18,37 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
-import java.util.SortedSet;
-
-import com.jgoodies.binding.list.ArrayListModel;
+import java.util.List;
 
 public interface LocomotiveManager {
-	public abstract ArrayListModel<Locomotive> getAllLocomotives()
-			throws LocomotivePersistenceException;
+	public abstract List<Locomotive> getAllLocomotives()
+			throws LocomotiveManagerException;
 
 	public abstract void addLocomotive(Locomotive locomotive)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
 	public abstract void deleteLocomotive(Locomotive locomotive)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
 	public abstract void updateLocomotive(Locomotive locomotive)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
 	public abstract Locomotive getLocomotiveByBusAddress(int bus, int address)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
 	public abstract void addLocomotiveGroup(LocomotiveGroup group)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
 	public abstract void deleteLocomotiveGroup(LocomotiveGroup group)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
 	public abstract void updateLocomotiveGroup(LocomotiveGroup group)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
-	public abstract ArrayListModel<LocomotiveGroup> getAllLocomotiveGroups()
-			throws LocomotivePersistenceException;
+	public abstract List<LocomotiveGroup> getAllLocomotiveGroups()
+			throws LocomotiveManagerException;
 
-	public LocomotiveGroup getLocomotiveGroupById(int id);
-
-	public abstract SortedSet<LocomotiveType> getAllLocomotiveTypes()
-			throws LocomotivePersistenceException;
-
-	public LocomotiveType getLocomotiveTypeById(int id);
-
-	public abstract LocomotiveType getLocomotiveTypeByName(String typeName)
-			throws LocomotivePersistenceException;
-
-	public abstract void addLocomotiveType(LocomotiveType defaultType)
-			throws LocomotivePersistenceException;
-
-	public abstract void deleteLocomotiveType(LocomotiveType type)
-			throws LocomotivePersistenceException;
-
-	public abstract void clear() throws LocomotivePersistenceException;
-
-	public abstract void flush();
+	public abstract void clear() throws LocomotiveManagerException;
 
 	public abstract void reload();
 

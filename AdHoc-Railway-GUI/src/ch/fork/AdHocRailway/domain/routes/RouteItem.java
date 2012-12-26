@@ -19,10 +19,9 @@
 package ch.fork.AdHocRailway.domain.routes;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 
 import com.jgoodies.binding.beans.Model;
-
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class RouteItem extends Model implements java.io.Serializable,
 		Comparable<RouteItem> {
@@ -33,38 +32,43 @@ public class RouteItem extends Model implements java.io.Serializable,
 
 	private Route route;
 
-	private String routedState;
+	private TurnoutState routedState;
 
 	public static final String PROPERTYNAME_ID = "id";
 	public static final String PROPERTYNAME_TURNOUT = "turnout";
 	public static final String PROPERTYNAME_ROUTE = "route";
 	public static final String PROPERTYNAME_ROUTED_STATE = "routedState";
 
-	private int turnoutId;
-
 	@Override
 	public int compareTo(RouteItem o) {
-		if (this == o)
+		if (this == o) {
 			return 0;
-		if (o == null)
+		}
+		if (o == null) {
 			return -1;
+		}
 		return turnout.compareTo(o.getTurnout());
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 
 		final RouteItem l = (RouteItem) o;
-		if (id != l.getId())
+		if (id != l.getId()) {
 			return false;
-		if (!turnout.equals(l.getTurnout()))
+		}
+		if (!turnout.equals(l.getTurnout())) {
 			return false;
-		if (!routedState.equals(l.getRoutedState()))
+		}
+		if (!routedState.equals(l.getRoutedState())) {
 			return false;
+		}
 		return true;
 	}
 
@@ -75,40 +79,14 @@ public class RouteItem extends Model implements java.io.Serializable,
 
 	@Override
 	public String toString() {
-		return turnout.toString() + ":" + routedState;
-	}
-
-	public SRCPTurnoutState getRoutedStateEnum() {
-		if (routedState.toUpperCase().equals("STRAIGHT")) {
-			return SRCPTurnoutState.STRAIGHT;
-		} else if (routedState.toUpperCase().equals("LEFT")) {
-			return SRCPTurnoutState.LEFT;
-		} else if (routedState.toUpperCase().equals("RIGHT")) {
-			return SRCPTurnoutState.RIGHT;
-		}
-		return SRCPTurnoutState.UNDEF;
-	}
-
-	public void setRoutedStateEnum(SRCPTurnoutState state) {
-		switch (state) {
-		case STRAIGHT:
-			setRoutedState("STRAIGHT");
-			break;
-		case LEFT:
-			setRoutedState("LEFT");
-			break;
-		case RIGHT:
-			setRoutedState("RIGHT");
-			break;
-		default:
-			setRoutedState("UNDEF");
-		}
+		return turnout.hashCode() + ":" + routedState;
 	}
 
 	public RouteItem() {
 	}
 
-	public RouteItem(int id, Turnout turnout, Route route, String routedState) {
+	public RouteItem(int id, Turnout turnout, Route route,
+			TurnoutState routedState) {
 		this.id = id;
 		this.turnout = turnout;
 		this.route = route;
@@ -143,23 +121,14 @@ public class RouteItem extends Model implements java.io.Serializable,
 		firePropertyChange(PROPERTYNAME_ROUTE, old, route);
 	}
 
-	public String getRoutedState() {
+	public TurnoutState getRoutedState() {
 		return this.routedState;
 	}
 
-	public void setRoutedState(String routedState) {
-		String old = this.routedState;
+	public void setRoutedState(TurnoutState routedState) {
+		TurnoutState old = this.routedState;
 		this.routedState = routedState;
 		firePropertyChange(PROPERTYNAME_ROUTED_STATE, old, routedState);
-	}
-
-	public void setTurnoutId(int turnoutId) {
-		this.turnoutId = turnoutId;
-
-	}
-
-	public int getTurnoutId() {
-		return turnoutId;
 	}
 
 }

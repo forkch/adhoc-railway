@@ -27,10 +27,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.ui.ImageTools;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
 
 public class TurnoutTypeCellRenderer extends DefaultTableCellRenderer {
 
+	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
 		JLabel iconLabel = (JLabel) super.getTableCellRendererComponent(table,
@@ -38,18 +38,23 @@ public class TurnoutTypeCellRenderer extends DefaultTableCellRenderer {
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		TurnoutType type = (TurnoutType) value;
 		iconLabel.setText("");
-		if (type.getTurnoutTypeEnum() == SRCPTurnoutTypes.DEFAULT) {
+		switch (type) {
+		case DEFAULT:
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/default_switch_small.png"));
-		} else if (type.getTurnoutTypeEnum() == SRCPTurnoutTypes.DOUBLECROSS) {
+			break;
+		case DOUBLECROSS:
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/double_cross_switch_small.png"));
-		} else if (type.getTurnoutTypeEnum() == SRCPTurnoutTypes.THREEWAY) {
+			break;
+		case THREEWAY:
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/three_way_switch_small.png"));
-		} else if (type.getTurnoutTypeEnum() == SRCPTurnoutTypes.CUTTER) {
+			break;
+		case CUTTER:
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/cutter_small.png"));
+			break;
 		}
 
 		return iconLabel;

@@ -51,61 +51,73 @@ public class HibernateRoute extends Model implements java.io.Serializable,
 	// Fields
 	@Id
 	@GeneratedValue
-	private int						id;
+	private int id;
 
-	private HibernateRouteGroup				routeGroup;
+	private HibernateRouteGroup routeGroup;
 
-	private int						number;
+	private int number;
 
-	private String					name;
+	private String name;
 
 	@Sort(type = SortType.NATURAL)
-	private SortedSet<HibernateRouteItem>	routeItems					= new TreeSet<HibernateRouteItem>();
+	private SortedSet<HibernateRouteItem> routeItems = new TreeSet<HibernateRouteItem>();
 
-	public static final String		PROPERTYNAME_ID				= "id";
-	public static final String		PROPERTYNAME_ROUTE_GROUP	= "routeGroup";
-	public static final String		PROPERTYNAME_NUMBER			= "number";
-	public static final String		PROPERTYNAME_NAME			= "name";
-	public static final String		PROPERTYNAME_ROUTE_ITEMS	= "routeItems";
+	public static final String PROPERTYNAME_ID = "id";
+	public static final String PROPERTYNAME_ROUTE_GROUP = "routeGroup";
+	public static final String PROPERTYNAME_NUMBER = "number";
+	public static final String PROPERTYNAME_NAME = "name";
+	public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
 
-
+	@Override
 	public int compareTo(HibernateRoute o) {
-		if (this == o)
+		if (this == o) {
 			return 0;
-		if (o == null)
+		}
+		if (o == null) {
 			return -1;
-		if (number > o.getNumber())
+		}
+		if (number > o.getNumber()) {
 			return 1;
-		else if (number == o.getNumber())
+		} else if (number == o.getNumber()) {
 			return 0;
-		else
+		} else {
 			return -1;
+		}
 	}
 
+	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 
 		final HibernateRoute l = (HibernateRoute) o;
-		if (!name.equals(l.getName()))
+		if (!name.equals(l.getName())) {
 			return false;
-		if (number != l.getNumber())
+		}
+		if (number != l.getNumber()) {
 			return false;
-		if (!routeGroup.equals(l.getRouteGroup()))
+		}
+		if (!routeGroup.equals(l.getRouteGroup())) {
 			return false;
-		if (!routeItems.equals(l.getRouteItems()))
+		}
+		if (!routeItems.equals(l.getRouteItems())) {
 			return false;
+		}
 
 		return true;
 	}
 
+	@Override
 	public int hashCode() {
 		return name.hashCode() + routeGroup.hashCode() + routeItems.hashCode()
 				+ number;
 	}
 
+	@Override
 	public String toString() {
 		return name;
 	}
@@ -117,7 +129,8 @@ public class HibernateRoute extends Model implements java.io.Serializable,
 	}
 
 	/** minimal constructor */
-	public HibernateRoute(int id, HibernateRouteGroup routeGroup, int number, String name) {
+	public HibernateRoute(int id, HibernateRouteGroup routeGroup, int number,
+			String name) {
 		this.id = id;
 		this.routeGroup = routeGroup;
 		this.number = number;
@@ -125,8 +138,8 @@ public class HibernateRoute extends Model implements java.io.Serializable,
 	}
 
 	/** full constructor */
-	public HibernateRoute(int id, HibernateRouteGroup routeGroup, int number, String name,
-			SortedSet<HibernateRouteItem> routeItems) {
+	public HibernateRoute(int id, HibernateRouteGroup routeGroup, int number,
+			String name, SortedSet<HibernateRouteItem> routeItems) {
 		this.id = id;
 		this.routeGroup = routeGroup;
 		this.number = number;
@@ -144,9 +157,7 @@ public class HibernateRoute extends Model implements java.io.Serializable,
 	}
 
 	public void setId(int id) {
-		int old = this.id;
 		this.id = id;
-		//firePropertyChange(PROPERTYNAME_ID, old, id);
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -165,9 +176,7 @@ public class HibernateRoute extends Model implements java.io.Serializable,
 	}
 
 	public void setNumber(int number) {
-		int old = this.number;
 		this.number = number;
-		firePropertyChange(PROPERTYNAME_NUMBER, old, number);
 	}
 
 	@Column(name = "name", unique = false, nullable = false, insertable = true, updatable = true)
@@ -176,20 +185,19 @@ public class HibernateRoute extends Model implements java.io.Serializable,
 	}
 
 	public void setName(String name) {
-		String old = this.name;
 		this.name = name;
-		firePropertyChange(PROPERTYNAME_NAME, old, name);
 	}
 
 	@Sort(type = SortType.NATURAL)
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, mappedBy = "route")
 	public SortedSet<HibernateRouteItem> getRouteItems() {
+		if (routeItems == null) {
+			routeItems = new TreeSet<HibernateRouteItem>();
+		}
 		return this.routeItems;
 	}
 
 	public void setRouteItems(SortedSet<HibernateRouteItem> routeItems) {
-		SortedSet<HibernateRouteItem> old = this.routeItems;
 		this.routeItems = routeItems;
-		//firePropertyChange(PROPERTYNAME_ROUTE_ITEMS, old, routeItems);
 	}
 }

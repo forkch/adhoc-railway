@@ -23,45 +23,38 @@ import java.util.List;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.domain.routes.RoutePersistenceException;
+import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
 
 public interface RouteService {
 
-	public abstract List<Route> getAllRoutes() throws RoutePersistenceException;
+	public abstract void addRoute(Route route) throws RouteManagerException;
 
-	public abstract void addRoute(Route route) throws RoutePersistenceException;
+	public abstract void deleteRoute(Route route) throws RouteManagerException;
 
-	public abstract void deleteRoute(Route route)
-			throws RoutePersistenceException;
-
-	public abstract void updateRoute(Route route)
-			throws RoutePersistenceException;
+	public abstract void updateRoute(Route route) throws RouteManagerException;
 
 	public abstract List<RouteGroup> getAllRouteGroups()
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract void addRouteGroup(RouteGroup routeGroup)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract void deleteRouteGroup(RouteGroup routeGroup)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract void updateRouteGroup(RouteGroup routeGroup)
-			throws RoutePersistenceException;
-
-	public abstract List<RouteItem> getAllRouteItems()
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract void addRouteItem(RouteItem item)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract void deleteRouteItem(RouteItem item)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
 	public abstract void updateRouteItem(RouteItem item)
-			throws RoutePersistenceException;
+			throws RouteManagerException;
 
-	public abstract void clear() throws RoutePersistenceException;
+	public abstract void clear() throws RouteManagerException;
 
 	public abstract void flush();
 

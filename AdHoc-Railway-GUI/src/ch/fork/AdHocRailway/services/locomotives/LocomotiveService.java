@@ -22,45 +22,30 @@ import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotivePersistenceException;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
 
 public interface LocomotiveService {
-	public abstract SortedSet<Locomotive> getAllLocomotives()
-			throws LocomotivePersistenceException;
-
 	public abstract void addLocomotive(Locomotive locomotive)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
 	public abstract void deleteLocomotive(Locomotive locomotive)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
 	public abstract void updateLocomotive(Locomotive locomotive)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
 	public abstract SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
 	public abstract void addLocomotiveGroup(LocomotiveGroup group)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
 	public abstract void deleteLocomotiveGroup(LocomotiveGroup group)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
 	public abstract void updateLocomotiveGroup(LocomotiveGroup group)
-			throws LocomotivePersistenceException;
+			throws LocomotiveManagerException;
 
-	public abstract SortedSet<LocomotiveType> getAllLocomotiveTypes()
-			throws LocomotivePersistenceException;
-
-	public abstract void addLocomotiveType(LocomotiveType type)
-			throws LocomotivePersistenceException;
-
-	public abstract void deleteLocomotiveType(LocomotiveType type)
-			throws LocomotivePersistenceException;
-
-	public abstract void clear() throws LocomotivePersistenceException;
-
-	public abstract void flush();
+	public abstract void clear() throws LocomotiveManagerException;
 
 }

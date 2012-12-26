@@ -49,58 +49,64 @@ public class HibernateRouteGroup extends Model implements java.io.Serializable,
 
 	@Id
 	@GeneratedValue
-	private int					id;
+	private int id;
 
-	private String				name;
-	private int					routeNumberOffset;
+	private String name;
+	private int routeNumberOffset;
 
-	private int					routeNumberAmount;
+	private int routeNumberAmount;
 
 	@Sort(type = SortType.NATURAL)
-	private SortedSet<HibernateRoute>	routes								= new TreeSet<HibernateRoute>();
+	private SortedSet<HibernateRoute> routes = new TreeSet<HibernateRoute>();
 
-	public static final String	PROPERTYNAME_ID						= "id";
-	public static final String	PROPERTYNAME_NAME					= "name";
-	public static final String	PROPERTYNAME_ROUTE_NUMBER_OFFSET	= "routeNumberOffset";
-	public static final String	PROPERTYNAME_ROUTE_NUMBER_AMOUNT	= "routeNumberAmount";
-	public static final String	PROPERTYNAME_ROUTES					= "routes";
+	public static final String PROPERTYNAME_ID = "id";
+	public static final String PROPERTYNAME_NAME = "name";
+	public static final String PROPERTYNAME_ROUTE_NUMBER_OFFSET = "routeNumberOffset";
+	public static final String PROPERTYNAME_ROUTE_NUMBER_AMOUNT = "routeNumberAmount";
+	public static final String PROPERTYNAME_ROUTES = "routes";
 
+	@Override
 	public int compareTo(HibernateRouteGroup o) {
-		if (this == o)
+		if (this == o) {
 			return 0;
-		if (o == null)
+		}
+		if (o == null) {
 			return -1;
-		// if(weight > o.getWeight()) return 1;
-		// if(weight == o.getWeight()) return 0;
-		// if(weight < o.getWeight()) return -1;
-		// return -1;
-		//return name.compareTo(o.getName());
-		if(id > o.getId())
+		}
+		if (id > o.getId()) {
 			return 1;
-		else if(id < o.getId())
+		} else if (id < o.getId()) {
 			return -1;
-		else
+		} else {
 			return 0;
+		}
 	}
 
+	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 
 		final HibernateRouteGroup l = (HibernateRouteGroup) o;
-		if (id != l.getId())
+		if (id != l.getId()) {
 			return false;
-		if (!name.equals(l.getName()))
+		}
+		if (!name.equals(l.getName())) {
 			return false;
+		}
 		return true;
 	}
 
+	@Override
 	public int hashCode() {
 		return name.hashCode();
 	}
 
+	@Override
 	public String toString() {
 		return name;
 	}
@@ -140,9 +146,7 @@ public class HibernateRouteGroup extends Model implements java.io.Serializable,
 	}
 
 	public void setId(int id) {
-		int old = id;
 		this.id = id;
-		//firePropertyChange(PROPERTYNAME_ID, old, id);
 	}
 
 	@Column(name = "name", unique = false, nullable = false, insertable = true, updatable = true)
@@ -156,9 +160,7 @@ public class HibernateRouteGroup extends Model implements java.io.Serializable,
 	}
 
 	public void setRouteNumberOffset(int turnoutNumberOffset) {
-		int old = this.routeNumberOffset;
 		this.routeNumberOffset = turnoutNumberOffset;
-		firePropertyChange(PROPERTYNAME_ID, old, turnoutNumberOffset);
 	}
 
 	@Column(name = "route_number_amount", unique = false, nullable = false, insertable = true, updatable = true)
@@ -167,27 +169,24 @@ public class HibernateRouteGroup extends Model implements java.io.Serializable,
 	}
 
 	public void setRouteNumberAmount(int turnoutNumberAmount) {
-		int old = this.routeNumberAmount;
 		this.routeNumberAmount = turnoutNumberAmount;
-		firePropertyChange(PROPERTYNAME_ID, old, turnoutNumberAmount);
 	}
 
 	public void setName(String name) {
-		String old = this.name;
 		this.name = name;
-		firePropertyChange(PROPERTYNAME_NAME, old, name);
 	}
 
 	@Sort(type = SortType.NATURAL)
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, mappedBy = "routeGroup")
 	public SortedSet<HibernateRoute> getRoutes() {
+		if (routes == null) {
+			routes = new TreeSet<HibernateRoute>();
+		}
 		return this.routes;
 	}
 
 	@Sort(type = SortType.NATURAL)
 	public void setRoutes(SortedSet<HibernateRoute> routes) {
-		SortedSet<HibernateRoute> old = routes;
 		this.routes = routes;
-		//firePropertyChange(PROPERTYNAME_ROUTES, old, routes);
 	}
 }

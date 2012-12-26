@@ -34,7 +34,7 @@ import javax.swing.SpinnerNumberModel;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
@@ -46,7 +46,7 @@ public class TurnoutWarmer extends ConfigurationDialog {
 	private SRCPSession session;
 	private JSpinner turnoutNumberField;
 	private JToggleButton warmButton;
-	private TurnoutManger turnoutPersistence;
+	private TurnoutManager turnoutPersistence;
 	private TurnoutControlIface turnoutControl;
 	private TurnoutWarmupThread t;
 

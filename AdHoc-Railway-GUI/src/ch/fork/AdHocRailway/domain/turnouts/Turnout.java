@@ -21,17 +21,17 @@ package ch.fork.AdHocRailway.domain.turnouts;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 
 import com.jgoodies.binding.beans.Model;
 
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
-
 public class Turnout extends Model implements java.io.Serializable,
 		Comparable<Turnout> {
 
-	private int id;
+	private int id = -1;
 
 	private TurnoutType turnoutType;
 
@@ -41,9 +41,9 @@ public class Turnout extends Model implements java.io.Serializable,
 
 	private String description;
 
-	private String defaultState;
+	private TurnoutState defaultState;
 
-	private String orientation;
+	private TurnoutOrientation orientation;
 
 	private Set<RouteItem> routeItems = new HashSet<RouteItem>(0);
 
@@ -64,8 +64,8 @@ public class Turnout extends Model implements java.io.Serializable,
 	public static final String PROPERTYNAME_TURNOUT_GROUP = "turnoutGroup";
 	public static final String PROPERTYNAME_NUMBER = "number";
 	public static final String PROPERTYNAME_DESCRIPTION = "description";
-	public static final String PROPERTYNAME_DEFAULT_STATE = "defaultStateEnum";
-	public static final String PROPERTYNAME_ORIENTATION = "orientationEnum";
+	public static final String PROPERTYNAME_DEFAULT_STATE = "defaultState";
+	public static final String PROPERTYNAME_ORIENTATION = "orientation";
 	public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
 	public static final String PROPERTYNAME_ADDRESS1 = "address1";
 	public static final String PROPERTYNAME_ADDRESS2 = "address2";
@@ -74,121 +74,52 @@ public class Turnout extends Model implements java.io.Serializable,
 	public static final String PROPERTYNAME_ADDRESS1_SWITCHED = "address1Switched";
 	public static final String PROPERTYNAME_ADDRESS2_SWITCHED = "address2Switched";
 
-	private int turnoutGroupId;
-
-	private int turnoutTypeId;
-
-	public enum TurnoutOrientation {
-		NORTH, SOUTH, WEST, EAST
-	};
-
-	public TurnoutOrientation getOrientationEnum() {
-		if (getOrientation().toUpperCase().equals("NORTH")) {
-			return TurnoutOrientation.NORTH;
-		} else if (getOrientation().toUpperCase().equals("SOUTH")) {
-			return TurnoutOrientation.SOUTH;
-		} else if (getOrientation().toUpperCase().equals("EAST")) {
-			return TurnoutOrientation.EAST;
-		} else if (getOrientation().toUpperCase().equals("WEST")) {
-			return TurnoutOrientation.WEST;
-		}
-		return null;
-	}
-
-	public void setOrientationEnum(TurnoutOrientation orientation) {
-		switch (orientation) {
-		case NORTH:
-			setOrientation("NORTH");
-			break;
-		case SOUTH:
-			setOrientation("SOUTH");
-			break;
-		case WEST:
-			setOrientation("WEST");
-			break;
-		case EAST:
-			setOrientation("EAST");
-			break;
-		}
-	}
-
-	public SRCPTurnoutState getDefaultStateEnum() {
-		if (getDefaultState().toUpperCase().equals("STRAIGHT")) {
-			return SRCPTurnoutState.STRAIGHT;
-		} else if (getDefaultState().toUpperCase().equals("LEFT")) {
-			return SRCPTurnoutState.LEFT;
-		} else if (getDefaultState().toUpperCase().equals("RIGHT")) {
-			return SRCPTurnoutState.RIGHT;
-		}
-		return SRCPTurnoutState.UNDEF;
-	}
-
-	public void setDefaultStateEnum(SRCPTurnoutState state) {
-		switch (state) {
-		case STRAIGHT:
-			setDefaultState("STRAIGHT");
-			break;
-		case LEFT:
-			setDefaultState("LEFT");
-			break;
-		case RIGHT:
-			setDefaultState("RIGHT");
-			break;
-		default:
-			setDefaultState("UNDEF");
-		}
-	}
-
 	public boolean isDefault() {
-		return getTurnoutType().getTurnoutTypeEnum() == SRCPTurnoutTypes.DEFAULT;
+		return getTurnoutType() == TurnoutType.DEFAULT;
 	}
 
 	public boolean isDoubleCross() {
-		return getTurnoutType().getTurnoutTypeEnum() == SRCPTurnoutTypes.DOUBLECROSS;
+		return getTurnoutType() == TurnoutType.DOUBLECROSS;
 	}
 
 	public boolean isThreeWay() {
-		return getTurnoutType().getTurnoutTypeEnum() == SRCPTurnoutTypes.THREEWAY;
+		return getTurnoutType() == TurnoutType.THREEWAY;
 	}
 
 	public boolean isCutter() {
-		return getTurnoutType().getTurnoutTypeEnum() == SRCPTurnoutTypes.CUTTER;
+		return getTurnoutType() == TurnoutType.CUTTER;
 	}
 
 	@Override
 	public int compareTo(Turnout o) {
-		if (this == o)
+		if (this == o) {
 			return 0;
-		if (o == null)
+		}
+		if (o == null) {
 			return -1;
-		if (number > o.getNumber())
+		}
+		if (number > o.getNumber()) {
 			return 1;
-		else if (number == o.getNumber())
+		} else if (number == o.getNumber()) {
 			return 0;
-		else
+		} else {
 			return -1;
+		}
 	}
 
 	@Override
 	public String toString() {
-		String str = "#" + number;
-		str += " Addr1 [" + bus1 + "," + address1 + "," + address1Switched
-				+ "]";
-		str += " Addr2 [" + bus2 + "," + address2 + "," + address2Switched
-				+ "]";
-		str += " default " + defaultState;
-		str += " group " + turnoutGroup.getName();
-		return str;
+		return ToStringBuilder.reflectionToString(this,
+				ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 	public Turnout() {
 	}
 
-	public Turnout(int id, TurnoutType turnoutType, TurnoutGroup turnoutGroup,
-			int number, String description, String defaultState,
-			String orientation, int address1, int bus1,
+	public Turnout(TurnoutType turnoutType, TurnoutGroup turnoutGroup,
+			int number, String description, TurnoutState defaultState,
+			TurnoutOrientation orientation, int address1, int bus1,
 			boolean address1_switched) {
-		this.id = id;
 		this.turnoutType = turnoutType;
 		this.turnoutGroup = turnoutGroup;
 		this.number = number;
@@ -200,12 +131,11 @@ public class Turnout extends Model implements java.io.Serializable,
 		this.address1Switched = address1_switched;
 	}
 
-	public Turnout(int id, TurnoutType turnoutType, TurnoutGroup turnoutGroup,
-			int number, String description, String defaultState,
-			String orientation, Set<RouteItem> routeItems, int address1,
-			int address2, int bus1, int bus2, boolean address1_switched,
-			boolean address2_switched) {
-		this.id = id;
+	public Turnout(TurnoutType turnoutType, TurnoutGroup turnoutGroup,
+			int number, String description, TurnoutState defaultState,
+			TurnoutOrientation orientation, Set<RouteItem> routeItems,
+			int address1, int address2, int bus1, int bus2,
+			boolean address1_switched, boolean address2_switched) {
 		this.turnoutType = turnoutType;
 		this.turnoutGroup = turnoutGroup;
 		this.number = number;
@@ -220,14 +150,6 @@ public class Turnout extends Model implements java.io.Serializable,
 		this.address1Switched = address1_switched;
 		this.address2Switched = address2_switched;
 
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public TurnoutType getTurnoutType() {
@@ -270,22 +192,22 @@ public class Turnout extends Model implements java.io.Serializable,
 		firePropertyChange(PROPERTYNAME_DESCRIPTION, old, description);
 	}
 
-	public String getDefaultState() {
+	public TurnoutState getDefaultState() {
 		return this.defaultState;
 	}
 
-	public void setDefaultState(String defaultState) {
-		String old = this.defaultState;
+	public void setDefaultState(TurnoutState defaultState) {
+		TurnoutState old = this.defaultState;
 		this.defaultState = defaultState;
 		firePropertyChange(PROPERTYNAME_DEFAULT_STATE, old, defaultState);
 	}
 
-	public String getOrientation() {
+	public TurnoutOrientation getOrientation() {
 		return this.orientation;
 	}
 
-	public void setOrientation(String orientation) {
-		String old = this.orientation;
+	public void setOrientation(TurnoutOrientation orientation) {
+		TurnoutOrientation old = this.orientation;
 		this.orientation = orientation;
 		firePropertyChange(PROPERTYNAME_ORIENTATION, old, orientation);
 	}
@@ -364,101 +286,41 @@ public class Turnout extends Model implements java.io.Serializable,
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + address1;
-		result = prime * result + (address1Switched ? 1231 : 1237);
-		result = prime * result + address2;
-		result = prime * result + (address2Switched ? 1231 : 1237);
-		result = prime * result + bus1;
-		result = prime * result + bus2;
-		result = prime * result
-				+ ((defaultState == null) ? 0 : defaultState.hashCode());
-		result = prime * result
-				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result + number;
-		result = prime * result
-				+ ((orientation == null) ? 0 : orientation.hashCode());
-		result = prime * result
-				+ ((turnoutGroup == null) ? 0 : turnoutGroup.hashCode());
-		result = prime * result
-				+ ((turnoutType == null) ? 0 : turnoutType.hashCode());
+		result = prime * result + id;
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		final Turnout other = (Turnout) obj;
-		if (address1 != other.address1)
+		}
+		Turnout other = (Turnout) obj;
+		if (id != other.id) {
 			return false;
-		if (address1Switched != other.address1Switched)
-			return false;
-		if (address2 != other.address2)
-			return false;
-		if (address2Switched != other.address2Switched)
-			return false;
-		if (bus1 != other.bus1)
-			return false;
-		if (bus2 != other.bus2)
-			return false;
-		if (defaultState == null) {
-			if (other.defaultState != null)
-				return false;
-		} else if (!defaultState.equals(other.defaultState))
-			return false;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (number != other.number)
-			return false;
-		if (orientation == null) {
-			if (other.orientation != null)
-				return false;
-		} else if (!orientation.equals(other.orientation))
-			return false;
-		if (turnoutGroup == null) {
-			if (other.turnoutGroup != null)
-				return false;
-		} else if (!turnoutGroup.equals(other.turnoutGroup))
-			return false;
-		if (turnoutType == null) {
-			if (other.turnoutType != null)
-				return false;
-		} else if (!turnoutType.equals(other.turnoutType))
-			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public Object clone() {
-		Turnout newT = new Turnout(id, turnoutType, turnoutGroup, number,
+		Turnout newT = new Turnout(turnoutType, turnoutGroup, number,
 				description, defaultState, orientation, routeItems, address1,
 				address2, bus1, bus2, address1Switched, address2Switched);
 		return newT;
 	}
 
-	public void setTurnoutGroupId(int turnoutGroupId) {
-		this.turnoutGroupId = turnoutGroupId;
-
+	public int getId() {
+		return id;
 	}
 
-	public int getTurnoutGroupId() {
-		return turnoutGroupId;
+	public void setId(int id) {
+		this.id = id;
 	}
-
-	public int getTurnoutTypeId() {
-		return turnoutTypeId;
-	}
-
-	public void setTurnoutTypeId(int turnoutTypeId) {
-		this.turnoutTypeId = turnoutTypeId;
-
-	}
-
 }

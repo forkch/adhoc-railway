@@ -18,7 +18,6 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
-
 public class LocomotiveException extends Exception {
 
 	public LocomotiveException() {

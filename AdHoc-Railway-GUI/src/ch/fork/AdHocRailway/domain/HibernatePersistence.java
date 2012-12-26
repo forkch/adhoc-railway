@@ -29,7 +29,7 @@ import javax.persistence.PersistenceException;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceException;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
@@ -90,11 +90,11 @@ public abstract class HibernatePersistence {
 			} catch (HibernateException ex) {
 				em.getTransaction().rollback();
 				em.close();
-				throw new TurnoutPersistenceException("Database Error", ex);
+				throw new TurnoutManagerException("Database Error", ex);
 			} catch (PersistenceException x) {
 				em.getTransaction().rollback();
 				em.close();
-				throw new TurnoutPersistenceException("Database Error", x);
+				throw new TurnoutManagerException("Database Error", x);
 			}
 			em.close();
 			em = null;
@@ -116,14 +116,14 @@ public abstract class HibernatePersistence {
 			em.close();
 			HibernatePersistence.connect();
 			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Database Error", ex);
+			throw new TurnoutManagerException("Database Error", ex);
 		} catch (PersistenceException x) {
 			x.printStackTrace();
 			em.getTransaction().rollback();
 			em.close();
 			HibernatePersistence.connect();
 			HibernatePersistence.getEntityManager().getTransaction().begin();
-			throw new TurnoutPersistenceException("Database Error", x);
+			throw new TurnoutManagerException("Database Error", x);
 		}
 		em.getTransaction().begin();
 	}

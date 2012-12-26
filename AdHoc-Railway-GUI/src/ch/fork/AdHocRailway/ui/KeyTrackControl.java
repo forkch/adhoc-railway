@@ -36,7 +36,7 @@ import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManger;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
@@ -228,7 +228,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
         private void handleSwitchChange(ActionEvent e, int enteredNumber)
                 throws TurnoutException {
-            TurnoutManger turnoutPersistence = AdHocRailway
+            TurnoutManager turnoutPersistence = AdHocRailway
                     .getInstance().getTurnoutPersistence();
             Turnout searchedTurnout = null;
             searchedTurnout = turnoutPersistence

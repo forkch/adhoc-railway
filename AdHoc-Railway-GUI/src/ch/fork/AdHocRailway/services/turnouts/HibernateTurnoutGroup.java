@@ -67,17 +67,20 @@ public class HibernateTurnoutGroup extends Model implements
 
 	@Override
 	public int compareTo(HibernateTurnoutGroup o) {
-		if (this == o)
+		if (this == o) {
 			return 0;
-		if (o == null)
+		}
+		if (o == null) {
 			return -1;
+		}
 		// return name.compareTo(o.getName());
-		if (id > o.getId())
+		if (id > o.getId()) {
 			return 1;
-		else if (id < o.getId())
+		} else if (id < o.getId()) {
 			return -1;
-		else
+		} else {
 			return 0;
+		}
 	}
 
 	@Override
@@ -91,16 +94,20 @@ public class HibernateTurnoutGroup extends Model implements
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
+		}
 		final HibernateTurnoutGroup other = (HibernateTurnoutGroup) obj;
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -183,6 +190,9 @@ public class HibernateTurnoutGroup extends Model implements
 	@Sort(type = SortType.NATURAL)
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "turnoutGroup")
 	public SortedSet<HibernateTurnout> getTurnouts() {
+		if (turnouts == null) {
+			turnouts = new TreeSet<HibernateTurnout>();
+		}
 		return this.turnouts;
 	}
 

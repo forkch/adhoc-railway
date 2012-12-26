@@ -25,7 +25,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -121,8 +121,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private void initComponents() {
 
-		LocomotiveManager locomotivePersistence = AdHocRailway
-				.getInstance().getLocomotivePersistence();
+		LocomotiveManager locomotivePersistence = AdHocRailway.getInstance()
+				.getLocomotivePersistence();
 		nameTextField = BasicComponentFactory.createTextField(presentationModel
 				.getModel(Locomotive.PROPERTYNAME_NAME));
 		nameTextField.setColumns(30);
@@ -184,8 +184,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 				324, // maxValue
 				1)); // step
 
-		List<LocomotiveType> locomotiveTypes = new ArrayList<LocomotiveType>(
-				locomotivePersistence.getAllLocomotiveTypes());
+		List<LocomotiveType> locomotiveTypes = Arrays.asList(LocomotiveType
+				.values());
 
 		ValueModel locomotiveTypeModel = presentationModel
 				.getModel(Locomotive.PROPERTYNAME_LOCOMOTIVE_TYPE);
@@ -261,18 +261,19 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 			Locomotive locomotive = presentationModel.getBean();
 			LocomotiveManager locomotivePersistence = AdHocRailway
 					.getInstance().getLocomotivePersistence();
-			if (locomotive.getId() == 0) {
-				locomotivePersistence.addLocomotive(locomotive);
-			} else {
+			if (locomotive.getId() != -1) {
 				locomotivePersistence.updateLocomotive(locomotive);
+			} else {
+				locomotivePersistence.addLocomotive(locomotive);
 			}
 
 			okPressed = true;
 			LocomotiveConfig.this.setVisible(false);
 
 			if (Preferences.getInstance().getBooleanValue(
-					PreferencesKeys.AUTOSAVE))
+					PreferencesKeys.AUTOSAVE)) {
 				AdHocRailway.getInstance().saveActualFile();
+			}
 		}
 	}
 
@@ -299,14 +300,15 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		Locomotive locomotive = presentationModel.getBean();
-		if (!validate(locomotive, event))
+		if (!validate(locomotive, event)) {
 			return;
+		}
 	}
 
 	private boolean validate(Locomotive locomotive, PropertyChangeEvent event) {
 
-		LocomotiveManager locomotivePersistence = AdHocRailway
-				.getInstance().getLocomotivePersistence();
+		LocomotiveManager locomotivePersistence = AdHocRailway.getInstance()
+				.getLocomotivePersistence();
 		boolean validate = true;
 		if (event == null
 				|| event.getPropertyName().equals(Locomotive.PROPERTYNAME_NAME)) {
@@ -353,8 +355,9 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 				boolean unique = true;
 				for (Locomotive l : locomotivePersistence.getAllLocomotives()) {
 					if (l.getBus() == bus && l.getAddress() == address
-							&& !l.equals(locomotive))
+							&& !l.equals(locomotive)) {
 						unique = false;
+					}
 				}
 				if (!unique) {
 					setSpinnerColor(busTextField, UIConstants.WARN_COLOR);
@@ -397,10 +400,12 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 			@Override
 			public boolean accept(File f) {
-				if (f.isDirectory())
+				if (f.isDirectory()) {
 					return true;
-				if (f.getName().matches(".*\\.png"))
+				}
+				if (f.getName().matches(".*\\.png")) {
 					return true;
+				}
 				return false;
 			}
 		});

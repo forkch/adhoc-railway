@@ -18,12 +18,15 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.jgoodies.binding.beans.Model;
 
 public class Locomotive extends Model implements java.io.Serializable,
 		Comparable<Locomotive> {
 
-	private int id;
+	private int id = -1;
 
 	private LocomotiveGroup locomotiveGroup;
 
@@ -54,17 +57,20 @@ public class Locomotive extends Model implements java.io.Serializable,
 
 	@Override
 	public int compareTo(Locomotive o) {
-		if (this == o)
+		if (this == o) {
 			return 0;
-		if (o == null)
+		}
+		if (o == null) {
 			return -1;
+		}
 		if (name == null) {
-			if (id > o.getId())
+			if (id > o.getId()) {
 				return 1;
-			else if (id == o.getId())
+			} else if (id == o.getId()) {
 				return 0;
-			else
+			} else {
 				return -1;
+			}
 		} else {
 			return name.compareTo(o.getName());
 		}
@@ -73,7 +79,8 @@ public class Locomotive extends Model implements java.io.Serializable,
 
 	@Override
 	public String toString() {
-		return name;
+		return ToStringBuilder.reflectionToString(this,
+				ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 	public Locomotive() {
@@ -194,60 +201,25 @@ public class Locomotive extends Model implements java.io.Serializable,
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + address;
-		result = prime * result + bus;
-		result = prime * result
-				+ ((description == null) ? 0 : description.hashCode());
 		result = prime * result + id;
-		result = prime * result + ((image == null) ? 0 : image.hashCode());
-		result = prime * result
-				+ ((locomotiveGroup == null) ? 0 : locomotiveGroup.hashCode());
-		result = prime * result
-				+ ((locomotiveType == null) ? 0 : locomotiveType.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		final Locomotive other = (Locomotive) obj;
-		if (address != other.address)
+		}
+		Locomotive other = (Locomotive) obj;
+		if (id != other.id) {
 			return false;
-		if (bus != other.bus)
-			return false;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (id != other.id)
-			return false;
-		if (image == null) {
-			if (other.image != null)
-				return false;
-		} else if (!image.equals(other.image))
-			return false;
-		if (locomotiveGroup == null) {
-			if (other.locomotiveGroup != null)
-				return false;
-		} else if (!locomotiveGroup.equals(other.locomotiveGroup))
-			return false;
-		if (locomotiveType == null) {
-			if (other.locomotiveType != null)
-				return false;
-		} else if (!locomotiveType.equals(other.locomotiveType))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
+		}
 		return true;
 	}
 
