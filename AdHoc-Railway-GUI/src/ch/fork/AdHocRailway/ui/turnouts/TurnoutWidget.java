@@ -220,7 +220,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			turnoutControl.removeTurnoutChangeListener(TurnoutWidget.this);
 			new TurnoutConfig(AdHocRailway.getInstance(), turnout);
 			validateTurnout();
-			turnoutControl.update();
+			turnoutControl.addOrUpdateTurnout(turnout);
 			turnoutControl
 					.addTurnoutChangeListener(turnout, TurnoutWidget.this);
 

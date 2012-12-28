@@ -27,23 +27,22 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	private static Logger logger = Logger
 			.getLogger(SRCPLocomotiveControlAdapter.class);
 
-	private static SRCPLocomotiveControlAdapter instance;
+	private static LocomotiveControlface instance;
 
-	private LocomotiveManager persistence;
-	private final Map<Locomotive, SRCPLocomotive> locomotiveSRCPLocomotiveMap;
-	private final Map<SRCPLocomotive, Locomotive> SRCPLocomotiveLocomotiveMap;
-	private final Map<SRCPLocomotive, List<LocomotiveChangeListener>> listeners;
+	private final Map<Locomotive, SRCPLocomotive> locomotiveSRCPLocomotiveMap = new HashMap<Locomotive, SRCPLocomotive>();
+	private final Map<SRCPLocomotive, Locomotive> SRCPLocomotiveLocomotiveMap = new HashMap<SRCPLocomotive, Locomotive>();
+	private final Map<SRCPLocomotive, List<LocomotiveChangeListener>> listeners = new HashMap<SRCPLocomotive, List<LocomotiveChangeListener>>();
 
 	private final SRCPLocomotiveControl locomotiveControl;
 
 	private SRCPLocomotiveControlAdapter() {
 		locomotiveControl = SRCPLocomotiveControl.getInstance();
-		locomotiveSRCPLocomotiveMap = new HashMap<Locomotive, SRCPLocomotive>();
-		SRCPLocomotiveLocomotiveMap = new HashMap<SRCPLocomotive, Locomotive>();
-		listeners = new HashMap<SRCPLocomotive, List<LocomotiveChangeListener>>();
+
+		locomotiveControl.addLocomotiveChangeListener(this, this);
+		reloadConfiguration();
 	}
 
-	public static SRCPLocomotiveControlAdapter getInstance() {
+	public static LocomotiveControlface getInstance() {
 		if (instance == null) {
 			instance = new SRCPLocomotiveControlAdapter();
 		}
@@ -124,12 +123,6 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	}
 
 	@Override
-	public void setLocomotivePersistence(LocomotiveManager persistence) {
-		this.persistence = persistence;
-
-	}
-
-	@Override
 	public void setSpeed(Locomotive locomotive, int speed, boolean[] functions)
 			throws LocomotiveException {
 		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
@@ -161,25 +154,26 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		}
 	}
 
-	@Override
-	public void update() {
-		locomotiveSRCPLocomotiveMap.clear();
-		SRCPLocomotiveLocomotiveMap.clear();
-
+	public void reloadConfiguration() {
 		SRCPLockControl.getInstance().setLockDuration(
 				Preferences.getInstance().getIntValue(
 						PreferencesKeys.LOCK_DURATION));
-
-		locomotiveControl.removeLocomotiveChangeListener(this, this);
-		for (Locomotive locomotive : persistence.getAllLocomotives()) {
-			addLocomotiveToMapping(locomotive);
-		}
-		locomotiveControl.addLocomotiveChangeListener(this, this);
-		locomotiveControl.update(SRCPLocomotiveLocomotiveMap.keySet());
-
 	}
 
-	public SRCPLocomotive addLocomotiveToMapping(Locomotive locomotive) {
+	@Override
+	public void addOrUpdateLocomotive(Locomotive locomotive) {
+		SRCPLocomotive srcpLocomotive = getSrcpLocomotive(locomotive);
+		if (srcpLocomotive != null) {
+			SRCPLocomotiveLocomotiveMap.remove(srcpLocomotive);
+			locomotiveSRCPLocomotiveMap.remove(locomotive);
+		}
+		SRCPLocomotive sLocomotive = createSRCPLocomotive(locomotive);
+
+		locomotiveSRCPLocomotiveMap.put(locomotive, sLocomotive);
+		SRCPLocomotiveLocomotiveMap.put(sLocomotive, locomotive);
+	}
+
+	public SRCPLocomotive createSRCPLocomotive(Locomotive locomotive) {
 		LocomotiveType type = locomotive.getLocomotiveType();
 		SRCPLocomotive sLocomotive = null;
 		switch (type) {
@@ -192,9 +186,6 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		}
 		sLocomotive.setBus(locomotive.getBus());
 		sLocomotive.setAddress(locomotive.getAddress());
-
-		locomotiveSRCPLocomotiveMap.put(locomotive, sLocomotive);
-		SRCPLocomotiveLocomotiveMap.put(sLocomotive, locomotive);
 		return sLocomotive;
 	}
 
@@ -299,13 +290,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	}
 
 	public SRCPLocomotive getSrcpLocomotive(Locomotive locomotive) {
-		SRCPLocomotive sLocomotive = locomotiveSRCPLocomotiveMap
-				.get(locomotive);
-		if (sLocomotive == null) {
-			logger.info("added locomotive " + locomotive + " to mapping");
-			return addLocomotiveToMapping(locomotive);
-		}
-		return sLocomotive;
+		return locomotiveSRCPLocomotiveMap.get(locomotive);
 	}
 
 }

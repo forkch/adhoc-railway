@@ -18,13 +18,9 @@
 	<classpathentry kind="lib" path="lib/javassist-3.15.0-GA.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-logging-3.1.0.GA.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-core-2.0-alpha2.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-impl-2.0-alpha2.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-api-2.0-alpha2.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-flume-ng-2.0-alpha2.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-jcl-2.0-alpha2.jar"/>
-	<classpathentry kind="lib" path="lib/log4j12-api-2.0-alpha2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jsrcpc"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>

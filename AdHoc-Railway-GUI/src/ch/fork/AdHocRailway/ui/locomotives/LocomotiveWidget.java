@@ -27,11 +27,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.io.File;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -93,8 +91,6 @@ public class LocomotiveWidget extends JPanel implements
 	private final JFrame frame;
 
 	private JLabel imageLabel;
-	private final ImageIcon emptyLocoIcon = ImageTools
-			.createImageIconFileSystem("locoimages/empty.png");
 
 	public LocomotiveWidget(int number, JFrame frame) {
 		super();
@@ -114,7 +110,7 @@ public class LocomotiveWidget extends JPanel implements
 
 		addMouseListener(new MouseAction());
 
-		imageLabel = new JLabel(emptyLocoIcon);
+		imageLabel = new JLabel();
 		imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
 		add(controlPanel, "span 3, grow");
@@ -134,6 +130,7 @@ public class LocomotiveWidget extends JPanel implements
 		locomotiveComboBox = new JComboBox<Locomotive>();
 		locomotiveComboBox.setFocusable(false);
 		locomotiveSelectAction = new LocomotiveSelectAction();
+		locomotiveComboBox.setRenderer(new LocomotiveComboBoxRenderer());
 
 		add(locomotiveGroupComboBox, "span 3, grow, width 200");
 		add(locomotiveComboBox, "span 3, grow, width 200");
@@ -161,18 +158,11 @@ public class LocomotiveWidget extends JPanel implements
 	 * @param imageLabel
 	 */
 	public void setLocomotiveImage() {
+
 		if (myLocomotive == null) {
 			return;
 		}
-		String image = myLocomotive.getImage();
-
-		if (image != null && !image.isEmpty()
-				&& new File("locoimages/" + image).exists()) {
-			imageLabel.setIcon(ImageTools
-					.createImageIconFileSystem("locoimages/" + image));
-		} else {
-			imageLabel.setIcon(emptyLocoIcon);
-		}
+		imageLabel.setIcon(ImageTools.getLocomotiveIcon(myLocomotive));
 	}
 
 	private JPanel initFunctionsControl() {
@@ -638,8 +628,6 @@ public class LocomotiveWidget extends JPanel implements
 			if (myLocomotive == null) {
 				return;
 			}
-			LocomotiveControlface locomotiveControl = AdHocRailway
-					.getInstance().getLocomotiveControl();
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
 				LocomotiveManager locomotivePersistence = AdHocRailway
 						.getInstance().getLocomotivePersistence();
@@ -649,7 +637,6 @@ public class LocomotiveWidget extends JPanel implements
 					locomotivePersistence.updateLocomotive(myLocomotive);
 				}
 				locomotiveChanged(myLocomotive);
-				locomotiveControl.update();
 			} else if (e.getButton() == MouseEvent.BUTTON2) {
 				ToggleDirectionAction a = new ToggleDirectionAction();
 				a.actionPerformed(null);

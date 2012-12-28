@@ -25,10 +25,8 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 
 	private static SRCPTurnoutControlAdapter instance;
 
-	private TurnoutManager persistence;
 	private final Map<Turnout, SRCPTurnout> turnoutsSRCPTurnoutsMap;
 	private final Map<SRCPTurnout, Turnout> SRCPTurnoutsTurnoutsMap;
-	// private Map<SRCPTurnout, List<TurnoutChangeListener>> listeners;
 	private final List<TurnoutChangeListener> listeners;
 
 	SRCPTurnoutControl turnoutControl;
@@ -38,11 +36,15 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 	Turnout turnoutTemp;
 
 	private SRCPTurnoutControlAdapter() {
-		turnoutControl = SRCPTurnoutControl.getInstance();
+
 		turnoutsSRCPTurnoutsMap = new HashMap<Turnout, SRCPTurnout>();
 		SRCPTurnoutsTurnoutsMap = new HashMap<SRCPTurnout, Turnout>();
-		// listeners = new HashMap<SRCPTurnout, List<TurnoutChangeListener>>();
 		listeners = new ArrayList<TurnoutChangeListener>();
+
+		turnoutControl = SRCPTurnoutControl.getInstance();
+
+		turnoutControl.addTurnoutChangeListener(this);
+		reloadConfiguration();
 	}
 
 	public static SRCPTurnoutControlAdapter getInstance() {
@@ -178,21 +180,25 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 		turnoutsSRCPTurnoutsMap.clear();
 		SRCPTurnoutsTurnoutsMap.clear();
 		turnoutControl.removeTurnoutChangeListener(this);
+
+	}
+
+	@Override
+	public void reloadConfiguration() {
 		turnoutControl.setInterface6051Connected(Preferences.getInstance()
 				.getBooleanValue(PreferencesKeys.INTERFACE_6051));
 		turnoutControl.setTurnoutActivationTime(Preferences.getInstance()
 				.getIntValue(PreferencesKeys.ACTIVATION_TIME));
-		for (Turnout turnout : persistence.getAllTurnouts()) {
-			SRCPTurnout sTurnout = createSRCPTurnout(turnout);
+	}
 
-			turnoutsSRCPTurnoutsMap.put(turnout, sTurnout);
-			SRCPTurnoutsTurnoutsMap.put(sTurnout, turnout);
+	@Override
+	public void addOrUpdateTurnout(Turnout turnout) {
+		turnoutControl.removeTurnout(getSRCPTurnout(turnout));
+		SRCPTurnout sTurnout = createSRCPTurnout(turnout);
 
-		}
-		turnoutControl.addTurnoutChangeListener(this);
-
-		turnoutControl.update(SRCPTurnoutsTurnoutsMap.keySet());
-		// turnoutControl.setSession(session)
+		turnoutsSRCPTurnoutsMap.put(turnout, sTurnout);
+		SRCPTurnoutsTurnoutsMap.put(sTurnout, turnout);
+		turnoutControl.addTurnout(sTurnout);
 	}
 
 	SRCPTurnout createSRCPTurnout(Turnout turnout) {
@@ -243,11 +249,6 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 	@Override
 	public void addTurnoutChangeListener(Turnout turnout,
 			TurnoutChangeListener listener) {
-		SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
-		// if (listeners.get(sTurnout) == null) {
-		// listeners.put(sTurnout, new ArrayList<TurnoutChangeListener>());
-		// }
-		// listeners.get(sTurnout).add(listener);
 		listeners.add(listener);
 	}
 
@@ -266,15 +267,6 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 	public void removeTurnoutChangeListener(TurnoutChangeListener listener) {
 		// listeners.keySet().remove(listener);
 		listeners.remove(listener);
-	}
-
-	public TurnoutManager getPersistence() {
-		return persistence;
-	}
-
-	@Override
-	public void setPersistence(TurnoutManager persistence) {
-		this.persistence = persistence;
 	}
 
 	@Override

@@ -51,8 +51,10 @@ public interface TurnoutControlIface {
 
 	public SRCPTurnoutState getTurnoutState(Turnout turnout);
 
-	public void setPersistence(TurnoutManager persistence);
-
 	public void toggleTest(Turnout turnout) throws TurnoutException;
+
+	public abstract void addOrUpdateTurnout(Turnout turnout);
+
+	public abstract void reloadConfiguration();
 
 }

@@ -45,15 +45,15 @@ import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
-	private Route			route;
-	private JLabel			nameLabel;
-	private JLabel			iconLabel;
-	private Icon			routeStopIcon;
-	private Icon			routeStartIcon;
-	private JProgressBar	routingProgress;
-	private JPanel			southPanel;
-	private MouseAction		mouseAction;
-	private JLabel			numberLabel;
+	private final Route route;
+	private JLabel nameLabel;
+	private JLabel iconLabel;
+	private Icon routeStopIcon;
+	private Icon routeStartIcon;
+	private JProgressBar routingProgress;
+	private JPanel southPanel;
+	private MouseAction mouseAction;
+	private JLabel numberLabel;
 
 	public RouteWidget(Route route) {
 		this.route = route;
@@ -69,10 +69,10 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 		JPanel northPanel = new JPanel();
 		northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.LINE_AXIS));
-		routeStopIcon = new ImageIcon(ClassLoader
-				.getSystemResource("routes/route_stop.png"));
-		routeStartIcon = new ImageIcon(ClassLoader
-				.getSystemResource("routes/route_start.png"));
+		routeStopIcon = new ImageIcon(
+				ClassLoader.getSystemResource("routes/route_stop.png"));
+		routeStartIcon = new ImageIcon(
+				ClassLoader.getSystemResource("routes/route_start.png"));
 		numberLabel = new JLabel("" + route.getNumber());
 		numberLabel.setFont(new Font("Dialog", Font.BOLD, 30));
 		nameLabel = new JLabel(route.getName());
@@ -117,12 +117,14 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 						.getRouteControl();
 				if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON1) {
-					if (routeControl.isRouting(route))
+					if (routeControl.isRouting(route)) {
 						return;
-					if (routeControl.isRouteEnabled(route))
+					}
+					if (routeControl.isRouteEnabled(route)) {
 						routeControl.disableRoute(route);
-					else
+					} else {
 						routeControl.enableRoute(route);
+					}
 					removeMouseListener(mouseAction);
 				} else if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON3) {
@@ -138,7 +140,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 					.getRouteControl();
 			routeControl.removeRouteChangeListener(route, RouteWidget.this);
 			new RouteConfig(AdHocRailway.getInstance(), route);
-			routeControl.update();
 			routeControl.addRouteChangeListener(route, RouteWidget.this);
 
 			routeChanged(route);
@@ -156,11 +157,11 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 							.getRouteControl();
 					if (routeControl.isRouteEnabled(route)) {
 						iconLabel.setIcon(routeStartIcon);
-						//routingProgress.setForeground(Color.GREEN);
+						// routingProgress.setForeground(Color.GREEN);
 						routingProgress.setValue(routingProgress.getMaximum());
 					} else {
 						iconLabel.setIcon(routeStopIcon);
-						//routingProgress.setBackground(Color.RED);
+						// routingProgress.setBackground(Color.RED);
 						routingProgress.setValue(routingProgress.getMinimum());
 					}
 					RouteWidget.this.revalidate();
@@ -177,7 +178,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 				@Override
 				public void run() {
-					//routingProgress.setValue(routingProgress.getValue() + 1);
+					// routingProgress.setValue(routingProgress.getValue() + 1);
 					RouteWidget.this.revalidate();
 					RouteWidget.this.repaint();
 				}
@@ -192,7 +193,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 				@Override
 				public void run() {
-					//routingProgress.setValue(routingProgress.getValue() - 1);
+					// routingProgress.setValue(routingProgress.getValue() - 1);
 					RouteWidget.this.revalidate();
 					RouteWidget.this.repaint();
 				}

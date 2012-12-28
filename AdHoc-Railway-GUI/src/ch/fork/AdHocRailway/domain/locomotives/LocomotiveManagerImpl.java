@@ -37,7 +37,8 @@ import de.dermoba.srcp.model.SRCPAddress;
 public class LocomotiveManagerImpl implements LocomotiveManager {
 	private static Logger LOGGER = Logger.getLogger(LocomotiveManager.class);
 
-	private static LocomotiveManagerImpl instance;
+	private static LocomotiveManager instance;
+	private LocomotiveControlface locomotiveControl;
 
 	private final Map<SRCPAddress, Locomotive> addressLocomotiveCache = new HashMap<SRCPAddress, Locomotive>();
 	private final SortedSet<LocomotiveGroup> locomotiveGroups = new TreeSet<LocomotiveGroup>();
@@ -48,11 +49,9 @@ public class LocomotiveManagerImpl implements LocomotiveManager {
 
 	private LocomotiveManagerImpl() {
 		LOGGER.info("LocomotiveManager loaded");
-
-		reload();
 	}
 
-	public static LocomotiveManagerImpl getInstance() {
+	public static LocomotiveManager getInstance() {
 		if (instance == null) {
 			instance = new LocomotiveManagerImpl();
 		}
@@ -94,12 +93,6 @@ public class LocomotiveManagerImpl implements LocomotiveManager {
 		putInCache(locomotive);
 	}
 
-	private void putInCache(Locomotive locomotive) {
-		addressLocomotiveCache.put(new SRCPAddress(locomotive.getBus(),
-				locomotive.getAddress(), 0, 0), locomotive);
-		ALL_LOCOMOTIVE_GROUP.getLocomotives().add(locomotive);
-	}
-
 	@Override
 	public void deleteLocomotive(Locomotive locomotive) {
 		locomotiveService.deleteLocomotive(locomotive);
@@ -109,14 +102,11 @@ public class LocomotiveManagerImpl implements LocomotiveManager {
 
 	}
 
-	private void removeFromCache(Locomotive locomotive) {
-		addressLocomotiveCache.values().remove(locomotive);
-		ALL_LOCOMOTIVE_GROUP.getLocomotives().remove(locomotive);
-	}
-
 	@Override
 	public void updateLocomotive(Locomotive locomotive) {
+		removeFromCache(locomotive);
 		locomotiveService.updateLocomotive(locomotive);
+		putInCache(locomotive);
 
 	}
 
@@ -155,7 +145,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager {
 	}
 
 	@Override
-	public void reload() {
+	public void initialize() {
 		clear();
 		for (LocomotiveGroup group : locomotiveService.getAllLocomotiveGroups()) {
 			locomotiveGroups.add(group);
@@ -163,5 +153,22 @@ public class LocomotiveManagerImpl implements LocomotiveManager {
 				putInCache(locomotive);
 			}
 		}
+	}
+
+	@Override
+	public void setLocomotiveControl(LocomotiveControlface locomotiveControl) {
+		this.locomotiveControl = locomotiveControl;
+	}
+
+	private void putInCache(Locomotive locomotive) {
+		addressLocomotiveCache.put(new SRCPAddress(locomotive.getBus(),
+				locomotive.getAddress(), 0, 0), locomotive);
+		ALL_LOCOMOTIVE_GROUP.getLocomotives().add(locomotive);
+		locomotiveControl.addOrUpdateLocomotive(locomotive);
+	}
+
+	private void removeFromCache(Locomotive locomotive) {
+		addressLocomotiveCache.values().remove(locomotive);
+		ALL_LOCOMOTIVE_GROUP.getLocomotives().remove(locomotive);
 	}
 }

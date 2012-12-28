@@ -171,16 +171,8 @@ public class RoutesConfigurationDialog extends JDialog {
 		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					RouteManager routePersistence = AdHocRailway.getInstance()
-							.getRoutePersistence();
-					routePersistence.flush();
-				} catch (RouteManagerException e1) {
-					ExceptionProcessor.getInstance().processException(e1);
-				} finally {
-					okPressed = true;
-					setVisible(false);
-				}
+				okPressed = true;
+				setVisible(false);
 			}
 
 		});

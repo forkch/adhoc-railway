@@ -42,7 +42,6 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
@@ -50,6 +49,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
@@ -122,7 +122,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	private void initRoutesPanel() {
 		routeGroupsTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
 
-		updateRoutes();
+		// updateRoutes();
 	}
 
 	private void initKeyboardActions() {

@@ -41,7 +41,7 @@ volatile uint16_t actualBit;
 uint16_t commandLength;
 volatile unsigned char prepareNextData;
 
-// ACHTUNG: Queue-Gršsse!!
+// ACHTUNG: Queue-Grï¿½sse!!
 volatile unsigned char commandQueue[2][MM_COMMAND_LENGTH_LOCO * NEW_LOCOCMD_REPETITIONS];
 //volatile unsigned char commandQueue[2][MM_COMMAND_LENGTH_SOLENOID * SOLENOIDCMD_REPETITIONS];
 //volatile unsigned char commandQueue[2][MM_COMMAND_LENGTH_LOCO * LOCOCMD_REPETITIONS];

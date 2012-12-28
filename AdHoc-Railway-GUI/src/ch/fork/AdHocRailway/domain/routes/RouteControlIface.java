@@ -18,7 +18,6 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-
 public interface RouteControlIface {
 
 	public abstract void enableRoute(Route r) throws RouteException;
@@ -37,13 +36,10 @@ public interface RouteControlIface {
 
 	public abstract void previousDeviceToDefault() throws RouteException;
 
-	public abstract void setRoutePersistence(
-			RouteManager routePersistence);
-
 	public abstract boolean isRouteEnabled(Route route);
 
 	public abstract boolean isRouting(Route route);
-	
-	public abstract void update();
+
+	void addOrUpdateRoute(Route route);
 
 }

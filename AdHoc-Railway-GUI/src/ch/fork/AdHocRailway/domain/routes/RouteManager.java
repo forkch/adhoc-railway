@@ -29,11 +29,9 @@ public interface RouteManager {
 
 	public abstract void addRoute(Route route) throws RouteManagerException;
 
-	public abstract void deleteRoute(Route route)
-			throws RouteManagerException;
+	public abstract void deleteRoute(Route route) throws RouteManagerException;
 
-	public abstract void updateRoute(Route route)
-			throws RouteManagerException;
+	public abstract void updateRoute(Route route) throws RouteManagerException;
 
 	public abstract List<RouteGroup> getAllRouteGroups()
 			throws RouteManagerException;
@@ -56,17 +54,16 @@ public interface RouteManager {
 	public abstract void updateRouteItem(RouteItem item)
 			throws RouteManagerException;
 
-	public abstract int getNextFreeRouteNumber()
-			throws RouteManagerException;
+	public abstract int getNextFreeRouteNumber() throws RouteManagerException;
 
-	public int getNextFreeRouteNumberOfGroup(RouteGroup routeGroup);
+	public abstract int getNextFreeRouteNumberOfGroup(RouteGroup routeGroup);
 
-	public void enlargeRouteGroups();
+	public abstract void enlargeRouteGroups();
 
 	public abstract void clear() throws RouteManagerException;
 
-	public abstract void flush();
-
 	public abstract void reload();
+
+	public abstract void setRouteControl(RouteControlIface routeControl);
 
 }

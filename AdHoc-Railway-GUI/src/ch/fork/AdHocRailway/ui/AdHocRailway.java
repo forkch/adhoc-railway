@@ -64,6 +64,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import org.apache.log4j.Logger;
+
 import ch.fork.AdHocRailway.domain.HibernatePersistence;
 import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
@@ -109,6 +111,8 @@ import de.dermoba.srcp.model.power.SRCPPowerSupplyException;
 
 public class AdHocRailway extends JFrame implements CommandDataListener,
 		InfoDataListener, PreferencesKeys {
+
+	private static Logger LOGGER = Logger.getLogger(AdHocRailway.class);
 
 	private static final long serialVersionUID = 1L;
 	private static AdHocRailway instance;
@@ -181,6 +185,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	public AdHocRailway(String file) {
 		super(TITLE);
+		LOGGER.error("TEst");
 		try {
 			/*
 			 * PatternLayout layout = new PatternLayout(
@@ -205,9 +210,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 			preferences = Preferences.getInstance();
 
-			boolean useDatabase = loadPersistenceLayer();
-
 			loadControlLayer();
+
+			boolean useDatabase = loadPersistenceLayer();
 
 			initProceeded("Creating GUI ...");
 			initGUI();
@@ -230,13 +235,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				new ConnectAction().actionPerformed(null);
 			}
 
-			// EnablerDisabler.setEnable(false, trackControlPanel);
-			// EnablerDisabler.setEnable(false, locomotiveControlPanel);
-
 			setSize(1200, 1024);
 			// pack();
 			toFront();
-			// TutorialUtils.locateOnOpticalScreenCenter(this);
+			TutorialUtils.locateOnOpticalScreenCenter(this);
 
 			initProceeded("RailControl started");
 			updateCommandHistory("RailControl started");
@@ -256,18 +258,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		initProceeded("Loading Control Layer (Locomotives)");
 		locomotiveControl = SRCPLocomotiveControlAdapter.getInstance();
-		locomotiveControl.setLocomotivePersistence(locomotivePersistence);
-		locomotiveControl.update();
 
 		initProceeded("Loading Control Layer (Turnouts)");
 		turnoutControl = SRCPTurnoutControlAdapter.getInstance();
-		turnoutControl.setPersistence(turnoutPersistence);
-		turnoutControl.update();
 
 		initProceeded("Loading Control Layer (Routes)");
 		routeControl = SRCPRouteControlAdapter.getInstance();
-		routeControl.setRoutePersistence(routePersistence);
-		routeControl.update();
 
 		initProceeded("Loading Control Layer (Locks)");
 		lockControl = SRCPLockControl.getInstance();
@@ -280,10 +276,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		if (useDatabase) {
 			initProceeded("Connecting to database");
 			try {
-				// HibernatePersistence.setup();
-				// System.out.println("setup()");
-				// HibernatePersistence.connect();
-				// System.out.println("connect()");
 				fileMode = false;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -301,23 +293,19 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			initProceeded("");
 		}
 		initProceeded("Loading Persistence Layer (Locomotives)");
-		// FIXME
-		// if (useDatabase)
 		locomotivePersistence = LocomotiveManagerImpl.getInstance();
-		// else
-		// locomotivePersistence = FileLocomotivePersistence.getInstance();
+		locomotivePersistence.setLocomotiveControl(getLocomotiveControl());
+		locomotivePersistence.initialize();
 
 		initProceeded("Loading Persistence Layer (Turnouts)");
-		// if (useDatabase)
 		turnoutPersistence = TurnoutManagerImpl.getInstance();
-		// else
-		// turnoutPersistence = XMLTurnoutService.getInstance();
+		turnoutPersistence.setTurnoutControl(getTurnoutControl());
+		turnoutPersistence.initialize();
 
 		initProceeded("Loading Persistence Layer (Routes)");
-		// if (useDatabase)
 		routePersistence = RouteManagerImpl.getInstance();
-		// else
-		// routePersistence = XMLRouteService.getInstance();
+		routePersistence.setRouteControl(getRouteControl());
+		routePersistence.reload();
 
 		if (useDatabase) {
 			String host = preferences
@@ -389,16 +377,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	}
 
 	private void updateLocomotives() {
-		// locomotivePersistence.reload();
-		locomotiveControl.update();
 		locomotiveControlPanel.update();
 	}
 
 	private void updateTurnouts() {
-		turnoutPersistence.reload();
-		// routePersistence.reload();
-		turnoutControl.update();
-		routeControl.update();
 		trackControlPanel.update();
 	}
 
@@ -479,12 +461,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 			hostnameLabel.setText(Preferences.getInstance().getStringValue(
 					PreferencesKeys.HOSTNAME));
-			// turnoutPersistence = XMLTurnoutService.getInstance();
-			turnoutControl.setPersistence(turnoutPersistence);
-			// locomotivePersistence = FileLocomotivePersistence.getInstance();
-			locomotiveControl.setLocomotivePersistence(locomotivePersistence);
-			// routePersistence = XMLRouteService.getInstance();
-			routeControl.setRoutePersistence(routePersistence);
 			setTitle(AdHocRailway.TITLE + " []");
 			actualFile = null;
 			fileMode = true;
@@ -530,15 +506,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 						hostnameLabel.setText(Preferences.getInstance()
 								.getStringValue(PreferencesKeys.HOSTNAME));
-						// turnoutPersistence = FileTurnoutPersistence
-						// .getInstance();
-						turnoutControl.setPersistence(turnoutPersistence);
-						// locomotivePersistence = FileLocomotivePersistence
-						// .getInstance();
-						locomotiveControl
-								.setLocomotivePersistence(locomotivePersistence);
-						// routePersistence = XMLRouteService.getInstance();
-						routeControl.setRoutePersistence(routePersistence);
 						setTitle(AdHocRailway.TITLE + " ["
 								+ file.getAbsolutePath() + "]");
 						AdHocRailway.this.actualFile = file;
@@ -579,11 +546,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 						HibernatePersistence.connect();
 						hostnameLabel.setText(Preferences.getInstance()
 								.getStringValue(PreferencesKeys.HOSTNAME));
-						turnoutControl.setPersistence(turnoutPersistence);
 
-						locomotiveControl
-								.setLocomotivePersistence(locomotivePersistence);
-						routeControl.setRoutePersistence(routePersistence);
 						String host = preferences
 								.getStringValue(PreferencesKeys.DATABASE_HOST);
 						String database = preferences
@@ -738,12 +701,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 								hostnameLabel.setText(Preferences.getInstance()
 										.getStringValue(
 												PreferencesKeys.HOSTNAME));
-								turnoutControl
-										.setPersistence(turnoutPersistence);
-								locomotiveControl
-										.setLocomotivePersistence(locomotivePersistence);
-								routeControl
-										.setRoutePersistence(routePersistence);
 
 								setTitle(AdHocRailway.TITLE + " [" + url + "]");
 								actualFile = null;

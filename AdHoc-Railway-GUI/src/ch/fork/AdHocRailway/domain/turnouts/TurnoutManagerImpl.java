@@ -47,6 +47,8 @@ public class TurnoutManagerImpl implements TurnoutManager {
 
 	private static TurnoutManagerImpl instance = null;
 
+	private TurnoutControlIface turnoutControl = null;
+
 	private TurnoutManagerImpl() {
 		LOGGER.info("TurnoutManagerImpl loaded");
 		this.addressTurnoutCache = new HashMap<SRCPAddress, Turnout>();
@@ -56,7 +58,6 @@ public class TurnoutManagerImpl implements TurnoutManager {
 
 		turnoutService = HibernateTurnoutService.getInstance();
 
-		reload();
 	}
 
 	public static TurnoutManagerImpl getInstance() {
@@ -163,6 +164,7 @@ public class TurnoutManagerImpl implements TurnoutManager {
 					turnout.getAddress2()), turnout);
 		}
 		numberToTurnoutCache.put(turnout.getNumber(), turnout);
+		turnoutControl.addOrUpdateTurnout(turnout);
 	}
 
 	/*
@@ -204,7 +206,10 @@ public class TurnoutManagerImpl implements TurnoutManager {
 	@Override
 	public void updateTurnout(Turnout turnout) throws TurnoutManagerException {
 		LOGGER.debug("updateTurnout()");
+		removeFromCache(turnout);
 		turnoutService.updateTurnout(turnout);
+		putInCache(turnout);
+
 	}
 
 	@Override
@@ -354,16 +359,22 @@ public class TurnoutManagerImpl implements TurnoutManager {
 	}
 
 	@Override
-	public void reload() {
+	public void initialize() {
 		clear();
 		for (TurnoutGroup group : turnoutService.getAllTurnoutGroups()) {
 			turnoutGroups.add(group);
 			for (Turnout turnout : group.getTurnouts()) {
 				numberToTurnoutCache.put(turnout.getNumber(), turnout);
 				putInCache(turnout);
+
 			}
 		}
 
+	}
+
+	@Override
+	public void setTurnoutControl(TurnoutControlIface turnoutControl) {
+		this.turnoutControl = turnoutControl;
 	}
 
 }

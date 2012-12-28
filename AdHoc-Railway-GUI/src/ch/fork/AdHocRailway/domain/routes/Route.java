@@ -18,9 +18,11 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.jgoodies.binding.beans.Model;
 
@@ -38,62 +40,6 @@ public class Route extends Model implements java.io.Serializable,
 	private SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>();
 
 	private int routeGroupId;
-
-	private Set<Integer> routeItemIds;
-
-	@Override
-	public int compareTo(Route o) {
-		if (this == o) {
-			return 0;
-		}
-		if (o == null) {
-			return -1;
-		}
-		if (number > o.getNumber()) {
-			return 1;
-		} else if (number == o.getNumber()) {
-			return 0;
-		} else {
-			return -1;
-		}
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-
-		final Route l = (Route) o;
-		if (!name.equals(l.getName())) {
-			return false;
-		}
-		if (number != l.getNumber()) {
-			return false;
-		}
-		if (!routeGroup.equals(l.getRouteGroup())) {
-			return false;
-		}
-		if (!routeItems.equals(l.getRouteItems())) {
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public int hashCode() {
-		return name.hashCode() + routeGroup.hashCode() + routeItems.hashCode()
-				+ number;
-	}
-
-	@Override
-	public String toString() {
-		return name;
-	}
 
 	public Route() {
 	}
@@ -165,5 +111,54 @@ public class Route extends Model implements java.io.Serializable,
 
 	public void addRouteItem(RouteItem routeItem) {
 		routeItems.add(routeItem);
+	}
+
+	@Override
+	public int compareTo(Route o) {
+		if (this == o) {
+			return 0;
+		}
+		if (o == null) {
+			return -1;
+		}
+		if (number > o.getNumber()) {
+			return 1;
+		} else if (number == o.getNumber()) {
+			return 0;
+		} else {
+			return -1;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Route other = (Route) obj;
+		if (id != other.id) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this,
+				ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 }

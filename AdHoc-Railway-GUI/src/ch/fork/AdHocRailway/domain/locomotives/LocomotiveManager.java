@@ -50,6 +50,8 @@ public interface LocomotiveManager {
 
 	public abstract void clear() throws LocomotiveManagerException;
 
-	public abstract void reload();
+	public abstract void initialize();
+
+	public abstract void setLocomotiveControl(LocomotiveControlface locomotiveControl);
 
 }

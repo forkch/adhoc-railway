@@ -45,10 +45,11 @@ public class RouteManagerImpl implements RouteManager {
 
 	private final Map<Integer, Route> numberToRouteCache = new HashMap<Integer, Route>();
 
+	private RouteControlIface routeControl;
+
 	private RouteManagerImpl() {
 		LOGGER.info("RouteMangerImpl loaded");
 		this.routeService = HibernateRouteService.getInstance();
-		reload();
 
 	}
 
@@ -147,6 +148,7 @@ public class RouteManagerImpl implements RouteManager {
 	@Override
 	public void updateRoute(Route route) {
 		LOGGER.debug("updateRoute()");
+		removeFromCache(route);
 		this.routeService.updateRoute(route);
 	}
 
@@ -274,16 +276,6 @@ public class RouteManagerImpl implements RouteManager {
 		return turnouts.last().getNumber() + 1;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#flush()
-	 */
-	@Override
-	public void flush() throws RouteManagerException {
-		LOGGER.debug("flush()");
-	}
-
 	@Override
 	public void enlargeRouteGroups() {
 		LOGGER.debug("enlargeRouteGroups()");
@@ -362,11 +354,17 @@ public class RouteManagerImpl implements RouteManager {
 
 	private void putInCache(Route route) {
 		numberToRouteCache.put(route.getNumber(), route);
+		routeControl.addOrUpdateRoute(route);
 
 	}
 
 	private void removeFromCache(Route route) {
 		numberToRouteCache.values().remove(route.getNumber());
+	}
+
+	@Override
+	public void setRouteControl(RouteControlIface routeControl) {
+		this.routeControl = routeControl;
 	}
 
 }

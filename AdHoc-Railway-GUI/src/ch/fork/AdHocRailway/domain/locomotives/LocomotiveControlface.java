@@ -21,11 +21,7 @@ package ch.fork.AdHocRailway.domain.locomotives;
 import ch.fork.AdHocRailway.domain.locking.LockControlIface;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotiveDirection;
 
-
 public interface LocomotiveControlface extends LockControlIface<Locomotive> {
-
-	public abstract void setLocomotivePersistence(
-			LocomotiveManager persistence);
 
 	/**
 	 * Toggles the direction of the Locomotive
@@ -103,8 +99,9 @@ public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 
 	public abstract void removeAllLocomotiveChangeListener();
 
-	public void update();
+	public abstract void emergencyStop(Locomotive myLocomotive)
+			throws LocomotiveException;
 
-	public abstract void emergencyStop(Locomotive myLocomotive) throws LocomotiveException;
+	public abstract void addOrUpdateLocomotive(Locomotive locomotive);
 
 }

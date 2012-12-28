@@ -55,5 +55,7 @@ public interface TurnoutManager {
 
 	public void enlargeTurnoutGroups();
 
-	public abstract void reload();
+	public abstract void initialize();
+
+	void setTurnoutControl(TurnoutControlIface turnoutControl);
 }

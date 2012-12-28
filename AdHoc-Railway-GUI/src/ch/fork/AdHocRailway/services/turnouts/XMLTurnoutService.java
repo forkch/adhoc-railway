@@ -32,26 +32,6 @@ public class XMLTurnoutService implements TurnoutService {
 	private XMLTurnoutService() {
 		logger.info("FileTurnoutPersistence loaded");
 
-		addDefaultTurnoutTypes();
-	}
-
-	private void addDefaultTurnoutTypes() {
-		// if (getTurnoutType(SRCPTurnoutTypes.DEFAULT) == null) {
-		// TurnoutType defaultType = new TurnoutType(0, "DEFAULT");
-		// addTurnoutType(defaultType);
-		// }
-		// if (getTurnoutType(SRCPTurnoutTypes.DOUBLECROSS) == null) {
-		// TurnoutType doublecrossType = new TurnoutType(0, "DOUBLECROSS");
-		// addTurnoutType(doublecrossType);
-		// }
-		// if (getTurnoutType(SRCPTurnoutTypes.THREEWAY) == null) {
-		// TurnoutType threewayType = new TurnoutType(0, "THREEWAY");
-		// addTurnoutType(threewayType);
-		// }
-		// if (getTurnoutType(SRCPTurnoutTypes.CUTTER) == null) {
-		// TurnoutType cutterType = new TurnoutType(0, "CUTTER");
-		// addTurnoutType(cutterType);
-		// }
 	}
 
 	public static XMLTurnoutService getInstance() {
