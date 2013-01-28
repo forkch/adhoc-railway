@@ -1,0 +1,18 @@
+div.row
+  div.span12
+    h3 Turnouts
+div.row
+  div.span12
+    div.well.turnout(ng-repeat='turnout in turnouts')
+      {{turnout.number}}
+      div.turnout.type
+        {{turnout.type}}
+      br
+      a(href='editTurnout/{{turnout.id}}')
+        i.icon-edit
+
+
+div.row
+  div.span12
+    a(href='addTurnout')
+      i.icon-plus

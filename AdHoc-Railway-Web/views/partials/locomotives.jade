@@ -1,0 +1,15 @@
+div.row
+  div.span12
+    h3 Locomotives
+div.row
+  div.span12
+    div.well.turnout(ng-repeat='locomotive in locomotives')
+      {{locomotive.name}}
+      br
+      a(href='editLocomotive/{{locomotive.id}}')
+        i.icon-edit
+
+
+div.row
+  a(href='addLocomotive')
+    i.icon-plus

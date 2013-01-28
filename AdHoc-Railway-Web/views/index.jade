@@ -1,0 +1,26 @@
+extends layout
+
+block body
+  div(ng-controller='AppCtrl')
+    div.navbar.navbar-inverse
+      div.navbar-inner
+        a.brand(href="#") AdHoc-Railway
+        ul.nav
+          li
+            a(href='turnouts') Turnouts
+          li
+            a(href='locomotives') Locomotives
+
+    div.row-fluid
+      div.span2
+      div.span10
+        div(ng-view)
+
+
+  script(src='js/lib/angular/angular.js')
+  script(src='/socket.io/socket.io.js')
+  script(src='js/app.js')
+  script(src='js/services.js')
+  script(src='js/controllers.js')
+  script(src='js/filters.js')
+  script(src='js/directives.js')

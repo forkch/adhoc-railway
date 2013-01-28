@@ -35,31 +35,10 @@ public class XMLLocomotiveService implements LocomotiveService {
 	private XMLLocomotiveService() {
 		logger.info("FileLocomotivePersistence loaded");
 
-		// addDefaultLocomotiveTypes();
-
 	}
-
-	// private void addDefaultLocomotiveTypes() {
-	// if (getLocomotiveTypeByName("DELTA") == null) {
-	// LocomotiveType deltaType = new LocomotiveType(0, "DELTA");
-	// deltaType.setDrivingSteps(14);
-	// deltaType.setStepping(2);
-	// deltaType.setFunctionCount(0);
-	// addLocomotiveType(deltaType);
-	// }
-	//
-	// if (getLocomotiveTypeByName("DIGITAL") == null) {
-	// LocomotiveType digitalType = new LocomotiveType(0, "DIGITAL");
-	// digitalType.setDrivingSteps(14);
-	// digitalType.setStepping(2);
-	// digitalType.setFunctionCount(5);
-	// addLocomotiveType(digitalType);
-	// }
-	// }
 
 	@Override
 	public void clear() {
-		// addDefaultLocomotiveTypes();
 	}
 
 	public static XMLLocomotiveService getInstance() {

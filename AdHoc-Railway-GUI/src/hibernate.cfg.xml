@@ -5,8 +5,8 @@
  <session-factory name="">
   <property name="hibernate.connection.driver_class">org.gjt.mm.mysql.Driver</property>
   <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/baehnle12_test</property>
-  <property name="hibernate.connection.username">root</property>
-  <property name="hibernate.connection.password">root</property>
+  <property name="hibernate.connection.username">baehnle</property>
+  <property name="hibernate.connection.password">baehnle</property>
   <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
   <mapping class="ch.fork.AdHocRailway.services.locomotives.HibernateLocomotive"/>
   <mapping class="ch.fork.AdHocRailway.services.locomotives.HibernateLocomotiveGroup"/>

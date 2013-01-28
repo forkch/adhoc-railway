@@ -47,13 +47,11 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutOrientation;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.TableResizer;
 
@@ -153,9 +151,9 @@ public class TurnoutConfigurationDialog extends JDialog {
 		turnoutGroupModel = new SelectionInList<TurnoutGroup>(
 				(ListModel) turnoutGroups);
 
-		turnoutGroupList = BasicComponentFactory.createList(turnoutGroupModel);
+		turnoutGroupList = BasicComponentFactory.createList(turnoutGroupModel,
+				new TurnoutGroupListCellRenderer());
 		turnoutGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		turnoutGroupList.setCellRenderer(new TurnoutGroupListCellRenderer());
 
 		turnoutGroupList.getInputMap().put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0),
@@ -175,8 +173,6 @@ public class TurnoutConfigurationDialog extends JDialog {
 		turnoutsTable = new JTable();
 		turnoutsTable.setModel(new TurnoutTableModel(turnoutModel));
 
-		// turnoutsTable.setSelectionModel(new SingleListSelectionAdapter(
-		// turnoutModel.getSelectionIndexHolder()));
 		turnoutsTable
 				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
@@ -204,15 +200,8 @@ public class TurnoutConfigurationDialog extends JDialog {
 		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					TurnoutManager turnoutPersistence = AdHocRailway
-							.getInstance().getTurnoutPersistence();
-				} catch (TurnoutManagerException e1) {
-					ExceptionProcessor.getInstance().processException(e1);
-				} finally {
-					okPressed = true;
-					setVisible(false);
-				}
+				okPressed = true;
+				setVisible(false);
 			}
 		});
 	}
@@ -295,7 +284,8 @@ public class TurnoutConfigurationDialog extends JDialog {
 				return;
 			}
 			if (previousSelectedGroup != null) {
-				// turnoutPersistence.updateTurnoutGroup(previousSelectedGroup);
+				AdHocRailway.getInstance().getTurnoutPersistence()
+						.updateTurnoutGroup(previousSelectedGroup);
 			}
 			if (turnoutGroupList.getSelectedIndex() == -1) {
 				turnoutGroupList.setSelectedIndex(0);

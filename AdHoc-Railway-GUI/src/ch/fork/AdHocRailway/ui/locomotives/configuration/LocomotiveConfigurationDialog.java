@@ -265,7 +265,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 					value, index, isSelected, cellHasFocus);
 
 			LocomotiveGroup group = (LocomotiveGroup) value;
-			setText(group == null ? "" : (" " + group.getName()));
+			setText(group == null ? "" : group.getName());
 			return component;
 		}
 	}
@@ -327,6 +327,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 			Locomotive newLocomotive = new Locomotive();
 			newLocomotive.setLocomotiveGroup(selectedLocomotiveGroup);
 			selectedLocomotiveGroup.getLocomotives().add(newLocomotive);
+
 			LocomotiveConfig locomotiveConfig = new LocomotiveConfig(
 					LocomotiveConfigurationDialog.this, newLocomotive);
 			List<Locomotive> locomotives = new ArrayList<Locomotive>(

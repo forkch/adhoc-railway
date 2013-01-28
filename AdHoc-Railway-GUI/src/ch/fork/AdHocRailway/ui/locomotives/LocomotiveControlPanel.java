@@ -86,8 +86,8 @@ public class LocomotiveControlPanel extends JPanel {
 			controlPanel.add(w);
 			locomotiveWidgets.add(w);
 		}
-		// revalidate();
-		// repaint();
+		revalidate();
+		repaint();
 	}
 
 	private class LocomotiveStopAction extends AbstractAction implements
@@ -105,11 +105,13 @@ public class LocomotiveControlPanel extends JPanel {
 						.getInstance().getLocomotiveControl();
 				for (LocomotiveWidget widget : locomotiveWidgets) {
 					Locomotive myLocomotive = widget.getMyLocomotive();
-					if (myLocomotive == null)
+					if (myLocomotive == null) {
 						continue;
+					}
 					if (locomotiveControl.isLocked(myLocomotive)
-							&& !locomotiveControl.isLockedByMe(myLocomotive))
+							&& !locomotiveControl.isLockedByMe(myLocomotive)) {
 						continue;
+					}
 					locomotiveControl.emergencyStop(myLocomotive);
 					// locomotiveControl.setSpeed(myLocomotive, 0, null);
 					widget.updateWidget();

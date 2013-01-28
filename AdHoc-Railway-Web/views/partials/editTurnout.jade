@@ -1,0 +1,44 @@
+h3 Add Turnout
+form(ng-submit='editTurnout()')
+  fieldset
+    p
+      input(size='4', placeholder='Number', ng-model='turnout.number')
+    p
+      input(size='4', placeholder='Bus 1', ng-model='turnout.bus1')
+    p
+      input(size='4', placeholder='Address 1', ng-model='turnout.address1')
+    p
+      input(type='checkbox', ng-model='turnout.address1switched')
+      | Address 1 switched
+    p
+      input(size='4', placeholder='Bus 2', ng-model='turnout.bus2')
+    p
+      input(size='4', placeholder='Address 2', ng-model='turnout.address2')
+    p
+      input(type='checkbox', ng-model='turnout.address2switched')
+      | Address 2 switched
+    p
+      select(ng-model='turnout.type')
+        option default
+        option doublecross
+        option threeway
+        option cutter
+    p
+      select(ng-model='turnout.defaultState')
+        option left
+        option right
+        option straight
+        option curved
+    p
+      select(ng-model='turnout.orientation')
+        option north
+        option east
+        option south
+        option west
+    p
+      button.btn(type='submit') Edit
+
+    div.alert(ng-show='error')
+      button.close(type='button', data-dismiss='alert')
+      {{error}}
+

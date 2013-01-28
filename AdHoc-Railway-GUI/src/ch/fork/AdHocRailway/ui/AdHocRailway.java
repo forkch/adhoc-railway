@@ -185,15 +185,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	public AdHocRailway(String file) {
 		super(TITLE);
-		LOGGER.error("TEst");
 		try {
-			/*
-			 * PatternLayout layout = new PatternLayout(
-			 * "%r [%t] %-5p %c{1} - %m%n"); logger.addAppender(new
-			 * FileAppender(layout, System .getProperty("user.home") +
-			 * File.separator + "adhocrailway.log"));
-			 */
-			// PlasticLookAndFeel.setMyCurrentTheme(settings.getSelectedTheme());
 			PlasticLookAndFeel
 					.setTabStyle(PlasticLookAndFeel.TAB_STYLE_DEFAULT_VALUE);
 			PlasticLookAndFeel.setHighContrastFocusColorsEnabled(false);
@@ -216,7 +208,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 			initProceeded("Creating GUI ...");
 			initGUI();
-			// logger.info("Finished Creating GUI");
+			LOGGER.info("Finished Creating GUI");
 			splash.setVisible(false);
 
 			if (preferences.getBooleanValue(OPEN_LAST_FILE)) {
@@ -841,7 +833,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 					AdHocRailway.this);
 			if (locomotiveConfigDialog.isOkPressed()) {
 				updateLocomotives();
-				// updateCommandHistory("Locomotive configuration changed");
+				updateCommandHistory("Locomotive configuration changed");
 			}
 		}
 	}
