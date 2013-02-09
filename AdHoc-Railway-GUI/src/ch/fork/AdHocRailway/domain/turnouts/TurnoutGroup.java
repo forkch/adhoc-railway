@@ -90,14 +90,6 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 		this.turnoutNumberAmount = turnoutNumberAmount;
 	}
 
-	public TurnoutGroup(String name, int turnoutNumberOffset,
-			int turnoutNumberAmount, SortedSet<Turnout> turnouts) {
-		this.name = name;
-		this.turnoutNumberOffset = turnoutNumberOffset;
-		this.turnoutNumberAmount = turnoutNumberAmount;
-		this.turnouts = turnouts;
-	}
-
 	public String getName() {
 		return this.name;
 	}

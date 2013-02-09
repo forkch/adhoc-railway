@@ -90,7 +90,13 @@ public class XMLTurnoutService implements TurnoutService {
 	}
 
 	@Override
-	public void flush() {
+	public void init(TurnoutServiceListener listener) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void disconnect() {
 		// TODO Auto-generated method stub
 
 	}

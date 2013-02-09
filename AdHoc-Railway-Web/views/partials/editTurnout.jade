@@ -1,8 +1,14 @@
-h3 Add Turnout
+h3 Edit Turnout
 form(ng-submit='editTurnout()')
   fieldset
     p
       input(size='4', placeholder='Number', ng-model='turnout.number')
+    p
+      select(ng-model='turnout.type')
+        option default
+        option doublecross
+        option threeway
+        option cutter
     p
       input(size='4', placeholder='Bus 1', ng-model='turnout.bus1')
     p
@@ -17,12 +23,6 @@ form(ng-submit='editTurnout()')
     p
       input(type='checkbox', ng-model='turnout.address2switched')
       | Address 2 switched
-    p
-      select(ng-model='turnout.type')
-        option default
-        option doublecross
-        option threeway
-        option cutter
     p
       select(ng-model='turnout.defaultState')
         option left

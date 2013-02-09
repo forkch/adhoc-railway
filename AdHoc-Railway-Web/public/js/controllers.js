@@ -5,17 +5,34 @@
 function AppCtrl($scope, socket) {
   socket.on('init', function (data) {
       $scope.turnouts = data.turnouts;
-      $scope.locomotives = data.locomotives;
+      $scope.locomotives = {};
   });
 }
 
 function TurnoutsCtrl($scope, socket) {
+    $scope.turnouts = {};
     socket.emit('turnouts:getAll', '', function(turnouts) {
-       $scope.turnouts = turnouts;
+        console.log(turnouts); 
+        $scope.turnouts = turnouts;
     });
     socket.on('turnout:added', function(turnout) {
-        $scope.turnouts.push(turnout);
+        $scope.turnouts[turnout.id] = turnout;
     });
+    socket.on('turnout:updated', function(turnout) {
+        $scope.turnouts[turnout.id] = turnout;
+    });
+
+    $scope.deleteTurnout = function(turnoutId) {
+        $scope.error = null;
+        socket.emit('turnout:delete', turnoutId, function(result, msg) {
+            if(!result) {
+                $scope.error = 'Error deleting turnout (' + msg + ')';
+            } else {
+                $location.path('/turnouts')
+            }
+        });
+    }
+    
 }
 TurnoutsCtrl.$inject = ['$scope', 'socket'];
 
@@ -37,18 +54,21 @@ function AddTurnoutCtrl($scope, socket,$location) {
             }
         });
     }
+    
 }
 AddTurnoutCtrl.$inject = ['$scope', 'socket', '$location'];
 
-function EditTurnoutCtrl($scope, socket,$location, $routeParams) {
-    $socket.emit('turnout:getFromId', $routeParams.id, function(turnout) {
-
+function EditTurnoutCtrl($scope, socket, $location, $routeParams) {
+    socket.emit('turnout:getById', $routeParams.id, function(turnout) {
+        if(turnout != null) {
+            $scope.turnout = turnout;
+        }
     });
-    $scope.addTurnout = function() {
+    $scope.editTurnout = function() {
         $scope.error = null;
-        socket.emit('turnout:add', $scope.turnout, function(result, msg) {
+        socket.emit('turnout:update', $scope.turnout, function(result, msg) {
             if(!result) {
-                $scope.error = 'Error adding turnout (' + msg + ')';
+                $scope.error = 'Error updating turnout (' + msg + ')';
             } else {
                 $location.path('/turnouts')
             }

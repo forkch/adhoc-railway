@@ -70,11 +70,9 @@ import ch.fork.AdHocRailway.domain.HibernatePersistence;
 import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
-import ch.fork.AdHocRailway.domain.routes.RouteManagerImpl;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
@@ -229,8 +227,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 			setSize(1200, 1024);
 			// pack();
-			toFront();
-			TutorialUtils.locateOnOpticalScreenCenter(this);
+			// toFront();
+			// TutorialUtils.locateOnOpticalScreenCenter(this);
 
 			initProceeded("RailControl started");
 			updateCommandHistory("RailControl started");
@@ -284,20 +282,20 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			fileMode = true;
 			initProceeded("");
 		}
-		initProceeded("Loading Persistence Layer (Locomotives)");
-		locomotivePersistence = LocomotiveManagerImpl.getInstance();
-		locomotivePersistence.setLocomotiveControl(getLocomotiveControl());
-		locomotivePersistence.initialize();
+		// initProceeded("Loading Persistence Layer (Locomotives)");
+		// locomotivePersistence = LocomotiveManagerImpl.getInstance();
+		// locomotivePersistence.setLocomotiveControl(getLocomotiveControl());
+		// locomotivePersistence.initialize();
 
 		initProceeded("Loading Persistence Layer (Turnouts)");
 		turnoutPersistence = TurnoutManagerImpl.getInstance();
 		turnoutPersistence.setTurnoutControl(getTurnoutControl());
 		turnoutPersistence.initialize();
 
-		initProceeded("Loading Persistence Layer (Routes)");
-		routePersistence = RouteManagerImpl.getInstance();
-		routePersistence.setRouteControl(getRouteControl());
-		routePersistence.reload();
+		// initProceeded("Loading Persistence Layer (Routes)");
+		// routePersistence = RouteManagerImpl.getInstance();
+		// routePersistence.setRouteControl(getRouteControl());
+		// routePersistence.reload();
 
 		if (useDatabase) {
 			String host = preferences
@@ -347,9 +345,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	public void updateGUI() {
 
-		updatePower();
-		updateTurnouts();
-		updateLocomotives();
+		// updatePower();
+		// updateLocomotives();
 		disableNavigationKeys(mainPanel);
 		mainPanel.requestFocus();
 	}
@@ -370,10 +367,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private void updateLocomotives() {
 		locomotiveControlPanel.update();
-	}
-
-	private void updateTurnouts() {
-		trackControlPanel.update();
 	}
 
 	@Override
@@ -797,7 +790,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			TurnoutConfigurationDialog switchConfigDialog = new TurnoutConfigurationDialog(
 					AdHocRailway.this);
 			if (switchConfigDialog.isOkPressed()) {
-				updateTurnouts();
 				// updateCommandHistory("Turnout configuration changed");
 			}
 		}
@@ -814,7 +806,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			RoutesConfigurationDialog routesConfig = new RoutesConfigurationDialog(
 					AdHocRailway.this);
 			if (routesConfig.isOkPressed()) {
-				updateTurnouts();
 				// updateCommandHistory("Routes configuration changed");
 			}
 		}

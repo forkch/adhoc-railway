@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -7,13 +6,14 @@ var express = require('express'),
   routes = require('./routes'),
   socket = require('./routes/socket.js');
 
-var app = module.exports = express();
-var server = require('http').createServer(app);
+var app = module.exports = express(); var server =
+require('http').createServer(app);
 
 // Hook Socket.io into Express
 var io = require('socket.io').listen(server);
 
 // Configuration
+
 
 app.configure(function(){
   app.set('views', __dirname + '/views');

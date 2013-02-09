@@ -6,5 +6,6 @@
       "express": "3.0.0"
     , "jade": ">= 0.0.1"
     , "socket.io": ">= 0.9.6"
+    , "mongoose" : ""
   }
 }

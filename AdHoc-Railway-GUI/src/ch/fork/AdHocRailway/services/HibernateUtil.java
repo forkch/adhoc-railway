@@ -7,10 +7,10 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
 public class HibernateUtil {
-	private static final SessionFactory sessionFactory;
-	private static final ServiceRegistry serviceRegistry;
+	private static SessionFactory sessionFactory;
+	private static ServiceRegistry serviceRegistry;
 
-	static {
+	public static void initialize() {
 		try {
 
 			Configuration configuration = new Configuration();
@@ -25,11 +25,10 @@ public class HibernateUtil {
 		}
 	}
 
-	public static SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
 	public static Session openSession() {
+		if (sessionFactory == null) {
+			initialize();
+		}
 		return sessionFactory.openSession();
 	}
 }

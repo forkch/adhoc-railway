@@ -25,6 +25,8 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 
 public interface TurnoutService {
 
+	public abstract void init(TurnoutServiceListener listener);
+
 	public abstract void addTurnout(Turnout turnout);
 
 	public abstract void deleteTurnout(Turnout turnout);
@@ -41,6 +43,5 @@ public interface TurnoutService {
 
 	public abstract void clear();
 
-	public abstract void flush();
-
+	public abstract void disconnect();
 }

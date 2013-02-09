@@ -23,7 +23,7 @@
       <file leaf-file-name="addTurnout.jade" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/partials/addTurnout.jade">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="5" selection-start="213" selection-end="213" vertical-scroll-proportion="0.0">
+            <state line="19" column="66" selection-start="601" selection-end="601" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -47,10 +47,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="controllers.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="controllers.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/js/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="43" column="35" selection-start="1223" selection-end="1223" vertical-scroll-proportion="0.0">
+            <state line="34" column="71" selection-start="978" selection-end="978" vertical-scroll-proportion="0.61102104">
               <folding />
             </state>
           </provider>
@@ -59,16 +59,16 @@
       <file leaf-file-name="editTurnout.jade" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/partials/editTurnout.jade">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="36" selection-start="1099" selection-end="1099" vertical-scroll-proportion="0.0">
+            <state line="0" column="7" selection-start="7" selection-end="7" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="socket.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="socket.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/socket.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="53" column="30" selection-start="1019" selection-end="1019" vertical-scroll-proportion="0.24635333">
+            <state line="71" column="33" selection-start="1632" selection-end="1636" vertical-scroll-proportion="-2.04">
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -128,10 +128,10 @@
         <option value="$PROJECT_DIR$/views/index.jade" />
         <option value="$PROJECT_DIR$/views/partials/turnouts.jade" />
         <option value="$PROJECT_DIR$/views/layout.jade" />
-        <option value="$PROJECT_DIR$/views/partials/addTurnout.jade" />
         <option value="$PROJECT_DIR$/views/partials/locomotives.jade" />
-        <option value="$PROJECT_DIR$/views/partials/editTurnout.jade" />
         <option value="$PROJECT_DIR$/public/js/app.js" />
+        <option value="$PROJECT_DIR$/views/partials/addTurnout.jade" />
+        <option value="$PROJECT_DIR$/views/partials/editTurnout.jade" />
         <option value="$PROJECT_DIR$/routes/socket.js" />
         <option value="$PROJECT_DIR$/public/js/controllers.js" />
       </list>
@@ -501,7 +501,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="3" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -547,34 +547,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/partials/locomotives.jade">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="59" selection-start="120" selection-end="120" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/socket.io/lib/transports/websocket/hybi-16.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="309" column="20" selection-start="6515" selection-end="6515" vertical-scroll-proportion="0.8608">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/partials/addTurnout.jade">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="5" selection-start="213" selection-end="213" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/partials/editTurnout.jade">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="36" selection-start="1099" selection-end="1099" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/views/partials/turnouts.jade">
       <provider selected="true" editor-type-id="text-editor">
         <state line="10" column="36" selection-start="230" selection-end="230" vertical-scroll-proportion="0.0">
@@ -585,13 +557,6 @@
     <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="24" column="3" selection-start="574" selection-end="574" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/controllers.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="35" selection-start="1223" selection-end="1223" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -610,12 +575,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/views/partials/locomotives.jade">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="59" selection-start="120" selection-end="120" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/partials/addTurnout.jade">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="66" selection-start="601" selection-end="601" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/partials/editTurnout.jade">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="7" selection-start="7" selection-end="7" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/routes/socket.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="30" selection-start="1019" selection-end="1019" vertical-scroll-proportion="0.24635333">
+        <state line="71" column="33" selection-start="1632" selection-end="1636" vertical-scroll-proportion="-2.04">
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/controllers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="71" selection-start="978" selection-end="978" vertical-scroll-proportion="0.61102104">
+          <folding />
         </state>
       </provider>
     </entry>

@@ -27,7 +27,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import ch.fork.AdHocRailway.domain.HibernatePersistence;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
@@ -35,17 +34,15 @@ import ch.fork.AdHocRailway.services.HibernateUtil;
 
 public class HibernateTurnoutService implements TurnoutService {
 	static Logger LOGGER = Logger.getLogger(HibernateTurnoutService.class);
-	private static HibernateTurnoutService instance;
+	private static final HibernateTurnoutService INSTANCE = new HibernateTurnoutService();
+	private TurnoutServiceListener listener;
 
 	private HibernateTurnoutService() {
 		LOGGER.info("HibernateTurnoutPersistence loaded");
 	}
 
 	public static TurnoutService getInstance() {
-		if (instance == null) {
-			instance = new HibernateTurnoutService();
-		}
-		return instance;
+		return INSTANCE;
 	}
 
 	@Override
@@ -93,6 +90,7 @@ public class HibernateTurnoutService implements TurnoutService {
 
 			turnout.setId(id);
 			transaction.commit();
+			listener.turnoutAdded(turnout);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
@@ -121,6 +119,7 @@ public class HibernateTurnoutService implements TurnoutService {
 					HibernateTurnout.class, id);
 			session.delete(hTurnout);
 			transaction.commit();
+			listener.turnoutRemoved(turnout);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
@@ -151,6 +150,7 @@ public class HibernateTurnoutService implements TurnoutService {
 			HibernateTurnoutMapper.updateHibernate(hTurnout, turnout);
 			session.update(hTurnout);
 			transaction.commit();
+			listener.turnoutUpdated(turnout);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
@@ -181,6 +181,7 @@ public class HibernateTurnoutService implements TurnoutService {
 
 			group.setId(id);
 			transaction.commit();
+			listener.turnoutGroupAdded(group);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
@@ -210,6 +211,7 @@ public class HibernateTurnoutService implements TurnoutService {
 					.get(HibernateTurnoutGroup.class, id);
 			session.delete(hTurnoutGroup);
 			transaction.commit();
+			listener.turnoutGroupDeleted(group);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
@@ -239,17 +241,13 @@ public class HibernateTurnoutService implements TurnoutService {
 
 			session.update(hTurnout);
 			transaction.commit();
+			listener.turnoutGroupUpdated(group);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
 		} finally {
 			session.close();
 		}
-	}
-
-	@Override
-	public void flush() {
-		HibernatePersistence.flush();
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -280,6 +278,18 @@ public class HibernateTurnoutService implements TurnoutService {
 		} finally {
 			session.close();
 		}
+	}
+
+	@Override
+	public void init(TurnoutServiceListener listener) {
+		this.listener = listener;
+		List<TurnoutGroup> allTurnoutGroups = getAllTurnoutGroups();
+		listener.turnoutsUpdated(allTurnoutGroups);
+	}
+
+	@Override
+	public void disconnect() {
+
 	}
 
 }

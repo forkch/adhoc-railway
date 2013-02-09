@@ -47,7 +47,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Turnout turnout;
+	private Turnout turnout;
 
 	private JLabel numberLabel;
 
@@ -82,6 +82,12 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	}
 
 	private void initGUI() {
+		updateTurnout();
+
+	}
+
+	public void updateTurnout() {
+		removeAll();
 		turnoutCanvas = new TurnoutCanvas(turnout);
 
 		turnoutCanvas.addMouseListener(new MouseAction());
@@ -105,7 +111,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		turnoutWidgetLayout.setConstraints(turnoutCanvas,
 				turnoutWidgetConstraints);
 		add(turnoutCanvas);
-
 	}
 
 	private void validateTurnout() {
@@ -241,7 +246,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 				public void run() {
 					numberLabel.setText(Integer.toString(turnout.getNumber()));
 					turnoutCanvas.setTurnoutState(actualTurnoutState);
-					System.out.println(actualTurnoutState);
 					TurnoutWidget.this.revalidate();
 					TurnoutWidget.this.repaint();
 				}
@@ -264,5 +268,10 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		}
 		widgetEnabled = enabled;
 		turnoutCanvas.setTurnoutState(SRCPTurnoutState.UNDEF);
+	}
+
+	public void setTurnout(Turnout turnout) {
+		this.turnout = turnout;
+		updateTurnout();
 	}
 }

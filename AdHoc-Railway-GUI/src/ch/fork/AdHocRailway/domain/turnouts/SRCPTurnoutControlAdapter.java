@@ -139,7 +139,7 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 			// just create a temporary SRCPTurnout
 			sTurnout = createSRCPTurnout(turnout);
 			sTurnoutTemp = sTurnout;
-			turnoutTemp = (Turnout) turnout.clone();
+			// turnoutTemp = (Turnout) turnout.clone();
 		} else {
 			sTurnout = sTurnoutTemp;
 		}

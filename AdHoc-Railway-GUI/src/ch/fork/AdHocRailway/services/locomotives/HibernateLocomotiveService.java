@@ -218,7 +218,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 	public SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
 			throws LocomotiveManagerException {
 		LOGGER.debug("getAllLocomotiveGroupsDB()");
-		Session session = HibernateUtil.getSessionFactory().openSession();
+		Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();

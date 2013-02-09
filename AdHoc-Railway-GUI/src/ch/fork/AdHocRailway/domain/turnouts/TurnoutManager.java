@@ -58,4 +58,6 @@ public interface TurnoutManager {
 	public abstract void initialize();
 
 	void setTurnoutControl(TurnoutControlIface turnoutControl);
+
+	public abstract void addTurnoutManagerLisener(TurnoutManagerListener listener);
 }

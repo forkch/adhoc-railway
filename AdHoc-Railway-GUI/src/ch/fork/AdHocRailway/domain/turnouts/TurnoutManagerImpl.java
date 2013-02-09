@@ -20,6 +20,7 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,9 +33,11 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.services.turnouts.HibernateTurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
+import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
 import de.dermoba.srcp.model.SRCPAddress;
 
-public class TurnoutManagerImpl implements TurnoutManager {
+public class TurnoutManagerImpl implements TurnoutManager,
+		TurnoutServiceListener {
 	static Logger LOGGER = Logger.getLogger(TurnoutManagerImpl.class);
 
 	private final Map<SRCPAddress, Turnout> addressTurnoutCache;
@@ -45,9 +48,11 @@ public class TurnoutManagerImpl implements TurnoutManager {
 
 	private final SortedSet<TurnoutGroup> turnoutGroups;
 
-	private static TurnoutManagerImpl instance = null;
+	private static TurnoutManager instance = null;
 
 	private TurnoutControlIface turnoutControl = null;
+
+	private final List<TurnoutManagerListener> listeners = new LinkedList<TurnoutManagerListener>();
 
 	private TurnoutManagerImpl() {
 		LOGGER.info("TurnoutManagerImpl loaded");
@@ -57,14 +62,19 @@ public class TurnoutManagerImpl implements TurnoutManager {
 		this.turnoutGroups = new TreeSet<TurnoutGroup>();
 
 		turnoutService = HibernateTurnoutService.getInstance();
-
 	}
 
-	public static TurnoutManagerImpl getInstance() {
+	public static TurnoutManager getInstance() {
 		if (instance == null) {
 			instance = new TurnoutManagerImpl();
 		}
 		return instance;
+	}
+
+	@Override
+	public void addTurnoutManagerLisener(TurnoutManagerListener listener) {
+		this.listeners.add(listener);
+		listener.turnoutsUpdated(new ArrayList<TurnoutGroup>(turnoutGroups));
 	}
 
 	@Override
@@ -76,24 +86,11 @@ public class TurnoutManagerImpl implements TurnoutManager {
 		this.turnoutGroups.clear();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#getAllTurnouts
-	 * ()
-	 */
 	@Override
 	public List<Turnout> getAllTurnouts() {
 		return new ArrayList<Turnout>(numberToTurnoutCache.values());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#
-	 * getTurnoutByNumber(int)
-	 */
 	@Override
 	public Turnout getTurnoutByNumber(int number)
 			throws TurnoutManagerException {
@@ -101,12 +98,6 @@ public class TurnoutManagerImpl implements TurnoutManager {
 		return numberToTurnoutCache.get(number);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#
-	 * getTurnoutByAddressBus(int, int)
-	 */
 	@Override
 	public Turnout getTurnoutByAddressBus(int bus, int address) {
 		LOGGER.debug("getTurnoutByAddressBus()");
@@ -133,13 +124,6 @@ public class TurnoutManagerImpl implements TurnoutManager {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#addTurnout
-	 * (ch.fork.AdHocRailway.domain.turnouts.Turnout)
-	 */
 	@Override
 	public void addTurnout(Turnout turnout) throws TurnoutManagerException {
 		LOGGER.debug("addTurnout()");
@@ -149,7 +133,6 @@ public class TurnoutManagerImpl implements TurnoutManager {
 		turnout.getTurnoutGroup().getTurnouts().add(turnout);
 		turnoutService.addTurnout(turnout);
 
-		putInCache(turnout);
 	}
 
 	private void putInCache(Turnout turnout) {
@@ -167,13 +150,6 @@ public class TurnoutManagerImpl implements TurnoutManager {
 		turnoutControl.addOrUpdateTurnout(turnout);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#deleteTurnout
-	 * (ch.fork.AdHocRailway.domain.turnouts.Turnout)
-	 */
 	@Override
 	public void deleteTurnout(Turnout turnout) {
 		LOGGER.debug("deleteTurnout(" + turnout + ")");
@@ -186,8 +162,6 @@ public class TurnoutManagerImpl implements TurnoutManager {
 			Route route = ri.getRoute();
 			route.getRouteItems().remove(ri);
 		}
-
-		removeFromCache(turnout);
 	}
 
 	private void removeFromCache(Turnout turnout) {
@@ -196,20 +170,10 @@ public class TurnoutManagerImpl implements TurnoutManager {
 		addressThreewayCache.values().remove(turnout);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#updateTurnout
-	 * (ch.fork.AdHocRailway.domain.turnouts.Turnout)
-	 */
 	@Override
 	public void updateTurnout(Turnout turnout) throws TurnoutManagerException {
 		LOGGER.debug("updateTurnout()");
-		removeFromCache(turnout);
 		turnoutService.updateTurnout(turnout);
-		putInCache(turnout);
-
 	}
 
 	@Override
@@ -217,12 +181,6 @@ public class TurnoutManagerImpl implements TurnoutManager {
 		return new ArrayList<TurnoutGroup>(turnoutGroups);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#
-	 * getTurnoutGroupByName(java.lang.String)
-	 */
 	@Override
 	public TurnoutGroup getTurnoutGroupByName(String name) {
 		LOGGER.debug("getTurnoutGroupByName()");
@@ -235,26 +193,17 @@ public class TurnoutManagerImpl implements TurnoutManager {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#addTurnoutGroup
-	 * (ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup)
-	 */
 	@Override
 	public void addTurnoutGroup(TurnoutGroup group) {
 		LOGGER.debug("addTurnoutGroup()");
 		turnoutService.addTurnoutGroup(group);
+		putTurnoutGroupInCache(group);
+	}
+
+	private void putTurnoutGroupInCache(TurnoutGroup group) {
 		turnoutGroups.add(group);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#
-	 * deleteTurnoutGroup(ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup)
-	 */
 	@Override
 	public void deleteTurnoutGroup(TurnoutGroup group)
 			throws TurnoutManagerException {
@@ -267,15 +216,13 @@ public class TurnoutManagerImpl implements TurnoutManager {
 			}
 		}
 		turnoutService.deleteTurnoutGroup(group);
+		removeTurnoutGroupFromCache(group);
+	}
+
+	public void removeTurnoutGroupFromCache(TurnoutGroup group) {
 		turnoutGroups.remove(group);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.turnouts.TurnoutPersistenceIface#
-	 * updateTurnoutGroup(ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup)
-	 */
 	@Override
 	public void updateTurnoutGroup(TurnoutGroup group) {
 		LOGGER.debug("updateTurnoutGroup()");
@@ -360,21 +307,74 @@ public class TurnoutManagerImpl implements TurnoutManager {
 
 	@Override
 	public void initialize() {
-		clear();
-		for (TurnoutGroup group : turnoutService.getAllTurnoutGroups()) {
-			turnoutGroups.add(group);
-			for (Turnout turnout : group.getTurnouts()) {
-				numberToTurnoutCache.put(turnout.getNumber(), turnout);
-				putInCache(turnout);
-
-			}
-		}
-
+		turnoutService.init(this);
 	}
 
 	@Override
 	public void setTurnoutControl(TurnoutControlIface turnoutControl) {
 		this.turnoutControl = turnoutControl;
+	}
+
+	@Override
+	public void turnoutsUpdated(List<TurnoutGroup> turnoutGroups) {
+		LOGGER.info("turnoutsUpdated: " + turnoutGroups);
+		clear();
+		for (TurnoutGroup group : turnoutGroups) {
+			putTurnoutGroupInCache(group);
+			for (Turnout turnout : group.getTurnouts()) {
+				numberToTurnoutCache.put(turnout.getNumber(), turnout);
+				putInCache(turnout);
+			}
+		}
+		for (TurnoutManagerListener l : listeners) {
+			l.turnoutsUpdated(turnoutGroups);
+		}
+	}
+
+	@Override
+	public void turnoutUpdated(Turnout turnout) {
+		LOGGER.info("turnoutUpdated: " + turnout);
+		putInCache(turnout);
+		for (TurnoutManagerListener l : listeners) {
+			l.turnoutUpdated(turnout);
+		}
+	}
+
+	@Override
+	public void turnoutRemoved(Turnout turnout) {
+		LOGGER.info("turnoutRemoved: " + turnout);
+		removeFromCache(turnout);
+		for (TurnoutManagerListener l : listeners) {
+			l.turnoutRemoved(turnout);
+		}
+	}
+
+	@Override
+	public void turnoutAdded(Turnout turnout) {
+		LOGGER.info("turnoutAdded: " + turnout);
+		putInCache(turnout);
+		for (TurnoutManagerListener l : listeners) {
+			l.turnoutAdded(turnout);
+		}
+	}
+
+	@Override
+	public void turnoutGroupAdded(TurnoutGroup group) {
+		LOGGER.info("turnoutGroupAdded: " + group);
+		putTurnoutGroupInCache(group);
+	}
+
+	@Override
+	public void turnoutGroupDeleted(TurnoutGroup group) {
+		LOGGER.info("turnoutGroupDeleted: " + group);
+		removeTurnoutGroupFromCache(group);
+	}
+
+	@Override
+	public void turnoutGroupUpdated(TurnoutGroup group) {
+		LOGGER.info("turnoutGroupUpdated: " + group);
+		removeTurnoutGroupFromCache(group);
+		putTurnoutGroupInCache(group);
 	}
 
 }

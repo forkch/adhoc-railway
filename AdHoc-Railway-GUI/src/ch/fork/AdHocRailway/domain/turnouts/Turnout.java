@@ -74,52 +74,13 @@ public class Turnout extends Model implements java.io.Serializable,
 	public static final String PROPERTYNAME_ADDRESS1_SWITCHED = "address1Switched";
 	public static final String PROPERTYNAME_ADDRESS2_SWITCHED = "address2Switched";
 
-	public boolean isDefault() {
-		return getTurnoutType() == TurnoutType.DEFAULT;
-	}
-
-	public boolean isDoubleCross() {
-		return getTurnoutType() == TurnoutType.DOUBLECROSS;
-	}
-
-	public boolean isThreeWay() {
-		return getTurnoutType() == TurnoutType.THREEWAY;
-	}
-
-	public boolean isCutter() {
-		return getTurnoutType() == TurnoutType.CUTTER;
-	}
-
-	@Override
-	public int compareTo(Turnout o) {
-		if (this == o) {
-			return 0;
-		}
-		if (o == null) {
-			return -1;
-		}
-		if (number > o.getNumber()) {
-			return 1;
-		} else if (number == o.getNumber()) {
-			return 0;
-		} else {
-			return -1;
-		}
-	}
-
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this,
-				ToStringStyle.SHORT_PREFIX_STYLE);
-	}
-
 	public Turnout() {
 	}
 
-	public Turnout(TurnoutType turnoutType, TurnoutGroup turnoutGroup,
-			int number, String description, TurnoutState defaultState,
-			TurnoutOrientation orientation, int address1, int bus1,
-			boolean address1_switched) {
+	public Turnout(int number, TurnoutType turnoutType, int bus1, int address1,
+			boolean address1_switched, TurnoutState defaultState,
+			TurnoutOrientation orientation, String description,
+			TurnoutGroup turnoutGroup) {
 		this.turnoutType = turnoutType;
 		this.turnoutGroup = turnoutGroup;
 		this.number = number;
@@ -129,27 +90,6 @@ public class Turnout extends Model implements java.io.Serializable,
 		this.address1 = address1;
 		this.bus1 = bus1;
 		this.address1Switched = address1_switched;
-	}
-
-	public Turnout(TurnoutType turnoutType, TurnoutGroup turnoutGroup,
-			int number, String description, TurnoutState defaultState,
-			TurnoutOrientation orientation, Set<RouteItem> routeItems,
-			int address1, int address2, int bus1, int bus2,
-			boolean address1_switched, boolean address2_switched) {
-		this.turnoutType = turnoutType;
-		this.turnoutGroup = turnoutGroup;
-		this.number = number;
-		this.description = description;
-		this.defaultState = defaultState;
-		this.orientation = orientation;
-		this.routeItems = routeItems;
-		this.address1 = address1;
-		this.address2 = address2;
-		this.bus1 = bus1;
-		this.bus2 = bus2;
-		this.address1Switched = address1_switched;
-		this.address2Switched = address2_switched;
-
 	}
 
 	public TurnoutType getTurnoutType() {
@@ -282,6 +222,22 @@ public class Turnout extends Model implements java.io.Serializable,
 				address2Switched);
 	}
 
+	public boolean isDefault() {
+		return getTurnoutType() == TurnoutType.DEFAULT;
+	}
+
+	public boolean isDoubleCross() {
+		return getTurnoutType() == TurnoutType.DOUBLECROSS;
+	}
+
+	public boolean isThreeWay() {
+		return getTurnoutType() == TurnoutType.THREEWAY;
+	}
+
+	public boolean isCutter() {
+		return getTurnoutType() == TurnoutType.CUTTER;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -309,11 +265,26 @@ public class Turnout extends Model implements java.io.Serializable,
 	}
 
 	@Override
-	public Object clone() {
-		Turnout newT = new Turnout(turnoutType, turnoutGroup, number,
-				description, defaultState, orientation, routeItems, address1,
-				address2, bus1, bus2, address1Switched, address2Switched);
-		return newT;
+	public int compareTo(Turnout o) {
+		if (this == o) {
+			return 0;
+		}
+		if (o == null) {
+			return -1;
+		}
+		if (number > o.getNumber()) {
+			return 1;
+		} else if (number == o.getNumber()) {
+			return 0;
+		} else {
+			return -1;
+		}
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this,
+				ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 	public int getId() {
