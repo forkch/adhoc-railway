@@ -4,33 +4,44 @@
 
 function AppCtrl($scope, socket) {
   socket.on('init', function (data) {
-      $scope.turnouts = data.turnouts;
-      $scope.locomotives = {};
+    angular.forEach(data.turnouts, function(value, key) {
+        $scope.turnouts[value._id] = value;
+    });
+    $scope.locomotives = {};
   });
 }
 
 function TurnoutsCtrl($scope, socket) {
     $scope.turnouts = {};
     socket.emit('turnouts:getAll', '', function(turnouts) {
-        console.log(turnouts); 
-        $scope.turnouts = turnouts;
+        console.log(turnouts);
+
+        angular.forEach(turnouts, function(value, key) {
+            this[value._id] = value;
+        }, $scope.turnouts);
     });
     socket.on('turnout:added', function(turnout) {
-        $scope.turnouts[turnout.id] = turnout;
+        $scope.turnouts[turnout._id] = turnout;
     });
     socket.on('turnout:updated', function(turnout) {
-        $scope.turnouts[turnout.id] = turnout;
+        console.log(turnout._id);
+        $scope.turnouts[turnout._id] = turnout;
+    });
+
+    socket.on('turnout:removed', function(turnoutId) {
+        delete $scope.turnouts[turnoutId];
     });
 
     $scope.deleteTurnout = function(turnoutId) {
         $scope.error = null;
-        socket.emit('turnout:delete', turnoutId, function(result, msg) {
+        socket.emit('turnout:remove', turnoutId, function(result, msg) {
             if(!result) {
-                $scope.error = 'Error deleting turnout (' + msg + ')';
+                $scope.error = 'Error removing turnout (' + msg + ')';
             } else {
-                $location.path('/turnouts')
+                delete $scope.turnouts[turnoutId];
             }
         });
+
     }
     
 }
