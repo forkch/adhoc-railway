@@ -1,23 +1,30 @@
 div.row
   div.span12
     h3 Turnouts
+div.row
+  div.span12
+    div.input-append
+      input(type='text', placeholder='New turnout group', ng-model='turnoutGroupName')
+      button.btn(ng-click='addTurnoutGroup()') Add
+div.row
+  div.span10
 
-div.row
-  div.span12
-    a(href='addTurnout')
+div.row(ng-repeat='turnoutGroup in turnoutGroups')
+  div.span10
+    
+    h4 {{turnoutGroup.name}}
+    a.btn(href='addTurnout/{{turnoutGroup._id}}')
       i.icon-plus
-div.row
-  div.span12
-    div.well.turnout(ng-repeat='turnout in turnouts')
+
+    div.well.turnout(ng-repeat='turnout in turnoutGroup.turnouts')
       div.turnout.number
-        {{turnout.number}}
-      div.turnout.type
+        {{turnout.number}} | 
         {{turnout.type}}
       br
-      div.turnout.editRemove
-        a(href='editTurnout/{{turnout._id}}')
+      div.btn-group.turnout.editRemove
+        a.btn(ng-href='editTurnout/{{turnout._id}}')
           i.icon-edit
-        span(ng-click='deleteTurnout(turnout._id)')
+        button.btn(ng-click='deleteTurnout(turnout._id)')
           i.icon-remove
 
 

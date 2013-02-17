@@ -6,6 +6,9 @@ var express = require('express'),
   routes = require('./routes'),
   socket = require('./routes/socket.js');
 
+var colorize = require('colorize');
+
+
 var app = module.exports = express(); var server =
 require('http').createServer(app);
 

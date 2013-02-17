@@ -12,12 +12,14 @@ exports.TurnoutSchema = new Schema({
 	type: String,
 	defaultState: String,
 	orientation: String,
-	description: String
+	description: String,
+	group:  ObjectId
 
 });
+
 exports.TurnoutGroupSchema = new Schema({
 	name: String,
-	turnouts : [exports.TurnoutSchema]
+	turnouts : [ObjectId]
 });
 
 exports.TurnoutModel = mongoose.model('Turnout', exports.TurnoutSchema);
