@@ -1,7 +1,7 @@
 extends layout
 
 block body
-  div(ng-controller='AppCtrl')
+  div.container(ng-controller='AppCtrl')
     div.navbar.navbar-inverse
       div.navbar-inner
         a.brand(href="#") AdHoc-Railway
@@ -10,14 +10,7 @@ block body
             a(href='turnouts') Turnouts
           li
             a(href='locomotives') Locomotives
-
-    
-    div.row-fluid
-      div.span2
-        div.well
-          {{turnouts.length}} Turnouts
-        div.well
-          {{locomotives.length}} Locomotives
-      div.span10
+    div.row     
+      div.span12
         div(ng-view)
 

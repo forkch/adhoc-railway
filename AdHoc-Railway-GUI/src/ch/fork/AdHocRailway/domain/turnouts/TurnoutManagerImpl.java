@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.services.turnouts.HibernateTurnoutService;
+import ch.fork.AdHocRailway.services.turnouts.SIOTurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
 import de.dermoba.srcp.model.SRCPAddress;
@@ -61,7 +61,8 @@ public class TurnoutManagerImpl implements TurnoutManager,
 		this.numberToTurnoutCache = new HashMap<Integer, Turnout>();
 		this.turnoutGroups = new TreeSet<TurnoutGroup>();
 
-		turnoutService = HibernateTurnoutService.getInstance();
+		turnoutService = SIOTurnoutService.getInstance();
+		turnoutService.init(this);
 	}
 
 	public static TurnoutManager getInstance() {
@@ -307,7 +308,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
 	@Override
 	public void initialize() {
-		turnoutService.init(this);
 	}
 
 	@Override
@@ -362,12 +362,18 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	public void turnoutGroupAdded(TurnoutGroup group) {
 		LOGGER.info("turnoutGroupAdded: " + group);
 		putTurnoutGroupInCache(group);
+		for (TurnoutManagerListener l : listeners) {
+			l.turnoutGroupAdded(group);
+		}
 	}
 
 	@Override
-	public void turnoutGroupDeleted(TurnoutGroup group) {
+	public void turnoutGroupRemoved(TurnoutGroup group) {
 		LOGGER.info("turnoutGroupDeleted: " + group);
 		removeTurnoutGroupFromCache(group);
+		for (TurnoutManagerListener l : listeners) {
+			l.turnoutGroupRemoved(group);
+		}
 	}
 
 	@Override
@@ -375,6 +381,21 @@ public class TurnoutManagerImpl implements TurnoutManager,
 		LOGGER.info("turnoutGroupUpdated: " + group);
 		removeTurnoutGroupFromCache(group);
 		putTurnoutGroupInCache(group);
+		for (TurnoutManagerListener l : listeners) {
+			l.turnoutGroupUpdated(group);
+		}
+	}
+
+	@Override
+	public void failure(TurnoutManagerException arg0) {
+		for (TurnoutManagerListener l : listeners) {
+			l.failure(arg0);
+		}
+	}
+
+	@Override
+	public void ready() {
+
 	}
 
 }

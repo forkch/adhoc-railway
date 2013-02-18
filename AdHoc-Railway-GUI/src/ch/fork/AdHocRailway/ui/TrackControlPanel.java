@@ -49,6 +49,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerListener;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
@@ -210,15 +211,12 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys,
 	public void addTurnoutGroup(int i, TurnoutGroup turnoutGroup) {
 		int maxTurnoutCols = preferences
 				.getIntValue(PreferencesKeys.TURNOUT_CONTROLES);
-		WidgetTab turnoutGroupTab = new WidgetTab(maxTurnoutCols);
-		JScrollPane groupScrollPane = new JScrollPane(turnoutGroupTab,
-				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		groupScrollPane.setBorder(BorderFactory.createEmptyBorder());
-		groupScrollPane.getVerticalScrollBar().setUnitIncrement(10);
-		groupScrollPane.getVerticalScrollBar().setBlockIncrement(10);
+		WidgetTab turnoutGroupTab = new WidgetTab();
 
-		turnoutGroupsTabbedPane.add(groupScrollPane, "F" + i + ": "
+		if (i == -1) {
+			i = 0;
+		}
+		turnoutGroupsTabbedPane.add(turnoutGroupTab, "F" + i + ": "
 				+ turnoutGroup.getName());
 
 		for (Turnout turnout : turnoutGroup.getTurnouts()) {
@@ -246,7 +244,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys,
 
 		for (RouteGroup routeGroup : routePersistence.getAllRouteGroups()) {
 
-			WidgetTab routeGroupTab = new WidgetTab(maxRouteCols);
+			WidgetTab routeGroupTab = new WidgetTab();
 			JScrollPane groupScrollPane = new JScrollPane(routeGroupTab,
 					JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -474,44 +472,96 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys,
 	}
 
 	@Override
-	public void turnoutUpdated(Turnout turnout) {
-		TurnoutWidget turnoutWidget = turnoutToTurnoutWidget.get(turnout);
-		turnoutWidget.setTurnout(turnout);
-		revalidate();
-		repaint();
-	}
+	public void turnoutUpdated(final Turnout turnout) {
+		SwingUtilities.invokeLater(new Runnable() {
 
-	@Override
-	public void turnoutRemoved(Turnout turnout) {
-		WidgetTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab.get(turnout
-				.getTurnoutGroup());
-		turnoutGroupTab.remove(turnoutToTurnoutWidget.get(turnout));
+			@Override
+			public void run() {
 
-		revalidate();
-		repaint();
-	}
+				TurnoutWidget turnoutWidget = turnoutToTurnoutWidget
+						.get(turnout);
+				turnoutWidget.setTurnout(turnout);
+				revalidate();
+				repaint();
 
-	@Override
-	public void turnoutAdded(Turnout turnout) {
-		WidgetTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab.get(turnout
-				.getTurnoutGroup());
-		addTurnout(turnoutGroupTab, turnout);
-		revalidate();
-		repaint();
+			}
+		});
 
 	}
 
 	@Override
-	public void turnoutGroupAdded(TurnoutGroup group) {
+	public void turnoutRemoved(final Turnout turnout) {
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+
+				WidgetTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
+						.get(turnout.getTurnoutGroup());
+				turnoutGroupTab.remove(turnoutToTurnoutWidget.get(turnout));
+
+				revalidate();
+				repaint();
+
+			}
+		});
+
 	}
 
 	@Override
-	public void turnoutGroupDeleted(TurnoutGroup group) {
+	public void turnoutAdded(final Turnout turnout) {
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				WidgetTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
+						.get(turnout.getTurnoutGroup());
+				addTurnout(turnoutGroupTab, turnout);
+				revalidate();
+				repaint();
+
+			}
+		});
+
+	}
+
+	@Override
+	public void turnoutGroupAdded(final TurnoutGroup group) {
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				addTurnoutGroup(-1, group);
+				revalidate();
+				repaint();
+			}
+		});
+	}
+
+	@Override
+	public void turnoutGroupRemoved(final TurnoutGroup group) {
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				WidgetTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
+						.get(group);
+				turnoutGroupsTabbedPane.remove(turnoutGroupTab);
+				revalidate();
+				repaint();
+			}
+		});
 
 	}
 
 	@Override
 	public void turnoutGroupUpdated(TurnoutGroup group) {
+
+	}
+
+	@Override
+	public void failure(TurnoutManagerException arg0) {
+		// TODO Auto-generated method stub
 
 	}
 }

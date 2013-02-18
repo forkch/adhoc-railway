@@ -13,7 +13,9 @@ public interface TurnoutManagerListener {
 
 	public void turnoutGroupAdded(TurnoutGroup group);
 
-	public void turnoutGroupDeleted(TurnoutGroup group);
+	public void turnoutGroupRemoved(TurnoutGroup group);
 
 	public void turnoutGroupUpdated(TurnoutGroup group);
+
+	public void failure(TurnoutManagerException arg0);
 }

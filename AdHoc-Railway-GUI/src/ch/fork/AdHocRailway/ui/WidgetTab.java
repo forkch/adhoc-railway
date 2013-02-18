@@ -18,20 +18,38 @@
 
 package ch.fork.AdHocRailway.ui;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 public class WidgetTab extends JPanel {
 	private static final long serialVersionUID = 1L;
+	private final JPanel widgets;
 
-	public WidgetTab(int maxCols) {
+	public WidgetTab() {
 
-		setLayout(new BetterFlowLayout(FlowLayout.LEADING));
+		widgets = new JPanel();
+		widgets.setLayout(new BetterFlowLayout(FlowLayout.LEADING));
+
+		JScrollPane groupScrollPane = new JScrollPane(widgets,
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		groupScrollPane.setBorder(BorderFactory.createEmptyBorder());
+		groupScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+		groupScrollPane.getVerticalScrollBar().setBlockIncrement(10);
+		setLayout(new BorderLayout());
+		add(groupScrollPane, BorderLayout.CENTER);
 	}
 
 	public void addWidget(JPanel widget) {
-		add(widget);
+		widgets.add(widget);
+	}
+
+	public void remove(JPanel widget) {
+		widgets.remove(widget);
 	}
 
 }

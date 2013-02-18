@@ -1,0 +1,11 @@
+div.row
+  div.span10
+    h3 Edit Turnout Gruop
+div.row
+  div.span5
+    form(ng-submit='editTurnoutGroup()')
+      fieldset
+        p
+          input(autofocus='true', type='text', size='12', placeholder='Name', ng-model='turnoutGroup.name')
+        p
+          button.btn(type='submit') Edit

@@ -211,7 +211,7 @@ public class HibernateTurnoutService implements TurnoutService {
 					.get(HibernateTurnoutGroup.class, id);
 			session.delete(hTurnoutGroup);
 			transaction.commit();
-			listener.turnoutGroupDeleted(group);
+			listener.turnoutGroupRemoved(group);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);

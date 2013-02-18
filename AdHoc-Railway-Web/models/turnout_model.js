@@ -14,7 +14,6 @@ exports.TurnoutSchema = new Schema({
 	orientation: String,
 	description: String,
 	group:  ObjectId
-
 });
 
 exports.TurnoutGroupSchema = new Schema({
@@ -22,5 +21,19 @@ exports.TurnoutGroupSchema = new Schema({
 	turnouts : [ObjectId]
 });
 
+exports.RouteSchema = new Schema({
+	name: String,
+	routedTurnout : {
+		turnoutId: ObjectId,
+		state: String
+	}
+})
+exports.RouteGroupSchema = new Schema({
+	name: String,
+	routes : [ObjectId]
+})
+
 exports.TurnoutModel = mongoose.model('Turnout', exports.TurnoutSchema);
 exports.TurnoutGroupModel = mongoose.model('TurnoutGroup', exports.TurnoutGroupSchema);
+exports.RouteModel = mongoose.model('Route', exports.RouteSchema);
+exports.RouteGroupModel = mongoose.model('RouteGroup', exports.RouteGroupSchema);
