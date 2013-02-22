@@ -19,6 +19,18 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
 
 public class SIOTurnoutService implements TurnoutService, IOCallback {
 
+	private static final String TURNOUT_GROUP_ADD_REQUEST = "turnoutGroup:add";
+	private static final String TURNOUT_GROUP_REMOVE_REQUEST = "turnoutGroup:remove";
+	private static final String TURNOUT_GROUP_UPDATE_REQUEST = "turnoutGroup:update";
+
+	private static final String TURNOUT_GROUP_GET_ALL_REQUEST = "turnoutGroup:getAll";
+
+	private static final String TURNOUT_ADD_REQUEST = "turnout:add";
+
+	private static final String TURNOUT_REMOVE_REQUEST = "turnout:remove";
+
+	private static final String TURNOUT_UPDATE_REQUEST = "turnout:update";
+
 	private static Logger LOGGER = Logger.getLogger(SIOTurnoutService.class);
 
 	private static final SIOTurnoutService INSTANCE = new SIOTurnoutService();
@@ -51,80 +63,144 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void addTurnout(final Turnout turnout) {
-		LOGGER.info("addTurnout()");
+		LOGGER.info(TURNOUT_ADD_REQUEST);
 		checkSocket();
 		try {
 			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
 				@Override
-				public void ack(Object... arg0) {
+				public void ack(final Object... arg0) {
 					LOGGER.info("ack: " + Arrays.toString(arg0));
-					listener.turnoutAdded(turnout);
-
+					Boolean err = (Boolean) arg0[0];
+					String msg = (String) arg0[1];
+					if (err) {
+						listener.failure(new TurnoutManagerException(msg));
+					} else {
+						listener.turnoutAdded(turnout);
+					}
 				}
 			};
 
 			JSONObject addTurnoutJson = SIOTurnoutMapper
 					.mapTurnoutToJSON(turnout);
 
-			socket.emit("turnout:add", ioAcknowledge, addTurnoutJson);
+			socket.emit(TURNOUT_ADD_REQUEST, ioAcknowledge, addTurnoutJson);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new TurnoutManagerException("error adding turnout", e);
 		}
 
 	}
 
 	@Override
-	public void deleteTurnout(Turnout turnout) {
-		checkSocket();
-
-	}
-
-	@Override
-	public void updateTurnout(Turnout turnout) {
-		checkSocket();
-
-	}
-
-	@Override
-	public List<TurnoutGroup> getAllTurnoutGroups() {
-		checkSocket();
-		IOAcknowledge ioAcknowledge = new IOAcknowledge() {
-
-			@Override
-			public void ack(Object... arg0) {
-
-				try {
-					SIOTurnoutServiceEventHandler.handleTurnoutInit(
-							(JSONObject) arg0[0], listener);
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		};
-		socket.emit("turnoutGroup:getAll", ioAcknowledge, new Object[] {});
-		return null;
-	}
-
-	@Override
-	public void addTurnoutGroup(final TurnoutGroup group) {
-		LOGGER.info("addTurnoutGroup()");
+	public void deleteTurnout(final Turnout turnout) {
+		LOGGER.info(TURNOUT_REMOVE_REQUEST);
 		checkSocket();
 		try {
 			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
 				@Override
-				public void ack(Object... arg0) {
+				public void ack(final Object... arg0) {
 					LOGGER.info("ack: " + Arrays.toString(arg0));
-					listener.turnoutGroupAdded(group);
+					Boolean err = (Boolean) arg0[0];
+					String msg = (String) arg0[1];
+					if (err) {
+						listener.failure(new TurnoutManagerException(msg));
+					} else {
+						listener.turnoutRemoved(turnout);
+					}
+
+				}
+			};
+
+			JSONObject removeTurnoutJson = SIOTurnoutMapper
+					.mapTurnoutToJSON(turnout);
+
+			socket.emit(TURNOUT_REMOVE_REQUEST, ioAcknowledge,
+					removeTurnoutJson);
+		} catch (JSONException e) {
+			throw new TurnoutManagerException("error removing turnout", e);
+		}
+	}
+
+	@Override
+	public void updateTurnout(final Turnout turnout) {
+		LOGGER.info(TURNOUT_UPDATE_REQUEST);
+		checkSocket();
+		try {
+			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
+
+				@Override
+				public void ack(final Object... arg0) {
+					LOGGER.info("ack: " + Arrays.toString(arg0));
+					Boolean err = (Boolean) arg0[0];
+					String msg = (String) arg0[1];
+					if (err) {
+						listener.failure(new TurnoutManagerException(msg));
+					} else {
+						listener.turnoutUpdated(turnout);
+					}
+
+				}
+			};
+
+			JSONObject updateTurnoutJson = SIOTurnoutMapper
+					.mapTurnoutToJSON(turnout);
+
+			socket.emit(TURNOUT_UPDATE_REQUEST, ioAcknowledge,
+					updateTurnoutJson);
+		} catch (JSONException e) {
+			throw new TurnoutManagerException("error updating turnout", e);
+		}
+
+	}
+
+	@Override
+	public List<TurnoutGroup> getAllTurnoutGroups() {
+		LOGGER.info(TURNOUT_GROUP_GET_ALL_REQUEST);
+		checkSocket();
+		IOAcknowledge ioAcknowledge = new IOAcknowledge() {
+
+			@Override
+			public void ack(Object... arg0) {
+				LOGGER.info("ack: " + Arrays.toString(arg0));
+
+				try {
+					SIOTurnoutServiceEventHandler.handleTurnoutInit(
+							(JSONObject) arg0[0], listener);
+
+				} catch (JSONException e) {
+					throw new TurnoutManagerException(
+							"error getting all turnout groups", e);
+				}
+			}
+		};
+		socket.emit(TURNOUT_GROUP_GET_ALL_REQUEST, ioAcknowledge,
+				new Object[] {});
+		return null;
+	}
+
+	@Override
+	public void addTurnoutGroup(final TurnoutGroup group) {
+		LOGGER.info(TURNOUT_GROUP_ADD_REQUEST);
+		checkSocket();
+		try {
+			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
+
+				@Override
+				public void ack(final Object... arg0) {
+					LOGGER.info("ack: " + Arrays.toString(arg0));
+					Boolean err = (Boolean) arg0[0];
+					String msg = (String) arg0[1];
+					if (err) {
+						listener.failure(new TurnoutManagerException(msg));
+					} else {
+						listener.turnoutGroupAdded(group);
+					}
 
 				}
 			};
@@ -132,23 +208,74 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 			JSONObject addTurnoutGroupJSON = SIOTurnoutMapper
 					.mapTurnoutGroupToJSON(group);
 
-			socket.emit("turnoutGroup:add", ioAcknowledge, addTurnoutGroupJSON);
+			socket.emit(TURNOUT_GROUP_ADD_REQUEST, ioAcknowledge,
+					addTurnoutGroupJSON);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new TurnoutManagerException("error adding turnout group", e);
 		}
 
 	}
 
 	@Override
-	public void deleteTurnoutGroup(TurnoutGroup group) {
+	public void removeTurnoutGroup(final TurnoutGroup group) {
+		LOGGER.info(TURNOUT_GROUP_REMOVE_REQUEST);
 		checkSocket();
+		try {
+			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
+				@Override
+				public void ack(final Object... arg0) {
+					LOGGER.info("ack: " + Arrays.toString(arg0));
+					Boolean err = (Boolean) arg0[0];
+					String msg = (String) arg0[1];
+					if (err) {
+						listener.failure(new TurnoutManagerException(msg));
+					} else {
+						listener.turnoutGroupRemoved(group);
+					}
+
+				}
+			};
+
+			JSONObject removeTurnoutGroupJSON = SIOTurnoutMapper
+					.mapTurnoutGroupToJSON(group);
+
+			socket.emit(TURNOUT_GROUP_REMOVE_REQUEST, ioAcknowledge,
+					removeTurnoutGroupJSON);
+		} catch (JSONException e) {
+			throw new TurnoutManagerException("error removing turnout group", e);
+		}
 	}
 
 	@Override
-	public void updateTurnoutGroup(TurnoutGroup group) {
+	public void updateTurnoutGroup(final TurnoutGroup group) {
+		LOGGER.info(TURNOUT_GROUP_UPDATE_REQUEST);
 		checkSocket();
+		try {
+			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
+
+				@Override
+				public void ack(final Object... arg0) {
+					LOGGER.info("ack: " + Arrays.toString(arg0));
+					Boolean err = (Boolean) arg0[0];
+					String msg = (String) arg0[1];
+					if (err) {
+						listener.failure(new TurnoutManagerException(msg));
+					} else {
+						listener.turnoutGroupUpdated(group);
+					}
+
+				}
+			};
+
+			JSONObject updateTurnoutGroupJSON = SIOTurnoutMapper
+					.mapTurnoutGroupToJSON(group);
+
+			socket.emit(TURNOUT_GROUP_UPDATE_REQUEST, ioAcknowledge,
+					updateTurnoutGroupJSON);
+		} catch (JSONException e) {
+			throw new TurnoutManagerException("error updating turnout group", e);
+		}
 	}
 
 	@Override
@@ -205,15 +332,15 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			listener.failure(new TurnoutManagerException(
+					"error parsing event '" + event + "'"));
 		}
 	}
 
 	@Override
 	public void onConnect() {
 		LOGGER.info("successfully connected to socket.io at " + URL);
-		listener.ready();
 	}
 
 	@Override

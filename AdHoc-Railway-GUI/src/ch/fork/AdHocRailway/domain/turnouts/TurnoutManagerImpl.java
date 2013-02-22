@@ -20,7 +20,7 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +34,7 @@ import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.services.turnouts.SIOTurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
+import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutAddListener;
 import de.dermoba.srcp.model.SRCPAddress;
 
 public class TurnoutManagerImpl implements TurnoutManager,
@@ -52,7 +53,9 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
 	private TurnoutControlIface turnoutControl = null;
 
-	private final List<TurnoutManagerListener> listeners = new LinkedList<TurnoutManagerListener>();
+	private final Set<TurnoutManagerListener> listeners = new HashSet<TurnoutManagerListener>();
+
+	private final Set<TurnoutManagerListener> listenersToBeRemovedInNextEvent = new HashSet<TurnoutManagerListener>();
 
 	private TurnoutManagerImpl() {
 		LOGGER.info("TurnoutManagerImpl loaded");
@@ -76,6 +79,17 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	public void addTurnoutManagerLisener(TurnoutManagerListener listener) {
 		this.listeners.add(listener);
 		listener.turnoutsUpdated(new ArrayList<TurnoutGroup>(turnoutGroups));
+	}
+
+	@Override
+	public void removeTurnoutManagerListenerInNextEvent(
+			TurnoutAddListener turnoutAddListener) {
+		listenersToBeRemovedInNextEvent.add(turnoutAddListener);
+	}
+
+	private void cleanupListeners() {
+		listeners.removeAll(listenersToBeRemovedInNextEvent);
+		listenersToBeRemovedInNextEvent.clear();
 	}
 
 	@Override
@@ -216,7 +230,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 				deleteTurnout(turnout);
 			}
 		}
-		turnoutService.deleteTurnoutGroup(group);
+		turnoutService.removeTurnoutGroup(group);
 		removeTurnoutGroupFromCache(group);
 	}
 
@@ -308,6 +322,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
 	@Override
 	public void initialize() {
+		cleanupListeners();
 	}
 
 	@Override
@@ -318,6 +333,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	@Override
 	public void turnoutsUpdated(List<TurnoutGroup> turnoutGroups) {
 		LOGGER.info("turnoutsUpdated: " + turnoutGroups);
+		cleanupListeners();
 		clear();
 		for (TurnoutGroup group : turnoutGroups) {
 			putTurnoutGroupInCache(group);
@@ -334,6 +350,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	@Override
 	public void turnoutUpdated(Turnout turnout) {
 		LOGGER.info("turnoutUpdated: " + turnout);
+		cleanupListeners();
 		putInCache(turnout);
 		for (TurnoutManagerListener l : listeners) {
 			l.turnoutUpdated(turnout);
@@ -343,6 +360,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	@Override
 	public void turnoutRemoved(Turnout turnout) {
 		LOGGER.info("turnoutRemoved: " + turnout);
+		cleanupListeners();
 		removeFromCache(turnout);
 		for (TurnoutManagerListener l : listeners) {
 			l.turnoutRemoved(turnout);
@@ -352,6 +370,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	@Override
 	public void turnoutAdded(Turnout turnout) {
 		LOGGER.info("turnoutAdded: " + turnout);
+		cleanupListeners();
 		putInCache(turnout);
 		for (TurnoutManagerListener l : listeners) {
 			l.turnoutAdded(turnout);
@@ -361,6 +380,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	@Override
 	public void turnoutGroupAdded(TurnoutGroup group) {
 		LOGGER.info("turnoutGroupAdded: " + group);
+		cleanupListeners();
 		putTurnoutGroupInCache(group);
 		for (TurnoutManagerListener l : listeners) {
 			l.turnoutGroupAdded(group);
@@ -370,6 +390,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	@Override
 	public void turnoutGroupRemoved(TurnoutGroup group) {
 		LOGGER.info("turnoutGroupDeleted: " + group);
+		cleanupListeners();
 		removeTurnoutGroupFromCache(group);
 		for (TurnoutManagerListener l : listeners) {
 			l.turnoutGroupRemoved(group);
@@ -379,6 +400,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	@Override
 	public void turnoutGroupUpdated(TurnoutGroup group) {
 		LOGGER.info("turnoutGroupUpdated: " + group);
+		cleanupListeners();
 		removeTurnoutGroupFromCache(group);
 		putTurnoutGroupInCache(group);
 		for (TurnoutManagerListener l : listeners) {
@@ -388,14 +410,11 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
 	@Override
 	public void failure(TurnoutManagerException arg0) {
+		LOGGER.warn("failure", arg0);
+		cleanupListeners();
 		for (TurnoutManagerListener l : listeners) {
 			l.failure(arg0);
 		}
-	}
-
-	@Override
-	public void ready() {
-
 	}
 
 }

@@ -3,8 +3,8 @@
  */
 
 var express = require('express'),
-  routes = require('./routes'),
-  socket = require('./routes/socket.js');
+    routes = require('./routes'),
+    socket = require('./routes/socket.js');
 
 var colorize = require('colorize');
 
@@ -19,20 +19,20 @@ var io = require('socket.io').listen(server);
 
 
 app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.static(__dirname + '/public'));
-  app.use(app.router);
+    app.set('views', __dirname + '/views');
+    app.set('view engine', 'jade');
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(express.static(__dirname + '/public'));
+    app.use(app.router);
 });
 
 app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 app.configure('production', function(){
-  app.use(express.errorHandler());
+    app.use(express.errorHandler());
 });
 
 // Routes
@@ -50,5 +50,5 @@ io.sockets.on('connection', socket);
 // Start server
 
 server.listen(3000, function(){
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 });

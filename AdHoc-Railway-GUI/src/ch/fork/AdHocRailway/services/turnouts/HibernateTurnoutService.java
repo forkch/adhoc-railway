@@ -197,7 +197,7 @@ public class HibernateTurnoutService implements TurnoutService {
 	 * deleteTurnoutGroup(ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup)
 	 */
 	@Override
-	public void deleteTurnoutGroup(TurnoutGroup group)
+	public void removeTurnoutGroup(TurnoutGroup group)
 			throws TurnoutManagerException {
 		LOGGER.debug("deleteTurnoutGroup()");
 		Session session = HibernateUtil.openSession();

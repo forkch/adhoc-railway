@@ -72,7 +72,7 @@ public class XMLTurnoutService implements TurnoutService {
 	}
 
 	@Override
-	public void deleteTurnoutGroup(TurnoutGroup group) {
+	public void removeTurnoutGroup(TurnoutGroup group) {
 		// TODO Auto-generated method stub
 
 	}

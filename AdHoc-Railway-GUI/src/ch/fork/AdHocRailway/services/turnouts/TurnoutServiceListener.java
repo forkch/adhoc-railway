@@ -23,7 +23,4 @@ public interface TurnoutServiceListener {
 	public void turnoutGroupUpdated(TurnoutGroup group);
 
 	public void failure(TurnoutManagerException arg0);
-
-	public void ready();
-
 }

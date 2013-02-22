@@ -41,6 +41,7 @@ import javax.swing.JTextField;
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
@@ -459,22 +460,51 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
-					.getTurnoutPersistence();
+			final TurnoutManager turnoutPersistence = AdHocRailway
+					.getInstance().getTurnoutPersistence();
+
 			Turnout turnout = presentationModel.getBean();
 			if (turnout.getId() != -1) {
 				turnoutPersistence.updateTurnout(turnout);
 			} else {
 				turnoutPersistence.addTurnout(turnout);
 			}
-			okPressed = true;
-			turnout.removePropertyChangeListener(TurnoutConfig.this);
-			TurnoutConfig.this.setVisible(false);
+			turnoutPersistence
+					.addTurnoutManagerLisener(new TurnoutAddListener() {
 
-			if (Preferences.getInstance().getBooleanValue(
-					PreferencesKeys.AUTOSAVE)) {
-				AdHocRailway.getInstance().saveActualFile();
-			}
+						@Override
+						public void turnoutAdded(Turnout turnout) {
+							success(turnoutPersistence, turnout);
+						}
+
+						@Override
+						public void turnoutUpdated(Turnout turnout) {
+							success(turnoutPersistence, turnout);
+						}
+
+						private void success(
+								final TurnoutManager turnoutPersistence,
+								Turnout turnout) {
+							turnoutPersistence
+									.removeTurnoutManagerListenerInNextEvent(this);
+
+							okPressed = true;
+							turnout.removePropertyChangeListener(TurnoutConfig.this);
+							TurnoutConfig.this.setVisible(false);
+
+							if (Preferences.getInstance().getBooleanValue(
+									PreferencesKeys.AUTOSAVE)) {
+								AdHocRailway.getInstance().saveActualFile();
+							}
+						}
+
+						@Override
+						public void failure(TurnoutManagerException arg0) {
+							System.out.println("failure");
+						}
+
+					});
+
 		}
 	}
 

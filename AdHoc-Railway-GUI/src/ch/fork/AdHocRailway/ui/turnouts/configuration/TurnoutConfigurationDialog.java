@@ -91,6 +91,8 @@ public class TurnoutConfigurationDialog extends JDialog {
 
 	private TurnoutGroup previousSelectedGroup = null;
 
+	private ArrayListModel<TurnoutGroup> turnoutGroups;
+
 	public TurnoutConfigurationDialog(JFrame owner) {
 		super(owner, "Turnout Configuration", true);
 		initGUI();
@@ -146,8 +148,9 @@ public class TurnoutConfigurationDialog extends JDialog {
 	private void initComponents() {
 		TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
-		ArrayListModel<TurnoutGroup> turnoutGroups = new ArrayListModel<TurnoutGroup>(
+		turnoutGroups = new ArrayListModel<TurnoutGroup>(
 				turnoutPersistence.getAllTurnoutGroups());
+
 		turnoutGroupModel = new SelectionInList<TurnoutGroup>(
 				(ListModel) turnoutGroups);
 
@@ -209,7 +212,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 	// TableModel *************************************************************
 
 	/**
-	 * Describes how to present an Album in a JTable.
+	 * Describes how to present an Turnout in a JTable.
 	 */
 	private static final class TurnoutTableModel extends
 			AbstractTableAdapter<Turnout> {
@@ -390,9 +393,6 @@ public class TurnoutConfigurationDialog extends JDialog {
 				previousSelectedGroup = null;
 				turnoutPersistence.deleteTurnoutGroup(groupToDelete);
 				turnoutGroupConfig.setTurnoutGroup(null);
-				List<TurnoutGroup> turnoutGroups = new ArrayList<TurnoutGroup>(
-						turnoutPersistence.getAllTurnoutGroups());
-				turnoutGroupModel.setList(turnoutGroups);
 			}
 		}
 	}
@@ -448,6 +448,7 @@ public class TurnoutConfigurationDialog extends JDialog {
 				List<Turnout> turnouts = new ArrayList<Turnout>(
 						selectedTurnoutGroup.getTurnouts());
 				turnoutModel.setList(turnouts);
+
 			}
 		}
 	}
@@ -456,7 +457,6 @@ public class TurnoutConfigurationDialog extends JDialog {
 
 		public RemoveTurnoutAction() {
 			super("Remove", ImageTools.createImageIconFromIconSet("remove.png"));
-			;
 		}
 
 		@Override
@@ -491,9 +491,6 @@ public class TurnoutConfigurationDialog extends JDialog {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			// PresentationModel<Turnout> model = new
-			// PresentationModel<Turnout>(
-			// turnoutModel);
 			int row = turnoutsTable.getSelectedRow();
 			int number = (Integer) turnoutsTable.getValueAt(row, 0);
 			TurnoutManager turnoutPersistence = AdHocRailway.getInstance()

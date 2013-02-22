@@ -37,7 +37,7 @@ public interface TurnoutService {
 
 	public abstract void addTurnoutGroup(TurnoutGroup group);
 
-	public abstract void deleteTurnoutGroup(TurnoutGroup group);
+	public abstract void removeTurnoutGroup(TurnoutGroup group);
 
 	public abstract void updateTurnoutGroup(TurnoutGroup group);
 

@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.domain.turnouts;
 import java.util.List;
 
 public interface TurnoutManagerListener {
+
 	public void turnoutsUpdated(List<TurnoutGroup> turnoutGroups);
 
 	public void turnoutUpdated(Turnout turnout);
