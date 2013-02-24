@@ -4,19 +4,16 @@ TurnoutModel = require('../models/turnout_model').TurnoutModel;
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
-mongoose.connect('mongodb://localhost/baehnle');
 
 var colorize = require('colorize');
 var cconsole = colorize.console;
 
 exports.init = function(socket) {
-
     getAllTurnoutData(function(err, result) {
         if(!err) {
             socket.emit('turnout:init', result);
         }
     });
-    
 }
 
 exports.getAllTurnoutGroups = function(socket,fn) {
@@ -24,11 +21,28 @@ exports.getAllTurnoutGroups = function(socket,fn) {
     getAllTurnoutData(function(err, result) {
         if(!err) {
             fn(false, result);
+        }else {
+            fn('failed to find all turnout groups');
+        }
+    });
+}
+
+exports.getTurnoutGroupById = function(socket, turnoutGroupId, fn) {
+    console.log('turnoutGroup:getById: ' + turnoutGroupId);
+    TurnoutGroupModel.findById(turnoutGroupId, function(err, turnoutGroup) {
+        if(!err) {
+            fn(turnoutGroup);
+        }else{
+            fn('failed to find turnout group with id ' + turnoutGroupId);
         }
     });
 }
 
 exports.addTurnoutGroup = function(socket, turnoutGroup, fn) {
+    if(turnoutGroup.name == null || turnoutGroup.name.length == 0) {
+        fn(true, 'name must be defined');
+        return;
+    }
     var group = new TurnoutGroupModel(turnoutGroup);
     group.save(function(err, addedTurnoutGroup) {
         if(!err) {
@@ -37,13 +51,16 @@ exports.addTurnoutGroup = function(socket, turnoutGroup, fn) {
             socket.broadcast.emit('turnoutGroup:added', turnoutGroup);
             fn(false, 'success', group);
         } else {
-            fn(true, 'error adding turnout group');
+            fn(true, 'failed to save turnout group');
         }
     });
 }
 
 exports.updateTurnoutGroup = function(socket, turnoutGroup, fn) {
-    
+    if(turnoutGroup.name == null || turnoutGroup.name.length == 0) {
+        fn(true, 'name must be defined');
+        return;
+    }
     console.log('updating turnout group' + JSON.stringify(turnoutGroup));
     
     var id = turnoutGroup._id;
@@ -55,7 +72,7 @@ exports.updateTurnoutGroup = function(socket, turnoutGroup, fn) {
             socket.broadcast.emit('turnoutGroup:updated', turnoutGroup);
             fn(false, ''); 
         }else {
-            fn(true, err);
+            fn(true, 'failed to update turnout group');
         }
     });
 }
@@ -70,11 +87,11 @@ exports.removeTurnoutGroup = function(socket, turnoutGroup, fn) {
                     socket.broadcast.emit('turnoutGroup:removed', turnoutGroup);
                     fn(false, '');
                 } else {
-                    fn(true, err);
+                    fn(true, 'failed to remove turnout group');
                 }
             });
         } else {
-            fn(true, err);
+            fn(true, 'failed to remove the turnouts associated to turnout group');
         }
     });
 }
@@ -86,23 +103,23 @@ exports.getById = function(socket, turnoutId, fn) {
         if(!err) {
             fn(turnout);
         }else{
-            fn(null);
+            fn('failed to find turnout with id ' + turnoutId);
         }
     });
 }
 
 exports.addTurnout = function(socket, turnout, fn) {
     if (!turnout.number || turnout.number < 1) {
-        fn(true, 'number should be greater 0');
+        fn(true, 'number must be greater 0');
         return ;
     }
     if(!turnout.bus1 || turnout.bus1 < 1) {
-        fn(true, 'bus 1 should be greater 0');
+        fn(true, 'bus 1 must be greater 0');
         return;
     }
 
     if(!turnout.address1 || turnout.address1 < 1) {
-        fn(true, 'address 1 should be greater 0');
+        fn(true, 'address 1 must be greater 0');
         return;
     }
     
@@ -118,31 +135,31 @@ exports.addTurnout = function(socket, turnout, fn) {
             socket.broadcast.emit('turnout:added', addedTurnout);
             fn(false, 'success');
         }else{
-            fn(true, 'error adding turnout');
+            fn(true, 'failed to add turnout');
         }
     });
     
 }
 
 exports.updateTurnout = function(socket, turnout, fn) {
-    if (turnout.number >= 1) {
-        console.log('updating turnout ' + JSON.stringify(turnout));
-        
-        var id = turnout._id;
-        delete turnout._id;
-
-        TurnoutModel.update({_id: id}, turnout, function(err,  numberAffected, rawResponse){
-            if(!err) {
-                turnout._id = id;
-                socket.broadcast.emit('turnout:updated', turnout);
-                fn(false, ''); 
-            }else {
-                fn(true, err);
-            }
-        });
-    } else {
-        fn(false, 'number should be greater 0');
+    if (turnout.number <= 0) {
+        fn(false, 'number must be greater 0');
+        return;
     }
+    console.log('updating turnout ' + JSON.stringify(turnout));
+    
+    var id = turnout._id;
+    delete turnout._id;
+
+    TurnoutModel.update({_id: id}, turnout, function(err,  numberAffected, rawResponse){
+        if(!err) {
+            turnout._id = id;
+            socket.broadcast.emit('turnout:updated', turnout);
+            fn(false, ''); 
+        }else {
+        fn(true, 'failed to update turnout');
+        }
+    });
 }
 
 exports.removeTurnout = function(socket, turnout, fn) {
@@ -156,11 +173,11 @@ exports.removeTurnout = function(socket, turnout, fn) {
                     socket.broadcast.emit('turnout:removed', turnout);
                     fn(false, '');
                 }else {
-                    fn(true, err);
+                    fn(true, 'failed to update turnout group');
                 }
             });
         }else {
-            fn(true, err);         
+            fn(true, 'failed to remove turnout ');       
         }
     });
 }

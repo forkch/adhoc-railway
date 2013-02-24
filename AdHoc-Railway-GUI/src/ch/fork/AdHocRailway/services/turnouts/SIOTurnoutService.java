@@ -332,7 +332,6 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 			}
 		} catch (JSONException e) {
-
 			listener.failure(new TurnoutManagerException(
 					"error parsing event '" + event + "'"));
 		}

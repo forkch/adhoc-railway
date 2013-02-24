@@ -344,8 +344,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	}
 
 	public void updateGUI() {
-
-		// updatePower();
+		updatePower();
 		// updateLocomotives();
 		disableNavigationKeys(mainPanel);
 		mainPanel.requestFocus();

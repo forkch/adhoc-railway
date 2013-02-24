@@ -1,0 +1,20 @@
+div.row
+  div.span10
+    h3 Edit Route
+div.row
+  div.span5
+    form(ng-submit='editRoute()')
+      fieldset
+        p
+          input(autofocus='true', type='number', size='4', placeholder='Number', ng-model='route.number')
+        p
+          input(type='text', size='4', placeholder='Target Track', ng-model='route.name')
+        p
+          input(type='text', size='4', placeholder='Orientation', ng-model='route.orientation')
+        p
+          button.btn(type='submit') Edit
+  div.span5
+    div.alert(ng-show='error')
+      button.close(type='button', data-dismiss='alert')
+      {{error}}
+

@@ -5,6 +5,7 @@
 var express = require('express'),
     routes = require('./routes'),
     socket = require('./routes/socket.js');
+var mongoose = require('mongoose');
 
 var colorize = require('colorize');
 
@@ -42,6 +43,12 @@ app.get('/partials/:name', routes.partials);
 
 // redirect all others to the index (HTML5 history)
 app.get('*', routes.index);
+
+
+
+var Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
+mongoose.connect('mongodb://localhost/baehnle');
+
 
 // Socket.io Communication
 

@@ -24,7 +24,9 @@ public class SIOTurnoutMapper {
 		int id = sioId.hashCode();
 		turnoutGroupIdMap.put(id, sioId);
 		turnoutGroup.setId(id);
-		turnoutGroup.setName(turnoutGroupJSON.getString("name"));
+
+		mergeTurnoutGroupBaseInfo(turnoutGroup, turnoutGroupJSON);
+
 		if (turnoutGroupJSON.has("turnouts")) {
 			JSONObject turnoutsJSON = turnoutGroupJSON
 					.getJSONObject("turnouts");
@@ -33,13 +35,12 @@ public class SIOTurnoutMapper {
 				for (String turnoutId : turnoutIds) {
 					Turnout turnout = mapTurnoutFromJSON(turnoutsJSON
 							.getJSONObject(turnoutId));
+					turnout.setTurnoutGroup(turnoutGroup);
 					turnoutGroup.addTurnout(turnout);
 				}
 			}
 		}
-
 		return turnoutGroup;
-
 	}
 
 	public static JSONObject mapTurnoutToJSON(Turnout turnout)
@@ -73,6 +74,13 @@ public class SIOTurnoutMapper {
 		int id = sioId.hashCode();
 		turnoutIdMap.put(id, sioId);
 		turnout.setId(id);
+		mergeTurnoutBaseInfo(turnoutJSON, turnout);
+
+		return turnout;
+	}
+
+	public static void mergeTurnoutBaseInfo(JSONObject turnoutJSON,
+			Turnout turnout) throws JSONException {
 		turnout.setNumber(turnoutJSON.getInt("number"));
 		turnout.setDescription(turnoutJSON.optString("description", ""));
 
@@ -89,8 +97,6 @@ public class SIOTurnoutMapper {
 				.getString("defaultState")));
 		turnout.setTurnoutType(TurnoutType.fromString(turnoutJSON
 				.getString("type")));
-
-		return turnout;
 	}
 
 	public static JSONObject mapTurnoutGroupToJSON(TurnoutGroup group)
@@ -98,5 +104,12 @@ public class SIOTurnoutMapper {
 		JSONObject turnoutGroupJSON = new JSONObject();
 		turnoutGroupJSON.put("name", group.getName());
 		return turnoutGroupJSON;
+	}
+
+	public static void mergeTurnoutGroupBaseInfo(TurnoutGroup turnoutGroup,
+			JSONObject turnoutGroupJSON) throws JSONException {
+
+		turnoutGroup.setName(turnoutGroupJSON.getString("name"));
+
 	}
 }

@@ -63,7 +63,6 @@ public class PowerControlPanel extends JPanel implements
 	private void initGUI() {
 
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		// BetterFlowLayout layout = new BetterFlowLayout();
 		MigLayout layout = new MigLayout("wrap 2");
 		powerControlPanel = new JPanel(layout);
 
@@ -93,8 +92,9 @@ public class PowerControlPanel extends JPanel implements
 		if (freeText == null || freeText.isEmpty()) {
 
 		} else {
-			if (freeText.toUpperCase().contains("AUTO"))
+			if (freeText.toUpperCase().contains("AUTO")) {
 				return;
+			}
 			int boosterNumber = -1;
 			StringTokenizer tokenizer = new StringTokenizer(freeText);
 			if (tokenizer.hasMoreTokens()) {
@@ -120,8 +120,9 @@ public class PowerControlPanel extends JPanel implements
 				JToggleButton button = numberToPowerToggleButtons
 						.get(boosterNumber);
 
-				if (button == null)
+				if (button == null) {
 					return;
+				}
 				button.removeActionListener(numberToActionListener
 						.get(boosterNumber));
 
@@ -180,8 +181,9 @@ public class PowerControlPanel extends JPanel implements
 		InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 		KeyStroke[] keys = inputMap.keys();
 		if (keys != null) {
-			for (KeyStroke ks : keys)
+			for (KeyStroke ks : keys) {
 				getInputMap().remove(ks);
+			}
 		}
 
 		KeyBoardLayout kbl = Preferences.getInstance().getKeyBoardLayout();

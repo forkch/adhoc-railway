@@ -22,11 +22,16 @@ exports.TurnoutGroupSchema = new Schema({
 });
 
 exports.RouteSchema = new Schema({
+	number: {type: Number, index: true},
 	name: String,
-	routedTurnout : {
-		turnoutId: ObjectId,
-		state: String
-	}
+	orientation: String,
+	group: ObjectId,
+	routedTurnouts: [
+		{
+			turnoutId: ObjectId,
+			state: String
+		}
+	]
 })
 exports.RouteGroupSchema = new Schema({
 	name: String,

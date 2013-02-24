@@ -127,8 +127,6 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	}
 
 	private void initComponents() {
-		TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
-				.getTurnoutPersistence();
 		numberTextField = new JSpinner();
 		numberTextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
 				presentationModel.getModel(Turnout.PROPERTYNAME_NUMBER), 1, // defaultValue
@@ -306,6 +304,12 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				bus2TextField.setValue(Constants.DEFAULT_BUS);
 				bus2TextField.setEnabled(true);
 				address2TextField.setEnabled(true);
+				break;
+			case CUTTER:
+				break;
+			case UNKNOWN:
+				break;
+			default:
 				break;
 			}
 		}
