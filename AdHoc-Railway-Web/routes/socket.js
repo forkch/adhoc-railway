@@ -33,6 +33,11 @@ module.exports = function (socket) {
         turnoutController.removeTurnoutGroup(socket, turnoutGroup, fn);
     });
 
+    socket.on('turnout:getAll', function (dummy, fn) {
+        console.log('turnout:getAll');
+        turnoutController.getAllTurnouts(socket, fn);
+    });
+
     socket.on('turnout:getById', function (turnoutId, fn) {
         console.log('turnout:getById');
         turnoutController.getById(socket, turnoutId, fn);
@@ -100,20 +105,52 @@ module.exports = function (socket) {
         routeController.removeRoute(socket, route, fn);
     });
 
-    socket.on('locomotive:getAll', function (dummy, fn) {
-        console.log('locomotive:getAll');
+    /* LOCOMOTIVES */
+
+    socket.on('locomotiveGroup:getAll', function (dummy, fn) {
+        console.log('locomotiveGroup:getAll');
+        locomotiveController.getAllLocomotiveGroups(socket, fn);
+    });
+
+    socket.on('locomotiveGroup:getById', function (locomotiveId, fn) {
+        console.log('locomotiveGroup:getById');
+        locomotiveController.getLocomotiveGroupById(socket,locomotiveId, fn);
+    });
+
+    socket.on('locomotiveGroup:add', function (locomotiveGroupName, fn) {
+        console.log('locomotiveGroup:add');
+        locomotiveController.addLocomotiveGroup(socket, locomotiveGroupName, fn);
+    });
+
+    socket.on('locomotiveGroup:update', function (locomotiveGroup, fn) {
+        console.log('locomotiveGroup:update');
+        locomotiveController.updateLocomotiveGroup(socket, locomotiveGroup, fn);
+    });
+    socket.on('locomotiveGroup:remove', function (locomotiveGroup, fn) {
+        console.log('locomotiveGroup:remove');
+        locomotiveController.removeLocomotiveGroup(socket, locomotiveGroup, fn);
+    });
+
+    socket.on('locomotive:getById', function (locomotiveId, fn) {
+        console.log('locomotive:getById');
+        locomotiveController.getById(socket, locomotiveId, fn);
     });
 
     socket.on('locomotive:add', function (locomotive, fn) {
         console.log('locomotive:add');
+        locomotiveController.addLocomotive(socket, locomotive, fn);
     });
-
+ 
     socket.on('locomotive:update', function (locomotive, fn) {
         console.log('locomotive:update');
+        locomotiveController.updateLocomotive(socket, locomotive, fn);
     });
-    
+
     socket.on('locomotive:remove', function (locomotive, fn) {
         console.log('locomotive:remove');
+        locomotiveController.removeLocomotive(socket, locomotive, fn);
     });
+
+
 
 };

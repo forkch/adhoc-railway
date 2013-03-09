@@ -58,6 +58,10 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 		case RIGHT:
 			stateString = "curved";
 			break;
+		case UNDEF:
+			break;
+		default:
+			break;
 		}
 		if (currentTurnout.isDefault()) {
 			iconLabel.setIcon(ImageTools

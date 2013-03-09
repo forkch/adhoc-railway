@@ -182,6 +182,47 @@ exports.removeRoute = function(socket, route, fn) {
     });
 }
 
+exports.addRoutedTurnout = function (socket, routeId, routedTurnout, fn) {
+
+  RouteModel.findById(routeId, function (err, route) {
+    if(!err) {
+
+        route.routedTurnouts.push(routedTurnout);
+        route.save();
+    
+    } else {
+      fn(true, 'failed to find route with id ' + routeId);
+      return;
+    }
+  
+  });
+}
+
+exports.updateRoutedTurnout = function (socket, routeId, routedTurnout, fn) {
+
+  RouteModel.update({_id: routeId}, {$set: {routedTurnouts: {'turnoutId': routedTurnout.turnoutId}}}, function (err, route) {
+    if(!err) {
+      fn(false, '');
+    } else {
+      fn(true, 'failed to update routedTurnout');
+      return;
+    }
+  
+  });
+}
+
+exports.removeRoutedTurnout = function (socket, routeId, routedTurnout, fn) {
+
+  RouteModel.update({_id: routeId}, {$pull: {routedTurnouts: {'turnoutId': routedTurnout.turnoutId}}}, function (err, route) {
+    if(!err) {
+      fn(false, '');
+    } else {
+      fn(true, 'failed to remove routedTurnout');
+      return;
+    }
+  
+  });
+}
 
 /* PRIVATE HELPERS */
 getAllRouteData = function (fn) {
@@ -202,7 +243,6 @@ getAllRouteData = function (fn) {
 
         var turnoutById = [];
         for(t in turnouts) {
-            console.log(turnouts[t].group + " --> " + JSON.stringify(turnouts[t]));
             var turnoutId = turnouts[t]._id;
 
             turnoutById[turnoutId] = turnouts[t];
@@ -212,7 +252,6 @@ getAllRouteData = function (fn) {
         for (r in routes) {
           var route = routes[r];
 
-          console.log(route.group + " --> " + JSON.stringify(route));
           if(!routeByGroupId[route.group]) {
               routeByGroupId[route.group] = {};
           }

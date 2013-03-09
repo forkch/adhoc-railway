@@ -45,7 +45,7 @@ import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
-	private final Route route;
+	private Route route;
 	private JLabel nameLabel;
 	private JLabel iconLabel;
 	private Icon routeStopIcon;
@@ -203,5 +203,10 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 	public Route getRoute() {
 		return route;
+	}
+
+	public void setRoute(Route route) {
+		this.route = route;
+		updateUI();
 	}
 }

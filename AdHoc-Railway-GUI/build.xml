@@ -1,131 +1,138 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="AdHoc-Railway" default="compile" basedir=".">
 	<!-- build-specific properties -->
-	<property file="${user.home}/.ant.properties"/>
-	<property file="build.properties"/>
+	<property file="${user.home}/.ant.properties" />
+	<property file="build.properties" />
 	<!-- set global properties for this build -->
-	<property name="etc.dir" value="etc"/>
-	<property name="src.dir" value="src"/>
-	<property name="lib.dir" value="lib"/>
-	<property name="db.dir" value="db"/>
-	<property name="locoimages.dir" value="locoimages"/>
-	<property name="samples.dir" value="samples"/>
-	<property name="build.dir" value="build"/>
-	<property name="javadoc.dir" value="javadoc"/>
-	<property name="release.dir" value="release/"/>
-	<property environment="env"/>
+	<property name="etc.dir" value="etc" />
+	<property name="src.dir" value="src" />
+	<property name="lib.dir" value="lib" />
+	<property name="db.dir" value="db" />
+	<property name="locoimages.dir" value="locoimages" />
+	<property name="samples.dir" value="samples" />
+	<property name="build.dir" value="build" />
+	<property name="javadoc.dir" value="javadoc" />
+	<property name="release.dir" value="release/" />
+	<property environment="env" />
 	<!-- main class for run target -->
-	
-	<!--property name="main.class" value="ch.fork.AdHocRailway.ui.AdHocRailway"/-->
-	<property name="main.class" value="ch.fork.AdHocRailway.ui.AdHocRailway"/>
+	<path id="compile.classpath">
+		<fileset dir="lib" includes="**/*.jar" />
+	</path>
+	<!--property name="main.class" value="ch.fork.AdHocRailway.ui.AdHocRailway"/ -->
+	<property name="main.class" value="ch.fork.AdHocRailway.ui.AdHocRailway" />
 	<!-- Useful shortcuts -->
 	<patternset id="meta.files">
-		<include name="**/*.xml"/>
-		<include name="**/*.properties"/>
+		<include name="**/*.xml" />
+		<include name="**/*.properties" />
 	</patternset>
-	
+
 	<!-- =================================================================== -->
-	<!-- Class paths                                                         -->
+	<!-- Class paths -->
 	<!-- =================================================================== -->
 	<path id="compile.class.path">
 		<fileset dir="${lib.dir}">
-			<include name="**/*.jar"/>
-			<include name="**/*.zip"/>
+			<include name="**/*.jar" />
+			<include name="**/*.zip" />
 		</fileset>
 	</path>
 	<path id="run.class.path">
 		<fileset dir="${lib.dir}">
-			<include name="**/*.jar"/>
-			<include name="**/*.zip"/>
+			<include name="**/*.jar" />
+			<include name="**/*.zip" />
 		</fileset>
 	</path>
 	<path id="javadoc.src.path">
-		<pathelement location="./src/"/>
+		<pathelement location="./src/" />
 	</path>
 	<!-- =================================================================== -->
-	<!-- Init targets                                                        -->
+	<!-- Init targets -->
 	<!-- =================================================================== -->
 	<target name="init">
 		<!-- Create the build directory structure used by compile -->
-		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.dir}" />
 	</target>
 	<!-- =================================================================== -->
-	<!-- CopyImages                                                          -->
+	<!-- CopyImages -->
 	<!-- =================================================================== -->
 	<target name="copy_images" depends="init">
 		<copy todir="${build.dir}">
 			<fileset dir="./res">
-				<include name="**/*.png"/>
+				<include name="**/*.png" />
 			</fileset>
 		</copy>
 	</target>
-	
+
 	<!-- =================================================================== -->
-	<!-- Compile: Default                                                    -->
+	<!-- Compile: Default -->
 	<!-- =================================================================== -->
-	<target name="compile" depends="copy_images"
-		description="Compiles all Java sources">
-		<javac destdir="${build.dir}" target="1.5" source="1.5" classpathref="compile.class.path"
+	<target name="compile" depends="copy_images" description="Compiles all Java sources">
+		<javac destdir="${build.dir}" classpathref="compile.class.path"
 			deprecation="off">
-			<src path="${src.dir}"/>
-			<include name="**/*.java"/>
+			<src path="${src.dir}" />
+			<include name="**/*.java" />
 		</javac>
 	</target>
 	<!-- =================================================================== -->
-	<!-- Run and Run-tests targets                                           -->
+	<!-- Run and Run-tests targets -->
 	<!-- =================================================================== -->
 	<target name="run" depends="init, compile" description="runs the examples">
-		<java classname="${main.class}" fork="yes" classpathref="run.class.path">
-			<classpath path="${build.dir}"/>
+		<java classname="${main.class}" fork="yes" classpathref="run.class.path" verbose="true">
+			<classpath path="${build.dir}" />
 		</java>
 	</target>
 	<!-- =================================================================== -->
-	<!-- RELEASE                                                             -->
+	<!-- RELEASE -->
 	<!-- =================================================================== -->
-	<target name="makerelease" depends="clean-all" description="Generates a release">
-		<antcall target="bin"/>
-		<antcall target="src"/>
+	<target name="makerelease" depends="clean-all,bin,src"
+		description="Generates a release">
 	</target>
-	
 	<!-- =================================================================== -->
-	<!-- Documentation                                                       -->
+	<!-- DEPLOY -->
+	<!-- =================================================================== -->
+	<target name="deploy" depends="bin"
+		description="Deploys a release to the AdHoc-Server">
+		<scp todir="pi:raspberry@192.168.2.100:/home/pi/AdHoc-Railway" trust="true">
+			<fileset dir="${release.dir}" />
+		</scp>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Documentation -->
 	<!-- =================================================================== -->
 	<target name="javadoc" description="Generate JavaDoc HTML pages"
 		depends="init">
-		<mkdir dir="${javadoc.dir}"/>
+		<mkdir dir="${javadoc.dir}" />
 		<javadoc sourcepath="${src.dir}" packagenames="*"
-			classpathref="compile.class.path"  destdir="${javadoc.dir}"
-			author="true" use="true" verbose="false" package="true">
+			classpathref="compile.class.path" destdir="${javadoc.dir}" author="true"
+			use="true" verbose="false" package="true">
 		</javadoc>
 	</target>
 	<!-- =================================================================== -->
-	<!-- Jar targets                                                         -->
+	<!-- Jar targets -->
 	<!-- =================================================================== -->
-	<target name="jar" depends="compile"
-		description="Builds a JAR file">
-		<delete file="AdHoc-Railway-${release}.jar"/>
-		<jar destfile="AdHoc-Railway-${release}.jar"
-			manifest="./src/manifest.mf">
-			<fileset dir="${build.dir}/" includes="**/*.class"/>
-			<fileset dir="${build.dir}/" includes="**/*.png"/>
-			<metainf dir="${etc.dir}/META-INF" includes="*"/>
+	<target name="jar" depends="compile" description="Builds a JAR file">
+		<delete file="AdHoc-Railway-${release}.jar" />
+		<jar destfile="AdHoc-Railway-${release}.jar" manifest="./src/manifest.mf">
+			<fileset dir="${build.dir}/" includes="**/*.class" />
+			<fileset dir="${build.dir}/" includes="**/*.png" />
+			<metainf dir="${etc.dir}/META-INF" includes="*" />
 		</jar>
-		
+
 	</target>
-	
+
 	<!-- =================================================================== -->
-	<!-- Zip targets                                                         -->
+	<!-- Zip targets -->
 	<!-- =================================================================== -->
 	<target name="bin" depends="jar"
 		description="Builds the ZIP file containing all stuff">
-		<property name="bindir" value="${release.dir}/AdHoc-Railway-${release}-bin"/>
-		<delete file="AdHoc-Railway-${release}-bin.zip"/>
-		<delete file="AdHoc-Railway-${release}-bin.tar.bz2"/>
-		<mkdir dir=""/>
+		<property name="bindir" value="${release.dir}/AdHoc-Railway-${release}-bin" />
+		<delete file="AdHoc-Railway-${release}-bin.zip" />
+		<delete file="AdHoc-Railway-${release}-bin.tar.bz2" />
+		<mkdir dir="" />
 		<copy todir="${bindir}">
 			<fileset dir="."
 				includes="ChangeLog, README, COPYING, TODO, adhocrailway.conf.sample"
-				excludes="**/.svn/"/>
+				excludes="**/.svn/" />
 		</copy>
 		<copy todir="${bindir}">
 			<fileset dir="">
@@ -133,81 +140,77 @@
 			</fileset>
 		</copy>
 		<copy todir="${bindir}/${lib.dir}">
-			<fileset dir="${lib.dir}"  excludes="**/.svn/"/>
+			<fileset dir="${lib.dir}" excludes="**/.svn/" />
 		</copy>
 		<copy todir="${bindir}/${etc.dir}">
-			<fileset dir="${etc.dir}"  excludes="**/.svn/"/>
+			<fileset dir="${etc.dir}" excludes="**/.svn/" />
 		</copy>
 		<copy todir="${bindir}/${samples.dir}">
-			<fileset dir="${samples.dir}"  excludes="**/.svn/"/>
+			<fileset dir="${samples.dir}" excludes="**/.svn/" />
 		</copy>
 		<copy todir="${bindir}/${db.dir}">
-			<fileset dir="${db.dir}"  excludes="**/.svn/"/>
+			<fileset dir="${db.dir}" excludes="**/.svn/" />
 		</copy>
 		<copy todir="${bindir}/${locoimages.dir}">
-			<fileset dir="${locoimages.dir}"  excludes="**/.svn/"/>
+			<fileset dir="${locoimages.dir}" excludes="**/.svn/" />
 		</copy>
 		<tar destfile="AdHoc-Railway-${release}-bin.tar.bz2" basedir="${release.dir}"
-      compression="bzip2"
-			/>
-		<zip destfile="AdHoc-Railway-${release}-bin.zip" basedir="${release.dir}"/>
-		
-		<delete file="ChangeLog"/>
+			compression="bzip2" />
+		<zip destfile="AdHoc-Railway-${release}-bin.zip" basedir="${release.dir}" />
+
+		<delete file="ChangeLog" />
 	</target>
-	
+
 	<target name="src" depends="javadoc"
 		description="Builds the ZIP file containing all stuff">
-		<property name="srcdir" value="${release.dir}/AdHoc-Railway-${release}-src"/>
-		<delete file="AdHoc-Railway-${release}-src.zip"/>
-			<delete file="AdHoc-Railway-${release}-src.tar.bz2"/>
-		
+		<property name="srcdir" value="${release.dir}/AdHoc-Railway-${release}-src" />
+		<delete file="AdHoc-Railway-${release}-src.zip" />
+		<delete file="AdHoc-Railway-${release}-src.tar.bz2" />
+
 		<copy todir="${srcdir}">
 			<fileset dir="."
 				includes="ChangeLog, README, COPYING, TODO, adhocrailway.conf.sample build.xml,
         build.properties"
-				excludes="**/.svn/"/>
+				excludes="**/.svn/" />
 		</copy>
-		<!--copy todir="${srcdir}/${javadoc.dir}">
-			<fileset dir="${javadoc.dir}"  excludes="**/.svn/"/>
-		</copy-->
+		<!--copy todir="${srcdir}/${javadoc.dir}"> <fileset dir="${javadoc.dir}" 
+			excludes="**/.svn/"/> </copy -->
 		<copy todir="${srcdir}/${lib.dir}">
-			<fileset dir="${lib.dir}"  excludes="**/.svn/"/>
+			<fileset dir="${lib.dir}" excludes="**/.svn/" />
 		</copy>
 		<copy todir="${srcdir}/${src.dir}">
-			<fileset dir="${src.dir}"  excludes="**/.svn/"/>
+			<fileset dir="${src.dir}" excludes="**/.svn/" />
 		</copy>
 		<copy todir="${srcdir}/${etc.dir}">
-			<fileset dir="${etc.dir}"  excludes="**/.svn/"/>
+			<fileset dir="${etc.dir}" excludes="**/.svn/" />
 		</copy>
 		<copy todir="${srcdir}/${samples.dir}">
-			<fileset dir="${samples.dir}"  excludes="**/.svn/"/>
+			<fileset dir="${samples.dir}" excludes="**/.svn/" />
 		</copy>
 		<copy todir="${srcdir}/${db.dir}">
-			<fileset dir="${db.dir}"  excludes="**/.svn/"/>
+			<fileset dir="${db.dir}" excludes="**/.svn/" />
 		</copy>
 		<tar destfile="AdHoc-Railway-${release}-src.tar.bz2" basedir="${release.dir}"
-      compression="bzip2"
-			/>
-		<zip destfile="AdHoc-Railway-${release}-src.zip" basedir="${release.dir}"
-			/>
-		<delete file="ChangeLog"/>
+			compression="bzip2" />
+		<zip destfile="AdHoc-Railway-${release}-src.zip" basedir="${release.dir}" />
+		<delete file="ChangeLog" />
 	</target>
 	<!-- =================================================================== -->
-	<!-- Clean targets                                                       -->
+	<!-- Clean targets -->
 	<!-- =================================================================== -->
 	<target name="clean" description="Removes generated class files">
-		<!--delete dir="${build.dir}"/-->
-		<delete dir="${release.dir}"/>
-		<delete file="AdHoc-Railway-${release}.jar"/>
-		<delete file="AdHoc-Railway-${release}-src.zip"/>
-			<delete file="AdHoc-Railway-${release}-src.tar.bz2"/>
-		<delete file="AdHoc-Railway-${release}-bin.zip"/>
-		<delete file="AdHoc-Railway-${release}-bin.tar.bz2"/>
+		<!--delete dir="${build.dir}"/ -->
+		<delete dir="${release.dir}" />
+		<delete file="AdHoc-Railway-${release}.jar" />
+		<delete file="AdHoc-Railway-${release}-src.zip" />
+		<delete file="AdHoc-Railway-${release}-src.tar.bz2" />
+		<delete file="AdHoc-Railway-${release}-bin.zip" />
+		<delete file="AdHoc-Railway-${release}-bin.tar.bz2" />
 	</target>
 	<target name="clean-javadoc" description="Removes generated Javadoc files">
-		<delete dir="${javadoc.dir}"/>
+		<delete dir="${javadoc.dir}" />
 	</target>
 	<target name="clean-all" depends="clean, clean-javadoc"
 		description="Removes all generated artifacts">
-	</target>	
+	</target>
 </project>

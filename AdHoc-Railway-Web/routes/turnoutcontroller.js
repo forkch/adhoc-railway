@@ -96,6 +96,16 @@ exports.removeTurnoutGroup = function(socket, turnoutGroup, fn) {
     });
 }
 
+exports.getAllTurnouts = function(socket,fn) {
+    
+  TurnoutModel.find(function (err, turnouts) {
+    if(!err) {
+      fn(false, '', turnouts);
+    } else {
+      fn(true, 'failed to find all turnouts');
+    }
+  });
+}
 
 exports.getById = function(socket, turnoutId, fn) {
     console.log('turnout:getById: ' + turnoutId);

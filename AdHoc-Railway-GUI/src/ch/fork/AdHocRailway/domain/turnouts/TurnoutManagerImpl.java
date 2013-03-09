@@ -34,7 +34,6 @@ import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.services.turnouts.SIOTurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
-import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutAddListener;
 import de.dermoba.srcp.model.SRCPAddress;
 
 public class TurnoutManagerImpl implements TurnoutManager,
@@ -76,14 +75,14 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	@Override
-	public void addTurnoutManagerLisener(TurnoutManagerListener listener) {
+	public void addTurnoutManagerListener(TurnoutManagerListener listener) {
 		this.listeners.add(listener);
 		listener.turnoutsUpdated(new ArrayList<TurnoutGroup>(turnoutGroups));
 	}
 
 	@Override
 	public void removeTurnoutManagerListenerInNextEvent(
-			TurnoutAddListener turnoutAddListener) {
+			TurnoutManagerListener turnoutAddListener) {
 		listenersToBeRemovedInNextEvent.add(turnoutAddListener);
 	}
 
@@ -166,8 +165,8 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	@Override
-	public void deleteTurnout(Turnout turnout) {
-		LOGGER.debug("deleteTurnout(" + turnout + ")");
+	public void removeTurnout(Turnout turnout) {
+		LOGGER.debug("removeTurnout(" + turnout + ")");
 		turnoutService.deleteTurnout(turnout);
 		TurnoutGroup group = turnout.getTurnoutGroup();
 		group.getTurnouts().remove(turnout);
@@ -220,18 +219,17 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	@Override
-	public void deleteTurnoutGroup(TurnoutGroup group)
+	public void removeTurnoutGroup(TurnoutGroup group)
 			throws TurnoutManagerException {
-		LOGGER.debug("deleteTurnoutGroup()");
+		LOGGER.debug("removeTurnoutGroup()");
 		if (!group.getTurnouts().isEmpty()) {
 			SortedSet<Turnout> turnouts = new TreeSet<Turnout>(
 					group.getTurnouts());
 			for (Turnout turnout : turnouts) {
-				deleteTurnout(turnout);
+				removeTurnout(turnout);
 			}
 		}
 		turnoutService.removeTurnoutGroup(group);
-		removeTurnoutGroupFromCache(group);
 	}
 
 	public void removeTurnoutGroupFromCache(TurnoutGroup group) {

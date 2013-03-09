@@ -41,7 +41,6 @@ import javax.swing.event.ListSelectionListener;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
-import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
@@ -78,12 +77,13 @@ public class RoutesConfigurationDialog extends JDialog {
 	private JButton okButton;
 	protected boolean okPressed;
 	private SelectionInList<Route> routesModel;
-	private PresentationModel<Route> routeModel;
-	private SelectionInList<RouteItem> routeItemModel;
 	public StringBuffer enteredNumberKeys;
 	private PanelBuilder builder;
 	private RouteGroupConfigPanel routeGroupConfig;
 	public ThreeDigitDisplay digitDisplay;
+
+	private ArrayListModel<RouteGroup> routeGroups;
+	private ArrayListModel<Route> routes;
 
 	public RoutesConfigurationDialog(JFrame parent) {
 		super(parent, "Edit Routes", true);
@@ -123,7 +123,6 @@ public class RoutesConfigurationDialog extends JDialog {
 		builder.add(buildMainButtonBar(), cc.xyw(1, 9, 4));
 
 		add(builder.getPanel());
-		// add(new FormDebugPanel(layout));
 	}
 
 	private Component buildRouteGroupButtonBar() {
@@ -143,7 +142,7 @@ public class RoutesConfigurationDialog extends JDialog {
 	private void initComponents() {
 		RouteManager routePersistence = AdHocRailway.getInstance()
 				.getRoutePersistence();
-		ArrayListModel<RouteGroup> routeGroups = new ArrayListModel<RouteGroup>(
+		routeGroups = new ArrayListModel<RouteGroup>(
 				routePersistence.getAllRouteGroups());
 		routeGroupModel = new SelectionInList<RouteGroup>(
 				(ListModel) routeGroups);
@@ -157,7 +156,9 @@ public class RoutesConfigurationDialog extends JDialog {
 		addRouteGroupButton = new JButton(new AddRouteGroupAction());
 		removeRouteGroupButton = new JButton(new RemoveRouteGroupAction());
 
-		routesModel = new SelectionInList<Route>();
+		routes = new ArrayListModel<Route>();
+		SelectionInList<Route> routesModel = new SelectionInList<Route>();
+		routesModel.setList(routes);
 		routesList = new JList();
 		routesList.setModel(routesModel);
 		routesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -215,10 +216,9 @@ public class RoutesConfigurationDialog extends JDialog {
 			if (selectedGroup == null) {
 				return;
 			}
-			routesList.setSelectedIndex(-1);
+			routes.clear();
+			routes.addAll(selectedGroup.getRoutes());
 			routeGroupConfig.setRouteGroup(selectedGroup);
-			List<Route> routes = new ArrayList<Route>(selectedGroup.getRoutes());
-			routesModel.setList(routes);
 		}
 	}
 
@@ -376,13 +376,6 @@ public class RoutesConfigurationDialog extends JDialog {
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			String newRouteName = JOptionPane.showInputDialog(
-					RoutesConfigurationDialog.this,
-					"Enter the name of the new Route", "Add Route",
-					JOptionPane.QUESTION_MESSAGE);
-			if (newRouteName == null || newRouteName.equals("")) {
-				return;
-			}
 			int nextNumber = 0;
 			RouteManager routePersistence = AdHocRailway.getInstance()
 					.getRoutePersistence();
@@ -401,22 +394,21 @@ public class RoutesConfigurationDialog extends JDialog {
 				nextNumber = routePersistence.getNextFreeRouteNumber();
 			}
 
-			Route newRoute = new Route();
-			newRoute.setName(newRouteName);
-			newRoute.setNumber(nextNumber);
-			selectedRouteGroup.getRoutes().add(newRoute);
+			Route newRoute = createDefaultRoute(selectedRouteGroup, nextNumber);
 
-			newRoute.setRouteGroup(selectedRouteGroup);
-			try {
-				routePersistence.addRoute(newRoute);
-
-				List<Route> routes = new ArrayList<Route>(
-						selectedRouteGroup.getRoutes());
-				routesModel.setList(routes);
-			} catch (RouteManagerException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+			RouteConfig routeConfig = new RouteConfig(
+					RoutesConfigurationDialog.this, newRoute);
+			if (routeConfig.isOkPressed()) {
+				routes.add(newRoute);
 			}
+		}
 
+		private Route createDefaultRoute(RouteGroup selectedRouteGroup,
+				int nextNumber) {
+			Route newRoute = new Route();
+			newRoute.setNumber(nextNumber);
+			newRoute.setRouteGroup(selectedRouteGroup);
+			return newRoute;
 		}
 	}
 
@@ -459,7 +451,7 @@ public class RoutesConfigurationDialog extends JDialog {
 				try {
 					RouteManager routePersistence = AdHocRailway.getInstance()
 							.getRoutePersistence();
-					routePersistence.deleteRoute(routeToDelete);
+					routePersistence.removeRoute(routeToDelete);
 
 					List<Route> routes = new ArrayList<Route>(
 							selectedRouteGroup.getRoutes());

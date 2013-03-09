@@ -468,13 +468,9 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 					.getInstance().getTurnoutPersistence();
 
 			Turnout turnout = presentationModel.getBean();
-			if (turnout.getId() != -1) {
-				turnoutPersistence.updateTurnout(turnout);
-			} else {
-				turnoutPersistence.addTurnout(turnout);
-			}
+
 			turnoutPersistence
-					.addTurnoutManagerLisener(new TurnoutAddListener() {
+					.addTurnoutManagerListener(new TurnoutAddListener() {
 
 						@Override
 						public void turnoutAdded(Turnout turnout) {
@@ -508,6 +504,12 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 						}
 
 					});
+
+			if (turnout.getId() != -1) {
+				turnoutPersistence.updateTurnout(turnout);
+			} else {
+				turnoutPersistence.addTurnout(turnout);
+			}
 
 		}
 	}

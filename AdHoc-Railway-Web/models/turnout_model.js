@@ -18,6 +18,8 @@ exports.TurnoutSchema = new Schema({
 
 exports.TurnoutGroupSchema = new Schema({
 	name: String,
+  turnoutNumberOffset: Number,
+  turnoutNumberAmount: Number,
 	turnouts : [ObjectId]
 });
 

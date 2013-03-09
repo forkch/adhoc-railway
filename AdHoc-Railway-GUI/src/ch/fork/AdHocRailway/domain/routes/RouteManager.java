@@ -22,14 +22,12 @@ import java.util.List;
 
 public interface RouteManager {
 
-	public abstract List<Route> getAllRoutes() throws RouteManagerException;
-
 	public abstract Route getRouteByNumber(int number)
 			throws RouteManagerException;
 
 	public abstract void addRoute(Route route) throws RouteManagerException;
 
-	public abstract void deleteRoute(Route route) throws RouteManagerException;
+	public abstract void removeRoute(Route route) throws RouteManagerException;
 
 	public abstract void updateRoute(Route route) throws RouteManagerException;
 
@@ -48,7 +46,7 @@ public interface RouteManager {
 	public abstract void addRouteItem(RouteItem item)
 			throws RouteManagerException;
 
-	public abstract void deleteRouteItem(RouteItem item)
+	public abstract void removeRouteItem(RouteItem item)
 			throws RouteManagerException;
 
 	public abstract void updateRouteItem(RouteItem item)
@@ -62,8 +60,13 @@ public interface RouteManager {
 
 	public abstract void clear() throws RouteManagerException;
 
-	public abstract void reload();
+	public abstract void initialize();
 
 	public abstract void setRouteControl(RouteControlIface routeControl);
+
+	void addRouteManagerListener(RouteManagerListener listener);
+
+	void removeRouteManagerListenerInNextEvent(
+			RouteManagerListener turnoutAddListener);
 
 }

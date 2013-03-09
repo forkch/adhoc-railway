@@ -73,6 +73,7 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
+import ch.fork.AdHocRailway.domain.routes.RouteManagerImpl;
 import ch.fork.AdHocRailway.domain.routes.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
@@ -292,10 +293,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		turnoutPersistence.setTurnoutControl(getTurnoutControl());
 		turnoutPersistence.initialize();
 
-		// initProceeded("Loading Persistence Layer (Routes)");
-		// routePersistence = RouteManagerImpl.getInstance();
-		// routePersistence.setRouteControl(getRouteControl());
-		// routePersistence.reload();
+		initProceeded("Loading Persistence Layer (Routes)");
+		routePersistence = RouteManagerImpl.getInstance();
+		routePersistence.setRouteControl(getRouteControl());
+		routePersistence.initialize();
 
 		if (useDatabase) {
 			String host = preferences

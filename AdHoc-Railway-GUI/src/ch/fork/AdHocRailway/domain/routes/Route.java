@@ -29,13 +29,15 @@ import com.jgoodies.binding.beans.Model;
 public class Route extends Model implements java.io.Serializable,
 		Comparable<Route> {
 
-	private int id;
+	private int id = -1;
 
 	private RouteGroup routeGroup;
 
 	private int number;
 
 	private String name;
+
+	private String orientation;
 
 	private SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>();
 
@@ -160,5 +162,13 @@ public class Route extends Model implements java.io.Serializable,
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this,
 				ToStringStyle.SHORT_PREFIX_STYLE);
+	}
+
+	public String getOrientation() {
+		return orientation;
+	}
+
+	public void setOrientation(String orientation) {
+		this.orientation = orientation;
 	}
 }

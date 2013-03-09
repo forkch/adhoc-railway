@@ -45,7 +45,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	public TurnoutGroupsPanel(int tabPlacement) {
 		super(tabPlacement);
-		turnoutPersistence.addTurnoutManagerLisener(this);
+		turnoutPersistence.addTurnoutManagerListener(this);
 
 		initToolBar();
 		initMenuBar();

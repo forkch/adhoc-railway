@@ -3,8 +3,8 @@ var Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
 
 exports.LocomotiveSchema = new Schema({
 	name: {type: String, index: true},
-	bus1: Number,
-	address1: Number,
+	bus: Number,
+	address: Number,
 	type: String,
 	image: String,
 	description: String,

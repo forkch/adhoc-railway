@@ -3,6 +3,8 @@
 /* Controllers */
 
 function AppCtrl($scope, socket) {
+
+  $scope.test = 'hello world';
   socket.on('turnout:init', function (data) {
     $scope.turnoutGroups = {};
     receivedNewTurnoutGroups(data.turnoutGroups,$scope);

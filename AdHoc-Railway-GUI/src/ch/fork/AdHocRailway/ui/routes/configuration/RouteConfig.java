@@ -18,12 +18,9 @@
 
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
@@ -41,7 +38,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
-import javax.swing.ListModel;
 import javax.swing.table.TableColumn;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
@@ -59,7 +55,6 @@ import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
 
 import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.binding.adapter.AbstractTableAdapter;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
 import com.jgoodies.binding.adapter.SpinnerAdapterFactory;
@@ -69,7 +64,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class RouteConfig extends JDialog implements PropertyChangeListener {
+public class RouteConfig extends JDialog {
 	private boolean okPressed;
 	private boolean cancelPressed;
 
@@ -86,6 +81,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 	public StringBuffer enteredNumberKeys;
 	private JButton removeRouteItemButton;
 	public ThreeDigitDisplay digitDisplay;
+	private JTextField routeOrientationField;
 
 	public RouteConfig(JDialog owner, Route myRoute) {
 		this(owner, new PresentationModel<Route>(myRoute));
@@ -127,6 +123,10 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 				1000, // maxValue
 				1)); // step
 
+		routeOrientationField = BasicComponentFactory
+				.createTextField(presentationModel.getModel("orientation"));
+		routeOrientationField.setColumns(5);
+
 		routeNameField = BasicComponentFactory
 				.createTextField(presentationModel.getModel("name"));
 		routeNameField.setColumns(5);
@@ -153,15 +153,13 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 
 		okButton = new JButton(new ApplyChangesAction());
 		cancelButton = new JButton(new CancelAction());
-		presentationModel.getBean().addPropertyChangeListener(this);
-		validate(presentationModel.getBean());
 	}
 
 	private void buildPanel() {
 		initComponents();
 
 		FormLayout layout = new FormLayout("pref, 5dlu, pref, 3dlu, pref:grow",
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref");
+				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref");
 		builder = new PanelBuilder(layout);
 
 		builder.setDefaultDialogBorder();
@@ -174,10 +172,13 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 		builder.addLabel("Route Name", cc.xy(3, 3));
 		builder.add(routeNameField, cc.xy(5, 3));
 
-		builder.add(new JScrollPane(routeItemTable), cc.xyw(3, 5, 3));
+		builder.addLabel("Route Orientation", cc.xy(3, 5));
+		builder.add(routeOrientationField, cc.xy(5, 5));
 
-		builder.add(buildRouteItemButtonBar(), cc.xyw(3, 7, 3));
-		builder.add(buildButtonBar(), cc.xyw(1, 9, 5));
+		builder.add(new JScrollPane(routeItemTable), cc.xyw(3, 7, 3));
+
+		builder.add(buildRouteItemButtonBar(), cc.xyw(3, 9, 3));
+		builder.add(buildButtonBar(), cc.xyw(1, 11, 5));
 
 		add(builder.getPanel());
 	}
@@ -189,62 +190,6 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 
 	private JComponent buildButtonBar() {
 		return ButtonBarFactory.buildRightAlignedBar(okButton, cancelButton);
-	}
-
-	// TableModel *************************************************************
-	private static final class RouteItemTableModel extends
-			AbstractTableAdapter<RouteItem> {
-
-		private static final String[] COLUMNS = { "Turnout Number",
-				"Routed Turnout State" };
-
-		private RouteItemTableModel(ListModel listModel) {
-			super(listModel, COLUMNS);
-		}
-
-		@Override
-		public Object getValueAt(int rowIndex, int columnIndex) {
-			RouteItem routeItem = getRow(rowIndex);
-			switch (columnIndex) {
-			case 0:
-				return routeItem.getTurnout().getNumber();
-			case 1:
-				return routeItem.getRoutedState();
-			default:
-				throw new IllegalStateException("Unknown column");
-			}
-		}
-
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		Route route = presentationModel.getBean();
-		if (!validate(route)) {
-			return;
-		}
-	}
-
-	private boolean validate(Route route) {
-		boolean validate = true;
-		// if (route.getNumber() == 0
-		// || usedTurnoutNumbers.contains(route.getNumber())) {
-		// setSpinnerColor(numberTextField, UIConstants.ERROR_COLOR);
-		// validate = false;
-		// okButton.setEnabled(false);
-		// } else {
-		// setSpinnerColor(numberTextField,
-		// UIConstants.DEFAULT_TEXTFIELD_COLOR);
-		// okButton.setEnabled(true);
-		// }
-
-		return validate;
-	}
-
-	private void setSpinnerColor(JSpinner spinner, Color color) {
-		JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner
-				.getEditor();
-		editor.getTextField().setBackground(color);
 	}
 
 	private class AddRouteItemAction extends AbstractAction {
@@ -411,7 +356,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 						}
 					}
 					if (itemToRemove != null) {
-						routePersistence.deleteRouteItem(itemToRemove);
+						routePersistence.removeRouteItem(itemToRemove);
 					}
 					RouteItem i = new RouteItem();
 					i.setRoute(route);
@@ -500,7 +445,7 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 			}
 			RouteManager routePersistence = AdHocRailway.getInstance()
 					.getRoutePersistence();
-			routePersistence.deleteRouteItem(routeItem);
+			routePersistence.removeRouteItem(routeItem);
 			List<RouteItem> routeItems = new ArrayList<RouteItem>(
 					selectedRoute.getRouteItems());
 			routeItemModel.setList(routeItems);
@@ -519,20 +464,47 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			RouteManager routePersistence = AdHocRailway.getInstance()
+			final RouteManager routePersistence = AdHocRailway.getInstance()
 					.getRoutePersistence();
 			Route route = presentationModel.getBean();
-			if (route.getId() == 0) {
+
+			routePersistence.addRouteManagerListener(new RouteAddListener() {
+
+				@Override
+				public void routeAdded(Route route) {
+					success(routePersistence, route);
+				}
+
+				@Override
+				public void routeUpdated(Route route) {
+					success(routePersistence, route);
+
+				}
+
+				private void success(final RouteManager routePersistence,
+						Route route) {
+					routePersistence
+							.removeRouteManagerListenerInNextEvent(this);
+
+					okPressed = true;
+					RouteConfig.this.setVisible(false);
+
+					if (Preferences.getInstance().getBooleanValue(
+							PreferencesKeys.AUTOSAVE)) {
+						AdHocRailway.getInstance().saveActualFile();
+					}
+				}
+
+				@Override
+				public void failure(RouteManagerException routeManagerException) {
+					System.out.println("failure");
+				}
+
+			});
+			if (route.getId() == -1) {
 				routePersistence.addRoute(route);
 			} else {
 				routePersistence.updateRoute(route);
-			}
-			okPressed = true;
-			route.removePropertyChangeListener(RouteConfig.this);
-			RouteConfig.this.setVisible(false);
-			if (Preferences.getInstance().getBooleanValue(
-					PreferencesKeys.AUTOSAVE)) {
-				AdHocRailway.getInstance().saveActualFile();
 			}
 
 		}
@@ -546,8 +518,6 @@ public class RouteConfig extends JDialog implements PropertyChangeListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Route route = presentationModel.getBean();
-			route.removePropertyChangeListener(RouteConfig.this);
 			okPressed = false;
 			cancelPressed = true;
 			RouteConfig.this.setVisible(false);

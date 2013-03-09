@@ -20,6 +20,7 @@ package ch.fork.AdHocRailway.domain.routes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,10 +32,11 @@ import org.apache.log4j.Logger;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerImpl;
-import ch.fork.AdHocRailway.services.routes.HibernateRouteService;
 import ch.fork.AdHocRailway.services.routes.RouteService;
+import ch.fork.AdHocRailway.services.routes.RouteServiceListener;
+import ch.fork.AdHocRailway.services.routes.SIORouteService;
 
-public class RouteManagerImpl implements RouteManager {
+public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	private static Logger LOGGER = Logger.getLogger(RouteManagerImpl.class);
 
 	private static RouteManagerImpl instance;
@@ -47,9 +49,13 @@ public class RouteManagerImpl implements RouteManager {
 
 	private RouteControlIface routeControl;
 
+	private final Set<RouteManagerListener> listeners = new HashSet<RouteManagerListener>();
+	private final Set<RouteManagerListener> listenersToBeRemovedInNextEvent = new HashSet<RouteManagerListener>();
+
 	private RouteManagerImpl() {
 		LOGGER.info("RouteMangerImpl loaded");
-		this.routeService = HibernateRouteService.getInstance();
+		this.routeService = SIORouteService.getInstance();
+		this.routeService.init(this);
 
 	}
 
@@ -61,25 +67,34 @@ public class RouteManagerImpl implements RouteManager {
 	}
 
 	@Override
+	public void addRouteManagerListener(RouteManagerListener listener) {
+		this.listeners.add(listener);
+		listener.routesUpdated(new ArrayList<RouteGroup>(routeGroups));
+	}
+
+	@Override
+	public void removeRouteManagerListenerInNextEvent(
+			RouteManagerListener turnoutAddListener) {
+		listenersToBeRemovedInNextEvent.add(turnoutAddListener);
+	}
+
+	private void cleanupListeners() {
+		listeners.removeAll(listenersToBeRemovedInNextEvent);
+		listenersToBeRemovedInNextEvent.clear();
+	}
+
+	@Override
 	public void clear() {
 		LOGGER.debug("clear()");
 		routeGroups.clear();
 		numberToRouteCache.clear();
 	}
 
-	@Override
-	public List<Route> getAllRoutes() {
+	private List<Route> getAllRoutes() {
 		LOGGER.debug("getAllRoutes()");
 		return new ArrayList<Route>(numberToRouteCache.values());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#getRouteByNumber
-	 * (int)
-	 */
 	@Override
 	public Route getRouteByNumber(int number) {
 		LOGGER.debug("getRouteByNumber()");
@@ -91,43 +106,28 @@ public class RouteManagerImpl implements RouteManager {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#addRoute(ch.
-	 * fork.AdHocRailway.domain.routes.Route)
-	 */
 	@Override
 	public void addRoute(Route route) throws RouteManagerException {
 		LOGGER.debug("addRoute()");
-		this.routeService.addRoute(route);
 
 		if (route.getRouteGroup() == null) {
 			throw new RouteManagerException("Route has no associated Group");
 		}
-		putInCache(route);
+		this.routeService.addRoute(route);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRoute(
-	 * ch.fork.AdHocRailway.domain.routes.Route)
-	 */
 	@Override
-	public void deleteRoute(Route route) throws RouteManagerException {
-		LOGGER.debug("deleteRoute()");
+	public void removeRoute(Route route) throws RouteManagerException {
+		LOGGER.debug("removeRoute()");
 		if (!route.getRouteItems().isEmpty()) {
 			SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>(
 					route.getRouteItems());
 			for (RouteItem routeitem : routeItems) {
-				deleteRouteItem(routeitem);
+				removeRouteItem(routeitem);
 			}
 		}
 
-		this.routeService.deleteRoute(route);
+		this.routeService.removeRoute(route);
 		RouteGroup group = route.getRouteGroup();
 		group.getRoutes().remove(route);
 
@@ -138,13 +138,6 @@ public class RouteManagerImpl implements RouteManager {
 		removeFromCache(route);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRoute(
-	 * ch.fork.AdHocRailway.domain.routes.Route)
-	 */
 	@Override
 	public void updateRoute(Route route) {
 		LOGGER.debug("updateRoute()");
@@ -158,13 +151,6 @@ public class RouteManagerImpl implements RouteManager {
 		return new ArrayList<RouteGroup>(routeGroups);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#addRouteGroup
-	 * (ch.fork.AdHocRailway.domain.routes.RouteGroup)
-	 */
 	@Override
 	public void addRouteGroup(RouteGroup routeGroup) {
 		LOGGER.debug("addRouteGroup()");
@@ -172,13 +158,6 @@ public class RouteManagerImpl implements RouteManager {
 		routeGroups.add(routeGroup);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRouteGroup
-	 * (ch.fork.AdHocRailway.domain.routes.RouteGroup)
-	 */
 	@Override
 	public void deleteRouteGroup(RouteGroup routeGroup)
 			throws RouteManagerException {
@@ -187,58 +166,38 @@ public class RouteManagerImpl implements RouteManager {
 			throw new RouteManagerException(
 					"Cannot delete Route-Group with associated Routes");
 		}
-		this.routeService.deleteRouteGroup(routeGroup);
+		this.routeService.removeRouteGroup(routeGroup);
 		routeGroups.remove(routeGroup);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRouteGroup
-	 * (ch.fork.AdHocRailway.domain.routes.RouteGroup)
-	 */
 	@Override
 	public void updateRouteGroup(RouteGroup routeGroup) {
 		LOGGER.debug("updateRouteGroup()");
 		this.routeService.updateRouteGroup(routeGroup);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#addRouteItem
-	 * (ch.fork.AdHocRailway.domain.routes.RouteItem)
-	 */
 	@Override
 	public void addRouteItem(RouteItem item) throws RouteManagerException {
 		LOGGER.debug("addRouteItem()");
 
 		if (item.getTurnout() == null) {
-			throw new RouteManagerException("Route has no associated Turnout");
+			throw new RouteManagerException(
+					"RouteItem has no associated Turnout");
 		}
 		item.getTurnout().getRouteItems().add(item);
 
 		if (item.getRoute() == null) {
-			throw new RouteManagerException("Route has no associated Route");
+			throw new RouteManagerException("RouteItem has no associated Route");
 		}
 		this.routeService.addRouteItem(item);
 		item.getRoute().getRouteItems().add(item);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#deleteRouteItem
-	 * (ch.fork.AdHocRailway.domain.routes.RouteItem)
-	 */
 	@Override
-	public void deleteRouteItem(RouteItem item) {
-		LOGGER.debug("deleteRouteItem()");
+	public void removeRouteItem(RouteItem item) {
+		LOGGER.debug("removeRouteItem()");
 
-		this.routeService.deleteRouteItem(item);
+		this.routeService.removeRouteItem(item);
 		Turnout turnout = item.getTurnout();
 		turnout.getRouteItems().remove(item);
 
@@ -246,13 +205,6 @@ public class RouteManagerImpl implements RouteManager {
 		route.getRouteItems().remove(item);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#updateRouteItem
-	 * (ch.fork.AdHocRailway.domain.routes.RouteItem)
-	 */
 	@Override
 	public void updateRouteItem(RouteItem item) {
 		LOGGER.debug("updateRouteItem()");
@@ -260,12 +212,6 @@ public class RouteManagerImpl implements RouteManager {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.routes.RoutePersistenceIface#
-	 * getNextFreeRouteNumber()
-	 */
 	@Override
 	public int getNextFreeRouteNumber() {
 		LOGGER.debug("getNextFreeRouteNumber()");
@@ -331,20 +277,6 @@ public class RouteManagerImpl implements RouteManager {
 		return -1;
 	}
 
-	@Override
-	public void reload() {
-		clear();
-		for (RouteGroup group : routeService.getAllRouteGroups()) {
-			routeGroups.add(group);
-			for (Route route : group.getRoutes()) {
-				putInCache(route);
-				for (RouteItem routeItem : route.getRouteItems()) {
-					reassignTurnoutToRouteItem(routeItem);
-				}
-			}
-		}
-	}
-
 	private void reassignTurnoutToRouteItem(RouteItem routeItem) {
 		TurnoutManager tm = TurnoutManagerImpl.getInstance();
 
@@ -358,13 +290,107 @@ public class RouteManagerImpl implements RouteManager {
 
 	}
 
+	private void putRouteGroupInCache(RouteGroup group) {
+		routeGroups.add(group);
+	}
+
 	private void removeFromCache(Route route) {
 		numberToRouteCache.values().remove(route.getNumber());
+	}
+
+	private void removeRouteGroupInCache(RouteGroup group) {
+		routeGroups.remove(group);
+	}
+
+	@Override
+	public void initialize() {
+		cleanupListeners();
 	}
 
 	@Override
 	public void setRouteControl(RouteControlIface routeControl) {
 		this.routeControl = routeControl;
+	}
+
+	@Override
+	public void routesUpdated(List<RouteGroup> allRouteGroups) {
+		for (RouteGroup group : allRouteGroups) {
+			routeGroups.add(group);
+			for (Route route : group.getRoutes()) {
+				putInCache(route);
+				for (RouteItem routeItem : route.getRouteItems()) {
+					reassignTurnoutToRouteItem(routeItem);
+				}
+			}
+		}
+		for (RouteManagerListener l : listeners) {
+			l.routesUpdated(allRouteGroups);
+		}
+	}
+
+	@Override
+	public void routeAdded(Route route) {
+		LOGGER.info("routeAdded: " + route);
+		putInCache(route);
+		for (RouteManagerListener l : listeners) {
+			l.routeAdded(route);
+		}
+	}
+
+	@Override
+	public void routeUpdated(Route route) {
+		LOGGER.info("routeUpdated: " + route);
+		cleanupListeners();
+		putInCache(route);
+		for (RouteManagerListener l : listeners) {
+			l.routeUpdated(route);
+		}
+	}
+
+	@Override
+	public void routeRemoved(Route route) {
+		LOGGER.info("routeRemoved: " + route);
+		removeFromCache(route);
+		for (RouteManagerListener l : listeners) {
+			l.routeRemoved(route);
+		}
+	}
+
+	@Override
+	public void routeGroupAdded(RouteGroup routeGroup) {
+		LOGGER.info("routeGroupAdded: " + routeGroup);
+		cleanupListeners();
+		putRouteGroupInCache(routeGroup);
+		for (RouteManagerListener l : listeners) {
+			l.routeGroupAdded(routeGroup);
+		}
+	}
+
+	@Override
+	public void routeGroupUpdated(RouteGroup routeGroup) {
+		LOGGER.info("routeGroupUpdated: " + routeGroup);
+		cleanupListeners();
+		removeRouteGroupInCache(routeGroup);
+		putRouteGroupInCache(routeGroup);
+		for (RouteManagerListener l : listeners) {
+			l.routeGroupRemoved(routeGroup);
+		}
+	}
+
+	@Override
+	public void routeGroupRemoved(RouteGroup routeGroup) {
+		LOGGER.info("routeGroupRemoved: " + routeGroup);
+		cleanupListeners();
+		removeRouteGroupInCache(routeGroup);
+		for (RouteManagerListener l : listeners) {
+			l.routeGroupRemoved(routeGroup);
+		}
+	}
+
+	@Override
+	public void failure(RouteManagerException turnoutManagerException) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -49,7 +49,7 @@ public class XMLRouteService implements RouteService {
 	}
 
 	@Override
-	public void deleteRoute(Route route) throws RouteManagerException {
+	public void removeRoute(Route route) throws RouteManagerException {
 		// TODO Auto-generated method stub
 
 	}
@@ -74,7 +74,7 @@ public class XMLRouteService implements RouteService {
 	}
 
 	@Override
-	public void deleteRouteGroup(RouteGroup routeGroup)
+	public void removeRouteGroup(RouteGroup routeGroup)
 			throws RouteManagerException {
 		// TODO Auto-generated method stub
 
@@ -94,7 +94,7 @@ public class XMLRouteService implements RouteService {
 	}
 
 	@Override
-	public void deleteRouteItem(RouteItem item) throws RouteManagerException {
+	public void removeRouteItem(RouteItem item) throws RouteManagerException {
 		// TODO Auto-generated method stub
 
 	}
@@ -112,7 +112,13 @@ public class XMLRouteService implements RouteService {
 	}
 
 	@Override
-	public void flush() {
+	public void init(RouteServiceListener listener) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void disconnect() {
 		// TODO Auto-generated method stub
 
 	}

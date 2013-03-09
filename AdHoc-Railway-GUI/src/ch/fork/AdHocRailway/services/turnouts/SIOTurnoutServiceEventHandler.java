@@ -17,6 +17,30 @@ public class SIOTurnoutServiceEventHandler {
 	private static Map<String, TurnoutGroup> sioIdToTurnoutGroupMap = new HashMap<String, TurnoutGroup>();
 	private static Map<String, Turnout> sioIdToTurnoutMap = new HashMap<String, Turnout>();
 
+	public static void handleTurnoutInit(JSONObject data,
+			TurnoutServiceListener listener) throws JSONException {
+		JSONArray turnoutGroupsJ = data.getJSONArray("turnoutGroups");
+		List<TurnoutGroup> turnoutGroups = new LinkedList<TurnoutGroup>();
+		for (int i = 0; i < turnoutGroupsJ.length(); i++) {
+			JSONObject turnoutGroupJSON = turnoutGroupsJ.getJSONObject(i);
+			TurnoutGroup turnoutGroup = SIOTurnoutMapper
+					.mapTurnoutGroupFromJSON(turnoutGroupJSON);
+
+			sioIdToTurnoutGroupMap.put(turnoutGroupJSON.getString("_id"),
+					turnoutGroup);
+
+			for (Turnout turnout : turnoutGroup.getTurnouts()) {
+				sioIdToTurnoutMap.put(
+						SIOTurnoutMapper.turnoutIdMap.get(turnout.getId()),
+						turnout);
+			}
+			turnoutGroups.add(turnoutGroup);
+		}
+
+		listener.turnoutsUpdated(turnoutGroups);
+
+	}
+
 	public static void handleTurnoutAdded(JSONObject turnoutJSON,
 			TurnoutServiceListener listener) throws JSONException {
 		Turnout turnout = SIOTurnoutMapper.mapTurnoutFromJSON(turnoutJSON);
@@ -24,7 +48,6 @@ public class SIOTurnoutServiceEventHandler {
 		turnout.setTurnoutGroup(sioIdToTurnoutGroupMap.get(turnoutJSON
 				.get("group")));
 		listener.turnoutAdded(turnout);
-
 	}
 
 	public static void handleTurnoutUpdated(JSONObject turnoutJSON,
@@ -40,9 +63,8 @@ public class SIOTurnoutServiceEventHandler {
 
 	public static void handleTurnoutRemoved(JSONObject turnoutJSON,
 			TurnoutServiceListener listener) throws JSONException {
-		Turnout turnout = sioIdToTurnoutMap.remove(turnoutJSON.getString("_id"));
-		turnout.setTurnoutGroup(sioIdToTurnoutGroupMap.get(turnoutJSON
-				.getString("group")));
+		Turnout turnout = sioIdToTurnoutMap
+				.remove(turnoutJSON.getString("_id"));
 		SIOTurnoutMapper.turnoutIdMap.remove(turnout.getId());
 		listener.turnoutRemoved(turnout);
 
@@ -52,8 +74,8 @@ public class SIOTurnoutServiceEventHandler {
 			TurnoutServiceListener listener) throws JSONException {
 		TurnoutGroup turnoutGroup = SIOTurnoutMapper
 				.mapTurnoutGroupFromJSON(turnoutGroupJSON);
-		sioIdToTurnoutGroupMap
-				.put(turnoutGroupJSON.getString("_id"), turnoutGroup);
+		sioIdToTurnoutGroupMap.put(turnoutGroupJSON.getString("_id"),
+				turnoutGroup);
 		listener.turnoutGroupAdded(turnoutGroup);
 	}
 
@@ -75,22 +97,11 @@ public class SIOTurnoutServiceEventHandler {
 		listener.turnoutGroupRemoved(turnoutGroup);
 	}
 
-	public static void handleTurnoutInit(JSONObject data,
-			TurnoutServiceListener listener) throws JSONException {
-		JSONArray turnoutGroupsJ = data.getJSONArray("turnoutGroups");
-		List<TurnoutGroup> turnoutGroups = new LinkedList<TurnoutGroup>();
-		for (int i = 0; i < turnoutGroupsJ.length(); i++) {
-			JSONObject turnoutGroupJSON = turnoutGroupsJ.getJSONObject(i);
-			TurnoutGroup turnoutGroup = SIOTurnoutMapper
-					.mapTurnoutGroupFromJSON(turnoutGroupJSON);
-
-			sioIdToTurnoutGroupMap.put(turnoutGroupJSON.getString("_id"),
-					turnoutGroup);
-			turnoutGroups.add(turnoutGroup);
-		}
-
-		listener.turnoutsUpdated(turnoutGroups);
-
+	public static Turnout getTurnoutBySIOId(String sioId) {
+		return sioIdToTurnoutMap.get(sioId);
 	}
 
+	public static String getSIOIdByTurnout(Turnout turnout) {
+		return SIOTurnoutMapper.turnoutIdMap.get(turnout.getId());
+	}
 }

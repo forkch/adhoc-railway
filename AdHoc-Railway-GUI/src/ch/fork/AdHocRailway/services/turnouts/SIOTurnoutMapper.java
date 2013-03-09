@@ -43,30 +43,6 @@ public class SIOTurnoutMapper {
 		return turnoutGroup;
 	}
 
-	public static JSONObject mapTurnoutToJSON(Turnout turnout)
-			throws JSONException {
-		JSONObject turnoutJSON = new JSONObject();
-		turnoutJSON.put("_id", turnoutIdMap.get(turnout.getId()));
-		turnoutJSON.put("number", turnout.getNumber());
-		turnoutJSON.put("description", turnout.getDescription());
-		turnoutJSON.put("bus1", turnout.getBus1());
-		turnoutJSON.put("bus2", turnout.getBus2());
-		turnoutJSON.put("address1", turnout.getAddress1());
-		turnoutJSON.put("address2", turnout.getAddress2());
-		turnoutJSON.put("address1switched", turnout.isAddress1Switched());
-		turnoutJSON.put("address2switched", turnout.isAddress2Switched());
-		turnoutJSON.put("orientation", turnout.getOrientation().name()
-				.toLowerCase());
-		turnoutJSON.put("defaultState", turnout.getDefaultState().name()
-				.toLowerCase());
-		turnoutJSON.put("type", turnout.getTurnoutType().name().toLowerCase());
-		turnoutJSON.put("group",
-				turnoutGroupIdMap.get(turnout.getTurnoutGroup().getId()));
-
-		return turnoutJSON;
-
-	}
-
 	public static Turnout mapTurnoutFromJSON(JSONObject turnoutJSON)
 			throws JSONException {
 		Turnout turnout = new Turnout();
@@ -99,6 +75,13 @@ public class SIOTurnoutMapper {
 				.getString("type")));
 	}
 
+	public static void mergeTurnoutGroupBaseInfo(TurnoutGroup turnoutGroup,
+			JSONObject turnoutGroupJSON) throws JSONException {
+
+		turnoutGroup.setName(turnoutGroupJSON.getString("name"));
+
+	}
+
 	public static JSONObject mapTurnoutGroupToJSON(TurnoutGroup group)
 			throws JSONException {
 		JSONObject turnoutGroupJSON = new JSONObject();
@@ -106,10 +89,28 @@ public class SIOTurnoutMapper {
 		return turnoutGroupJSON;
 	}
 
-	public static void mergeTurnoutGroupBaseInfo(TurnoutGroup turnoutGroup,
-			JSONObject turnoutGroupJSON) throws JSONException {
+	public static JSONObject mapTurnoutToJSON(Turnout turnout)
+			throws JSONException {
+		JSONObject turnoutJSON = new JSONObject();
+		turnoutJSON.put("_id", turnoutIdMap.get(turnout.getId()));
+		turnoutJSON.put("number", turnout.getNumber());
+		turnoutJSON.put("description", turnout.getDescription());
+		turnoutJSON.put("bus1", turnout.getBus1());
+		turnoutJSON.put("bus2", turnout.getBus2());
+		turnoutJSON.put("address1", turnout.getAddress1());
+		turnoutJSON.put("address2", turnout.getAddress2());
+		turnoutJSON.put("address1switched", turnout.isAddress1Switched());
+		turnoutJSON.put("address2switched", turnout.isAddress2Switched());
+		turnoutJSON.put("orientation", turnout.getOrientation().name()
+				.toLowerCase());
+		turnoutJSON.put("defaultState", turnout.getDefaultState().name()
+				.toLowerCase());
+		turnoutJSON.put("type", turnout.getTurnoutType().name().toLowerCase());
+		turnoutJSON.put("group",
+				turnoutGroupIdMap.get(turnout.getTurnoutGroup().getId()));
 
-		turnoutGroup.setName(turnoutGroupJSON.getString("name"));
+		return turnoutJSON;
 
 	}
+
 }

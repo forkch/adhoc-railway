@@ -88,8 +88,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 	private TurnoutGroupConfigPanel turnoutGroupConfig;
 
-	private TurnoutGroup previousSelectedGroup = null;
-
 	private ArrayListModel<TurnoutGroup> turnoutGroups;
 
 	private ArrayListModel<Turnout> turnouts;
@@ -103,7 +101,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 	private void initGUI() {
 		buildPanel();
-		turnoutPersistence.addTurnoutManagerLisener(this);
+		turnoutPersistence.addTurnoutManagerListener(this);
 		pack();
 		setLocationRelativeTo(getParent());
 		setVisible(true);
@@ -252,7 +250,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			if (selectedGroup == null) {
 				return;
 			}
-			previousSelectedGroup = selectedGroup;
 
 			turnouts.clear();
 			turnouts.addAll(selectedGroup.getTurnouts());
@@ -309,7 +306,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
 						.parseInt(newAmount));
 			}
 
-			previousSelectedGroup = null;
 			turnoutPersistence.addTurnoutGroup(newTurnoutGroup);
 			turnoutGroupConfig.setTurnoutGroup(null);
 
@@ -338,8 +334,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 							+ "' ?", "Remove Turnout-Group",
 					JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
-				previousSelectedGroup = null;
-				turnoutPersistence.deleteTurnoutGroup(groupToDelete);
+				turnoutPersistence.removeTurnoutGroup(groupToDelete);
 				turnoutGroupConfig.setTurnoutGroup(null);
 			}
 		}
@@ -425,7 +420,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			for (int number : numbers) {
 				Turnout turnoutByNumber = turnoutPersistence
 						.getTurnoutByNumber(number);
-				turnoutPersistence.deleteTurnout(turnoutByNumber);
+				turnoutPersistence.removeTurnout(turnoutByNumber);
 			}
 			turnoutsTable.clearSelection();
 		}
@@ -453,19 +448,16 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 	@Override
 	public void turnoutUpdated(Turnout turnout) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void turnoutRemoved(Turnout turnout) {
-		turnouts.remove(turnout);
 
 	}
 
 	@Override
 	public void turnoutAdded(Turnout turnout) {
-		// TODO Auto-generated method stub
 
 	}
 

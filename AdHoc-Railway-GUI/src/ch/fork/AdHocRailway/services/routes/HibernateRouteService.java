@@ -18,18 +18,15 @@
 
 package ch.fork.AdHocRailway.services.routes;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import ch.fork.AdHocRailway.domain.HibernatePersistence;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
@@ -42,10 +39,7 @@ public class HibernateRouteService implements RouteService {
 	private static Logger logger = Logger
 			.getLogger(HibernateRouteService.class);
 	private static RouteService instance;
-
-	private final Map<Route, Integer> routeToIdMap = new HashMap<Route, Integer>();
-	private final Map<RouteItem, Integer> routeItemToIdMap = new HashMap<RouteItem, Integer>();
-	private final Map<RouteGroup, Integer> routeGroupToIdMap = new HashMap<RouteGroup, Integer>();
+	private RouteServiceListener listener;
 
 	private HibernateRouteService() {
 		logger.info("HibernateRoutePersistence loaded");
@@ -71,9 +65,6 @@ public class HibernateRouteService implements RouteService {
 			session.createSQLQuery("TRUNCATE TABLE route_group")
 					.executeUpdate();
 
-			routeToIdMap.clear();
-			routeItemToIdMap.clear();
-			routeGroupToIdMap.clear();
 			transaction.commit();
 		} catch (HibernateException x) {
 			transaction.rollback();
@@ -102,8 +93,8 @@ public class HibernateRouteService implements RouteService {
 
 			Integer id = (Integer) session.save(hRoute);
 			route.setId(id);
-			routeToIdMap.put(route, id);
 			transaction.commit();
+			listener.routeAdded(route);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
@@ -114,7 +105,7 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void deleteRoute(Route route) throws RouteManagerException {
+	public void removeRoute(Route route) throws RouteManagerException {
 		logger.debug("deleteRoute()");
 		Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
@@ -125,8 +116,8 @@ public class HibernateRouteService implements RouteService {
 			HibernateRoute hRoute = (HibernateRoute) session.get(
 					HibernateRoute.class, id);
 			session.delete(hRoute);
-			routeToIdMap.remove(route);
 			transaction.commit();
+			listener.routeRemoved(route);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
@@ -149,8 +140,8 @@ public class HibernateRouteService implements RouteService {
 
 			HibernateRouteMapper.updateHibernateRoute(hRoute, route);
 			session.update(hRoute);
-			routeToIdMap.put(route, id);
 			transaction.commit();
+			listener.routeUpdated(route);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new RouteManagerException("Database Error", x);
@@ -173,8 +164,8 @@ public class HibernateRouteService implements RouteService {
 			Integer id = (Integer) session.save(hRouteGroup);
 
 			routeGroup.setId(id);
-			routeGroupToIdMap.put(routeGroup, id);
 			transaction.commit();
+			listener.routeGroupAdded(routeGroup);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
@@ -184,7 +175,7 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void deleteRouteGroup(RouteGroup routeGroup)
+	public void removeRouteGroup(RouteGroup routeGroup)
 			throws RouteManagerException {
 		logger.debug("deleteRouteGroup()");
 		Session session = HibernateUtil.openSession();
@@ -196,8 +187,8 @@ public class HibernateRouteService implements RouteService {
 			HibernateRouteGroup hRouteGroup = (HibernateRouteGroup) session
 					.get(HibernateRouteGroup.class, id);
 			session.delete(hRouteGroup);
-			routeGroupToIdMap.remove(routeGroup);
 			transaction.commit();
+			listener.routeGroupRemoved(routeGroup);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
@@ -220,8 +211,8 @@ public class HibernateRouteService implements RouteService {
 
 			HibernateRouteMapper.updateHibernateRouteGroup(hRoute, routeGroup);
 			session.update(hRoute);
-			routeGroupToIdMap.put(routeGroup, id);
 			transaction.commit();
+			listener.routeGroupUpdated(routeGroup);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
@@ -242,7 +233,6 @@ public class HibernateRouteService implements RouteService {
 			List hRouteGroups = session.createQuery("from HibernateRouteGroup")
 					.list();
 			List<RouteGroup> routeGroups = new LinkedList<RouteGroup>();
-			routeGroupToIdMap.clear();
 			for (Iterator iterator = hRouteGroups.iterator(); iterator
 					.hasNext();) {
 				HibernateRouteGroup hRouteGroup = (HibernateRouteGroup) iterator
@@ -250,7 +240,6 @@ public class HibernateRouteService implements RouteService {
 				RouteGroup routeGroup = HibernateRouteMapper
 						.mapHibernateRouteGroup(hRouteGroup);
 				routeGroups.add(routeGroup);
-				routeGroupToIdMap.put(routeGroup, hRouteGroup.getId());
 			}
 			transaction.commit();
 
@@ -287,7 +276,6 @@ public class HibernateRouteService implements RouteService {
 
 			Integer id = (Integer) session.save(hRouteItem);
 			item.setId(id);
-			routeItemToIdMap.put(item, id);
 			transaction.commit();
 		} catch (HibernateException x) {
 			transaction.rollback();
@@ -298,7 +286,7 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void deleteRouteItem(RouteItem item) throws RouteManagerException {
+	public void removeRouteItem(RouteItem item) throws RouteManagerException {
 		logger.debug("deleteRouteItem()");
 		Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
@@ -309,7 +297,6 @@ public class HibernateRouteService implements RouteService {
 			HibernateRouteItem hRouteItem = (HibernateRouteItem) session.get(
 					HibernateRouteItem.class, id);
 			session.delete(hRouteItem);
-			routeItemToIdMap.remove(item);
 			transaction.commit();
 		} catch (HibernateException x) {
 			transaction.rollback();
@@ -333,7 +320,6 @@ public class HibernateRouteService implements RouteService {
 
 			HibernateRouteMapper.updateHibernateRouteItem(hTurnout, item);
 			session.update(hTurnout);
-			routeItemToIdMap.put(item, id);
 			transaction.commit();
 		} catch (HibernateException x) {
 			transaction.rollback();
@@ -344,8 +330,15 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void flush() {
-		HibernatePersistence.flush();
+	public void init(RouteServiceListener listener) {
+		this.listener = listener;
+		List<RouteGroup> allRouteGroups = getAllRouteGroups();
+		listener.routesUpdated(allRouteGroups);
 	}
 
+	@Override
+	public void disconnect() {
+		// TODO Auto-generated method stub
+
+	}
 }

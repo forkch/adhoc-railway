@@ -29,7 +29,7 @@ public interface RouteService {
 
 	public abstract void addRoute(Route route) throws RouteManagerException;
 
-	public abstract void deleteRoute(Route route) throws RouteManagerException;
+	public abstract void removeRoute(Route route) throws RouteManagerException;
 
 	public abstract void updateRoute(Route route) throws RouteManagerException;
 
@@ -39,7 +39,7 @@ public interface RouteService {
 	public abstract void addRouteGroup(RouteGroup routeGroup)
 			throws RouteManagerException;
 
-	public abstract void deleteRouteGroup(RouteGroup routeGroup)
+	public abstract void removeRouteGroup(RouteGroup routeGroup)
 			throws RouteManagerException;
 
 	public abstract void updateRouteGroup(RouteGroup routeGroup)
@@ -48,7 +48,7 @@ public interface RouteService {
 	public abstract void addRouteItem(RouteItem item)
 			throws RouteManagerException;
 
-	public abstract void deleteRouteItem(RouteItem item)
+	public abstract void removeRouteItem(RouteItem item)
 			throws RouteManagerException;
 
 	public abstract void updateRouteItem(RouteItem item)
@@ -56,6 +56,8 @@ public interface RouteService {
 
 	public abstract void clear() throws RouteManagerException;
 
-	public abstract void flush();
+	void init(RouteServiceListener listener);
+
+	void disconnect();
 
 }
