@@ -85,6 +85,7 @@ public class SIOTurnoutMapper {
 	public static JSONObject mapTurnoutGroupToJSON(TurnoutGroup group)
 			throws JSONException {
 		JSONObject turnoutGroupJSON = new JSONObject();
+		turnoutGroupJSON.put("_id", turnoutGroupIdMap.get(group.getId()));
 		turnoutGroupJSON.put("name", group.getName());
 		return turnoutGroupJSON;
 	}

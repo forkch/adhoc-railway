@@ -139,8 +139,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	}
 
 	private Component buildGroupButtonBar() {
-		return ButtonBarFactory.buildCenteredBar(editGroupButton,
-				addGroupButton, removeGroupButton);
+		return ButtonBarFactory.buildCenteredBar(addGroupButton,
+				editGroupButton, removeGroupButton);
 	}
 
 	private Component buildMainButtonBar() {
@@ -169,13 +169,12 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 		turnoutGroupConfig = new TurnoutGroupConfigPanel();
 
-		editGroupButton = new JButton(new EditTurnoutGroupAction());
 		addGroupButton = new JButton(new AddTurnoutGroupAction());
+		editGroupButton = new JButton(new EditTurnoutGroupAction());
 		removeGroupButton = new JButton(new RemoveTurnoutGroupAction());
 
 		turnouts = new ArrayListModel<Turnout>();
-		SelectionInList<Turnout> turnoutModel = new SelectionInList<Turnout>(
-				(ListModel) turnouts);
+		SelectionInList<Turnout> turnoutModel = new SelectionInList<Turnout>();
 
 		turnoutModel.setList(turnouts);
 		turnoutsTable = new JTable();
@@ -210,6 +209,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			public void actionPerformed(ActionEvent e) {
 				okPressed = true;
 				setVisible(false);
+				turnoutPersistence
+						.removeTurnoutManagerListenerInNextEvent(TurnoutConfigurationDialog.this);
 			}
 		});
 	}
@@ -247,6 +248,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			}
 			TurnoutGroup selectedGroup = (TurnoutGroup) turnoutGroupList
 					.getSelectedValue();
+
 			if (selectedGroup == null) {
 				return;
 			}
@@ -262,13 +264,11 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	private class EditTurnoutGroupAction extends AbstractAction {
 		public EditTurnoutGroupAction() {
 			super("Edit Group");
-			// , ImageTools.createImageIconFromIconSet("edit.png")
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			TurnoutGroup groupToEdit = (TurnoutGroup) (turnoutGroupList
-					.getSelectedValue());
+			TurnoutGroup groupToEdit = turnoutGroupModel.getSelection();
 
 			turnoutPersistence.updateTurnoutGroup(groupToEdit);
 
@@ -351,7 +351,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 					.getSelection();
 			if (selectedTurnoutGroup == null) {
 				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
-						"Please select a switch group", "Error",
+						"Please select a locomotive group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -373,12 +373,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			Turnout newTurnout = createDefaultTurnout(selectedTurnoutGroup,
 					nextNumber);
 
-			TurnoutConfig switchConfig = new TurnoutConfig(
-					TurnoutConfigurationDialog.this, newTurnout);
-			if (switchConfig.isOkPressed()) {
-				turnouts.clear();
-				turnouts.addAll(selectedTurnoutGroup.getTurnouts());
-			}
+			new TurnoutConfig(TurnoutConfigurationDialog.this, newTurnout);
 		}
 
 		private Turnout createDefaultTurnout(TurnoutGroup selectedTurnoutGroup,
@@ -407,10 +402,9 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (turnoutsTable.isEditing()) {
-				turnoutsTable.getCellEditor().stopCellEditing();
-			}
 
+			TurnoutGroup selectedTurnoutGroup = turnoutGroupModel
+					.getSelection();
 			int[] rows = turnoutsTable.getSelectedRows();
 			int[] numbers = new int[rows.length];
 			int i = 0;
@@ -424,11 +418,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
 				turnoutPersistence.removeTurnout(turnoutByNumber);
 			}
 			turnoutsTable.clearSelection();
-			turnouts.clear();
-
-			TurnoutGroup selectedTurnoutGroup = turnoutGroupModel
-					.getSelection();
-			turnouts.addAll(selectedTurnoutGroup.getTurnouts());
 		}
 	}
 
@@ -454,16 +443,24 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 	@Override
 	public void turnoutUpdated(Turnout turnout) {
-
+		if (turnout.getTurnoutGroup().equals(turnoutGroupModel.getSelection())) {
+			turnouts.remove(turnout);
+			turnouts.add(turnout);
+		}
 	}
 
 	@Override
 	public void turnoutRemoved(Turnout turnout) {
+		if (turnout.getTurnoutGroup().equals(turnoutGroupModel.getSelection())) {
+			turnouts.remove(turnout);
+		}
 	}
 
 	@Override
 	public void turnoutAdded(Turnout turnout) {
-
+		if (turnout.getTurnoutGroup().equals(turnoutGroupModel.getSelection())) {
+			turnouts.add(turnout);
+		}
 	}
 
 	@Override
@@ -473,6 +470,9 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 	@Override
 	public void turnoutGroupRemoved(TurnoutGroup group) {
+		if (turnoutGroupModel.getSelection().equals(group)) {
+			turnouts.clear();
+		}
 		turnoutGroups.remove(group);
 
 	}

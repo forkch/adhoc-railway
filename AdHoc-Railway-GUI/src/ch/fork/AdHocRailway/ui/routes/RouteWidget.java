@@ -61,6 +61,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 				.getRouteControl();
 		initGUI();
 		routeControl.addRouteChangeListener(route, this);
+		update();
 	}
 
 	private void initGUI() {
@@ -73,9 +74,10 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 				ClassLoader.getSystemResource("routes/route_stop.png"));
 		routeStartIcon = new ImageIcon(
 				ClassLoader.getSystemResource("routes/route_start.png"));
-		numberLabel = new JLabel("" + route.getNumber());
+
+		numberLabel = new JLabel();
+		nameLabel = new JLabel();
 		numberLabel.setFont(new Font("Dialog", Font.BOLD, 30));
-		nameLabel = new JLabel(route.getName());
 		iconLabel = new JLabel(routeStopIcon);
 
 		routingProgress = new JProgressBar(SwingConstants.HORIZONTAL, 0, route
@@ -106,6 +108,12 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		add(northPanel);
 		add(southPanel);
 		add(Box.createVerticalStrut(5));
+	}
+
+	private void update() {
+		numberLabel.setText("" + route.getNumber());
+		nameLabel.setText(route.getName());
+		routingProgress.setMaximum(route.getRouteItems().size());
 	}
 
 	private class MouseAction extends MouseAdapter {
@@ -207,6 +215,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 	public void setRoute(Route route) {
 		this.route = route;
-		updateUI();
+		update();
 	}
 }

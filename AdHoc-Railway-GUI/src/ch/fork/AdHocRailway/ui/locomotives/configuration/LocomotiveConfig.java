@@ -44,6 +44,7 @@ import javax.swing.filechooser.FileFilter;
 import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -259,21 +260,50 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Locomotive locomotive = presentationModel.getBean();
-			LocomotiveManager locomotivePersistence = AdHocRailway
+			final LocomotiveManager locomotivePersistence = AdHocRailway
 					.getInstance().getLocomotivePersistence();
+			locomotivePersistence
+					.addLocomotiveManagerListener(new LocomotiveAddListener() {
+
+						@Override
+						public void locomotiveAdded(Locomotive locomotive) {
+							success(locomotivePersistence, locomotive);
+						}
+
+						@Override
+						public void locomotiveUpdated(Locomotive locomotive) {
+							success(locomotivePersistence, locomotive);
+						}
+
+						private void success(
+								final LocomotiveManager locomotivePersistence,
+								Locomotive locomotive) {
+							locomotivePersistence
+									.removeLocomotiveManagerListenerInNextEvent(this);
+
+							okPressed = true;
+							locomotive
+									.removePropertyChangeListener(LocomotiveConfig.this);
+							LocomotiveConfig.this.setVisible(false);
+
+							if (Preferences.getInstance().getBooleanValue(
+									PreferencesKeys.AUTOSAVE)) {
+								AdHocRailway.getInstance().saveActualFile();
+							}
+						}
+
+						@Override
+						public void failure(LocomotiveManagerException arg0) {
+							System.out.println("failure");
+						}
+
+					});
 			if (locomotive.getId() != -1) {
 				locomotivePersistence.updateLocomotive(locomotive);
 			} else {
 				locomotivePersistence.addLocomotive(locomotive);
 			}
 
-			okPressed = true;
-			LocomotiveConfig.this.setVisible(false);
-
-			if (Preferences.getInstance().getBooleanValue(
-					PreferencesKeys.AUTOSAVE)) {
-				AdHocRailway.getInstance().saveActualFile();
-			}
 		}
 	}
 

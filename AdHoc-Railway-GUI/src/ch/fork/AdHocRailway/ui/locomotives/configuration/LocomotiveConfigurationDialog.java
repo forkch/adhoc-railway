@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -44,13 +43,12 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
-import ch.fork.AdHocRailway.ui.TableResizer;
 
 import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.binding.adapter.AbstractTableAdapter;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
 import com.jgoodies.binding.list.ArrayListModel;
@@ -60,7 +58,8 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class LocomotiveConfigurationDialog extends JDialog {
+public class LocomotiveConfigurationDialog extends JDialog implements
+		LocomotiveManagerListener {
 
 	private boolean okPressed;
 
@@ -84,6 +83,14 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 	private LocomotiveGroupSelectionHandler groupSelectionHandler;
 
+	private final LocomotiveManager locomotivePersistence = AdHocRailway
+			.getInstance().getLocomotivePersistence();
+
+	private JButton editGroupButton;
+
+	private ArrayListModel<LocomotiveGroup> locomotiveGroups;
+	private ArrayListModel<Locomotive> locomotives;
+
 	public LocomotiveConfigurationDialog(JFrame owner) {
 		super(owner, "Locomotive Configuration", true);
 		initGUI();
@@ -91,6 +98,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 	private void initGUI() {
 		buildPanel();
+		locomotivePersistence.addLocomotiveManagerListener(this);
 		pack();
 		setLocationRelativeTo(getParent());
 		setVisible(true);
@@ -128,7 +136,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 	private Component buildGroupButtonBar() {
 		return ButtonBarFactory.buildCenteredBar(addGroupButton,
-				removeGroupButton);
+				editGroupButton, removeGroupButton);
 	}
 
 	private Component buildMainButtonBar() {
@@ -136,9 +144,7 @@ public class LocomotiveConfigurationDialog extends JDialog {
 	}
 
 	private void initComponents() {
-		LocomotiveManager locomotivePersistence = AdHocRailway.getInstance()
-				.getLocomotivePersistence();
-		ArrayListModel<LocomotiveGroup> locomotiveGroups = new ArrayListModel<LocomotiveGroup>(
+		locomotiveGroups = new ArrayListModel<LocomotiveGroup>(
 				locomotivePersistence.getAllLocomotiveGroups());
 		locomotiveGroupModel = new SelectionInList<LocomotiveGroup>(
 				(ListModel) locomotiveGroups);
@@ -151,9 +157,12 @@ public class LocomotiveConfigurationDialog extends JDialog {
 				.setCellRenderer(new LocomotiveGroupListCellRenderer());
 
 		addGroupButton = new JButton(new AddLocomotiveGroupAction());
+		editGroupButton = new JButton(new EditLocomotiveGroupAction());
 		removeGroupButton = new JButton(new RemoveLocomotiveGroupAction());
 
+		locomotives = new ArrayListModel<Locomotive>();
 		locomotiveModel = new SelectionInList<Locomotive>();
+		locomotiveModel.setList(locomotives);
 		locomotivesTable = new JTable();
 		locomotivesTable.setModel(new LocomotiveTableModel(locomotiveModel));
 		locomotivesTable.setSelectionModel(new SingleListSelectionAdapter(
@@ -169,6 +178,8 @@ public class LocomotiveConfigurationDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				okPressed = true;
 				setVisible(false);
+				locomotivePersistence
+						.removeLocomotiveManagerListenerInNextEvent(LocomotiveConfigurationDialog.this);
 			}
 		});
 	}
@@ -208,65 +219,9 @@ public class LocomotiveConfigurationDialog extends JDialog {
 			if (selectedGroup == null) {
 				return;
 			}
-			List<Locomotive> locomotives = new ArrayList<Locomotive>(
-					selectedGroup.getLocomotives());
-			locomotiveModel.setList(locomotives);
-			TableResizer.adjustColumnWidths(locomotivesTable, 5);
-		}
-	}
 
-	// TableModel *************************************************************
-
-	/**
-	 * Describes how to present an Album in a JTable.
-	 */
-	private static final class LocomotiveTableModel extends
-			AbstractTableAdapter<Locomotive> {
-
-		private static final String[] COLUMNS = { "Name", "Image", "Type",
-				"Address", "Desc" };
-
-		private LocomotiveTableModel(ListModel listModel) {
-			super(listModel, COLUMNS);
-		}
-
-		@Override
-		public Object getValueAt(int rowIndex, int columnIndex) {
-			Locomotive locomotive = getRow(rowIndex);
-			switch (columnIndex) {
-			case 0:
-				return locomotive.getName();
-			case 1:
-				return locomotive.getImage();
-			case 2:
-				return locomotive.getLocomotiveType();
-			case 3:
-				return locomotive.getAddress();
-			case 4:
-				return locomotive.getDescription();
-			default:
-				throw new IllegalStateException("Unknown column");
-			}
-		}
-
-	}
-
-	/**
-	 * Used to renders LocomotiveGroups in JLists and JComboBoxes. If the combo
-	 * box selection is null, an empty text <code>""</code> is rendered.
-	 */
-	private static final class LocomotiveGroupListCellRenderer extends
-			DefaultListCellRenderer {
-
-		@Override
-		public Component getListCellRendererComponent(JList list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus) {
-			Component component = super.getListCellRendererComponent(list,
-					value, index, isSelected, cellHasFocus);
-
-			LocomotiveGroup group = (LocomotiveGroup) value;
-			setText(group == null ? "" : group.getName());
-			return component;
+			locomotives.clear();
+			locomotives.addAll(selectedGroup.getLocomotives());
 		}
 	}
 
@@ -283,9 +238,21 @@ public class LocomotiveConfigurationDialog extends JDialog {
 					"Enter the name of the new Locomotive-Group",
 					"Add Locomotive-Group", JOptionPane.QUESTION_MESSAGE);
 			LocomotiveGroup newSection = new LocomotiveGroup(0, newGroupName);
-			LocomotiveManager locomotivePersistence = AdHocRailway
-					.getInstance().getLocomotivePersistence();
 			locomotivePersistence.addLocomotiveGroup(newSection);
+		}
+	}
+
+	private class EditLocomotiveGroupAction extends AbstractAction {
+		public EditLocomotiveGroupAction() {
+			super("Edit Group");
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			LocomotiveGroup groupToEdit = locomotiveGroupModel.getSelection();
+
+			locomotivePersistence.updateLocomotiveGroup(groupToEdit);
+
 		}
 	}
 
@@ -305,8 +272,6 @@ public class LocomotiveConfigurationDialog extends JDialog {
 					"Remove Locomotive-Group", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
 				try {
-					LocomotiveManager locomotivePersistence = AdHocRailway
-							.getInstance().getLocomotivePersistence();
 					locomotivePersistence.deleteLocomotiveGroup(groupToDelete);
 				} catch (LocomotiveManagerException e) {
 					ExceptionProcessor.getInstance().processException(e);
@@ -322,17 +287,26 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) (locomotiveGroupList
-					.getSelectedValue());
+			LocomotiveGroup selectedLocomotiveGroup = locomotiveGroupModel
+					.getSelection();
+			if (selectedLocomotiveGroup == null) {
+				JOptionPane.showMessageDialog(
+						LocomotiveConfigurationDialog.this,
+						"Please select a locomotive group", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			Locomotive newLocomotive = createDefaultLocomotive(selectedLocomotiveGroup);
+
+			new LocomotiveConfig(LocomotiveConfigurationDialog.this,
+					newLocomotive);
+		}
+
+		private Locomotive createDefaultLocomotive(
+				LocomotiveGroup selectedLocomotiveGroup) {
 			Locomotive newLocomotive = new Locomotive();
 			newLocomotive.setLocomotiveGroup(selectedLocomotiveGroup);
-			selectedLocomotiveGroup.getLocomotives().add(newLocomotive);
-
-			LocomotiveConfig locomotiveConfig = new LocomotiveConfig(
-					LocomotiveConfigurationDialog.this, newLocomotive);
-			List<Locomotive> locomotives = new ArrayList<Locomotive>(
-					selectedLocomotiveGroup.getLocomotives());
-			locomotiveModel.setList(locomotives);
+			return newLocomotive;
 		}
 	}
 
@@ -366,22 +340,86 @@ public class LocomotiveConfigurationDialog extends JDialog {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) locomotiveGroupList
-					.getSelectedValue();
+			LocomotiveGroup selectedLocomotiveGroup = locomotiveGroupModel
+					.getSelection();
 
 			int row = locomotivesTable.getSelectedRow();
 			Locomotive locomotiveToDelete = locomotiveModel.getElementAt(row);
 
-			LocomotiveManager locomotivePersistence = AdHocRailway
-					.getInstance().getLocomotivePersistence();
-			locomotivePersistence.deleteLocomotive(locomotiveToDelete);
-			List<Locomotive> locomotives = new ArrayList<Locomotive>(
-					selectedLocomotiveGroup.getLocomotives());
-			locomotiveModel.setList(locomotives);
+			if (locomotiveToDelete == null) {
+				JOptionPane.showMessageDialog(
+						LocomotiveConfigurationDialog.this,
+						"Please select a locomotive", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			int response = JOptionPane.showConfirmDialog(
+					LocomotiveConfigurationDialog.this,
+					"Really remove Locomotive '" + locomotiveToDelete.getName()
+							+ "' ?", "Remove Locomotive",
+					JOptionPane.YES_NO_OPTION);
+			if (response == JOptionPane.YES_OPTION) {
+				locomotivePersistence.deleteLocomotive(locomotiveToDelete);
+			}
 		}
 	}
 
 	public boolean isOkPressed() {
 		return okPressed;
+	}
+
+	@Override
+	public void locomotiveAdded(Locomotive locomotive) {
+		if (locomotive.getLocomotiveGroup().equals(
+				locomotiveGroupModel.getSelection())) {
+			locomotives.add(locomotive);
+		}
+	}
+
+	@Override
+	public void locomotiveUpdated(Locomotive locomotive) {
+		if (locomotive.getLocomotiveGroup().equals(
+				locomotiveGroupModel.getSelection())) {
+			locomotives.remove(locomotive);
+			locomotives.add(locomotive);
+		}
+	}
+
+	@Override
+	public void locomotiveRemoved(Locomotive locomotive) {
+		if (locomotive.getLocomotiveGroup().equals(
+				locomotiveGroupModel.getSelection())) {
+			locomotives.remove(locomotive);
+		}
+	}
+
+	@Override
+	public void locomotiveGroupAdded(LocomotiveGroup group) {
+		locomotiveGroups.add(group);
+
+	}
+
+	@Override
+	public void locomotiveGroupUpdated(LocomotiveGroup group) {
+		locomotiveGroups.remove(group);
+		locomotiveGroups.add(group);
+	}
+
+	@Override
+	public void locomotiveGroupRemoved(LocomotiveGroup group) {
+		if (locomotiveGroupModel.getSelection().equals(group)) {
+			locomotives.clear();
+		}
+		locomotiveGroups.remove(group);
+	}
+
+	@Override
+	public void locomotivesUpdated(List<LocomotiveGroup> locomotiveGroups) {
+
+	}
+
+	@Override
+	public void failure(LocomotiveManagerException locomotiveManagerException) {
+
 	}
 }

@@ -23,6 +23,46 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "routes/socket.js",
+			"settings":
+			{
+				"buffer_size": 5398,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "routes/turnoutcontroller.js",
+			"settings":
+			{
+				"buffer_size": 7097,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "public/js/controllers/turnoutsCtrl.js",
+			"settings":
+			{
+				"buffer_size": 5853,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "routes/routecontroller.js",
+			"settings":
+			{
+				"buffer_size": 7970,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "routes/locomotivecontroller.js",
+			"settings":
+			{
+				"buffer_size": 7194,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "Packages/JSLint/JSLint.sublime-build",
 	"command_palette":
@@ -140,6 +180,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"addTurnout",
 			"locomotive:add",
 			"Turnout",
 			"turnout",
@@ -198,8 +239,149 @@
 	"groups":
 	[
 		{
+			"selected": 4,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "routes/socket.js",
+					"settings":
+					{
+						"buffer_size": 5398,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								371,
+								371
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "routes/turnoutcontroller.js",
+					"settings":
+					{
+						"buffer_size": 7097,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1615,
+								1615
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 663.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "public/js/controllers/turnoutsCtrl.js",
+					"settings":
+					{
+						"buffer_size": 5853,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3453,
+								3453
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1275.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "routes/routecontroller.js",
+					"settings":
+					{
+						"buffer_size": 7970,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1612,
+								1612
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 561.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "routes/locomotivecontroller.js",
+					"settings":
+					{
+						"buffer_size": 7194,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3746,
+								3746
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1683.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -253,24 +435,32 @@
 		"selected_items":
 		[
 			[
-				"locomotives",
-				"views/partials/locomotives.jade"
+				"locomot",
+				"routes/locomotivecontroller.js"
+			],
+			[
+				"routecon",
+				"routes/routecontroller.js"
+			],
+			[
+				"turnoutctr",
+				"public/js/controllers/turnoutsCtrl.js"
 			],
 			[
 				"turnout",
 				"routes/turnoutcontroller.js"
 			],
 			[
-				"locomot",
-				"routes/locomotivecontroller.js"
+				"socket",
+				"routes/socket.js"
+			],
+			[
+				"locomotives",
+				"views/partials/locomotives.jade"
 			],
 			[
 				"locomotives.jad",
 				"views/partials/locomotives.jade"
-			],
-			[
-				"socket",
-				"routes/socket.js"
 			],
 			[
 				"app.js",
@@ -283,10 +473,6 @@
 			[
 				"route",
 				"routes/routecontroller.js"
-			],
-			[
-				"turnoutctr",
-				"public/js/controllers/turnoutsCtrl.js"
 			],
 			[
 				"app",

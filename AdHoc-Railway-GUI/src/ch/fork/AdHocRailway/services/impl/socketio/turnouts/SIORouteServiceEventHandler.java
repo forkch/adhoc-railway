@@ -44,7 +44,10 @@ public class SIORouteServiceEventHandler {
 			RouteServiceListener listener) throws JSONException {
 		Route route = SIORouteMapper.mapRouteFromJSON(routeJSON);
 		sioIdToRouteMap.put(routeJSON.getString("_id"), route);
-		route.setRouteGroup(sioIdToRouteGroupMap.get(routeJSON.get("group")));
+		RouteGroup routeGroup = sioIdToRouteGroupMap
+				.get(routeJSON.get("group"));
+		route.setRouteGroup(routeGroup);
+		routeGroup.addRoute(route);
 		listener.routeAdded(route);
 	}
 
@@ -53,8 +56,6 @@ public class SIORouteServiceEventHandler {
 		Route route = sioIdToRouteMap.get(routeJSON.getString("_id"));
 
 		SIORouteMapper.mergeRouteBaseInfo(routeJSON, route);
-		route.setRouteGroup(sioIdToRouteGroupMap.get(routeJSON
-				.getString("group")));
 		listener.routeUpdated(route);
 
 	}
@@ -63,6 +64,9 @@ public class SIORouteServiceEventHandler {
 			RouteServiceListener listener) throws JSONException {
 		Route route = sioIdToRouteMap.get(routeJSON.getString("_id"));
 		SIORouteMapper.routeIdMap.remove(route.getId());
+		RouteGroup routeGroup = sioIdToRouteGroupMap.get(routeJSON
+				.getString("group"));
+		routeGroup.removeRoute(route);
 		listener.routeRemoved(route);
 	}
 
@@ -92,6 +96,7 @@ public class SIORouteServiceEventHandler {
 
 	public static void addIdToRoute(Route route, String sioId) {
 		int id = sioId.hashCode();
+		route.setId(id);
 		sioIdToRouteMap.put(sioId, route);
 		SIORouteMapper.routeIdMap.put(id, sioId);
 
@@ -99,6 +104,7 @@ public class SIORouteServiceEventHandler {
 
 	public static void addIdToRouteGroup(RouteGroup group, String sioId) {
 		int id = sioId.hashCode();
+		group.setId(id);
 		sioIdToRouteGroupMap.put(sioId, group);
 		SIORouteMapper.routeGroupIdMap.put(id, sioId);
 	}

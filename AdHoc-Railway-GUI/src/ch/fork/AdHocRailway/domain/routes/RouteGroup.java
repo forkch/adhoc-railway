@@ -43,36 +43,40 @@ public class RouteGroup extends Model implements java.io.Serializable,
 
 	@Override
 	public int compareTo(RouteGroup o) {
-		if (this == o)
+		if (this == o) {
 			return 0;
-		if (o == null)
+		}
+		if (o == null) {
 			return -1;
-		if (id > o.getId())
+		}
+		if (id > o.getId()) {
 			return 1;
-		else if (id < o.getId())
+		} else if (id < o.getId()) {
 			return -1;
-		else
+		} else {
 			return 0;
+		}
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 
 		final RouteGroup l = (RouteGroup) o;
-		if (id != l.getId())
+		if (id != l.getId()) {
 			return false;
-		if (!name.equals(l.getName()))
-			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		return name.hashCode();
+		return Integer.valueOf(id).hashCode();
 	}
 
 	@Override
@@ -148,6 +152,11 @@ public class RouteGroup extends Model implements java.io.Serializable,
 
 	public void addRoute(Route route) {
 		this.routes.add(route);
+
+	}
+
+	public void removeRoute(Route route) {
+		this.routes.remove(route);
 
 	}
 }

@@ -132,8 +132,8 @@ exports.addRoute = function(socket, route, fn) {
                 routeGroup.routes.push(addedRoute._id);
                 routeGroup.save();
             });
-            socket.broadcast.emit('route:added', addedRoute._id);
-            fn(false, 'success');
+            socket.broadcast.emit('route:added',addedRoute);
+            fn(false, 'success', addedRoute._id);
         }else{
             fn(true, 'failed to add route');
         }

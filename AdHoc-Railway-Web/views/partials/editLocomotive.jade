@@ -1,0 +1,28 @@
+div.row
+  div.span10
+    h3 Edit Locomotive
+div.row
+  div.span5
+    form(ng-submit='editLocomotive()')
+      fieldset
+        p
+          input(autofocus='true', type='text', size='4', placeholder='Name', ng-model='locomotive.name')
+        p
+          input(autofocus='true', type='text', size='4', placeholder='Description', ng-model='locomotive.description')
+        p
+          input(autofocus='true', type='text', size='4', placeholder='Image', ng-model='locomotive.image')
+        p
+          input(type='number',size='4', placeholder='Bus', ng-model='locomotive.bus')
+        p
+          input(type='number',size='4', placeholder='Address', ng-model='locomotive.address')
+        p
+          select(ng-model='locomotive.type')
+            option delta
+            option digital
+        p
+          button.btn(type='submit') Edit
+  div.span5
+    div.alert(ng-show='error')
+      button.close(type='button', data-dismiss='alert')
+      {{error}} 
+

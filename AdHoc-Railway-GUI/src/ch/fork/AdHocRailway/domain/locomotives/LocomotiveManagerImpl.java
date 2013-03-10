@@ -135,7 +135,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	@Override
 	public List<LocomotiveGroup> getAllLocomotiveGroups() {
 		LinkedList<LocomotiveGroup> allLocomotiveGroups = new LinkedList<LocomotiveGroup>();
-		allLocomotiveGroups.addFirst(ALL_LOCOMOTIVE_GROUP);
+		// allLocomotiveGroups.addFirst(ALL_LOCOMOTIVE_GROUP);
 		allLocomotiveGroups.addAll(locomotiveGroups);
 		return allLocomotiveGroups;
 	}

@@ -51,10 +51,7 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + id;
-		return result;
+		return Integer.valueOf(id).hashCode();
 	}
 
 	@Override
@@ -139,6 +136,10 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public void removeTurnout(Turnout turnout) {
+		this.turnouts.remove(turnout);
 	}
 
 }

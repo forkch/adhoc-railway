@@ -47,8 +47,8 @@ exports.addLocomotiveGroup = function(socket, locomotiveGroup, fn) {
         if(!err) {
             var locomotiveGroup = addedlocomotiveGroup.toJSON();
             locomotiveGroup.locomotives = {};
-            socket.broadcast.emit('locomotiveGroup:added', locomotiveGroup._id);
-            fn(false, 'success', group);
+            socket.broadcast.emit('locomotiveGroup:added', locomotiveGroup);
+            fn(false, 'success', locomotiveGroup._id);
         } else {
             fn(true, 'failed to save locomotive group');
         }
@@ -114,7 +114,16 @@ exports.addLocomotive = function(socket, locomotive, fn) {
     }
 
     if(!locomotive.address|| locomotive.address < 1) {
-        fn(true, 'address  must be greater 0');
+        fn(true, 'address must be greater 0');
+        return;
+    }
+
+    if(!locomotive.name == null || locomotive.name.length < 1) {
+        fn(true, 'name must be specified');
+        return;
+    }
+    if(!locomotive.type == null || locomotive.type.length < 1) {
+        fn(true, 'type must be specified');
         return;
     }
     
@@ -127,8 +136,8 @@ exports.addLocomotive = function(socket, locomotive, fn) {
                 locomotiveGroup.locomotives.push(addedLocomotive._id);
                 locomotiveGroup.save();
             });
-            socket.broadcast.emit('locomotive:added', addedLocomotive._id);
-            fn(false, 'success');
+            socket.broadcast.emit('locomotive:added', addedLocomotive);
+            fn(false, 'success',addedLocomotive._id);
         }else{
             fn(true, 'failed to add locomotive');
         }

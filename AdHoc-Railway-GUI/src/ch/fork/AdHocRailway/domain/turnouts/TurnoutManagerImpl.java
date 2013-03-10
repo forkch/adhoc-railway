@@ -412,4 +412,5 @@ public class TurnoutManagerImpl implements TurnoutManager,
 		addressTurnoutCache.values().remove(turnout);
 		addressThreewayCache.values().remove(turnout);
 	}
+
 }

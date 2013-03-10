@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 
 public class SIORouteMapper {
@@ -59,6 +60,7 @@ public class SIORouteMapper {
 	public static JSONObject mapRouteGroupToJSON(RouteGroup routeGroup)
 			throws JSONException {
 		JSONObject routeGroupJSON = new JSONObject();
+		routeGroupJSON.put("_id", routeGroupIdMap.get(routeGroup.getId()));
 		routeGroupJSON.put("name", routeGroup.getName());
 		return routeGroupJSON;
 	}
@@ -93,12 +95,18 @@ public class SIORouteMapper {
 			JSONArray routedTurnouts = routeJSON.getJSONArray("routedTurnouts");
 			for (int i = 0; i < routedTurnouts.length(); i++) {
 				JSONObject routedTurnout = routedTurnouts.getJSONObject(i);
+
+				if (!routedTurnout.has("turnoutId")) {
+					continue;
+				}
+				Turnout turnoutBySIOId = SIOTurnoutServiceEventHandler
+						.getTurnoutBySIOId(routedTurnout.getString("turnoutId"));
+				if (turnoutBySIOId == null) {
+					continue;
+				}
 				RouteItem routeItem = new RouteItem();
 				routeItem.setId(routedTurnout.getString("_id").hashCode());
-				routeItem
-						.setTurnout(SIOTurnoutServiceEventHandler
-								.getTurnoutBySIOId(routedTurnout
-										.getString("turnoutId")));
+				routeItem.setTurnout(turnoutBySIOId);
 				routeItem.setRoutedState(TurnoutState.fromString(routedTurnout
 						.getString("state")));
 				route.getRouteItems().add(routeItem);

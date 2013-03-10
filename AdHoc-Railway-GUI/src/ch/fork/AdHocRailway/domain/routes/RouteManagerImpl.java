@@ -373,7 +373,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 		removeRouteGroupInCache(routeGroup);
 		putRouteGroupInCache(routeGroup);
 		for (RouteManagerListener l : listeners) {
-			l.routeGroupRemoved(routeGroup);
+			l.routeGroupUpdated(routeGroup);
 		}
 	}
 
