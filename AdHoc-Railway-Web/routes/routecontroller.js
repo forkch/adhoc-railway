@@ -50,7 +50,7 @@ exports.addRouteGroup = function (socket, routeGroup, fn) {
       var routeGroup = addedRouteGroup.toJSON();
       routeGroup.routes = {};
       socket.broadcast.emit('routeGroup:added', routeGroup);
-      fn(false, 'success', group);
+      fn(false, 'success', routeGroup._id);
     } else {
        fn(true, 'failed to save route group');
     }
@@ -132,7 +132,7 @@ exports.addRoute = function(socket, route, fn) {
                 routeGroup.routes.push(addedRoute._id);
                 routeGroup.save();
             });
-            socket.broadcast.emit('route:added', addedRoute);
+            socket.broadcast.emit('route:added', addedRoute._id);
             fn(false, 'success');
         }else{
             fn(true, 'failed to add route');

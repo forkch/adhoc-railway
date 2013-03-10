@@ -2,6 +2,7 @@
 
 function TurnoutsCtrl($scope, socket) {
     $scope.turnouts = {};
+    $scope.turnoutGroups = {};
     socket.emit('turnoutGroup:getAll', '', function(err, data) {
         if(!err) {
             receivedNewTurnoutGroups(data.turnoutGroups, $scope);
@@ -53,26 +54,16 @@ function TurnoutsCtrl($scope, socket) {
             }
         });
     }
-
-    $scope.addTurnoutGroup = function() {
-        socket.emit('turnoutGroup:add', $scope.turnoutGroupName, function(err, msg, turnoutGroup) {
-            if(!err) {
-                $scope.turnoutGroups[turnoutGroup._id] = turnoutGroup;
-            }else {
-                $scope.error = 'Error adding turnoutgroup (' + msg + ')';
-            }
-        });
-    }
     
 }
 TurnoutsCtrl.$inject = ['$scope', 'socket'];
 
-function AddTurnoutGroupCtrl($scope, socket, $location,$routeParams) {
+function AddTurnoutGroupCtrl($scope, socket, $location) {
     $scope.turnoutGroup = {
     }
     $scope.addTurnoutGroup = function() {
         $scope.error = null;
-        socket.emit('turnoutGroup:add', $scope.turnoutGroup, function(err, msg, turnoutGroup) {
+        socket.emit('turnoutGroup:add', $scope.turnoutGroup, function(err, msg, groupId) {
             if(!err) {
                 $location.path('/turnouts')
             } else {
@@ -116,7 +107,7 @@ function AddTurnoutCtrl($scope, socket, $location,$routeParams) {
     }
     $scope.addTurnout = function() {
         $scope.error = null;
-        socket.emit('turnout:add', $scope.turnout, function(err, msg, turnout) {
+        socket.emit('turnout:add', $scope.turnout, function(err, msg, turnoutId) {
             if(!err) {
                 $location.path('/turnouts')
             } else {
@@ -126,7 +117,7 @@ function AddTurnoutCtrl($scope, socket, $location,$routeParams) {
     }
     
 }
-AddTurnoutCtrl.$inject = ['$scope', 'socket', '$location'];
+AddTurnoutCtrl.$inject = ['$scope', 'socket', '$location','$routeParams'];
 
 function EditTurnoutCtrl($scope, socket, $location, $routeParams) {
     socket.emit('turnout:getById', $routeParams.id, function(turnout) {
@@ -145,7 +136,7 @@ function EditTurnoutCtrl($scope, socket, $location, $routeParams) {
         });
     }
 }
-AddTurnoutCtrl.$inject = ['$scope', 'socket', '$location', '$routeParams'];
+EditTurnoutCtrl.$inject = ['$scope', 'socket', '$location', '$routeParams'];
 
 /**************
 // Private helpers

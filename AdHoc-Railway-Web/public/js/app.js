@@ -16,12 +16,11 @@ var app = angular.module('myApp', ['ui.bootstrap', 'myApp.services']).
     $routeProvider.when('/addRoute/:groupId', {templateUrl: 'partials/addRoute', controller: AddRouteCtrl});
     $routeProvider.when('/editRoute/:id', {templateUrl: 'partials/editRoute', controller: EditRouteCtrl});
 
-    /*$routeProvider.when('/locomotives', {templateUrl: 'partials/locomotives', controller: LocomotivesCtrl});
+    $routeProvider.when('/locomotives', {templateUrl: 'partials/locomotives', controller: LocomotivesCtrl});
     $routeProvider.when('/addLocomotiveGroup', {templateUrl: 'partials/addLocomotiveGroup', controller: AddLocomotiveGroupCtrl});
     $routeProvider.when('/editLocomotiveGroup/:id', {templateUrl: 'partials/editLocomotiveGroup', controller: EditLocomotiveGroupCtrl});
     $routeProvider.when('/addLocomotive/:groupId', {templateUrl: 'partials/addLocomotive', controller: AddLocomotiveCtrl});
     $routeProvider.when('/editLocomotive/:id', {templateUrl: 'partials/editLocomotive', controller: EditLocomotiveCtrl});
-    */
 
     $routeProvider.otherwise({redirectTo: '/'});
     $locationProvider.html5Mode(true);

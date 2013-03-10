@@ -23,94 +23,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "routes/backend.js",
-			"settings":
-			{
-				"buffer_size": 0,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "routes/turnoutcontroller.js",
-			"settings":
-			{
-				"buffer_size": 6936,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "app.js",
-			"settings":
-			{
-				"buffer_size": 1374,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "public/js/controllers/routesCtrl.js",
-			"settings":
-			{
-				"buffer_size": 5392,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "public/js/controllers/turnoutsCtrl.js",
-			"settings":
-			{
-				"buffer_size": 6185,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "models/turnout_model.js",
-			"settings":
-			{
-				"buffer_size": 1075,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "routes/routecontroller.js",
-			"settings":
-			{
-				"buffer_size": 6471,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "routes/socket.js",
-			"settings":
-			{
-				"buffer_size": 3458,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "views/partials/routes.jade",
-			"settings":
-			{
-				"buffer_size": 572,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "public/js/app.js",
-			"settings":
-			{
-				"buffer_size": 1580,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "views/partials/addRoute.jade",
-			"settings":
-			{
-				"buffer_size": 633,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "Packages/JSLint/JSLint.sublime-build",
 	"command_palette":
@@ -151,7 +63,7 @@
 				"Set Syntax: JavaScript"
 			]
 		],
-		"width": 602.0
+		"width": 449.0
 	},
 	"console":
 	{
@@ -168,36 +80,45 @@
 	},
 	"file_history":
 	[
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/editLocomotiveGroup.jade",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/models/locomotive_model.js",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/layout.jade",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/addLocomotiveGroup.jade",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/controllers/controllers.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/app.js",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/controllers/turnoutsCtrl.js",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/controllers/locomotivesCtrl.js",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/routes/socket.js",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/routes/locomotivecontroller.js",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/locomotives.jade",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/addLocomotive.jade",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/editLocomotive.jade",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/routes/turnoutcontroller.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/addRoute.jade",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/routes.jade",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/models/turnout_model.js",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/controllers/routesCtrl.js",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/app.js",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/routes/backend.js",
+		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/routes/routecontroller.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/editRoute.jade",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/editRouteGroup.jad",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/editRouteGroup.jade",
-		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/routes.jade",
-		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/layout.jade",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/index.jade",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/addRouteGroup.jade",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/addTurnoutGroup.jade",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/editTurnoutGroup.jade",
-		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/routes/routecontroller.js",
-		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/controllers/turnoutsCtrl.js",
-		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/routes/turnoutcontroller.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/editTurnout.jade",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/routes.jad",
-		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/controllers/routesCtrl.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/filters.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/services.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/turnoutCtrl.js",
-		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/models/turnout_model.js",
-		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/routes/socket.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/controllers.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/turnouts.jade",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/views/partials/addTurnout.jade",
-		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/models/locomotive_model.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/css/app.css",
 		"/home/fork/.config/sublime-text-2/Packages/Default/Preferences.sublime-settings",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/package.json",
-		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/app.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/directives.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/public/js/lib/ui-bootstrap-tpls-0.1.0.js",
 		"/home/fork/Code/adhocrailway/trunk/AdHoc-Railway-Web/routes/index.js",
@@ -219,6 +140,13 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"locomotive:add",
+			"Turnout",
+			"turnout",
+			"turnoutGroup",
+			"\n\nfunction LocomotivesCtrl($scope, socket,$location) {\n    socket.emit('locomotives:getAll', '', function(locomotives) {\n        $scope.locomotives = locomotives;\n    });\n    socket.on('locomotive:add', function(locomotive) {\n        $scope.locomotives.push(locomotive.name);\n    });\n}\nLocomotivesCtrl.$inject = ['$scope', 'socket', '$location'];",
+			"p\n          select(ng-model='locomotive.defaultState')\n            option left\n            option right\n            option straight\n            option curved\n        p\n          select(ng-model='locomotive.orientation')\n            option north\n            option east\n            option south\n            option west",
+			"threeway",
 			"turnout",
 			"getAll",
 			"turnout",
@@ -254,6 +182,10 @@
 		"regex": false,
 		"replace_history":
 		[
+			"Locomotive",
+			"locomotive",
+			"locomotiveGroup",
+			"locomotive",
 			"routeGroup",
 			"turnoutGroup"
 		],
@@ -266,309 +198,8 @@
 	"groups":
 	[
 		{
-			"selected": 6,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "routes/backend.js",
-					"settings":
-					{
-						"buffer_size": 0,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "routes/turnoutcontroller.js",
-					"settings":
-					{
-						"buffer_size": 6936,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5687,
-								5687
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2429.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "app.js",
-					"settings":
-					{
-						"buffer_size": 1374,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								180,
-								180
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "public/js/controllers/routesCtrl.js",
-					"settings":
-					{
-						"buffer_size": 5392,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3353,
-								3353
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 1377.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "public/js/controllers/turnoutsCtrl.js",
-					"settings":
-					{
-						"buffer_size": 6185,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4126,
-								4126
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2040.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "models/turnout_model.js",
-					"settings":
-					{
-						"buffer_size": 1075,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								556,
-								556
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "routes/routecontroller.js",
-					"settings":
-					{
-						"buffer_size": 6471,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								456,
-								458
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 2
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "routes/socket.js",
-					"settings":
-					{
-						"buffer_size": 3458,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2817,
-								2817
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 816.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "views/partials/routes.jade",
-					"settings":
-					{
-						"buffer_size": 572,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								572,
-								572
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Jade/Syntaxes/Jade.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "public/js/app.js",
-					"settings":
-					{
-						"buffer_size": 1580,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1580,
-								1580
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "views/partials/addRoute.jade",
-					"settings":
-					{
-						"buffer_size": 633,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								631,
-								631
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Jade/Syntaxes/Jade.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -605,7 +236,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 99.0
+		"height": 348.0
 	},
 	"output.git":
 	{
@@ -622,16 +253,40 @@
 		"selected_items":
 		[
 			[
+				"locomotives",
+				"views/partials/locomotives.jade"
+			],
+			[
+				"turnout",
+				"routes/turnoutcontroller.js"
+			],
+			[
+				"locomot",
+				"routes/locomotivecontroller.js"
+			],
+			[
+				"locomotives.jad",
+				"views/partials/locomotives.jade"
+			],
+			[
+				"socket",
+				"routes/socket.js"
+			],
+			[
+				"app.js",
+				"public/js/app.js"
+			],
+			[
+				"locomotv",
+				"models/locomotive_model.js"
+			],
+			[
 				"route",
 				"routes/routecontroller.js"
 			],
 			[
 				"turnoutctr",
 				"public/js/controllers/turnoutsCtrl.js"
-			],
-			[
-				"socket",
-				"routes/socket.js"
 			],
 			[
 				"app",

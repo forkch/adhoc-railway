@@ -49,7 +49,7 @@ exports.addTurnoutGroup = function(socket, turnoutGroup, fn) {
             var turnoutGroup = addedTurnoutGroup.toJSON();
             turnoutGroup.turnouts = {};
             socket.broadcast.emit('turnoutGroup:added', turnoutGroup);
-            fn(false, 'success', group);
+            fn(false, 'success', turnoutGroup._id);
         } else {
             fn(true, 'failed to save turnout group');
         }
@@ -143,7 +143,7 @@ exports.addTurnout = function(socket, turnout, fn) {
                 turnoutGroup.save();
             });
             socket.broadcast.emit('turnout:added', addedTurnout);
-            fn(false, 'success');
+            fn(false, 'success', addedTurnout._id);
         }else{
             fn(true, 'failed to add turnout');
         }
@@ -206,7 +206,6 @@ getAllTurnoutData = function(fn) {
             }    
             var turnoutByGroupId = [];
             for(t in turnouts) {
-                console.log(turnouts[t].group + " --> " + JSON.stringify(turnouts[t]));
                 if(!turnoutByGroupId[turnouts[t].group]) {
                     turnoutByGroupId[turnouts[t].group] = {};
                 }

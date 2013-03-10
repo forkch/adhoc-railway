@@ -16,6 +16,7 @@ exports.init = function(socket) {
 }
 
 exports.getAllLocomotiveGroups = function(socket,fn) {
+    console.log("sdfsdf");
     getAllLocomotiveData(function(err, result) {
         if(!err) {
             fn(false, result);
@@ -46,7 +47,7 @@ exports.addLocomotiveGroup = function(socket, locomotiveGroup, fn) {
         if(!err) {
             var locomotiveGroup = addedlocomotiveGroup.toJSON();
             locomotiveGroup.locomotives = {};
-            socket.broadcast.emit('locomotiveGroup:added', locomotiveGroup);
+            socket.broadcast.emit('locomotiveGroup:added', locomotiveGroup._id);
             fn(false, 'success', group);
         } else {
             fn(true, 'failed to save locomotive group');
@@ -112,13 +113,13 @@ exports.addLocomotive = function(socket, locomotive, fn) {
         return;
     }
 
-    if(!locomotive.address1 || locomotive.address1 < 1) {
-        fn(true, 'address 1 must be greater 0');
+    if(!locomotive.address|| locomotive.address < 1) {
+        fn(true, 'address  must be greater 0');
         return;
     }
     
     console.log('adding new locomotive ' + JSON.stringify(locomotive));
-    new Locomotive(locomotive).save(function(err, addedLocomotive) {
+    new LocomotiveModel(locomotive).save(function(err, addedLocomotive) {
         if(!err) {
             console.log(addedLocomotive.group);
             LocomotiveGroupModel.findById({_id: addedLocomotive.group}, function(err, locomotiveGroup) {
@@ -126,7 +127,7 @@ exports.addLocomotive = function(socket, locomotive, fn) {
                 locomotiveGroup.locomotives.push(addedLocomotive._id);
                 locomotiveGroup.save();
             });
-            socket.broadcast.emit('locomotive:added', addedLocomotive);
+            socket.broadcast.emit('locomotive:added', addedLocomotive._id);
             fn(false, 'success');
         }else{
             fn(true, 'failed to add locomotive');

@@ -3,9 +3,11 @@
  */
 var turnoutController = require('./turnoutcontroller');
 var routeController = require('./routecontroller');
+var locomotiveController = require('./locomotivecontroller');
 
 module.exports = function (socket) {
 
+    locomotiveController.init(socket);
     turnoutController.init(socket);
     routeController.init(socket);
 
@@ -60,47 +62,47 @@ module.exports = function (socket) {
 
     /* ROUTES */
 
-    socket.on('routeGroup:getAll', function(dummy, fn) {
+    socket.on('routeGroup:getAll', function (dummy, fn) {
         console.log('route:getAll');
         routeController.getAllRouteGroups(socket, fn);
     });
     
-    socket.on('routeGroup:getById', function(routeGroupId, fn) {
+    socket.on('routeGroup:getById', function (routeGroupId, fn) {
         console.log('routeGroup:getById');
         routeController.getRouteGroupById(socket, routeGroupId, fn);
     });
 
-    socket.on('routeGroup:add', function(routeGroup, fn) {
+    socket.on('routeGroup:add', function (routeGroup, fn) {
         console.log('routeGroup:add');
         routeController.addRouteGroup(socket, routeGroup, fn);
     });
 
-    socket.on('routeGroup:update', function(routeGroup, fn) {
+    socket.on('routeGroup:update', function (routeGroup, fn) {
         console.log('routeGroup:update');
         routeController.updateRouteGroup(socket, routeGroup, fn);
     });
 
-    socket.on('routeGroup:remove', function(routeGroup, fn) {
+    socket.on('routeGroup:remove', function (routeGroup, fn) {
         console.log('routeGroup:remove');
         routeController.removeRouteGroup(socket, routeGroup, fn);
     });
 
-    socket.on('route:getById', function(routeId, fn) {
+    socket.on('route:getById', function (routeId, fn) {
         console.log('route:getById');
         routeController.getRouteById(socket, routeId, fn);
     });
 
-    socket.on('route:add', function(route, fn) {
+    socket.on('route:add', function (route, fn) {
         console.log('route:add');
         routeController.addRoute(socket, route, fn);
     });
 
-    socket.on('route:update', function(route, fn) {
+    socket.on('route:update', function (route, fn) {
         console.log('route:update');
         routeController.updateRoute(socket, route, fn);
     });
 
-    socket.on('route:remove', function(route, fn) {
+    socket.on('route:remove', function (route, fn) {
         console.log('route:remove');
         routeController.removeRoute(socket, route, fn);
     });
@@ -126,6 +128,7 @@ module.exports = function (socket) {
         console.log('locomotiveGroup:update');
         locomotiveController.updateLocomotiveGroup(socket, locomotiveGroup, fn);
     });
+
     socket.on('locomotiveGroup:remove', function (locomotiveGroup, fn) {
         console.log('locomotiveGroup:remove');
         locomotiveController.removeLocomotiveGroup(socket, locomotiveGroup, fn);
@@ -150,7 +153,4 @@ module.exports = function (socket) {
         console.log('locomotive:remove');
         locomotiveController.removeLocomotive(socket, locomotive, fn);
     });
-
-
-
 };
