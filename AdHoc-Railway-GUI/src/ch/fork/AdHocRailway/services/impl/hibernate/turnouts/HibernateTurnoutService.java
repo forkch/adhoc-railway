@@ -16,7 +16,7 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.services.turnouts;
+package ch.fork.AdHocRailway.services.impl.hibernate.turnouts;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -30,7 +30,9 @@ import org.hibernate.Transaction;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
-import ch.fork.AdHocRailway.services.HibernateUtil;
+import ch.fork.AdHocRailway.services.impl.hibernate.HibernateUtil;
+import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
+import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
 
 public class HibernateTurnoutService implements TurnoutService {
 	static Logger LOGGER = Logger.getLogger(HibernateTurnoutService.class);

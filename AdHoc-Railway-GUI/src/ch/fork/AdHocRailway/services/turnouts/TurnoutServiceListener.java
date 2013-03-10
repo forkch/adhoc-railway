@@ -10,17 +10,17 @@ public interface TurnoutServiceListener {
 
 	public void turnoutsUpdated(List<TurnoutGroup> turnoutGroups);
 
+	public void turnoutAdded(Turnout turnout);
+
 	public void turnoutUpdated(Turnout turnout);
 
 	public void turnoutRemoved(Turnout turnout);
 
-	public void turnoutAdded(Turnout turnout);
-
 	public void turnoutGroupAdded(TurnoutGroup group);
 
-	public void turnoutGroupRemoved(TurnoutGroup group);
-
 	public void turnoutGroupUpdated(TurnoutGroup group);
+
+	public void turnoutGroupRemoved(TurnoutGroup group);
 
 	public void failure(TurnoutManagerException arg0);
 }

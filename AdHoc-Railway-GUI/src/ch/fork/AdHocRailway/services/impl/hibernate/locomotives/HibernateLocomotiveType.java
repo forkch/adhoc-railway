@@ -16,7 +16,7 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.services.locomotives;
+package ch.fork.AdHocRailway.services.impl.hibernate.locomotives;
 
 // Generated 08-Aug-2007 18:10:44 by Hibernate Tools 3.2.0.beta8
 

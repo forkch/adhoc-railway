@@ -48,10 +48,16 @@ public interface LocomotiveManager {
 	public abstract List<LocomotiveGroup> getAllLocomotiveGroups()
 			throws LocomotiveManagerException;
 
+	void addLocomotiveManagerListener(LocomotiveManagerListener listener);
+
+	void removeLocomotiveManagerListenerInNextEvent(
+			LocomotiveManagerListener listener);
+
 	public abstract void clear() throws LocomotiveManagerException;
 
 	public abstract void initialize();
 
-	public abstract void setLocomotiveControl(LocomotiveControlface locomotiveControl);
+	public abstract void setLocomotiveControl(
+			LocomotiveControlface locomotiveControl);
 
 }

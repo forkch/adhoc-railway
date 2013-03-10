@@ -16,12 +16,11 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.services.locomotives;
+package ch.fork.AdHocRailway.services.impl.hibernate.locomotives;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -31,12 +30,15 @@ import org.hibernate.Transaction;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
-import ch.fork.AdHocRailway.services.HibernateUtil;
+import ch.fork.AdHocRailway.services.impl.hibernate.HibernateUtil;
+import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
+import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
 
 public class HibernateLocomotiveService implements LocomotiveService {
 	private static HibernateLocomotiveService instance;
 	private static Logger LOGGER = Logger
 			.getLogger(HibernateLocomotiveService.class);
+	private LocomotiveServiceListener listener;
 
 	private HibernateLocomotiveService() {
 		LOGGER.info("HibernateLocomotivePersistence loaded");
@@ -90,6 +92,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 			Integer id = (Integer) session.save(hLocomotive);
 			locomotive.setId(id);
 			transaction.commit();
+			listener.locomotiveAdded(locomotive);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
@@ -99,7 +102,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public void deleteLocomotive(Locomotive locomotive)
+	public void removeLocomotive(Locomotive locomotive)
 			throws LocomotiveManagerException {
 		LOGGER.debug("deleteLocomotive()");
 		Session session = HibernateUtil.openSession();
@@ -112,6 +115,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 					HibernateLocomotive.class, id);
 			session.delete(hl);
 			transaction.commit();
+			listener.locomotiveRemoved(locomotive);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
@@ -136,6 +140,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 			HibernateLocomotiveMapper.updateHibernateLocomotive(hl, locomotive);
 			session.update(hl);
 			transaction.commit();
+			listener.locomotiveUpdated(locomotive);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
@@ -158,6 +163,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 
 			group.setId(id);
 			transaction.commit();
+			listener.locomotiveGroupAdded(group);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
@@ -167,7 +173,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public void deleteLocomotiveGroup(LocomotiveGroup group)
+	public void removeLocomotiveGroup(LocomotiveGroup group)
 			throws LocomotiveManagerException {
 		LOGGER.debug("deleteLocomotiveGroup()");
 		Session session = HibernateUtil.openSession();
@@ -180,6 +186,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 					.get(HibernateLocomotiveGroup.class, id);
 			session.delete(hlg);
 			transaction.commit();
+			listener.locomotiveGroupRemoved(group);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
@@ -205,6 +212,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 					.updateHibernateLocomotiveGroup(hlg, group);
 			session.update(hlg);
 			transaction.commit();
+			listener.locomotiveGroupUpdated(group);
 		} catch (HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
@@ -215,7 +223,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
+	public List<LocomotiveGroup> getAllLocomotiveGroups()
 			throws LocomotiveManagerException {
 		LOGGER.debug("getAllLocomotiveGroupsDB()");
 		Session session = HibernateUtil.openSession();
@@ -225,7 +233,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 			List groups = session.createQuery("from HibernateLocomotiveGroup")
 					.list();
 
-			SortedSet<LocomotiveGroup> locomotiveGroups = new TreeSet<LocomotiveGroup>();
+			List<LocomotiveGroup> locomotiveGroups = new ArrayList<LocomotiveGroup>();
 			for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
 				HibernateLocomotiveGroup hLocomotiveGroup = (HibernateLocomotiveGroup) iterator
 						.next();
@@ -242,6 +250,18 @@ public class HibernateLocomotiveService implements LocomotiveService {
 		} finally {
 			session.close();
 		}
+
+	}
+
+	@Override
+	public void init(LocomotiveServiceListener listener) {
+		this.listener = listener;
+		List<LocomotiveGroup> allLocomotiveGroups = getAllLocomotiveGroups();
+		listener.locomotivesUpdated(allLocomotiveGroups);
+	}
+
+	@Override
+	public void disconnect() {
 
 	}
 }

@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.services.turnouts;
+package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
 import java.util.HashMap;
 import java.util.Map;

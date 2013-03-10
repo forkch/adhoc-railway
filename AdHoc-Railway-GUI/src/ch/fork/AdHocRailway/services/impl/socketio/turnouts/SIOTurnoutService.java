@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.services.turnouts;
+package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
@@ -14,21 +14,11 @@ import org.json.JSONObject;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
-import ch.fork.AdHocRailway.services.routes.SIOService;
+import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
+import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
+import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
 
 public class SIOTurnoutService implements TurnoutService, IOCallback {
-
-	private static final String TURNOUT_GROUP_ADD_REQUEST = "turnoutGroup:add";
-	private static final String TURNOUT_GROUP_REMOVE_REQUEST = "turnoutGroup:remove";
-	private static final String TURNOUT_GROUP_UPDATE_REQUEST = "turnoutGroup:update";
-
-	private static final String TURNOUT_GROUP_GET_ALL_REQUEST = "turnoutGroup:getAll";
-
-	private static final String TURNOUT_ADD_REQUEST = "turnout:add";
-
-	private static final String TURNOUT_REMOVE_REQUEST = "turnout:remove";
-
-	private static final String TURNOUT_UPDATE_REQUEST = "turnout:update";
 
 	private static Logger LOGGER = Logger.getLogger(SIOTurnoutService.class);
 
@@ -60,7 +50,7 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 	@Override
 	public void addTurnout(final Turnout turnout) {
-		LOGGER.info(TURNOUT_ADD_REQUEST);
+		LOGGER.info(SIOTurnoutServiceEvent.TURNOUT_ADD_REQUEST);
 		sioService.checkSocket();
 		try {
 			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
@@ -70,9 +60,12 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 					LOGGER.info("ack: " + Arrays.toString(arg0));
 					Boolean err = (Boolean) arg0[0];
 					String msg = (String) arg0[1];
+					String sioId = (String) arg0[2];
 					if (err) {
 						listener.failure(new TurnoutManagerException(msg));
 					} else {
+						SIOTurnoutServiceEventHandler.addIdToTurnout(turnout,
+								sioId);
 						listener.turnoutAdded(turnout);
 					}
 				}
@@ -81,8 +74,9 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 			JSONObject addTurnoutJson = SIOTurnoutMapper
 					.mapTurnoutToJSON(turnout);
 
-			sioService.getSocket().emit(TURNOUT_ADD_REQUEST, ioAcknowledge,
-					addTurnoutJson);
+			sioService.getSocket().emit(
+					SIOTurnoutServiceEvent.TURNOUT_ADD_REQUEST.getEvent(),
+					ioAcknowledge, addTurnoutJson);
 		} catch (JSONException e) {
 			throw new TurnoutManagerException("error adding turnout", e);
 		}
@@ -91,7 +85,7 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 	@Override
 	public void deleteTurnout(final Turnout turnout) {
-		LOGGER.info(TURNOUT_REMOVE_REQUEST);
+		LOGGER.info(SIOTurnoutServiceEvent.TURNOUT_REMOVE_REQUEST);
 		sioService.checkSocket();
 		try {
 			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
@@ -113,8 +107,9 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 			JSONObject removeTurnoutJson = SIOTurnoutMapper
 					.mapTurnoutToJSON(turnout);
 
-			sioService.getSocket().emit(TURNOUT_REMOVE_REQUEST, ioAcknowledge,
-					removeTurnoutJson);
+			sioService.getSocket().emit(
+					SIOTurnoutServiceEvent.TURNOUT_REMOVE_REQUEST.getEvent(),
+					ioAcknowledge, removeTurnoutJson);
 		} catch (JSONException e) {
 			throw new TurnoutManagerException("error removing turnout", e);
 		}
@@ -122,7 +117,7 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 	@Override
 	public void updateTurnout(final Turnout turnout) {
-		LOGGER.info(TURNOUT_UPDATE_REQUEST);
+		LOGGER.info(SIOTurnoutServiceEvent.TURNOUT_UPDATE_REQUEST);
 		sioService.checkSocket();
 		try {
 			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
@@ -144,8 +139,9 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 			JSONObject updateTurnoutJson = SIOTurnoutMapper
 					.mapTurnoutToJSON(turnout);
 
-			sioService.getSocket().emit(TURNOUT_UPDATE_REQUEST, ioAcknowledge,
-					updateTurnoutJson);
+			sioService.getSocket().emit(
+					SIOTurnoutServiceEvent.TURNOUT_UPDATE_REQUEST.getEvent(),
+					ioAcknowledge, updateTurnoutJson);
 		} catch (JSONException e) {
 			throw new TurnoutManagerException("error updating turnout", e);
 		}
@@ -154,7 +150,7 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 	@Override
 	public List<TurnoutGroup> getAllTurnoutGroups() {
-		LOGGER.info(TURNOUT_GROUP_GET_ALL_REQUEST);
+		LOGGER.info(SIOTurnoutServiceEvent.TURNOUT_GROUP_GET_ALL_REQUEST);
 		sioService.checkSocket();
 		IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
@@ -172,14 +168,17 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 				}
 			}
 		};
-		sioService.getSocket().emit(TURNOUT_GROUP_GET_ALL_REQUEST,
-				ioAcknowledge, new Object[] {});
+		sioService
+				.getSocket()
+				.emit(SIOTurnoutServiceEvent.TURNOUT_GROUP_GET_ALL_REQUEST
+						.getEvent(),
+						ioAcknowledge, new Object[] {});
 		return null;
 	}
 
 	@Override
 	public void addTurnoutGroup(final TurnoutGroup group) {
-		LOGGER.info(TURNOUT_GROUP_ADD_REQUEST);
+		LOGGER.info(SIOTurnoutServiceEvent.TURNOUT_GROUP_ADD_REQUEST);
 		sioService.checkSocket();
 		try {
 			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
@@ -189,9 +188,12 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 					LOGGER.info("ack: " + Arrays.toString(arg0));
 					Boolean err = (Boolean) arg0[0];
 					String msg = (String) arg0[1];
+					String sioId = (String) arg0[2];
 					if (err) {
 						listener.failure(new TurnoutManagerException(msg));
 					} else {
+						SIOTurnoutServiceEventHandler.addIdToTurnoutGroup(
+								group, sioId);
 						listener.turnoutGroupAdded(group);
 					}
 
@@ -201,8 +203,11 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 			JSONObject addTurnoutGroupJSON = SIOTurnoutMapper
 					.mapTurnoutGroupToJSON(group);
 
-			sioService.getSocket().emit(TURNOUT_GROUP_ADD_REQUEST,
-					ioAcknowledge, addTurnoutGroupJSON);
+			sioService
+					.getSocket()
+					.emit(SIOTurnoutServiceEvent.TURNOUT_GROUP_ADD_REQUEST
+							.getEvent(),
+							ioAcknowledge, addTurnoutGroupJSON);
 		} catch (JSONException e) {
 			throw new TurnoutManagerException("error adding turnout group", e);
 		}
@@ -211,7 +216,7 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 	@Override
 	public void removeTurnoutGroup(final TurnoutGroup group) {
-		LOGGER.info(TURNOUT_GROUP_REMOVE_REQUEST);
+		LOGGER.info(SIOTurnoutServiceEvent.TURNOUT_GROUP_REMOVE_REQUEST);
 		sioService.checkSocket();
 		try {
 			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
@@ -233,8 +238,11 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 			JSONObject removeTurnoutGroupJSON = SIOTurnoutMapper
 					.mapTurnoutGroupToJSON(group);
 
-			sioService.getSocket().emit(TURNOUT_GROUP_REMOVE_REQUEST,
-					ioAcknowledge, removeTurnoutGroupJSON);
+			sioService
+					.getSocket()
+					.emit(SIOTurnoutServiceEvent.TURNOUT_GROUP_REMOVE_REQUEST
+							.getEvent(),
+							ioAcknowledge, removeTurnoutGroupJSON);
 		} catch (JSONException e) {
 			throw new TurnoutManagerException("error removing turnout group", e);
 		}
@@ -242,7 +250,7 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 	@Override
 	public void updateTurnoutGroup(final TurnoutGroup group) {
-		LOGGER.info(TURNOUT_GROUP_UPDATE_REQUEST);
+		LOGGER.info(SIOTurnoutServiceEvent.TURNOUT_GROUP_UPDATE_REQUEST);
 		sioService.checkSocket();
 		try {
 			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
@@ -264,8 +272,11 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 			JSONObject updateTurnoutGroupJSON = SIOTurnoutMapper
 					.mapTurnoutGroupToJSON(group);
 
-			sioService.getSocket().emit(TURNOUT_GROUP_UPDATE_REQUEST,
-					ioAcknowledge, updateTurnoutGroupJSON);
+			sioService
+					.getSocket()
+					.emit(SIOTurnoutServiceEvent.TURNOUT_GROUP_UPDATE_REQUEST
+							.getEvent(),
+							ioAcknowledge, updateTurnoutGroupJSON);
 		} catch (JSONException e) {
 			throw new TurnoutManagerException("error updating turnout group", e);
 		}

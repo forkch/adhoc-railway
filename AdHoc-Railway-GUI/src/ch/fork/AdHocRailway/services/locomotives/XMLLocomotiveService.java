@@ -18,7 +18,7 @@
 
 package ch.fork.AdHocRailway.services.locomotives;
 
-import java.util.SortedSet;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -56,7 +56,7 @@ public class XMLLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public void deleteLocomotive(Locomotive locomotive)
+	public void removeLocomotive(Locomotive locomotive)
 			throws LocomotiveManagerException {
 		// TODO Auto-generated method stub
 
@@ -70,7 +70,7 @@ public class XMLLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
+	public List<LocomotiveGroup> getAllLocomotiveGroups()
 			throws LocomotiveManagerException {
 		// TODO Auto-generated method stub
 		return null;
@@ -84,7 +84,7 @@ public class XMLLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public void deleteLocomotiveGroup(LocomotiveGroup group)
+	public void removeLocomotiveGroup(LocomotiveGroup group)
 			throws LocomotiveManagerException {
 		// TODO Auto-generated method stub
 
@@ -93,6 +93,18 @@ public class XMLLocomotiveService implements LocomotiveService {
 	@Override
 	public void updateLocomotiveGroup(LocomotiveGroup group)
 			throws LocomotiveManagerException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void init(LocomotiveServiceListener listener) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void disconnect() {
 		// TODO Auto-generated method stub
 
 	}

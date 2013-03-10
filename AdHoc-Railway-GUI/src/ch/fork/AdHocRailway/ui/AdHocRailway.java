@@ -66,10 +66,10 @@ import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
 
-import ch.fork.AdHocRailway.domain.HibernatePersistence;
 import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
@@ -79,11 +79,12 @@ import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerImpl;
-import ch.fork.AdHocRailway.services.locomotives.HibernateLocomotiveService;
+import ch.fork.AdHocRailway.services.impl.hibernate.HibernatePersistence;
+import ch.fork.AdHocRailway.services.impl.hibernate.locomotives.HibernateLocomotiveService;
+import ch.fork.AdHocRailway.services.impl.hibernate.turnouts.HibernateRouteService;
+import ch.fork.AdHocRailway.services.impl.hibernate.turnouts.HibernateTurnoutService;
 import ch.fork.AdHocRailway.services.locomotives.XMLLocomotiveService;
-import ch.fork.AdHocRailway.services.routes.HibernateRouteService;
-import ch.fork.AdHocRailway.services.routes.XMLRouteService;
-import ch.fork.AdHocRailway.services.turnouts.HibernateTurnoutService;
+import ch.fork.AdHocRailway.services.turnouts.XMLRouteService;
 import ch.fork.AdHocRailway.services.turnouts.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
@@ -283,10 +284,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			fileMode = true;
 			initProceeded("");
 		}
-		// initProceeded("Loading Persistence Layer (Locomotives)");
-		// locomotivePersistence = LocomotiveManagerImpl.getInstance();
-		// locomotivePersistence.setLocomotiveControl(getLocomotiveControl());
-		// locomotivePersistence.initialize();
+		initProceeded("Loading Persistence Layer (Locomotives)");
+		locomotivePersistence = LocomotiveManagerImpl.getInstance();
+		locomotivePersistence.setLocomotiveControl(getLocomotiveControl());
+		locomotivePersistence.initialize();
 
 		initProceeded("Loading Persistence Layer (Turnouts)");
 		turnoutPersistence = TurnoutManagerImpl.getInstance();
@@ -346,7 +347,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	public void updateGUI() {
 		updatePower();
-		// updateLocomotives();
 		disableNavigationKeys(mainPanel);
 		mainPanel.requestFocus();
 	}

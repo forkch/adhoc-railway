@@ -16,7 +16,7 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.services.turnouts;
+package ch.fork.AdHocRailway.services.impl.hibernate.turnouts;
 
 // Generated 08-Aug-2007 18:10:44 by Hibernate Tools 3.2.0.beta8
 

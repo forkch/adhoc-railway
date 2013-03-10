@@ -320,8 +320,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			TurnoutGroup groupToDelete = (TurnoutGroup) (turnoutGroupList
-					.getSelectedValue());
+			TurnoutGroup groupToDelete = turnoutGroupModel.getSelection();
 			if (groupToDelete == null) {
 				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
 						"Please select a Turnout-Group", "Error",
@@ -347,8 +346,9 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			TurnoutGroup selectedTurnoutGroup = (TurnoutGroup) (turnoutGroupList
-					.getSelectedValue());
+
+			TurnoutGroup selectedTurnoutGroup = turnoutGroupModel
+					.getSelection();
 			if (selectedTurnoutGroup == null) {
 				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
 						"Please select a switch group", "Error",
@@ -376,7 +376,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			TurnoutConfig switchConfig = new TurnoutConfig(
 					TurnoutConfigurationDialog.this, newTurnout);
 			if (switchConfig.isOkPressed()) {
-				turnouts.add(newTurnout);
+				turnouts.clear();
+				turnouts.addAll(selectedTurnoutGroup.getTurnouts());
 			}
 		}
 
@@ -423,6 +424,11 @@ public class TurnoutConfigurationDialog extends JDialog implements
 				turnoutPersistence.removeTurnout(turnoutByNumber);
 			}
 			turnoutsTable.clearSelection();
+			turnouts.clear();
+
+			TurnoutGroup selectedTurnoutGroup = turnoutGroupModel
+					.getSelection();
+			turnouts.addAll(selectedTurnoutGroup.getTurnouts());
 		}
 	}
 
@@ -453,7 +459,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 	@Override
 	public void turnoutRemoved(Turnout turnout) {
-
 	}
 
 	@Override
@@ -481,7 +486,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 	@Override
 	public void failure(TurnoutManagerException arg0) {
-		// TODO Auto-generated method stub
 
 	}
 }

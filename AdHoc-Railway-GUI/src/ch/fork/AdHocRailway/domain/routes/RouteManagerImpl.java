@@ -32,9 +32,9 @@ import org.apache.log4j.Logger;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerImpl;
-import ch.fork.AdHocRailway.services.routes.RouteService;
-import ch.fork.AdHocRailway.services.routes.RouteServiceListener;
-import ch.fork.AdHocRailway.services.routes.SIORouteService;
+import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
+import ch.fork.AdHocRailway.services.turnouts.RouteService;
+import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
 
 public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	private static Logger LOGGER = Logger.getLogger(RouteManagerImpl.class);

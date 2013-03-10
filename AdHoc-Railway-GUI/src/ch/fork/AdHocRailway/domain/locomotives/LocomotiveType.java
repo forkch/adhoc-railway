@@ -26,4 +26,13 @@ public enum LocomotiveType {
 	public int getStepping() {
 		return stepping;
 	}
+
+	public static LocomotiveType fromString(String string) {
+		for (LocomotiveType lt : values()) {
+			if (lt.name().equalsIgnoreCase(string)) {
+				return lt;
+			}
+		}
+		return null;
+	}
 }

@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.services.locomotives;
+package ch.fork.AdHocRailway.services.impl.hibernate.locomotives;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;

@@ -16,7 +16,7 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.services.turnouts;
+package ch.fork.AdHocRailway.services.impl.hibernate.turnouts;
 
 // Generated 08-Aug-2007 18:10:44 by Hibernate Tools 3.2.0.beta8
 
@@ -56,10 +56,6 @@ public class HibernateTurnoutType extends Model implements
 
 	@Sort(type = SortType.NATURAL)
 	private SortedSet<HibernateTurnout> turnouts = new TreeSet<HibernateTurnout>();
-
-	private static final String PROPERTYNAME_ID = "id";
-	private static final String PROPERTYNAME_TYPENAME = "typeName";
-	private static final String PROPERTYNAME_TURNOUTS = "turnouts";
 
 	@Override
 	public int compareTo(HibernateTurnoutType o) {
@@ -150,9 +146,7 @@ public class HibernateTurnoutType extends Model implements
 	}
 
 	public void setId(int id) {
-		int old = this.id;
 		this.id = id;
-		// firePropertyChange(PROPERTYNAME_ID, old, id);
 	}
 
 	@Column(name = "type_name", unique = false, nullable = false, insertable = true, updatable = true)
@@ -161,9 +155,7 @@ public class HibernateTurnoutType extends Model implements
 	}
 
 	public void setTypeName(String typeName) {
-		String old = this.typeName;
 		this.typeName = typeName;
-		firePropertyChange(PROPERTYNAME_TYPENAME, old, typeName);
 	}
 
 	@Sort(type = SortType.NATURAL)
@@ -174,9 +166,7 @@ public class HibernateTurnoutType extends Model implements
 
 	@Sort(type = SortType.NATURAL)
 	public void setTurnouts(SortedSet<HibernateTurnout> turnouts) {
-		SortedSet<HibernateTurnout> old = this.turnouts;
 		this.turnouts = turnouts;
-		// firePropertyChange(PROPERTYNAME_TURNOUTS, old, turnouts);
 	}
 
 }

@@ -64,6 +64,7 @@ public class LocomotiveControlPanel extends JPanel {
 				.getKeyBoardLayout()
 				.assignKeys(getInputMap(WHEN_IN_FOCUSED_WINDOW),
 						"LocomotiveStop");
+		update();
 	}
 
 	public void update() {

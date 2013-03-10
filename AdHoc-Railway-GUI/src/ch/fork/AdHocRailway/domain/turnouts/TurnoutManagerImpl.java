@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.services.turnouts.SIOTurnoutService;
+import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
 import de.dermoba.srcp.model.SRCPAddress;
@@ -149,21 +149,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
 	}
 
-	private void putInCache(Turnout turnout) {
-		addressTurnoutCache.put(
-				new SRCPAddress(turnout.getBus1(), turnout.getAddress1(),
-						turnout.getBus2(), turnout.getAddress2()), turnout);
-		if (turnout.isThreeWay()) {
-			addressThreewayCache.put(
-					new SRCPAddress(turnout.getBus1(), turnout.getAddress1(),
-							0, 0), turnout);
-			addressThreewayCache.put(new SRCPAddress(0, 0, turnout.getBus2(),
-					turnout.getAddress2()), turnout);
-		}
-		numberToTurnoutCache.put(turnout.getNumber(), turnout);
-		turnoutControl.addOrUpdateTurnout(turnout);
-	}
-
 	@Override
 	public void removeTurnout(Turnout turnout) {
 		LOGGER.debug("removeTurnout(" + turnout + ")");
@@ -176,12 +161,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
 			Route route = ri.getRoute();
 			route.getRouteItems().remove(ri);
 		}
-	}
-
-	private void removeFromCache(Turnout turnout) {
-		numberToTurnoutCache.values().remove(turnout);
-		addressTurnoutCache.values().remove(turnout);
-		addressThreewayCache.values().remove(turnout);
 	}
 
 	@Override
@@ -211,11 +190,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	public void addTurnoutGroup(TurnoutGroup group) {
 		LOGGER.debug("addTurnoutGroup()");
 		turnoutService.addTurnoutGroup(group);
-		putTurnoutGroupInCache(group);
-	}
-
-	private void putTurnoutGroupInCache(TurnoutGroup group) {
-		turnoutGroups.add(group);
 	}
 
 	@Override
@@ -229,11 +203,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
 				removeTurnout(turnout);
 			}
 		}
-		turnoutService.removeTurnoutGroup(group);
-	}
-
-	public void removeTurnoutGroupFromCache(TurnoutGroup group) {
-		turnoutGroups.remove(group);
 	}
 
 	@Override
@@ -346,6 +315,16 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	@Override
+	public void turnoutAdded(Turnout turnout) {
+		LOGGER.info("turnoutAdded: " + turnout);
+		cleanupListeners();
+		putInCache(turnout);
+		for (TurnoutManagerListener l : listeners) {
+			l.turnoutAdded(turnout);
+		}
+	}
+
+	@Override
 	public void turnoutUpdated(Turnout turnout) {
 		LOGGER.info("turnoutUpdated: " + turnout);
 		cleanupListeners();
@@ -366,32 +345,12 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	@Override
-	public void turnoutAdded(Turnout turnout) {
-		LOGGER.info("turnoutAdded: " + turnout);
-		cleanupListeners();
-		putInCache(turnout);
-		for (TurnoutManagerListener l : listeners) {
-			l.turnoutAdded(turnout);
-		}
-	}
-
-	@Override
 	public void turnoutGroupAdded(TurnoutGroup group) {
 		LOGGER.info("turnoutGroupAdded: " + group);
 		cleanupListeners();
 		putTurnoutGroupInCache(group);
 		for (TurnoutManagerListener l : listeners) {
 			l.turnoutGroupAdded(group);
-		}
-	}
-
-	@Override
-	public void turnoutGroupRemoved(TurnoutGroup group) {
-		LOGGER.info("turnoutGroupDeleted: " + group);
-		cleanupListeners();
-		removeTurnoutGroupFromCache(group);
-		for (TurnoutManagerListener l : listeners) {
-			l.turnoutGroupRemoved(group);
 		}
 	}
 
@@ -407,6 +366,16 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	@Override
+	public void turnoutGroupRemoved(TurnoutGroup group) {
+		LOGGER.info("turnoutGroupDeleted: " + group);
+		cleanupListeners();
+		removeTurnoutGroupFromCache(group);
+		for (TurnoutManagerListener l : listeners) {
+			l.turnoutGroupRemoved(group);
+		}
+	}
+
+	@Override
 	public void failure(TurnoutManagerException arg0) {
 		LOGGER.warn("failure", arg0);
 		cleanupListeners();
@@ -415,4 +384,32 @@ public class TurnoutManagerImpl implements TurnoutManager,
 		}
 	}
 
+	private void putTurnoutGroupInCache(TurnoutGroup group) {
+		turnoutGroups.add(group);
+	}
+
+	private void removeTurnoutGroupFromCache(TurnoutGroup group) {
+		turnoutGroups.remove(group);
+	}
+
+	private void putInCache(Turnout turnout) {
+		addressTurnoutCache.put(
+				new SRCPAddress(turnout.getBus1(), turnout.getAddress1(),
+						turnout.getBus2(), turnout.getAddress2()), turnout);
+		if (turnout.isThreeWay()) {
+			addressThreewayCache.put(
+					new SRCPAddress(turnout.getBus1(), turnout.getAddress1(),
+							0, 0), turnout);
+			addressThreewayCache.put(new SRCPAddress(0, 0, turnout.getBus2(),
+					turnout.getAddress2()), turnout);
+		}
+		numberToTurnoutCache.put(turnout.getNumber(), turnout);
+		turnoutControl.addOrUpdateTurnout(turnout);
+	}
+
+	private void removeFromCache(Turnout turnout) {
+		numberToTurnoutCache.values().remove(turnout);
+		addressTurnoutCache.values().remove(turnout);
+		addressThreewayCache.values().remove(turnout);
+	}
 }

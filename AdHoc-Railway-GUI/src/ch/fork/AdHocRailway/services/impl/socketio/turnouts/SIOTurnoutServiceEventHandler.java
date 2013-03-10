@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.services.turnouts;
+package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
 
 public class SIOTurnoutServiceEventHandler {
 
@@ -103,5 +104,19 @@ public class SIOTurnoutServiceEventHandler {
 
 	public static String getSIOIdByTurnout(Turnout turnout) {
 		return SIOTurnoutMapper.turnoutIdMap.get(turnout.getId());
+	}
+
+	public static void addIdToTurnout(Turnout turnout, String sioId) {
+		int id = sioId.hashCode();
+		turnout.setId(id);
+		sioIdToTurnoutMap.put(sioId, turnout);
+		SIOTurnoutMapper.turnoutIdMap.put(id, sioId);
+	}
+
+	public static void addIdToTurnoutGroup(TurnoutGroup group, String sioId) {
+		int id = sioId.hashCode();
+		group.setId(id);
+		sioIdToTurnoutGroupMap.put(sioId, group);
+		SIOTurnoutMapper.turnoutGroupIdMap.put(id, sioId);
 	}
 }
