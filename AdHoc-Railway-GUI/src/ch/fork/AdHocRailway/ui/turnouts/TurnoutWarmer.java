@@ -43,7 +43,10 @@ import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import de.dermoba.srcp.client.SRCPSession;
 
 public class TurnoutWarmer extends ConfigurationDialog {
-	private SRCPSession session;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5791582705451816603L;
 	private JSpinner turnoutNumberField;
 	private JToggleButton warmButton;
 	private TurnoutManager turnoutPersistence;
@@ -52,7 +55,6 @@ public class TurnoutWarmer extends ConfigurationDialog {
 
 	public TurnoutWarmer(JFrame owner, SRCPSession session) {
 		super(owner, "Switch Programmer");
-		this.session = session;
 		initGUI();
 	}
 
@@ -98,6 +100,11 @@ public class TurnoutWarmer extends ConfigurationDialog {
 	}
 
 	class WarmupAction extends AbstractAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4286408324389585654L;
 
 		public WarmupAction() {
 			super("Start");

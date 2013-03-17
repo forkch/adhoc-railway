@@ -22,8 +22,6 @@ public interface PreferencesKeys {
 
 	// GUI
 	public static final String LOCOMOTIVE_CONTROLES = "LocomotiveControlesAmount";
-	public static final String TURNOUT_CONTROLES = "SwitchControlesAmount";
-	public static final String ROUTE_CONTROLES = "RouteControlesAmount";
 	public static final String KEYBOARD_LAYOUT = "KeyBoardLayout";
 	public static final String FULLSCREEN = "Fullscreen";
 	public static final String TABBED_TRACK = "TabbedTrack";
@@ -43,10 +41,17 @@ public interface PreferencesKeys {
 	public static final String DEFAULT_LOCOMOTIVE_BUS = "DefaultLocomotiveBus";
 	public static final String NUMBER_OF_BOOSTERS = "NumberOfBoosters";
 
-	// Server
-	public static final String HOSTNAME = "Hostname";
-	public static final String PORT = "Port";
-	public static final String AUTOCONNECT = "Autoconnect";
+	// SRCP Server
+	public static final String SRCP_HOSTNAME = "SRCPHostname";
+	public static final String SRCP_PORT = "SRCPPort";
+	public static final String SRCP_AUTOCONNECT = "SRCPAutoconnect";
+
+	// AdHoc-Server Server
+	public static final String USE_ADHOC_SERVER = "UseAdHocServer";
+	public static final String ADHOC_SERVER_HOSTNAME = "AdHocServerHostname";
+	public static final String ADHOC_SERVER_PORT = "AdHocServerPort";
+	public static final String ADHOC_SERVER_COLLECTION = "AdHocServerCollection";
+	public static final String ADHOC_SERVER_AUTOCONNECT = "AdHocServerAutoconnect";
 
 	// Database
 	public static final String USE_DATABASE = "UseDatabase";
@@ -54,4 +59,5 @@ public interface PreferencesKeys {
 	public static final String DATABASE_NAME = "DatabaseName";
 	public static final String DATABASE_USER = "DatabaseUser";
 	public static final String DATABASE_PWD = "DatabasePWD";
+
 }

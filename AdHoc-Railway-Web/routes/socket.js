@@ -153,4 +153,9 @@ module.exports = function (socket) {
         console.log('locomotive:remove');
         locomotiveController.removeLocomotive(socket, locomotive, fn);
     });
+
+    socket.on('locomotive:clear', function (locomotive, fn) {
+        console.log('locomotive:clear');
+        locomotiveController.clearLocomotive(socket, fn);
+    });
 };

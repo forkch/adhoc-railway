@@ -18,24 +18,29 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.jgoodies.binding.beans.Model;
 
 public class LocomotiveGroup extends Model implements java.io.Serializable,
 		Comparable<LocomotiveGroup> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7262606789136545713L;
+
 	private int id;
 
 	private String name;
 
-	private SortedSet<Locomotive> locomotives = new TreeSet<Locomotive>();
+	private List<Locomotive> locomotives = new ArrayList<Locomotive>();
 
 	private static final String PROPERTYNAME_NAME = "name";
 
 	@Override
-	public int compareTo(LocomotiveGroup o) {
+	public int compareTo(final LocomotiveGroup o) {
 		if (this == o) {
 			return 0;
 		}
@@ -51,7 +56,7 @@ public class LocomotiveGroup extends Model implements java.io.Serializable,
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -83,23 +88,16 @@ public class LocomotiveGroup extends Model implements java.io.Serializable,
 	public LocomotiveGroup() {
 	}
 
-	public LocomotiveGroup(int id, String name) {
+	public LocomotiveGroup(final int id, final String name) {
 		this.id = id;
 		this.name = name;
-	}
-
-	public LocomotiveGroup(int id, String name,
-			SortedSet<Locomotive> locomotives) {
-		this.id = id;
-		this.name = name;
-		this.locomotives = locomotives;
 	}
 
 	public int getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -107,26 +105,27 @@ public class LocomotiveGroup extends Model implements java.io.Serializable,
 		return this.name;
 	}
 
-	public void setName(String name) {
-		String old = this.name;
+	public void setName(final String name) {
+		final String old = this.name;
 		this.name = name;
 		firePropertyChange(PROPERTYNAME_NAME, old, name);
 	}
 
-	public SortedSet<Locomotive> getLocomotives() {
+	public List<Locomotive> getLocomotives() {
 		return this.locomotives;
 	}
 
-	public void setLocomotives(SortedSet<Locomotive> locomotives) {
+	public void setLocomotives(final List<Locomotive> locomotives) {
 		this.locomotives = locomotives;
-		// firePropertyChange(PROPERTYNAME_LOCOMOTIVES, old, locomotives);
 	}
 
-	public void addLocomotive(Locomotive locomotive) {
-		locomotives.add(locomotive);
+	public void addLocomotive(final Locomotive locomotive) {
+		if (!locomotives.contains(locomotive)) {
+			locomotives.add(locomotive);
+		}
 	}
 
-	public void removeLocomotive(Locomotive locomotive) {
+	public void removeLocomotive(final Locomotive locomotive) {
 		locomotives.remove(locomotive);
 	}
 

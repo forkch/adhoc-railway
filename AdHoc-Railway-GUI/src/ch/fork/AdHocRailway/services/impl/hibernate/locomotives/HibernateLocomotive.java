@@ -40,6 +40,11 @@ import com.jgoodies.binding.beans.Model;
 public class HibernateLocomotive extends Model implements java.io.Serializable,
 		Comparable<HibernateLocomotive> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5673819222778326830L;
+
 	// Fields
 	@Id
 	@GeneratedValue

@@ -8,6 +8,12 @@ div.row
         p
           input(autofocus='true', type='number', size='4', placeholder='Number', ng-model='turnout.number')
         p
+          select(ng-model='turnout.type')
+            option default
+            option doublecross
+            option threeway
+            option cutter
+        p
           input(type='number',size='4', placeholder='Bus 1', ng-model='turnout.bus1')
         p
           input(type='number',size='4', placeholder='Address 1', ng-model='turnout.address1')
@@ -21,12 +27,6 @@ div.row
         p
           label.checkbox Address 2 switched
             input(type='text',type='checkbox', ng-model='turnout.address2switched')
-        p
-          select(ng-model='turnout.type')
-            option default
-            option doublecross
-            option threeway
-            option cutter
         p
           select(ng-model='turnout.defaultState')
             option left

@@ -36,7 +36,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.table.TableColumn;
 
@@ -52,6 +51,7 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
+import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
 
 import com.jgoodies.binding.PresentationModel;
@@ -65,6 +65,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class RouteConfig extends JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6408833917980514400L;
 	private boolean okPressed;
 	private boolean cancelPressed;
 
@@ -109,8 +113,10 @@ public class RouteConfig extends JDialog {
 		// usedRouteNumbers = routePersistence.getUsedRouteNumbers();
 		// usedRouteNumbers.remove(presentationModel.getBean().getNumber());
 		buildPanel();
+
 		pack();
 		setLocationRelativeTo(getParent());
+		SwingUtils.addEscapeListener(this);
 		setVisible(true);
 	}
 
@@ -194,6 +200,11 @@ public class RouteConfig extends JDialog {
 
 	private class AddRouteItemAction extends AbstractAction {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2588582945532694902L;
+
 		public AddRouteItemAction() {
 			super("Add Turnout", ImageTools
 					.createImageIconFromIconSet("add.png"));
@@ -207,9 +218,11 @@ public class RouteConfig extends JDialog {
 
 	private class RecordRouteAction extends AbstractAction {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1287566434458519970L;
 		private boolean recording;
-		private JWindow numberDisplayDialog;
-
 		public RecordRouteAction() {
 			super("Record", ImageTools
 					.createImageIconFromIconSet("record_off.png"));
@@ -284,6 +297,10 @@ public class RouteConfig extends JDialog {
 	}
 
 	private abstract class SwitchingAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -126103872681435146L;
 		private final Route route;
 
 		public SwitchingAction(Route route) {
@@ -382,36 +399,66 @@ public class RouteConfig extends JDialog {
 	}
 
 	private class CurvedLeftAction extends SwitchingAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2298539073910194594L;
+
 		public CurvedLeftAction(Route route) {
 			super(route);
 		}
 	}
 
 	private class StraightAction extends SwitchingAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2866441796856357663L;
+
 		public StraightAction(Route route) {
 			super(route);
 		}
 	}
 
 	private class CurvedRightAction extends SwitchingAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6106999361346507826L;
+
 		public CurvedRightAction(Route route) {
 			super(route);
 		}
 	}
 
 	private class EnableRouteAction extends SwitchingAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2554594488359463589L;
+
 		public EnableRouteAction(Route route) {
 			super(route);
 		}
 	}
 
 	private class DisableRouteAction extends SwitchingAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -150319621580243688L;
+
 		public DisableRouteAction(Route route) {
 			super(route);
 		}
 	}
 
 	private class NumberEnteredAction extends AbstractAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4851780584974377445L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -430,6 +477,11 @@ public class RouteConfig extends JDialog {
 	}
 
 	private class RemoveRouteItemAction extends AbstractAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1122483690867740137L;
 
 		public RemoveRouteItemAction() {
 			super("Remove Turnout", ImageTools
@@ -457,6 +509,11 @@ public class RouteConfig extends JDialog {
 	}
 
 	class ApplyChangesAction extends AbstractAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7279880783090999221L;
 
 		public ApplyChangesAction() {
 			super("OK");
@@ -511,6 +568,11 @@ public class RouteConfig extends JDialog {
 	}
 
 	class CancelAction extends AbstractAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8783083615316968787L;
 
 		public CancelAction() {
 			super("Cancel");

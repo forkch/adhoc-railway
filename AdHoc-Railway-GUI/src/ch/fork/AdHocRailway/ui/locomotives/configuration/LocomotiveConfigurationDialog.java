@@ -47,12 +47,12 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
+import ch.fork.AdHocRailway.ui.SwingUtils;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
-import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.common.collect.ArrayListModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -61,13 +61,16 @@ import com.jgoodies.forms.layout.FormLayout;
 public class LocomotiveConfigurationDialog extends JDialog implements
 		LocomotiveManagerListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4043586436141605523L;
+
 	private boolean okPressed;
 
 	private JTable locomotivesTable;
 
 	private JList locomotiveGroupList;
-
-	private SelectionInList<LocomotiveGroup> locomotiveGroupModel;
 
 	private JButton addLocomotiveButton;
 
@@ -76,8 +79,6 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 	private JButton addGroupButton;
 
 	private JButton removeGroupButton;
-
-	private SelectionInList<Locomotive> locomotiveModel;
 
 	private JButton okButton;
 
@@ -88,10 +89,12 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 	private JButton editGroupButton;
 
+	private SelectionInList<LocomotiveGroup> locomotiveGroupModel;
+	private SelectionInList<Locomotive> locomotiveModel;
 	private ArrayListModel<LocomotiveGroup> locomotiveGroups;
 	private ArrayListModel<Locomotive> locomotives;
 
-	public LocomotiveConfigurationDialog(JFrame owner) {
+	public LocomotiveConfigurationDialog(final JFrame owner) {
 		super(owner, "Locomotive Configuration", true);
 		initGUI();
 	}
@@ -108,12 +111,12 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 		initComponents();
 		initEventHandling();
 
-		FormLayout layout = new FormLayout("pref, 10dlu, pref:grow",
+		final FormLayout layout = new FormLayout("pref, 10dlu, pref:grow",
 				"pref, 3dlu, fill:pref:grow, 10dlu, pref, 10dlu, pref");
 
-		PanelBuilder builder = new PanelBuilder(layout);
+		final PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		CellConstraints cc = new CellConstraints();
+		final CellConstraints cc = new CellConstraints();
 
 		builder.addSeparator("Locomotive Groups", cc.xyw(1, 1, 1));
 
@@ -146,6 +149,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 	private void initComponents() {
 		locomotiveGroups = new ArrayListModel<LocomotiveGroup>(
 				locomotivePersistence.getAllLocomotiveGroups());
+
 		locomotiveGroupModel = new SelectionInList<LocomotiveGroup>(
 				(ListModel) locomotiveGroups);
 
@@ -175,7 +179,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 				ImageTools.createImageIconFromIconSet("ok.png"));
 		okButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				okPressed = true;
 				setVisible(false);
 				locomotivePersistence
@@ -190,7 +194,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 		locomotivesTable.addMouseListener(new MouseAdapter() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseClicked(final MouseEvent e) {
 				if (e.getClickCount() == 2
 						&& e.getButton() == MouseEvent.BUTTON1) {
 					new EditLocomotiveAction().actionPerformed(null);
@@ -198,6 +202,8 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			}
 
 		});
+		SwingUtils.addEscapeListener(this);
+
 	}
 
 	/**
@@ -207,14 +213,14 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			ListSelectionListener {
 
 		@Override
-		public void valueChanged(ListSelectionEvent e) {
+		public void valueChanged(final ListSelectionEvent e) {
 			if (e.getValueIsAdjusting()) {
 				return;
 			}
 			if (locomotiveGroupList.getSelectedIndex() == -1) {
 				locomotiveGroupList.setSelectedIndex(0);
 			}
-			LocomotiveGroup selectedGroup = (LocomotiveGroup) locomotiveGroupList
+			final LocomotiveGroup selectedGroup = (LocomotiveGroup) locomotiveGroupList
 					.getSelectedValue();
 			if (selectedGroup == null) {
 				return;
@@ -227,29 +233,41 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 	private class AddLocomotiveGroupAction extends AbstractAction {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6754626146363603303L;
+
 		public AddLocomotiveGroupAction() {
 			super("Add", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			String newGroupName = JOptionPane.showInputDialog(
+		public void actionPerformed(final ActionEvent arg0) {
+			final String newGroupName = JOptionPane.showInputDialog(
 					LocomotiveConfigurationDialog.this,
 					"Enter the name of the new Locomotive-Group",
 					"Add Locomotive-Group", JOptionPane.QUESTION_MESSAGE);
-			LocomotiveGroup newSection = new LocomotiveGroup(0, newGroupName);
+			final LocomotiveGroup newSection = new LocomotiveGroup(0,
+					newGroupName);
 			locomotivePersistence.addLocomotiveGroup(newSection);
 		}
 	}
 
 	private class EditLocomotiveGroupAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5332973509659278121L;
+
 		public EditLocomotiveGroupAction() {
 			super("Edit Group");
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			LocomotiveGroup groupToEdit = locomotiveGroupModel.getSelection();
+		public void actionPerformed(final ActionEvent arg0) {
+			final LocomotiveGroup groupToEdit = locomotiveGroupModel
+					.getSelection();
 
 			locomotivePersistence.updateLocomotiveGroup(groupToEdit);
 
@@ -257,15 +275,20 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 	}
 
 	private class RemoveLocomotiveGroupAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6014881261911976113L;
+
 		public RemoveLocomotiveGroupAction() {
 			super("Remove", ImageTools.createImageIconFromIconSet("remove.png"));
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			LocomotiveGroup groupToDelete = (LocomotiveGroup) (locomotiveGroupList
+		public void actionPerformed(final ActionEvent arg0) {
+			final LocomotiveGroup groupToDelete = (LocomotiveGroup) (locomotiveGroupList
 					.getSelectedValue());
-			int response = JOptionPane.showConfirmDialog(
+			final int response = JOptionPane.showConfirmDialog(
 					LocomotiveConfigurationDialog.this,
 					"Really remove Locomotive-Group '"
 							+ groupToDelete.getName() + "' ?",
@@ -273,7 +296,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			if (response == JOptionPane.YES_OPTION) {
 				try {
 					locomotivePersistence.deleteLocomotiveGroup(groupToDelete);
-				} catch (LocomotiveManagerException e) {
+				} catch (final LocomotiveManagerException e) {
 					ExceptionProcessor.getInstance().processException(e);
 				}
 			}
@@ -281,13 +304,18 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 	}
 
 	private class AddLocomotiveAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7522044592371429190L;
+
 		public AddLocomotiveAction() {
 			super("Add", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			LocomotiveGroup selectedLocomotiveGroup = locomotiveGroupModel
+		public void actionPerformed(final ActionEvent e) {
+			final LocomotiveGroup selectedLocomotiveGroup = locomotiveGroupModel
 					.getSelection();
 			if (selectedLocomotiveGroup == null) {
 				JOptionPane.showMessageDialog(
@@ -296,55 +324,58 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			Locomotive newLocomotive = createDefaultLocomotive(selectedLocomotiveGroup);
+			final Locomotive newLocomotive = createDefaultLocomotive();
 
 			new LocomotiveConfig(LocomotiveConfigurationDialog.this,
-					newLocomotive);
+					newLocomotive, selectedLocomotiveGroup);
 		}
 
-		private Locomotive createDefaultLocomotive(
-				LocomotiveGroup selectedLocomotiveGroup) {
-			Locomotive newLocomotive = new Locomotive();
-			newLocomotive.setLocomotiveGroup(selectedLocomotiveGroup);
+		private Locomotive createDefaultLocomotive() {
+			final Locomotive newLocomotive = new Locomotive();
 			return newLocomotive;
 		}
 	}
 
 	private class EditLocomotiveAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7081224522762457353L;
+
 		public EditLocomotiveAction() {
 			super("Edit");
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-
-			PresentationModel<Locomotive> model = new PresentationModel<Locomotive>(
-					locomotiveModel);
-			LocomotiveConfig turnoutConfig = new LocomotiveConfig(
-					LocomotiveConfigurationDialog.this, model);
-			if (turnoutConfig.isOkPressed()) {
-				// locomotivePersistence.updateLocomotive(model.getBean());
-			}
-			LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) (locomotiveGroupList
-					.getSelectedValue());
-			List<Locomotive> locomotives = new ArrayList<Locomotive>(
+		public void actionPerformed(final ActionEvent e) {
+			final LocomotiveGroup selectedLocomotiveGroup = locomotiveGroupModel
+					.getSelection();
+			new LocomotiveConfig(LocomotiveConfigurationDialog.this,
+					locomotiveModel.getSelection(), selectedLocomotiveGroup);
+			final List<Locomotive> locomotives = new ArrayList<Locomotive>(
 					selectedLocomotiveGroup.getLocomotives());
 			locomotiveModel.setList(locomotives);
 		}
 	}
 
 	private class RemoveLocomotiveAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1606368554698945245L;
+
 		public RemoveLocomotiveAction() {
 			super("Remove", ImageTools.createImageIconFromIconSet("remove.png"));
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			LocomotiveGroup selectedLocomotiveGroup = locomotiveGroupModel
+		public void actionPerformed(final ActionEvent e) {
+			final LocomotiveGroup selectedLocomotiveGroup = locomotiveGroupModel
 					.getSelection();
 
-			int row = locomotivesTable.getSelectedRow();
-			Locomotive locomotiveToDelete = locomotiveModel.getElementAt(row);
+			final int row = locomotivesTable.getSelectedRow();
+			final Locomotive locomotiveToDelete = locomotiveModel
+					.getElementAt(row);
 
 			if (locomotiveToDelete == null) {
 				JOptionPane.showMessageDialog(
@@ -353,13 +384,14 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			int response = JOptionPane.showConfirmDialog(
+			final int response = JOptionPane.showConfirmDialog(
 					LocomotiveConfigurationDialog.this,
 					"Really remove Locomotive '" + locomotiveToDelete.getName()
 							+ "' ?", "Remove Locomotive",
 					JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
-				locomotivePersistence.deleteLocomotive(locomotiveToDelete);
+				locomotivePersistence.removeLocomotiveFromGroup(
+						locomotiveToDelete, selectedLocomotiveGroup);
 			}
 		}
 	}
@@ -369,44 +401,41 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 	}
 
 	@Override
-	public void locomotiveAdded(Locomotive locomotive) {
-		if (locomotive.getLocomotiveGroup().equals(
-				locomotiveGroupModel.getSelection())) {
+	public void locomotiveAdded(final Locomotive locomotive) {
+		if (locomotive.getGroup().equals(locomotiveGroupModel.getSelection())) {
 			locomotives.add(locomotive);
 		}
 	}
 
 	@Override
-	public void locomotiveUpdated(Locomotive locomotive) {
-		if (locomotive.getLocomotiveGroup().equals(
-				locomotiveGroupModel.getSelection())) {
+	public void locomotiveUpdated(final Locomotive locomotive) {
+		if (locomotive.getGroup().equals(locomotiveGroupModel.getSelection())) {
 			locomotives.remove(locomotive);
 			locomotives.add(locomotive);
 		}
 	}
 
 	@Override
-	public void locomotiveRemoved(Locomotive locomotive) {
-		if (locomotive.getLocomotiveGroup().equals(
-				locomotiveGroupModel.getSelection())) {
+	public void locomotiveRemoved(final Locomotive locomotive) {
+		if (locomotive.getGroup().equals(locomotiveGroupModel.getSelection())) {
 			locomotives.remove(locomotive);
 		}
 	}
 
 	@Override
-	public void locomotiveGroupAdded(LocomotiveGroup group) {
+	public void locomotiveGroupAdded(final LocomotiveGroup group) {
 		locomotiveGroups.add(group);
 
 	}
 
 	@Override
-	public void locomotiveGroupUpdated(LocomotiveGroup group) {
+	public void locomotiveGroupUpdated(final LocomotiveGroup group) {
 		locomotiveGroups.remove(group);
 		locomotiveGroups.add(group);
 	}
 
 	@Override
-	public void locomotiveGroupRemoved(LocomotiveGroup group) {
+	public void locomotiveGroupRemoved(final LocomotiveGroup group) {
 		if (locomotiveGroupModel.getSelection().equals(group)) {
 			locomotives.clear();
 		}
@@ -414,12 +443,13 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 	}
 
 	@Override
-	public void locomotivesUpdated(List<LocomotiveGroup> locomotiveGroups) {
+	public void locomotivesUpdated(final List<LocomotiveGroup> locomotiveGroups) {
 
 	}
 
 	@Override
-	public void failure(LocomotiveManagerException locomotiveManagerException) {
+	public void failure(
+			final LocomotiveManagerException locomotiveManagerException) {
 
 	}
 }

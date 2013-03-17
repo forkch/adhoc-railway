@@ -22,6 +22,7 @@ import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -37,6 +38,7 @@ import javax.swing.SwingUtilities;
 
 public class ErrorPanel extends JPanel {
 
+	private static final long serialVersionUID = 519354077339077675L;
 	private JTextArea errorTextArea;
 	private JLabel iconLabel;
 	private Color defaultColor;
@@ -52,8 +54,10 @@ public class ErrorPanel extends JPanel {
 	}
 
 	private void initGUI() {
-		JPanel p = new JPanel();
-		p.setLayout(new BorderLayout(5, 5));
+		panel = new RoundedPanel();
+		panel.drawBorder = false;
+		panel.arcs = new Dimension(10, 10);
+		panel.setLayout(new BorderLayout(5, 5));
 
 		errorTextArea = new JTextArea(2, 30);
 		errorTextArea.setEditable(false);
@@ -65,12 +69,12 @@ public class ErrorPanel extends JPanel {
 		addMouseListener(new ErrorConfirmAction());
 		errorTextArea.addMouseListener(new ErrorConfirmAction());
 
-		p.add(iconLabel, BorderLayout.WEST);
-		p.add(errorTextArea, BorderLayout.CENTER);
-		add(p);
+		panel.add(iconLabel, BorderLayout.WEST);
+		panel.add(errorTextArea, BorderLayout.CENTER);
+		add(panel);
 	}
 
-	public void setErrorTextIcon(String text, Icon icon) {
+	public void setErrorTextIcon(final String text, final Icon icon) {
 		this.icon = icon;
 		iconLabel.setIcon(icon);
 		iconLabel.setBackground(new Color(255, 177, 177));
@@ -78,29 +82,31 @@ public class ErrorPanel extends JPanel {
 
 	}
 
-	public void setErrorTextIcon(String text, String cause, Icon icon) {
+	public void setErrorTextIcon(final String text, final String cause,
+			final Icon icon) {
 		this.cause = cause;
 		setErrorTextIcon(text, icon);
 		// setToolTipText(cause);
 	}
 
-	public void setErrorText(String text) {
+	public void setErrorText(final String text) {
 		this.text = text;
 		alpha = 1.0f;
 		active = true;
 		errorTextArea.setText(text);
-		errorTextArea.setBackground(new Color(255, 177, 177));
+		errorTextArea.setOpaque(false);
+		panel.setBackground(new Color(255, 177, 177));
 		revalidate();
 		repaint();
 
-		Thread errorPanelCloser = new Thread(waitRunner,
+		final Thread errorPanelCloser = new Thread(waitRunner,
 				"ErrorPanelCloserThread");
 		errorPanelCloser.start();
 	}
 
 	private class ErrorConfirmAction extends MouseAdapter {
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseClicked(final MouseEvent e) {
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
 				SwingUtilities.invokeLater(closerRunner);
 			} else if (e.getClickCount() == 1
@@ -112,11 +118,11 @@ public class ErrorPanel extends JPanel {
 	}
 
 	@Override
-	protected void paintComponent(Graphics g) {
+	protected void paintComponent(final Graphics g) {
 		super.paintComponent(g);
-		Composite alphaCompositge = AlphaComposite.getInstance(
+		final Composite alphaCompositge = AlphaComposite.getInstance(
 				AlphaComposite.SRC_OVER, alpha);
-		Graphics2D g2 = (Graphics2D) g;
+		final Graphics2D g2 = (Graphics2D) g;
 		g2.setComposite(alphaCompositge);
 	}
 
@@ -125,14 +131,10 @@ public class ErrorPanel extends JPanel {
 		public void run() {
 			try {
 				Thread.sleep(pause);
-				Thread closer = new Thread(closerRunner);
+				final Thread closer = new Thread(closerRunner);
 				closer.start();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
-				// can catch
-				// InvocationTargetException
-				// can catch
-				// InterruptedException
 			}
 		}
 	};
@@ -148,14 +150,14 @@ public class ErrorPanel extends JPanel {
 				}
 				try {
 					Thread.sleep(50);
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					e.printStackTrace();
 				}
 
 			}
-			errorTextArea.setBackground(ErrorPanel.this.defaultColor);
 			errorTextArea.setText("");
 			iconLabel.setIcon(null);
 		}
 	};
+	private RoundedPanel panel;
 }

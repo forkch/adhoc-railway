@@ -29,17 +29,21 @@ import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class StaticTurnoutWidget extends JPanel {
 
-	private static final long	serialVersionUID	= 1L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 712523713204411248L;
 
-	private Turnout				turnout;
+	private final Turnout turnout;
 
-	private JLabel				numberLabel;
+	private JLabel numberLabel;
 
-	private TurnoutCanvas		turnoutCanvas;
+	private TurnoutCanvas turnoutCanvas;
 
-	private SRCPTurnoutState		state;
+	private final SRCPTurnoutState state;
 
-	public StaticTurnoutWidget(Turnout turnout, SRCPTurnoutState state) {
+	public StaticTurnoutWidget(final Turnout turnout,
+			final SRCPTurnoutState state) {
 		this.turnout = turnout;
 		this.state = state;
 

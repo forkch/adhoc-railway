@@ -47,6 +47,10 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public class TurnoutGroupConfigPanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1287114708577602193L;
 	private PresentationModel<TurnoutGroup>	presentationModel;
 	private JTextField						turnoutGroupName;
 	private JSpinner						turnoutNumberOffset;

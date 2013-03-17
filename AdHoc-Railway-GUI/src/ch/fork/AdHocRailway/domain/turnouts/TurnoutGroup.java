@@ -29,6 +29,11 @@ import com.jgoodies.binding.beans.Model;
 public class TurnoutGroup extends Model implements java.io.Serializable,
 		Comparable<TurnoutGroup> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8822984732725579518L;
+
 	private int id;
 
 	private String name;

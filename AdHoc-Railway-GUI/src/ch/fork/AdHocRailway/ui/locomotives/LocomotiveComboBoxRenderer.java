@@ -13,6 +13,11 @@ import ch.fork.AdHocRailway.ui.ImageTools;
 public class LocomotiveComboBoxRenderer extends JLabel implements
 		ListCellRenderer<Locomotive> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4561005713259042914L;
+
 	public LocomotiveComboBoxRenderer() {
 		setOpaque(true);
 		setHorizontalAlignment(CENTER);

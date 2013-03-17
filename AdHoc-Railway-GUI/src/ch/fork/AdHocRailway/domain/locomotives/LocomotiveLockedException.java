@@ -19,6 +19,11 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 public class LocomotiveLockedException extends LocomotiveException {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1510828393541264141L;
+
 	public LocomotiveLockedException(String msg) {
 		super(msg);
 	}

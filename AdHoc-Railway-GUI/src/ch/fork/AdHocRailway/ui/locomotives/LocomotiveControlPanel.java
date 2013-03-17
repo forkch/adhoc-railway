@@ -31,14 +31,22 @@ import javax.swing.JPanel;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
 
-public class LocomotiveControlPanel extends JPanel {
+public class LocomotiveControlPanel extends JPanel implements
+		LocomotiveManagerListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -149795300932888094L;
 	private final List<LocomotiveWidget> locomotiveWidgets;
 	private JPanel controlPanel;
 
@@ -51,11 +59,13 @@ public class LocomotiveControlPanel extends JPanel {
 	private void initGUI() {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.CENTER, 5, 0);
+		final FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.CENTER,
+				5, 0);
 		controlPanel = new JPanel(controlPanelLayout);
 		controlPanel.setLayout(controlPanelLayout);
 
-		SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame("Trains");
+		final SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame(
+				"Trains");
 		locomotivesFrame.add(controlPanel, BorderLayout.CENTER);
 		add(locomotivesFrame, BorderLayout.NORTH);
 		getActionMap().put("LocomotiveStop", new LocomotiveStopAction());
@@ -68,22 +78,17 @@ public class LocomotiveControlPanel extends JPanel {
 	}
 
 	public void update() {
-		LocomotiveControlface locomotiveControl = AdHocRailway.getInstance()
-				.getLocomotiveControl();
+		final LocomotiveControlface locomotiveControl = AdHocRailway
+				.getInstance().getLocomotiveControl();
 		locomotiveControl.removeAllLocomotiveChangeListener();
 
 		controlPanel.removeAll();
 		locomotiveWidgets.clear();
-		/*
-		 * if (Preferences.getInstance().getStringValue(
-		 * PreferencesKeys.KEYBOARD_LAYOUT).equals("Swiss German")) {
-		 * keyBindings = keyBindingsDE; } else { keyBindings = keyBindingsUS; }
-		 */
+
 		for (int i = 0; i < Preferences.getInstance().getIntValue(
 				PreferencesKeys.LOCOMOTIVE_CONTROLES); i++) {
-			LocomotiveWidget w = new LocomotiveWidget(i,
+			final LocomotiveWidget w = new LocomotiveWidget(i,
 					AdHocRailway.getInstance());
-			w.updateLocomotiveGroups();
 			controlPanel.add(w);
 			locomotiveWidgets.add(w);
 		}
@@ -93,19 +98,25 @@ public class LocomotiveControlPanel extends JPanel {
 
 	private class LocomotiveStopAction extends AbstractAction implements
 			Runnable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5935980511796588692L;
+
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			Thread t = new Thread(this);
+		public void actionPerformed(final ActionEvent e) {
+			final Thread t = new Thread(this);
 			t.start();
 		}
 
 		@Override
 		public void run() {
 			try {
-				LocomotiveControlface locomotiveControl = AdHocRailway
+				final LocomotiveControlface locomotiveControl = AdHocRailway
 						.getInstance().getLocomotiveControl();
-				for (LocomotiveWidget widget : locomotiveWidgets) {
-					Locomotive myLocomotive = widget.getMyLocomotive();
+				for (final LocomotiveWidget widget : locomotiveWidgets) {
+					final Locomotive myLocomotive = widget.getMyLocomotive();
 					if (myLocomotive == null) {
 						continue;
 					}
@@ -117,9 +128,58 @@ public class LocomotiveControlPanel extends JPanel {
 					// locomotiveControl.setSpeed(myLocomotive, 0, null);
 					widget.updateWidget();
 				}
-			} catch (LocomotiveException e3) {
+			} catch (final LocomotiveException e3) {
 				ExceptionProcessor.getInstance().processException(e3);
 			}
 		}
+	}
+
+	@Override
+	public void locomotiveAdded(final Locomotive locomotive) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void locomotiveUpdated(final Locomotive locomotive) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void locomotiveGroupAdded(final LocomotiveGroup group) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void locomotiveRemoved(final Locomotive locomotive) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void locomotiveGroupRemoved(final LocomotiveGroup group) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void locomotiveGroupUpdated(final LocomotiveGroup group) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void locomotivesUpdated(final List<LocomotiveGroup> locomotiveGroups) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void failure(
+			final LocomotiveManagerException locomotiveManagerException) {
+		// TODO Auto-generated method stub
+
 	}
 }

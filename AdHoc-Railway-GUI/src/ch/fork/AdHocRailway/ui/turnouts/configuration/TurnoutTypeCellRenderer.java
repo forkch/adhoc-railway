@@ -30,6 +30,11 @@ import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class TurnoutTypeCellRenderer extends DefaultTableCellRenderer {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 765440307759405716L;
+
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {

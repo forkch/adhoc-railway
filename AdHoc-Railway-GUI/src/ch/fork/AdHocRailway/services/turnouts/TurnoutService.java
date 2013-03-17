@@ -29,7 +29,7 @@ public interface TurnoutService {
 
 	public abstract void addTurnout(Turnout turnout);
 
-	public abstract void deleteTurnout(Turnout turnout);
+	public abstract void removeTurnout(Turnout turnout);
 
 	public abstract void updateTurnout(Turnout turnout);
 

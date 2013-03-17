@@ -21,7 +21,6 @@ package ch.fork.AdHocRailway.domain.locomotives;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,7 +29,6 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
-import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
 import de.dermoba.srcp.model.SRCPAddress;
@@ -44,9 +42,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
 	private final Map<SRCPAddress, Locomotive> addressLocomotiveCache = new HashMap<SRCPAddress, Locomotive>();
 	private final SortedSet<LocomotiveGroup> locomotiveGroups = new TreeSet<LocomotiveGroup>();
-	private final LocomotiveService locomotiveService;
-	private final LocomotiveGroup ALL_LOCOMOTIVE_GROUP = new LocomotiveGroup(
-			Integer.MIN_VALUE, "All");
+	private LocomotiveService locomotiveService;
 
 	private final Set<LocomotiveManagerListener> listeners = new HashSet<LocomotiveManagerListener>();
 
@@ -55,8 +51,6 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	private LocomotiveManagerImpl() {
 		LOGGER.info("LocomotiveManager loaded");
 
-		locomotiveService = SIOLocomotiveService.getInstance();
-		locomotiveService.init(this);
 	}
 
 	public static LocomotiveManager getInstance() {
@@ -67,7 +61,8 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	}
 
 	@Override
-	public void addLocomotiveManagerListener(LocomotiveManagerListener listener) {
+	public void addLocomotiveManagerListener(
+			final LocomotiveManagerListener listener) {
 		this.listeners.add(listener);
 		listener.locomotivesUpdated(new ArrayList<LocomotiveGroup>(
 				locomotiveGroups));
@@ -75,7 +70,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
 	@Override
 	public void removeLocomotiveManagerListenerInNextEvent(
-			LocomotiveManagerListener listener) {
+			final LocomotiveManagerListener listener) {
 		listenersToBeRemovedInNextEvent.add(listener);
 	}
 
@@ -85,10 +80,14 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	}
 
 	@Override
-	public void clear() {
+	public void clear(final boolean deepClear) {
 		addressLocomotiveCache.clear();
 		locomotiveGroups.clear();
-		ALL_LOCOMOTIVE_GROUP.getLocomotives().clear();
+		if (deepClear) {
+			locomotiveService.clear();
+		}
+		locomotivesUpdated(getAllLocomotiveGroups());
+
 	}
 
 	@Override
@@ -97,9 +96,9 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	}
 
 	@Override
-	public Locomotive getLocomotiveByBusAddress(int bus, int address) {
-		Locomotive locomotive = addressLocomotiveCache.get(new SRCPAddress(bus,
-				address, 0, 0));
+	public Locomotive getLocomotiveByBusAddress(final int bus, final int address) {
+		final Locomotive locomotive = addressLocomotiveCache
+				.get(new SRCPAddress(bus, address, 0, 0));
 		if (locomotive != null) {
 			return locomotive;
 		}
@@ -108,46 +107,46 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	}
 
 	@Override
-	public void addLocomotive(Locomotive locomotive) {
-		if (locomotive.getLocomotiveGroup() == null) {
+	public void addLocomotiveToGroup(final Locomotive locomotive,
+			final LocomotiveGroup group) {
+		if (group == null) {
 			throw new LocomotiveManagerException(
 					"Locomotive has no associated Group");
 		}
-		locomotive.getLocomotiveGroup().getLocomotives().add(locomotive);
+		group.addLocomotive(locomotive);
+		locomotive.setGroup(group);
 		locomotiveService.addLocomotive(locomotive);
 
 	}
 
 	@Override
-	public void deleteLocomotive(Locomotive locomotive) {
+	public void removeLocomotiveFromGroup(final Locomotive locomotive,
+			final LocomotiveGroup group) {
 		locomotiveService.removeLocomotive(locomotive);
-		locomotive.getLocomotiveGroup().getLocomotives().remove(locomotive);
+		group.removeLocomotive(locomotive);
 
 		removeFromCache(locomotive);
 	}
 
 	@Override
-	public void updateLocomotive(Locomotive locomotive) {
+	public void updateLocomotive(final Locomotive locomotive) {
 		locomotiveService.updateLocomotive(locomotive);
 
 	}
 
 	@Override
 	public List<LocomotiveGroup> getAllLocomotiveGroups() {
-		LinkedList<LocomotiveGroup> allLocomotiveGroups = new LinkedList<LocomotiveGroup>();
-		// allLocomotiveGroups.addFirst(ALL_LOCOMOTIVE_GROUP);
-		allLocomotiveGroups.addAll(locomotiveGroups);
-		return allLocomotiveGroups;
+		return new ArrayList<LocomotiveGroup>(locomotiveGroups);
 	}
 
 	@Override
-	public void addLocomotiveGroup(LocomotiveGroup group) {
+	public void addLocomotiveGroup(final LocomotiveGroup group) {
 		locomotiveService.addLocomotiveGroup(group);
 		locomotiveGroups.add(group);
 	}
 
 	@Override
-	public void deleteLocomotiveGroup(LocomotiveGroup group)
+	public void deleteLocomotiveGroup(final LocomotiveGroup group)
 			throws LocomotiveManagerException {
 		if (group.getId() == Integer.MIN_VALUE) {
 			throw new LocomotiveManagerException(
@@ -162,123 +161,135 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	}
 
 	@Override
-	public void updateLocomotiveGroup(LocomotiveGroup group) {
-		updateLocomotiveGroup(group);
+	public void updateLocomotiveGroup(final LocomotiveGroup group) {
+		locomotiveService.updateLocomotiveGroup(group);
+	}
+
+	@Override
+	public void setLocomotiveService(final LocomotiveService instance) {
+		this.locomotiveService = instance;
 	}
 
 	@Override
 	public void initialize() {
+		clear(false);
 		cleanupListeners();
+		locomotiveService.init(this);
 	}
 
 	@Override
-	public void setLocomotiveControl(LocomotiveControlface locomotiveControl) {
+	public void setLocomotiveControl(
+			final LocomotiveControlface locomotiveControl) {
 		this.locomotiveControl = locomotiveControl;
 	}
 
 	@Override
-	public void locomotivesUpdated(List<LocomotiveGroup> locomotiveGroups) {
+	public void locomotivesUpdated(final List<LocomotiveGroup> locomotiveGroups) {
 		LOGGER.info("locomotivesUpdated: " + locomotiveGroups);
 		cleanupListeners();
-		clear();
-		for (LocomotiveGroup group : locomotiveGroups) {
+		for (final LocomotiveGroup group : locomotiveGroups) {
 			putTurnoutGroupInCache(group);
-			for (Locomotive locomotive : group.getLocomotives()) {
+			for (final Locomotive locomotive : group.getLocomotives()) {
 				putInCache(locomotive);
 			}
 		}
-		for (LocomotiveManagerListener l : listeners) {
+		for (final LocomotiveManagerListener l : listeners) {
 			l.locomotivesUpdated(locomotiveGroups);
 		}
 	}
 
 	@Override
-	public void locomotiveAdded(Locomotive locomotive) {
+	public void locomotiveAdded(final Locomotive locomotive) {
 		LOGGER.info("locomotiveAdded: " + locomotive);
 		cleanupListeners();
 		putInCache(locomotive);
-		for (LocomotiveManagerListener l : listeners) {
+		for (final LocomotiveManagerListener l : listeners) {
 			l.locomotiveAdded(locomotive);
 		}
 	}
 
 	@Override
-	public void locomotiveUpdated(Locomotive locomotive) {
+	public void locomotiveUpdated(final Locomotive locomotive) {
 		LOGGER.info("locomotiveUpdated: " + locomotive);
 		cleanupListeners();
 		putInCache(locomotive);
-		for (LocomotiveManagerListener l : listeners) {
+		for (final LocomotiveManagerListener l : listeners) {
 			l.locomotiveUpdated(locomotive);
 		}
 	}
 
 	@Override
-	public void locomotiveRemoved(Locomotive locomotive) {
+	public void locomotiveRemoved(final Locomotive locomotive) {
 		LOGGER.info("locomotiveRemoved: " + locomotive);
 		cleanupListeners();
 		removeFromCache(locomotive);
-		for (LocomotiveManagerListener l : listeners) {
+		for (final LocomotiveManagerListener l : listeners) {
 			l.locomotiveRemoved(locomotive);
 		}
 	}
 
 	@Override
-	public void locomotiveGroupAdded(LocomotiveGroup group) {
+	public void locomotiveGroupAdded(final LocomotiveGroup group) {
 		LOGGER.info("locomotiveGroupAdded: " + group);
 		cleanupListeners();
 		putTurnoutGroupInCache(group);
-		for (LocomotiveManagerListener l : listeners) {
+		for (final LocomotiveManagerListener l : listeners) {
 			l.locomotiveGroupAdded(group);
 		}
 	}
 
 	@Override
-	public void locomotiveGroupUpdated(LocomotiveGroup group) {
+	public void locomotiveGroupUpdated(final LocomotiveGroup group) {
 		LOGGER.info("locomotiveGroupUpdated: " + group);
 		cleanupListeners();
 		removeTurnoutGroupFromCache(group);
 		putTurnoutGroupInCache(group);
-		for (LocomotiveManagerListener l : listeners) {
+		for (final LocomotiveManagerListener l : listeners) {
 			l.locomotiveGroupUpdated(group);
 		}
 	}
 
 	@Override
-	public void locomotiveGroupRemoved(LocomotiveGroup group) {
+	public void locomotiveGroupRemoved(final LocomotiveGroup group) {
 		LOGGER.info("locomotiveGroupRemoved: " + group);
 		cleanupListeners();
 		removeTurnoutGroupFromCache(group);
-		for (LocomotiveManagerListener l : listeners) {
+		for (final LocomotiveManagerListener l : listeners) {
 			l.locomotiveGroupRemoved(group);
 		}
 	}
 
 	@Override
-	public void failure(LocomotiveManagerException locomotiveManagerException) {
+	public void failure(
+			final LocomotiveManagerException locomotiveManagerException) {
 		LOGGER.warn("failure", locomotiveManagerException);
 		cleanupListeners();
-		for (LocomotiveManagerListener l : listeners) {
+		for (final LocomotiveManagerListener l : listeners) {
 			l.failure(locomotiveManagerException);
 		}
 	}
 
-	private void putTurnoutGroupInCache(LocomotiveGroup group) {
+	private void putTurnoutGroupInCache(final LocomotiveGroup group) {
 		locomotiveGroups.add(group);
 	}
 
-	private void removeTurnoutGroupFromCache(LocomotiveGroup group) {
+	private void removeTurnoutGroupFromCache(final LocomotiveGroup group) {
 		locomotiveGroups.remove(group);
 	}
 
-	private void putInCache(Locomotive locomotive) {
+	private void putInCache(final Locomotive locomotive) {
 		addressLocomotiveCache.put(new SRCPAddress(locomotive.getBus(),
 				locomotive.getAddress(), 0, 0), locomotive);
-		ALL_LOCOMOTIVE_GROUP.getLocomotives().add(locomotive);
 		locomotiveControl.addOrUpdateLocomotive(locomotive);
 	}
 
-	private void removeFromCache(Locomotive locomotive) {
+	private void removeFromCache(final Locomotive locomotive) {
 		addressLocomotiveCache.values().remove(locomotive);
-		ALL_LOCOMOTIVE_GROUP.getLocomotives().remove(locomotive);
+	}
+
+	@Override
+	public void disconnect() {
+		locomotiveService.disconnect();
+		locomotivesUpdated(new ArrayList<LocomotiveGroup>());
 	}
 }

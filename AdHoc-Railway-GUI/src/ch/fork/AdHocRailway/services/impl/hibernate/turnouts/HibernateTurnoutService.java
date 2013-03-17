@@ -109,7 +109,7 @@ public class HibernateTurnoutService implements TurnoutService {
 	 * (ch.fork.AdHocRailway.domain.turnouts.Turnout)
 	 */
 	@Override
-	public void deleteTurnout(Turnout turnout) throws TurnoutManagerException {
+	public void removeTurnout(Turnout turnout) throws TurnoutManagerException {
 		LOGGER.debug("deleteTurnout()");
 		Session session = HibernateUtil.openSession();
 		Transaction transaction = null;

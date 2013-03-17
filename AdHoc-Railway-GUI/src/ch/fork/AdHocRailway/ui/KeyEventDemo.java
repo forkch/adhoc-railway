@@ -53,6 +53,10 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 public class KeyEventDemo extends JFrame implements KeyListener, ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2232513810851750611L;
 	JTextArea displayArea;
 	JTextField typingArea;
 	static final String newline = System.getProperty("line.separator");

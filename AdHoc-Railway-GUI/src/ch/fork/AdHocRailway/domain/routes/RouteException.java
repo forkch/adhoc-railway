@@ -21,6 +21,11 @@ package ch.fork.AdHocRailway.domain.routes;
 
 public class RouteException extends Exception{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4797784647018551199L;
+
 	public RouteException() {
 		// TODO Auto-generated constructor stub
 	}

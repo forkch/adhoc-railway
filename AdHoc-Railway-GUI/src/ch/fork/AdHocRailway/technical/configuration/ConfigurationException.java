@@ -20,6 +20,11 @@ package ch.fork.AdHocRailway.technical.configuration;
 
 public class ConfigurationException extends RuntimeException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9095543258820685282L;
+
 	public ConfigurationException() {
 		super();
 		// TODO Auto-generated constructor stub

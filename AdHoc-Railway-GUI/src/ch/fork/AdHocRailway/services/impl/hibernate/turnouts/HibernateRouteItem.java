@@ -29,7 +29,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-
 import com.jgoodies.binding.beans.Model;
 
 /**
@@ -41,6 +40,11 @@ public class HibernateRouteItem extends Model implements java.io.Serializable,
 		Comparable<HibernateRouteItem> {
 
 	// Fields
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6741140855056550629L;
 
 	@Id
 	@GeneratedValue

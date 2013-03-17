@@ -25,6 +25,11 @@ import javax.swing.JToggleButton;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class LockToggleButton extends JToggleButton {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6029273304442150097L;
+
 	public LockToggleButton() {
 		super();
 	}

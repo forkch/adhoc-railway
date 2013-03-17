@@ -60,10 +60,10 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 					LOGGER.info("ack: " + Arrays.toString(arg0));
 					Boolean err = (Boolean) arg0[0];
 					String msg = (String) arg0[1];
-					String sioId = (String) arg0[2];
 					if (err) {
 						listener.failure(new TurnoutManagerException(msg));
 					} else {
+						String sioId = (String) arg0[2];
 						SIOTurnoutServiceEventHandler.addIdToTurnout(turnout,
 								sioId);
 						listener.turnoutAdded(turnout);
@@ -84,7 +84,7 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 	}
 
 	@Override
-	public void deleteTurnout(final Turnout turnout) {
+	public void removeTurnout(final Turnout turnout) {
 		LOGGER.info(SIOTurnoutServiceEvent.TURNOUT_REMOVE_REQUEST);
 		sioService.checkSocket();
 		try {
@@ -284,8 +284,7 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 	@Override
 	public void disconnect() {
-
-		sioService.disconnect();
+		sioService.removeIOCallback(this);
 	}
 
 	@Override

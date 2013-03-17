@@ -30,6 +30,11 @@ import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class TurnoutDefaultStateComboBoxCellRenderer extends
 		DefaultListCellRenderer {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2928955312058895462L;
+
 	public Component getListCellRendererComponent(JList list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
 		JLabel iconLabel = (JLabel) super.getListCellRendererComponent(list,

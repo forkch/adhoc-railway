@@ -24,6 +24,11 @@ import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class FunctionToggleButton extends JToggleButton {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5886703909665855244L;
+
 	public FunctionToggleButton(String text) {
 		super(text);
 		setIcon(ImageTools.createImageIcon("locomotives/button_cancel.png"));

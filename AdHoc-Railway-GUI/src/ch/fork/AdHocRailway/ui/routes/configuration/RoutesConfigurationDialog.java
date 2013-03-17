@@ -48,12 +48,13 @@ import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
+import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.common.collect.ArrayListModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -61,6 +62,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class RoutesConfigurationDialog extends JDialog implements
 		RouteManagerListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 374903860703369736L;
 
 	private JList routeGroupList;
 
@@ -83,8 +89,8 @@ public class RoutesConfigurationDialog extends JDialog implements
 	private RouteGroupConfigPanel routeGroupConfig;
 	public ThreeDigitDisplay digitDisplay;
 
-	private ArrayListModel<RouteGroup> routeGroups;
-	private ArrayListModel<Route> routes;
+	private com.jgoodies.common.collect.ArrayListModel<RouteGroup> routeGroups;
+	private com.jgoodies.common.collect.ArrayListModel<Route> routes;
 
 	private final RouteManager routePersistence = AdHocRailway.getInstance()
 			.getRoutePersistence();
@@ -203,6 +209,8 @@ public class RoutesConfigurationDialog extends JDialog implements
 			}
 
 		});
+		SwingUtils.addEscapeListener(this);
+
 	}
 
 	/**
@@ -257,6 +265,11 @@ public class RoutesConfigurationDialog extends JDialog implements
 	private static final class RouteGroupListCellRenderer extends
 			DefaultListCellRenderer {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8334830106991840589L;
+
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
@@ -276,6 +289,11 @@ public class RoutesConfigurationDialog extends JDialog implements
 	private static final class RouteListCellRenderer extends
 			DefaultListCellRenderer {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2449618372558779146L;
+
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
@@ -289,6 +307,11 @@ public class RoutesConfigurationDialog extends JDialog implements
 	}
 
 	private class EditRouteGroupAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5693865195234842058L;
+
 		public EditRouteGroupAction() {
 			super("Edit Group");
 		}
@@ -303,6 +326,11 @@ public class RoutesConfigurationDialog extends JDialog implements
 	}
 
 	private class AddRouteGroupAction extends AbstractAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3045858271545335261L;
 
 		public AddRouteGroupAction() {
 			super("Add Group", ImageTools.createImageIconFromIconSet("add.png"));
@@ -342,6 +370,11 @@ public class RoutesConfigurationDialog extends JDialog implements
 
 	private class RemoveRouteGroupAction extends AbstractAction {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2720292570898525106L;
+
 		public RemoveRouteGroupAction() {
 			super("Remove Group", ImageTools
 					.createImageIconFromIconSet("remove.png"));
@@ -363,7 +396,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 					"Remove Route-Group", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
 				try {
-					routePersistence.deleteRouteGroup(routeGroupToDelete);
+					routePersistence.removeRouteGroup(routeGroupToDelete);
 					routeGroupConfig.setRouteGroup(null);
 					routeGroups.remove(routeGroupToDelete);
 				} catch (RouteManagerException e1) {
@@ -378,6 +411,11 @@ public class RoutesConfigurationDialog extends JDialog implements
 	}
 
 	private class AddRouteAction extends AbstractAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 712960776135284412L;
 
 		public AddRouteAction() {
 			super("Add Route", ImageTools.createImageIconFromIconSet("add.png"));
@@ -410,7 +448,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 
 			Route newRoute = createDefaultRoute(selectedRouteGroup, nextNumber);
 
-			RouteConfig routeConfig = new RouteConfig(
+			new RouteConfig(
 					RoutesConfigurationDialog.this, newRoute);
 		}
 
@@ -424,6 +462,11 @@ public class RoutesConfigurationDialog extends JDialog implements
 	}
 
 	private class EditRouteAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3140803329110781102L;
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
@@ -437,6 +480,11 @@ public class RoutesConfigurationDialog extends JDialog implements
 	}
 
 	private class RemoveRouteAction extends AbstractAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1067155603250166588L;
 
 		public RemoveRouteAction() {
 			super("Remove Route", ImageTools

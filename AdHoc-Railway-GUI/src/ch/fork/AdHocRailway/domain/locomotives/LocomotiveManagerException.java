@@ -20,6 +20,11 @@ package ch.fork.AdHocRailway.domain.locomotives;
 
 public class LocomotiveManagerException extends RuntimeException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6688667574674137647L;
+
 	public LocomotiveManagerException() {
 	}
 

@@ -17,6 +17,11 @@ import ch.fork.AdHocRailway.ui.AdHocRailway;
 
 public class RouteGroupsPanel extends JTabbedPane implements
 		RouteManagerListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8209638004262038025L;
+
 	private final Map<Integer, RouteGroup> indexToRouteGroup = new HashMap<Integer, RouteGroup>();
 
 	private final Map<RouteGroup, RouteGroupTab> routeGroupToRouteGroupTab = new HashMap<RouteGroup, RouteGroupTab>();
@@ -24,30 +29,32 @@ public class RouteGroupsPanel extends JTabbedPane implements
 	private final RouteManager routePersistence = AdHocRailway.getInstance()
 			.getRoutePersistence();
 
-	public RouteGroupsPanel(int tabPlacement) {
+	public RouteGroupsPanel(final int tabPlacement) {
 		super(tabPlacement);
 		routePersistence.addRouteManagerListener(this);
 
 	}
 
-	private void updateRoutes(List<RouteGroup> routeGroups) {
+	private void updateRoutes(final List<RouteGroup> routeGroups) {
 		indexToRouteGroup.clear();
+		removeAll();
+		routeGroupToRouteGroupTab.clear();
 
 		int i = 1;
-		RouteControlIface routeControl = AdHocRailway.getInstance()
+		final RouteControlIface routeControl = AdHocRailway.getInstance()
 				.getRouteControl();
 
 		routeControl.removeAllRouteChangeListeners();
 
-		for (RouteGroup routeGroup : routeGroups) {
+		for (final RouteGroup routeGroup : routeGroups) {
 			indexToRouteGroup.put(i - 1, routeGroup);
 			addRouteGroup(i, routeGroup);
 			i++;
 		}
 	}
 
-	public void addRouteGroup(int groupNumber, RouteGroup routeGroup) {
-		RouteGroupTab routeGroupTab = new RouteGroupTab(routeGroup);
+	public void addRouteGroup(final int groupNumber, final RouteGroup routeGroup) {
+		final RouteGroupTab routeGroupTab = new RouteGroupTab(routeGroup);
 
 		add(routeGroupTab, "F" + groupNumber + ": " + routeGroup.getName());
 		routeGroupToRouteGroupTab.put(routeGroup, routeGroupTab);
@@ -74,7 +81,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 			@Override
 			public void run() {
 
-				RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
+				final RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
 						.get(route.getRouteGroup());
 				routeGroupTab.updateRoute(route);
 				revalidate();
@@ -91,7 +98,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 			@Override
 			public void run() {
 
-				RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
+				final RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
 						.get(route.getRouteGroup());
 				routeGroupTab.removeRoute(route);
 
@@ -107,7 +114,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 			@Override
 			public void run() {
-				RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
+				final RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
 						.get(route.getRouteGroup());
 				routeGroupTab.addRoute(route);
 				revalidate();
@@ -137,7 +144,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 			@Override
 			public void run() {
-				RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
+				final RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
 						.get(group);
 				remove(routeGroupTab);
 				revalidate();
@@ -152,7 +159,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
+				final RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
 						.get(group);
 				routeGroupTab.updateRouteGroup(group);
 				revalidate();
@@ -162,7 +169,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 	}
 
 	@Override
-	public void failure(RouteManagerException arg0) {
+	public void failure(final RouteManagerException arg0) {
 
 	}
 }

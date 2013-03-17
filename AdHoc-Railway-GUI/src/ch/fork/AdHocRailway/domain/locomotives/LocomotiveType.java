@@ -2,13 +2,16 @@ package ch.fork.AdHocRailway.domain.locomotives;
 
 public enum LocomotiveType {
 
-	DELTA(0, 14, 1), DIGITAL(5, 14, 1);
+	DELTA("delta", 0, 14, 1), DIGITAL("digital", 5, 14, 1);
 
 	private final int functionCount;
 	private final int drivingSteps;
 	private final int stepping;
+	private final String name;
 
-	LocomotiveType(int functionCount, int drivingSteps, int stepping) {
+	LocomotiveType(final String name, final int functionCount,
+			final int drivingSteps, final int stepping) {
+		this.name = name;
 		this.functionCount = functionCount;
 		this.drivingSteps = drivingSteps;
 		this.stepping = stepping;
@@ -27,12 +30,16 @@ public enum LocomotiveType {
 		return stepping;
 	}
 
-	public static LocomotiveType fromString(String string) {
-		for (LocomotiveType lt : values()) {
+	public static LocomotiveType fromString(final String string) {
+		for (final LocomotiveType lt : values()) {
 			if (lt.name().equalsIgnoreCase(string)) {
 				return lt;
 			}
 		}
 		return null;
+	}
+
+	public String getName() {
+		return name;
 	}
 }

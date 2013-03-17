@@ -18,45 +18,118 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.jgoodies.binding.beans.Model;
 
-public class Locomotive extends Model implements java.io.Serializable,
+public class Locomotive extends Model implements Serializable,
 		Comparable<Locomotive> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7581060269617994905L;
 
 	private int id = -1;
 
-	private LocomotiveGroup locomotiveGroup;
+	private LocomotiveGroup group;
 
-	private LocomotiveType locomotiveType;
+	private LocomotiveType type;
 
 	private String name;
 
-	private String description;
+	private String desc;
 
 	private String image;
 
 	private int address;
 
 	private int bus;
-
-	private int locomotiveTypeId;
-
-	private int locomotiveGroupId;
-
 	public static final String PROPERTYNAME_ID = "id";
-	public static final String PROPERTYNAME_LOCOMOTIVE_GROUP = "locomotiveGroup";
-	public static final String PROPERTYNAME_LOCOMOTIVE_TYPE = "locomotiveType";
+	public static final String PROPERTYNAME_LOCOMOTIVE_GROUP = "group";
+	public static final String PROPERTYNAME_LOCOMOTIVE_TYPE = "type";
 	public static final String PROPERTYNAME_NAME = "name";
-	public static final String PROPERTYNAME_DESCRIPTION = "description";
+	public static final String PROPERTYNAME_DESCRIPTION = "desc";
 	public static final String PROPERTYNAME_IMAGE = "image";
 	public static final String PROPERTYNAME_ADDRESS = "address";
 	public static final String PROPERTYNAME_BUS = "bus";
 
+	public Locomotive() {
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(final int id) {
+		this.id = id;
+	}
+
+	public LocomotiveGroup getGroup() {
+		return this.group;
+	}
+
+	public void setGroup(final LocomotiveGroup locomotiveGroup) {
+		this.group = locomotiveGroup;
+	}
+
+	public LocomotiveType getType() {
+		return this.type;
+	}
+
+	public void setType(final LocomotiveType locomotiveType) {
+		this.type = locomotiveType;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	public String getDesc() {
+		return this.desc;
+	}
+
+	public void setDesc(final String description) {
+		this.desc = description;
+	}
+
+	public String getImage() {
+		return this.image;
+	}
+
+	public void setImage(final String image) {
+		this.image = image;
+	}
+
+	public int getAddress() {
+		return this.address;
+	}
+
+	public void setAddress(final int address) {
+		this.address = address;
+	}
+
+	public int getBus() {
+		return this.bus;
+	}
+
+	public void setBus(final int bus) {
+		this.bus = bus;
+	}
+
+	public int[] getAddresses() {
+		return new int[] { address };
+	}
+
 	@Override
-	public int compareTo(Locomotive o) {
+	public int compareTo(final Locomotive o) {
 		if (this == o) {
 			return 0;
 		}
@@ -83,120 +156,6 @@ public class Locomotive extends Model implements java.io.Serializable,
 				ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
-	public Locomotive() {
-	}
-
-	public Locomotive(int id, LocomotiveGroup locomotiveGroup,
-			LocomotiveType locomotiveType, String name, int address, int bus) {
-		this.id = id;
-		this.locomotiveGroup = locomotiveGroup;
-		this.locomotiveType = locomotiveType;
-		this.name = name;
-		this.address = address;
-		this.bus = bus;
-
-	}
-
-	public Locomotive(int id, LocomotiveGroup locomotiveGroup,
-			LocomotiveType locomotiveType, String name, String description,
-			String image, int address, int bus) {
-		this.id = id;
-		this.locomotiveGroup = locomotiveGroup;
-		this.locomotiveType = locomotiveType;
-		this.name = name;
-		this.description = description;
-		this.image = image;
-		this.address = address;
-		this.bus = bus;
-
-	}
-
-	// Property accessors
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		int old = this.id;
-		this.id = id;
-		firePropertyChange(PROPERTYNAME_ID, old, id);
-	}
-
-	public LocomotiveGroup getLocomotiveGroup() {
-		return this.locomotiveGroup;
-	}
-
-	public void setLocomotiveGroup(LocomotiveGroup locomotiveGroup) {
-		LocomotiveGroup old = this.locomotiveGroup;
-		this.locomotiveGroup = locomotiveGroup;
-		firePropertyChange(PROPERTYNAME_LOCOMOTIVE_GROUP, old, locomotiveGroup);
-	}
-
-	public LocomotiveType getLocomotiveType() {
-		return this.locomotiveType;
-	}
-
-	public void setLocomotiveType(LocomotiveType locomotiveType) {
-		LocomotiveType old = this.locomotiveType;
-		this.locomotiveType = locomotiveType;
-		firePropertyChange(PROPERTYNAME_LOCOMOTIVE_TYPE, old, locomotiveType);
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		String old = this.name;
-		this.name = name;
-		firePropertyChange(PROPERTYNAME_NAME, old, name);
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		String old = this.description;
-		this.description = description;
-		firePropertyChange(PROPERTYNAME_DESCRIPTION, old, description);
-	}
-
-	public String getImage() {
-		return this.image;
-	}
-
-	public void setImage(String image) {
-		String old = this.image;
-		this.image = image;
-		firePropertyChange(PROPERTYNAME_IMAGE, old, image);
-	}
-
-	public int getAddress() {
-		return this.address;
-	}
-
-	public void setAddress(int address) {
-		int old = this.address;
-		this.address = address;
-		firePropertyChange(PROPERTYNAME_ADDRESS, old, address);
-	}
-
-	public int getBus() {
-		return this.bus;
-	}
-
-	public void setBus(int bus) {
-		int old = this.bus;
-		this.bus = bus;
-		firePropertyChange(PROPERTYNAME_BUS, old, bus);
-	}
-
-	public int[] getAddresses() {
-		return new int[] { address };
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -206,7 +165,7 @@ public class Locomotive extends Model implements java.io.Serializable,
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -216,27 +175,11 @@ public class Locomotive extends Model implements java.io.Serializable,
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Locomotive other = (Locomotive) obj;
+		final Locomotive other = (Locomotive) obj;
 		if (id != other.id) {
 			return false;
 		}
 		return true;
-	}
-
-	public int getLocomotiveTypeId() {
-		return locomotiveTypeId;
-	}
-
-	public void setLocomotiveTypeId(int locomotiveTypeId) {
-		this.locomotiveTypeId = locomotiveTypeId;
-	}
-
-	public int getLocomotiveGroupId() {
-		return locomotiveGroupId;
-	}
-
-	public void setLocomotiveGroupId(int locomotiveGroupId) {
-		this.locomotiveGroupId = locomotiveGroupId;
 	}
 
 }

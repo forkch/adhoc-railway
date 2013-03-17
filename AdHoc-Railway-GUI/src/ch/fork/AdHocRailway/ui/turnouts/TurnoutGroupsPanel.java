@@ -36,6 +36,11 @@ import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 
 public class TurnoutGroupsPanel extends JTabbedPane implements
 		TurnoutManagerListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4422288695074160221L;
+
 	private final Map<Integer, TurnoutGroup> indexToTurnoutGroup = new HashMap<Integer, TurnoutGroup>();
 
 	private final Map<TurnoutGroup, TurnoutGroupTab> turnoutGroupToTurnoutGroupTab = new HashMap<TurnoutGroup, TurnoutGroupTab>();
@@ -43,7 +48,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 	private final TurnoutManager turnoutPersistence = AdHocRailway
 			.getInstance().getTurnoutPersistence();
 
-	public TurnoutGroupsPanel(int tabPlacement) {
+	public TurnoutGroupsPanel(final int tabPlacement) {
 		super(tabPlacement);
 		turnoutPersistence.addTurnoutManagerListener(this);
 
@@ -51,24 +56,27 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 		initMenuBar();
 	}
 
-	private void updateTurnouts(List<TurnoutGroup> turnoutGroups) {
+	private void updateTurnouts(final List<TurnoutGroup> turnoutGroups) {
 		indexToTurnoutGroup.clear();
-
+		removeAll();
+		turnoutGroupToTurnoutGroupTab.clear();
 		int i = 1;
-		TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
+		final TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
 				.getTurnoutControl();
 
 		turnoutControl.removeAllTurnoutChangeListener();
 
-		for (TurnoutGroup turnoutGroup : turnoutGroups) {
+		for (final TurnoutGroup turnoutGroup : turnoutGroups) {
 			indexToTurnoutGroup.put(i - 1, turnoutGroup);
 			addTurnoutGroup(i, turnoutGroup);
 			i++;
 		}
 	}
 
-	public void addTurnoutGroup(int groupNumber, TurnoutGroup turnoutGroup) {
-		TurnoutGroupTab turnoutGroupTab = new TurnoutGroupTab(turnoutGroup);
+	public void addTurnoutGroup(final int groupNumber,
+			final TurnoutGroup turnoutGroup) {
+		final TurnoutGroupTab turnoutGroupTab = new TurnoutGroupTab(
+				turnoutGroup);
 
 		add(turnoutGroupTab, "F" + groupNumber + ": " + turnoutGroup.getName());
 		turnoutGroupToTurnoutGroupTab.put(turnoutGroup, turnoutGroupTab);
@@ -77,14 +85,19 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	private class TurnoutsStraightAction extends AbstractAction {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7388480296763893134L;
+
 		public TurnoutsStraightAction() {
 			super("Set all turnouts straight\u2026",
 					createImageIconFromIconSet("switch.png"));
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			TurnoutStraighter s = new TurnoutStraighter();
+		public void actionPerformed(final ActionEvent e) {
+			final TurnoutStraighter s = new TurnoutStraighter();
 			s.start();
 		}
 
@@ -93,20 +106,20 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 			@Override
 			public void run() {
 				try {
-					TurnoutManager turnoutPersistence = AdHocRailway
+					final TurnoutManager turnoutPersistence = AdHocRailway
 							.getInstance().getTurnoutPersistence();
-					TurnoutControlIface turnoutControl = AdHocRailway
+					final TurnoutControlIface turnoutControl = AdHocRailway
 							.getInstance().getTurnoutControl();
-					int delay = Preferences.getInstance().getIntValue(
+					final int delay = Preferences.getInstance().getIntValue(
 							PreferencesKeys.ROUTING_DELAY);
-					for (Turnout t : turnoutPersistence.getAllTurnouts()) {
+					for (final Turnout t : turnoutPersistence.getAllTurnouts()) {
 						turnoutControl.setDefaultState(t);
 						Thread.sleep(3 * delay);
 					}
-				} catch (TurnoutException e1) {
+				} catch (final TurnoutException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
 					return;
-				} catch (InterruptedException e2) {
+				} catch (final InterruptedException e2) {
 					e2.printStackTrace();
 				}
 			}
@@ -114,13 +127,18 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 	}
 
 	private class EnlargeTurnoutGroups extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1229887213395163349L;
+
 		public EnlargeTurnoutGroups() {
 			super("Rearranging Turnout and Route numbers (enlarge groups)");
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			int result = JOptionPane
+		public void actionPerformed(final ActionEvent arg0) {
+			final int result = JOptionPane
 					.showConfirmDialog(
 							AdHocRailway.getInstance(),
 							"The numbering of the Turnout- and Route-Groups is now being adjusted\n"
@@ -132,10 +150,10 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 							JOptionPane.QUESTION_MESSAGE,
 							createImageIconFromIconSet("messagebox_info.png"));
 			if (result == JOptionPane.OK_OPTION) {
-				TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
-						.getTurnoutPersistence();
-				RouteManager routePersistence = AdHocRailway.getInstance()
-						.getRoutePersistence();
+				final TurnoutManager turnoutPersistence = AdHocRailway
+						.getInstance().getTurnoutPersistence();
+				final RouteManager routePersistence = AdHocRailway
+						.getInstance().getRoutePersistence();
 
 				turnoutPersistence.enlargeTurnoutGroups();
 				routePersistence.enlargeRouteGroups();
@@ -145,13 +163,18 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 	}
 
 	private class AddTurnoutsAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8397984042487108076L;
+
 		public AddTurnoutsAction() {
 			super("Add Turnouts\u2026",
 					createImageIconFromIconSet("filenew.png"));
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			if (indexToTurnoutGroup.isEmpty()) {
 				JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
 						"Please configure a group first", "Add Turnouts",
@@ -159,13 +182,13 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 						createImageIconFromIconSet("messagebox_info.png"));
 				return;
 			}
-			int selectedGroupPane = getSelectedIndex();
+			final int selectedGroupPane = getSelectedIndex();
 
-			TurnoutGroup selectedTurnoutGroup = indexToTurnoutGroup
+			final TurnoutGroup selectedTurnoutGroup = indexToTurnoutGroup
 					.get(selectedGroupPane);
 			int nextNumber = 0;
-			TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
-					.getTurnoutPersistence();
+			final TurnoutManager turnoutPersistence = AdHocRailway
+					.getInstance().getTurnoutPersistence();
 			if (Preferences.getInstance().getBooleanValue(
 					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
 				nextNumber = turnoutPersistence
@@ -182,7 +205,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 				nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
 			}
 
-			Turnout newTurnout = new Turnout();
+			final Turnout newTurnout = new Turnout();
 			newTurnout.setNumber(nextNumber);
 
 			newTurnout.setBus1(Preferences.getInstance().getIntValue(
@@ -203,26 +226,36 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	private class TurnoutProgrammerAction extends AbstractAction {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4307628017748686166L;
+
 		public TurnoutProgrammerAction() {
 			super("Turnout Decoder Programmer\u2026",
 					createImageIconFromIconSet("switch_programmer.png"));
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			new SwitchProgrammer(AdHocRailway.getInstance(), AdHocRailway
+		public void actionPerformed(final ActionEvent e) {
+			new TurnoutProgrammer(AdHocRailway.getInstance(), AdHocRailway
 					.getInstance().getSession());
 		}
 	}
 
 	private class TurnoutWarmerAction extends AbstractAction {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4069163470504661773L;
+
 		public TurnoutWarmerAction() {
 			super("Turnout Warmer\u2026");
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			new TurnoutWarmer(AdHocRailway.getInstance(), AdHocRailway
 					.getInstance().getSession());
 		}
@@ -230,12 +263,12 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	private void initToolBar() {
 		/* Turnout Tools */
-		JToolBar turnoutToolsToolBar = new JToolBar();
-		JButton addTurnoutsButton = new SmallToolbarButton(
+		final JToolBar turnoutToolsToolBar = new JToolBar();
+		final JButton addTurnoutsButton = new SmallToolbarButton(
 				new AddTurnoutsAction());
-		JButton setAllSwitchesStraightButton = new SmallToolbarButton(
+		final JButton setAllSwitchesStraightButton = new SmallToolbarButton(
 				new TurnoutsStraightAction());
-		JButton switchProgrammerButton = new SmallToolbarButton(
+		final JButton switchProgrammerButton = new SmallToolbarButton(
 				new TurnoutProgrammerAction());
 
 		turnoutToolsToolBar.add(addTurnoutsButton);
@@ -247,15 +280,16 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	private void initMenuBar() {
 		/* TOOLS */
-		JMenu toolsMenu = new JMenu("Tools");
-		JMenuItem addTurnoutsItem = new JMenuItem(new AddTurnoutsAction());
-		JMenuItem turnoutsStraightItem = new JMenuItem(
+		final JMenu toolsMenu = new JMenu("Tools");
+		final JMenuItem addTurnoutsItem = new JMenuItem(new AddTurnoutsAction());
+		final JMenuItem turnoutsStraightItem = new JMenuItem(
 				new TurnoutsStraightAction());
-		JMenuItem turnoutsWarmerItem = new JMenuItem(new TurnoutWarmerAction());
-		JMenuItem turnoutsProgrammerItem = new JMenuItem(
+		final JMenuItem turnoutsWarmerItem = new JMenuItem(
+				new TurnoutWarmerAction());
+		final JMenuItem turnoutsProgrammerItem = new JMenuItem(
 				new TurnoutProgrammerAction());
 
-		JMenuItem enlargeTurnoutGroupsItem = new JMenuItem(
+		final JMenuItem enlargeTurnoutGroupsItem = new JMenuItem(
 				new EnlargeTurnoutGroups());
 
 		toolsMenu.add(addTurnoutsItem);
@@ -288,7 +322,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 			@Override
 			public void run() {
 
-				TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
+				final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
 						.get(turnout.getTurnoutGroup());
 				turnoutGroupTab.updateTurnout(turnout);
 				revalidate();
@@ -306,7 +340,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 			@Override
 			public void run() {
 
-				TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
+				final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
 						.get(turnout.getTurnoutGroup());
 				turnoutGroupTab.removeTurnout(turnout);
 
@@ -324,7 +358,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 			@Override
 			public void run() {
-				TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
+				final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
 						.get(turnout.getTurnoutGroup());
 				turnoutGroupTab.addTurnout(turnout);
 				revalidate();
@@ -354,7 +388,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 			@Override
 			public void run() {
-				TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
+				final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
 						.get(group);
 				remove(turnoutGroupTab);
 				revalidate();
@@ -370,7 +404,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 			@Override
 			public void run() {
-				TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
+				final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
 						.get(group);
 				turnoutGroupTab.updateTurnoutGroup(group);
 				revalidate();
@@ -380,7 +414,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 	}
 
 	@Override
-	public void failure(TurnoutManagerException arg0) {
+	public void failure(final TurnoutManagerException arg0) {
 
 	}
 }

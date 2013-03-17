@@ -21,6 +21,11 @@ package ch.fork.AdHocRailway.domain.locking;
 
 public class LockingException extends RuntimeException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3123947073281918272L;
+
 	public LockingException() {
 		super();
 		// TODO Auto-generated constructor stub

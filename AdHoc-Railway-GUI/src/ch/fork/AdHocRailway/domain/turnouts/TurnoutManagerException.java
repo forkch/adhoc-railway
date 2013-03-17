@@ -20,6 +20,11 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 public class TurnoutManagerException extends RuntimeException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1593444055818073341L;
+
 	public TurnoutManagerException() {
 	}
 

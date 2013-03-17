@@ -31,6 +31,10 @@ import javax.swing.JPanel;
 
 public abstract class ConfigurationDialog extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3558143497279399956L;
 	protected boolean	okPressed;
 	protected boolean	cancelPressed;
 	public JButton		okButton;

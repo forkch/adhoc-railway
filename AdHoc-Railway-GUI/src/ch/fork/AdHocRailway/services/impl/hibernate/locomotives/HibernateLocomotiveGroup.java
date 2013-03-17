@@ -47,6 +47,11 @@ public class HibernateLocomotiveGroup extends Model implements
 
 	// Fields
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4135734033419296582L;
+
 	@Id
 	@GeneratedValue
 	private int id;

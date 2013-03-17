@@ -43,7 +43,7 @@ public class Preferences implements PreferencesKeys {
 	private static Preferences instance = null;
 	private Properties props;
 	private File configFile;
-	private Map<String, KeyBoardLayout> keyBoardLayouts;
+	private final Map<String, KeyBoardLayout> keyBoardLayouts;
 
 	private Preferences() {
 
@@ -51,8 +51,12 @@ public class Preferences implements PreferencesKeys {
 		preferences = new HashMap<String, String>();
 		hostnames = new ArrayList<String>();
 		hostnames.add("localhost");
-		setStringValue(HOSTNAME, "localhost");
-		setIntValue(PORT, 4303);
+		setStringValue(SRCP_HOSTNAME, "localhost");
+		setIntValue(SRCP_PORT, 4303);
+		setBooleanValue(SRCP_AUTOCONNECT, false);
+		setStringValue(ADHOC_SERVER_HOSTNAME, "localhost");
+		setIntValue(ADHOC_SERVER_PORT, 3000);
+		setBooleanValue(ADHOC_SERVER_AUTOCONNECT, false);
 		setIntValue(ACTIVATION_TIME, 50);
 		setIntValue(ROUTING_DELAY, 150);
 		setIntValue(LOCK_DURATION, 0);
@@ -124,11 +128,8 @@ public class Preferences implements PreferencesKeys {
 				+ ";F8:ToggleBooster7"
 				+ ";ESCAPE:TurnOffAllBooster");
 		setBooleanValue(INTERFACE_6051, false);
-		setIntValue(TURNOUT_CONTROLES, 5);
-		setIntValue(ROUTE_CONTROLES, 5);
 		setBooleanValue(LOGGING, true);
 		setBooleanValue(FULLSCREEN, false);
-		setBooleanValue(AUTOCONNECT, false);
 		setBooleanValue(TABBED_TRACK, true);
 		setBooleanValue(USE_DATABASE, false);
 		setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES, false);
@@ -138,9 +139,9 @@ public class Preferences implements PreferencesKeys {
 		setBooleanValue(STOP_ON_DIRECTION_CHANGE, false);
 
 		boolean found = findConfigFile();
-		if (!found)
+		if (!found) {
 			logger.info("no config file found, using default values");
-		else {
+		} else {
 			logger.info("Config file found");
 			props = new Properties();
 			try {
@@ -230,8 +231,9 @@ public class Preferences implements PreferencesKeys {
 	}
 
 	public String getStringValue(String key) {
-		if (preferences.containsKey(key))
+		if (preferences.containsKey(key)) {
 			return preferences.get(key);
+		}
 		return "";
 	}
 
@@ -240,8 +242,9 @@ public class Preferences implements PreferencesKeys {
 	}
 
 	public int getIntValue(String key) {
-		if (preferences.containsKey(key))
+		if (preferences.containsKey(key)) {
 			return Integer.parseInt(preferences.get(key));
+		}
 		return 0;
 	}
 
@@ -250,8 +253,9 @@ public class Preferences implements PreferencesKeys {
 	}
 
 	public boolean getBooleanValue(String key) {
-		if (preferences.containsKey(key))
+		if (preferences.containsKey(key)) {
 			return Boolean.parseBoolean(preferences.get(key));
+		}
 		return false;
 	}
 
@@ -302,38 +306,51 @@ public class Preferences implements PreferencesKeys {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Preferences other = (Preferences) obj;
 		if (configFile == null) {
-			if (other.configFile != null)
+			if (other.configFile != null) {
 				return false;
-		} else if (!configFile.equals(other.configFile))
+			}
+		} else if (!configFile.equals(other.configFile)) {
 			return false;
+		}
 		if (hostnames == null) {
-			if (other.hostnames != null)
+			if (other.hostnames != null) {
 				return false;
-		} else if (!hostnames.equals(other.hostnames))
+			}
+		} else if (!hostnames.equals(other.hostnames)) {
 			return false;
+		}
 		if (keyBoardLayouts == null) {
-			if (other.keyBoardLayouts != null)
+			if (other.keyBoardLayouts != null) {
 				return false;
-		} else if (!keyBoardLayouts.equals(other.keyBoardLayouts))
+			}
+		} else if (!keyBoardLayouts.equals(other.keyBoardLayouts)) {
 			return false;
+		}
 		if (preferences == null) {
-			if (other.preferences != null)
+			if (other.preferences != null) {
 				return false;
-		} else if (!preferences.equals(other.preferences))
+			}
+		} else if (!preferences.equals(other.preferences)) {
 			return false;
+		}
 		if (props == null) {
-			if (other.props != null)
+			if (other.props != null) {
 				return false;
-		} else if (!props.equals(other.props))
+			}
+		} else if (!props.equals(other.props)) {
 			return false;
+		}
 		return true;
 	}
 }

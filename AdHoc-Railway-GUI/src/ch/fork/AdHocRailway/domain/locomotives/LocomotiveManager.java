@@ -20,15 +20,17 @@ package ch.fork.AdHocRailway.domain.locomotives;
 
 import java.util.List;
 
+import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
+
 public interface LocomotiveManager {
 	public abstract List<Locomotive> getAllLocomotives()
 			throws LocomotiveManagerException;
 
-	public abstract void addLocomotive(Locomotive locomotive)
-			throws LocomotiveManagerException;
+	public abstract void addLocomotiveToGroup(Locomotive locomotive,
+			LocomotiveGroup group) throws LocomotiveManagerException;
 
-	public abstract void deleteLocomotive(Locomotive locomotive)
-			throws LocomotiveManagerException;
+	public abstract void removeLocomotiveFromGroup(Locomotive locomotive,
+			LocomotiveGroup group) throws LocomotiveManagerException;
 
 	public abstract void updateLocomotive(Locomotive locomotive)
 			throws LocomotiveManagerException;
@@ -53,11 +55,16 @@ public interface LocomotiveManager {
 	void removeLocomotiveManagerListenerInNextEvent(
 			LocomotiveManagerListener listener);
 
-	public abstract void clear() throws LocomotiveManagerException;
+	public abstract void clear(boolean deepClear)
+			throws LocomotiveManagerException;
 
 	public abstract void initialize();
 
 	public abstract void setLocomotiveControl(
 			LocomotiveControlface locomotiveControl);
+
+	public abstract void setLocomotiveService(LocomotiveService instance);
+
+	public abstract void disconnect();
 
 }

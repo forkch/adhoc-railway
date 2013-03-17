@@ -35,7 +35,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-
 import com.jgoodies.binding.beans.Model;
 
 /**
@@ -47,6 +46,11 @@ public class HibernateTurnout extends Model implements java.io.Serializable,
 		Comparable<HibernateTurnout> {
 
 	// Fields
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3335740079959008616L;
 
 	@Id
 	@GeneratedValue

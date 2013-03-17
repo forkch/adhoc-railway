@@ -48,6 +48,11 @@ import com.jgoodies.binding.beans.Model;
 public class HibernateRoute extends Model implements java.io.Serializable,
 		Comparable<HibernateRoute> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3923095019284054584L;
+
 	// Fields
 	@Id
 	@GeneratedValue

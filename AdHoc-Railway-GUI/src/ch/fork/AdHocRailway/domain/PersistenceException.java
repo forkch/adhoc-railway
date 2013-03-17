@@ -20,6 +20,11 @@ package ch.fork.AdHocRailway.domain;
 
 public class PersistenceException extends AdHocRailwayException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2345053574504535357L;
+
 	public PersistenceException() {
 		// TODO Auto-generated constructor stub
 	}

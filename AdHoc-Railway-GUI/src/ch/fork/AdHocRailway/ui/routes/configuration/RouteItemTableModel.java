@@ -8,6 +8,10 @@ import com.jgoodies.binding.adapter.AbstractTableAdapter;
 
 public class RouteItemTableModel extends AbstractTableAdapter<RouteItem> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7347063413543307040L;
 	private static final String[] COLUMNS = { "Turnout Number",
 			"Routed Turnout State" };
 

@@ -45,6 +45,10 @@ import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1639307474591899703L;
 	private Route route;
 	private JLabel nameLabel;
 	private JLabel iconLabel;

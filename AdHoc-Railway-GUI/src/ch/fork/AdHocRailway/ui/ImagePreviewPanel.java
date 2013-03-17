@@ -14,7 +14,11 @@ import javax.swing.JPanel;
 public class ImagePreviewPanel extends JPanel
         implements PropertyChangeListener {
     
-    private int width, height;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -180369192790600148L;
+	private int width, height;
     private ImageIcon icon;
     private Image image;
     private static final int ACCSIZE = 155;

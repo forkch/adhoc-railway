@@ -40,6 +40,10 @@ import ch.fork.AdHocRailway.ui.AdHocRailway;
 
 public class StaticRouteWidget extends JPanel implements RouteChangeListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4978823383737145288L;
 	private Route			route;
 	private JLabel			nameLabel;
 	private JLabel			iconLabel;

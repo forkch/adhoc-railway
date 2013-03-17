@@ -20,6 +20,11 @@ package ch.fork.AdHocRailway.domain.routes;
 
 public class RouteManagerException extends RuntimeException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6775132028782515680L;
+
 	public RouteManagerException() {
 	}
 

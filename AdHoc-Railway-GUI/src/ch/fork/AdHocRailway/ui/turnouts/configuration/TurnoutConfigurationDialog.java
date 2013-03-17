@@ -53,12 +53,13 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
+import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.TableResizer;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.common.collect.ArrayListModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -66,6 +67,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class TurnoutConfigurationDialog extends JDialog implements
 		TurnoutManagerListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8428097435012625412L;
 
 	private boolean okPressed;
 
@@ -88,13 +94,13 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 	private TurnoutGroupConfigPanel turnoutGroupConfig;
 
-	private ArrayListModel<TurnoutGroup> turnoutGroups;
+	private com.jgoodies.common.collect.ArrayListModel<TurnoutGroup> turnoutGroups;
 
-	private ArrayListModel<Turnout> turnouts;
+	private com.jgoodies.common.collect.ArrayListModel<Turnout> turnouts;
 	private final TurnoutManager turnoutPersistence = AdHocRailway
 			.getInstance().getTurnoutPersistence();
 
-	public TurnoutConfigurationDialog(JFrame owner) {
+	public TurnoutConfigurationDialog(final JFrame owner) {
 		super(owner, "Turnout Configuration", true);
 		initGUI();
 	}
@@ -111,12 +117,12 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		initComponents();
 		initEventHandling();
 
-		FormLayout layout = new FormLayout("pref, 10dlu, pref:grow",
+		final FormLayout layout = new FormLayout("pref, 10dlu, pref:grow",
 				"pref, 3dlu, fill:pref:grow, 3dlu, pref, 3dlu, pref, 3dlu, pref");
 
-		PanelBuilder builder = new PanelBuilder(layout);
+		final PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		CellConstraints cc = new CellConstraints();
+		final CellConstraints cc = new CellConstraints();
 
 		builder.addSeparator("Turnout Groups", cc.xyw(1, 1, 1));
 
@@ -174,7 +180,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		removeGroupButton = new JButton(new RemoveTurnoutGroupAction());
 
 		turnouts = new ArrayListModel<Turnout>();
-		SelectionInList<Turnout> turnoutModel = new SelectionInList<Turnout>();
+		final SelectionInList<Turnout> turnoutModel = new SelectionInList<Turnout>();
 
 		turnoutModel.setList(turnouts);
 		turnoutsTable = new JTable();
@@ -190,10 +196,11 @@ public class TurnoutConfigurationDialog extends JDialog implements
 				"deleteTurnout");
 		turnoutsTable.getActionMap().put("deleteTurnout",
 				new RemoveTurnoutAction());
-		TableColumn typeColumn = turnoutsTable.getColumnModel().getColumn(1);
+		final TableColumn typeColumn = turnoutsTable.getColumnModel()
+				.getColumn(1);
 		typeColumn.setCellRenderer(new TurnoutTypeCellRenderer());
 
-		TableColumn defaultStateColumn = turnoutsTable.getColumnModel()
+		final TableColumn defaultStateColumn = turnoutsTable.getColumnModel()
 				.getColumn(8);
 		defaultStateColumn
 				.setCellRenderer(new TurnoutDefaultStateCellRenderer());
@@ -206,7 +213,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 				ImageTools.createImageIconFromIconSet("ok.png"));
 		okButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				okPressed = true;
 				setVisible(false);
 				turnoutPersistence
@@ -221,7 +228,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		turnoutsTable.addMouseListener(new MouseAdapter() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseClicked(final MouseEvent e) {
 				if (e.getClickCount() == 2
 						&& e.getButton() == MouseEvent.BUTTON1) {
 					new EditTurnoutAction().actionPerformed(null);
@@ -229,6 +236,9 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			}
 
 		});
+
+		SwingUtils.addEscapeListener(this);
+
 	}
 
 	/**
@@ -238,7 +248,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			ListSelectionListener {
 
 		@Override
-		public void valueChanged(ListSelectionEvent e) {
+		public void valueChanged(final ListSelectionEvent e) {
 
 			if (e.getValueIsAdjusting()) {
 				return;
@@ -246,7 +256,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			if (turnoutGroupList.getSelectedIndex() == -1) {
 				turnoutGroupList.setSelectedIndex(0);
 			}
-			TurnoutGroup selectedGroup = (TurnoutGroup) turnoutGroupList
+			final TurnoutGroup selectedGroup = (TurnoutGroup) turnoutGroupList
 					.getSelectedValue();
 
 			if (selectedGroup == null) {
@@ -262,13 +272,18 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	}
 
 	private class EditTurnoutGroupAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2098239263496275812L;
+
 		public EditTurnoutGroupAction() {
 			super("Edit Group");
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			TurnoutGroup groupToEdit = turnoutGroupModel.getSelection();
+		public void actionPerformed(final ActionEvent arg0) {
+			final TurnoutGroup groupToEdit = turnoutGroupModel.getSelection();
 
 			turnoutPersistence.updateTurnoutGroup(groupToEdit);
 
@@ -276,28 +291,33 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	}
 
 	private class AddTurnoutGroupAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7442768865195498598L;
+
 		public AddTurnoutGroupAction() {
 			super("Add Group", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			String newGroupName = JOptionPane.showInputDialog(
+		public void actionPerformed(final ActionEvent arg0) {
+			final String newGroupName = JOptionPane.showInputDialog(
 					TurnoutConfigurationDialog.this,
 					"Enter the name of the new Turnout-Group",
 					"Add Turnout-Group", JOptionPane.QUESTION_MESSAGE);
 			if (newGroupName == null) {
 				return;
 			}
-			TurnoutGroup newTurnoutGroup = new TurnoutGroup();
+			final TurnoutGroup newTurnoutGroup = new TurnoutGroup();
 			newTurnoutGroup.setName(newGroupName);
 			if (Preferences.getInstance().getBooleanValue(
 					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-				String newAmount = JOptionPane.showInputDialog(
+				final String newAmount = JOptionPane.showInputDialog(
 						TurnoutConfigurationDialog.this,
 						"How many Turnouts should be in this group?", "10");
 				int newOffset = 1;
-				for (TurnoutGroup group : turnoutPersistence
+				for (final TurnoutGroup group : turnoutPersistence
 						.getAllTurnoutGroups()) {
 					newOffset += group.getTurnoutNumberAmount();
 				}
@@ -313,21 +333,26 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	}
 
 	private class RemoveTurnoutGroupAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4438753209564805774L;
+
 		public RemoveTurnoutGroupAction() {
 			super("Remove Group", ImageTools
 					.createImageIconFromIconSet("remove.png"));
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			TurnoutGroup groupToDelete = turnoutGroupModel.getSelection();
+		public void actionPerformed(final ActionEvent arg0) {
+			final TurnoutGroup groupToDelete = turnoutGroupModel.getSelection();
 			if (groupToDelete == null) {
 				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
 						"Please select a Turnout-Group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			int response = JOptionPane.showConfirmDialog(
+			final int response = JOptionPane.showConfirmDialog(
 					TurnoutConfigurationDialog.this,
 					"Really remove Turnout-Group '" + groupToDelete.getName()
 							+ "' ?", "Remove Turnout-Group",
@@ -340,14 +365,19 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	}
 
 	private class AddTurnoutAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2097710453761242564L;
+
 		public AddTurnoutAction() {
 			super("Add", ImageTools.createImageIconFromIconSet("add.png"));
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 
-			TurnoutGroup selectedTurnoutGroup = turnoutGroupModel
+			final TurnoutGroup selectedTurnoutGroup = turnoutGroupModel
 					.getSelection();
 			if (selectedTurnoutGroup == null) {
 				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
@@ -370,15 +400,15 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			} else {
 				nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
 			}
-			Turnout newTurnout = createDefaultTurnout(selectedTurnoutGroup,
-					nextNumber);
+			final Turnout newTurnout = createDefaultTurnout(
+					selectedTurnoutGroup, nextNumber);
 
 			new TurnoutConfig(TurnoutConfigurationDialog.this, newTurnout);
 		}
 
-		private Turnout createDefaultTurnout(TurnoutGroup selectedTurnoutGroup,
-				int nextNumber) {
-			Turnout newTurnout = new Turnout();
+		private Turnout createDefaultTurnout(
+				final TurnoutGroup selectedTurnoutGroup, final int nextNumber) {
+			final Turnout newTurnout = new Turnout();
 			newTurnout.setNumber(nextNumber);
 
 			newTurnout.setBus1(Preferences.getInstance().getIntValue(
@@ -396,24 +426,28 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 	private class RemoveTurnoutAction extends AbstractAction {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3406975342633828556L;
+
 		public RemoveTurnoutAction() {
 			super("Remove", ImageTools.createImageIconFromIconSet("remove.png"));
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 
-			TurnoutGroup selectedTurnoutGroup = turnoutGroupModel
-					.getSelection();
-			int[] rows = turnoutsTable.getSelectedRows();
-			int[] numbers = new int[rows.length];
+			turnoutGroupModel.getSelection();
+			final int[] rows = turnoutsTable.getSelectedRows();
+			final int[] numbers = new int[rows.length];
 			int i = 0;
-			for (int row : rows) {
+			for (final int row : rows) {
 				numbers[i] = (Integer) turnoutsTable.getValueAt(row, 0);
 				i++;
 			}
-			for (int number : numbers) {
-				Turnout turnoutByNumber = turnoutPersistence
+			for (final int number : numbers) {
+				final Turnout turnoutByNumber = turnoutPersistence
 						.getTurnoutByNumber(number);
 				turnoutPersistence.removeTurnout(turnoutByNumber);
 			}
@@ -422,12 +456,17 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	}
 
 	private class EditTurnoutAction extends AbstractAction {
-		@Override
-		public void actionPerformed(ActionEvent e) {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4218588761631497486L;
 
-			int row = turnoutsTable.getSelectedRow();
-			int number = (Integer) turnoutsTable.getValueAt(row, 0);
-			PresentationModel<Turnout> model = new PresentationModel<Turnout>(
+		@Override
+		public void actionPerformed(final ActionEvent e) {
+
+			final int row = turnoutsTable.getSelectedRow();
+			final int number = (Integer) turnoutsTable.getValueAt(row, 0);
+			final PresentationModel<Turnout> model = new PresentationModel<Turnout>(
 					turnoutPersistence.getTurnoutByNumber(number));
 			new TurnoutConfig(TurnoutConfigurationDialog.this, model);
 		}
@@ -438,11 +477,11 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	}
 
 	@Override
-	public void turnoutsUpdated(List<TurnoutGroup> turnoutGroups) {
+	public void turnoutsUpdated(final List<TurnoutGroup> turnoutGroups) {
 	}
 
 	@Override
-	public void turnoutUpdated(Turnout turnout) {
+	public void turnoutUpdated(final Turnout turnout) {
 		if (turnout.getTurnoutGroup().equals(turnoutGroupModel.getSelection())) {
 			turnouts.remove(turnout);
 			turnouts.add(turnout);
@@ -450,26 +489,29 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	}
 
 	@Override
-	public void turnoutRemoved(Turnout turnout) {
+	public void turnoutRemoved(final Turnout turnout) {
+		if (turnout == null) {
+			return;
+		}
 		if (turnout.getTurnoutGroup().equals(turnoutGroupModel.getSelection())) {
 			turnouts.remove(turnout);
 		}
 	}
 
 	@Override
-	public void turnoutAdded(Turnout turnout) {
+	public void turnoutAdded(final Turnout turnout) {
 		if (turnout.getTurnoutGroup().equals(turnoutGroupModel.getSelection())) {
 			turnouts.add(turnout);
 		}
 	}
 
 	@Override
-	public void turnoutGroupAdded(TurnoutGroup group) {
+	public void turnoutGroupAdded(final TurnoutGroup group) {
 		turnoutGroups.add(group);
 	}
 
 	@Override
-	public void turnoutGroupRemoved(TurnoutGroup group) {
+	public void turnoutGroupRemoved(final TurnoutGroup group) {
 		if (turnoutGroupModel.getSelection().equals(group)) {
 			turnouts.clear();
 		}
@@ -478,14 +520,14 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	}
 
 	@Override
-	public void turnoutGroupUpdated(TurnoutGroup group) {
+	public void turnoutGroupUpdated(final TurnoutGroup group) {
 		turnoutGroups.remove(group);
 		turnoutGroups.add(group);
 
 	}
 
 	@Override
-	public void failure(TurnoutManagerException arg0) {
+	public void failure(final TurnoutManagerException arg0) {
 
 	}
 }

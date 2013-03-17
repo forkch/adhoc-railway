@@ -44,6 +44,11 @@ import ch.fork.AdHocRailway.ui.turnouts.StaticTurnoutWidget;
 
 public class KeyTrackControl extends SimpleInternalFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3052109699874529256L;
+
 	private StringBuffer		enteredNumberKeys;
 
 	private JPanel				switchesHistory;
@@ -161,7 +166,12 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
     private class NumberEnteredAction extends AbstractAction {
 
-        public void actionPerformed(ActionEvent e) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -4818198896180938380L;
+
+		public void actionPerformed(ActionEvent e) {
             enteredNumberKeys.append(e.getActionCommand());
             String switchNumberAsString = enteredNumberKeys.toString();
             int switchNumber = Integer.parseInt(switchNumberAsString);
@@ -176,14 +186,24 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
     private class PeriodEnteredAction extends AbstractAction {
 
-        public void actionPerformed(ActionEvent e) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 6709249386564202875L;
+
+		public void actionPerformed(ActionEvent e) {
             routeMode = true;
             digitDisplay.setPeriod(true);
         }
     }
 
     private abstract class SwitchingAction extends AbstractAction {
-        public void actionPerformed(ActionEvent e) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 8783785027663679688L;
+
+		public void actionPerformed(ActionEvent e) {
 
             try {
                 RouteControlIface routeControl = AdHocRailway.getInstance()
@@ -279,18 +299,43 @@ public class KeyTrackControl extends SimpleInternalFrame {
     }
 
     private class CurvedLeftAction extends SwitchingAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5676902063321467852L;
     }
     
     private class StraightAction extends SwitchingAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2339006950893044415L;
     }
     
     private class CurvedRightAction extends SwitchingAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7285117051054231241L;
     }
     
     private class EnableRouteAction extends SwitchingAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5376121297997351343L;
     }
     
     private class DisableRouteAction extends SwitchingAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4179628128437613997L;
     }
     
 }

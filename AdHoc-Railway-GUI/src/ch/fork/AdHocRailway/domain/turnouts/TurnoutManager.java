@@ -21,6 +21,8 @@ package ch.fork.AdHocRailway.domain.turnouts;
 import java.util.List;
 import java.util.Set;
 
+import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
+
 public interface TurnoutManager {
 
 	public abstract List<Turnout> getAllTurnouts();
@@ -64,4 +66,8 @@ public interface TurnoutManager {
 
 	public abstract void removeTurnoutManagerListenerInNextEvent(
 			TurnoutManagerListener turnoutAddListener);
+
+	public abstract void setTurnoutService(TurnoutService instance);
+
+	public abstract void disconnect();
 }

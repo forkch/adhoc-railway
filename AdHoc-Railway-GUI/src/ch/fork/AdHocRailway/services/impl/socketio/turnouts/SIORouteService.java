@@ -62,10 +62,10 @@ public class SIORouteService implements RouteService, IOCallback {
 					LOGGER.info("ack: " + Arrays.toString(arg0));
 					Boolean err = (Boolean) arg0[0];
 					String msg = (String) arg0[1];
-					String sioId = (String) arg0[2];
 					if (err) {
 						listener.failure(new RouteManagerException(msg));
 					} else {
+						String sioId = (String) arg0[2];
 						SIORouteServiceEventHandler.addIdToRoute(route, sioId);
 						listener.routeAdded(route);
 					}
@@ -294,7 +294,8 @@ public class SIORouteService implements RouteService, IOCallback {
 
 	@Override
 	public void disconnect() {
-		sioService.disconnect();
+
+		sioService.removeIOCallback(this);
 	}
 
 	@Override

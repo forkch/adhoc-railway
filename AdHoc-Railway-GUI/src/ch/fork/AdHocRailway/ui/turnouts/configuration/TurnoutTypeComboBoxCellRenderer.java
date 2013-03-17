@@ -29,6 +29,11 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class TurnoutTypeComboBoxCellRenderer extends DefaultListCellRenderer {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8179478248689107235L;
+
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {

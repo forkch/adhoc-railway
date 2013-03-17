@@ -30,6 +30,10 @@ import java.awt.geom.AffineTransform;
 import javax.swing.JPanel;
 
 public class Segment7 extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8795856441365657774L;
 	private int		digit;
 	private boolean	hasfocus;
 	private boolean	displayPeriod	= false;

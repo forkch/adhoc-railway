@@ -32,6 +32,10 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class TurnoutCanvas extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7177529935222900726L;
 	protected Turnout turnout;
 	protected SRCPTurnoutState turnoutState = SRCPTurnoutState.UNDEF;
 

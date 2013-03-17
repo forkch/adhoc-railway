@@ -33,6 +33,11 @@ import java.awt.FlowLayout;
  * 
  */
 public class ThreeDigitDisplay extends javax.swing.JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7093577060926940704L;
+
 	private Segment7	seg1;
 
 	private Segment7	seg2;

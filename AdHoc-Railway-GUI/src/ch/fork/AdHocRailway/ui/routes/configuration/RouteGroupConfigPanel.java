@@ -45,6 +45,10 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public class RouteGroupConfigPanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6564150077064098335L;
 	private PresentationModel<RouteGroup>	presentationModel;
 	private JTextField						routeGroupName;
 	private JSpinner						routeNumberOffset;

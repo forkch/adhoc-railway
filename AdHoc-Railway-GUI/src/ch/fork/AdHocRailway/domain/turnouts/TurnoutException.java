@@ -21,6 +21,11 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 public class TurnoutException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -356171641042648431L;
+
 	public TurnoutException() {
 		// TODO Auto-generated constructor stub
 	}

@@ -47,6 +47,11 @@ public class HibernateRouteGroup extends Model implements java.io.Serializable,
 
 	// Fields
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1258997643222460823L;
+
 	@Id
 	@GeneratedValue
 	private int id;

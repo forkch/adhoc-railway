@@ -11,6 +11,10 @@ import com.jgoodies.binding.adapter.AbstractTableAdapter;
  */
 public class LocomotiveTableModel extends AbstractTableAdapter<Locomotive> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3279273929330645457L;
 	private static final String[] COLUMNS = { "Name", "Image", "Type",
 			"Address", "Desc" };
 
@@ -27,11 +31,11 @@ public class LocomotiveTableModel extends AbstractTableAdapter<Locomotive> {
 		case 1:
 			return locomotive.getImage();
 		case 2:
-			return locomotive.getLocomotiveType();
+			return locomotive.getType();
 		case 3:
 			return locomotive.getAddress();
 		case 4:
-			return locomotive.getDescription();
+			return locomotive.getDesc();
 		default:
 			throw new IllegalStateException("Unknown column");
 		}

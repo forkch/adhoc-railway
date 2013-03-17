@@ -20,6 +20,11 @@ package ch.fork.AdHocRailway.domain;
 
 public class AdHocRailwayException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1449606891489948213L;
+
 	public AdHocRailwayException() {
 		// TODO Auto-generated constructor stub
 	}

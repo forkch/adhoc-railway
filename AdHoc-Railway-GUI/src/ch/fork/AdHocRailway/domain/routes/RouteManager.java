@@ -20,6 +20,8 @@ package ch.fork.AdHocRailway.domain.routes;
 
 import java.util.List;
 
+import ch.fork.AdHocRailway.services.turnouts.RouteService;
+
 public interface RouteManager {
 
 	public abstract Route getRouteByNumber(int number)
@@ -37,7 +39,7 @@ public interface RouteManager {
 	public abstract void addRouteGroup(RouteGroup routeGroup)
 			throws RouteManagerException;
 
-	public abstract void deleteRouteGroup(RouteGroup routeGroup)
+	public abstract void removeRouteGroup(RouteGroup routeGroup)
 			throws RouteManagerException;
 
 	public abstract void updateRouteGroup(RouteGroup routeGroup)
@@ -68,5 +70,9 @@ public interface RouteManager {
 
 	void removeRouteManagerListenerInNextEvent(
 			RouteManagerListener turnoutAddListener);
+
+	public abstract void setRouteService(RouteService instance);
+
+	public abstract void disconnect();
 
 }

@@ -36,7 +36,7 @@ public class HibernateLocomotiveMapper {
 				.getLocomotives()) {
 			Locomotive locomotive = mapLocomotive(hLocomotive);
 			group.addLocomotive(locomotive);
-			locomotive.setLocomotiveGroup(group);
+			locomotive.setGroup(group);
 		}
 		return group;
 	}
@@ -66,10 +66,10 @@ public class HibernateLocomotiveMapper {
 		locomotive.setName(hibernateLocomotive.getName());
 		locomotive.setId(hibernateLocomotive.getId());
 		locomotive.setBus(hibernateLocomotive.getBus());
-		locomotive.setDescription(hibernateLocomotive.getDescription());
+		locomotive.setDesc(hibernateLocomotive.getDescription());
 		locomotive.setImage(hibernateLocomotive.getImage());
 		locomotive.setAddress(hibernateLocomotive.getAddress());
-		locomotive.setLocomotiveType(mapType(hibernateLocomotive.getType()));
+		locomotive.setType(mapType(hibernateLocomotive.getType()));
 	}
 
 	public static void updateHibernateLocomotive(
@@ -78,8 +78,8 @@ public class HibernateLocomotiveMapper {
 		hLocomotive.setId(locomotive.getId());
 		hLocomotive.setAddress(locomotive.getAddress());
 		hLocomotive.setBus(locomotive.getBus());
-		hLocomotive.setDescription(locomotive.getDescription());
+		hLocomotive.setDescription(locomotive.getDesc());
 		hLocomotive.setImage(locomotive.getImage());
-		hLocomotive.setType(mapType(locomotive.getLocomotiveType()));
+		hLocomotive.setType(mapType(locomotive.getType()));
 	}
 }

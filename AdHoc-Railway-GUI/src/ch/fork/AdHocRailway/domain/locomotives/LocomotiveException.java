@@ -20,6 +20,11 @@ package ch.fork.AdHocRailway.domain.locomotives;
 
 public class LocomotiveException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6187908607232717869L;
+
 	public LocomotiveException() {
 		// TODO Auto-generated constructor stub
 	}

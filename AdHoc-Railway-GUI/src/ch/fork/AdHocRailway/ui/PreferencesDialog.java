@@ -30,8 +30,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -45,6 +45,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class PreferencesDialog extends JDialog implements PreferencesKeys {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6559383494970215298L;
 	private JSpinner defaultActivationTime;
 	private JSpinner defaultRoutingDelay;
 	private JSpinner defaultLockDuration;
@@ -52,14 +56,11 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private SpinnerNumberModel defaultRoutingDelayModel;
 	private SpinnerNumberModel defaultLockDurationModel;
 	private JSpinner locomotiveControlNumber;
-	private JSpinner switchControlNumber;
-	private JSpinner routeControlNumber;
 	private JSpinner defaultTurnoutBus;
 	private JSpinner defaultLocomotiveBus;
 	private SpinnerNumberModel locomotiveControlNumberModel;
-	private SpinnerNumberModel switchControlNumberModel;
-	private JTextField hostnameTextField;
-	private JTextField portnumberTextField;
+	private JTextField srcpHostnameTextField;
+	private JTextField srcpPortnumberTextField;
 	private JComboBox<String> keyBoardLayoutComboBox;
 	private JCheckBox interface6051;
 	private JCheckBox writeLog;
@@ -70,18 +71,17 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 	private boolean okPressed;
 	private boolean cancelPressed;
-	private JCheckBox autoconnectCheckBox;
-	private SpinnerNumberModel routeControlNumberModel;
-	private JTextField databaseHostField;
-	private JTextField databaseNameField;
-	private JTextField databaseUserField;
-	private JTextField databasePasswordField;
-	private JCheckBox useDatabaseCheckBox;
+	private JCheckBox srcpAutoconnectCheckBox;
+	private JTextField adHocServerHostField;
+	private JTextField adHocServerCollectionField;
+	private JCheckBox useAdHocServerCheckBox;
 	private JCheckBox openLastFileCheckBox;
 	private SpinnerNumberModel defaultTurnoutBusModel;
 	private SpinnerNumberModel defaultLocomotiveBusModel;
 	private SpinnerNumberModel numberOfBoostersModel;
 	private JSpinner numberOfBoosters;
+	private JSpinner adHocServerPortField;
+	private SpinnerNumberModel adHocServerPortModel;
 
 	public PreferencesDialog(JFrame owner) {
 		super(owner, "Preferences", true);
@@ -107,8 +107,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		builder.addSeparator("SRCP-Server", cc.xy(2, 6));
 		builder.add(createServerTab(), cc.xy(2, 8));
 
-		builder.addSeparator("Database", cc.xy(4, 6));
-		builder.add(createDatabaseTab(), cc.xy(4, 8));
+		builder.addSeparator("AdHoc-Server", cc.xy(4, 6));
+		builder.add(createAdHocServerTab(), cc.xy(4, 8));
 
 		JButton okButton = new JButton("OK",
 				ImageTools.createImageIconFromIconSet("ok.png"));
@@ -116,7 +116,16 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				okPressed = true;
+
+				JOptionPane
+						.showMessageDialog(
+								PreferencesDialog.this,
+								"Please restart application for the changes to have effect",
+								"Please restart",
+								JOptionPane.INFORMATION_MESSAGE);
 				PreferencesDialog.this.setVisible(false);
+
+				savePreferences();
 			}
 		});
 		JButton cancelButton = new JButton("Cancel",
@@ -129,27 +138,23 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				PreferencesDialog.this.setVisible(false);
 			}
 		});
+
 		builder.add(
 				ButtonBarFactory.buildRightAlignedBar(okButton, cancelButton),
 				cc.xyw(2, 10, 3));
 
 		add(builder.getPanel());
+
 		loadPreferences();
 		pack();
 		setLocationRelativeTo(getParent());
+		SwingUtils.addEscapeListener(this);
 		setVisible(true);
-		savePreferences();
 	}
 
 	private JPanel createGUISettingsTab() {
 		locomotiveControlNumberModel = new SpinnerNumberModel(5, 1, 10, 1);
 		locomotiveControlNumber = new JSpinner(locomotiveControlNumberModel);
-
-		switchControlNumberModel = new SpinnerNumberModel(7, 1, 10, 1);
-		switchControlNumber = new JSpinner(switchControlNumberModel);
-
-		routeControlNumberModel = new SpinnerNumberModel(7, 1, 10, 1);
-		routeControlNumber = new JSpinner(routeControlNumberModel);
 
 		fixedTurnoutGroupSizesCheckBox = new JCheckBox();
 
@@ -174,12 +179,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		builder.addLabel("Locomotive Controls", cc.xy(1, 1));
 		builder.add(locomotiveControlNumber, cc.xy(3, 1));
-
-		builder.addLabel("Turnout Controls per row", cc.xy(1, 3));
-		builder.add(switchControlNumber, cc.xy(3, 3));
-
-		builder.addLabel("Route Controls per row", cc.xy(1, 5));
-		builder.add(routeControlNumber, cc.xy(3, 5));
 
 		builder.addLabel("Keyboard-Layout", cc.xy(1, 7));
 		builder.add(keyBoardLayoutComboBox, cc.xy(3, 7));
@@ -257,59 +256,55 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 	private JPanel createServerTab() {
 
-		hostnameTextField = new JTextField(15);
+		srcpHostnameTextField = new JTextField(15);
 
-		portnumberTextField = new JTextField("12345", 15);
+		srcpPortnumberTextField = new JTextField("12345", 15);
 
-		autoconnectCheckBox = new JCheckBox();
+		srcpAutoconnectCheckBox = new JCheckBox();
 
 		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
 				"pref, 3dlu, pref, 3dlu, pref, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 		builder.addLabel("Hostname (Name or IP)", cc.xy(1, 1));
-		builder.add(hostnameTextField, cc.xy(3, 1));
+		builder.add(srcpHostnameTextField, cc.xy(3, 1));
 
 		builder.addLabel("Portnumber (e.g. 12345)", cc.xy(1, 3));
-		builder.add(portnumberTextField, cc.xy(3, 3));
+		builder.add(srcpPortnumberTextField, cc.xy(3, 3));
 
 		builder.addLabel("Autoconnect", cc.xy(1, 5));
-		builder.add(autoconnectCheckBox, cc.xy(3, 5));
+		builder.add(srcpAutoconnectCheckBox, cc.xy(3, 5));
 
 		return builder.getPanel();
 	}
 
-	private JPanel createDatabaseTab() {
+	private JPanel createAdHocServerTab() {
 
-		useDatabaseCheckBox = new JCheckBox();
+		useAdHocServerCheckBox = new JCheckBox();
 
-		databaseHostField = new JTextField(15);
+		adHocServerHostField = new JTextField(15);
 
-		databaseNameField = new JTextField(15);
+		adHocServerPortModel = new SpinnerNumberModel(3000, 1025, 65535, 1);
+		adHocServerPortField = new JSpinner(adHocServerPortModel);
 
-		databaseUserField = new JTextField(15);
-
-		databasePasswordField = new JPasswordField(15);
+		adHocServerCollectionField = new JTextField(15);
 
 		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
+				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 
-		builder.addLabel("Use Database", cc.xy(1, 1));
-		builder.add(useDatabaseCheckBox, cc.xy(3, 1));
+		builder.addLabel("Use AdHoc-Server", cc.xy(1, 1));
+		builder.add(useAdHocServerCheckBox, cc.xy(3, 1));
 
 		builder.addLabel("Host", cc.xy(1, 3));
-		builder.add(databaseHostField, cc.xy(3, 3));
+		builder.add(adHocServerHostField, cc.xy(3, 3));
 
-		builder.addLabel("Database", cc.xy(1, 5));
-		builder.add(databaseNameField, cc.xy(3, 5));
+		builder.addLabel("Port", cc.xy(1, 5));
+		builder.add(adHocServerPortField, cc.xy(3, 5));
 
-		builder.addLabel("User", cc.xy(1, 7));
-		builder.add(databaseUserField, cc.xy(3, 7));
-
-		builder.addLabel("Password", cc.xy(1, 9));
-		builder.add(databasePasswordField, cc.xy(3, 9));
+		builder.addLabel("Collection", cc.xy(1, 7));
+		builder.add(adHocServerCollectionField, cc.xy(3, 7));
 
 		return builder.getPanel();
 	}
@@ -326,8 +321,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		Preferences p = Preferences.getInstance();
 		locomotiveControlNumberModel.setValue(p
 				.getIntValue(LOCOMOTIVE_CONTROLES));
-		switchControlNumberModel.setValue(p.getIntValue(TURNOUT_CONTROLES));
-		routeControlNumberModel.setValue(p.getIntValue(ROUTE_CONTROLES));
 		keyBoardLayoutComboBox.setSelectedItem(p
 				.getStringValue(KEYBOARD_LAYOUT));
 		writeLog.setSelected(p.getBooleanValue(LOGGING));
@@ -347,25 +340,23 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		defaultLockDurationModel.setValue(p.getIntValue(LOCK_DURATION));
 		interface6051.setSelected(p.getBooleanValue(INTERFACE_6051));
 
-		hostnameTextField.setText(p.getStringValue(HOSTNAME));
-		portnumberTextField.setText(Integer.toString(p.getIntValue(PORT)));
-		autoconnectCheckBox.setSelected(p.getBooleanValue(AUTOCONNECT));
+		srcpHostnameTextField.setText(p.getStringValue(SRCP_HOSTNAME));
+		srcpPortnumberTextField.setText(Integer.toString(p
+				.getIntValue(SRCP_PORT)));
+		srcpAutoconnectCheckBox
+				.setSelected(p.getBooleanValue(SRCP_AUTOCONNECT));
 
-		useDatabaseCheckBox.setSelected(p.getBooleanValue(USE_DATABASE));
-		databaseHostField.setText(p.getStringValue(DATABASE_HOST));
-		databaseNameField.setText(p.getStringValue(DATABASE_NAME));
-		databaseUserField.setText(p.getStringValue(DATABASE_USER));
-		databasePasswordField.setText(p.getStringValue(DATABASE_PWD));
+		useAdHocServerCheckBox.setSelected(p.getBooleanValue(USE_ADHOC_SERVER));
+		adHocServerHostField.setText(p.getStringValue(ADHOC_SERVER_HOSTNAME));
+		adHocServerPortField.setValue(p.getIntValue(ADHOC_SERVER_PORT));
+		adHocServerCollectionField.setText(p
+				.getStringValue(ADHOC_SERVER_COLLECTION));
 	}
 
 	public void savePreferences() {
 		Preferences p = Preferences.getInstance();
 		p.setIntValue(LOCOMOTIVE_CONTROLES, locomotiveControlNumberModel
 				.getNumber().intValue());
-		p.setIntValue(TURNOUT_CONTROLES, switchControlNumberModel.getNumber()
-				.intValue());
-		p.setIntValue(ROUTE_CONTROLES, routeControlNumberModel.getNumber()
-				.intValue());
 		p.setStringValue(KEYBOARD_LAYOUT, keyBoardLayoutComboBox
 				.getSelectedItem().toString());
 		p.setBooleanValue(LOGGING, writeLog.isSelected());
@@ -390,15 +381,18 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				.intValue());
 		p.setBooleanValue(INTERFACE_6051, interface6051.isSelected());
 
-		p.setStringValue(HOSTNAME, hostnameTextField.getText());
-		p.setIntValue(PORT, Integer.parseInt(portnumberTextField.getText()));
-		p.setBooleanValue(AUTOCONNECT, autoconnectCheckBox.isSelected());
+		p.setStringValue(SRCP_HOSTNAME, srcpHostnameTextField.getText());
+		p.setIntValue(SRCP_PORT,
+				Integer.parseInt(srcpPortnumberTextField.getText()));
+		p.setBooleanValue(SRCP_AUTOCONNECT,
+				srcpAutoconnectCheckBox.isSelected());
 
-		p.setBooleanValue(USE_DATABASE, useDatabaseCheckBox.isSelected());
-		p.setStringValue(DATABASE_HOST, databaseHostField.getText());
-		p.setStringValue(DATABASE_NAME, databaseNameField.getText());
-		p.setStringValue(DATABASE_USER, databaseUserField.getText());
-		p.setStringValue(DATABASE_PWD, databasePasswordField.getText());
+		p.setBooleanValue(USE_ADHOC_SERVER, useAdHocServerCheckBox.isSelected());
+		p.setStringValue(ADHOC_SERVER_HOSTNAME, adHocServerHostField.getText());
+		p.setIntValue(ADHOC_SERVER_PORT, adHocServerPortModel.getNumber()
+				.intValue());
+		p.setStringValue(ADHOC_SERVER_COLLECTION,
+				adHocServerCollectionField.getText());
 		try {
 			p.save();
 		} catch (FileNotFoundException e) {
@@ -407,5 +401,4 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 			ExceptionProcessor.getInstance().processException(e);
 		}
 	}
-
 }

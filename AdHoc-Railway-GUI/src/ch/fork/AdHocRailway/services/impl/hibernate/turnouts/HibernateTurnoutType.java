@@ -47,6 +47,11 @@ import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
 public class HibernateTurnoutType extends Model implements
 		java.io.Serializable, Comparable<HibernateTurnoutType> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3890337891949213058L;
+
 	// Fields-
 	@Id
 	@GeneratedValue

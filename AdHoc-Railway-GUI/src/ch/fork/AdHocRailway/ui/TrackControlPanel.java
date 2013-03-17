@@ -42,6 +42,11 @@ import ch.fork.AdHocRailway.ui.turnouts.TurnoutGroupsPanel;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3165655530717661123L;
+
 	private JTabbedPane routeGroupsTabbedPane;
 
 	private JTabbedPane turnoutGroupsTabbedPane;
@@ -98,6 +103,11 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private void initKeyboardActions() {
 		getActionMap().put("NextSelected", new AbstractAction() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -6347728432292797201L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (trackControlPane.getSelectedIndex() == 0) {
@@ -116,8 +126,6 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private void updateRoutes() {
 		routeGroupsTabbedPane.removeAll();
-		int maxRouteCols = preferences
-				.getIntValue(PreferencesKeys.ROUTE_CONTROLES);
 		int i = 1;
 		RouteControlIface routeControl = AdHocRailway.getInstance()
 				.getRouteControl();
@@ -147,6 +155,11 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	}
 
 	private class GroupChangeAction extends AbstractAction {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7396916793275894512L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {

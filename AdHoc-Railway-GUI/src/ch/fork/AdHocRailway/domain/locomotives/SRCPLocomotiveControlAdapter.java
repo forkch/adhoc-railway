@@ -174,7 +174,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	}
 
 	public SRCPLocomotive createSRCPLocomotive(Locomotive locomotive) {
-		LocomotiveType type = locomotive.getLocomotiveType();
+		LocomotiveType type = locomotive.getType();
 		SRCPLocomotive sLocomotive = null;
 		switch (type) {
 		case DELTA:

@@ -47,6 +47,11 @@ public class HibernateTurnoutGroup extends Model implements
 
 	// Fields
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3726760465347384577L;
+
 	@Id
 	@GeneratedValue
 	private int id;

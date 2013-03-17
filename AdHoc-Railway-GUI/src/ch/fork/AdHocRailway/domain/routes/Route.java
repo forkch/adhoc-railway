@@ -29,6 +29,11 @@ import com.jgoodies.binding.beans.Model;
 public class Route extends Model implements java.io.Serializable,
 		Comparable<Route> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2382655333966102806L;
+
 	private int id = -1;
 
 	private RouteGroup routeGroup;

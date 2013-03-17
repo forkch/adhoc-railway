@@ -19,6 +19,11 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 public class TurnoutLockedException extends TurnoutException {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1244808380520100590L;
+
 	public TurnoutLockedException(String msg) {
 		super(msg);
 	}
