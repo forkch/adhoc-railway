@@ -110,24 +110,33 @@ exports.getById = function(socket, locomotiveId, fn) {
 }
 
 exports.addLocomotive = function(socket, locomotive, fn) {
+  if(!locomotive.name || locomotive.name.length < 1) {
+    fn(true, 'name must be specified');
+    return;
+  }
+  if(!locomotive.type || locomotive.type.length < 1) {
+    fn(true, 'type must be specified');
+    return;
+  }
+
   if(!locomotive.bus || locomotive.bus < 1) {
     fn(true, 'bus must be greater 0');
     return;
   }
 
-  if(!locomotive.address|| locomotive.address < 1) {
-    fn(true, 'address must be greater 0');
+  if(!locomotive.address1|| locomotive.address1 < 1) {
+    fn(true, 'address 1 must be greater 0');
     return;
   }
 
-  if(!locomotive.name == null || locomotive.name.length < 1) {
-    fn(true, 'name must be specified');
-    return;
+  if(locomotive.type.toUpperCase() === "SIMULATED-MFX") {
+
+    if(!locomotive.address2 || locomotive.address2 < 1) {
+      fn(true, 'address 2 must be greater 0');
+      return false;
+    }
   }
-  if(!locomotive.type == null || locomotive.type.length < 1) {
-    fn(true, 'type must be specified');
-    return;
-  }
+
 
   console.log('adding new locomotive ' + JSON.stringify(locomotive));
   new LocomotiveModel(locomotive).save(function(err, addedLocomotive) {

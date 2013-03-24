@@ -2,19 +2,27 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
 
 exports.LocomotiveSchema = new Schema({
-	name: {type: String, index: true},
-	bus: Number,
-	address: Number,
-	type: String,
-	image: String,
-	description: String,
-	group:  ObjectId
+  name: {type: String, index: true},
+  bus: Number,
+  address1: Number,
+  address2: Number,
+  type: String,
+  image: String,
+  description: String,
+  group:  ObjectId,
+  functions : [
+    {
+    number: Number,
+    description: String,
+    emergencyBrakeFunction: Boolean
+  }
+  ]
 
 });
 
 exports.LocomotiveGroupSchema = new Schema({
-	name: String,
-	locomotives : [ObjectId]
+  name: String,
+  locomotives : [ObjectId]
 });
 
 

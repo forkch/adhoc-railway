@@ -8,17 +8,22 @@ div.row
         p
           input(autofocus='true', type='text', size='4', placeholder='Name', ng-model='locomotive.name')
         p
+          select(ng-model='locomotive.type')
+            option digital
+            option simulated-mfx
+            option delta
+        p
           input(autofocus='true', type='text', size='4', placeholder='Description', ng-model='locomotive.description')
         p
           input(autofocus='true', type='text', size='4', placeholder='Image', ng-model='locomotive.image')
         p
           input(type='number',size='4', placeholder='Bus', ng-model='locomotive.bus')
         p
-          input(type='number',size='4', placeholder='Address', ng-model='locomotive.address')
+          input(type='number',size='4', placeholder='Address 1',
+          ng-model='locomotive.address1')
         p
-          select(ng-model='locomotive.type')
-            option delta
-            option digital
+          input(type='number',size='4', placeholder='Address 2',
+          ng-model='locomotive.address2')
         p
           button.btn(type='submit') Edit
   div.span5
