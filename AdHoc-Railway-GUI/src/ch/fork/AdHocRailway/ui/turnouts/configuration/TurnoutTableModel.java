@@ -16,7 +16,7 @@ public class TurnoutTableModel extends AbstractTableAdapter<Turnout> {
 			"Addr. 1 switched", "Bus 2", "Addr. 2", "Addr. 2 switched",
 			"Default State", "Orientation", "Desc" };
 
-	public TurnoutTableModel(ListModel listModel) {
+	public TurnoutTableModel(ListModel<?> listModel) {
 		super(listModel, COLUMNS);
 	}
 

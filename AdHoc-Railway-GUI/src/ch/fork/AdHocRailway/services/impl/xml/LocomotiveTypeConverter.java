@@ -7,7 +7,7 @@ import com.thoughtworks.xstream.converters.SingleValueConverter;
 public class LocomotiveTypeConverter implements SingleValueConverter {
 
 	@Override
-	public boolean canConvert(final Class type) {
+	public boolean canConvert(@SuppressWarnings("rawtypes") final Class type) {
 		return type.equals(LocomotiveType.class);
 	}
 

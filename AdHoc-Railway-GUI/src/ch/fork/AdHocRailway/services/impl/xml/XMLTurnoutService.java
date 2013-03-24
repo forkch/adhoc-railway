@@ -18,8 +18,8 @@
 
 package ch.fork.AdHocRailway.services.impl.xml;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -32,8 +32,8 @@ import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
 public class XMLTurnoutService implements TurnoutService {
 	static Logger logger = Logger.getLogger(XMLTurnoutService.class);
 	private static XMLTurnoutService instance;
-	private final List<Turnout> turnouts = new ArrayList<Turnout>();
-	private final List<TurnoutGroup> turnoutGroups = new ArrayList<TurnoutGroup>();
+	private final SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
+	private final SortedSet<TurnoutGroup> turnoutGroups = new TreeSet<TurnoutGroup>();
 	private TurnoutServiceListener listener;
 
 	private XMLTurnoutService() {
@@ -71,7 +71,7 @@ public class XMLTurnoutService implements TurnoutService {
 	}
 
 	@Override
-	public List<TurnoutGroup> getAllTurnoutGroups() {
+	public SortedSet<TurnoutGroup> getAllTurnoutGroups() {
 		return turnoutGroups;
 	}
 
@@ -113,7 +113,7 @@ public class XMLTurnoutService implements TurnoutService {
 
 	}
 
-	public void loadTurnoutGroupsFromXML(final List<TurnoutGroup> groups) {
+	public void loadTurnoutGroupsFromXML(final SortedSet<TurnoutGroup> groups) {
 		turnoutGroups.clear();
 		turnouts.clear();
 		if (groups != null) {

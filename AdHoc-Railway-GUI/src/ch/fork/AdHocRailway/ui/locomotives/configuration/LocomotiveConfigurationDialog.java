@@ -25,6 +25,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -40,10 +41,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
@@ -70,7 +73,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 	private JTable locomotivesTable;
 
-	private JList locomotiveGroupList;
+	private JList<?> locomotiveGroupList;
 
 	private JButton addLocomotiveButton;
 
@@ -151,7 +154,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 				locomotivePersistence.getAllLocomotiveGroups());
 
 		locomotiveGroupModel = new SelectionInList<LocomotiveGroup>(
-				(ListModel) locomotiveGroups);
+				(ListModel<?>) locomotiveGroups);
 
 		locomotiveGroupList = BasicComponentFactory
 				.createList(locomotiveGroupModel);
@@ -332,6 +335,20 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 		private Locomotive createDefaultLocomotive() {
 			final Locomotive newLocomotive = new Locomotive();
+			newLocomotive.setType(LocomotiveType.DIGITAL);
+
+			newLocomotive.setBus(1);
+			final LocomotiveFunction fn = new LocomotiveFunction(0, "Fn", false);
+			final LocomotiveFunction f1 = new LocomotiveFunction(1, "F1", false);
+			final LocomotiveFunction f2 = new LocomotiveFunction(2, "F2", false);
+			final LocomotiveFunction f3 = new LocomotiveFunction(3, "F3", false);
+			final LocomotiveFunction f4 = new LocomotiveFunction(4, "F4", true);
+
+			newLocomotive.addLocomotiveFunction(fn);
+			newLocomotive.addLocomotiveFunction(f1);
+			newLocomotive.addLocomotiveFunction(f2);
+			newLocomotive.addLocomotiveFunction(f3);
+			newLocomotive.addLocomotiveFunction(f4);
 			return newLocomotive;
 		}
 	}
@@ -443,7 +460,8 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 	}
 
 	@Override
-	public void locomotivesUpdated(final List<LocomotiveGroup> locomotiveGroups) {
+	public void locomotivesUpdated(
+			final SortedSet<LocomotiveGroup> locomotiveGroups) {
 
 	}
 

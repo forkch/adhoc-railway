@@ -1,6 +1,6 @@
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
-import java.util.List;
+import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
@@ -19,27 +19,27 @@ public abstract class TurnoutAddListener implements TurnoutManagerListener {
 	public abstract void turnoutUpdated(Turnout turnout);
 
 	@Override
-	public void turnoutsUpdated(List<TurnoutGroup> turnoutGroups) {
+	public void turnoutsUpdated(final SortedSet<TurnoutGroup> turnoutGroups) {
 
 	}
 
 	@Override
-	public void turnoutRemoved(Turnout turnout) {
+	public void turnoutRemoved(final Turnout turnout) {
 
 	}
 
 	@Override
-	public void turnoutGroupAdded(TurnoutGroup group) {
+	public void turnoutGroupAdded(final TurnoutGroup group) {
 
 	}
 
 	@Override
-	public void turnoutGroupRemoved(TurnoutGroup group) {
+	public void turnoutGroupRemoved(final TurnoutGroup group) {
 
 	}
 
 	@Override
-	public void turnoutGroupUpdated(TurnoutGroup group) {
+	public void turnoutGroupUpdated(final TurnoutGroup group) {
 
 	}
 

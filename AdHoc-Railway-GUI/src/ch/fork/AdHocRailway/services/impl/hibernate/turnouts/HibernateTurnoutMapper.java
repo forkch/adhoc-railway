@@ -8,13 +8,13 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 
 public class HibernateTurnoutMapper {
 
-	public static Turnout mapTurnout(HibernateTurnout hTurnout) {
-		Turnout turnout = new Turnout();
+	public static Turnout mapTurnout(final HibernateTurnout hTurnout) {
+		final Turnout turnout = new Turnout();
 		updateTurnout(turnout, hTurnout);
 		return turnout;
 	}
 
-	public static TurnoutOrientation mapOrientation(String orientation) {
+	public static TurnoutOrientation mapOrientation(final String orientation) {
 		if (orientation.equalsIgnoreCase("NORTH")) {
 			return TurnoutOrientation.NORTH;
 		} else if (orientation.equalsIgnoreCase("EAST")) {
@@ -27,11 +27,11 @@ public class HibernateTurnoutMapper {
 		return null;
 	}
 
-	public static String mapOrientation(TurnoutOrientation orientation) {
+	public static String mapOrientation(final TurnoutOrientation orientation) {
 		return orientation.toString();
 	}
 
-	public static TurnoutState mapTurnoutState(String defaultState) {
+	public static TurnoutState mapTurnoutState(final String defaultState) {
 		if (defaultState.equalsIgnoreCase("STRAIGHT")) {
 			return TurnoutState.STRAIGHT;
 		} else if (defaultState.equalsIgnoreCase("LEFT")) {
@@ -42,7 +42,7 @@ public class HibernateTurnoutMapper {
 		return TurnoutState.UNDEF;
 	}
 
-	public static String mapTurnoutState(TurnoutState defaultState) {
+	public static String mapTurnoutState(final TurnoutState defaultState) {
 		switch (defaultState) {
 		case STRAIGHT:
 			return "STRAIGHT";
@@ -55,29 +55,29 @@ public class HibernateTurnoutMapper {
 		}
 	}
 
-	public static TurnoutGroup map(HibernateTurnoutGroup hGroup) {
-		TurnoutGroup group = new TurnoutGroup();
+	public static TurnoutGroup map(final HibernateTurnoutGroup hGroup) {
+		final TurnoutGroup group = new TurnoutGroup();
 		group.setId(hGroup.getId());
 		group.setName(hGroup.getName());
 		group.setTurnoutNumberAmount(hGroup.getTurnoutNumberAmount());
 		group.setTurnoutNumberOffset(hGroup.getTurnoutNumberOffset());
-		for (HibernateTurnout hTurnout : hGroup.getTurnouts()) {
-			Turnout turnout = mapTurnout(hTurnout);
+		for (final HibernateTurnout hTurnout : hGroup.getTurnouts()) {
+			final Turnout turnout = mapTurnout(hTurnout);
 			turnout.setTurnoutGroup(group);
 			group.addTurnout(turnout);
 		}
 		return group;
 	}
 
-	public static HibernateTurnout map(Turnout turnout) {
-		HibernateTurnout hTurnout = new HibernateTurnout();
+	public static HibernateTurnout map(final Turnout turnout) {
+		final HibernateTurnout hTurnout = new HibernateTurnout();
 
 		update(turnout, hTurnout);
 
 		return hTurnout;
 	}
 
-	private static String mapType(TurnoutType turnoutType) {
+	private static String mapType(final TurnoutType turnoutType) {
 		switch (turnoutType) {
 		case CUTTER:
 			return "CUTTER";
@@ -87,14 +87,13 @@ public class HibernateTurnoutMapper {
 			return "DOUBLECROSS";
 		case THREEWAY:
 			return "THREEWAY";
-		case UNKNOWN:
 		default:
 			return "UNKNOWN";
 
 		}
 	}
 
-	private static TurnoutType mapType(String turnoutType) {
+	private static TurnoutType mapType(final String turnoutType) {
 		if (turnoutType.equalsIgnoreCase("DEFAULT")) {
 			return TurnoutType.DEFAULT;
 		} else if (turnoutType.equalsIgnoreCase("DOUBLECROSS")) {
@@ -107,8 +106,8 @@ public class HibernateTurnoutMapper {
 		return null;
 	}
 
-	public static HibernateTurnoutGroup map(TurnoutGroup group) {
-		HibernateTurnoutGroup hTurnoutGroup = new HibernateTurnoutGroup();
+	public static HibernateTurnoutGroup map(final TurnoutGroup group) {
+		final HibernateTurnoutGroup hTurnoutGroup = new HibernateTurnoutGroup();
 
 		hTurnoutGroup.setName(group.getName());
 		hTurnoutGroup.setTurnoutNumberAmount(group.getTurnoutNumberAmount());
@@ -117,7 +116,8 @@ public class HibernateTurnoutMapper {
 		return hTurnoutGroup;
 	}
 
-	public static void update(Turnout turnout, HibernateTurnout hTurnout) {
+	public static void update(final Turnout turnout,
+			final HibernateTurnout hTurnout) {
 		hTurnout.setId(turnout.getId());
 		hTurnout.setNumber(turnout.getNumber());
 		hTurnout.setBus1(turnout.getBus1());
@@ -132,7 +132,8 @@ public class HibernateTurnoutMapper {
 		hTurnout.setTurnoutType(mapType(turnout.getTurnoutType()));
 	}
 
-	public static void updateTurnout(Turnout turnout, HibernateTurnout hTurnout) {
+	public static void updateTurnout(final Turnout turnout,
+			final HibernateTurnout hTurnout) {
 		turnout.setId(hTurnout.getId());
 		turnout.setNumber(hTurnout.getNumber());
 		turnout.setBus1(hTurnout.getBus1());
@@ -147,8 +148,8 @@ public class HibernateTurnoutMapper {
 		turnout.setTurnoutType(mapType(hTurnout.getTurnoutType()));
 	}
 
-	public static void updateHibernate(HibernateTurnout hTurnout,
-			Turnout turnout) {
+	public static void updateHibernate(final HibernateTurnout hTurnout,
+			final Turnout turnout) {
 		hTurnout.setId(turnout.getId());
 		hTurnout.setNumber(turnout.getNumber());
 		hTurnout.setBus1(turnout.getBus1());

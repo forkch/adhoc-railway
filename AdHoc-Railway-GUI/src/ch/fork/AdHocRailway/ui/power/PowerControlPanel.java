@@ -36,9 +36,6 @@ import de.dermoba.srcp.model.power.SRCPPowerSupplyException;
 public class PowerControlPanel extends JPanel implements
 		SRCPPowerSupplyChangeListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -4402814993315460803L;
 	private int numberOfBoosters;
 	private final ImageIcon stopIcon;
@@ -67,18 +64,18 @@ public class PowerControlPanel extends JPanel implements
 	private void initGUI() {
 
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		MigLayout layout = new MigLayout("wrap 2");
+		final MigLayout layout = new MigLayout("wrap 2");
 		powerControlPanel = new JPanel(layout);
 
 		update();
 
-		SimpleInternalFrame frame = new SimpleInternalFrame("Power");
+		final SimpleInternalFrame frame = new SimpleInternalFrame("Power");
 		frame.add(powerControlPanel, BorderLayout.CENTER);
 		add(frame, BorderLayout.CENTER);
 
 	}
 
-	public void setConnected(boolean b) {
+	public void setConnected(final boolean b) {
 		if (b) {
 			allBoostersOn.setEnabled(true);
 			allBoostersOff.setEnabled(true);
@@ -86,13 +83,15 @@ public class PowerControlPanel extends JPanel implements
 			allBoostersOn.setEnabled(false);
 			allBoostersOff.setEnabled(false);
 		}
-		for (JToggleButton toggleButton : numberToPowerToggleButtons.values()) {
+		for (final JToggleButton toggleButton : numberToPowerToggleButtons
+				.values()) {
 			toggleButton.setEnabled(b);
 		}
 	}
 
 	@Override
-	public void powerSupplyChanged(SRCPPowerSupply powerSupply, String freeText) {
+	public void powerSupplyChanged(final SRCPPowerSupply powerSupply,
+			final String freeText) {
 		if (freeText == null || freeText.isEmpty()) {
 
 		} else {
@@ -100,28 +99,28 @@ public class PowerControlPanel extends JPanel implements
 				return;
 			}
 			int boosterNumber = -1;
-			StringTokenizer tokenizer = new StringTokenizer(freeText);
+			final StringTokenizer tokenizer = new StringTokenizer(freeText);
 			if (tokenizer.hasMoreTokens()) {
 
-				String t = tokenizer.nextToken().trim();
+				final String t = tokenizer.nextToken().trim();
 
 				try {
 					boosterNumber = Integer.parseInt(t);
-				} catch (NumberFormatException x) {
+				} catch (final NumberFormatException x) {
 				}
 
 			}
 			boolean shortcut = false;
 			if (tokenizer.hasMoreTokens()) {
 
-				String t = tokenizer.nextToken().trim();
+				final String t = tokenizer.nextToken().trim();
 				if (t.toUpperCase().equals("SHORTCUT")) {
 					shortcut = true;
 				}
 			}
 
 			if (boosterNumber != -1) {
-				JToggleButton button = numberToPowerToggleButtons
+				final JToggleButton button = numberToPowerToggleButtons
 						.get(boosterNumber);
 
 				if (button == null) {
@@ -164,10 +163,10 @@ public class PowerControlPanel extends JPanel implements
 
 		for (int i = 0; i < numberOfBoosters; i++) {
 
-			JToggleButton boosterButton = new JToggleButton("Booster "
+			final JToggleButton boosterButton = new JToggleButton("Booster "
 					+ (i + 1), stopIcon);
 			boosterButton.setHorizontalAlignment(SwingConstants.LEADING);
-			ToggleBoosterAction action = new ToggleBoosterAction();
+			final ToggleBoosterAction action = new ToggleBoosterAction();
 			boosterButton.addActionListener(action);
 			powerControlPanel.add(boosterButton, "grow");
 
@@ -182,15 +181,16 @@ public class PowerControlPanel extends JPanel implements
 
 	private void initKeyboardActions() {
 
-		InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-		KeyStroke[] keys = inputMap.keys();
+		final InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+		final KeyStroke[] keys = inputMap.keys();
 		if (keys != null) {
-			for (KeyStroke ks : keys) {
+			for (final KeyStroke ks : keys) {
 				getInputMap().remove(ks);
 			}
 		}
 
-		KeyBoardLayout kbl = Preferences.getInstance().getKeyBoardLayout();
+		final KeyBoardLayout kbl = Preferences.getInstance()
+				.getKeyBoardLayout();
 
 		for (int i = 0; i < numberOfBoosters; i++) {
 			getActionMap().put("ToggleBooster" + i,
@@ -208,14 +208,15 @@ public class PowerControlPanel extends JPanel implements
 		// kbl.assignKeys(inputMap, "TurnOffAllBoosters");
 	}
 
-	private void toogleBooster(int boosterNumber, boolean on) {
+	private void toogleBooster(final int boosterNumber, final boolean on) {
 
-		JToggleButton source = numberToPowerToggleButtons.get(boosterNumber);
+		final JToggleButton source = numberToPowerToggleButtons
+				.get(boosterNumber);
 
-		Set<SRCPPowerSupply> powerSupplies = powerControl
+		final Set<SRCPPowerSupply> powerSupplies = powerControl
 				.getKnownPowerSupplies();
 		SRCPPowerSupply bus1Supply = null;
-		for (SRCPPowerSupply supply : powerSupplies) {
+		for (final SRCPPowerSupply supply : powerSupplies) {
 			if (supply.getBus() == 1) {
 				bus1Supply = supply;
 			}
@@ -236,9 +237,9 @@ public class PowerControlPanel extends JPanel implements
 						+ boosterNumber);
 				source.setIcon(stopIcon);
 			}
-		} catch (SRCPPowerSupplyException e) {
+		} catch (final SRCPPowerSupplyException e) {
 			ExceptionProcessor.getInstance().processException(e);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			ExceptionProcessor.getInstance().processException(e);
 		}
 	}
@@ -254,13 +255,13 @@ public class PowerControlPanel extends JPanel implements
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 
 			try {
 				SRCPPowerControl.getInstance().setAllStates(SRCPPowerState.ON);
-			} catch (SRCPPowerSupplyException e1) {
+			} catch (final SRCPPowerSupplyException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
-			} catch (SRCPModelException e1) {
+			} catch (final SRCPModelException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
 			}
 
@@ -278,13 +279,13 @@ public class PowerControlPanel extends JPanel implements
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 
 			try {
 				powerControl.setAllStates(SRCPPowerState.OFF);
-			} catch (SRCPPowerSupplyException e1) {
+			} catch (final SRCPPowerSupplyException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
-			} catch (SRCPModelException e1) {
+			} catch (final SRCPModelException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
 			}
 
@@ -302,10 +303,10 @@ public class PowerControlPanel extends JPanel implements
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			JToggleButton source = (JToggleButton) arg0.getSource();
+		public void actionPerformed(final ActionEvent arg0) {
+			final JToggleButton source = (JToggleButton) arg0.getSource();
 
-			int boosterNumber = powerToggleButtonsToNumber.get(source);
+			final int boosterNumber = powerToggleButtonsToNumber.get(source);
 
 			toogleBooster(boosterNumber, source.isSelected());
 		}
@@ -319,15 +320,15 @@ public class PowerControlPanel extends JPanel implements
 		private static final long serialVersionUID = -7583549489780694040L;
 		private final int boosterNumber;
 
-		public ToggleBoosterKeyAction(int number) {
+		public ToggleBoosterKeyAction(final int number) {
 			super();
 			this.boosterNumber = number;
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
+		public void actionPerformed(final ActionEvent arg0) {
 
-			JToggleButton source = numberToPowerToggleButtons
+			final JToggleButton source = numberToPowerToggleButtons
 					.get(boosterNumber);
 			toogleBooster(boosterNumber, !source.isSelected());
 		}

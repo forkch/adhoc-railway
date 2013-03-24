@@ -357,7 +357,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				new ExitAction().actionPerformed(null);
 			}
 		});
-		hostnameLabel.setText(preferences.getStringValue("Hostname"));
+		hostnameLabel.setText(preferences
+				.getStringValue(PreferencesKeys.SRCP_HOSTNAME));
 	}
 
 	public void updateGUI() {
@@ -791,7 +792,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			final PreferencesDialog p = new PreferencesDialog(AdHocRailway.this);
 			if (p.isOkPressed()) {
 				updateGUI();
-				hostnameLabel.setText(preferences.getStringValue("Hostname"));
+				hostnameLabel.setText(preferences
+						.getStringValue(PreferencesKeys.SRCP_HOSTNAME));
 				updateCommandHistory("Preferences saved to: "
 						+ preferences.getConfigFile());
 			}
@@ -1252,7 +1254,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		/* DAEMON */
 		final JToolBar daemonToolBar = new JToolBar();
 		hostnameLabel = new JLabel();
-		hostnameLabel.setText(preferences.getStringValue("Hostname"));
+		hostnameLabel.setText(preferences
+				.getStringValue(PreferencesKeys.SRCP_HOSTNAME));
 		connectToolBarButton = new SmallToolbarButton(new ConnectAction());
 		disconnectToolBarButton = new SmallToolbarButton(new DisconnectAction());
 		disconnectToolBarButton.setEnabled(false);

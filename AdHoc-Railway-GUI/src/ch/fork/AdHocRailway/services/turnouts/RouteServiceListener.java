@@ -1,6 +1,6 @@
 package ch.fork.AdHocRailway.services.turnouts;
 
-import java.util.List;
+import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
@@ -8,7 +8,7 @@ import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
 
 public interface RouteServiceListener {
 
-	void routesUpdated(List<RouteGroup> allRouteGroups);
+	void routesUpdated(SortedSet<RouteGroup> allRouteGroups);
 
 	void routeRemoved(Route route);
 

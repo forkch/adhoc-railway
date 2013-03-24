@@ -20,6 +20,7 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 
@@ -37,7 +38,7 @@ public interface TurnoutManager {
 
 	public abstract void updateTurnout(Turnout turnout);
 
-	public abstract List<TurnoutGroup> getAllTurnoutGroups();
+	public abstract SortedSet<TurnoutGroup> getAllTurnoutGroups();
 
 	public abstract TurnoutGroup getTurnoutGroupByName(String name);
 

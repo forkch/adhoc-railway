@@ -18,7 +18,7 @@
 
 package ch.fork.AdHocRailway.services.locomotives;
 
-import java.util.List;
+import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -34,7 +34,7 @@ public interface LocomotiveService {
 	public abstract void updateLocomotive(Locomotive locomotive)
 			throws LocomotiveManagerException;
 
-	public abstract List<LocomotiveGroup> getAllLocomotiveGroups()
+	public abstract SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
 			throws LocomotiveManagerException;
 
 	public abstract void addLocomotiveGroup(LocomotiveGroup group)

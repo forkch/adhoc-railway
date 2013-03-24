@@ -21,6 +21,7 @@ import de.dermoba.srcp.model.locomotives.SRCPLocomotive;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotiveChangeListener;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotiveControl;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotiveDirection;
+import de.dermoba.srcp.model.turnouts.DoubleMMDigitalLocomotive;
 
 public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		SRCPLocomotiveChangeListener, SRCPLockChangeListener {
@@ -50,106 +51,111 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	}
 
 	@Override
-	public void decreaseSpeed(Locomotive locomotive) throws LocomotiveException {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+	public void decreaseSpeed(final Locomotive locomotive)
+			throws LocomotiveException {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.decreaseSpeed(sLocomotive);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}
 
 	}
 
 	@Override
-	public void decreaseSpeedStep(Locomotive locomotive)
+	public void decreaseSpeedStep(final Locomotive locomotive)
 			throws LocomotiveException {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.decreaseSpeedStep(sLocomotive);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}
 
 	}
 
 	@Override
-	public int getCurrentSpeed(Locomotive locomotive) {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+	public int getCurrentSpeed(final Locomotive locomotive) {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		return sLocomotive.getCurrentSpeed();
 	}
 
 	@Override
-	public SRCPLocomotiveDirection getDirection(Locomotive locomotive) {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+	public SRCPLocomotiveDirection getDirection(final Locomotive locomotive) {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		return sLocomotive.getDirection();
 	}
 
 	@Override
-	public boolean[] getFunctions(Locomotive locomotive) {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+	public boolean[] getFunctions(final Locomotive locomotive) {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		return sLocomotive.getFunctions();
 	}
 
 	@Override
-	public void increaseSpeed(Locomotive locomotive) throws LocomotiveException {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+	public void increaseSpeed(final Locomotive locomotive)
+			throws LocomotiveException {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.increaseSpeed(sLocomotive);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}
 	}
 
 	@Override
-	public void increaseSpeedStep(Locomotive locomotive)
+	public void increaseSpeedStep(final Locomotive locomotive)
 			throws LocomotiveException {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.increaseSpeedStep(sLocomotive);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}
 	}
 
 	@Override
-	public void setFunctions(Locomotive locomotive, boolean[] functions)
-			throws LocomotiveException {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+	public void setFunctions(final Locomotive locomotive,
+			final boolean[] functions) throws LocomotiveException {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.setFunctions(sLocomotive, functions);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}
 	}
 
 	@Override
-	public void setSpeed(Locomotive locomotive, int speed, boolean[] functions)
-			throws LocomotiveException {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+	public void setSpeed(final Locomotive locomotive, final int speed,
+			final boolean[] functions) throws LocomotiveException {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.setSpeed(sLocomotive, speed, functions);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}
 	}
 
 	@Override
-	public void emergencyStop(Locomotive locomotive) throws LocomotiveException {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
-		try {
-			locomotiveControl.emergencyStop(sLocomotive);
-		} catch (SRCPModelException e) {
-			throw new LocomotiveException("Locomotive Error", e);
-		}
-	}
-
-	@Override
-	public void toggleDirection(Locomotive locomotive)
+	public void emergencyStop(final Locomotive locomotive)
 			throws LocomotiveException {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		try {
+			final int emergencyStopFunction = locomotive
+					.getEmergencyStopFunction();
+			locomotiveControl.emergencyStop(sLocomotive, emergencyStopFunction);
+		} catch (final SRCPModelException e) {
+			throw new LocomotiveException("Locomotive Error", e);
+		}
+	}
+
+	@Override
+	public void toggleDirection(final Locomotive locomotive)
+			throws LocomotiveException {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.toggleDirection(sLocomotive);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}
 	}
@@ -161,20 +167,20 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	}
 
 	@Override
-	public void addOrUpdateLocomotive(Locomotive locomotive) {
-		SRCPLocomotive srcpLocomotive = getSrcpLocomotive(locomotive);
+	public void addOrUpdateLocomotive(final Locomotive locomotive) {
+		final SRCPLocomotive srcpLocomotive = getSrcpLocomotive(locomotive);
 		if (srcpLocomotive != null) {
 			SRCPLocomotiveLocomotiveMap.remove(srcpLocomotive);
 			locomotiveSRCPLocomotiveMap.remove(locomotive);
 		}
-		SRCPLocomotive sLocomotive = createSRCPLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = createSRCPLocomotive(locomotive);
 
 		locomotiveSRCPLocomotiveMap.put(locomotive, sLocomotive);
 		SRCPLocomotiveLocomotiveMap.put(sLocomotive, locomotive);
 	}
 
-	public SRCPLocomotive createSRCPLocomotive(Locomotive locomotive) {
-		LocomotiveType type = locomotive.getType();
+	public SRCPLocomotive createSRCPLocomotive(final Locomotive locomotive) {
+		final LocomotiveType type = locomotive.getType();
 		SRCPLocomotive sLocomotive = null;
 		switch (type) {
 		case DELTA:
@@ -183,75 +189,86 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		case DIGITAL:
 			sLocomotive = new MMDigitalLocomotive();
 			break;
+		case SIMULATED_MFX:
+			final DoubleMMDigitalLocomotive doubleMMDigitalLocomotive = new DoubleMMDigitalLocomotive();
+			doubleMMDigitalLocomotive.setAddress2(locomotive.getAddress2());
+			sLocomotive = doubleMMDigitalLocomotive;
+			break;
+		default:
+			break;
 		}
 		sLocomotive.setBus(locomotive.getBus());
-		sLocomotive.setAddress(locomotive.getAddress());
+		sLocomotive.setAddress(locomotive.getAddress1());
 		return sLocomotive;
 	}
 
-	public void setSession(SRCPSession session) {
+	public void setSession(final SRCPSession session) {
 		locomotiveControl.setSession(session);
 	}
 
 	@Override
-	public boolean acquireLock(Locomotive locomotive) throws LockingException {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+	public boolean acquireLock(final Locomotive locomotive)
+			throws LockingException {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			return locomotiveControl.acquireLock(sLocomotive);
-		} catch (SRCPLockingException e) {
+		} catch (final SRCPLockingException e) {
 			throw new LockingException("Locomotive Locked", e);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new LockingException("Locomotive Error", e);
 		}
 	}
 
 	@Override
-	public boolean isLocked(Locomotive locomotive) throws LockingException {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+	public boolean isLocked(final Locomotive locomotive)
+			throws LockingException {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		if (locomotiveControl.getSession() == null) {
 			return false;
 		}
 		try {
 			return locomotiveControl.isLocked(sLocomotive);
-		} catch (SRCPLockingException e) {
+		} catch (final SRCPLockingException e) {
 			throw new LockingException("Locomotive Locked", e);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new LockingException("Locomotive Error", e);
 		}
 	}
 
 	@Override
-	public boolean isLockedByMe(Locomotive locomotive) throws LockingException {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+	public boolean isLockedByMe(final Locomotive locomotive)
+			throws LockingException {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		if (locomotiveControl.getSession() == null) {
 			return false;
 		}
 		try {
 			return locomotiveControl.isLockedByMe(sLocomotive);
 
-		} catch (SRCPLockingException e) {
+		} catch (final SRCPLockingException e) {
 			throw new LockingException("Locomotive Locked", e);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new LockingException("Locomotive Error", e);
 		}
 	}
 
 	@Override
-	public boolean releaseLock(Locomotive locomotive) throws LockingException {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+	public boolean releaseLock(final Locomotive locomotive)
+			throws LockingException {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			return locomotiveControl.releaseLock(sLocomotive);
-		} catch (SRCPLockingException e) {
+		} catch (final SRCPLockingException e) {
 			throw new LockingException("Locomotive Locked", e);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new LockingException("Locomotive Error", e);
 		}
 	}
 
 	@Override
-	public void addLocomotiveChangeListener(Locomotive locomotive,
-			LocomotiveChangeListener listener) {
-		SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+	public void addLocomotiveChangeListener(final Locomotive locomotive,
+			final LocomotiveChangeListener listener) {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		if (listeners.get(sLocomotive) == null) {
 			listeners.put(sLocomotive,
 					new ArrayList<LocomotiveChangeListener>());
@@ -265,31 +282,32 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	}
 
 	@Override
-	public void locomotiveChanged(SRCPLocomotive changedLocomotive) {
+	public void locomotiveChanged(final SRCPLocomotive changedLocomotive) {
 		informListeners(changedLocomotive);
 	}
 
 	@Override
-	public void lockChanged(Object changedLock, boolean locked) {
-		SRCPLocomotive changedLocomotive = (SRCPLocomotive) changedLock;
+	public void lockChanged(final Object changedLock, final boolean locked) {
+		final SRCPLocomotive changedLocomotive = (SRCPLocomotive) changedLock;
 		informListeners(changedLocomotive);
 	}
 
-	private void informListeners(SRCPLocomotive changedLocomotive) {
+	private void informListeners(final SRCPLocomotive changedLocomotive) {
 		logger.debug("locomotiveChanged(" + changedLocomotive + ")");
-		List<LocomotiveChangeListener> ll = listeners.get(changedLocomotive);
+		final List<LocomotiveChangeListener> ll = listeners
+				.get(changedLocomotive);
 		if (ll == null) {
 			return;
 		}
 
-		Locomotive locomotive = SRCPLocomotiveLocomotiveMap
+		final Locomotive locomotive = SRCPLocomotiveLocomotiveMap
 				.get(changedLocomotive);
-		for (LocomotiveChangeListener scl : ll) {
+		for (final LocomotiveChangeListener scl : ll) {
 			scl.locomotiveChanged(locomotive);
 		}
 	}
 
-	public SRCPLocomotive getSrcpLocomotive(Locomotive locomotive) {
+	public SRCPLocomotive getSrcpLocomotive(final Locomotive locomotive) {
 		return locomotiveSRCPLocomotiveMap.get(locomotive);
 	}
 

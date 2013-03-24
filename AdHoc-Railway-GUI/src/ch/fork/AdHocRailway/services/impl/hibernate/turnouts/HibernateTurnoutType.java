@@ -63,7 +63,7 @@ public class HibernateTurnoutType extends Model implements
 	private SortedSet<HibernateTurnout> turnouts = new TreeSet<HibernateTurnout>();
 
 	@Override
-	public int compareTo(HibernateTurnoutType o) {
+	public int compareTo(final HibernateTurnoutType o) {
 		return typeName.compareTo(o.getTypeName());
 	}
 
@@ -78,7 +78,7 @@ public class HibernateTurnoutType extends Model implements
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -116,9 +116,8 @@ public class HibernateTurnoutType extends Model implements
 			return SRCPTurnoutTypes.THREEWAY;
 		} else if (typeName.toUpperCase().equals("CUTTER")) {
 			return SRCPTurnoutTypes.CUTTER;
-		} else {
-			return SRCPTurnoutTypes.UNKNOWN;
 		}
+		return null;
 
 	}
 
@@ -129,14 +128,14 @@ public class HibernateTurnoutType extends Model implements
 	}
 
 	/** minimal constructor */
-	public HibernateTurnoutType(int id, String typeName) {
+	public HibernateTurnoutType(final int id, final String typeName) {
 		this.id = id;
 		this.typeName = typeName;
 	}
 
 	/** full constructor */
-	public HibernateTurnoutType(int id, String typeName,
-			SortedSet<HibernateTurnout> turnouts) {
+	public HibernateTurnoutType(final int id, final String typeName,
+			final SortedSet<HibernateTurnout> turnouts) {
 		this.id = id;
 		this.typeName = typeName;
 		this.turnouts = turnouts;
@@ -150,7 +149,7 @@ public class HibernateTurnoutType extends Model implements
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -159,7 +158,7 @@ public class HibernateTurnoutType extends Model implements
 		return this.typeName;
 	}
 
-	public void setTypeName(String typeName) {
+	public void setTypeName(final String typeName) {
 		this.typeName = typeName;
 	}
 
@@ -170,7 +169,7 @@ public class HibernateTurnoutType extends Model implements
 	}
 
 	@Sort(type = SortType.NATURAL)
-	public void setTurnouts(SortedSet<HibernateTurnout> turnouts) {
+	public void setTurnouts(final SortedSet<HibernateTurnout> turnouts) {
 		this.turnouts = turnouts;
 	}
 

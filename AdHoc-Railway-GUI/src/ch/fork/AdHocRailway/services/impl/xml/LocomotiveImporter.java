@@ -1,6 +1,8 @@
 package ch.fork.AdHocRailway.services.impl.xml;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -19,14 +21,14 @@ public class LocomotiveImporter implements LocomotiveManagerListener {
 
 	public void importLocomotives(
 			final LocomotiveManager locomotivePersistence,
-			final List<LocomotiveGroup> groups) {
+			final SortedSet<LocomotiveGroup> groups) {
 
 		this.locomotivePersistence = locomotivePersistence;
-		this.groups = groups;
+		this.groups = new ArrayList<LocomotiveGroup>(groups);
 		locomotivePersistence.clear(true);
 		locomotivePersistence.addLocomotiveManagerListener(this);
 
-		locomotivePersistence.addLocomotiveGroup(groups.get(0));
+		locomotivePersistence.addLocomotiveGroup(this.groups.get(0));
 	}
 
 	@Override
@@ -36,8 +38,8 @@ public class LocomotiveImporter implements LocomotiveManagerListener {
 		if (actualLocomotiveInGroup < actualSourceLocomotiveGroup
 				.getLocomotives().size()) {
 			locomotivePersistence.addLocomotiveToGroup(
-					actualSourceLocomotiveGroup.getLocomotives().get(
-							actualLocomotiveInGroup),
+					new ArrayList<Locomotive>(actualSourceLocomotiveGroup
+							.getLocomotives()).get(actualLocomotiveInGroup),
 					actualTargetLocomotiveGroup);
 		} else {
 			actualGroup++;
@@ -63,8 +65,8 @@ public class LocomotiveImporter implements LocomotiveManagerListener {
 		actualLocomotiveInGroup = 0;
 		if (!actualSourceLocomotiveGroup.getLocomotives().isEmpty()) {
 			locomotivePersistence.addLocomotiveToGroup(
-					actualSourceLocomotiveGroup.getLocomotives().get(
-							actualLocomotiveInGroup),
+					new ArrayList<Locomotive>(actualSourceLocomotiveGroup
+							.getLocomotives()).get(actualLocomotiveInGroup),
 					actualTargetLocomotiveGroup);
 		} else {
 			actualGroup++;
@@ -77,32 +79,27 @@ public class LocomotiveImporter implements LocomotiveManagerListener {
 
 	@Override
 	public void locomotiveRemoved(final Locomotive locomotive) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void locomotiveGroupRemoved(final LocomotiveGroup group) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void locomotiveGroupUpdated(final LocomotiveGroup group) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void locomotivesUpdated(final List<LocomotiveGroup> locomotiveGroups) {
-		// TODO Auto-generated method stub
+	public void locomotivesUpdated(
+			final SortedSet<LocomotiveGroup> locomotiveGroups) {
 
 	}
 
 	@Override
 	public void failure(
 			final LocomotiveManagerException locomotiveManagerException) {
-		// TODO Auto-generated method stub
-
 	}
 }

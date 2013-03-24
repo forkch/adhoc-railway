@@ -15,7 +15,7 @@ public class RouteItemTableModel extends AbstractTableAdapter<RouteItem> {
 	private static final String[] COLUMNS = { "Turnout Number",
 			"Routed Turnout State" };
 
-	RouteItemTableModel(ListModel listModel) {
+	RouteItemTableModel(ListModel<?> listModel) {
 		super(listModel, COLUMNS);
 	}
 

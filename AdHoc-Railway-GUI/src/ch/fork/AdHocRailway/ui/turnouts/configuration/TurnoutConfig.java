@@ -81,9 +81,9 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 	private JSpinner address2TextField;
 	private JCheckBox switched1Checkbox;
 	private JCheckBox switched2Checkbox;
-	private JComboBox turnoutTypeComboBox;
-	private JComboBox turnoutDefaultStateComboBox;
-	private JComboBox turnoutOrientationComboBox;
+	private JComboBox<?> turnoutTypeComboBox;
+	private JComboBox<?> turnoutDefaultStateComboBox;
+	private JComboBox<?> turnoutOrientationComboBox;
 	private Set<Integer> usedTurnoutNumbers;
 
 	private final PresentationModel<Turnout> presentationModel;
@@ -209,6 +209,8 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 			bus2TextField.setEnabled(true);
 			address2TextField.setEnabled(true);
 			break;
+		default:
+			break;
 		}
 
 		final ValueModel defaultStateModel = presentationModel
@@ -319,8 +321,6 @@ public class TurnoutConfig extends JDialog implements PropertyChangeListener {
 				address2TextField.setEnabled(true);
 				break;
 			case CUTTER:
-				break;
-			case UNKNOWN:
 				break;
 			default:
 				break;

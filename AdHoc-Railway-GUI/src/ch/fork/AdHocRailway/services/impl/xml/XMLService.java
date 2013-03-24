@@ -2,7 +2,7 @@ package ch.fork.AdHocRailway.services.impl.xml;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.io.FileUtils;
@@ -57,13 +57,14 @@ public class XMLService {
 
 	public void saveToFile(final File xmlFile) throws IOException {
 
-		final List<LocomotiveGroup> locomotiveGroups = locomotiveService
+		final SortedSet<LocomotiveGroup> locomotiveGroups = locomotiveService
 				.getAllLocomotiveGroups();
 
-		final List<TurnoutGroup> turnoutGroups = turnoutService
+		final SortedSet<TurnoutGroup> turnoutGroups = turnoutService
 				.getAllTurnoutGroups();
 
-		final List<RouteGroup> routeGroups = routeService.getAllRouteGroups();
+		final SortedSet<RouteGroup> routeGroups = routeService
+				.getAllRouteGroups();
 
 		final AdHocRailwayData data = new AdHocRailwayData(locomotiveGroups,
 				turnoutGroups, routeGroups);
@@ -118,7 +119,8 @@ public class XMLService {
 		xstream.useAttributeFor(Locomotive.class, "desc");
 		xstream.useAttributeFor(Locomotive.class, "image");
 		xstream.useAttributeFor(Locomotive.class, "bus");
-		xstream.useAttributeFor(Locomotive.class, "address");
+		xstream.useAttributeFor(Locomotive.class, "address1");
+		xstream.useAttributeFor(Locomotive.class, "address2");
 		xstream.useAttributeFor(Locomotive.class, "type");
 
 		xstream.addImplicitCollection(LocomotiveGroup.class, "locomotives");

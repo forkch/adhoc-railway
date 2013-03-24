@@ -27,6 +27,8 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -43,6 +45,7 @@ import javax.swing.filechooser.FileFilter;
 
 import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
@@ -50,6 +53,7 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
+import ch.fork.AdHocRailway.ui.ErrorPanel;
 import ch.fork.AdHocRailway.ui.ImagePreviewPanel;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
@@ -76,14 +80,17 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private JTextField nameTextField;
 
-	private JSpinner busTextField;
+	private JSpinner busSpinner;
 
-	private JSpinner addressTextField;
+	private JSpinner address1Spinner;
+
+	private JSpinner address2Spinner;
 
 	private JTextField descTextField;
 
 	private JTextField imageTextField;
 
+	@SuppressWarnings("rawtypes")
 	private JComboBox locomotiveTypeComboBox;
 
 	private final PresentationModel<Locomotive> presentationModel;
@@ -101,6 +108,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 	private JButton chooseImageButton;
 
 	private LocomotiveGroup selectedLocomotiveGroup;
+	private ErrorPanel errorPanel;
 
 	private final LocomotiveManager locomotivePersistence = AdHocRailway
 			.getInstance().getLocomotivePersistence();
@@ -168,16 +176,25 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 					.createImageIconFileSystem("locoimages/" + image));
 		}
 
-		busTextField = new JSpinner();
-		busTextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
+		busSpinner = new JSpinner();
+		busSpinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
 				presentationModel.getModel(Locomotive.PROPERTYNAME_BUS), 1, // defaultValue
 				0, // minValue
 				100, // maxValue
 				1)); // step
 
-		addressTextField = new JSpinner();
-		addressTextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
-				presentationModel.getModel(Locomotive.PROPERTYNAME_ADDRESS), 1, // defaultValue
+		address1Spinner = new JSpinner();
+		address1Spinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
+				presentationModel.getModel(Locomotive.PROPERTYNAME_ADDRESS1),
+				1, // defaultValue
+				0, // minValue
+				324, // maxValue
+				1)); // step
+
+		address2Spinner = new JSpinner();
+		address2Spinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
+				presentationModel.getModel(Locomotive.PROPERTYNAME_ADDRESS2),
+				1, // defaultValue
 				0, // minValue
 				324, // maxValue
 				1)); // step
@@ -190,9 +207,11 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		locomotiveTypeComboBox = BasicComponentFactory
 				.createComboBox(new SelectionInList<LocomotiveType>(
 						locomotiveTypes, locomotiveTypeModel));
-		// locomotiveTypeComboBox.setSelectedIndex(0);
+
+		errorPanel = new ErrorPanel();
 
 		validate(presentationModel.getBean(), null);
+		presentationModel.getBean().addPropertyChangeListener(this);
 		okButton = new JButton(new ApplyChangesAction(false));
 		cancelButton = new JButton(new CancelAction());
 	}
@@ -229,11 +248,15 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		builder.addSeparator("Interface", cc.xyw(5, 1, 3));
 
 		builder.addLabel("Bus", cc.xy(5, 3));
-		builder.add(busTextField, cc.xy(7, 3));
+		builder.add(busSpinner, cc.xy(7, 3));
 
-		builder.addLabel("Address", cc.xy(5, 5));
-		builder.add(addressTextField, cc.xy(7, 5));
+		builder.addLabel("Address 1", cc.xy(5, 5));
+		builder.add(address1Spinner, cc.xy(7, 5));
 
+		builder.addLabel("Address 2", cc.xy(5, 7));
+		builder.add(address2Spinner, cc.xy(7, 7));
+
+		builder.add(errorPanel, cc.xyw(1, 13, 7));
 		builder.add(buildButtonBar(), cc.xyw(1, 11, 7));
 
 		add(builder.getPanel());
@@ -298,7 +321,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 						@Override
 						public void failure(
 								final LocomotiveManagerException arg0) {
-							System.out.println("failure");
+							errorPanel.setErrorText(arg0.getMessage());
 						}
 
 					});
@@ -337,9 +360,51 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 	@Override
 	public void propertyChange(final PropertyChangeEvent event) {
 		final Locomotive locomotive = presentationModel.getBean();
+
+		if (event.getPropertyName().equals(
+				Locomotive.PROPERTYNAME_LOCOMOTIVE_TYPE)) {
+			initializeFunctions(locomotive);
+
+		}
+
 		if (!validate(locomotive, event)) {
 			return;
 		}
+	}
+
+	private void initializeFunctions(final Locomotive locomotive) {
+
+		final SortedSet<LocomotiveFunction> newFunctions = new TreeSet<LocomotiveFunction>();
+
+		final LocomotiveFunction fn = new LocomotiveFunction(0, "F", false);
+		newFunctions.add(fn);
+		switch (locomotive.getType()) {
+		case DELTA:
+			break;
+		case SIMULATED_MFX:
+			final LocomotiveFunction f5 = new LocomotiveFunction(5, "F5", false);
+			final LocomotiveFunction f6 = new LocomotiveFunction(6, "F6", false);
+			final LocomotiveFunction f7 = new LocomotiveFunction(7, "F7", false);
+			final LocomotiveFunction f8 = new LocomotiveFunction(8, "F8", false);
+			newFunctions.add(f5);
+			newFunctions.add(f6);
+			newFunctions.add(f7);
+			newFunctions.add(f8);
+		case DIGITAL:
+			final LocomotiveFunction f1 = new LocomotiveFunction(1, "F1", false);
+			final LocomotiveFunction f2 = new LocomotiveFunction(2, "F2", false);
+			final LocomotiveFunction f3 = new LocomotiveFunction(3, "F3", false);
+			final LocomotiveFunction f4 = new LocomotiveFunction(4, "F4", false);
+			newFunctions.add(f1);
+			newFunctions.add(f2);
+			newFunctions.add(f3);
+			newFunctions.add(f4);
+			break;
+		default:
+			break;
+		}
+
+		locomotive.setFunctions(newFunctions);
 	}
 
 	private boolean validate(final Locomotive locomotive,
@@ -361,50 +426,49 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		if (event == null
 				|| event.getPropertyName().equals(Locomotive.PROPERTYNAME_BUS)
 				|| event.getPropertyName().equals(
-						Locomotive.PROPERTYNAME_ADDRESS)) {
+						Locomotive.PROPERTYNAME_ADDRESS1)) {
 			boolean busValid = true;
 
 			if (locomotive.getBus() == 0) {
-				setSpinnerColor(busTextField, UIConstants.ERROR_COLOR);
+				setSpinnerColor(busSpinner, UIConstants.ERROR_COLOR);
 				validate = false;
 				busValid = false;
 			} else {
-				setSpinnerColor(busTextField,
-						UIConstants.DEFAULT_TEXTFIELD_COLOR);
+				setSpinnerColor(busSpinner, UIConstants.DEFAULT_TEXTFIELD_COLOR);
 			}
 
 			boolean addressValid = true;
 
-			if (locomotive.getAddress() == 0
-					|| locomotive.getAddress() > MMTurnout.MAX_MM_TURNOUT_ADDRESS) {
-				setSpinnerColor(addressTextField, UIConstants.ERROR_COLOR);
+			if (locomotive.getAddress1() == 0
+					|| locomotive.getAddress1() > MMTurnout.MAX_MM_TURNOUT_ADDRESS) {
+				setSpinnerColor(address1Spinner, UIConstants.ERROR_COLOR);
 				validate = false;
 				addressValid = false;
 			} else {
-				setSpinnerColor(addressTextField,
+				setSpinnerColor(address1Spinner,
 						UIConstants.DEFAULT_TEXTFIELD_COLOR);
 			}
 
 			if (busValid && addressValid) {
 
-				final int bus = ((Integer) busTextField.getValue()).intValue();
-				final int address = ((Integer) addressTextField.getValue())
+				final int bus = ((Integer) busSpinner.getValue()).intValue();
+				final int address = ((Integer) address1Spinner.getValue())
 						.intValue();
 				boolean unique = true;
 				for (final Locomotive l : locomotivePersistence
 						.getAllLocomotives()) {
-					if (l.getBus() == bus && l.getAddress() == address
+					if (l.getBus() == bus && l.getAddress1() == address
 							&& !l.equals(locomotive)) {
 						unique = false;
 					}
 				}
 				if (!unique) {
-					setSpinnerColor(busTextField, UIConstants.WARN_COLOR);
-					setSpinnerColor(addressTextField, UIConstants.WARN_COLOR);
+					setSpinnerColor(busSpinner, UIConstants.WARN_COLOR);
+					setSpinnerColor(address1Spinner, UIConstants.WARN_COLOR);
 				} else {
-					setSpinnerColor(busTextField,
+					setSpinnerColor(busSpinner,
 							UIConstants.DEFAULT_TEXTFIELD_COLOR);
-					setSpinnerColor(addressTextField,
+					setSpinnerColor(address1Spinner,
 							UIConstants.DEFAULT_TEXTFIELD_COLOR);
 				}
 			}

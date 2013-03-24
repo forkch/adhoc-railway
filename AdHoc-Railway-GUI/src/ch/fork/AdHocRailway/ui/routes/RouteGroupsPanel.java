@@ -1,8 +1,8 @@
 package ch.fork.AdHocRailway.ui.routes;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
@@ -35,7 +35,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 	}
 
-	private void updateRoutes(final List<RouteGroup> routeGroups) {
+	private void updateRoutes(final SortedSet<RouteGroup> routeGroups) {
 		indexToRouteGroup.clear();
 		removeAll();
 		routeGroupToRouteGroupTab.clear();
@@ -62,7 +62,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 	}
 
 	@Override
-	public void routesUpdated(final List<RouteGroup> routeGroups) {
+	public void routesUpdated(final SortedSet<RouteGroup> routeGroups) {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override

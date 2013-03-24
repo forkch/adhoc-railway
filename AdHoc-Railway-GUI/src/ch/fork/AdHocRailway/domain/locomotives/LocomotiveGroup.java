@@ -18,8 +18,8 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.jgoodies.binding.beans.Model;
 
@@ -35,7 +35,7 @@ public class LocomotiveGroup extends Model implements java.io.Serializable,
 
 	private String name;
 
-	private List<Locomotive> locomotives = new ArrayList<Locomotive>();
+	private SortedSet<Locomotive> locomotives = new TreeSet<Locomotive>();
 
 	private static final String PROPERTYNAME_NAME = "name";
 
@@ -111,11 +111,11 @@ public class LocomotiveGroup extends Model implements java.io.Serializable,
 		firePropertyChange(PROPERTYNAME_NAME, old, name);
 	}
 
-	public List<Locomotive> getLocomotives() {
+	public SortedSet<Locomotive> getLocomotives() {
 		return this.locomotives;
 	}
 
-	public void setLocomotives(final List<Locomotive> locomotives) {
+	public void setLocomotives(final SortedSet<Locomotive> locomotives) {
 		this.locomotives = locomotives;
 	}
 

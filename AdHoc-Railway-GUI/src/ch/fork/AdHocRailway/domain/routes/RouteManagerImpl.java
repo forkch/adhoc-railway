@@ -66,7 +66,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	@Override
 	public void addRouteManagerListener(final RouteManagerListener listener) {
 		this.listeners.add(listener);
-		listener.routesUpdated(new ArrayList<RouteGroup>(routeGroups));
+		listener.routesUpdated(routeGroups);
 	}
 
 	@Override
@@ -145,9 +145,9 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	}
 
 	@Override
-	public List<RouteGroup> getAllRouteGroups() {
+	public SortedSet<RouteGroup> getAllRouteGroups() {
 		LOGGER.debug("getAllRouteGroups()");
-		return new ArrayList<RouteGroup>(routeGroups);
+		return routeGroups;
 	}
 
 	@Override
@@ -321,7 +321,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	}
 
 	@Override
-	public void routesUpdated(final List<RouteGroup> routeGroups) {
+	public void routesUpdated(final SortedSet<RouteGroup> routeGroups) {
 		LOGGER.info("routesUpdated: " + routeGroups);
 		for (final RouteGroup group : routeGroups) {
 			putRouteGroupInCache(group);
@@ -408,6 +408,6 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	@Override
 	public void disconnect() {
 		routeService.disconnect();
-		routesUpdated(new ArrayList<RouteGroup>());
+		routesUpdated(new TreeSet<RouteGroup>());
 	}
 }

@@ -64,8 +64,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	public void addLocomotiveManagerListener(
 			final LocomotiveManagerListener listener) {
 		this.listeners.add(listener);
-		listener.locomotivesUpdated(new ArrayList<LocomotiveGroup>(
-				locomotiveGroups));
+		listener.locomotivesUpdated(locomotiveGroups);
 	}
 
 	@Override
@@ -135,8 +134,8 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	}
 
 	@Override
-	public List<LocomotiveGroup> getAllLocomotiveGroups() {
-		return new ArrayList<LocomotiveGroup>(locomotiveGroups);
+	public SortedSet<LocomotiveGroup> getAllLocomotiveGroups() {
+		return locomotiveGroups;
 	}
 
 	@Override
@@ -184,11 +183,12 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	}
 
 	@Override
-	public void locomotivesUpdated(final List<LocomotiveGroup> locomotiveGroups) {
+	public void locomotivesUpdated(
+			final SortedSet<LocomotiveGroup> locomotiveGroups) {
 		LOGGER.info("locomotivesUpdated: " + locomotiveGroups);
 		cleanupListeners();
 		for (final LocomotiveGroup group : locomotiveGroups) {
-			putTurnoutGroupInCache(group);
+			putLocomotiveGroupInCache(group);
 			for (final Locomotive locomotive : group.getLocomotives()) {
 				putInCache(locomotive);
 			}
@@ -232,7 +232,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	public void locomotiveGroupAdded(final LocomotiveGroup group) {
 		LOGGER.info("locomotiveGroupAdded: " + group);
 		cleanupListeners();
-		putTurnoutGroupInCache(group);
+		putLocomotiveGroupInCache(group);
 		for (final LocomotiveManagerListener l : listeners) {
 			l.locomotiveGroupAdded(group);
 		}
@@ -243,7 +243,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 		LOGGER.info("locomotiveGroupUpdated: " + group);
 		cleanupListeners();
 		removeTurnoutGroupFromCache(group);
-		putTurnoutGroupInCache(group);
+		putLocomotiveGroupInCache(group);
 		for (final LocomotiveManagerListener l : listeners) {
 			l.locomotiveGroupUpdated(group);
 		}
@@ -269,7 +269,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 		}
 	}
 
-	private void putTurnoutGroupInCache(final LocomotiveGroup group) {
+	private void putLocomotiveGroupInCache(final LocomotiveGroup group) {
 		locomotiveGroups.add(group);
 	}
 
@@ -278,8 +278,10 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	}
 
 	private void putInCache(final Locomotive locomotive) {
-		addressLocomotiveCache.put(new SRCPAddress(locomotive.getBus(),
-				locomotive.getAddress(), 0, 0), locomotive);
+		addressLocomotiveCache.put(
+				new SRCPAddress(locomotive.getBus(), locomotive.getAddress1(),
+						locomotive.getBus(), locomotive.getAddress2()),
+				locomotive);
 		locomotiveControl.addOrUpdateLocomotive(locomotive);
 	}
 
@@ -290,6 +292,6 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	@Override
 	public void disconnect() {
 		locomotiveService.disconnect();
-		locomotivesUpdated(new ArrayList<LocomotiveGroup>());
+		locomotivesUpdated(new TreeSet<LocomotiveGroup>());
 	}
 }

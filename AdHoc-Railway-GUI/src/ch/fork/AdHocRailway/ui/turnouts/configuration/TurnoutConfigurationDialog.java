@@ -24,7 +24,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
+import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -75,7 +75,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 	private boolean okPressed;
 
-	private JList turnoutGroupList;
+	private JList<?> turnoutGroupList;
 
 	private JTable turnoutsTable;
 
@@ -158,7 +158,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 				turnoutPersistence.getAllTurnoutGroups());
 
 		turnoutGroupModel = new SelectionInList<TurnoutGroup>(
-				(ListModel) turnoutGroups);
+				(ListModel<?>) turnoutGroups);
 
 		turnoutGroupList = BasicComponentFactory.createList(turnoutGroupModel,
 				new TurnoutGroupListCellRenderer());
@@ -477,7 +477,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	}
 
 	@Override
-	public void turnoutsUpdated(final List<TurnoutGroup> turnoutGroups) {
+	public void turnoutsUpdated(final SortedSet<TurnoutGroup> turnoutGroups) {
 	}
 
 	@Override

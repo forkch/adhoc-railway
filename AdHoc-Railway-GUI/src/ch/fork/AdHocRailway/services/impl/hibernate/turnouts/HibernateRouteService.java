@@ -19,8 +19,9 @@
 package ch.fork.AdHocRailway.services.impl.hibernate.turnouts;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -57,7 +58,7 @@ public class HibernateRouteService implements RouteService {
 	@Override
 	public void clear() throws RouteManagerException {
 		logger.debug("clear()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
@@ -67,7 +68,7 @@ public class HibernateRouteService implements RouteService {
 					.executeUpdate();
 
 			transaction.commit();
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new RouteManagerException("Database Error", x);
 		} finally {
@@ -76,27 +77,27 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void addRoute(Route route) throws RouteManagerException {
+	public void addRoute(final Route route) throws RouteManagerException {
 		logger.debug("addRoute(" + route + ")");
 
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			HibernateRoute hRoute = HibernateRouteMapper.mapRoute(route);
-			Integer hRouteGroupId = route.getRouteGroup().getId();
-			HibernateRouteGroup hRouteGroup = (HibernateRouteGroup) session
+			final HibernateRoute hRoute = HibernateRouteMapper.mapRoute(route);
+			final Integer hRouteGroupId = route.getRouteGroup().getId();
+			final HibernateRouteGroup hRouteGroup = (HibernateRouteGroup) session
 					.get(HibernateRouteGroup.class, hRouteGroupId);
 
 			hRouteGroup.getRoutes().add(hRoute);
 			hRoute.setRouteGroup(hRouteGroup);
 
-			Integer id = (Integer) session.save(hRoute);
+			final Integer id = (Integer) session.save(hRoute);
 			route.setId(id);
 			transaction.commit();
 			listener.routeAdded(route);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -106,20 +107,20 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void removeRoute(Route route) throws RouteManagerException {
+	public void removeRoute(final Route route) throws RouteManagerException {
 		logger.debug("deleteRoute()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			Integer id = route.getId();
-			HibernateRoute hRoute = (HibernateRoute) session.get(
+			final Integer id = route.getId();
+			final HibernateRoute hRoute = (HibernateRoute) session.get(
 					HibernateRoute.class, id);
 			session.delete(hRoute);
 			transaction.commit();
 			listener.routeRemoved(route);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -128,22 +129,22 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void updateRoute(Route route) throws RouteManagerException {
+	public void updateRoute(final Route route) throws RouteManagerException {
 		logger.debug("updateRoute(" + route + ")");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			Integer id = route.getId();
-			HibernateRoute hRoute = (HibernateRoute) session.get(
+			final Integer id = route.getId();
+			final HibernateRoute hRoute = (HibernateRoute) session.get(
 					HibernateRoute.class, id);
 
 			HibernateRouteMapper.updateHibernateRoute(hRoute, route);
 			session.update(hRoute);
 			transaction.commit();
 			listener.routeUpdated(route);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new RouteManagerException("Database Error", x);
 		} finally {
@@ -152,22 +153,22 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void addRouteGroup(RouteGroup routeGroup)
+	public void addRouteGroup(final RouteGroup routeGroup)
 			throws RouteManagerException {
 		logger.debug("addRouteGroup");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			HibernateRouteGroup hRouteGroup = HibernateRouteMapper
+			final HibernateRouteGroup hRouteGroup = HibernateRouteMapper
 					.map(routeGroup);
-			Integer id = (Integer) session.save(hRouteGroup);
+			final Integer id = (Integer) session.save(hRouteGroup);
 
 			routeGroup.setId(id);
 			transaction.commit();
 			listener.routeGroupAdded(routeGroup);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -176,21 +177,21 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void removeRouteGroup(RouteGroup routeGroup)
+	public void removeRouteGroup(final RouteGroup routeGroup)
 			throws RouteManagerException {
 		logger.debug("deleteRouteGroup()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			Integer id = routeGroup.getId();
+			final Integer id = routeGroup.getId();
 
-			HibernateRouteGroup hRouteGroup = (HibernateRouteGroup) session
+			final HibernateRouteGroup hRouteGroup = (HibernateRouteGroup) session
 					.get(HibernateRouteGroup.class, id);
 			session.delete(hRouteGroup);
 			transaction.commit();
 			listener.routeGroupRemoved(routeGroup);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -199,22 +200,22 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void updateRouteGroup(RouteGroup routeGroup) {
+	public void updateRouteGroup(final RouteGroup routeGroup) {
 		logger.debug("updateRouteGroup()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			Integer id = routeGroup.getId();
-			HibernateRouteGroup hRoute = (HibernateRouteGroup) session.get(
-					HibernateRouteGroup.class, id);
+			final Integer id = routeGroup.getId();
+			final HibernateRouteGroup hRoute = (HibernateRouteGroup) session
+					.get(HibernateRouteGroup.class, id);
 
 			HibernateRouteMapper.updateHibernateRouteGroup(hRoute, routeGroup);
 			session.update(hRoute);
 			transaction.commit();
 			listener.routeGroupUpdated(routeGroup);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -224,28 +225,29 @@ public class HibernateRouteService implements RouteService {
 
 	@Override
 	@SuppressWarnings({ "rawtypes" })
-	public List<RouteGroup> getAllRouteGroups() throws RouteManagerException {
+	public SortedSet<RouteGroup> getAllRouteGroups()
+			throws RouteManagerException {
 		logger.debug("getAllRouteGroupsDB()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			List hRouteGroups = session.createQuery("from HibernateRouteGroup")
-					.list();
-			List<RouteGroup> routeGroups = new LinkedList<RouteGroup>();
-			for (Iterator iterator = hRouteGroups.iterator(); iterator
+			final List hRouteGroups = session.createQuery(
+					"from HibernateRouteGroup").list();
+			final SortedSet<RouteGroup> routeGroups = new TreeSet<RouteGroup>();
+			for (final Iterator iterator = hRouteGroups.iterator(); iterator
 					.hasNext();) {
-				HibernateRouteGroup hRouteGroup = (HibernateRouteGroup) iterator
+				final HibernateRouteGroup hRouteGroup = (HibernateRouteGroup) iterator
 						.next();
-				RouteGroup routeGroup = HibernateRouteMapper
+				final RouteGroup routeGroup = HibernateRouteMapper
 						.mapHibernateRouteGroup(hRouteGroup);
 				routeGroups.add(routeGroup);
 			}
 			transaction.commit();
 
 			return routeGroups;
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -254,31 +256,31 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void addRouteItem(RouteItem item) throws RouteManagerException {
+	public void addRouteItem(final RouteItem item) throws RouteManagerException {
 		logger.debug("addRouteItem");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			HibernateRouteItem hRouteItem = HibernateRouteMapper
+			final HibernateRouteItem hRouteItem = HibernateRouteMapper
 					.mapRouteItem(item);
-			Integer routeId = item.getRoute().getId();
-			HibernateRoute hRoute = (HibernateRoute) session.get(
+			final Integer routeId = item.getRoute().getId();
+			final HibernateRoute hRoute = (HibernateRoute) session.get(
 					HibernateRoute.class, routeId);
 			hRoute.getRouteItems().add(hRouteItem);
 			hRouteItem.setRoute(hRoute);
 
-			Integer turnoutId = item.getTurnout().getId();
-			HibernateTurnout hTurnout = (HibernateTurnout) session.get(
+			final Integer turnoutId = item.getTurnout().getId();
+			final HibernateTurnout hTurnout = (HibernateTurnout) session.get(
 					HibernateTurnout.class, turnoutId);
 			hTurnout.getRouteItems().add(hRouteItem);
 			hRouteItem.setTurnout(hTurnout);
 
-			Integer id = (Integer) session.save(hRouteItem);
+			final Integer id = (Integer) session.save(hRouteItem);
 			item.setId(id);
 			transaction.commit();
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -287,19 +289,20 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void removeRouteItem(RouteItem item) throws RouteManagerException {
+	public void removeRouteItem(final RouteItem item)
+			throws RouteManagerException {
 		logger.debug("deleteRouteItem()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			Integer id = item.getId();
+			final Integer id = item.getId();
 
-			HibernateRouteItem hRouteItem = (HibernateRouteItem) session.get(
-					HibernateRouteItem.class, id);
+			final HibernateRouteItem hRouteItem = (HibernateRouteItem) session
+					.get(HibernateRouteItem.class, id);
 			session.delete(hRouteItem);
 			transaction.commit();
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -308,21 +311,22 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void updateRouteItem(RouteItem item) throws RouteManagerException {
+	public void updateRouteItem(final RouteItem item)
+			throws RouteManagerException {
 		logger.debug("updateRouteGroup()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			Integer id = item.getId();
-			HibernateRouteItem hTurnout = (HibernateRouteItem) session.get(
-					HibernateRouteItem.class, id);
+			final Integer id = item.getId();
+			final HibernateRouteItem hTurnout = (HibernateRouteItem) session
+					.get(HibernateRouteItem.class, id);
 
 			HibernateRouteMapper.updateHibernateRouteItem(hTurnout, item);
 			session.update(hTurnout);
 			transaction.commit();
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -331,9 +335,9 @@ public class HibernateRouteService implements RouteService {
 	}
 
 	@Override
-	public void init(RouteServiceListener listener) {
+	public void init(final RouteServiceListener listener) {
 		this.listener = listener;
-		List<RouteGroup> allRouteGroups = getAllRouteGroups();
+		final SortedSet<RouteGroup> allRouteGroups = getAllRouteGroups();
 		listener.routesUpdated(allRouteGroups);
 	}
 

@@ -35,7 +35,7 @@ public class TurnoutDefaultStateComboBoxCellRenderer extends
 	 */
 	private static final long serialVersionUID = -2928955312058895462L;
 
-	public Component getListCellRendererComponent(JList list, Object value,
+	public Component getListCellRendererComponent(JList<?> list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
 		JLabel iconLabel = (JLabel) super.getListCellRendererComponent(list,
 				value, index, isSelected, cellHasFocus);

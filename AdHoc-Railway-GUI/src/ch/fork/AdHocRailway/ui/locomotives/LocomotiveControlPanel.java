@@ -23,6 +23,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -171,7 +172,8 @@ public class LocomotiveControlPanel extends JPanel implements
 	}
 
 	@Override
-	public void locomotivesUpdated(final List<LocomotiveGroup> locomotiveGroups) {
+	public void locomotivesUpdated(
+			final SortedSet<LocomotiveGroup> locomotiveGroups) {
 		// TODO Auto-generated method stub
 
 	}

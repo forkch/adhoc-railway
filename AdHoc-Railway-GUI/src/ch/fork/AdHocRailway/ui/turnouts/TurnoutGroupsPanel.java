@@ -4,8 +4,8 @@ import static ch.fork.AdHocRailway.ui.ImageTools.createImageIconFromIconSet;
 
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -56,7 +56,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 		initMenuBar();
 	}
 
-	private void updateTurnouts(final List<TurnoutGroup> turnoutGroups) {
+	private void updateTurnouts(final SortedSet<TurnoutGroup> turnoutGroups) {
 		indexToTurnoutGroup.clear();
 		removeAll();
 		turnoutGroupToTurnoutGroupTab.clear();
@@ -114,7 +114,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 							PreferencesKeys.ROUTING_DELAY);
 					for (final Turnout t : turnoutPersistence.getAllTurnouts()) {
 						turnoutControl.setDefaultState(t);
-						Thread.sleep(3 * delay);
+						Thread.sleep(delay);
 					}
 				} catch (final TurnoutException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
@@ -303,7 +303,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 	}
 
 	@Override
-	public void turnoutsUpdated(final List<TurnoutGroup> turnoutGroups) {
+	public void turnoutsUpdated(final SortedSet<TurnoutGroup> turnoutGroups) {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override

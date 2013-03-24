@@ -18,7 +18,7 @@
 
 package ch.fork.AdHocRailway.services.turnouts;
 
-import java.util.List;
+import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
@@ -33,7 +33,7 @@ public interface RouteService {
 
 	public abstract void updateRoute(Route route) throws RouteManagerException;
 
-	public abstract List<RouteGroup> getAllRouteGroups()
+	public abstract SortedSet<RouteGroup> getAllRouteGroups()
 			throws RouteManagerException;
 
 	public abstract void addRouteGroup(RouteGroup routeGroup)

@@ -69,7 +69,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	@Override
 	public void addTurnoutManagerListener(final TurnoutManagerListener listener) {
 		this.listeners.add(listener);
-		listener.turnoutsUpdated(new ArrayList<TurnoutGroup>(turnoutGroups));
+		listener.turnoutsUpdated(turnoutGroups);
 	}
 
 	@Override
@@ -165,8 +165,8 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	@Override
-	public List<TurnoutGroup> getAllTurnoutGroups() {
-		return new ArrayList<TurnoutGroup>(turnoutGroups);
+	public SortedSet<TurnoutGroup> getAllTurnoutGroups() {
+		return turnoutGroups;
 	}
 
 	@Override
@@ -301,9 +301,10 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	@Override
-	public void turnoutsUpdated(final List<TurnoutGroup> turnoutGroups) {
+	public void turnoutsUpdated(final SortedSet<TurnoutGroup> turnoutGroups) {
 		LOGGER.info("turnoutsUpdated: " + turnoutGroups);
 		cleanupListeners();
+
 		for (final TurnoutGroup group : turnoutGroups) {
 			putTurnoutGroupInCache(group);
 			for (final Turnout turnout : group.getTurnouts()) {
@@ -312,7 +313,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 			}
 		}
 		for (final TurnoutManagerListener l : listeners) {
-			l.turnoutsUpdated(turnoutGroups);
+			l.turnoutsUpdated(this.turnoutGroups);
 		}
 	}
 
@@ -418,6 +419,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	@Override
 	public void disconnect() {
 		turnoutService.disconnect();
-		turnoutsUpdated(new ArrayList<TurnoutGroup>());
+		turnoutsUpdated(new TreeSet<TurnoutGroup>());
 	}
 }

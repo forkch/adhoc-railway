@@ -5,7 +5,7 @@ import io.socket.IOCallback;
 import io.socket.SocketIOException;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.SortedSet;
 
 import org.jboss.logging.Logger;
 import org.json.JSONException;
@@ -37,7 +37,7 @@ public class SIORouteService implements RouteService, IOCallback {
 	}
 
 	@Override
-	public void init(RouteServiceListener listener) {
+	public void init(final RouteServiceListener listener) {
 		this.listener = listener;
 		sioService = SIOService.getInstance();
 		sioService.addIOCallback(this);
@@ -55,29 +55,30 @@ public class SIORouteService implements RouteService, IOCallback {
 
 		sioService.checkSocket();
 		try {
-			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
+			final IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
 				@Override
 				public void ack(final Object... arg0) {
 					LOGGER.info("ack: " + Arrays.toString(arg0));
-					Boolean err = (Boolean) arg0[0];
-					String msg = (String) arg0[1];
+					final Boolean err = (Boolean) arg0[0];
+					final String msg = (String) arg0[1];
 					if (err) {
 						listener.failure(new RouteManagerException(msg));
 					} else {
-						String sioId = (String) arg0[2];
+						final String sioId = (String) arg0[2];
 						SIORouteServiceEventHandler.addIdToRoute(route, sioId);
 						listener.routeAdded(route);
 					}
 				}
 			};
 
-			JSONObject addRouteJson = SIORouteMapper.mapRouteToJSON(route);
+			final JSONObject addRouteJson = SIORouteMapper
+					.mapRouteToJSON(route);
 
 			sioService.getSocket().emit(
 					SIORouteServiceEvent.ROUTE_ADD_REQUEST.getEvent(),
 					ioAcknowledge, addRouteJson);
-		} catch (JSONException e) {
+		} catch (final JSONException e) {
 			throw new TurnoutManagerException("error adding route", e);
 		}
 
@@ -89,13 +90,13 @@ public class SIORouteService implements RouteService, IOCallback {
 
 		sioService.checkSocket();
 		try {
-			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
+			final IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
 				@Override
 				public void ack(final Object... arg0) {
 					LOGGER.info("ack: " + Arrays.toString(arg0));
-					Boolean err = (Boolean) arg0[0];
-					String msg = (String) arg0[1];
+					final Boolean err = (Boolean) arg0[0];
+					final String msg = (String) arg0[1];
 					if (err) {
 						listener.failure(new RouteManagerException(msg));
 					} else {
@@ -105,12 +106,13 @@ public class SIORouteService implements RouteService, IOCallback {
 				}
 			};
 
-			JSONObject removeRouteJson = SIORouteMapper.mapRouteToJSON(route);
+			final JSONObject removeRouteJson = SIORouteMapper
+					.mapRouteToJSON(route);
 
 			sioService.getSocket().emit(
 					SIORouteServiceEvent.ROUTE_REMOVE_REQUEST.getEvent(),
 					ioAcknowledge, removeRouteJson);
-		} catch (JSONException e) {
+		} catch (final JSONException e) {
 			throw new TurnoutManagerException("error removing route", e);
 		}
 	}
@@ -121,13 +123,13 @@ public class SIORouteService implements RouteService, IOCallback {
 
 		sioService.checkSocket();
 		try {
-			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
+			final IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
 				@Override
 				public void ack(final Object... arg0) {
 					LOGGER.info("ack: " + Arrays.toString(arg0));
-					Boolean err = (Boolean) arg0[0];
-					String msg = (String) arg0[1];
+					final Boolean err = (Boolean) arg0[0];
+					final String msg = (String) arg0[1];
 					if (err) {
 						listener.failure(new RouteManagerException(msg));
 					} else {
@@ -137,33 +139,34 @@ public class SIORouteService implements RouteService, IOCallback {
 				}
 			};
 
-			JSONObject updateTurnoutJson = SIORouteMapper.mapRouteToJSON(route);
+			final JSONObject updateTurnoutJson = SIORouteMapper
+					.mapRouteToJSON(route);
 
 			sioService.getSocket().emit(
 					SIORouteServiceEvent.ROUTE_UPDATE_REQUEST.getEvent(),
 					ioAcknowledge, updateTurnoutJson);
-		} catch (JSONException e) {
+		} catch (final JSONException e) {
 			throw new TurnoutManagerException("error updating route", e);
 		}
 
 	}
 
 	@Override
-	public List<RouteGroup> getAllRouteGroups() {
+	public SortedSet<RouteGroup> getAllRouteGroups() {
 		LOGGER.info(SIORouteServiceEvent.ROUTE_GROUP_GET_ALL_REQUEST);
 
 		sioService.checkSocket();
-		IOAcknowledge ioAcknowledge = new IOAcknowledge() {
+		final IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
 			@Override
-			public void ack(Object... arg0) {
+			public void ack(final Object... arg0) {
 				LOGGER.info("ack: " + Arrays.toString(arg0));
 
 				try {
 					SIORouteServiceEventHandler.handleRouteInit(
 							(JSONObject) arg0[0], listener);
 
-				} catch (JSONException e) {
+				} catch (final JSONException e) {
 					throw new TurnoutManagerException(
 							"error getting all turnout groups", e);
 				}
@@ -181,14 +184,14 @@ public class SIORouteService implements RouteService, IOCallback {
 
 		sioService.checkSocket();
 		try {
-			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
+			final IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
 				@Override
 				public void ack(final Object... arg0) {
 					LOGGER.info("ack: " + Arrays.toString(arg0));
-					Boolean err = (Boolean) arg0[0];
-					String msg = (String) arg0[1];
-					String sioId = (String) arg0[2];
+					final Boolean err = (Boolean) arg0[0];
+					final String msg = (String) arg0[1];
+					final String sioId = (String) arg0[2];
 					if (err) {
 						listener.failure(new RouteManagerException(msg));
 					} else {
@@ -200,13 +203,13 @@ public class SIORouteService implements RouteService, IOCallback {
 				}
 			};
 
-			JSONObject addRouteGroupJSON = SIORouteMapper
+			final JSONObject addRouteGroupJSON = SIORouteMapper
 					.mapRouteGroupToJSON(group);
 
 			sioService.getSocket().emit(
 					SIORouteServiceEvent.ROUTE_GROUP_ADD_REQUEST.getEvent(),
 					ioAcknowledge, addRouteGroupJSON);
-		} catch (JSONException e) {
+		} catch (final JSONException e) {
 			throw new TurnoutManagerException("error adding route group", e);
 		}
 
@@ -217,13 +220,13 @@ public class SIORouteService implements RouteService, IOCallback {
 		LOGGER.info(SIORouteServiceEvent.ROUTE_GROUP_REMOVE_REQUEST);
 		sioService.checkSocket();
 		try {
-			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
+			final IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
 				@Override
 				public void ack(final Object... arg0) {
 					LOGGER.info("ack: " + Arrays.toString(arg0));
-					Boolean err = (Boolean) arg0[0];
-					String msg = (String) arg0[1];
+					final Boolean err = (Boolean) arg0[0];
+					final String msg = (String) arg0[1];
 					if (err) {
 						listener.failure(new RouteManagerException(msg));
 					} else {
@@ -233,13 +236,13 @@ public class SIORouteService implements RouteService, IOCallback {
 				}
 			};
 
-			JSONObject removeTurnoutGroupJSON = SIORouteMapper
+			final JSONObject removeTurnoutGroupJSON = SIORouteMapper
 					.mapRouteGroupToJSON(group);
 
 			sioService.getSocket().emit(
 					SIORouteServiceEvent.ROUTE_GROUP_REMOVE_REQUEST.getEvent(),
 					ioAcknowledge, removeTurnoutGroupJSON);
-		} catch (JSONException e) {
+		} catch (final JSONException e) {
 			throw new TurnoutManagerException("error removing turnout group", e);
 		}
 	}
@@ -250,13 +253,13 @@ public class SIORouteService implements RouteService, IOCallback {
 
 		sioService.checkSocket();
 		try {
-			IOAcknowledge ioAcknowledge = new IOAcknowledge() {
+			final IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
 				@Override
 				public void ack(final Object... arg0) {
 					LOGGER.info("ack: " + Arrays.toString(arg0));
-					Boolean err = (Boolean) arg0[0];
-					String msg = (String) arg0[1];
+					final Boolean err = (Boolean) arg0[0];
+					final String msg = (String) arg0[1];
 					if (err) {
 						listener.failure(new RouteManagerException(msg));
 					} else {
@@ -266,29 +269,31 @@ public class SIORouteService implements RouteService, IOCallback {
 				}
 			};
 
-			JSONObject updateRouteGroupJSON = SIORouteMapper
+			final JSONObject updateRouteGroupJSON = SIORouteMapper
 					.mapRouteGroupToJSON(group);
 
 			sioService.getSocket().emit(
 					SIORouteServiceEvent.ROUTE_GROUP_UPDATE_REQUEST.getEvent(),
 					ioAcknowledge, updateRouteGroupJSON);
-		} catch (JSONException e) {
+		} catch (final JSONException e) {
 			throw new TurnoutManagerException("error updating route group", e);
 		}
 	}
 
 	@Override
-	public void addRouteItem(RouteItem item) throws RouteManagerException {
+	public void addRouteItem(final RouteItem item) throws RouteManagerException {
 
 	}
 
 	@Override
-	public void removeRouteItem(RouteItem item) throws RouteManagerException {
+	public void removeRouteItem(final RouteItem item)
+			throws RouteManagerException {
 
 	}
 
 	@Override
-	public void updateRouteItem(RouteItem item) throws RouteManagerException {
+	public void updateRouteItem(final RouteItem item)
+			throws RouteManagerException {
 
 	}
 
@@ -299,15 +304,15 @@ public class SIORouteService implements RouteService, IOCallback {
 	}
 
 	@Override
-	public synchronized void on(String event, IOAcknowledge arg1,
-			Object... jsonData) {
-		SIORouteServiceEvent serviceEvent = SIORouteServiceEvent
+	public synchronized void on(final String event, final IOAcknowledge arg1,
+			final Object... jsonData) {
+		final SIORouteServiceEvent serviceEvent = SIORouteServiceEvent
 				.fromEvent(event);
 
 		if (serviceEvent == null) {
 			return;
 		}
-		JSONObject data = (JSONObject) jsonData[0];
+		final JSONObject data = (JSONObject) jsonData[0];
 		LOGGER.info("on(message: " + event + ", args: " + data + ")");
 		try {
 			switch (serviceEvent) {
@@ -338,7 +343,7 @@ public class SIORouteService implements RouteService, IOCallback {
 			default:
 				break;
 			}
-		} catch (JSONException e) {
+		} catch (final JSONException e) {
 			e.printStackTrace();
 			listener.failure(new RouteManagerException("error parsing event '"
 					+ event + "'"));
@@ -355,16 +360,16 @@ public class SIORouteService implements RouteService, IOCallback {
 	}
 
 	@Override
-	public void onError(SocketIOException arg0) {
+	public void onError(final SocketIOException arg0) {
 	}
 
 	@Override
-	public void onMessage(String arg0, IOAcknowledge arg1) {
+	public void onMessage(final String arg0, final IOAcknowledge arg1) {
 		LOGGER.info("onMessage(" + arg0 + ")");
 	}
 
 	@Override
-	public void onMessage(JSONObject arg0, IOAcknowledge arg1) {
+	public void onMessage(final JSONObject arg0, final IOAcknowledge arg1) {
 		LOGGER.info("onMessage(" + arg0 + ")");
 
 	}

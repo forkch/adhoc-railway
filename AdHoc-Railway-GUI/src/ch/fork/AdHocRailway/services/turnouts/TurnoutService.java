@@ -18,7 +18,7 @@
 
 package ch.fork.AdHocRailway.services.turnouts;
 
-import java.util.List;
+import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
@@ -33,7 +33,7 @@ public interface TurnoutService {
 
 	public abstract void updateTurnout(Turnout turnout);
 
-	public abstract List<TurnoutGroup> getAllTurnoutGroups();
+	public abstract SortedSet<TurnoutGroup> getAllTurnoutGroups();
 
 	public abstract void addTurnoutGroup(TurnoutGroup group);
 

@@ -1,6 +1,6 @@
 package ch.fork.AdHocRailway.services.impl.xml;
 
-import java.util.List;
+import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
@@ -8,28 +8,29 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 
 public class AdHocRailwayData {
 
-	private final List<LocomotiveGroup> locomotiveGroups;
-	private final List<TurnoutGroup> turnoutGroups;
+	private final SortedSet<LocomotiveGroup> locomotiveGroups;
+	private final SortedSet<TurnoutGroup> turnoutGroups;
 
-	private final List<RouteGroup> routeGroups;
+	private final SortedSet<RouteGroup> routeGroups;
 
-	public AdHocRailwayData(List<LocomotiveGroup> locomotiveGroups,
-			List<TurnoutGroup> turnoutGroups, List<RouteGroup> routeGroups) {
+	public AdHocRailwayData(final SortedSet<LocomotiveGroup> locomotiveGroups,
+			final SortedSet<TurnoutGroup> turnoutGroups,
+			final SortedSet<RouteGroup> routeGroups) {
 		super();
 		this.locomotiveGroups = locomotiveGroups;
 		this.turnoutGroups = turnoutGroups;
 		this.routeGroups = routeGroups;
 	}
 
-	public List<LocomotiveGroup> getLocomotiveGroups() {
+	public SortedSet<LocomotiveGroup> getLocomotiveGroups() {
 		return locomotiveGroups;
 	}
 
-	public List<TurnoutGroup> getTurnoutGroups() {
+	public SortedSet<TurnoutGroup> getTurnoutGroups() {
 		return turnoutGroups;
 	}
 
-	public List<RouteGroup> getRouteGroups() {
+	public SortedSet<RouteGroup> getRouteGroups() {
 		return routeGroups;
 	}
 }

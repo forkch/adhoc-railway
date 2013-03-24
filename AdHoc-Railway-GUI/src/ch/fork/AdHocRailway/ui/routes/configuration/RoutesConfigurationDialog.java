@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
+import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListCellRenderer;
@@ -68,13 +68,13 @@ public class RoutesConfigurationDialog extends JDialog implements
 	 */
 	private static final long serialVersionUID = 374903860703369736L;
 
-	private JList routeGroupList;
+	private JList<?> routeGroupList;
 
 	private JButton addRouteGroupButton;
 
 	private JButton removeRouteGroupButton;
 
-	private JList routesList;
+	private JList<?> routesList;
 
 	private JButton addRouteButton;
 
@@ -97,7 +97,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 
 	private JButton editGroupButton;
 
-	public RoutesConfigurationDialog(JFrame parent) {
+	public RoutesConfigurationDialog(final JFrame parent) {
 		super(parent, "Edit Routes", true);
 		initGUI();
 	}
@@ -114,13 +114,13 @@ public class RoutesConfigurationDialog extends JDialog implements
 		initComponents();
 		initEventHandling();
 
-		FormLayout layout = new FormLayout(
+		final FormLayout layout = new FormLayout(
 				"pref, 5dlu, pref, 5dlu",
 				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref:grow, 3dlu, pref:grow, 3dlu, pref, 3dlu, pref");
 		builder = new PanelBuilder(layout);
 		layout.setColumnGroups(new int[][] { { 1, 3 } });
 		builder.setDefaultDialogBorder();
-		CellConstraints cc = new CellConstraints();
+		final CellConstraints cc = new CellConstraints();
 
 		builder.addSeparator("Route Groups", cc.xyw(1, 1, 1));
 
@@ -152,11 +152,12 @@ public class RoutesConfigurationDialog extends JDialog implements
 		return ButtonBarFactory.buildRightAlignedBar(okButton);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initComponents() {
 		routeGroups = new ArrayListModel<RouteGroup>(
 				routePersistence.getAllRouteGroups());
 		routeGroupModel = new SelectionInList<RouteGroup>(
-				(ListModel) routeGroups);
+				(ListModel<?>) routeGroups);
 
 		routeGroupList = BasicComponentFactory.createList(routeGroupModel);
 		routeGroupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -169,9 +170,9 @@ public class RoutesConfigurationDialog extends JDialog implements
 		removeRouteGroupButton = new JButton(new RemoveRouteGroupAction());
 
 		routes = new ArrayListModel<Route>();
-		SelectionInList<Route> routesModel = new SelectionInList<Route>();
+		final SelectionInList<Route> routesModel = new SelectionInList<Route>();
 		routesModel.setList(routes);
-		routesList = new JList();
+		routesList = new JList<Object>();
 		routesList.setModel(routesModel);
 		routesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		routesList.setCellRenderer(new RouteListCellRenderer());
@@ -183,7 +184,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 				ImageTools.createImageIconFromIconSet("ok.png"));
 		okButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				okPressed = true;
 				setVisible(false);
 				routePersistence
@@ -201,7 +202,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 		routesList.addMouseListener(new MouseAdapter() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseClicked(final MouseEvent e) {
 				if (e.getClickCount() == 2
 						&& e.getButton() == MouseEvent.BUTTON1) {
 					new EditRouteAction().actionPerformed(null);
@@ -220,14 +221,14 @@ public class RoutesConfigurationDialog extends JDialog implements
 			ListSelectionListener {
 
 		@Override
-		public void valueChanged(ListSelectionEvent e) {
+		public void valueChanged(final ListSelectionEvent e) {
 			if (e.getValueIsAdjusting()) {
 				return;
 			}
 			if (routeGroupList.getSelectedIndex() == -1) {
 				routeGroupList.setSelectedIndex(0);
 			}
-			RouteGroup selectedGroup = (RouteGroup) routeGroupList
+			final RouteGroup selectedGroup = (RouteGroup) routeGroupList
 					.getSelectedValue();
 			if (selectedGroup == null) {
 				return;
@@ -244,14 +245,14 @@ public class RoutesConfigurationDialog extends JDialog implements
 	private final class RouteSelectionHandler implements ListSelectionListener {
 
 		@Override
-		public void valueChanged(ListSelectionEvent e) {
+		public void valueChanged(final ListSelectionEvent e) {
 			if (e.getValueIsAdjusting()) {
 				return;
 			}
 			if (routesList.getSelectedIndex() == -1) {
 				routesList.setSelectedIndex(0);
 			}
-			Route selectedRoute = (Route) routesList.getSelectedValue();
+			final Route selectedRoute = (Route) routesList.getSelectedValue();
 			if (selectedRoute == null) {
 				return;
 			}
@@ -271,12 +272,13 @@ public class RoutesConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = 8334830106991840589L;
 
 		@Override
-		public Component getListCellRendererComponent(JList list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus) {
-			Component component = super.getListCellRendererComponent(list,
-					value, index, isSelected, cellHasFocus);
+		public Component getListCellRendererComponent(final JList<?> list,
+				final Object value, final int index, final boolean isSelected,
+				final boolean cellHasFocus) {
+			final Component component = super.getListCellRendererComponent(
+					list, value, index, isSelected, cellHasFocus);
 
-			RouteGroup group = (RouteGroup) value;
+			final RouteGroup group = (RouteGroup) value;
 			setText(group == null ? "" : (" " + group.getName()));
 			return component;
 		}
@@ -295,12 +297,13 @@ public class RoutesConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = 2449618372558779146L;
 
 		@Override
-		public Component getListCellRendererComponent(JList list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus) {
-			Component component = super.getListCellRendererComponent(list,
-					value, index, isSelected, cellHasFocus);
+		public Component getListCellRendererComponent(final JList<?> list,
+				final Object value, final int index, final boolean isSelected,
+				final boolean cellHasFocus) {
+			final Component component = super.getListCellRendererComponent(
+					list, value, index, isSelected, cellHasFocus);
 
-			Route route = (Route) value;
+			final Route route = (Route) value;
 			setText(route == null ? "" : (" " + route.getName()));
 			return component;
 		}
@@ -317,8 +320,8 @@ public class RoutesConfigurationDialog extends JDialog implements
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			RouteGroup groupToEdit = routeGroupModel.getSelection();
+		public void actionPerformed(final ActionEvent arg0) {
+			final RouteGroup groupToEdit = routeGroupModel.getSelection();
 
 			routePersistence.updateRouteGroup(groupToEdit);
 
@@ -337,8 +340,8 @@ public class RoutesConfigurationDialog extends JDialog implements
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			String newRouteGroupName = JOptionPane.showInputDialog(
+		public void actionPerformed(final ActionEvent e) {
+			final String newRouteGroupName = JOptionPane.showInputDialog(
 					RoutesConfigurationDialog.this,
 					"Enter the name of the new route group", "Add route group",
 					JOptionPane.QUESTION_MESSAGE);
@@ -347,15 +350,16 @@ public class RoutesConfigurationDialog extends JDialog implements
 				return;
 			}
 
-			RouteGroup newRouteGroup = new RouteGroup();
+			final RouteGroup newRouteGroup = new RouteGroup();
 			newRouteGroup.setName(newRouteGroupName);
 			if (Preferences.getInstance().getBooleanValue(
 					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-				String newAmount = JOptionPane.showInputDialog(
+				final String newAmount = JOptionPane.showInputDialog(
 						RoutesConfigurationDialog.this,
 						"How many Routes should be in this group?", "10");
 				int newOffset = 1;
-				for (RouteGroup group : routePersistence.getAllRouteGroups()) {
+				for (final RouteGroup group : routePersistence
+						.getAllRouteGroups()) {
 					newOffset += group.getRouteNumberAmount();
 				}
 				newRouteGroup.setRouteNumberOffset(newOffset);
@@ -381,15 +385,16 @@ public class RoutesConfigurationDialog extends JDialog implements
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			RouteGroup routeGroupToDelete = routeGroupModel.getSelection();
+		public void actionPerformed(final ActionEvent e) {
+			final RouteGroup routeGroupToDelete = routeGroupModel
+					.getSelection();
 			if (routeGroupToDelete == null) {
 				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
 						"Please select a Route-Group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			int response = JOptionPane.showConfirmDialog(
+			final int response = JOptionPane.showConfirmDialog(
 					RoutesConfigurationDialog.this,
 					"Really remove Route-Group '"
 							+ routeGroupToDelete.getName() + "' ?",
@@ -399,7 +404,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 					routePersistence.removeRouteGroup(routeGroupToDelete);
 					routeGroupConfig.setRouteGroup(null);
 					routeGroups.remove(routeGroupToDelete);
-				} catch (RouteManagerException e1) {
+				} catch (final RouteManagerException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
 				}
 			}
@@ -422,8 +427,9 @@ public class RoutesConfigurationDialog extends JDialog implements
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			RouteGroup selectedRouteGroup = routeGroupModel.getSelection();
+		public void actionPerformed(final ActionEvent e) {
+			final RouteGroup selectedRouteGroup = routeGroupModel
+					.getSelection();
 			if (selectedRouteGroup == null) {
 				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
 						"Please select a route group", "Error",
@@ -446,15 +452,15 @@ public class RoutesConfigurationDialog extends JDialog implements
 				nextNumber = routePersistence.getNextFreeRouteNumber();
 			}
 
-			Route newRoute = createDefaultRoute(selectedRouteGroup, nextNumber);
+			final Route newRoute = createDefaultRoute(selectedRouteGroup,
+					nextNumber);
 
-			new RouteConfig(
-					RoutesConfigurationDialog.this, newRoute);
+			new RouteConfig(RoutesConfigurationDialog.this, newRoute);
 		}
 
-		private Route createDefaultRoute(RouteGroup selectedRouteGroup,
-				int nextNumber) {
-			Route newRoute = new Route();
+		private Route createDefaultRoute(final RouteGroup selectedRouteGroup,
+				final int nextNumber) {
+			final Route newRoute = new Route();
 			newRoute.setNumber(nextNumber);
 			newRoute.setRouteGroup(selectedRouteGroup);
 			return newRoute;
@@ -468,13 +474,14 @@ public class RoutesConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = -3140803329110781102L;
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 
 			// PresentationModel<Turnout> model = new
 			// PresentationModel<Turnout>(
 			// turnoutModel);
-			Route route = (Route) routesList.getSelectedValue();
-			PresentationModel<Route> model = new PresentationModel<Route>(route);
+			final Route route = (Route) routesList.getSelectedValue();
+			final PresentationModel<Route> model = new PresentationModel<Route>(
+					route);
 			new RouteConfig(RoutesConfigurationDialog.this, model);
 		}
 	}
@@ -492,15 +499,15 @@ public class RoutesConfigurationDialog extends JDialog implements
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			Route routeToDelete = routesModel.getSelection();
+		public void actionPerformed(final ActionEvent e) {
+			final Route routeToDelete = routesModel.getSelection();
 			if (routeToDelete == null) {
 				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
 						"Please select a route", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			int response = JOptionPane.showConfirmDialog(
+			final int response = JOptionPane.showConfirmDialog(
 					RoutesConfigurationDialog.this, "Really remove Route '"
 							+ routeToDelete.getName() + "' ?", "Remove Route",
 					JOptionPane.YES_NO_OPTION);
@@ -511,25 +518,25 @@ public class RoutesConfigurationDialog extends JDialog implements
 	}
 
 	@Override
-	public void routesUpdated(List<RouteGroup> allRouteGroups) {
+	public void routesUpdated(final SortedSet<RouteGroup> allRouteGroups) {
 	}
 
 	@Override
-	public void routeRemoved(Route route) {
+	public void routeRemoved(final Route route) {
 		if (route.getRouteGroup().equals(routeGroupModel.getSelection())) {
 			routes.remove(route);
 		}
 	}
 
 	@Override
-	public void routeAdded(Route route) {
+	public void routeAdded(final Route route) {
 		if (route.getRouteGroup().equals(routeGroupModel.getSelection())) {
 			routes.add(route);
 		}
 	}
 
 	@Override
-	public void routeUpdated(Route route) {
+	public void routeUpdated(final Route route) {
 		if (route.getRouteGroup().equals(routeGroupModel.getSelection())) {
 			routes.remove(route);
 			routes.add(route);
@@ -537,12 +544,12 @@ public class RoutesConfigurationDialog extends JDialog implements
 	}
 
 	@Override
-	public void routeGroupAdded(RouteGroup routeGroup) {
+	public void routeGroupAdded(final RouteGroup routeGroup) {
 		routeGroups.add(routeGroup);
 	}
 
 	@Override
-	public void routeGroupRemoved(RouteGroup routeGroup) {
+	public void routeGroupRemoved(final RouteGroup routeGroup) {
 		if (routeGroupModel.getSelection().equals(routeGroup)) {
 			routes.clear();
 		}
@@ -551,13 +558,13 @@ public class RoutesConfigurationDialog extends JDialog implements
 	}
 
 	@Override
-	public void routeGroupUpdated(RouteGroup routeGroup) {
+	public void routeGroupUpdated(final RouteGroup routeGroup) {
 		routeGroups.remove(routeGroup);
 		routeGroups.add(routeGroup);
 	}
 
 	@Override
-	public void failure(RouteManagerException routeManagerException) {
+	public void failure(final RouteManagerException routeManagerException) {
 
 	}
 }

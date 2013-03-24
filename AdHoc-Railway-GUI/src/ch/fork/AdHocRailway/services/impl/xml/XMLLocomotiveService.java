@@ -18,8 +18,8 @@
 
 package ch.fork.AdHocRailway.services.impl.xml;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -36,9 +36,9 @@ public class XMLLocomotiveService implements LocomotiveService {
 
 	private static Logger logger = Logger.getLogger(LocomotiveManager.class);
 
-	private final List<Locomotive> locomotives = new ArrayList<Locomotive>();
+	private final SortedSet<Locomotive> locomotives = new TreeSet<Locomotive>();
 
-	private final List<LocomotiveGroup> locomotiveGroups = new ArrayList<LocomotiveGroup>();
+	private final SortedSet<LocomotiveGroup> locomotiveGroups = new TreeSet<LocomotiveGroup>();
 
 	private LocomotiveServiceListener listener;
 
@@ -85,7 +85,7 @@ public class XMLLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public List<LocomotiveGroup> getAllLocomotiveGroups()
+	public SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
 			throws LocomotiveManagerException {
 		return locomotiveGroups;
 	}
@@ -124,7 +124,8 @@ public class XMLLocomotiveService implements LocomotiveService {
 
 	}
 
-	public void loadLocomotiveGroupsFromXML(final List<LocomotiveGroup> groups) {
+	public void loadLocomotiveGroupsFromXML(
+			final SortedSet<LocomotiveGroup> groups) {
 		locomotiveGroups.clear();
 		locomotives.clear();
 		if (groups != null) {

@@ -49,25 +49,25 @@ public class KeyTrackControl extends SimpleInternalFrame {
 	 */
 	private static final long serialVersionUID = -3052109699874529256L;
 
-	private StringBuffer		enteredNumberKeys;
+	private StringBuffer enteredNumberKeys;
 
-	private JPanel				switchesHistory;
+	private JPanel switchesHistory;
 
-	private LinkedList<Object>	historyStack;
+	private final LinkedList<Object> historyStack;
 
-	private LinkedList<JPanel>	historyWidgets;
+	private final LinkedList<JPanel> historyWidgets;
 
-	public boolean				routeMode;
+	public boolean routeMode;
 
-	public boolean				changedSwitch	= false;
+	public boolean changedSwitch = false;
 
-	public boolean				changedRoute	= false;
+	public boolean changedRoute = false;
 
-	public static final int		HISTORY_LENGTH	= 5;
+	public static final int HISTORY_LENGTH = 5;
 
-	private JScrollPane			switchesHistoryPane;
+	private JScrollPane switchesHistoryPane;
 
-	private ThreeDigitDisplay	digitDisplay;
+	private ThreeDigitDisplay digitDisplay;
 
 	public KeyTrackControl() {
 		super("Track Control / History");
@@ -79,9 +79,9 @@ public class KeyTrackControl extends SimpleInternalFrame {
 	}
 
 	private void initGUI() {
-		JPanel segmentPanelNorth = initSegmentPanel();
+		final JPanel segmentPanelNorth = initSegmentPanel();
 		switchesHistory = new JPanel();
-		JPanel sh1 = new JPanel(new BorderLayout());
+		final JPanel sh1 = new JPanel(new BorderLayout());
 
 		switchesHistory.setLayout(new GridLayout(HISTORY_LENGTH, 1));
 
@@ -96,23 +96,26 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 	private JPanel initSegmentPanel() {
 		digitDisplay = new ThreeDigitDisplay();
-		JPanel p = new JPanel(new BorderLayout());
+		final JPanel p = new JPanel(new BorderLayout());
 		p.add(digitDisplay, BorderLayout.WEST);
 		return p;
 	}
 
 	private void initKeyboardActions() {
 		for (int i = 0; i <= 10; i++) {
-			registerKeyboardAction(new NumberEnteredAction(), Integer
-					.toString(i), KeyStroke.getKeyStroke(Integer.toString(i)),
+			registerKeyboardAction(new NumberEnteredAction(),
+					Integer.toString(i),
+					KeyStroke.getKeyStroke(Integer.toString(i)),
 					WHEN_IN_FOCUSED_WINDOW);
-			registerKeyboardAction(new NumberEnteredAction(), Integer
-					.toString(i), KeyStroke.getKeyStroke("NUMPAD"
-					+ Integer.toString(i)), WHEN_IN_FOCUSED_WINDOW);
+			registerKeyboardAction(new NumberEnteredAction(),
+					Integer.toString(i),
+					KeyStroke.getKeyStroke("NUMPAD" + Integer.toString(i)),
+					WHEN_IN_FOCUSED_WINDOW);
 
 		}
-		KeyBoardLayout kbl = Preferences.getInstance().getKeyBoardLayout();
-		InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+		final KeyBoardLayout kbl = Preferences.getInstance()
+				.getKeyBoardLayout();
+		final InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
 		getActionMap().put("RouteNumberEntered", new PeriodEnteredAction());
 		kbl.assignKeys(inputMap, "RouteNumberEntered");
 		getActionMap().put("CurvedLeft", new CurvedLeftAction());
@@ -127,215 +130,222 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		kbl.assignKeys(inputMap, "DisableRoute");
 	}
 
-	private void updateHistory(Object obj) {
+	private void updateHistory(final Object obj) {
 		if (historyStack.size() == HISTORY_LENGTH) {
-			historyStack.removeLast();
-			historyWidgets.removeLast();
-		}
-		if(!historyStack.isEmpty() && historyStack.getFirst().equals(obj)) {
 			historyStack.removeFirst();
 			historyWidgets.removeFirst();
 		}
-		historyStack.addFirst(obj);
+		if (!historyStack.isEmpty() && historyStack.getFirst().equals(obj)) {
+			historyStack.removeLast();
+			historyWidgets.removeLast();
+		}
+		historyStack.addLast(obj);
 		JPanel w = null;
-		TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
+		final TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
 				.getTurnoutControl();
 
 		if (obj instanceof Turnout) {
-			Turnout turnout = (Turnout) obj;
-			w = new StaticTurnoutWidget(turnout, turnoutControl
-					.getTurnoutState(turnout));
+			final Turnout turnout = (Turnout) obj;
+			w = new StaticTurnoutWidget(turnout,
+					turnoutControl.getTurnoutState(turnout));
 		} else if (obj instanceof Route) {
 			w = new RouteWidget((Route) obj);
 		} else {
 			return;
 		}
-		historyWidgets.addFirst(w);
+		historyWidgets.addLast(w);
 		updateHistory();
 	}
 
 	private void updateHistory() {
 		switchesHistory.removeAll();
 
-		for (JPanel p : historyWidgets) {
+		for (final JPanel p : historyWidgets) {
 			switchesHistory.add(p);
 		}
 		revalidate();
 		repaint();
 	}
 
-    private class NumberEnteredAction extends AbstractAction {
+	private class NumberEnteredAction extends AbstractAction {
 
-        /**
+		/**
 		 * 
 		 */
 		private static final long serialVersionUID = -4818198896180938380L;
 
-		public void actionPerformed(ActionEvent e) {
-            enteredNumberKeys.append(e.getActionCommand());
-            String switchNumberAsString = enteredNumberKeys.toString();
-            int switchNumber = Integer.parseInt(switchNumberAsString);
-            if (switchNumber > 999) {
-                digitDisplay.reset();
-                enteredNumberKeys = new StringBuffer();
-                return;
-            }
-            digitDisplay.setNumber(switchNumber);
-        }
-    }
+		@Override
+		public void actionPerformed(final ActionEvent e) {
+			enteredNumberKeys.append(e.getActionCommand());
+			final String switchNumberAsString = enteredNumberKeys.toString();
+			final int switchNumber = Integer.parseInt(switchNumberAsString);
+			if (switchNumber > 999) {
+				digitDisplay.reset();
+				enteredNumberKeys = new StringBuffer();
+				return;
+			}
+			digitDisplay.setNumber(switchNumber);
+		}
+	}
 
-    private class PeriodEnteredAction extends AbstractAction {
+	private class PeriodEnteredAction extends AbstractAction {
 
-        /**
+		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 6709249386564202875L;
 
-		public void actionPerformed(ActionEvent e) {
-            routeMode = true;
-            digitDisplay.setPeriod(true);
-        }
-    }
+		@Override
+		public void actionPerformed(final ActionEvent e) {
+			routeMode = true;
+			digitDisplay.setPeriod(true);
+		}
+	}
 
-    private abstract class SwitchingAction extends AbstractAction {
-        /**
+	private abstract class SwitchingAction extends AbstractAction {
+		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 8783785027663679688L;
 
-		public void actionPerformed(ActionEvent e) {
+		@Override
+		public void actionPerformed(final ActionEvent e) {
 
-            try {
-                RouteControlIface routeControl = AdHocRailway.getInstance()
-                        .getRouteControl();
-                TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
-                        .getTurnoutControl();
+			try {
+				final RouteControlIface routeControl = AdHocRailway
+						.getInstance().getRouteControl();
+				final TurnoutControlIface turnoutControl = AdHocRailway
+						.getInstance().getTurnoutControl();
 
-                String enteredNumberAsString = enteredNumberKeys.toString();
-                if (enteredNumberKeys.toString().equals("")) {
-                    if (historyStack.size() == 0)
-                        return;
-                    Object obj = historyStack.removeFirst();
-                    if (obj instanceof Turnout) {
-                        Turnout t = (Turnout) obj;
-                        turnoutControl.setDefaultState(t);
-                    } else if (obj instanceof Route) {
-                        Route r = (Route) obj;
-                        routeControl.disableRoute(r);
-                    } else {
-                        return;
-                    }
-                    historyWidgets.removeFirst();
-                    updateHistory();
-                } else {
-                    int enteredNumber = Integer.parseInt(enteredNumberAsString);
-                    if (routeMode) {
-                        handleRouteChange(e, enteredNumber);
-                    } else {
-                        handleSwitchChange(e, enteredNumber);
-                    }
-                }
+				final String enteredNumberAsString = enteredNumberKeys
+						.toString();
+				if (enteredNumberKeys.toString().equals("")) {
+					if (historyStack.size() == 0) {
+						return;
+					}
+					final Object obj = historyStack.removeFirst();
+					if (obj instanceof Turnout) {
+						final Turnout t = (Turnout) obj;
+						turnoutControl.setDefaultState(t);
+					} else if (obj instanceof Route) {
+						final Route r = (Route) obj;
+						routeControl.disableRoute(r);
+					} else {
+						return;
+					}
+					historyWidgets.removeFirst();
+					updateHistory();
+				} else {
+					final int enteredNumber = Integer
+							.parseInt(enteredNumberAsString);
+					if (routeMode) {
+						handleRouteChange(e, enteredNumber);
+					} else {
+						handleSwitchChange(e, enteredNumber);
+					}
+				}
 
-            } catch (RouteException e1) {
-                ExceptionProcessor.getInstance().processException(e1);
-            } catch (TurnoutException e1) {
-                ExceptionProcessor.getInstance().processException(e1);
-            }
-            enteredNumberKeys = new StringBuffer();
-            routeMode = false;
-            digitDisplay.reset();
-        }
+			} catch (final RouteException e1) {
+				ExceptionProcessor.getInstance().processException(e1);
+			} catch (final TurnoutException e1) {
+				ExceptionProcessor.getInstance().processException(e1);
+			}
+			enteredNumberKeys = new StringBuffer();
+			routeMode = false;
+			digitDisplay.reset();
+		}
 
-        private void handleSwitchChange(ActionEvent e, int enteredNumber)
-                throws TurnoutException {
-            TurnoutManager turnoutPersistence = AdHocRailway
-                    .getInstance().getTurnoutPersistence();
-            Turnout searchedTurnout = null;
-            searchedTurnout = turnoutPersistence
-                    .getTurnoutByNumber(enteredNumber);
-            if (searchedTurnout == null) {
-                return;
-            }
-            TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
-                    .getTurnoutControl();
+		private void handleSwitchChange(final ActionEvent e,
+				final int enteredNumber) throws TurnoutException {
+			final TurnoutManager turnoutPersistence = AdHocRailway
+					.getInstance().getTurnoutPersistence();
+			Turnout searchedTurnout = null;
+			searchedTurnout = turnoutPersistence
+					.getTurnoutByNumber(enteredNumber);
+			if (searchedTurnout == null) {
+				return;
+			}
+			final TurnoutControlIface turnoutControl = AdHocRailway
+					.getInstance().getTurnoutControl();
 
-            if (this instanceof CurvedLeftAction) {
-                turnoutControl.setCurvedLeft(searchedTurnout);
-            } else if (this instanceof StraightAction) {
-                turnoutControl.setStraight(searchedTurnout);
-            } else if (this instanceof CurvedRightAction) {
-                turnoutControl.setCurvedRight(searchedTurnout);
-            } else if (this instanceof EnableRouteAction) {
-                if (!searchedTurnout.isThreeWay()) {
-                    turnoutControl.setNonDefaultState(searchedTurnout);
-                }
-            } else if (this instanceof DisableRouteAction) {
-                if (!searchedTurnout.isThreeWay()) {
-                    turnoutControl.setDefaultState(searchedTurnout);
-                }
-            }
-            updateHistory(searchedTurnout);
-        }
+			if (this instanceof CurvedLeftAction) {
+				turnoutControl.setCurvedLeft(searchedTurnout);
+			} else if (this instanceof StraightAction) {
+				turnoutControl.setStraight(searchedTurnout);
+			} else if (this instanceof CurvedRightAction) {
+				turnoutControl.setCurvedRight(searchedTurnout);
+			} else if (this instanceof EnableRouteAction) {
+				if (!searchedTurnout.isThreeWay()) {
+					turnoutControl.setNonDefaultState(searchedTurnout);
+				}
+			} else if (this instanceof DisableRouteAction) {
+				if (!searchedTurnout.isThreeWay()) {
+					turnoutControl.setDefaultState(searchedTurnout);
+				}
+			}
+			updateHistory(searchedTurnout);
+		}
 
-        private void handleRouteChange(ActionEvent e, int enteredNumber)
-                throws TurnoutException, RouteException {
-            Route searchedRoute = null;
+		private void handleRouteChange(final ActionEvent e,
+				final int enteredNumber) throws TurnoutException,
+				RouteException {
+			Route searchedRoute = null;
 
-            RouteControlIface routeControl = AdHocRailway.getInstance()
-                    .getRouteControl();
-            RouteManager routePersistence = AdHocRailway.getInstance()
-                    .getRoutePersistence();
-            searchedRoute = routePersistence.getRouteByNumber(enteredNumber);
-            if (searchedRoute == null) {
-                return;
-            }
-            if (this instanceof EnableRouteAction) {
-                routeControl.enableRoute(searchedRoute);
-            } else if (this instanceof DisableRouteAction) {
-                routeControl.disableRoute(searchedRoute);
-            }
-            updateHistory(searchedRoute);
-        }
-    }
+			final RouteControlIface routeControl = AdHocRailway.getInstance()
+					.getRouteControl();
+			final RouteManager routePersistence = AdHocRailway.getInstance()
+					.getRoutePersistence();
+			searchedRoute = routePersistence.getRouteByNumber(enteredNumber);
+			if (searchedRoute == null) {
+				return;
+			}
+			if (this instanceof EnableRouteAction) {
+				routeControl.enableRoute(searchedRoute);
+			} else if (this instanceof DisableRouteAction) {
+				routeControl.disableRoute(searchedRoute);
+			}
+			updateHistory(searchedRoute);
+		}
+	}
 
-    private class CurvedLeftAction extends SwitchingAction {
+	private class CurvedLeftAction extends SwitchingAction {
 
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 5676902063321467852L;
-    }
-    
-    private class StraightAction extends SwitchingAction {
+	}
+
+	private class StraightAction extends SwitchingAction {
 
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = -2339006950893044415L;
-    }
-    
-    private class CurvedRightAction extends SwitchingAction {
+	}
+
+	private class CurvedRightAction extends SwitchingAction {
 
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = -7285117051054231241L;
-    }
-    
-    private class EnableRouteAction extends SwitchingAction {
+	}
+
+	private class EnableRouteAction extends SwitchingAction {
 
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 5376121297997351343L;
-    }
-    
-    private class DisableRouteAction extends SwitchingAction {
+	}
+
+	private class DisableRouteAction extends SwitchingAction {
 
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = -4179628128437613997L;
-    }
-    
+	}
+
 }

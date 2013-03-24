@@ -7,14 +7,14 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 public class HibernateLocomotiveMapper {
 
 	public static Locomotive mapLocomotive(
-			HibernateLocomotive hibernateLocomotive) {
+			final HibernateLocomotive hibernateLocomotive) {
 
-		Locomotive locomotive = new Locomotive();
+		final Locomotive locomotive = new Locomotive();
 		updateLocomotive(hibernateLocomotive, locomotive);
 		return locomotive;
 	}
 
-	private static LocomotiveType mapType(String locomotiveType) {
+	private static LocomotiveType mapType(final String locomotiveType) {
 		if (locomotiveType.equalsIgnoreCase("DELTA")) {
 			return LocomotiveType.DELTA;
 		} else if (locomotiveType.equalsIgnoreCase("DIGITAL")) {
@@ -23,60 +23,61 @@ public class HibernateLocomotiveMapper {
 		return null;
 	}
 
-	private static String mapType(LocomotiveType locomotiveType) {
+	private static String mapType(final LocomotiveType locomotiveType) {
 		return locomotiveType.toString();
 	}
 
 	public static LocomotiveGroup mapHibernateLocomotiveGroup(
-			HibernateLocomotiveGroup hLocomotiveGroup) {
-		LocomotiveGroup group = new LocomotiveGroup();
+			final HibernateLocomotiveGroup hLocomotiveGroup) {
+		final LocomotiveGroup group = new LocomotiveGroup();
 		group.setId(hLocomotiveGroup.getId());
 		group.setName(hLocomotiveGroup.getName());
-		for (HibernateLocomotive hLocomotive : hLocomotiveGroup
+		for (final HibernateLocomotive hLocomotive : hLocomotiveGroup
 				.getLocomotives()) {
-			Locomotive locomotive = mapLocomotive(hLocomotive);
+			final Locomotive locomotive = mapLocomotive(hLocomotive);
 			group.addLocomotive(locomotive);
 			locomotive.setGroup(group);
 		}
 		return group;
 	}
 
-	public static HibernateLocomotive mapLocomotive(Locomotive locomotive) {
-		HibernateLocomotive hLocomotive = new HibernateLocomotive();
+	public static HibernateLocomotive mapLocomotive(final Locomotive locomotive) {
+		final HibernateLocomotive hLocomotive = new HibernateLocomotive();
 		updateHibernateLocomotive(hLocomotive, locomotive);
 		return hLocomotive;
 	}
 
 	public static HibernateLocomotiveGroup mapLocomotiveGroup(
-			LocomotiveGroup locomotiveGroup) {
-		HibernateLocomotiveGroup hLocomotiveGroup = new HibernateLocomotiveGroup();
+			final LocomotiveGroup locomotiveGroup) {
+		final HibernateLocomotiveGroup hLocomotiveGroup = new HibernateLocomotiveGroup();
 		updateHibernateLocomotiveGroup(hLocomotiveGroup, locomotiveGroup);
 		return hLocomotiveGroup;
 	}
 
 	public static void updateHibernateLocomotiveGroup(
-			HibernateLocomotiveGroup hLocomotiveGroup,
-			LocomotiveGroup locomotiveGroup) {
+			final HibernateLocomotiveGroup hLocomotiveGroup,
+			final LocomotiveGroup locomotiveGroup) {
 		hLocomotiveGroup.setId(locomotiveGroup.getId());
 		hLocomotiveGroup.setName(locomotiveGroup.getName());
 	}
 
 	public static void updateLocomotive(
-			HibernateLocomotive hibernateLocomotive, Locomotive locomotive) {
+			final HibernateLocomotive hibernateLocomotive,
+			final Locomotive locomotive) {
 		locomotive.setName(hibernateLocomotive.getName());
 		locomotive.setId(hibernateLocomotive.getId());
 		locomotive.setBus(hibernateLocomotive.getBus());
 		locomotive.setDesc(hibernateLocomotive.getDescription());
 		locomotive.setImage(hibernateLocomotive.getImage());
-		locomotive.setAddress(hibernateLocomotive.getAddress());
+		locomotive.setAddress1(hibernateLocomotive.getAddress());
 		locomotive.setType(mapType(hibernateLocomotive.getType()));
 	}
 
 	public static void updateHibernateLocomotive(
-			HibernateLocomotive hLocomotive, Locomotive locomotive) {
+			final HibernateLocomotive hLocomotive, final Locomotive locomotive) {
 		hLocomotive.setName(locomotive.getName());
 		hLocomotive.setId(locomotive.getId());
-		hLocomotive.setAddress(locomotive.getAddress());
+		hLocomotive.setAddress(locomotive.getAddress1());
 		hLocomotive.setBus(locomotive.getBus());
 		hLocomotive.setDescription(locomotive.getDesc());
 		hLocomotive.setImage(locomotive.getImage());

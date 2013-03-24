@@ -19,8 +19,9 @@
 package ch.fork.AdHocRailway.services.impl.hibernate.turnouts;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -50,7 +51,7 @@ public class HibernateTurnoutService implements TurnoutService {
 	@Override
 	public void clear() {
 		LOGGER.debug("clear()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
@@ -59,7 +60,7 @@ public class HibernateTurnoutService implements TurnoutService {
 					.executeUpdate();
 
 			transaction.commit();
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
 		} finally {
@@ -75,25 +76,27 @@ public class HibernateTurnoutService implements TurnoutService {
 	 * (ch.fork.AdHocRailway.domain.turnouts.Turnout)
 	 */
 	@Override
-	public void addTurnout(Turnout turnout) throws TurnoutManagerException {
+	public void addTurnout(final Turnout turnout)
+			throws TurnoutManagerException {
 		LOGGER.debug("addTurnout()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			HibernateTurnout hTurnout = HibernateTurnoutMapper.map(turnout);
-			Integer turnoutGroupId = turnout.getTurnoutGroup().getId();
-			HibernateTurnoutGroup hTurnoutGroup = (HibernateTurnoutGroup) session
+			final HibernateTurnout hTurnout = HibernateTurnoutMapper
+					.map(turnout);
+			final Integer turnoutGroupId = turnout.getTurnoutGroup().getId();
+			final HibernateTurnoutGroup hTurnoutGroup = (HibernateTurnoutGroup) session
 					.get(HibernateTurnoutGroup.class, turnoutGroupId);
 			hTurnoutGroup.getTurnouts().add(hTurnout);
 			hTurnout.setTurnoutGroup(hTurnoutGroup);
-			Integer id = (Integer) session.save(hTurnout);
+			final Integer id = (Integer) session.save(hTurnout);
 
 			turnout.setId(id);
 			transaction.commit();
 			listener.turnoutAdded(turnout);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
 		} finally {
@@ -109,20 +112,21 @@ public class HibernateTurnoutService implements TurnoutService {
 	 * (ch.fork.AdHocRailway.domain.turnouts.Turnout)
 	 */
 	@Override
-	public void removeTurnout(Turnout turnout) throws TurnoutManagerException {
+	public void removeTurnout(final Turnout turnout)
+			throws TurnoutManagerException {
 		LOGGER.debug("deleteTurnout()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			Integer id = turnout.getId();
+			final Integer id = turnout.getId();
 
-			HibernateTurnout hTurnout = (HibernateTurnout) session.get(
+			final HibernateTurnout hTurnout = (HibernateTurnout) session.get(
 					HibernateTurnout.class, id);
 			session.delete(hTurnout);
 			transaction.commit();
 			listener.turnoutRemoved(turnout);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
 		} finally {
@@ -138,22 +142,23 @@ public class HibernateTurnoutService implements TurnoutService {
 	 * (ch.fork.AdHocRailway.domain.turnouts.Turnout)
 	 */
 	@Override
-	public void updateTurnout(Turnout turnout) throws TurnoutManagerException {
+	public void updateTurnout(final Turnout turnout)
+			throws TurnoutManagerException {
 		LOGGER.debug("updateTurnout()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			Integer id = turnout.getId();
-			HibernateTurnout hTurnout = (HibernateTurnout) session.get(
+			final Integer id = turnout.getId();
+			final HibernateTurnout hTurnout = (HibernateTurnout) session.get(
 					HibernateTurnout.class, id);
 
 			HibernateTurnoutMapper.updateHibernate(hTurnout, turnout);
 			session.update(hTurnout);
 			transaction.commit();
 			listener.turnoutUpdated(turnout);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
 		} finally {
@@ -169,22 +174,22 @@ public class HibernateTurnoutService implements TurnoutService {
 	 * (ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup)
 	 */
 	@Override
-	public void addTurnoutGroup(TurnoutGroup group)
+	public void addTurnoutGroup(final TurnoutGroup group)
 			throws TurnoutManagerException {
 		LOGGER.debug("addTurnoutGroup()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			HibernateTurnoutGroup hTurnoutGroup = HibernateTurnoutMapper
+			final HibernateTurnoutGroup hTurnoutGroup = HibernateTurnoutMapper
 					.map(group);
-			Integer id = (Integer) session.save(hTurnoutGroup);
+			final Integer id = (Integer) session.save(hTurnoutGroup);
 
 			group.setId(id);
 			transaction.commit();
 			listener.turnoutGroupAdded(group);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
 		} finally {
@@ -199,22 +204,22 @@ public class HibernateTurnoutService implements TurnoutService {
 	 * deleteTurnoutGroup(ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup)
 	 */
 	@Override
-	public void removeTurnoutGroup(TurnoutGroup group)
+	public void removeTurnoutGroup(final TurnoutGroup group)
 			throws TurnoutManagerException {
 		LOGGER.debug("deleteTurnoutGroup()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			Integer id = group.getId();
+			final Integer id = group.getId();
 
-			HibernateTurnoutGroup hTurnoutGroup = (HibernateTurnoutGroup) session
+			final HibernateTurnoutGroup hTurnoutGroup = (HibernateTurnoutGroup) session
 					.get(HibernateTurnoutGroup.class, id);
 			session.delete(hTurnoutGroup);
 			transaction.commit();
 			listener.turnoutGroupRemoved(group);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
 		} finally {
@@ -229,22 +234,22 @@ public class HibernateTurnoutService implements TurnoutService {
 	 * updateTurnoutGroup(ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup)
 	 */
 	@Override
-	public void updateTurnoutGroup(TurnoutGroup group)
+	public void updateTurnoutGroup(final TurnoutGroup group)
 			throws TurnoutManagerException {
 		LOGGER.debug("updateTurnoutGroup()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			Integer id = group.getId();
-			HibernateTurnoutGroup hTurnout = (HibernateTurnoutGroup) session
+			final Integer id = group.getId();
+			final HibernateTurnoutGroup hTurnout = (HibernateTurnoutGroup) session
 					.get(HibernateTurnoutGroup.class, id);
 
 			session.update(hTurnout);
 			transaction.commit();
 			listener.turnoutGroupUpdated(group);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
 		} finally {
@@ -254,27 +259,27 @@ public class HibernateTurnoutService implements TurnoutService {
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public List<TurnoutGroup> getAllTurnoutGroups() {
+	public SortedSet<TurnoutGroup> getAllTurnoutGroups() {
 		LOGGER.debug("getAllTurnoutGroups()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			List hTurnoutGroups = session.createQuery(
+			final List hTurnoutGroups = session.createQuery(
 					"from HibernateTurnoutGroup").list();
-			List<TurnoutGroup> turnoutGroups = new LinkedList<TurnoutGroup>();
-			for (Iterator iterator = hTurnoutGroups.iterator(); iterator
+			final SortedSet<TurnoutGroup> turnoutGroups = new TreeSet<TurnoutGroup>();
+			for (final Iterator iterator = hTurnoutGroups.iterator(); iterator
 					.hasNext();) {
-				HibernateTurnoutGroup hTurnoutGroup = (HibernateTurnoutGroup) iterator
+				final HibernateTurnoutGroup hTurnoutGroup = (HibernateTurnoutGroup) iterator
 						.next();
-				TurnoutGroup turnoutGroup = HibernateTurnoutMapper
+				final TurnoutGroup turnoutGroup = HibernateTurnoutMapper
 						.map(hTurnoutGroup);
 				turnoutGroups.add(turnoutGroup);
 			}
 			transaction.commit();
 			return turnoutGroups;
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new TurnoutManagerException("Database Error", x);
 		} finally {
@@ -283,9 +288,10 @@ public class HibernateTurnoutService implements TurnoutService {
 	}
 
 	@Override
-	public void init(TurnoutServiceListener listener) {
+	public void init(final TurnoutServiceListener listener) {
 		this.listener = listener;
-		List<TurnoutGroup> allTurnoutGroups = getAllTurnoutGroups();
+		final SortedSet<TurnoutGroup> allTurnoutGroups = new TreeSet<TurnoutGroup>(
+				getAllTurnoutGroups());
 		listener.turnoutsUpdated(allTurnoutGroups);
 	}
 

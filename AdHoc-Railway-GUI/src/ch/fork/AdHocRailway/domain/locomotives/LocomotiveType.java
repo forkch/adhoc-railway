@@ -2,7 +2,8 @@ package ch.fork.AdHocRailway.domain.locomotives;
 
 public enum LocomotiveType {
 
-	DELTA("delta", 0, 14, 1), DIGITAL("digital", 5, 14, 1);
+	DELTA("delta", 0, 14, 1), DIGITAL("digital", 5, 14, 1), SIMULATED_MFX(
+			"simulated-mfx", 9, 14, 1);
 
 	private final int functionCount;
 	private final int drivingSteps;
@@ -32,7 +33,7 @@ public enum LocomotiveType {
 
 	public static LocomotiveType fromString(final String string) {
 		for (final LocomotiveType lt : values()) {
-			if (lt.name().equalsIgnoreCase(string)) {
+			if (lt.getName().equalsIgnoreCase(string)) {
 				return lt;
 			}
 		}

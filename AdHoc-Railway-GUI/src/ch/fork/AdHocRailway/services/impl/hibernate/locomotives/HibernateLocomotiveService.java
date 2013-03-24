@@ -18,9 +18,10 @@
 
 package ch.fork.AdHocRailway.services.impl.hibernate.locomotives;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -54,7 +55,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 	@Override
 	public void clear() throws LocomotiveManagerException {
 		LOGGER.debug("clear()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
@@ -63,7 +64,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 					.executeUpdate();
 
 			transaction.commit();
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -72,28 +73,28 @@ public class HibernateLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public void addLocomotive(Locomotive locomotive)
+	public void addLocomotive(final Locomotive locomotive)
 			throws LocomotiveManagerException {
 		LOGGER.debug("addLocomotive()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			HibernateLocomotive hLocomotive = HibernateLocomotiveMapper
+			final HibernateLocomotive hLocomotive = HibernateLocomotiveMapper
 					.mapLocomotive(locomotive);
-			Integer locomotiveGroupId = locomotive.getId();
+			final Integer locomotiveGroupId = locomotive.getId();
 
-			HibernateLocomotiveGroup hLocomotiveGroup = (HibernateLocomotiveGroup) session
+			final HibernateLocomotiveGroup hLocomotiveGroup = (HibernateLocomotiveGroup) session
 					.get(HibernateLocomotiveGroup.class, locomotiveGroupId);
 			hLocomotiveGroup.getLocomotives().add(hLocomotive);
 			hLocomotive.setLocomotiveGroup(hLocomotiveGroup);
 
-			Integer id = (Integer) session.save(hLocomotive);
+			final Integer id = (Integer) session.save(hLocomotive);
 			locomotive.setId(id);
 			transaction.commit();
 			listener.locomotiveAdded(locomotive);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -102,21 +103,21 @@ public class HibernateLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public void removeLocomotive(Locomotive locomotive)
+	public void removeLocomotive(final Locomotive locomotive)
 			throws LocomotiveManagerException {
 		LOGGER.debug("deleteLocomotive()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			Integer id = locomotive.getId();
-			HibernateLocomotive hl = (HibernateLocomotive) session.get(
+			final Integer id = locomotive.getId();
+			final HibernateLocomotive hl = (HibernateLocomotive) session.get(
 					HibernateLocomotive.class, id);
 			session.delete(hl);
 			transaction.commit();
 			listener.locomotiveRemoved(locomotive);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -125,23 +126,23 @@ public class HibernateLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public void updateLocomotive(Locomotive locomotive)
+	public void updateLocomotive(final Locomotive locomotive)
 			throws LocomotiveManagerException {
 		LOGGER.debug("updateLocomotive()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			Integer id = locomotive.getId();
-			HibernateLocomotive hl = (HibernateLocomotive) session.get(
+			final Integer id = locomotive.getId();
+			final HibernateLocomotive hl = (HibernateLocomotive) session.get(
 					HibernateLocomotive.class, id);
 
 			HibernateLocomotiveMapper.updateHibernateLocomotive(hl, locomotive);
 			session.update(hl);
 			transaction.commit();
 			listener.locomotiveUpdated(locomotive);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -150,21 +151,21 @@ public class HibernateLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public void addLocomotiveGroup(LocomotiveGroup group)
+	public void addLocomotiveGroup(final LocomotiveGroup group)
 			throws LocomotiveManagerException {
 		LOGGER.debug("addLocomotiveGroup()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			HibernateLocomotiveGroup hibernateLocomotiveGroup = HibernateLocomotiveMapper
+			final HibernateLocomotiveGroup hibernateLocomotiveGroup = HibernateLocomotiveMapper
 					.mapLocomotiveGroup(group);
-			Integer id = (Integer) session.save(hibernateLocomotiveGroup);
+			final Integer id = (Integer) session.save(hibernateLocomotiveGroup);
 
 			group.setId(id);
 			transaction.commit();
 			listener.locomotiveGroupAdded(group);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -173,21 +174,21 @@ public class HibernateLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public void removeLocomotiveGroup(LocomotiveGroup group)
+	public void removeLocomotiveGroup(final LocomotiveGroup group)
 			throws LocomotiveManagerException {
 		LOGGER.debug("deleteLocomotiveGroup()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			Integer id = group.getId();
+			final Integer id = group.getId();
 
-			HibernateLocomotiveGroup hlg = (HibernateLocomotiveGroup) session
+			final HibernateLocomotiveGroup hlg = (HibernateLocomotiveGroup) session
 					.get(HibernateLocomotiveGroup.class, id);
 			session.delete(hlg);
 			transaction.commit();
 			listener.locomotiveGroupRemoved(group);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -196,16 +197,16 @@ public class HibernateLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public void updateLocomotiveGroup(LocomotiveGroup group)
+	public void updateLocomotiveGroup(final LocomotiveGroup group)
 			throws LocomotiveManagerException {
 		LOGGER.debug("updateLocomotiveGroup()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			Integer id = group.getId();
-			HibernateLocomotiveGroup hlg = (HibernateLocomotiveGroup) session
+			final Integer id = group.getId();
+			final HibernateLocomotiveGroup hlg = (HibernateLocomotiveGroup) session
 					.get(HibernateLocomotiveGroup.class, id);
 
 			HibernateLocomotiveMapper
@@ -213,7 +214,7 @@ public class HibernateLocomotiveService implements LocomotiveService {
 			session.update(hlg);
 			transaction.commit();
 			listener.locomotiveGroupUpdated(group);
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -223,28 +224,29 @@ public class HibernateLocomotiveService implements LocomotiveService {
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public List<LocomotiveGroup> getAllLocomotiveGroups()
+	public SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
 			throws LocomotiveManagerException {
 		LOGGER.debug("getAllLocomotiveGroupsDB()");
-		Session session = HibernateUtil.openSession();
+		final Session session = HibernateUtil.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			List groups = session.createQuery("from HibernateLocomotiveGroup")
-					.list();
+			final List groups = session.createQuery(
+					"from HibernateLocomotiveGroup").list();
 
-			List<LocomotiveGroup> locomotiveGroups = new ArrayList<LocomotiveGroup>();
-			for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
-				HibernateLocomotiveGroup hLocomotiveGroup = (HibernateLocomotiveGroup) iterator
+			final SortedSet<LocomotiveGroup> locomotiveGroups = new TreeSet<LocomotiveGroup>();
+			for (final Iterator iterator = groups.iterator(); iterator
+					.hasNext();) {
+				final HibernateLocomotiveGroup hLocomotiveGroup = (HibernateLocomotiveGroup) iterator
 						.next();
-				LocomotiveGroup locomotiveGroup = HibernateLocomotiveMapper
+				final LocomotiveGroup locomotiveGroup = HibernateLocomotiveMapper
 						.mapHibernateLocomotiveGroup(hLocomotiveGroup);
 				locomotiveGroups.add(locomotiveGroup);
 			}
 			transaction.commit();
 
 			return locomotiveGroups;
-		} catch (HibernateException x) {
+		} catch (final HibernateException x) {
 			transaction.rollback();
 			throw new LocomotiveManagerException("Database Error", x);
 		} finally {
@@ -254,9 +256,9 @@ public class HibernateLocomotiveService implements LocomotiveService {
 	}
 
 	@Override
-	public void init(LocomotiveServiceListener listener) {
+	public void init(final LocomotiveServiceListener listener) {
 		this.listener = listener;
-		List<LocomotiveGroup> allLocomotiveGroups = getAllLocomotiveGroups();
+		final SortedSet<LocomotiveGroup> allLocomotiveGroups = getAllLocomotiveGroups();
 		listener.locomotivesUpdated(allLocomotiveGroups);
 	}
 

@@ -87,23 +87,25 @@ public class RouteConfig extends JDialog {
 	public ThreeDigitDisplay digitDisplay;
 	private JTextField routeOrientationField;
 
-	public RouteConfig(JDialog owner, Route myRoute) {
+	public RouteConfig(final JDialog owner, final Route myRoute) {
 		this(owner, new PresentationModel<Route>(myRoute));
 	}
 
-	public RouteConfig(Frame owner, Route myRoute) {
+	public RouteConfig(final Frame owner, final Route myRoute) {
 		super(owner, "Route Config", true);
 		this.presentationModel = new PresentationModel<Route>(myRoute);
 		initGUI();
 	}
 
-	public RouteConfig(JDialog owner, PresentationModel<Route> presentationModel) {
+	public RouteConfig(final JDialog owner,
+			final PresentationModel<Route> presentationModel) {
 		super(owner, "Route Config", true);
 		this.presentationModel = presentationModel;
 		initGUI();
 	}
 
-	public RouteConfig(Frame owner, PresentationModel<Route> presentationModel) {
+	public RouteConfig(final Frame owner,
+			final PresentationModel<Route> presentationModel) {
 		super(owner, "Route Config", true);
 		this.presentationModel = presentationModel;
 		initGUI();
@@ -147,7 +149,7 @@ public class RouteConfig extends JDialog {
 		routeItemModel.setList(new ArrayList<RouteItem>(presentationModel
 				.getBean().getRouteItems()));
 
-		TableColumn routedStateColumn = routeItemTable.getColumnModel()
+		final TableColumn routedStateColumn = routeItemTable.getColumnModel()
 				.getColumn(1);
 		routedStateColumn.setCellRenderer(new RoutedTurnoutStateCellRenderer());
 
@@ -164,12 +166,13 @@ public class RouteConfig extends JDialog {
 	private void buildPanel() {
 		initComponents();
 
-		FormLayout layout = new FormLayout("pref, 5dlu, pref, 3dlu, pref:grow",
+		final FormLayout layout = new FormLayout(
+				"pref, 5dlu, pref, 3dlu, pref:grow",
 				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref");
 		builder = new PanelBuilder(layout);
 
 		builder.setDefaultDialogBorder();
-		CellConstraints cc = new CellConstraints();
+		final CellConstraints cc = new CellConstraints();
 
 		builder.add(digitDisplay, cc.xywh(1, 1, 1, 7));
 		builder.addLabel("Route Number", cc.xy(3, 1));
@@ -211,7 +214,7 @@ public class RouteConfig extends JDialog {
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 
 		}
 	}
@@ -223,15 +226,16 @@ public class RouteConfig extends JDialog {
 		 */
 		private static final long serialVersionUID = 1287566434458519970L;
 		private boolean recording;
+
 		public RecordRouteAction() {
 			super("Record", ImageTools
 					.createImageIconFromIconSet("record_off.png"));
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			if (!recording) {
-				Route selectedRoute = (presentationModel.getBean());
+				final Route selectedRoute = (presentationModel.getBean());
 				if (selectedRoute == null) {
 					JOptionPane
 							.showMessageDialog(
@@ -255,12 +259,12 @@ public class RouteConfig extends JDialog {
 			}
 		}
 
-		private void initKeyboardActions(Route route) {
+		private void initKeyboardActions(final Route route) {
 			enteredNumberKeys = new StringBuffer();
-			JPanel routeItemPanel = builder.getPanel();
-			JPanel[] panels = new JPanel[] { routeItemPanel, digitDisplay };
+			final JPanel routeItemPanel = builder.getPanel();
+			final JPanel[] panels = new JPanel[] { routeItemPanel, digitDisplay };
 			for (int i = 0; i <= 10; i++) {
-				for (JPanel p : panels) {
+				for (final JPanel p : panels) {
 					p.registerKeyboardAction(new NumberEnteredAction(),
 							Integer.toString(i),
 							KeyStroke.getKeyStroke(Integer.toString(i)),
@@ -274,10 +278,10 @@ public class RouteConfig extends JDialog {
 				}
 
 			}
-			for (JPanel p : panels) {
-				KeyBoardLayout kbl = Preferences.getInstance()
+			for (final JPanel p : panels) {
+				final KeyBoardLayout kbl = Preferences.getInstance()
 						.getKeyBoardLayout();
-				InputMap inputMap = p
+				final InputMap inputMap = p
 						.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 				p.getActionMap().put("CurvedLeft", new CurvedLeftAction(route));
 				kbl.assignKeys(inputMap, "CurvedLeft");
@@ -303,25 +307,25 @@ public class RouteConfig extends JDialog {
 		private static final long serialVersionUID = -126103872681435146L;
 		private final Route route;
 
-		public SwitchingAction(Route route) {
+		public SwitchingAction(final Route route) {
 			this.route = route;
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 
-			String enteredNumberAsString = enteredNumberKeys.toString();
+			final String enteredNumberAsString = enteredNumberKeys.toString();
 			if (enteredNumberAsString.equals("")) {
 				return;
 			}
-			int enteredNumber = Integer.parseInt(enteredNumberAsString);
+			final int enteredNumber = Integer.parseInt(enteredNumberAsString);
 			System.out.println(enteredNumber);
 			Turnout turnout;
 			try {
-				RouteManager routePersistence = AdHocRailway.getInstance()
-						.getRoutePersistence();
-				TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
-						.getTurnoutPersistence();
+				final RouteManager routePersistence = AdHocRailway
+						.getInstance().getRoutePersistence();
+				final TurnoutManager turnoutPersistence = AdHocRailway
+						.getInstance().getTurnoutPersistence();
 				turnout = turnoutPersistence.getTurnoutByNumber(enteredNumber);
 				System.out.println(turnout);
 				if (turnout == null) {
@@ -337,13 +341,10 @@ public class RouteConfig extends JDialog {
 				} else {
 					TurnoutState routedState = null;
 					if (this instanceof CurvedLeftAction) {
-						// ThreeWay LEFT
 						routedState = TurnoutState.LEFT;
 					} else if (this instanceof StraightAction) {
-						// ThreeWay STRAIGHT
 						routedState = TurnoutState.STRAIGHT;
 					} else if (this instanceof CurvedRightAction) {
-						// ThreeWay RIGHT
 						routedState = TurnoutState.RIGHT;
 					} else if (this instanceof EnableRouteAction) {
 						// CURVED
@@ -353,6 +354,8 @@ public class RouteConfig extends JDialog {
 								routedState = TurnoutState.LEFT;
 								break;
 							case LEFT:
+							case RIGHT:
+							case UNDEF:
 								routedState = TurnoutState.STRAIGHT;
 								break;
 							}
@@ -365,8 +368,9 @@ public class RouteConfig extends JDialog {
 					}
 
 					RouteItem itemToRemove = null;
-					SortedSet<RouteItem> itemsOfRoute = route.getRouteItems();
-					for (RouteItem item : itemsOfRoute) {
+					final SortedSet<RouteItem> itemsOfRoute = route
+							.getRouteItems();
+					for (final RouteItem item : itemsOfRoute) {
 						if (item.getTurnout().equals(turnout)) {
 							itemToRemove = item;
 							break;
@@ -375,21 +379,21 @@ public class RouteConfig extends JDialog {
 					if (itemToRemove != null) {
 						routePersistence.removeRouteItem(itemToRemove);
 					}
-					RouteItem i = new RouteItem();
+					final RouteItem i = new RouteItem();
 					i.setRoute(route);
 					i.setRoutedState(routedState);
 					i.setTurnout(turnout);
 
 					try {
 						routePersistence.addRouteItem(i);
-						List<RouteItem> routeItems = new ArrayList<RouteItem>(
+						final List<RouteItem> routeItems = new ArrayList<RouteItem>(
 								route.getRouteItems());
 						routeItemModel.setList(routeItems);
-					} catch (RouteManagerException e1) {
+					} catch (final RouteManagerException e1) {
 						e1.printStackTrace();
 					}
 				}
-			} catch (NumberFormatException e1) {
+			} catch (final NumberFormatException e1) {
 				e1.printStackTrace();
 			} finally {
 				enteredNumberKeys = new StringBuffer();
@@ -404,7 +408,7 @@ public class RouteConfig extends JDialog {
 		 */
 		private static final long serialVersionUID = 2298539073910194594L;
 
-		public CurvedLeftAction(Route route) {
+		public CurvedLeftAction(final Route route) {
 			super(route);
 		}
 	}
@@ -415,7 +419,7 @@ public class RouteConfig extends JDialog {
 		 */
 		private static final long serialVersionUID = 2866441796856357663L;
 
-		public StraightAction(Route route) {
+		public StraightAction(final Route route) {
 			super(route);
 		}
 	}
@@ -426,7 +430,7 @@ public class RouteConfig extends JDialog {
 		 */
 		private static final long serialVersionUID = -6106999361346507826L;
 
-		public CurvedRightAction(Route route) {
+		public CurvedRightAction(final Route route) {
 			super(route);
 		}
 	}
@@ -437,7 +441,7 @@ public class RouteConfig extends JDialog {
 		 */
 		private static final long serialVersionUID = -2554594488359463589L;
 
-		public EnableRouteAction(Route route) {
+		public EnableRouteAction(final Route route) {
 			super(route);
 		}
 	}
@@ -448,7 +452,7 @@ public class RouteConfig extends JDialog {
 		 */
 		private static final long serialVersionUID = -150319621580243688L;
 
-		public DisableRouteAction(Route route) {
+		public DisableRouteAction(final Route route) {
 			super(route);
 		}
 	}
@@ -461,11 +465,11 @@ public class RouteConfig extends JDialog {
 		private static final long serialVersionUID = -4851780584974377445L;
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 
 			enteredNumberKeys.append(e.getActionCommand());
-			String switchNumberAsString = enteredNumberKeys.toString();
-			int switchNumber = Integer.parseInt(switchNumberAsString);
+			final String switchNumberAsString = enteredNumberKeys.toString();
+			final int switchNumber = Integer.parseInt(switchNumberAsString);
 			if (switchNumber > 999) {
 				enteredNumberKeys = new StringBuffer();
 				digitDisplay.reset();
@@ -489,16 +493,16 @@ public class RouteConfig extends JDialog {
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			Route selectedRoute = (presentationModel.getBean());
-			RouteItem routeItem = routeItemModel.getSelection();
+		public void actionPerformed(final ActionEvent e) {
+			final Route selectedRoute = (presentationModel.getBean());
+			final RouteItem routeItem = routeItemModel.getSelection();
 			if (routeItem == null) {
 				return;
 			}
-			RouteManager routePersistence = AdHocRailway.getInstance()
+			final RouteManager routePersistence = AdHocRailway.getInstance()
 					.getRoutePersistence();
 			routePersistence.removeRouteItem(routeItem);
-			List<RouteItem> routeItems = new ArrayList<RouteItem>(
+			final List<RouteItem> routeItems = new ArrayList<RouteItem>(
 					selectedRoute.getRouteItems());
 			routeItemModel.setList(routeItems);
 		}
@@ -520,26 +524,26 @@ public class RouteConfig extends JDialog {
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			final RouteManager routePersistence = AdHocRailway.getInstance()
 					.getRoutePersistence();
-			Route route = presentationModel.getBean();
+			final Route route = presentationModel.getBean();
 
 			routePersistence.addRouteManagerListener(new RouteAddListener() {
 
 				@Override
-				public void routeAdded(Route route) {
+				public void routeAdded(final Route route) {
 					success(routePersistence, route);
 				}
 
 				@Override
-				public void routeUpdated(Route route) {
+				public void routeUpdated(final Route route) {
 					success(routePersistence, route);
 
 				}
 
 				private void success(final RouteManager routePersistence,
-						Route route) {
+						final Route route) {
 					routePersistence
 							.removeRouteManagerListenerInNextEvent(this);
 
@@ -553,7 +557,8 @@ public class RouteConfig extends JDialog {
 				}
 
 				@Override
-				public void failure(RouteManagerException routeManagerException) {
+				public void failure(
+						final RouteManagerException routeManagerException) {
 					System.out.println("failure");
 				}
 
@@ -579,7 +584,7 @@ public class RouteConfig extends JDialog {
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			okPressed = false;
 			cancelPressed = true;
 			RouteConfig.this.setVisible(false);

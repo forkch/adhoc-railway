@@ -18,7 +18,7 @@ public class LocomotiveTableModel extends AbstractTableAdapter<Locomotive> {
 	private static final String[] COLUMNS = { "Name", "Image", "Type",
 			"Address", "Desc" };
 
-	public LocomotiveTableModel(ListModel listModel) {
+	public LocomotiveTableModel(ListModel<?> listModel) {
 		super(listModel, COLUMNS);
 	}
 
@@ -33,7 +33,7 @@ public class LocomotiveTableModel extends AbstractTableAdapter<Locomotive> {
 		case 2:
 			return locomotive.getType();
 		case 3:
-			return locomotive.getAddress();
+			return locomotive.getAddress1();
 		case 4:
 			return locomotive.getDesc();
 		default:

@@ -1,6 +1,6 @@
 package ch.fork.AdHocRailway.services.turnouts;
 
-import java.util.List;
+import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
@@ -8,7 +8,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
 
 public interface TurnoutServiceListener {
 
-	public void turnoutsUpdated(List<TurnoutGroup> turnoutGroups);
+	public void turnoutsUpdated(SortedSet<TurnoutGroup> turnoutGroups);
 
 	public void turnoutAdded(Turnout turnout);
 

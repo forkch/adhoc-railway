@@ -41,7 +41,6 @@ public class ErrorPanel extends JPanel {
 	private static final long serialVersionUID = 519354077339077675L;
 	private JTextArea errorTextArea;
 	private JLabel iconLabel;
-	private Color defaultColor;
 	private final int pause = 5000;
 	private float alpha = 1.0f;
 	boolean active = true;
@@ -62,7 +61,6 @@ public class ErrorPanel extends JPanel {
 		errorTextArea = new JTextArea(2, 30);
 		errorTextArea.setEditable(false);
 		errorTextArea.setForeground(Color.BLACK);
-		defaultColor = errorTextArea.getBackground();
 		errorTextArea.setFont(new Font("Dialog", Font.BOLD, 12));
 
 		iconLabel = new JLabel("");

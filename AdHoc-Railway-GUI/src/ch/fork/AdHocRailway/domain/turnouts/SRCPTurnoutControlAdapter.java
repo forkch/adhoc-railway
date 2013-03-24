@@ -55,8 +55,8 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 	}
 
 	@Override
-	public SRCPTurnoutState getTurnoutState(Turnout turnout) {
-		SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+	public SRCPTurnoutState getTurnoutState(final Turnout turnout) {
+		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
 		return sTurnout.getTurnoutState();
 	}
 
@@ -64,68 +64,69 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 	public void previousDeviceToDefault() throws TurnoutException {
 		try {
 			turnoutControl.previousDeviceToDefault();
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
 
 	}
 
 	@Override
-	public void setCurvedLeft(Turnout turnout) throws TurnoutException {
-		SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+	public void setCurvedLeft(final Turnout turnout) throws TurnoutException {
+		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
 		try {
 			turnoutControl.setCurvedLeft(sTurnout);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
 	}
 
 	@Override
-	public void setCurvedRight(Turnout turnout) throws TurnoutException {
-		SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+	public void setCurvedRight(final Turnout turnout) throws TurnoutException {
+		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
 		try {
 			turnoutControl.setCurvedRight(sTurnout);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
 
 	}
 
 	@Override
-	public void setDefaultState(Turnout turnout) throws TurnoutException {
-		SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+	public void setDefaultState(final Turnout turnout) throws TurnoutException {
+		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
 		try {
 			turnoutControl.setDefaultState(sTurnout);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
 
 	}
 
 	@Override
-	public void setNonDefaultState(Turnout turnout) throws TurnoutException {
-		SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+	public void setNonDefaultState(final Turnout turnout)
+			throws TurnoutException {
+		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
 		try {
 			turnoutControl.setNonDefaultState(sTurnout);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
 
 	}
 
 	@Override
-	public void setStraight(Turnout turnout) throws TurnoutException {
-		SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+	public void setStraight(final Turnout turnout) throws TurnoutException {
+		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
 		try {
 			turnoutControl.setStraight(sTurnout);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
 
 	}
 
 	@Override
-	public void toggleTest(Turnout turnout) throws TurnoutException {
+	public void toggleTest(final Turnout turnout) throws TurnoutException {
 		SRCPTurnout sTurnout = null;
 		if (sTurnoutTemp != null) {
 			turnoutControl.removeTurnout(sTurnoutTemp);
@@ -147,18 +148,18 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 		System.out.println(turnout);
 		try {
 			turnoutControl.toggle(sTurnout);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
 	}
 
 	@Override
-	public void toggle(Turnout turnout) throws TurnoutException {
-		SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+	public void toggle(final Turnout turnout) throws TurnoutException {
+		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
 
 		try {
 			turnoutControl.toggle(sTurnout);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
 
@@ -168,7 +169,7 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 	public void undoLastChange() throws TurnoutException {
 		try {
 			turnoutControl.undoLastChange();
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
 	}
@@ -192,17 +193,17 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 	}
 
 	@Override
-	public void addOrUpdateTurnout(Turnout turnout) {
+	public void addOrUpdateTurnout(final Turnout turnout) {
 		turnoutControl.removeTurnout(getSRCPTurnout(turnout));
-		SRCPTurnout sTurnout = createSRCPTurnout(turnout);
+		final SRCPTurnout sTurnout = createSRCPTurnout(turnout);
 
 		turnoutsSRCPTurnoutsMap.put(turnout, sTurnout);
 		SRCPTurnoutsTurnoutsMap.put(sTurnout, turnout);
 		turnoutControl.addTurnout(sTurnout);
 	}
 
-	SRCPTurnout createSRCPTurnout(Turnout turnout) {
-		SRCPTurnout sTurnout = new MMTurnout();
+	SRCPTurnout createSRCPTurnout(final Turnout turnout) {
+		final SRCPTurnout sTurnout = new MMTurnout();
 		sTurnout.setBus1(turnout.getBus1());
 		sTurnout.setBus2(turnout.getBus2());
 
@@ -241,14 +242,14 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 			sTurnout.setTurnoutType(SRCPTurnoutTypes.THREEWAY);
 			break;
 		default:
-			sTurnout.setTurnoutType(SRCPTurnoutTypes.UNKNOWN);
+			sTurnout.setTurnoutType(SRCPTurnoutTypes.DEFAULT);
 		}
 		return sTurnout;
 	}
 
 	@Override
-	public void addTurnoutChangeListener(Turnout turnout,
-			TurnoutChangeListener listener) {
+	public void addTurnoutChangeListener(final Turnout turnout,
+			final TurnoutChangeListener listener) {
 		listeners.add(listener);
 	}
 
@@ -258,24 +259,24 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 	}
 
 	@Override
-	public void removeTurnoutChangeListener(Turnout turnout) {
+	public void removeTurnoutChangeListener(final Turnout turnout) {
 		// SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
 		// listeners.remove(sTurnout);
 	}
 
 	@Override
-	public void removeTurnoutChangeListener(TurnoutChangeListener listener) {
+	public void removeTurnoutChangeListener(final TurnoutChangeListener listener) {
 		// listeners.keySet().remove(listener);
 		listeners.remove(listener);
 	}
 
 	@Override
-	public void turnoutChanged(SRCPTurnout changedTurnout,
-			SRCPTurnoutState newState) {
+	public void turnoutChanged(final SRCPTurnout changedTurnout,
+			final SRCPTurnoutState newState) {
 		informListeners(changedTurnout);
 	}
 
-	private void informListeners(SRCPTurnout changedTurnout) {
+	private void informListeners(final SRCPTurnout changedTurnout) {
 		// List<TurnoutChangeListener> ll = listeners.get(changedTurnout);
 		// if (ll == null)
 		// its a sub-turnout of a threeway turnout
@@ -285,18 +286,18 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 		if (turnout == null) {
 			turnout = turnoutTemp;
 		}
-		for (TurnoutChangeListener scl : listeners) {
+		for (final TurnoutChangeListener scl : listeners) {
 			scl.turnoutChanged(turnout, changedTurnout.getTurnoutState());
 		}
 		logger.debug("turnoutChanged(" + changedTurnout + ")");
 
 	}
 
-	public void setSession(SRCPSession session) {
+	public void setSession(final SRCPSession session) {
 		turnoutControl.setSession(session);
 	}
 
-	public SRCPTurnout getSRCPTurnout(Turnout turnout) {
+	public SRCPTurnout getSRCPTurnout(final Turnout turnout) {
 		return turnoutsSRCPTurnoutsMap.get(turnout);
 	}
 }
