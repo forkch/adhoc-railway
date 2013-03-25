@@ -18,12 +18,9 @@
 #include "booster.h"
 
 uint8_t parse_ib_cmd(char* cmd) {
-	char cmdCopy[64];
-	//char* token;
 	char delimiter[] = " ,";
 	char **tokens;
 	int count = 0;
-	strcpy(cmdCopy, cmd);
 
 	for (int i = 0; i < strlen(cmd); i++) {
 		if (cmd[i] == ',' || cmd[i] == ' ')
@@ -296,7 +293,7 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 	locoData[t].active = 1;
 	locoData[t].refreshState = 0;
 
-	// RichtungsŠnderung nur wenn letzter Speed == 0
+	// Richtungsï¿½nderung nur wenn letzter Speed == 0
 	if ((direction != locoData[t].direction) && (locoData[t].numericSpeed == 0)) {
 		locoData[t].encodedSpeed = mmChangeDirection;
 		locoData[t].deltaSpeed = mmChangeDirection;

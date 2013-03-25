@@ -117,7 +117,7 @@ int main() {
 			processASCIIData(cmd);
 		}
 
-		//Verzšgerung Weichen-Deaktivierung in 13ms-Schritten
+		//Verzï¿½gerung Weichen-Deaktivierung in 13ms-Schritten
 #ifdef AUTO_SOLENOID
 		if (timer0_interrupt > 40) {
 #else
@@ -140,7 +140,6 @@ int main() {
 					solenoidToDeactivate = i;
 					break;
 				}
-
 			}
 		}
 
@@ -629,7 +628,7 @@ ISR( TIMER0_OVF_vect) {
 }
 
 #ifdef AUTO_SOLENOID
-// Timer2 fŸr AutoSolenoid
+// Timer2 fï¿½r AutoSolenoid
 ISR( TIMER2_COMPA_vect){
 	timer2_interrupt++;
 	if (timer2_interrupt == 250) {

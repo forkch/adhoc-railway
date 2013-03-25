@@ -17,7 +17,7 @@
 //Ausgabe der Zustand der Booster auf die Debug-LEDs
 #define DEBUG_BOOSTER_STATE
 
-//Beim Init werden alle Loks gestoppt und die Funktionen zurŸckgesetzt
+//Beim Init werden alle Loks gestoppt und die Funktionen zurï¿½ckgesetzt
 //#define SEND_STOP_ALL_LOCO_ON_INIT
 
 //damit DeltaLocos mit im Decoder gespeichertem Speed beim Starten gestoppt werden
@@ -50,22 +50,22 @@ extern unsigned char debugLevel;
 #define MM_PACKET_LENGTH 18
 
 // LOCO
-#define MM_INTER_PACKET_PAUSE_LOCO 7				// 7  Packets @Loco => 1.414ms (1 Packet => 1 Trit => 202µs)
-#define MM_INTER_DOUBLE_PACKET_PAUSE_LOCO 5 		// 5  Packets @Loco => 1.010ms (1 Packet => 1 Trit => 202µs)
+#define MM_INTER_PACKET_PAUSE_LOCO 7				// 7  Packets @Loco => 1.414ms (1 Packet => 1 Trit => 202ï¿½s)
+#define MM_INTER_DOUBLE_PACKET_PAUSE_LOCO 5 		// 5  Packets @Loco => 1.010ms (1 Packet => 1 Trit => 202ï¿½s)
 #define MM_DOUBLE_PACKET_LENGTH_LOCO (2*MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE_LOCO)
 #define MM_COMMAND_LENGTH_LOCO (MM_DOUBLE_PACKET_LENGTH_LOCO + MM_INTER_DOUBLE_PACKET_PAUSE_LOCO)
 #define LOCOCMD_REPETITIONS 2
 #define NEW_LOCOCMD_REPETITIONS 6					// MAX LOCO COMMAND LENGTH => (((2*18)+7)+5)*6 = 288 PACKETS
 
 // SOLENOID
-#define MM_INTER_PACKET_PAUSE_SOLENOID 8			//  8 Packets @Solenoid => 0.792ms (1 Packet => 1 Trit => 99µs)
-#define MM_INTER_DOUBLE_PACKET_PAUSE_SOLENOID 15 	// 15 Packets @Solenoid => 1.485ms (1 Packet => 1 Trit => 99µs)
-#define MM_END_PAUSE_SOLENOID 26					// 26 Packets @Solenoid => 2.574ms (1 Packet => 1 Trit => 99µs)
+#define MM_INTER_PACKET_PAUSE_SOLENOID 8			//  8 Packets @Solenoid => 0.792ms (1 Packet => 1 Trit => 99ï¿½s)
+#define MM_INTER_DOUBLE_PACKET_PAUSE_SOLENOID 15 	// 15 Packets @Solenoid => 1.485ms (1 Packet => 1 Trit => 99ï¿½s)
+#define MM_END_PAUSE_SOLENOID 26					// 26 Packets @Solenoid => 2.574ms (1 Packet => 1 Trit => 99ï¿½s)
 #define MM_DOUBLE_PACKET_LENGTH_SOLENOID (2*MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE_SOLENOID)
 #define MM_COMMAND_LENGTH_SOLENOID (MM_DOUBLE_PACKET_LENGTH_SOLENOID + MM_INTER_DOUBLE_PACKET_PAUSE_SOLENOID)
 #define SOLENOIDCMD_REPETITIONS 2					// MAX SOLENOID COMMAND LENGHT => ((((2*18)+8)+15)*2)+26 = 144 Packets
 
-// ACHTUNG: Die LŠnge der Queue wird in der main.h  bestimmt. Je nach Definition der Packet-Parameter muss die Definition geŠndert werden.
+// ACHTUNG: Die Lï¿½nge der Queue wird in der main.h  bestimmt. Je nach Definition der Packet-Parameter muss die Definition geï¿½ndert werden.
 
 typedef struct LocoData {
 	unsigned char address;
