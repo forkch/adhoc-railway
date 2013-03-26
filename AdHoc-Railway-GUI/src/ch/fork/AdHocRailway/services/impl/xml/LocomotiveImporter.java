@@ -52,7 +52,6 @@ public class LocomotiveImporter implements LocomotiveManagerListener {
 
 	@Override
 	public void locomotiveUpdated(final Locomotive locomotive) {
-		// TODO Auto-generated method stub
 
 	}
 

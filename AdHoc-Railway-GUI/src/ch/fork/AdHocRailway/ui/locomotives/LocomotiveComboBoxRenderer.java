@@ -1,39 +1,53 @@
 package ch.fork.AdHocRailway.ui.locomotives;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 
-import javax.swing.ImageIcon;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
+
+import org.apache.commons.lang3.StringUtils;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
-public class LocomotiveComboBoxRenderer extends JLabel implements
+public class LocomotiveComboBoxRenderer extends JPanel implements
 		ListCellRenderer<Locomotive> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4561005713259042914L;
+	private final JLabel textLabel;
+	private final JLabel iconLabel;
 
 	public LocomotiveComboBoxRenderer() {
 		setOpaque(true);
-		setHorizontalAlignment(CENTER);
-		setVerticalAlignment(CENTER);
+		setLayout(new BorderLayout(3, 3));
+		setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+		textLabel = new JLabel();
+		iconLabel = new JLabel();
+		iconLabel.setHorizontalAlignment(JLabel.CENTER);
+
+		add(textLabel, BorderLayout.NORTH);
+		add(iconLabel, BorderLayout.SOUTH);
+
 	}
 
 	@Override
 	public Component getListCellRendererComponent(
-			JList<? extends Locomotive> list, Locomotive locomotive, int index,
-			boolean isSelected, boolean cellHasFocus) {
+			final JList<? extends Locomotive> list,
+			final Locomotive locomotive, final int index,
+			final boolean isSelected, final boolean cellHasFocus) {
 
+		textLabel.setText("");
+		iconLabel.setIcon(null);
 		if (locomotive == null) {
 			return this;
 		}
-		// Get the selected index. (The index param isn't
-		// always valid, so just use the value.)
 
 		if (isSelected) {
 			setBackground(list.getSelectionBackground());
@@ -45,15 +59,13 @@ public class LocomotiveComboBoxRenderer extends JLabel implements
 
 		// Set the icon and text. If icon was null, say so.
 		// setLocomotiveImage(locomotive);
-		setText(locomotive.getName());
+		textLabel.setText(locomotive.getName());
+		if (StringUtils.isNotBlank(locomotive.getImage())) {
+			iconLabel.setIcon(ImageTools.getLocomotiveIcon(locomotive, 100));
+		}
 
 		return this;
 
-	}
-
-	public void setLocomotiveImage(Locomotive locomotive) {
-		ImageIcon icon = ImageTools.getLocomotiveIcon(locomotive);
-		setIcon(icon);
 	}
 
 }

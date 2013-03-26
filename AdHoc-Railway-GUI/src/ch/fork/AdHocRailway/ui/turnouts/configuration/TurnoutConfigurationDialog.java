@@ -24,6 +24,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
@@ -99,6 +101,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	private com.jgoodies.common.collect.ArrayListModel<Turnout> turnouts;
 	private final TurnoutManager turnoutPersistence = AdHocRailway
 			.getInstance().getTurnoutPersistence();
+
+	private SelectionInList<Turnout> turnoutModel;
 
 	public TurnoutConfigurationDialog(final JFrame owner) {
 		super(owner, "Turnout Configuration", true);
@@ -180,14 +184,14 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		removeGroupButton = new JButton(new RemoveTurnoutGroupAction());
 
 		turnouts = new ArrayListModel<Turnout>();
-		final SelectionInList<Turnout> turnoutModel = new SelectionInList<Turnout>();
+		turnoutModel = new SelectionInList<Turnout>();
 
 		turnoutModel.setList(turnouts);
 		turnoutsTable = new JTable();
 		turnoutsTable.setModel(new TurnoutTableModel(turnoutModel));
 
 		turnoutsTable
-				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		turnoutsTable.getInputMap().put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "deleteTurnout");
@@ -438,20 +442,30 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 
-			turnoutGroupModel.getSelection();
 			final int[] rows = turnoutsTable.getSelectedRows();
-			final int[] numbers = new int[rows.length];
-			int i = 0;
-			for (final int row : rows) {
-				numbers[i] = (Integer) turnoutsTable.getValueAt(row, 0);
-				i++;
+			if (rows.length == 0) {
+				JOptionPane.showMessageDialog(TurnoutConfigurationDialog.this,
+						"Please select a turnout", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
 			}
-			for (final int number : numbers) {
-				final Turnout turnoutByNumber = turnoutPersistence
-						.getTurnoutByNumber(number);
-				turnoutPersistence.removeTurnout(turnoutByNumber);
+
+			final int response = JOptionPane.showConfirmDialog(
+					TurnoutConfigurationDialog.this,
+					"Really remove turnouts(s) ?", "Remove turnout(s)",
+					JOptionPane.YES_NO_OPTION);
+
+			if (response == JOptionPane.YES_OPTION) {
+				final Set<Turnout> turnoutsToRemove = new HashSet<Turnout>();
+				for (final int row : rows) {
+
+					turnoutsToRemove.add(turnoutModel.getElementAt(row));
+				}
+				for (final Turnout turnout : turnoutsToRemove) {
+					turnoutPersistence.removeTurnout(turnout);
+				}
+				turnoutsTable.clearSelection();
 			}
-			turnoutsTable.clearSelection();
 		}
 	}
 
@@ -530,4 +544,5 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	public void failure(final TurnoutManagerException arg0) {
 
 	}
+
 }

@@ -294,4 +294,5 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 		locomotiveService.disconnect();
 		locomotivesUpdated(new TreeSet<LocomotiveGroup>());
 	}
+
 }

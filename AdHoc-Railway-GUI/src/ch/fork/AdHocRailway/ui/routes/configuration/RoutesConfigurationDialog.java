@@ -23,6 +23,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
@@ -170,11 +172,13 @@ public class RoutesConfigurationDialog extends JDialog implements
 		removeRouteGroupButton = new JButton(new RemoveRouteGroupAction());
 
 		routes = new ArrayListModel<Route>();
-		final SelectionInList<Route> routesModel = new SelectionInList<Route>();
+		routesModel = new SelectionInList<Route>();
 		routesModel.setList(routes);
 		routesList = new JList<Object>();
 		routesList.setModel(routesModel);
-		routesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		routesList
+				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
 		routesList.setCellRenderer(new RouteListCellRenderer());
 
 		addRouteButton = new JButton(new AddRouteAction());
@@ -411,10 +415,6 @@ public class RoutesConfigurationDialog extends JDialog implements
 		}
 	}
 
-	public boolean isOkPressed() {
-		return okPressed;
-	}
-
 	private class AddRouteAction extends AbstractAction {
 
 		/**
@@ -500,19 +500,25 @@ public class RoutesConfigurationDialog extends JDialog implements
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			final Route routeToDelete = routesModel.getSelection();
-			if (routeToDelete == null) {
+			final int[] rows = routesList.getSelectedIndices();
+			if (rows.length == 0) {
 				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
 						"Please select a route", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			final int response = JOptionPane.showConfirmDialog(
-					RoutesConfigurationDialog.this, "Really remove Route '"
-							+ routeToDelete.getName() + "' ?", "Remove Route",
-					JOptionPane.YES_NO_OPTION);
+					RoutesConfigurationDialog.this, "Really remove route(s) ?",
+					"Remove route(s)", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
-				routePersistence.removeRoute(routeToDelete);
+				final Set<Route> routesToRemove = new HashSet<Route>();
+				for (final int row : rows) {
+					routesToRemove.add(routesModel.getElementAt(row));
+				}
+				for (final Route route : routesToRemove) {
+					routePersistence.removeRoute(route);
+				}
+				routesList.clearSelection();
 			}
 		}
 	}

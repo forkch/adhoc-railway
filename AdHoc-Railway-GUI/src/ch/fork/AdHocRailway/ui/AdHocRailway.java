@@ -78,6 +78,8 @@ import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerImpl;
+import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
+import ch.fork.AdHocRailway.services.impl.socketio.ServiceListener;
 import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
@@ -173,10 +175,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private JPanel mainPanel;
 	private JPanel toolbarPanel;
-	public File actualFile;
+	private File actualFile;
 	private RouteManager routePersistence;
 	private JProgressBar progressBar;
-	public boolean fileMode;
+	private boolean fileMode;
 	private PowerControlPanel powerControlPanel;
 
 	private JMenuItem saveItem;
@@ -208,18 +210,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 			loadControlLayer();
 
-			SwingUtilities.invokeLater(new Runnable() {
-
-				@Override
-				public void run() {
-					loadPersistenceLayer();
-
-				}
-			});
+			loadPersistenceLayer();
 
 			initProceeded("Creating GUI ...");
-			initGUI();
 
+			initGUI();
 			disableEnableMenuItems();
 			LOGGER.info("Finished Creating GUI");
 			splash.setVisible(false);
@@ -239,21 +234,116 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			}
 
 			setSize(1200, 1024);
-			// pack();
-			// toFront();
-			// TutorialUtils.locateOnOpticalScreenCenter(this);
+			pack();
 
-			initProceeded("RailControl started");
-			updateCommandHistory("RailControl started");
+			initProceeded("AdHoc-Railway started");
+			updateCommandHistory("AdHoc-Railway started");
 			setVisible(true);
 		} catch (final UnsupportedLookAndFeelException e) {
-			// logger.error(e.getMessage(), e);
 			ExceptionProcessor.getInstance().processException(e);
 		}
 	}
 
 	public static AdHocRailway getInstance() {
 		return instance;
+	}
+
+	public void saveActualFile() {
+		if (fileMode) {
+			saveFile(AdHocRailway.this.actualFile);
+		}
+	}
+
+	public void addMenu(final JMenu menu) {
+		menuBar.add(menu);
+	}
+
+	public void addToolBar(final JToolBar toolbar) {
+		toolbarPanel.add(toolbar);
+	}
+
+	public void updateCommandHistory(final String text) {
+		final DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
+		final String date = df.format(Calendar.getInstance().getTime());
+		final String fullText = "[" + date + "]: " + text;
+		SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
+	}
+
+	public void handleException(final Exception ex) {
+		final ExceptionProcessor instance2 = ExceptionProcessor.getInstance();
+		if (instance2 != null) {
+			instance2.processException(ex);
+		}
+	}
+
+	public LocomotiveControlface getLocomotiveControl() {
+		return locomotiveControl;
+	}
+
+	public void setLocomotiveControl(
+			final LocomotiveControlface locomotiveControl) {
+		this.locomotiveControl = locomotiveControl;
+	}
+
+	public TurnoutControlIface getTurnoutControl() {
+		return turnoutControl;
+	}
+
+	public TurnoutManager getTurnoutPersistence() {
+		return turnoutPersistence;
+	}
+
+	public LocomotiveManager getLocomotivePersistence() {
+		return locomotivePersistence;
+	}
+
+	public RouteControlIface getRouteControl() {
+		return routeControl;
+	}
+
+	public Preferences getPreferences() {
+		return preferences;
+	}
+
+	public SRCPSession getSession() {
+		return session;
+	}
+
+	public RouteManager getRoutePersistence() {
+		return routePersistence;
+	}
+
+	public void registerEscapeKey(final Action action) {
+		final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+		final JRootPane rootPane = getRootPane();
+		rootPane.registerKeyboardAction(action, stroke,
+				JComponent.WHEN_IN_FOCUSED_WINDOW);
+	}
+
+	@Override
+	public void commandDataReceived(final String response) {
+
+	}
+
+	@Override
+	public void infoDataSent(final String infoData) {
+
+	}
+
+	@Override
+	public void commandDataSent(final String commandData) {
+		if (preferences.getBooleanValue(LOGGING)) {
+			updateCommandHistory("To Server: " + commandData);
+		}
+		LOGGER.info("To Server: " + commandData.trim());
+	}
+
+	@Override
+	public void infoDataReceived(final String infoData) {
+		if (preferences.getBooleanValue(LOGGING)) {
+			updateCommandHistory("From Server: " + infoData);
+		}
+		LOGGER.info("From Server: " + infoData.trim());
 	}
 
 	private void loadControlLayer() {
@@ -270,59 +360,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		initProceeded("Loading Control Layer (Locks)");
 		lockControl = SRCPLockControl.getInstance();
-	}
-
-	private void loadPersistenceLayer() {
-		final boolean useAdHocServer = preferences
-				.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER);
-
-		initProceeded("Loading Persistence Layer (Locomotives)");
-		locomotivePersistence = LocomotiveManagerImpl.getInstance();
-		locomotivePersistence.setLocomotiveControl(getLocomotiveControl());
-		if (useAdHocServer) {
-			locomotivePersistence.setLocomotiveService(SIOLocomotiveService
-					.getInstance());
-		} else {
-			locomotivePersistence.setLocomotiveService(XMLLocomotiveService
-					.getInstance());
-		}
-		locomotivePersistence.initialize();
-
-		initProceeded("Loading Persistence Layer (Turnouts)");
-		turnoutPersistence = TurnoutManagerImpl.getInstance();
-		turnoutPersistence.setTurnoutControl(getTurnoutControl());
-		if (useAdHocServer) {
-			turnoutPersistence.setTurnoutService(SIOTurnoutService
-					.getInstance());
-		} else {
-			turnoutPersistence.setTurnoutService(XMLTurnoutService
-					.getInstance());
-		}
-		turnoutPersistence.initialize();
-
-		initProceeded("Loading Persistence Layer (Routes)");
-		routePersistence = RouteManagerImpl.getInstance();
-		routePersistence.setRouteControl(getRouteControl());
-		if (useAdHocServer) {
-			routePersistence.setRouteService(SIORouteService.getInstance());
-		} else {
-			routePersistence.setRouteService(XMLRouteService.getInstance());
-		}
-		routePersistence.initialize();
-
-		if (useAdHocServer) {
-			final String host = preferences
-					.getStringValue(PreferencesKeys.ADHOC_SERVER_HOSTNAME)
-					+ preferences
-							.getStringValue(PreferencesKeys.ADHOC_SERVER_PORT);
-			final String collection = preferences
-					.getStringValue(PreferencesKeys.ADHOC_SERVER_COLLECTION);
-			final String url = "adhocserver://" + host + "/" + collection;
-			setTitle(AdHocRailway.TITLE + " [" + url + "]");
-
-			updateCommandHistory("Successfully connected to database: " + url);
-
-		}
 	}
 
 	private void initGUI() {
@@ -361,10 +398,91 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				.getStringValue(PreferencesKeys.SRCP_HOSTNAME));
 	}
 
-	public void updateGUI() {
-		updatePower();
+	private void updateGUI() {
 		disableNavigationKeys(mainPanel);
 		mainPanel.requestFocus();
+	}
+
+	private void loadPersistenceLayer() {
+
+		final boolean useAdHocServer = preferences
+				.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER);
+
+		initProceeded("Loading Persistence Layer (Locomotives)");
+		locomotivePersistence = LocomotiveManagerImpl.getInstance();
+		locomotivePersistence.setLocomotiveControl(getLocomotiveControl());
+		if (useAdHocServer) {
+			locomotivePersistence.setLocomotiveService(SIOLocomotiveService
+					.getInstance());
+		} else {
+			locomotivePersistence.setLocomotiveService(XMLLocomotiveService
+					.getInstance());
+		}
+
+		locomotivePersistence.initialize();
+
+		initProceeded("Loading Persistence Layer (Turnouts)");
+		turnoutPersistence = TurnoutManagerImpl.getInstance();
+		turnoutPersistence.setTurnoutControl(getTurnoutControl());
+		if (useAdHocServer) {
+			turnoutPersistence.setTurnoutService(SIOTurnoutService
+					.getInstance());
+		} else {
+			turnoutPersistence.setTurnoutService(XMLTurnoutService
+					.getInstance());
+		}
+		turnoutPersistence.initialize();
+
+		initProceeded("Loading Persistence Layer (Routes)");
+		routePersistence = RouteManagerImpl.getInstance();
+		routePersistence.setRouteControl(getRouteControl());
+		if (useAdHocServer) {
+			routePersistence.setRouteService(SIORouteService.getInstance());
+		} else {
+			routePersistence.setRouteService(XMLRouteService.getInstance());
+		}
+		routePersistence.initialize();
+
+		if (useAdHocServer) {
+
+			SIOService.getInstance().connect(new ServiceListener() {
+
+				@Override
+				public void disconnected() {
+					updateCommandHistory("Successfully connected to AdHoc-Server");
+				}
+
+				@Override
+				public void connectionError(final Exception ex) {
+					updateCommandHistory("Connection error: " + ex.getMessage());
+					handleException(ex);
+				}
+
+				@Override
+				public void connected() {
+					final String host = preferences
+							.getStringValue(PreferencesKeys.ADHOC_SERVER_HOSTNAME)
+							+ preferences
+									.getStringValue(PreferencesKeys.ADHOC_SERVER_PORT);
+					final String collection = preferences
+							.getStringValue(PreferencesKeys.ADHOC_SERVER_COLLECTION);
+					final String url = "adhocserver://" + host + "/"
+							+ collection;
+					setTitle(AdHocRailway.TITLE + " [" + url + "]");
+
+					updateCommandHistory("Successfully connected to AdHoc-Server: "
+							+ url);
+
+				}
+			});
+
+		}
+	}
+
+	private void disconnectFromCurrentPersistence() {
+		turnoutPersistence.disconnect();
+		routePersistence.disconnect();
+		locomotivePersistence.disconnect();
 	}
 
 	private void disableNavigationKeys(final Component comp) {
@@ -381,33 +499,272 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		powerControlPanel.update();
 	}
 
-	@Override
-	public void commandDataSent(final String commandData) {
-		if (preferences.getBooleanValue(LOGGING)) {
-			// updateCommandHistory("To Server: " + commandData);
-		}
-		// logger.info("To Server: " + commandData.trim());
-	}
-
-	@Override
-	public void infoDataReceived(final String infoData) {
-		if (preferences.getBooleanValue(LOGGING)) {
-			// updateCommandHistory("From Server: " + infoData);
-		}
-		// logger.info("From Server: " + infoData.trim());
-	}
-
-	public void updateCommandHistory(final String text) {
-		final DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
-		final String date = df.format(Calendar.getInstance().getTime());
-		final String fullText = "[" + date + "]: " + text;
-		SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
-
-	}
-
 	private void initProceeded(final String message) {
 		// logger.info(message);
 		splash.nextStep(message);
+	}
+
+	private void switchToFileMode() {
+		fileMode = true;
+		preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, false);
+		try {
+			preferences.save();
+		} catch (final IOException e) {
+			ExceptionProcessor.getInstance().processException(e);
+		}
+	}
+
+	private void switchToServerMode() {
+		fileMode = false;
+		preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, true);
+		try {
+			preferences.save();
+		} catch (final IOException e) {
+			ExceptionProcessor.getInstance().processException(e);
+		}
+	}
+
+	private void disableEnableMenuItems() {
+		saveAsItem.setEnabled(fileMode);
+		saveItem.setEnabled(fileMode);
+
+	}
+
+	private void saveFile(final File file) {
+		try {
+			XMLService.getInstance().saveToFile(file);
+		} catch (final IOException e) {
+
+			ExceptionProcessor.getInstance().processException(e);
+		}
+		updateCommandHistory("AdHoc-Railway Configuration saved (" + file + ")");
+	}
+
+	private void initMenu() {
+		menuBar = new JMenuBar();
+		/* FILE */
+		final JMenu fileMenu = new JMenu("File");
+		fileMenu.setMnemonic(KeyEvent.VK_F);
+
+		final JMenuItem newItem = new JMenuItem(new NewFileAction());
+		newItem.setMnemonic(KeyEvent.VK_N);
+		newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
+				ActionEvent.CTRL_MASK));
+
+		final JMenuItem openItem = new JMenuItem(new OpenFileAction());
+		openItem.setMnemonic(KeyEvent.VK_O);
+		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
+				ActionEvent.CTRL_MASK));
+
+		saveItem = new JMenuItem(new SaveAction());
+		saveItem.setMnemonic(KeyEvent.VK_S);
+		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+				ActionEvent.CTRL_MASK));
+
+		saveAsItem = new JMenuItem(new SaveAsAction());
+		saveAsItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+				ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
+
+		final JMenuItem importLocomotivesItem = new JMenuItem(
+				new ImportLocomotivesAction());
+		final JMenuItem exportLocomotivesItem = new JMenuItem(
+				new ExportLocomotivesAction());
+
+		new JMenuItem(new OpenDatabaseAction());
+
+		final JMenuItem exitItem = new JMenuItem(new ExitAction());
+		exitItem.setMnemonic(KeyEvent.VK_X);
+		exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
+				ActionEvent.CTRL_MASK));
+
+		final JMenu importMenu = new JMenu("Import");
+		final JMenu exportMenu = new JMenu("Export");
+		importMenu.add(importLocomotivesItem);
+		exportMenu.add(exportLocomotivesItem);
+
+		fileMenu.add(newItem);
+		fileMenu.add(openItem);
+		// fileMenu.add(openDatabaseItem);
+		fileMenu.add(saveItem);
+		fileMenu.add(saveAsItem);
+		fileMenu.add(new JSeparator());
+		// fileMenu.add(openDatabaseItem);
+		// fileMenu.add(new JSeparator());
+		fileMenu.add(importMenu);
+		fileMenu.add(exportMenu);
+		fileMenu.add(new JSeparator());
+		fileMenu.add(exitItem);
+
+		/* EDIT */
+		final JMenu editMenu = new JMenu("Edit");
+		final JMenuItem switchesItem = new JMenuItem(new TurnoutAction());
+		final JMenuItem routesItem = new JMenuItem(new RoutesAction());
+		final JMenuItem locomotivesItem = new JMenuItem(new LocomotivesAction());
+		final JMenuItem preferencesItem = new JMenuItem(new PreferencesAction());
+		editMenu.setMnemonic(KeyEvent.VK_E);
+		switchesItem.setMnemonic(KeyEvent.VK_S);
+		switchesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+				ActionEvent.ALT_MASK));
+		routesItem.setMnemonic(KeyEvent.VK_R);
+		routesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
+				ActionEvent.ALT_MASK));
+		locomotivesItem.setMnemonic(KeyEvent.VK_L);
+		locomotivesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L,
+				ActionEvent.ALT_MASK));
+		preferencesItem.setMnemonic(KeyEvent.VK_P);
+		preferencesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
+				ActionEvent.ALT_MASK));
+		editMenu.add(switchesItem);
+		editMenu.add(routesItem);
+		editMenu.add(locomotivesItem);
+		editMenu.add(new JSeparator());
+		editMenu.add(preferencesItem);
+
+		/* DAEMON */
+		final JMenu daemonMenu = new JMenu("Daemon");
+		daemonConnectItem = new JMenuItem(new ConnectAction());
+		daemonConnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
+				ActionEvent.CTRL_MASK));
+		daemonDisconnectItem = new JMenuItem(new DisconnectAction());
+		daemonPowerOnItem = new JMenuItem(new PowerOnAction());
+		assignAccelerator(daemonPowerOnItem, "PowerOn");
+		daemonPowerOnItem.setEnabled(true);
+		daemonPowerOffItem = new JMenuItem(new PowerOffAction());
+		assignAccelerator(daemonPowerOffItem, "PowerOff");
+		daemonPowerOffItem.setEnabled(true);
+		daemonResetItem = new JMenuItem(new ResetAction());
+		daemonDisconnectItem.setEnabled(false);
+		daemonResetItem.setEnabled(false);
+		daemonMenu.add(daemonConnectItem);
+		daemonMenu.add(daemonDisconnectItem);
+		daemonMenu.add(new JSeparator());
+		daemonMenu.add(daemonPowerOnItem);
+		daemonMenu.add(daemonPowerOffItem);
+		daemonMenu.add(new JSeparator());
+		daemonMenu.add(daemonResetItem);
+
+		/* VIEW */
+		final JMenu viewMenu = new JMenu("View");
+		final JMenuItem refreshItem = new JMenuItem(new RefreshAction());
+		final JMenuItem fullscreenItem = new JMenuItem(
+				new ToggleFullscreenAction());
+
+		viewMenu.add(refreshItem);
+		viewMenu.add(fullscreenItem);
+
+		/* HELP */
+		// JMenu helpMenu = new JMenu("Help");
+		addMenu(fileMenu);
+		addMenu(editMenu);
+		addMenu(daemonMenu);
+		addMenu(viewMenu);
+		// addMenu(helpMenu);
+		setJMenuBar(menuBar);
+	}
+
+	/**
+	 * 
+	 */
+	private void assignAccelerator(final JMenuItem item, final String actionName) {
+		final Set<KeyStroke> strokes = preferences.getKeyBoardLayout().getKeys(
+				actionName);
+		if (strokes != null && strokes.size() > 0) {
+			item.setAccelerator(strokes.iterator().next());
+		}
+	}
+
+	private void initToolbar() {
+		/* FILE */
+		final JToolBar fileToolBar = new JToolBar();
+
+		final JButton newFileToolBarButton = new SmallToolbarButton(
+				new NewFileAction());
+		final JButton openFileToolBarButton = new SmallToolbarButton(
+				new OpenFileAction());
+		final JButton openDatabaseToolBarButton = new SmallToolbarButton(
+				new OpenDatabaseAction());
+		final JButton saveToolBarButton = new SmallToolbarButton(
+				new SaveAction());
+		final JButton exitToolBarButton = new SmallToolbarButton(
+				new ExitAction());
+
+		fileToolBar.add(newFileToolBarButton);
+		fileToolBar.add(openFileToolBarButton);
+		fileToolBar.add(openDatabaseToolBarButton);
+		fileToolBar.add(saveToolBarButton);
+		fileToolBar.add(exitToolBarButton);
+
+		/* DIGITAL */
+		final JToolBar digitalToolBar = new JToolBar();
+		final JButton switchesToolBarButton = new SmallToolbarButton(
+				new TurnoutAction());
+		final JButton routesToolBarButton = new SmallToolbarButton(
+				new RoutesAction());
+		final JButton locomotivesToolBarButton = new SmallToolbarButton(
+				new LocomotivesAction());
+		final JButton preferencesToolBarButton = new SmallToolbarButton(
+				new PreferencesAction());
+
+		digitalToolBar.add(switchesToolBarButton);
+		digitalToolBar.add(routesToolBarButton);
+		digitalToolBar.add(locomotivesToolBarButton);
+		digitalToolBar.add(preferencesToolBarButton);
+
+		/* DAEMON */
+		final JToolBar daemonToolBar = new JToolBar();
+		hostnameLabel = new JLabel();
+		hostnameLabel.setText(preferences
+				.getStringValue(PreferencesKeys.SRCP_HOSTNAME));
+		connectToolBarButton = new SmallToolbarButton(new ConnectAction());
+		disconnectToolBarButton = new SmallToolbarButton(new DisconnectAction());
+		disconnectToolBarButton.setEnabled(false);
+
+		daemonToolBar.add(hostnameLabel);
+		daemonToolBar.addSeparator();
+		daemonToolBar.add(connectToolBarButton);
+		daemonToolBar.add(disconnectToolBarButton);
+
+		/* VIEWS */
+		final JToolBar viewToolBar = new JToolBar();
+		final JButton refreshButton = new SmallToolbarButton(
+				new RefreshAction());
+		// toggleFullscreenButton = new SmallToolbarButton(
+		// new ToggleFullscreenAction());
+
+		viewToolBar.add(refreshButton);
+		// viewToolBar.add(toggleFullscreenButton);
+
+		/* ERROR */
+		final ErrorPanel errorPanel = new ErrorPanel();
+		ExceptionProcessor.getInstance(errorPanel);
+
+		toolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
+		addToolBar(fileToolBar);
+		addToolBar(digitalToolBar);
+		addToolBar(daemonToolBar);
+		addToolBar(viewToolBar);
+		// toolbarPanel.add(errorPanel);
+
+		final JPanel toolbarErrorPanel = new JPanel(new BorderLayout(10, 10));
+		toolbarErrorPanel.add(toolbarPanel, BorderLayout.WEST);
+		toolbarErrorPanel.add(errorPanel, BorderLayout.EAST);
+
+		add(toolbarErrorPanel, BorderLayout.PAGE_START);
+	}
+
+	private JPanel initStatusBar() {
+		final JPanel statusBarPanel = new JPanel();
+		commandHistoryModel = new DefaultComboBoxModel<String>();
+		commandHistory = new JComboBox<String>(commandHistoryModel);
+		commandHistory.setEditable(false);
+		commandHistory.setFocusable(false);
+
+		progressBar = new JProgressBar(SwingConstants.HORIZONTAL);
+
+		statusBarPanel.setLayout(new BorderLayout(5, 0));
+		statusBarPanel.add(progressBar, BorderLayout.WEST);
+		statusBarPanel.add(commandHistory, BorderLayout.CENTER);
+		return statusBarPanel;
 	}
 
 	private class CommandHistoryUpdater implements Runnable {
@@ -747,9 +1104,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		public void actionPerformed(final ActionEvent e) {
 			final RoutesConfigurationDialog routesConfig = new RoutesConfigurationDialog(
 					AdHocRailway.this);
-			if (routesConfig.isOkPressed()) {
-				// updateCommandHistory("Routes configuration changed");
-			}
 		}
 	}
 
@@ -1027,343 +1381,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				fullscreen = true;
 			}
 		}
-	}
-
-	private void disconnectFromCurrentPersistence() {
-		turnoutPersistence.disconnect();
-		routePersistence.disconnect();
-		locomotivePersistence.disconnect();
-	}
-
-	private void switchToFileMode() {
-		fileMode = true;
-		preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, false);
-		try {
-			preferences.save();
-		} catch (final IOException e) {
-			ExceptionProcessor.getInstance().processException(e);
-		}
-	}
-
-	private void switchToServerMode() {
-		fileMode = false;
-		preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, true);
-		try {
-			preferences.save();
-		} catch (final IOException e) {
-			ExceptionProcessor.getInstance().processException(e);
-		}
-	}
-
-	private void disableEnableMenuItems() {
-		saveAsItem.setEnabled(fileMode);
-		saveItem.setEnabled(fileMode);
-
-	}
-
-	public void saveActualFile() {
-		if (fileMode) {
-			saveFile(AdHocRailway.this.actualFile);
-		}
-	}
-
-	private void saveFile(final File file) {
-		try {
-			XMLService.getInstance().saveToFile(file);
-		} catch (final IOException e) {
-
-			ExceptionProcessor.getInstance().processException(e);
-		}
-		updateCommandHistory("AdHoc-Railway Configuration saved (" + file + ")");
-	}
-
-	private void initMenu() {
-		menuBar = new JMenuBar();
-		/* FILE */
-		final JMenu fileMenu = new JMenu("File");
-		fileMenu.setMnemonic(KeyEvent.VK_F);
-
-		final JMenuItem newItem = new JMenuItem(new NewFileAction());
-		newItem.setMnemonic(KeyEvent.VK_N);
-		newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
-				ActionEvent.CTRL_MASK));
-
-		final JMenuItem openItem = new JMenuItem(new OpenFileAction());
-		openItem.setMnemonic(KeyEvent.VK_O);
-		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
-				ActionEvent.CTRL_MASK));
-
-		saveItem = new JMenuItem(new SaveAction());
-		saveItem.setMnemonic(KeyEvent.VK_S);
-		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-				ActionEvent.CTRL_MASK));
-
-		saveAsItem = new JMenuItem(new SaveAsAction());
-		saveAsItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-				ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
-
-		final JMenuItem importLocomotivesItem = new JMenuItem(
-				new ImportLocomotivesAction());
-		final JMenuItem exportLocomotivesItem = new JMenuItem(
-				new ExportLocomotivesAction());
-
-		new JMenuItem(new OpenDatabaseAction());
-
-		final JMenuItem exitItem = new JMenuItem(new ExitAction());
-		exitItem.setMnemonic(KeyEvent.VK_X);
-		exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-				ActionEvent.CTRL_MASK));
-
-		final JMenu importMenu = new JMenu("Import");
-		final JMenu exportMenu = new JMenu("Export");
-		importMenu.add(importLocomotivesItem);
-		exportMenu.add(exportLocomotivesItem);
-
-		fileMenu.add(newItem);
-		fileMenu.add(openItem);
-		// fileMenu.add(openDatabaseItem);
-		fileMenu.add(saveItem);
-		fileMenu.add(saveAsItem);
-		fileMenu.add(new JSeparator());
-		// fileMenu.add(openDatabaseItem);
-		// fileMenu.add(new JSeparator());
-		fileMenu.add(importMenu);
-		fileMenu.add(exportMenu);
-		fileMenu.add(new JSeparator());
-		fileMenu.add(exitItem);
-
-		/* EDIT */
-		final JMenu editMenu = new JMenu("Edit");
-		final JMenuItem switchesItem = new JMenuItem(new TurnoutAction());
-		final JMenuItem routesItem = new JMenuItem(new RoutesAction());
-		final JMenuItem locomotivesItem = new JMenuItem(new LocomotivesAction());
-		final JMenuItem preferencesItem = new JMenuItem(new PreferencesAction());
-		editMenu.setMnemonic(KeyEvent.VK_E);
-		switchesItem.setMnemonic(KeyEvent.VK_S);
-		switchesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-				ActionEvent.ALT_MASK));
-		routesItem.setMnemonic(KeyEvent.VK_R);
-		routesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
-				ActionEvent.ALT_MASK));
-		locomotivesItem.setMnemonic(KeyEvent.VK_L);
-		locomotivesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L,
-				ActionEvent.ALT_MASK));
-		preferencesItem.setMnemonic(KeyEvent.VK_P);
-		preferencesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
-				ActionEvent.ALT_MASK));
-		editMenu.add(switchesItem);
-		editMenu.add(routesItem);
-		editMenu.add(locomotivesItem);
-		editMenu.add(new JSeparator());
-		editMenu.add(preferencesItem);
-
-		/* DAEMON */
-		final JMenu daemonMenu = new JMenu("Daemon");
-		daemonConnectItem = new JMenuItem(new ConnectAction());
-		daemonConnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
-				ActionEvent.CTRL_MASK));
-		daemonDisconnectItem = new JMenuItem(new DisconnectAction());
-		daemonPowerOnItem = new JMenuItem(new PowerOnAction());
-		assignAccelerator(daemonPowerOnItem, "PowerOn");
-		daemonPowerOnItem.setEnabled(true);
-		daemonPowerOffItem = new JMenuItem(new PowerOffAction());
-		assignAccelerator(daemonPowerOffItem, "PowerOff");
-		daemonPowerOffItem.setEnabled(true);
-		daemonResetItem = new JMenuItem(new ResetAction());
-		daemonDisconnectItem.setEnabled(false);
-		daemonResetItem.setEnabled(false);
-		daemonMenu.add(daemonConnectItem);
-		daemonMenu.add(daemonDisconnectItem);
-		daemonMenu.add(new JSeparator());
-		daemonMenu.add(daemonPowerOnItem);
-		daemonMenu.add(daemonPowerOffItem);
-		daemonMenu.add(new JSeparator());
-		daemonMenu.add(daemonResetItem);
-
-		/* VIEW */
-		final JMenu viewMenu = new JMenu("View");
-		final JMenuItem refreshItem = new JMenuItem(new RefreshAction());
-		final JMenuItem fullscreenItem = new JMenuItem(
-				new ToggleFullscreenAction());
-
-		viewMenu.add(refreshItem);
-		viewMenu.add(fullscreenItem);
-
-		/* HELP */
-		// JMenu helpMenu = new JMenu("Help");
-		addMenu(fileMenu);
-		addMenu(editMenu);
-		addMenu(daemonMenu);
-		addMenu(viewMenu);
-		// addMenu(helpMenu);
-		setJMenuBar(menuBar);
-	}
-
-	/**
-     * 
-     */
-	private void assignAccelerator(final JMenuItem item, final String actionName) {
-		final Set<KeyStroke> strokes = preferences.getKeyBoardLayout().getKeys(
-				actionName);
-		if (strokes != null && strokes.size() > 0) {
-			item.setAccelerator(strokes.iterator().next());
-		}
-	}
-
-	public void addMenu(final JMenu menu) {
-		menuBar.add(menu);
-	}
-
-	private void initToolbar() {
-		/* FILE */
-		final JToolBar fileToolBar = new JToolBar();
-
-		final JButton newFileToolBarButton = new SmallToolbarButton(
-				new NewFileAction());
-		final JButton openFileToolBarButton = new SmallToolbarButton(
-				new OpenFileAction());
-		final JButton openDatabaseToolBarButton = new SmallToolbarButton(
-				new OpenDatabaseAction());
-		final JButton saveToolBarButton = new SmallToolbarButton(
-				new SaveAction());
-		final JButton exitToolBarButton = new SmallToolbarButton(
-				new ExitAction());
-
-		fileToolBar.add(newFileToolBarButton);
-		fileToolBar.add(openFileToolBarButton);
-		fileToolBar.add(openDatabaseToolBarButton);
-		fileToolBar.add(saveToolBarButton);
-		fileToolBar.add(exitToolBarButton);
-
-		/* DIGITAL */
-		final JToolBar digitalToolBar = new JToolBar();
-		final JButton switchesToolBarButton = new SmallToolbarButton(
-				new TurnoutAction());
-		final JButton routesToolBarButton = new SmallToolbarButton(
-				new RoutesAction());
-		final JButton locomotivesToolBarButton = new SmallToolbarButton(
-				new LocomotivesAction());
-		final JButton preferencesToolBarButton = new SmallToolbarButton(
-				new PreferencesAction());
-
-		digitalToolBar.add(switchesToolBarButton);
-		digitalToolBar.add(routesToolBarButton);
-		digitalToolBar.add(locomotivesToolBarButton);
-		digitalToolBar.add(preferencesToolBarButton);
-
-		/* DAEMON */
-		final JToolBar daemonToolBar = new JToolBar();
-		hostnameLabel = new JLabel();
-		hostnameLabel.setText(preferences
-				.getStringValue(PreferencesKeys.SRCP_HOSTNAME));
-		connectToolBarButton = new SmallToolbarButton(new ConnectAction());
-		disconnectToolBarButton = new SmallToolbarButton(new DisconnectAction());
-		disconnectToolBarButton.setEnabled(false);
-
-		daemonToolBar.add(hostnameLabel);
-		daemonToolBar.addSeparator();
-		daemonToolBar.add(connectToolBarButton);
-		daemonToolBar.add(disconnectToolBarButton);
-
-		/* VIEWS */
-		final JToolBar viewToolBar = new JToolBar();
-		final JButton refreshButton = new SmallToolbarButton(
-				new RefreshAction());
-		// toggleFullscreenButton = new SmallToolbarButton(
-		// new ToggleFullscreenAction());
-
-		viewToolBar.add(refreshButton);
-		// viewToolBar.add(toggleFullscreenButton);
-
-		/* ERROR */
-		final ErrorPanel errorPanel = new ErrorPanel();
-		ExceptionProcessor.getInstance(errorPanel);
-
-		toolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
-		addToolBar(fileToolBar);
-		addToolBar(digitalToolBar);
-		addToolBar(daemonToolBar);
-		addToolBar(viewToolBar);
-		// toolbarPanel.add(errorPanel);
-
-		final JPanel toolbarErrorPanel = new JPanel(new BorderLayout(10, 10));
-		toolbarErrorPanel.add(toolbarPanel, BorderLayout.WEST);
-		toolbarErrorPanel.add(errorPanel, BorderLayout.EAST);
-
-		add(toolbarErrorPanel, BorderLayout.PAGE_START);
-	}
-
-	public void addToolBar(final JToolBar toolbar) {
-		toolbarPanel.add(toolbar);
-	}
-
-	private JPanel initStatusBar() {
-		final JPanel statusBarPanel = new JPanel();
-		commandHistoryModel = new DefaultComboBoxModel<String>();
-		commandHistory = new JComboBox<String>(commandHistoryModel);
-		commandHistory.setEditable(false);
-		commandHistory.setFocusable(false);
-
-		progressBar = new JProgressBar(SwingConstants.HORIZONTAL);
-
-		statusBarPanel.setLayout(new BorderLayout(5, 0));
-		statusBarPanel.add(progressBar, BorderLayout.WEST);
-		statusBarPanel.add(commandHistory, BorderLayout.CENTER);
-		return statusBarPanel;
-	}
-
-	public LocomotiveControlface getLocomotiveControl() {
-		return locomotiveControl;
-	}
-
-	public void setLocomotiveControl(
-			final LocomotiveControlface locomotiveControl) {
-		this.locomotiveControl = locomotiveControl;
-	}
-
-	public TurnoutControlIface getTurnoutControl() {
-		return turnoutControl;
-	}
-
-	public TurnoutManager getTurnoutPersistence() {
-		return turnoutPersistence;
-	}
-
-	public LocomotiveManager getLocomotivePersistence() {
-		return locomotivePersistence;
-	}
-
-	public RouteControlIface getRouteControl() {
-		return routeControl;
-	}
-
-	public Preferences getPreferences() {
-		return preferences;
-	}
-
-	public SRCPSession getSession() {
-		return session;
-	}
-
-	public RouteManager getRoutePersistence() {
-		return routePersistence;
-	}
-
-	@Override
-	public void commandDataReceived(final String response) {
-
-	}
-
-	@Override
-	public void infoDataSent(final String infoData) {
-
-	}
-
-	public void registerEscapeKey(final Action action) {
-		final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-		final JRootPane rootPane = getRootPane();
-		rootPane.registerKeyboardAction(action, stroke,
-				JComponent.WHEN_IN_FOCUSED_WINDOW);
 	}
 
 	public static void main(final String[] args) {

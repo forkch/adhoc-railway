@@ -27,8 +27,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -39,6 +37,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
@@ -62,6 +61,7 @@ import ch.fork.AdHocRailway.ui.UIConstants;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.SpinnerAdapterFactory;
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -108,10 +108,17 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 	private JButton chooseImageButton;
 
 	private LocomotiveGroup selectedLocomotiveGroup;
+
+	private JTable functionsTable;
+
+	private ArrayListModel<LocomotiveFunction> functions;
+
 	private ErrorPanel errorPanel;
 
 	private final LocomotiveManager locomotivePersistence = AdHocRailway
 			.getInstance().getLocomotivePersistence();
+
+	private SelectionInList<LocomotiveFunction> functionsModel;
 
 	public LocomotiveConfig(final Frame owner, final Locomotive myLocomotive,
 			final LocomotiveGroup selectedLocomotiveGroup) {
@@ -208,6 +215,15 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 				.createComboBox(new SelectionInList<LocomotiveType>(
 						locomotiveTypes, locomotiveTypeModel));
 
+		functions = new ArrayListModel<LocomotiveFunction>(presentationModel
+				.getBean().getFunctions());
+		functionsTable = new JTable();
+		functionsModel = new SelectionInList<LocomotiveFunction>();
+		functionsModel.setList(functions);
+
+		functionsTable
+				.setModel(new LocomotiveFunctionTableModel(functionsModel));
+
 		errorPanel = new ErrorPanel();
 
 		validate(presentationModel.getBean(), null);
@@ -221,7 +237,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 		final FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow",
-				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 10dlu,p:grow");
+				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow");
 		layout.setColumnGroups(new int[][] { { 1, 5 }, { 3, 7 } });
 		layout.setRowGroups(new int[][] { { 3, 5, 7, 9 } });
 
@@ -256,8 +272,11 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		builder.addLabel("Address 2", cc.xy(5, 7));
 		builder.add(address2Spinner, cc.xy(7, 7));
 
-		builder.add(errorPanel, cc.xyw(1, 13, 7));
-		builder.add(buildButtonBar(), cc.xyw(1, 11, 7));
+		builder.add(functionsTable, cc.xywh(5, 9, 3, 3));
+
+		builder.add(errorPanel, cc.xyw(1, 13, 3));
+
+		builder.add(buildButtonBar(), cc.xyw(5, 13, 3));
 
 		add(builder.getPanel());
 	}
@@ -353,10 +372,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		}
 	}
 
-	public boolean isCancelPressed() {
-		return cancelPressed;
-	}
-
 	@Override
 	public void propertyChange(final PropertyChangeEvent event) {
 		final Locomotive locomotive = presentationModel.getBean();
@@ -374,37 +389,21 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private void initializeFunctions(final Locomotive locomotive) {
 
-		final SortedSet<LocomotiveFunction> newFunctions = new TreeSet<LocomotiveFunction>();
-
-		final LocomotiveFunction fn = new LocomotiveFunction(0, "F", false);
-		newFunctions.add(fn);
 		switch (locomotive.getType()) {
 		case DELTA:
+			locomotive.setFunctions(Locomotive.DELTA_FUNCTIONS);
+			break;
+		case DIGITAL:
+			locomotive.setFunctions(Locomotive.DIGITAL_FUNCTIONS);
 			break;
 		case SIMULATED_MFX:
-			final LocomotiveFunction f5 = new LocomotiveFunction(5, "F5", false);
-			final LocomotiveFunction f6 = new LocomotiveFunction(6, "F6", false);
-			final LocomotiveFunction f7 = new LocomotiveFunction(7, "F7", false);
-			final LocomotiveFunction f8 = new LocomotiveFunction(8, "F8", false);
-			newFunctions.add(f5);
-			newFunctions.add(f6);
-			newFunctions.add(f7);
-			newFunctions.add(f8);
-		case DIGITAL:
-			final LocomotiveFunction f1 = new LocomotiveFunction(1, "F1", false);
-			final LocomotiveFunction f2 = new LocomotiveFunction(2, "F2", false);
-			final LocomotiveFunction f3 = new LocomotiveFunction(3, "F3", false);
-			final LocomotiveFunction f4 = new LocomotiveFunction(4, "F4", false);
-			newFunctions.add(f1);
-			newFunctions.add(f2);
-			newFunctions.add(f3);
-			newFunctions.add(f4);
+			locomotive.setFunctions(Locomotive.SIMULATED_MFX_FUNCTIONS);
 			break;
 		default:
 			break;
+
 		}
 
-		locomotive.setFunctions(newFunctions);
 	}
 
 	private boolean validate(final Locomotive locomotive,

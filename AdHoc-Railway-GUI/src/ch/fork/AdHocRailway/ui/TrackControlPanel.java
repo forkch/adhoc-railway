@@ -40,9 +40,9 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	 */
 	private static final long serialVersionUID = -3165655530717661123L;
 
-	private JTabbedPane routeGroupsTabbedPane;
+	private RouteGroupsPanel routeGroupsTabbedPane;
 
-	private JTabbedPane turnoutGroupsTabbedPane;
+	private TurnoutGroupsPanel turnoutGroupsTabbedPane;
 
 	private final Preferences preferences = Preferences.getInstance();
 

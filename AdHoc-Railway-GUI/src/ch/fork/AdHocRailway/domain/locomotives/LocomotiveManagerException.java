@@ -18,7 +18,9 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
-public class LocomotiveManagerException extends RuntimeException {
+import ch.fork.AdHocRailway.domain.ManagerException;
+
+public class LocomotiveManagerException extends ManagerException {
 
 	/**
 	 * 
@@ -28,15 +30,16 @@ public class LocomotiveManagerException extends RuntimeException {
 	public LocomotiveManagerException() {
 	}
 
-	public LocomotiveManagerException(String message) {
+	public LocomotiveManagerException(final String message) {
 		super(message);
 	}
 
-	public LocomotiveManagerException(Throwable cause) {
+	public LocomotiveManagerException(final Throwable cause) {
 		super(cause);
 	}
 
-	public LocomotiveManagerException(String message, Throwable cause) {
+	public LocomotiveManagerException(final String message,
+			final Throwable cause) {
 		super(message, cause);
 	}
 

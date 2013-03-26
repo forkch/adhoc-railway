@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -63,6 +64,27 @@ public class Locomotive extends Model implements Serializable,
 	public static final String PROPERTYNAME_ADDRESS1 = "address1";
 	public static final String PROPERTYNAME_ADDRESS2 = "address2";
 	public static final String PROPERTYNAME_BUS = "bus";
+
+	public static final SortedSet<LocomotiveFunction> DELTA_FUNCTIONS = new TreeSet<LocomotiveFunction>();
+	public static final SortedSet<LocomotiveFunction> DIGITAL_FUNCTIONS = new TreeSet<LocomotiveFunction>();
+	public static final SortedSet<LocomotiveFunction> SIMULATED_MFX_FUNCTIONS = new TreeSet<LocomotiveFunction>();
+	static {
+
+		final LocomotiveFunction fn = new LocomotiveFunction(0, "F", false);
+		final LocomotiveFunction f1 = new LocomotiveFunction(1, "F1", false);
+		final LocomotiveFunction f2 = new LocomotiveFunction(2, "F2", false);
+		final LocomotiveFunction f3 = new LocomotiveFunction(3, "F3", false);
+		final LocomotiveFunction f4 = new LocomotiveFunction(4, "F4", false);
+		final LocomotiveFunction f5 = new LocomotiveFunction(5, "F5", false);
+		final LocomotiveFunction f6 = new LocomotiveFunction(6, "F6", false);
+		final LocomotiveFunction f7 = new LocomotiveFunction(7, "F7", false);
+		final LocomotiveFunction f8 = new LocomotiveFunction(8, "F8", false);
+
+		DELTA_FUNCTIONS.add(fn);
+		DIGITAL_FUNCTIONS.addAll(Arrays.asList(fn, f1, f2, f3, f4));
+		SIMULATED_MFX_FUNCTIONS.addAll(Arrays.asList(fn, f1, f2, f3, f4, f5,
+				f6, f7, f8));
+	}
 
 	public Locomotive() {
 	}

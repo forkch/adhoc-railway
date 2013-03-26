@@ -24,7 +24,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
@@ -53,7 +55,6 @@ import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.common.collect.ArrayListModel;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -167,13 +168,16 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 		editGroupButton = new JButton(new EditLocomotiveGroupAction());
 		removeGroupButton = new JButton(new RemoveLocomotiveGroupAction());
 
+		locomotivesTable = new JTable();
+
 		locomotives = new ArrayListModel<Locomotive>();
+
 		locomotiveModel = new SelectionInList<Locomotive>();
 		locomotiveModel.setList(locomotives);
-		locomotivesTable = new JTable();
+
 		locomotivesTable.setModel(new LocomotiveTableModel(locomotiveModel));
-		locomotivesTable.setSelectionModel(new SingleListSelectionAdapter(
-				locomotiveModel.getSelectionIndexHolder()));
+		locomotivesTable
+				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		addLocomotiveButton = new JButton(new AddLocomotiveAction());
 		removeLocomotiveButton = new JButton(new RemoveLocomotiveAction());
@@ -231,6 +235,8 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 			locomotives.clear();
 			locomotives.addAll(selectedGroup.getLocomotives());
+
+			locomotiveModel.setList(locomotives);
 		}
 	}
 
@@ -367,8 +373,10 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 		public void actionPerformed(final ActionEvent e) {
 			final LocomotiveGroup selectedLocomotiveGroup = locomotiveGroupModel
 					.getSelection();
+			final int selectedRow = locomotivesTable.getSelectedRow();
 			new LocomotiveConfig(LocomotiveConfigurationDialog.this,
-					locomotiveModel.getSelection(), selectedLocomotiveGroup);
+					locomotiveModel.getElementAt(selectedRow),
+					selectedLocomotiveGroup);
 			final List<Locomotive> locomotives = new ArrayList<Locomotive>(
 					selectedLocomotiveGroup.getLocomotives());
 			locomotiveModel.setList(locomotives);
@@ -390,25 +398,34 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			final LocomotiveGroup selectedLocomotiveGroup = locomotiveGroupModel
 					.getSelection();
 
-			final int row = locomotivesTable.getSelectedRow();
-			final Locomotive locomotiveToDelete = locomotiveModel
-					.getElementAt(row);
+			final int[] rows = locomotivesTable.getSelectedRows();
 
-			if (locomotiveToDelete == null) {
+			if (rows.length == 0) {
 				JOptionPane.showMessageDialog(
 						LocomotiveConfigurationDialog.this,
 						"Please select a locomotive", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+
 			final int response = JOptionPane.showConfirmDialog(
 					LocomotiveConfigurationDialog.this,
-					"Really remove Locomotive '" + locomotiveToDelete.getName()
-							+ "' ?", "Remove Locomotive",
+					"Really remove Locomotive(s) ?", "Remove Locomotive",
 					JOptionPane.YES_NO_OPTION);
+
 			if (response == JOptionPane.YES_OPTION) {
-				locomotivePersistence.removeLocomotiveFromGroup(
-						locomotiveToDelete, selectedLocomotiveGroup);
+
+				final Set<Locomotive> locomotivesToRemove = new HashSet<Locomotive>();
+				for (final int row : rows) {
+					locomotivesToRemove.add(locomotiveModel.getElementAt(row));
+				}
+				for (final Locomotive locomotive : locomotivesToRemove) {
+
+					locomotivePersistence.removeLocomotiveFromGroup(locomotive,
+							selectedLocomotiveGroup);
+
+				}
+				locomotivesTable.clearSelection();
 			}
 		}
 	}
@@ -470,4 +487,5 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			final LocomotiveManagerException locomotiveManagerException) {
 
 	}
+
 }

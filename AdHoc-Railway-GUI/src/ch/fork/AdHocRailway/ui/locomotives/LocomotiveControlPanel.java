@@ -126,8 +126,6 @@ public class LocomotiveControlPanel extends JPanel implements
 						continue;
 					}
 					locomotiveControl.emergencyStop(myLocomotive);
-					// locomotiveControl.setSpeed(myLocomotive, 0, null);
-					widget.updateWidget();
 				}
 			} catch (final LocomotiveException e3) {
 				ExceptionProcessor.getInstance().processException(e3);
@@ -137,51 +135,43 @@ public class LocomotiveControlPanel extends JPanel implements
 
 	@Override
 	public void locomotiveAdded(final Locomotive locomotive) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void locomotiveUpdated(final Locomotive locomotive) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void locomotiveGroupAdded(final LocomotiveGroup group) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void locomotiveRemoved(final Locomotive locomotive) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void locomotiveGroupRemoved(final LocomotiveGroup group) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void locomotiveGroupUpdated(final LocomotiveGroup group) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void locomotivesUpdated(
 			final SortedSet<LocomotiveGroup> locomotiveGroups) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void failure(
 			final LocomotiveManagerException locomotiveManagerException) {
-		// TODO Auto-generated method stub
 
 	}
 }

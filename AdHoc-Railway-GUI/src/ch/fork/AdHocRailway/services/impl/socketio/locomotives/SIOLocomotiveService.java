@@ -40,7 +40,6 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
 
 		sioService = SIOService.getInstance();
 		sioService.addIOCallback(this);
-		sioService.connect();
 	}
 
 	@Override
@@ -358,6 +357,8 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
 
 	@Override
 	public void onError(final SocketIOException arg0) {
+		listener.failure(new LocomotiveManagerException(
+				"failure in communication with adhoc-server", arg0));
 	}
 
 	@Override

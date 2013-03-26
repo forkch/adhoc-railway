@@ -45,10 +45,9 @@ public class SIOService {
 		return INSTANCE;
 	}
 
-	public void connect() {
+	public void connect(final ServiceListener mainCallback) {
 		try {
 			if (socket == null) {
-				System.out.println(">>>>>>>" + Thread.currentThread());
 				socket = new SocketIO(url);
 				socket.connect(new IOCallback() {
 
@@ -64,12 +63,14 @@ public class SIOService {
 					public void onConnect() {
 						LOGGER.info("successfully connected to socket.io at "
 								+ url);
+						mainCallback.connected();
 					}
 
 					@Override
 					public void onDisconnect() {
 						LOGGER.info("successfully disconnected from socket.io at "
 								+ url);
+						mainCallback.disconnected();
 					}
 
 					@Override
@@ -77,6 +78,7 @@ public class SIOService {
 						LOGGER.error(
 								"failed to connect to socket.io at " + url,
 								arg0);
+						mainCallback.connectionError(arg0);
 						for (final IOCallback cb : otherCallbacks) {
 							cb.onError(arg0);
 						}
@@ -135,7 +137,6 @@ public class SIOService {
 			e.printStackTrace();
 		}
 		if (socket != null) {
-			System.out.println(">>>>>>>" + Thread.currentThread());
 			socket.disconnect();
 			socket = null;
 		}

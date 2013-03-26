@@ -47,7 +47,7 @@ public class XMLService {
 
 		final AdHocRailwayData data = (AdHocRailwayData) xstream
 				.fromXML(xmlFile);
-
+		addFunctionsIfNeccesaray(data);
 		locomotiveService.loadLocomotiveGroupsFromXML(data
 				.getLocomotiveGroups());
 		turnoutService.loadTurnoutGroupsFromXML(data.getTurnoutGroups());
@@ -92,8 +92,36 @@ public class XMLService {
 		final AdHocRailwayData data = (AdHocRailwayData) xstream
 				.fromXML(selectedFile);
 
+		addFunctionsIfNeccesaray(data);
 		new LocomotiveImporter().importLocomotives(locomotivePersistence,
 				data.getLocomotiveGroups());
+	}
+
+	private void addFunctionsIfNeccesaray(final AdHocRailwayData data) {
+		for (final LocomotiveGroup group : data.getLocomotiveGroups()) {
+			for (final Locomotive locomotive : group.getLocomotives()) {
+				if (locomotive.getFunctions() == null) {
+
+					switch (locomotive.getType()) {
+					case DELTA:
+						locomotive.setFunctions(Locomotive.DELTA_FUNCTIONS);
+						break;
+					case DIGITAL:
+						locomotive.setFunctions(Locomotive.DIGITAL_FUNCTIONS);
+						break;
+					case SIMULATED_MFX:
+						locomotive
+								.setFunctions(Locomotive.SIMULATED_MFX_FUNCTIONS);
+						break;
+					default:
+						break;
+
+					}
+
+				}
+			}
+
+		}
 	}
 
 	private XStream getXStream() {

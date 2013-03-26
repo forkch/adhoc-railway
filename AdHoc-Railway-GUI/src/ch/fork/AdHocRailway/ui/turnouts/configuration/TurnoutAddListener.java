@@ -42,5 +42,4 @@ public abstract class TurnoutAddListener implements TurnoutManagerListener {
 	public void turnoutGroupUpdated(final TurnoutGroup group) {
 
 	}
-
 }

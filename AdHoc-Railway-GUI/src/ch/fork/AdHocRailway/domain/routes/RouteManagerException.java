@@ -18,7 +18,9 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
-public class RouteManagerException extends RuntimeException {
+import ch.fork.AdHocRailway.domain.ManagerException;
+
+public class RouteManagerException extends ManagerException {
 
 	/**
 	 * 
@@ -28,15 +30,15 @@ public class RouteManagerException extends RuntimeException {
 	public RouteManagerException() {
 	}
 
-	public RouteManagerException(String message) {
+	public RouteManagerException(final String message) {
 		super(message);
 	}
 
-	public RouteManagerException(Throwable cause) {
+	public RouteManagerException(final Throwable cause) {
 		super(cause);
 	}
 
-	public RouteManagerException(String message, Throwable cause) {
+	public RouteManagerException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 

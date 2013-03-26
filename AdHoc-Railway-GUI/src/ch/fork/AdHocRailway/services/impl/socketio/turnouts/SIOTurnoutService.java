@@ -40,7 +40,6 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 		sioService = SIOService.getInstance();
 		sioService.addIOCallback(this);
-		sioService.connect();
 	}
 
 	@Override
@@ -350,6 +349,8 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 	@Override
 	public void onError(final SocketIOException arg0) {
+		listener.failure(new TurnoutManagerException(
+				"failure in communication with adhoc-server", arg0));
 	}
 
 	@Override

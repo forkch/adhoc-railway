@@ -421,4 +421,5 @@ public class TurnoutManagerImpl implements TurnoutManager,
 		turnoutService.disconnect();
 		turnoutsUpdated(new TreeSet<TurnoutGroup>());
 	}
+
 }

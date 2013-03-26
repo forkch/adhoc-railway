@@ -157,7 +157,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 				turnoutPersistence.enlargeTurnoutGroups();
 				routePersistence.enlargeRouteGroups();
-				AdHocRailway.getInstance().updateGUI();
 			}
 		}
 	}
@@ -197,7 +196,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 					JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
 							"No more free numbers in this group", "Error",
 							JOptionPane.ERROR_MESSAGE);
-					AdHocRailway.getInstance().updateGUI();
 					setSelectedIndex(selectedGroupPane);
 					return;
 				}
@@ -219,7 +217,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 			newTurnout.setTurnoutType(TurnoutType.DEFAULT);
 
 			new TurnoutConfig(AdHocRailway.getInstance(), newTurnout);
-			AdHocRailway.getInstance().updateGUI();
 			setSelectedIndex(selectedGroupPane);
 		}
 	}

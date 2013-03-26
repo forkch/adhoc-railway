@@ -59,6 +59,7 @@ public class PowerControlPanel extends JPanel implements
 
 		powerControl.addPowerSupplyChangeListener(this);
 		initGUI();
+		setConnected(false);
 	}
 
 	private void initGUI() {
@@ -147,6 +148,7 @@ public class PowerControlPanel extends JPanel implements
 	}
 
 	public void update() {
+
 		numberOfBoosters = Preferences.getInstance().getIntValue(
 				PreferencesKeys.NUMBER_OF_BOOSTERS);
 		powerControlPanel.removeAll();

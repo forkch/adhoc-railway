@@ -18,7 +18,9 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-public class TurnoutManagerException extends RuntimeException {
+import ch.fork.AdHocRailway.domain.ManagerException;
+
+public class TurnoutManagerException extends ManagerException {
 
 	/**
 	 * 
@@ -28,15 +30,15 @@ public class TurnoutManagerException extends RuntimeException {
 	public TurnoutManagerException() {
 	}
 
-	public TurnoutManagerException(String message) {
+	public TurnoutManagerException(final String message) {
 		super(message);
 	}
 
-	public TurnoutManagerException(Throwable cause) {
+	public TurnoutManagerException(final Throwable cause) {
 		super(cause);
 	}
 
-	public TurnoutManagerException(String message, Throwable cause) {
+	public TurnoutManagerException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 

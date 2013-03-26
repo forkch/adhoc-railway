@@ -41,7 +41,6 @@ public class SIORouteService implements RouteService, IOCallback {
 		this.listener = listener;
 		sioService = SIOService.getInstance();
 		sioService.addIOCallback(this);
-		sioService.connect();
 	}
 
 	@Override
@@ -361,6 +360,8 @@ public class SIORouteService implements RouteService, IOCallback {
 
 	@Override
 	public void onError(final SocketIOException arg0) {
+		listener.failure(new RouteManagerException(
+				"failure in communication with adhoc-server", arg0));
 	}
 
 	@Override
