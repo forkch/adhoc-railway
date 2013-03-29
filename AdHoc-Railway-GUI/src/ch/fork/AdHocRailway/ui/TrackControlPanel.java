@@ -50,7 +50,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	public TrackControlPanel() {
 		initGUI();
-		initKeyboardActions();
+		// initKeyboardActions();
 	}
 
 	private void initGUI() {

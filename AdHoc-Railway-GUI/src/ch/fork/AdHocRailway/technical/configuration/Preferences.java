@@ -138,7 +138,7 @@ public class Preferences implements PreferencesKeys {
 		setIntValue(DEFAULT_LOCOMOTIVE_BUS, 1);
 		setBooleanValue(STOP_ON_DIRECTION_CHANGE, false);
 
-		boolean found = findConfigFile();
+		final boolean found = findConfigFile();
 		if (!found) {
 			logger.info("no config file found, using default values");
 		} else {
@@ -146,26 +146,26 @@ public class Preferences implements PreferencesKeys {
 			props = new Properties();
 			try {
 				props.load(new FileInputStream(configFile));
-				for (Object key : props.keySet()) {
+				for (final Object key : props.keySet()) {
 					setStringValue(key.toString(),
 							props.getProperty(key.toString()).toString());
 				}
-			} catch (FileNotFoundException e) {
-			} catch (IOException e) {
+			} catch (final FileNotFoundException e) {
+			} catch (final IOException e) {
 			}
 		}
 
 		keyBoardLayouts = new HashMap<String, KeyBoardLayout>();
-		Map<KeyBoardLayout, String> pendingBaseLinks = new HashMap<KeyBoardLayout, String>();
-		for (Object key : preferences.keySet()) {
+		final Map<KeyBoardLayout, String> pendingBaseLinks = new HashMap<KeyBoardLayout, String>();
+		for (final Object key : preferences.keySet()) {
 			if (key.toString().startsWith(KEYBOARD_LAYOUT + ".")) {
-				KeyBoardLayout layout = parseLayout(pendingBaseLinks,
+				final KeyBoardLayout layout = parseLayout(pendingBaseLinks,
 						getStringValue(key.toString()));
 				keyBoardLayouts.put(layout.getName(), layout);
 			}
 		}
 		// Resolve references to base layouts
-		for (Map.Entry<KeyBoardLayout, String> entry : pendingBaseLinks
+		for (final Map.Entry<KeyBoardLayout, String> entry : pendingBaseLinks
 				.entrySet()) {
 			entry.getKey().setBase(keyBoardLayouts.get(entry.getValue()));
 		}
@@ -188,19 +188,20 @@ public class Preferences implements PreferencesKeys {
 	}
 
 	private KeyBoardLayout parseLayout(
-			Map<KeyBoardLayout, String> pendingBaseLinks, String layoutDesc) {
-		List<String> entries = new LinkedList<String>(Arrays.asList(layoutDesc
-				.split(";")));
-		String layoutName = entries.remove(0);
-		KeyBoardLayout layout = new KeyBoardLayout(layoutName);
-		String layoutBase = entries.remove(0);
+			final Map<KeyBoardLayout, String> pendingBaseLinks,
+			final String layoutDesc) {
+		final List<String> entries = new LinkedList<String>(
+				Arrays.asList(layoutDesc.split(";")));
+		final String layoutName = entries.remove(0);
+		final KeyBoardLayout layout = new KeyBoardLayout(layoutName);
+		final String layoutBase = entries.remove(0);
 		if (layoutBase.length() > 0) {
 			pendingBaseLinks.put(layout, layoutBase);
 		}
 		while (entries.size() > 0) {
-			String entry = entries.remove(0);
-			String[] pair = entry.split(":", 2);
-			KeyStroke keyStroke = KeyStroke.getKeyStroke(pair[0].trim());
+			final String entry = entries.remove(0);
+			final String[] pair = entry.split(":", 2);
+			final KeyStroke keyStroke = KeyStroke.getKeyStroke(pair[0].trim());
 			layout.addEntry(keyStroke, pair[1].trim());
 		}
 		return layout;
@@ -219,40 +220,40 @@ public class Preferences implements PreferencesKeys {
 		if (props == null) {
 			props = new Properties();
 		}
-		for (String key : preferences.keySet()) {
+		for (final String key : preferences.keySet()) {
 			props.setProperty(key, preferences.get(key));
 		}
 		props.store(new FileOutputStream(configFile), "");
 		logger.info("Preferences saved to: " + configFile.getAbsolutePath());
 	}
 
-	public void setStringValue(String key, String value) {
+	public void setStringValue(final String key, final String value) {
 		preferences.put(key, value);
 	}
 
-	public String getStringValue(String key) {
+	public String getStringValue(final String key) {
 		if (preferences.containsKey(key)) {
 			return preferences.get(key);
 		}
 		return "";
 	}
 
-	public void setIntValue(String key, int value) {
+	public void setIntValue(final String key, final int value) {
 		setStringValue(key, Integer.toString(value));
 	}
 
-	public int getIntValue(String key) {
+	public int getIntValue(final String key) {
 		if (preferences.containsKey(key)) {
 			return Integer.parseInt(preferences.get(key));
 		}
 		return 0;
 	}
 
-	public void setBooleanValue(String key, boolean value) {
+	public void setBooleanValue(final String key, final boolean value) {
 		setStringValue(key, Boolean.toString(value));
 	}
 
-	public boolean getBooleanValue(String key) {
+	public boolean getBooleanValue(final String key) {
 		if (preferences.containsKey(key)) {
 			return Boolean.parseBoolean(preferences.get(key));
 		}
@@ -263,7 +264,7 @@ public class Preferences implements PreferencesKeys {
 		return hostnames;
 	}
 
-	public void setHostnames(List<String> hostnames) {
+	public void setHostnames(final List<String> hostnames) {
 		this.hostnames = hostnames;
 	}
 
@@ -271,7 +272,7 @@ public class Preferences implements PreferencesKeys {
 		return preferences;
 	}
 
-	public void setPreferences(Map<String, String> preferences) {
+	public void setPreferences(final Map<String, String> preferences) {
 		this.preferences = preferences;
 	}
 
@@ -305,7 +306,7 @@ public class Preferences implements PreferencesKeys {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -315,7 +316,7 @@ public class Preferences implements PreferencesKeys {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Preferences other = (Preferences) obj;
+		final Preferences other = (Preferences) obj;
 		if (configFile == null) {
 			if (other.configFile != null) {
 				return false;

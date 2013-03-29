@@ -94,6 +94,10 @@
 		<scp todir="pi:raspberry@192.168.2.100:/home/pi/AdHoc-Railway" trust="true">
 			<fileset dir="${release.dir}" />
 		</scp>
+
+		<scp todir="pi:raspberry@192.168.2.100:/home/pi/AdHoc-Railway/AdHoc-Railway-${release}-bin" trust="true">
+			<fileset file="adhocrailway.conf" />
+		</scp>
 	</target>
 
 	<!-- =================================================================== -->
@@ -112,7 +116,16 @@
 	<!-- =================================================================== -->
 	<target name="jar" depends="compile" description="Builds a JAR file">
 		<delete file="AdHoc-Railway-${release}.jar" />
-		<jar destfile="AdHoc-Railway-${release}.jar" manifest="./src/manifest.mf">
+		<manifestclasspath property="manifest.classpath" jarfile="AdHoc-Railway-${release}.jar">
+		        <classpath refid="run.class.path" />
+		</manifestclasspath>
+		<jar destfile="AdHoc-Railway-${release}.jar">
+
+			<manifest>
+			       <attribute name="Main-Class" value="ch.fork.AdHocRailway.ui.AdHocRailway"/>
+			       <attribute name="Class-Path" value="${manifest.classpath}"/>
+			</manifest>
+			
 			<fileset dir="${build.dir}/" includes="**/*.class" />
 			<fileset dir="${build.dir}/" includes="**/*.png" />
 			<metainf dir="${etc.dir}/META-INF" includes="*" />

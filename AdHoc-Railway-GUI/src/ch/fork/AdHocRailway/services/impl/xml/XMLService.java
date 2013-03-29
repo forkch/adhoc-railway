@@ -100,6 +100,9 @@ public class XMLService {
 
 	private void addFunctionsIfNeccesaray(final AdHocRailwayData data) {
 		for (final LocomotiveGroup group : data.getLocomotiveGroups()) {
+			if (group.getLocomotives() == null) {
+				continue;
+			}
 			for (final Locomotive locomotive : group.getLocomotives()) {
 				if (locomotive.getFunctions() == null) {
 

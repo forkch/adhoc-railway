@@ -15,7 +15,6 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
 import net.miginfocom.swing.MigLayout;
@@ -68,6 +67,7 @@ public class PowerControlPanel extends JPanel implements
 		final MigLayout layout = new MigLayout("wrap 2");
 		powerControlPanel = new JPanel(layout);
 
+		initKeyboardActions();
 		update();
 
 		final SimpleInternalFrame frame = new SimpleInternalFrame("Power");
@@ -177,19 +177,18 @@ public class PowerControlPanel extends JPanel implements
 			powerToggleButtonsToNumber.put(boosterButton, i);
 			boosterButton.setFocusable(false);
 		}
-
 		initKeyboardActions();
 	}
 
 	private void initKeyboardActions() {
 
-		final InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-		final KeyStroke[] keys = inputMap.keys();
-		if (keys != null) {
-			for (final KeyStroke ks : keys) {
-				getInputMap().remove(ks);
-			}
-		}
+		final InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+		// final KeyStroke[] keys = inputMap.keys();
+		// if (keys != null) {
+		// for (final KeyStroke ks : keys) {
+		// getInputMap().remove(ks);
+		// }
+		// }
 
 		final KeyBoardLayout kbl = Preferences.getInstance()
 				.getKeyBoardLayout();
@@ -202,12 +201,6 @@ public class PowerControlPanel extends JPanel implements
 
 		AdHocRailway.getInstance()
 				.registerEscapeKey(new AllBoostersOffAction());
-		// getInputMap().put(KeyStroke.getKeyStroke("ESCAPE"),
-		// "discardActionKey");
-		// getActionMap().put("discardActionKey", test);
-
-		// getActionMap().put("TurnOffAllBoosters", new AllBoostersOffAction());
-		// kbl.assignKeys(inputMap, "TurnOffAllBoosters");
 	}
 
 	private void toogleBooster(final int boosterNumber, final boolean on) {

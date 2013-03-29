@@ -64,6 +64,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
@@ -192,6 +193,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	public AdHocRailway(final String file) {
 		super(TITLE);
 		try {
+			PropertyConfigurator.configure("etc/log4j.properties");
 			PlasticLookAndFeel
 					.setTabStyle(PlasticLookAndFeel.TAB_STYLE_DEFAULT_VALUE);
 			PlasticLookAndFeel.setHighContrastFocusColorsEnabled(false);

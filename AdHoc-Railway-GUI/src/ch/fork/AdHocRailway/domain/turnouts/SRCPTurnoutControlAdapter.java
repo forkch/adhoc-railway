@@ -127,30 +127,36 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 
 	@Override
 	public void toggleTest(final Turnout turnout) throws TurnoutException {
-		SRCPTurnout sTurnout = null;
-		if (sTurnoutTemp != null) {
-			turnoutControl.removeTurnout(sTurnoutTemp);
-		}
-		if (turnoutTemp != null) {
-			System.out.println(turnoutTemp.equals(turnout));
-		}
-		if (turnoutTemp == null || !turnoutTemp.equals(turnout)) {
 
-			System.out.println("NEEW");
+		turnoutControl.removeTurnout(sTurnoutTemp);
+		if (turnoutTemp == null || !turnoutTemp.equals(turnout)) {
+			if (sTurnoutTemp != null) {
+				turnoutControl.removeTurnout(sTurnoutTemp);
+			}
+			turnoutTemp = turnout;
 			// just create a temporary SRCPTurnout
-			sTurnout = createSRCPTurnout(turnout);
-			sTurnoutTemp = sTurnout;
-			// turnoutTemp = (Turnout) turnout.clone();
+			sTurnoutTemp = createSRCPTurnout(turnout);
 		} else {
-			sTurnout = sTurnoutTemp;
+			applyNewSettings(turnout);
+			sTurnoutTemp.setInitialized(false);
 		}
-		turnoutControl.addTurnout(sTurnout);
-		System.out.println(turnout);
+		turnoutControl.addTurnout(sTurnoutTemp);
 		try {
-			turnoutControl.toggle(sTurnout);
+			turnoutControl.toggle(sTurnoutTemp);
 		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
+	}
+
+	private void applyNewSettings(final Turnout turnout) {
+		sTurnoutTemp.setBus1(turnout.getBus1());
+		sTurnoutTemp.setBus2(turnout.getBus2());
+		sTurnoutTemp.setAddress1(turnout.getAddress1());
+		sTurnoutTemp.setAddress2(turnout.getAddress2());
+		sTurnoutTemp.setAddress1Switched(turnout.isAddress1Switched());
+		sTurnoutTemp.setAddress2Switched(turnout.isAddress2Switched());
+		setSRCPTurnoutDefaultState(sTurnoutTemp, turnout);
+		setSRCPTurnoutType(turnout, sTurnoutTemp);
 	}
 
 	@Override
@@ -213,21 +219,14 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 		sTurnout.setAddress1Switched(turnout.isAddress1Switched());
 		sTurnout.setAddress2Switched(turnout.isAddress2Switched());
 
-		switch (turnout.getDefaultState()) {
-		case STRAIGHT:
-			sTurnout.setDefaultState(SRCPTurnoutState.STRAIGHT);
-			break;
-		case LEFT:
-			sTurnout.setDefaultState(SRCPTurnoutState.LEFT);
-			break;
-		case RIGHT:
-			sTurnout.setDefaultState(SRCPTurnoutState.RIGHT);
-			break;
-		case UNDEF:
-			sTurnout.setDefaultState(SRCPTurnoutState.UNDEF);
-			break;
-		}
+		setSRCPTurnoutDefaultState(sTurnout, turnout);
 
+		setSRCPTurnoutType(turnout, sTurnout);
+		return sTurnout;
+	}
+
+	private void setSRCPTurnoutType(final Turnout turnout,
+			final SRCPTurnout sTurnout) {
 		switch (turnout.getTurnoutType()) {
 		case DEFAULT:
 			sTurnout.setTurnoutType(SRCPTurnoutTypes.DEFAULT);
@@ -244,7 +243,24 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 		default:
 			sTurnout.setTurnoutType(SRCPTurnoutTypes.DEFAULT);
 		}
-		return sTurnout;
+	}
+
+	private void setSRCPTurnoutDefaultState(final SRCPTurnout sTurnout,
+			final Turnout turnout) {
+		switch (turnout.getDefaultState()) {
+		case STRAIGHT:
+			sTurnout.setDefaultState(SRCPTurnoutState.STRAIGHT);
+			break;
+		case LEFT:
+			sTurnout.setDefaultState(SRCPTurnoutState.LEFT);
+			break;
+		case RIGHT:
+			sTurnout.setDefaultState(SRCPTurnoutState.RIGHT);
+			break;
+		case UNDEF:
+			sTurnout.setDefaultState(SRCPTurnoutState.UNDEF);
+			break;
+		}
 	}
 
 	@Override
