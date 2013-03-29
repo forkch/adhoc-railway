@@ -12,8 +12,8 @@ public class LocomotiveFunctionTableModel extends
 	 * 
 	 */
 	private static final long serialVersionUID = -3279273929330645457L;
-	private static final String[] COLUMNS = { "Number", "Function",
-			"Emergency Stop" };
+	private static final String[] COLUMNS = { "Function", "Description",
+			"E. Stop" };
 
 	public LocomotiveFunctionTableModel(final ListModel<?> listModel) {
 		super(listModel, COLUMNS);
@@ -33,4 +33,40 @@ public class LocomotiveFunctionTableModel extends
 			throw new IllegalStateException("Unknown column");
 		}
 	}
+
+	@Override
+	public void setValueAt(final Object value, final int row, final int col) {
+		final LocomotiveFunction function = getRow(row);
+		switch (col) {
+		case 1:
+			function.setDescription((String) value);
+			break;
+		case 2:
+			function.setEmergencyBrakeFunction(((Boolean) value).booleanValue());
+			break;
+		default:
+			throw new IllegalStateException("Unknown column");
+		}
+
+		fireTableCellUpdated(row, col);
+	}
+
+	@Override
+	public boolean isCellEditable(final int row, final int col) {
+		switch (col) {
+		case 0:
+			return false;
+		case 1:
+			return true;
+		case 2:
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Class getColumnClass(final int c) {
+		return getValueAt(0, c).getClass();
+	}
+
 }

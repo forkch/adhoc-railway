@@ -36,11 +36,13 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
@@ -73,9 +75,6 @@ import de.dermoba.srcp.model.turnouts.MMTurnout;
 
 public class LocomotiveConfig extends JDialog implements PropertyChangeListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4760042063985342866L;
 
 	private JTextField nameTextField;
@@ -181,6 +180,9 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 				&& new File("locoimages/" + image).exists()) {
 			imageLabel.setIcon(ImageTools
 					.createImageIconFileSystem("locoimages/" + image));
+		} else {
+			imageLabel.setIcon(ImageTools
+					.createImageIconFileSystem(ImageTools.EMTPY_LOCO_ICON));
 		}
 
 		busSpinner = new JSpinner();
@@ -223,6 +225,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 		functionsTable
 				.setModel(new LocomotiveFunctionTableModel(functionsModel));
+		functionsTable.getColumnModel().getColumn(0)
+				.setCellRenderer(new CenterRenderer());
 
 		errorPanel = new ErrorPanel();
 
@@ -230,6 +234,17 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		presentationModel.getBean().addPropertyChangeListener(this);
 		okButton = new JButton(new ApplyChangesAction(false));
 		cancelButton = new JButton(new CancelAction());
+	}
+
+	class CenterRenderer extends DefaultTableCellRenderer {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5492683325296918902L;
+
+		protected CenterRenderer() {
+			setHorizontalAlignment(JLabel.CENTER);
+		}
 	}
 
 	private void buildPanel() {
@@ -278,7 +293,38 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 		builder.add(buildButtonBar(), cc.xyw(5, 13, 3));
 
-		add(builder.getPanel());
+		// add(builder.getPanel());
+
+		setLayout(new MigLayout());
+
+		add(new JLabel("Name"));
+		add(nameTextField, "w 300!");
+
+		add(new JLabel("Bus"), "gap unrelated");
+		add(busSpinner, "w 150!, wrap");
+
+		add(new JLabel("Description"));
+		add(descTextField, "w 300!");
+
+		add(new JLabel("Address 1"), "gap unrelated");
+		add(address1Spinner, "w 150!, wrap");
+
+		add(new JLabel("Type"));
+		add(locomotiveTypeComboBox, "w 150!");
+
+		add(new JLabel("Address 2"), "gap unrelated");
+		add(address2Spinner, "w 150!, wrap");
+
+		add(new JLabel("Image"));
+		add(chooseImageButton, "w 150!");
+
+		add(new JLabel("Functions"), "gap unrelated");
+		add(new JScrollPane(functionsTable), "h 200!, w 300!, span 1 2, wrap");
+
+		add(imageLabel, "align center, span 2, wrap");
+
+		add(buildButtonBar(), "span 4, align right");
+
 	}
 
 	private JComponent buildButtonBar() {
@@ -296,11 +342,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		public ApplyChangesAction(final boolean createNextTurnout) {
 			super("OK", ImageTools.createImageIconFromIconSet("ok.png"));
 			this.createNextTurnout = createNextTurnout;
-			if (createNextTurnout) {
-				setTitle("Next");
-			} else {
-				setTitle("OK");
-			}
 		}
 
 		@Override
@@ -391,13 +432,14 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 		switch (locomotive.getType()) {
 		case DELTA:
-			locomotive.setFunctions(Locomotive.DELTA_FUNCTIONS);
+			locomotive.setFunctions(LocomotiveFunction.getDeltaFunctions());
 			break;
 		case DIGITAL:
-			locomotive.setFunctions(Locomotive.DIGITAL_FUNCTIONS);
+			locomotive.setFunctions(LocomotiveFunction.getDigitalFunctions());
 			break;
 		case SIMULATED_MFX:
-			locomotive.setFunctions(Locomotive.SIMULATED_MFX_FUNCTIONS);
+			locomotive.setFunctions(LocomotiveFunction
+					.getSimulatedMfxFunctions());
 			break;
 		default:
 			break;

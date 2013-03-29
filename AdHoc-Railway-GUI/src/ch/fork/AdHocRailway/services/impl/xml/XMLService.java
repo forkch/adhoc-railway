@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.io.FileUtils;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.routes.Route;
@@ -104,14 +105,16 @@ public class XMLService {
 
 					switch (locomotive.getType()) {
 					case DELTA:
-						locomotive.setFunctions(Locomotive.DELTA_FUNCTIONS);
+						locomotive.setFunctions(LocomotiveFunction
+								.getDeltaFunctions());
 						break;
 					case DIGITAL:
-						locomotive.setFunctions(Locomotive.DIGITAL_FUNCTIONS);
+						locomotive.setFunctions(LocomotiveFunction
+								.getDigitalFunctions());
 						break;
 					case SIMULATED_MFX:
-						locomotive
-								.setFunctions(Locomotive.SIMULATED_MFX_FUNCTIONS);
+						locomotive.setFunctions(LocomotiveFunction
+								.getSimulatedMfxFunctions());
 						break;
 					default:
 						break;
@@ -120,7 +123,6 @@ public class XMLService {
 
 				}
 			}
-
 		}
 	}
 

@@ -98,6 +98,8 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 	private ArrayListModel<LocomotiveGroup> locomotiveGroups;
 	private ArrayListModel<Locomotive> locomotives;
 
+	public boolean disableListener;
+
 	public LocomotiveConfigurationDialog(final JFrame owner) {
 		super(owner, "Locomotive Configuration", true);
 		initGUI();
@@ -344,17 +346,8 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			newLocomotive.setType(LocomotiveType.DIGITAL);
 
 			newLocomotive.setBus(1);
-			final LocomotiveFunction fn = new LocomotiveFunction(0, "Fn", false);
-			final LocomotiveFunction f1 = new LocomotiveFunction(1, "F1", false);
-			final LocomotiveFunction f2 = new LocomotiveFunction(2, "F2", false);
-			final LocomotiveFunction f3 = new LocomotiveFunction(3, "F3", false);
-			final LocomotiveFunction f4 = new LocomotiveFunction(4, "F4", true);
-
-			newLocomotive.addLocomotiveFunction(fn);
-			newLocomotive.addLocomotiveFunction(f1);
-			newLocomotive.addLocomotiveFunction(f2);
-			newLocomotive.addLocomotiveFunction(f3);
-			newLocomotive.addLocomotiveFunction(f4);
+			newLocomotive
+					.setFunctions(LocomotiveFunction.getDigitalFunctions());
 			return newLocomotive;
 		}
 	}
@@ -415,6 +408,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 			if (response == JOptionPane.YES_OPTION) {
 
+				disableListener = true;
 				final Set<Locomotive> locomotivesToRemove = new HashSet<Locomotive>();
 				for (final int row : rows) {
 					locomotivesToRemove.add(locomotiveModel.getElementAt(row));
@@ -423,8 +417,10 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 					locomotivePersistence.removeLocomotiveFromGroup(locomotive,
 							selectedLocomotiveGroup);
+					locomotives.remove(locomotive);
 
 				}
+				disableListener = false;
 				locomotivesTable.clearSelection();
 			}
 		}
@@ -451,6 +447,9 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 	@Override
 	public void locomotiveRemoved(final Locomotive locomotive) {
+		if (disableListener) {
+			return;
+		}
 		if (locomotive.getGroup().equals(locomotiveGroupModel.getSelection())) {
 			locomotives.remove(locomotive);
 		}

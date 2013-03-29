@@ -33,7 +33,7 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 
 public class ImageTools {
 
-	private final static String emptyLocoIcon = "locoimages/empty.png";
+	public final static String EMTPY_LOCO_ICON = "locoimages/empty.png";
 
 	public static ImageIcon createImageIcon(final String icon) {
 		return new ImageIcon(ClassLoader.getSystemResource(icon));
@@ -62,7 +62,7 @@ public class ImageTools {
 				&& new File("locoimages/" + image).exists()) {
 			return getScaledImage(new File("locoimages/" + image), scale);
 		} else {
-			return getScaledImage(new File(emptyLocoIcon), scale);
+			return getScaledImage(new File(EMTPY_LOCO_ICON), scale);
 		}
 	}
 

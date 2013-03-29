@@ -462,6 +462,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				public void connected() {
 					final String host = preferences
 							.getStringValue(PreferencesKeys.ADHOC_SERVER_HOSTNAME)
+							+ ":"
 							+ preferences
 									.getStringValue(PreferencesKeys.ADHOC_SERVER_PORT);
 					final String collection = preferences
