@@ -50,7 +50,6 @@ public class ImageTools {
 			LOGGER.info("cache-miss: put icon for " + icon + " in cache");
 			return imageIcon;
 		}
-		LOGGER.debug("cache-hit: got icon for " + icon + " from cache");
 		return cache.get(icon);
 	}
 
@@ -62,7 +61,6 @@ public class ImageTools {
 			LOGGER.info("cache-miss: put icon for " + icon + " in cache");
 			return imageIcon;
 		}
-		LOGGER.debug("cache-hit: got icon for " + icon + " from cache");
 		return cache.get(icon);
 	}
 
@@ -84,7 +82,6 @@ public class ImageTools {
 				return getScaledImage(EMTPY_LOCO_ICON, scale);
 			}
 		} else {
-			LOGGER.debug("cache-hit: got icon for " + image + " from cache");
 			return cache.get(image);
 		}
 	}

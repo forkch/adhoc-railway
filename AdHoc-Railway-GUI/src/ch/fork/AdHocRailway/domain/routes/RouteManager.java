@@ -26,7 +26,8 @@ public interface RouteManager {
 
 	public abstract Route getRouteByNumber(int number);
 
-	public abstract void addRoute(Route route);
+	public abstract void addRouteToGroup(Route route,
+			RouteGroup selectedRouteGroup);
 
 	public abstract void removeRoute(Route route);
 

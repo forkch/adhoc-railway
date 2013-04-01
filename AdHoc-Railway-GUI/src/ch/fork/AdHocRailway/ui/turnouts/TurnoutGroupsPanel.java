@@ -3,8 +3,6 @@ package ch.fork.AdHocRailway.ui.turnouts;
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIconFromIconSet;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -57,15 +55,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 	}
 
 	private void initActionListeners() {
-
-		addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mouseClicked(final MouseEvent e) {
-
-				System.out.println("sdljasdjsd");
-			}
-		});
 	}
 
 	private void updateTurnouts(final SortedSet<TurnoutGroup> turnoutGroups) {

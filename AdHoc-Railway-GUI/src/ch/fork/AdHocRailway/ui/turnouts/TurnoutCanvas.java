@@ -39,16 +39,18 @@ public class TurnoutCanvas extends JPanel {
 	protected Turnout turnout;
 	protected SRCPTurnoutState turnoutState = SRCPTurnoutState.UNDEF;
 
-	public TurnoutCanvas(Turnout turnout) {
+	public TurnoutCanvas(final Turnout turnout) {
 		this.turnout = turnout;
 	}
 
 	@Override
-	public void paintComponent(Graphics g) {
+	public void paintComponent(final Graphics g) {
 		if (turnout.isDoubleCross()) {
 			paintDoubleCross(g);
-		} else if (turnout.isDefault()) {
-			paintDefault(g);
+		} else if (turnout.isDefaultLeft()) {
+			paintDefaultLeft(g);
+		} else if (turnout.isDefaultRight()) {
+			paintDefaultRight(g);
 		} else if (turnout.isThreeWay()) {
 			paintThreeway(g);
 		} else if (turnout.isCutter()) {
@@ -56,8 +58,8 @@ public class TurnoutCanvas extends JPanel {
 		}
 	}
 
-	protected void rotate(Graphics g, BufferedImage img) {
-		Graphics2D g2 = (Graphics2D) g;
+	protected void rotate(final Graphics g, final BufferedImage img) {
+		final Graphics2D g2 = (Graphics2D) g;
 		AffineTransform at = null;
 		switch (turnout.getOrientation()) {
 		case NORTH:
@@ -83,11 +85,11 @@ public class TurnoutCanvas extends JPanel {
 		g2.drawImage(img, at, this);
 	}
 
-	private void paintDefault(Graphics g) {
-		BufferedImage img = new BufferedImage(56, 35,
+	private void paintDefaultLeft(final Graphics g) {
+		final BufferedImage img = new BufferedImage(56, 35,
 				BufferedImage.TYPE_4BYTE_ABGR);
-		Graphics2D g3 = img.createGraphics();
-		g3.drawImage(createImageIcon("switches/canvas/default_switch.png")
+		final Graphics2D g3 = img.createGraphics();
+		g3.drawImage(createImageIcon("switches/canvas/default_switch_left.png")
 				.getImage(), 0, 0, this);
 		switch (turnoutState) {
 		case STRAIGHT:
@@ -118,20 +120,56 @@ public class TurnoutCanvas extends JPanel {
 		rotate(g, img);
 	}
 
-	private void paintCutter(Graphics g) {
-		BufferedImage img = new BufferedImage(56, 35,
+	private void paintDefaultRight(final Graphics g) {
+		final BufferedImage img = new BufferedImage(56, 35,
 				BufferedImage.TYPE_4BYTE_ABGR);
-		Graphics2D g3 = img.createGraphics();
+		final Graphics2D g3 = img.createGraphics();
+		g3.drawImage(
+				createImageIcon("switches/canvas/default_switch_right.png")
+						.getImage(), 0, 0, this);
+		switch (turnoutState) {
+		case STRAIGHT:
+			g3.drawImage(
+					createImageIcon("switches/canvas/LED_middle_yellow.png")
+							.getImage(), 28, 0, this);
+			g3.drawImage(createImageIcon("switches/canvas/LED_down_white.png")
+					.getImage(), 28, 0, this);
+			break;
+		case LEFT:
+		case RIGHT:
+			g3.drawImage(
+					createImageIcon("switches/canvas/LED_middle_white.png")
+							.getImage(), 28, 0, this);
+			g3.drawImage(createImageIcon("switches/canvas/LED_down_yellow.png")
+					.getImage(), 28, 0, this);
+			break;
+		case UNDEF:
+			g3.drawImage(createImageIcon("switches/canvas/LED_down_white.png")
+					.getImage(), 28, 0, this);
+			g3.drawImage(
+					createImageIcon("switches/canvas/LED_middle_white.png")
+							.getImage(), 28, 0, this);
+			break;
+		}
+		g3.drawImage(createImageIcon("switches/canvas/LED_middle_white.png")
+				.getImage(), 0, 0, this);
+		rotate(g, img);
+	}
+
+	private void paintCutter(final Graphics g) {
+		final BufferedImage img = new BufferedImage(56, 35,
+				BufferedImage.TYPE_4BYTE_ABGR);
+		final Graphics2D g3 = img.createGraphics();
 		g3.drawImage(createImageIcon("switches/cutter.png").getImage(), 0, 0,
 				this);
 
 		rotate(g, img);
 	}
 
-	private void paintDoubleCross(Graphics g) {
-		BufferedImage img = new BufferedImage(56, 35,
+	private void paintDoubleCross(final Graphics g) {
+		final BufferedImage img = new BufferedImage(56, 35,
 				BufferedImage.TYPE_4BYTE_ABGR);
-		Graphics2D g3 = img.createGraphics();
+		final Graphics2D g3 = img.createGraphics();
 		g3.drawImage(createImageIcon("switches/canvas/double_cross_switch.png")
 				.getImage(), 0, 0, this);
 		switch (turnoutState) {
@@ -176,10 +214,10 @@ public class TurnoutCanvas extends JPanel {
 		rotate(g, img);
 	}
 
-	private void paintThreeway(Graphics g) {
-		BufferedImage img = new BufferedImage(56, 35,
+	private void paintThreeway(final Graphics g) {
+		final BufferedImage img = new BufferedImage(56, 35,
 				BufferedImage.TYPE_4BYTE_ABGR);
-		Graphics2D g3 = img.createGraphics();
+		final Graphics2D g3 = img.createGraphics();
 		g3.drawImage(createImageIcon("switches/canvas/three_way_switch.png")
 				.getImage(), 0, 0, this);
 		switch (turnoutState) {
@@ -249,7 +287,7 @@ public class TurnoutCanvas extends JPanel {
 		return true;
 	}
 
-	public void setTurnoutState(SRCPTurnoutState turnoutState) {
+	public void setTurnoutState(final SRCPTurnoutState turnoutState) {
 		this.turnoutState = turnoutState;
 	}
 }

@@ -135,7 +135,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 			final RouteControlIface routeControl = AdHocRailway.getInstance()
 					.getRouteControl();
 			routeControl.removeRouteChangeListener(route, RouteWidget.this);
-			new RouteConfig(AdHocRailway.getInstance(), route);
+			new RouteConfig(AdHocRailway.getInstance(), route,
+					route.getRouteGroup());
 			routeControl.addRouteChangeListener(route, RouteWidget.this);
 
 			routeChanged(route);

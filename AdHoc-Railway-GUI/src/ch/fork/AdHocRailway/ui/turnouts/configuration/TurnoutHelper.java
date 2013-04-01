@@ -1,7 +1,11 @@
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import org.apache.commons.beanutils.BeanUtils;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
@@ -37,15 +41,14 @@ public class TurnoutHelper {
 		}
 
 		final Turnout newTurnout = TurnoutHelper.createDefaultTurnout(
-				turnoutPersistence, selectedTurnoutGroup, nextNumber);
+				turnoutPersistence, nextNumber);
 
 		new TurnoutConfig(AdHocRailway.getInstance(), newTurnout,
 				selectedTurnoutGroup);
 	}
 
 	public static Turnout createDefaultTurnout(
-			final TurnoutManager turnoutPersistence,
-			final TurnoutGroup selectedTurnoutGroup, final int nextNumber) {
+			final TurnoutManager turnoutPersistence, final int nextNumber) {
 		final Turnout newTurnout = new Turnout();
 		newTurnout.setNumber(nextNumber);
 
@@ -56,11 +59,22 @@ public class TurnoutHelper {
 
 		newTurnout
 				.setAddress1(turnoutPersistence.getLastProgrammedAddress() + 1);
-		newTurnout.setTurnoutGroup(selectedTurnoutGroup);
 		newTurnout.setDefaultState(TurnoutState.STRAIGHT);
 		newTurnout.setOrientation(TurnoutOrientation.EAST);
-		newTurnout.setTurnoutType(TurnoutType.DEFAULT);
+		newTurnout.setTurnoutType(TurnoutType.DEFAULT_LEFT);
 		return newTurnout;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Turnout copyTurnout(final Turnout old) {
+		final Turnout t = new Turnout();
+		try {
+			BeanUtils.copyProperties(t, old);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return t;
 	}
 
 	public static void validateTurnout(final TurnoutManager turnoutPersistence,
@@ -88,8 +102,11 @@ public class TurnoutHelper {
 
 			boolean unique1 = true;
 			for (final Turnout t : turnoutPersistence.getAllTurnouts()) {
-				if (t.getBus1() == bus1 && t.getAddress1() == address1
-						&& !t.equals(turnout)) {
+				if (t.equals(turnout)) {
+					continue;
+				}
+				if ((t.getBus1() == bus1 && t.getAddress1() == address1)
+						|| (t.getBus1() == bus1 && t.getAddress2() == address1)) {
 					unique1 = false;
 				}
 			}
@@ -135,6 +152,16 @@ public class TurnoutHelper {
 					panel.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
 				}
 			}
+		}
+	}
+
+	public static void update(final Turnout testTurnout, final String property,
+			final Object newValue) {
+		try {
+			BeanUtils.setProperty(testTurnout, property, newValue);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

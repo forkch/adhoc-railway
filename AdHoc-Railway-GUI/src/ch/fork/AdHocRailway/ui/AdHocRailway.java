@@ -416,7 +416,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		statusBarPanel = initStatusBar();
 		mainPanel = new JPanel();
 
-		mainPanel = new JPanel(new MigLayout());
+		mainPanel = new JPanel(new MigLayout("", "[][grow]", "[grow][]"));
 
 		final JPanel segmentPanel = new KeyTrackControl();
 
@@ -435,10 +435,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		 * BorderLayout.CENTER);
 		 */
 
-		mainPanel.add(segmentPanel, "dock west");
-		mainPanel.add(trackControlPanel, "gap unrelated, wrap");
-		mainPanel.add(powerControlPanel, "");
-		mainPanel.add(locomotiveControlPanel, "wrap");
+		mainPanel.add(segmentPanel, "grow");
+		mainPanel.add(trackControlPanel, "gap unrelated, grow, wrap");
+		mainPanel.add(powerControlPanel, "grow");
+		mainPanel.add(locomotiveControlPanel, "gap unrelated, shrink 0, wrap");
 
 		add(mainPanel, BorderLayout.CENTER);
 		add(statusBarPanel, BorderLayout.PAGE_END);

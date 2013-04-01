@@ -228,7 +228,8 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 	private void setSRCPTurnoutType(final Turnout turnout,
 			final SRCPTurnout sTurnout) {
 		switch (turnout.getTurnoutType()) {
-		case DEFAULT:
+		case DEFAULT_LEFT:
+		case DEFAULT_RIGHT:
 			sTurnout.setTurnoutType(SRCPTurnoutTypes.DEFAULT);
 			break;
 		case DOUBLECROSS:

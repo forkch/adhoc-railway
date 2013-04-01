@@ -51,6 +51,8 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	private final Set<RouteManagerListener> listeners = new HashSet<RouteManagerListener>();
 	private final Set<RouteManagerListener> listenersToBeRemovedInNextEvent = new HashSet<RouteManagerListener>();
 
+	private int lastProgrammedNumber = 0;
+
 	private RouteManagerImpl() {
 		LOGGER.info("RouteMangerImpl loaded");
 
@@ -110,13 +112,14 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	}
 
 	@Override
-	public void addRoute(final Route route) throws RouteManagerException {
-		LOGGER.debug("addRoute()");
+	public void addRouteToGroup(final Route route, final RouteGroup group)
+			throws RouteManagerException {
+		LOGGER.debug("addRouteToGroup()");
 
-		if (route.getRouteGroup() == null) {
-			throw new RouteManagerException("Route has no associated Group");
-		}
+		group.addRoute(route);
+		route.setRouteGroup(group);
 		this.routeService.addRoute(route);
+		lastProgrammedNumber = route.getNumber();
 	}
 
 	@Override
@@ -218,11 +221,12 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	@Override
 	public int getNextFreeRouteNumber() {
 		LOGGER.debug("getNextFreeRouteNumber()");
-		final SortedSet<Route> turnouts = new TreeSet<Route>(getAllRoutes());
-		if (turnouts.isEmpty()) {
-			return 1;
-		}
-		return turnouts.last().getNumber() + 1;
+		// final SortedSet<Route> turnouts = new TreeSet<Route>(getAllRoutes());
+		// if (turnouts.isEmpty()) {
+		// return 1;
+		// }
+		// return turnouts.last().getNumber() + 1;
+		return lastProgrammedNumber + 1;
 	}
 
 	@Override

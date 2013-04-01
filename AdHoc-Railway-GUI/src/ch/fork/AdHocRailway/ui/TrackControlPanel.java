@@ -21,7 +21,6 @@ package ch.fork.AdHocRailway.ui;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -51,7 +50,6 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private void initGUI() {
 		setLayout(new BorderLayout(5, 5));
-		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		initTurnoutPanel();
 		initRoutesPanel();
 
@@ -63,7 +61,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 			trackControlPane.add("Routes", routeGroupsTabbedPane);
 			final SimpleInternalFrame turnoutRouteFrame = new SimpleInternalFrame(
 					"Turnouts/Routes");
-			turnoutRouteFrame.add(trackControlPane);
+			turnoutRouteFrame.add(trackControlPane, BorderLayout.CENTER);
 			controlPanel.add(turnoutRouteFrame);
 		} else {
 			final SimpleInternalFrame turnoutFrame = new SimpleInternalFrame(

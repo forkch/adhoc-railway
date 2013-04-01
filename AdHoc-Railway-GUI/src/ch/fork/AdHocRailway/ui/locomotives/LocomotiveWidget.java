@@ -39,7 +39,6 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
@@ -100,8 +99,6 @@ public class LocomotiveWidget extends JPanel implements
 
 	private final JFrame frame;
 
-	private JLabel imageLabel;
-
 	private final LocomotiveManager locomotivePersistence = AdHocRailway
 			.getInstance().getLocomotivePersistence();
 	private final LocomotiveControlface locomotiveControl = AdHocRailway
@@ -141,7 +138,6 @@ public class LocomotiveWidget extends JPanel implements
 		locomotiveGroupComboBox.addItemListener(groupSelectAction);
 		locomotiveGroupComboBox.setSelectedIndex(-1);
 		locomotiveComboBox.setSelectedIndex(-1);
-		imageLabel.setIcon(null);
 
 	}
 
@@ -159,11 +155,7 @@ public class LocomotiveWidget extends JPanel implements
 
 		addMouseListener(new MouseAction());
 
-		imageLabel = new JLabel();
-		imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
 		add(controlPanel, "span 3, grow");
-		// add(imageLabel, "span 3, grow, width 200, height 60");
 
 		addMouseWheelListener(new WheelControl());
 
@@ -198,8 +190,6 @@ public class LocomotiveWidget extends JPanel implements
 		controlPanel.add(functionsPanel, "grow, west");
 		controlPanel.add(speedControlPanel, "grow");
 		controlPanel.add(speedBar, "east, width 30");
-
-		setLocomotiveImage();
 
 		return controlPanel;
 	}
@@ -340,7 +330,6 @@ public class LocomotiveWidget extends JPanel implements
 			}
 		}
 
-		setLocomotiveImage();
 		if (isFree()) {
 			locomotiveGroupComboBox.setEnabled(true);
 			locomotiveComboBox.setEnabled(true);
@@ -377,17 +366,6 @@ public class LocomotiveWidget extends JPanel implements
 				return false;
 			}
 		}
-	}
-
-	/**
-	 * @param imageLabel
-	 */
-	private void setLocomotiveImage() {
-
-		if (myLocomotive == null) {
-			return;
-		}
-		imageLabel.setIcon(ImageTools.getLocomotiveIcon(myLocomotive));
 	}
 
 	@Override
@@ -471,7 +449,6 @@ public class LocomotiveWidget extends JPanel implements
 			locomotiveComboBox.addItemListener(locomotiveSelectAction);
 
 			locomotiveComboBox.setSelectedIndex(-1);
-			imageLabel.setIcon(null);
 		}
 	}
 

@@ -33,6 +33,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
@@ -57,15 +58,17 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
 	private final boolean forHistory;
 
+	private JPanel statePanel;
+
 	public TurnoutWidget(final Turnout turnout, final boolean forHistory) {
-		this(turnout, false, forHistory);
+		this(turnout, forHistory, false);
 	}
 
-	public TurnoutWidget(final Turnout turnout, final boolean testMode,
-			final boolean forHistory) {
-		this.testMode = testMode;
+	public TurnoutWidget(final Turnout turnout, final boolean forHistory,
+			final boolean testMode) {
 		this.turnout = turnout;
 		this.forHistory = forHistory;
+		this.testMode = testMode;
 
 		widgetEnabled = true;
 
@@ -84,6 +87,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		numberLabel = new JLabel();
 		numberLabel.setFont(new Font("Dialog", Font.BOLD, 25));
+		statePanel = new JPanel();
 
 		setLayout(new MigLayout());
 
@@ -91,8 +95,9 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			add(numberLabel);
 			add(turnoutCanvas);
 		} else {
-			add(numberLabel, "wrap");
-			add(turnoutCanvas);
+			add(numberLabel, "");
+			add(statePanel, "wrap, w 15!, h 5!, align right");
+			add(turnoutCanvas, "span 2");
 		}
 	}
 
@@ -160,6 +165,32 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 				public void run() {
 					numberLabel.setText(Integer.toString(turnout.getNumber()));
 					turnoutCanvas.setTurnoutState(actualTurnoutState);
+					switch (actualTurnoutState) {
+					case LEFT:
+					case RIGHT:
+						if (turnout.getDefaultState().equals(
+								TurnoutState.STRAIGHT)) {
+							statePanel.setBackground(Color.RED);
+						} else {
+							statePanel.setBackground(Color.GREEN);
+						}
+
+						break;
+					case STRAIGHT:
+						if (turnout.getDefaultState().equals(
+								TurnoutState.STRAIGHT)) {
+							statePanel.setBackground(Color.GREEN);
+						} else {
+							statePanel.setBackground(Color.RED);
+						}
+
+						break;
+					case UNDEF:
+					default:
+						statePanel.setBackground(Color.GRAY);
+						break;
+
+					}
 					TurnoutWidget.this.revalidate();
 					TurnoutWidget.this.repaint();
 				}

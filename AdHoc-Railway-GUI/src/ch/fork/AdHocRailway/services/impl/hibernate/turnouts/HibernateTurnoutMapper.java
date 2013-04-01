@@ -81,7 +81,7 @@ public class HibernateTurnoutMapper {
 		switch (turnoutType) {
 		case CUTTER:
 			return "CUTTER";
-		case DEFAULT:
+		case DEFAULT_LEFT:
 			return "DEFAULT";
 		case DOUBLECROSS:
 			return "DOUBLECROSS";
@@ -95,7 +95,7 @@ public class HibernateTurnoutMapper {
 
 	private static TurnoutType mapType(final String turnoutType) {
 		if (turnoutType.equalsIgnoreCase("DEFAULT")) {
-			return TurnoutType.DEFAULT;
+			return TurnoutType.DEFAULT_LEFT;
 		} else if (turnoutType.equalsIgnoreCase("DOUBLECROSS")) {
 			return TurnoutType.DOUBLECROSS;
 		} else if (turnoutType.equalsIgnoreCase("THREEWAY")) {

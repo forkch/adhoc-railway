@@ -39,21 +39,22 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = -8165753925040643894L;
 
 	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value,
-			boolean isSelected, boolean hasFocus, int row, int column) {
-		JLabel iconLabel = (JLabel) super.getTableCellRendererComponent(table,
-				value, isSelected, hasFocus, row, column);
+	public Component getTableCellRendererComponent(final JTable table,
+			final Object value, final boolean isSelected,
+			final boolean hasFocus, final int row, final int column) {
+		final JLabel iconLabel = (JLabel) super.getTableCellRendererComponent(
+				table, value, isSelected, hasFocus, row, column);
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		Turnout currentTurnout;
 		iconLabel.setText("");
-		TurnoutManager persistence = AdHocRailway.getInstance()
+		final TurnoutManager persistence = AdHocRailway.getInstance()
 				.getTurnoutPersistence();
 		currentTurnout = persistence.getTurnoutByNumber(Integer
 				.valueOf((Integer) table.getValueAt(row, 0)));
 		if (currentTurnout == null) {
 			return iconLabel;
 		}
-		TurnoutState routedState = (TurnoutState) value;
+		final TurnoutState routedState = (TurnoutState) value;
 		String stateString = "";
 		switch (routedState) {
 		case STRAIGHT:
@@ -68,10 +69,14 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 		default:
 			break;
 		}
-		if (currentTurnout.isDefault()) {
+		if (currentTurnout.isDefaultLeft()) {
 			iconLabel.setIcon(ImageTools
-					.createImageIcon("switches/default_switch_" + stateString
-							+ ".png"));
+					.createImageIcon("switches/default_switch_left_"
+							+ stateString + ".png"));
+		} else if (currentTurnout.isDefaultRight()) {
+			iconLabel.setIcon(ImageTools
+					.createImageIcon("switches/default_switch_right_"
+							+ stateString + ".png"));
 		} else if (currentTurnout.isDoubleCross()) {
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/double_cross_switch_"

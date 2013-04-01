@@ -402,7 +402,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 				nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
 			}
 			final Turnout newTurnout = TurnoutHelper.createDefaultTurnout(
-					turnoutPersistence, selectedTurnoutGroup, nextNumber);
+					turnoutPersistence, nextNumber);
 
 			new TurnoutConfig(TurnoutConfigurationDialog.this, newTurnout,
 					selectedTurnoutGroup);

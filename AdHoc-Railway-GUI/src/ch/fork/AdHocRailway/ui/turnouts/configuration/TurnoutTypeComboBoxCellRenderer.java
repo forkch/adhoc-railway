@@ -35,17 +35,23 @@ public class TurnoutTypeComboBoxCellRenderer extends DefaultListCellRenderer {
 	private static final long serialVersionUID = -8179478248689107235L;
 
 	@Override
-	public Component getListCellRendererComponent(JList<?> list, Object value,
-			int index, boolean isSelected, boolean cellHasFocus) {
-		JLabel iconLabel = (JLabel) super.getListCellRendererComponent(list,
-				value, index, isSelected, cellHasFocus);
+	public Component getListCellRendererComponent(final JList<?> list,
+			final Object value, final int index, final boolean isSelected,
+			final boolean cellHasFocus) {
+		final JLabel iconLabel = (JLabel) super.getListCellRendererComponent(
+				list, value, index, isSelected, cellHasFocus);
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		TurnoutType type = (TurnoutType) value;
+		final TurnoutType type = (TurnoutType) value;
 		iconLabel.setText("");
 		switch (type) {
-		case DEFAULT:
+		case DEFAULT_LEFT:
 			iconLabel.setIcon(ImageTools
-					.createImageIcon("switches/default_switch_small.png"));
+					.createImageIcon("switches/default_switch_small_left.png"));
+			break;
+		case DEFAULT_RIGHT:
+			iconLabel
+					.setIcon(ImageTools
+							.createImageIcon("switches/default_switch_small_right.png"));
 			break;
 		case DOUBLECROSS:
 			iconLabel.setIcon(ImageTools

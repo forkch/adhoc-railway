@@ -44,6 +44,7 @@ import javax.swing.table.TableColumn;
 
 import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.routes.Route;
+import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
@@ -54,6 +55,7 @@ import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
+import ch.fork.AdHocRailway.ui.ErrorPanel;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
@@ -64,7 +66,6 @@ import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
 import com.jgoodies.binding.adapter.SpinnerAdapterFactory;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.Trigger;
-import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
 public class RouteConfig extends JDialog {
@@ -75,12 +76,10 @@ public class RouteConfig extends JDialog {
 	private final PresentationModel<Route> presentationModel;
 	private JButton okButton;
 	private JButton cancelButton;
-	private PanelBuilder builder;
 	private JSpinner routeNumberSpinner;
 	private JTextField routeNameField;
 	private SelectionInList<RouteItem> routeItemModel;
 	private JTable routeItemTable;
-	private JButton addRouteItemButton;
 	private JButton recordRouteButton;
 	public StringBuffer enteredNumberKeys;
 	private JButton removeRouteItemButton;
@@ -88,15 +87,21 @@ public class RouteConfig extends JDialog {
 	private JTextField routeOrientationField;
 	private JPanel mainPanel;
 	private final Trigger trigger = new Trigger();
+	private final RouteGroup selectedRouteGroup;
+	private ErrorPanel errorPanel;
 
-	public RouteConfig(final JDialog owner, final Route myRoute) {
+	public RouteConfig(final JDialog owner, final Route myRoute,
+			final RouteGroup selectedRouteGroup) {
 		super(owner, "Route Config", true);
+		this.selectedRouteGroup = selectedRouteGroup;
 		this.presentationModel = new PresentationModel<Route>(myRoute, trigger);
 		initGUI();
 	}
 
-	public RouteConfig(final Frame owner, final Route myRoute) {
+	public RouteConfig(final Frame owner, final Route myRoute,
+			final RouteGroup selectedRouteGroup) {
 		super(owner, "Route Config", true);
+		this.selectedRouteGroup = selectedRouteGroup;
 		this.presentationModel = new PresentationModel<Route>(myRoute, trigger);
 
 		initGUI();
@@ -143,11 +148,12 @@ public class RouteConfig extends JDialog {
 				.getColumn(1);
 		routedStateColumn.setCellRenderer(new RoutedTurnoutStateCellRenderer());
 
-		addRouteItemButton = new JButton(new AddRouteItemAction());
 		recordRouteButton = new JButton(new RecordRouteAction());
 		removeRouteItemButton = new JButton(new RemoveRouteItemAction());
 
 		digitDisplay = new ThreeDigitDisplay();
+
+		errorPanel = new ErrorPanel();
 
 		okButton = new JButton(new ApplyChangesAction());
 		cancelButton = new JButton(new CancelAction());
@@ -173,7 +179,8 @@ public class RouteConfig extends JDialog {
 		mainPanel.add(buildRouteItemButtonBar(), "span 2, align center, wrap");
 		mainPanel.add(new JScrollPane(routeItemTable), "span 2, grow x, wrap");
 
-		mainPanel.add(buildButtonBar(), "span 2, align right");
+		mainPanel.add(errorPanel);
+		mainPanel.add(buildButtonBar(), "span 1, align right");
 
 		add(mainPanel);
 	}
@@ -185,21 +192,6 @@ public class RouteConfig extends JDialog {
 
 	private JComponent buildButtonBar() {
 		return ButtonBarFactory.buildRightAlignedBar(okButton, cancelButton);
-	}
-
-	private class AddRouteItemAction extends AbstractAction {
-
-		private static final long serialVersionUID = -2588582945532694902L;
-
-		public AddRouteItemAction() {
-			super("Add Turnout", ImageTools
-					.createImageIconFromIconSet("list-add.png"));
-		}
-
-		@Override
-		public void actionPerformed(final ActionEvent e) {
-
-		}
 	}
 
 	private class RecordRouteAction extends AbstractAction {
@@ -543,12 +535,13 @@ public class RouteConfig extends JDialog {
 				@Override
 				public void failure(
 						final RouteManagerException routeManagerException) {
-					System.out.println("failure");
+
+					errorPanel.setErrorText(routeManagerException.getMessage());
 				}
 
 			});
 			if (route.getId() == -1) {
-				routePersistence.addRoute(route);
+				routePersistence.addRouteToGroup(route, selectedRouteGroup);
 			} else {
 				routePersistence.updateRoute(route);
 			}

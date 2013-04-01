@@ -439,9 +439,10 @@ public class RoutesConfigurationDialog extends JDialog implements
 			}
 
 			final Route newRoute = RouteHelper.createDefaultRoute(
-					routePersistence, selectedRouteGroup, nextNumber);
+					routePersistence, nextNumber);
 
-			new RouteConfig(RoutesConfigurationDialog.this, newRoute);
+			new RouteConfig(RoutesConfigurationDialog.this, newRoute,
+					selectedRouteGroup);
 		}
 	}
 
@@ -478,7 +479,8 @@ public class RoutesConfigurationDialog extends JDialog implements
 			final Route newRoute = RouteHelper.copyRoute(routePersistence,
 					selectedRoute, selectedRouteGroup, nextNumber);
 
-			new RouteConfig(RoutesConfigurationDialog.this, newRoute);
+			new RouteConfig(RoutesConfigurationDialog.this, newRoute,
+					selectedRouteGroup);
 		}
 	}
 
@@ -492,7 +494,8 @@ public class RoutesConfigurationDialog extends JDialog implements
 		public void actionPerformed(final ActionEvent e) {
 
 			final Route route = (Route) routesList.getSelectedValue();
-			new RouteConfig(RoutesConfigurationDialog.this, route);
+			new RouteConfig(RoutesConfigurationDialog.this, route,
+					route.getRouteGroup());
 		}
 	}
 

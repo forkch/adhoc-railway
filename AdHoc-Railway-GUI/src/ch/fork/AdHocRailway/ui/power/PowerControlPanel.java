@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
@@ -62,8 +61,6 @@ public class PowerControlPanel extends JPanel implements
 	}
 
 	private void initGUI() {
-
-		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		final MigLayout layout = new MigLayout("wrap 2");
 		powerControlPanel = new JPanel(layout);
 
@@ -72,6 +69,7 @@ public class PowerControlPanel extends JPanel implements
 
 		final SimpleInternalFrame frame = new SimpleInternalFrame("Boosters");
 		frame.add(powerControlPanel, BorderLayout.CENTER);
+		setLayout(new BorderLayout());
 		add(frame, BorderLayout.CENTER);
 
 	}
@@ -160,8 +158,8 @@ public class PowerControlPanel extends JPanel implements
 		allBoostersOn.addActionListener(new AllBoostersOnAction());
 		allBoostersOff.addActionListener(new AllBoostersOffAction());
 
-		powerControlPanel.add(allBoostersOn, "");
-		powerControlPanel.add(allBoostersOff, "wrap 15");
+		powerControlPanel.add(allBoostersOn, "growx");
+		powerControlPanel.add(allBoostersOff, "growx, wrap 15");
 
 		for (int i = 0; i < numberOfBoosters; i++) {
 
@@ -170,7 +168,7 @@ public class PowerControlPanel extends JPanel implements
 			boosterButton.setHorizontalAlignment(SwingConstants.LEADING);
 			final ToggleBoosterAction action = new ToggleBoosterAction();
 			boosterButton.addActionListener(action);
-			powerControlPanel.add(boosterButton, "grow");
+			powerControlPanel.add(boosterButton, "growx");
 
 			numberToPowerToggleButtons.put(i, boosterButton);
 			numberToActionListener.put(i, action);

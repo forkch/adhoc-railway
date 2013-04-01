@@ -25,8 +25,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
 
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.ImageTools;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class TurnoutDefaultStateComboBoxCellRenderer extends
 		DefaultListCellRenderer {
@@ -35,16 +35,18 @@ public class TurnoutDefaultStateComboBoxCellRenderer extends
 	 */
 	private static final long serialVersionUID = -2928955312058895462L;
 
-	public Component getListCellRendererComponent(JList<?> list, Object value,
-			int index, boolean isSelected, boolean cellHasFocus) {
-		JLabel iconLabel = (JLabel) super.getListCellRendererComponent(list,
-				value, index, isSelected, cellHasFocus);
+	@Override
+	public Component getListCellRendererComponent(final JList<?> list,
+			final Object value, final int index, final boolean isSelected,
+			final boolean cellHasFocus) {
+		final JLabel iconLabel = (JLabel) super.getListCellRendererComponent(
+				list, value, index, isSelected, cellHasFocus);
 		if (value == null) {
 			return iconLabel;
 		}
 		iconLabel.setText("");
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		if (value.equals(SRCPTurnoutState.STRAIGHT)) {
+		if (value.equals(TurnoutState.STRAIGHT)) {
 			iconLabel.setIcon(ImageTools
 					.createImageIcon("switches/default_straight.png"));
 		} else {

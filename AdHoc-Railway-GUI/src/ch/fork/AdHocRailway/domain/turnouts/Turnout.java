@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
+import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,11 +27,12 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 
-import com.jgoodies.binding.beans.Model;
+import com.jgoodies.binding.beans.ExtendedPropertyChangeSupport;
 
-public class Turnout extends Model implements java.io.Serializable,
-		Comparable<Turnout> {
+public class Turnout implements java.io.Serializable, Comparable<Turnout> {
 
+	private final ExtendedPropertyChangeSupport changeSupport = new ExtendedPropertyChangeSupport(
+			this);
 	/**
 	 * 
 	 */
@@ -105,7 +107,8 @@ public class Turnout extends Model implements java.io.Serializable,
 	public void setTurnoutType(final TurnoutType turnoutType) {
 		final TurnoutType old = this.turnoutType;
 		this.turnoutType = turnoutType;
-		firePropertyChange(PROPERTYNAME_TURNOUT_TYPE, old, turnoutType);
+		changeSupport.firePropertyChange(PROPERTYNAME_TURNOUT_TYPE, old,
+				turnoutType);
 	}
 
 	public TurnoutGroup getTurnoutGroup() {
@@ -115,7 +118,8 @@ public class Turnout extends Model implements java.io.Serializable,
 	public void setTurnoutGroup(final TurnoutGroup turnoutGroup) {
 		final TurnoutGroup old = this.turnoutGroup;
 		this.turnoutGroup = turnoutGroup;
-		firePropertyChange(PROPERTYNAME_TURNOUT_GROUP, old, turnoutGroup);
+		changeSupport.firePropertyChange(PROPERTYNAME_TURNOUT_GROUP, old,
+				turnoutGroup);
 	}
 
 	public int getNumber() {
@@ -125,7 +129,7 @@ public class Turnout extends Model implements java.io.Serializable,
 	public void setNumber(final int number) {
 		final int old = this.number;
 		this.number = number;
-		firePropertyChange(PROPERTYNAME_NUMBER, old, number);
+		changeSupport.firePropertyChange(PROPERTYNAME_NUMBER, old, number);
 	}
 
 	public String getDescription() {
@@ -135,7 +139,8 @@ public class Turnout extends Model implements java.io.Serializable,
 	public void setDescription(final String description) {
 		final String old = this.description;
 		this.description = description;
-		firePropertyChange(PROPERTYNAME_DESCRIPTION, old, description);
+		changeSupport.firePropertyChange(PROPERTYNAME_DESCRIPTION, old,
+				description);
 	}
 
 	public TurnoutState getDefaultState() {
@@ -145,7 +150,8 @@ public class Turnout extends Model implements java.io.Serializable,
 	public void setDefaultState(final TurnoutState defaultState) {
 		final TurnoutState old = this.defaultState;
 		this.defaultState = defaultState;
-		firePropertyChange(PROPERTYNAME_DEFAULT_STATE, old, defaultState);
+		changeSupport.firePropertyChange(PROPERTYNAME_DEFAULT_STATE, old,
+				defaultState);
 	}
 
 	public TurnoutOrientation getOrientation() {
@@ -155,7 +161,8 @@ public class Turnout extends Model implements java.io.Serializable,
 	public void setOrientation(final TurnoutOrientation orientation) {
 		final TurnoutOrientation old = this.orientation;
 		this.orientation = orientation;
-		firePropertyChange(PROPERTYNAME_ORIENTATION, old, orientation);
+		changeSupport.firePropertyChange(PROPERTYNAME_ORIENTATION, old,
+				orientation);
 	}
 
 	public Set<RouteItem> getRouteItems() {
@@ -173,7 +180,7 @@ public class Turnout extends Model implements java.io.Serializable,
 	public void setAddress1(final int address1) {
 		final int old = this.address1;
 		this.address1 = address1;
-		firePropertyChange(PROPERTYNAME_ADDRESS1, old, address1);
+		changeSupport.firePropertyChange(PROPERTYNAME_ADDRESS1, old, address1);
 	}
 
 	public int getAddress2() {
@@ -183,7 +190,7 @@ public class Turnout extends Model implements java.io.Serializable,
 	public void setAddress2(final int address2) {
 		final int old = this.address2;
 		this.address2 = address2;
-		firePropertyChange(PROPERTYNAME_ADDRESS2, old, address2);
+		changeSupport.firePropertyChange(PROPERTYNAME_ADDRESS2, old, address2);
 	}
 
 	public int getBus1() {
@@ -193,7 +200,7 @@ public class Turnout extends Model implements java.io.Serializable,
 	public void setBus1(final int bus1) {
 		final int old = this.bus1;
 		this.bus1 = bus1;
-		firePropertyChange(PROPERTYNAME_BUS1, old, bus1);
+		changeSupport.firePropertyChange(PROPERTYNAME_BUS1, old, bus1);
 	}
 
 	public int getBus2() {
@@ -203,7 +210,7 @@ public class Turnout extends Model implements java.io.Serializable,
 	public void setBus2(final int bus2) {
 		final int old = this.bus2;
 		this.bus2 = bus2;
-		firePropertyChange(PROPERTYNAME_BUS2, old, bus2);
+		changeSupport.firePropertyChange(PROPERTYNAME_BUS2, old, bus2);
 	}
 
 	public boolean isAddress1Switched() {
@@ -213,7 +220,7 @@ public class Turnout extends Model implements java.io.Serializable,
 	public void setAddress1Switched(final boolean address1Switched) {
 		final boolean old = this.address1Switched;
 		this.address1Switched = address1Switched;
-		firePropertyChange(PROPERTYNAME_ADDRESS1_SWITCHED, old,
+		changeSupport.firePropertyChange(PROPERTYNAME_ADDRESS1_SWITCHED, old,
 				address1Switched);
 	}
 
@@ -224,12 +231,16 @@ public class Turnout extends Model implements java.io.Serializable,
 	public void setAddress2Switched(final boolean address2Switched) {
 		final boolean old = this.address2Switched;
 		this.address2Switched = address2Switched;
-		firePropertyChange(PROPERTYNAME_ADDRESS2_SWITCHED, old,
+		changeSupport.firePropertyChange(PROPERTYNAME_ADDRESS2_SWITCHED, old,
 				address2Switched);
 	}
 
-	public boolean isDefault() {
-		return getTurnoutType() == TurnoutType.DEFAULT;
+	public boolean isDefaultLeft() {
+		return getTurnoutType() == TurnoutType.DEFAULT_LEFT;
+	}
+
+	public boolean isDefaultRight() {
+		return getTurnoutType() == TurnoutType.DEFAULT_RIGHT;
 	}
 
 	public boolean isDoubleCross() {
@@ -299,5 +310,13 @@ public class Turnout extends Model implements java.io.Serializable,
 
 	public void setId(final int id) {
 		this.id = id;
+	}
+
+	public void addPropertyChangeListener(final PropertyChangeListener x) {
+		changeSupport.addPropertyChangeListener(x);
+	}
+
+	public void removePropertyChangeListener(final PropertyChangeListener x) {
+		changeSupport.removePropertyChangeListener(x);
 	}
 }

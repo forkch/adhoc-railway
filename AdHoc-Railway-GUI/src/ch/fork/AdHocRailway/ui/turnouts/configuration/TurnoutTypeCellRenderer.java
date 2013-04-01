@@ -45,9 +45,14 @@ public class TurnoutTypeCellRenderer extends DefaultTableCellRenderer {
 		final TurnoutType type = (TurnoutType) value;
 		iconLabel.setText("");
 		switch (type) {
-		case DEFAULT:
+		case DEFAULT_LEFT:
 			iconLabel.setIcon(ImageTools
-					.createImageIcon("switches/default_switch_small.png"));
+					.createImageIcon("switches/default_switch_small_left.png"));
+			break;
+		case DEFAULT_RIGHT:
+			iconLabel
+					.setIcon(ImageTools
+							.createImageIcon("switches/default_switch_small_right.png"));
 			break;
 		case DOUBLECROSS:
 			iconLabel.setIcon(ImageTools

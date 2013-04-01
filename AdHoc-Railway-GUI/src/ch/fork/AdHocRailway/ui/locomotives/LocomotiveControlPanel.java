@@ -19,16 +19,15 @@
 package ch.fork.AdHocRailway.ui.locomotives;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
@@ -59,16 +58,14 @@ public class LocomotiveControlPanel extends JPanel implements
 
 	private void initGUI() {
 		setLayout(new BorderLayout());
-		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		final FlowLayout controlPanelLayout = new FlowLayout(FlowLayout.CENTER,
-				5, 0);
-		controlPanel = new JPanel(controlPanelLayout);
-		controlPanel.setLayout(controlPanelLayout);
+		controlPanel = new JPanel(new MigLayout());
 
 		final SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame(
 				"Trains");
 		locomotivesFrame.add(controlPanel, BorderLayout.CENTER);
+		setLayout(new BorderLayout());
 		add(locomotivesFrame, BorderLayout.NORTH);
+
 		getActionMap().put("LocomotiveStop", new LocomotiveStopAction());
 		Preferences
 				.getInstance()
