@@ -224,6 +224,27 @@ exports.removeRoutedTurnout = function (socket, routeId, routedTurnout, fn) {
   });
 }
 
+exports.clear = function(socket, fn) {
+  RouteModel.remove( function (err) {
+    if(!err) {
+      RouteGroupModel.remove( function (err) {
+        if(!err) {
+          getAllRouteData(function(err, result) {
+            if(!err) {
+              socket.broadcast.emit('route:init', result);
+              fn(false, '', result);
+            }
+          });
+        } else {
+          fn(true, 'failed to clear route groups', '');
+        }
+      });
+    } else {
+      fn(true, 'failed to clear routes', '');
+    }
+  });
+}
+
 /* PRIVATE HELPERS */
 getAllRouteData = function (fn) {
 

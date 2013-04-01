@@ -33,4 +33,9 @@ div.row(ng-repeat='routeGroup in routeGroups')
       a.btn(href='addRoute/{{routeGroup._id}}')
         i.icon-plus
 
+div.row
+  div.span3
+    button.btn(ng-click='clearRoutes()', style='margin-top:30px;')
+      i.icon-remove(style='padding-right:10px;')
+      | Remove all Routes
 

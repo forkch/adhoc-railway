@@ -187,6 +187,27 @@ exports.removeTurnout = function(socket, turnout, fn) {
   });
 }
 
+exports.clear = function(socket, fn) {
+  TurnoutModel.remove( function (err) {
+    if(!err) {
+      TurnoutGroupModel.remove( function (err) {
+        if(!err) {
+          getAllTurnoutData(function(err, result) {
+            if(!err) {
+              socket.broadcast.emit('turnout:init', result);
+              fn(false, '', result);
+            }
+          });
+        } else {
+          fn(true, 'failed to clear turnout groups','');
+        }
+      });
+    } else {
+      fn(true, 'failed to clear turnouts','');
+    }
+  });
+}
+
 /* PRIVATE HELPERS */
 getAllTurnoutData = function(fn) {
 

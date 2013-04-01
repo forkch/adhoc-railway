@@ -4,9 +4,13 @@ function TurnoutsCtrl($scope, socket) {
     $scope.turnouts = {};
     $scope.turnoutGroups = {};
     socket.emit('turnoutGroup:getAll', '', function(err, data) {
-        if(!err) {
-            receivedNewTurnoutGroups(data.turnoutGroups, $scope);
-        }
+      if(!err) {
+        receivedNewTurnoutGroups(data.turnoutGroups, $scope);
+      }
+    });
+
+    socket.on('turnout:init', function(data) {
+      receivedNewTurnoutGroups(data.turnoutGroups, $scope);
     });
 
     socket.on('turnoutGroup:added', function(turnoutGroup) {
@@ -53,6 +57,17 @@ function TurnoutsCtrl($scope, socket) {
                 $scope.error = 'Error removing turnout group(' + msg + ')';
             }
         });
+    }
+
+    $scope.clearTurnouts = function() {
+      $scope.error = null;
+      socket.emit('turnout:clear', '', function(err, msg, data) {
+        if(!err) {
+            receivedNewTurnoutGroups(data.turnoutGroups, $scope);
+        } else {
+          $scope.error = 'Error clearing turnouts: ' + msg;
+        }
+      })
     }
     
 }
@@ -144,6 +159,8 @@ EditTurnoutCtrl.$inject = ['$scope', 'socket', '$location', '$routeParams'];
 
 
 function receivedNewTurnoutGroups(turnoutGroups, $scope) {
+    $scope.turnouts = {};
+    $scope.turnoutGroups = {};
     angular.forEach(turnoutGroups, function(turnoutGroup, key) {
         $scope.turnoutGroups[turnoutGroup._id] = turnoutGroup;
         angular.forEach(turnoutGroup.turnouts, function(turnout, id) {

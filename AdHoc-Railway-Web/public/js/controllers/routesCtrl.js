@@ -4,9 +4,13 @@ function RoutesCtrl($scope, socket) {
   $scope.routes = {};
   $scope.routeGroups = {};
   socket.emit('routeGroup:getAll', '', function(err, data) {
-    if(!err) {
-      receivedNewRouteGroups(data.routeGroups, $scope);
-    }
+      if(!err) {
+        receivedNewRouteGroups(data.routeGroups, $scope);
+      }
+  });
+
+  socket.on('route:init', function(data) {
+    receivedNewRouteGroups(data.routeGroups, $scope);
   });
 
   socket.on('routeGroup:added', function(routeGroup) {
@@ -55,6 +59,16 @@ function RoutesCtrl($scope, socket) {
     });
   }
 
+  $scope.clearRoutes = function() {
+    $scope.error = null;
+    socket.emit('route:clear', '', function(err, msg, data) {
+      if(!err) {
+        receivedNewRouteGroups(data.routeGroups, $scope);
+      } else {
+        $scope.error = 'Error clearing routes: ' + msg;
+      }
+    })
+  }
 }
 RoutesCtrl.$inject = ['$scope', 'socket'];
 
@@ -180,6 +194,8 @@ EditRouteCtrl.$inject = ['$scope', 'socket', '$location', '$routeParams'];
 // Private helpers
  **************/
 function receivedNewRouteGroups(routeGroups, $scope) {
+  $scope.routes = {};
+  $scope.routeGroups = {};
   angular.forEach(routeGroups, function(routeGroup, key) {
     $scope.routeGroups[routeGroup._id] = routeGroup;
     angular.forEach(routeGroup.routes, function(route, id) {
@@ -219,7 +235,7 @@ function removeRoute(routeId, $scope) {
 function removeRouteGroup(routeGroupId, $scope) {
   delete $scope.routeGroups[routeGroupId]
 }
- 
+
 function updateRouteGroup (routeGroup, $scope) {
   $scope.routeGroups[routeGroup._id].number = routeGroup.number;
   $scope.routeGroups[routeGroup._id].name = routeGroup.name;
@@ -244,7 +260,7 @@ function getAllTurnouts (socket, $scope, fn) {
       fn();
     }
   });
-  
+
 }
 function populateTurnoutIds ($scope) {
   angular.forEach($scope.route.routedTurnouts, function(routedTurnout) {

@@ -35,3 +35,9 @@ div.row(ng-repeat='locomotiveGroup in locomotiveGroups')
       a.btn(href='addLocomotive/{{locomotiveGroup._id}}')
         i.icon-plus
 
+div.row
+  div.span3
+    button.btn(ng-click='clearLocomotives()', style='margin-top:30px;')
+      i.icon-remove(style='padding-right:10px;')
+      | Remove all Locomotives
+

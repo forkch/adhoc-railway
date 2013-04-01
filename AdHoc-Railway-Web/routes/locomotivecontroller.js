@@ -110,33 +110,10 @@ exports.getById = function(socket, locomotiveId, fn) {
 }
 
 exports.addLocomotive = function(socket, locomotive, fn) {
-  if(!locomotive.name || locomotive.name.length < 1) {
-    fn(true, 'name must be specified');
+
+  if(!validateLocomotive(locomotive, fn)){
     return;
   }
-  if(!locomotive.type || locomotive.type.length < 1) {
-    fn(true, 'type must be specified');
-    return;
-  }
-
-  if(!locomotive.bus || locomotive.bus < 1) {
-    fn(true, 'bus must be greater 0');
-    return;
-  }
-
-  if(!locomotive.address1|| locomotive.address1 < 1) {
-    fn(true, 'address 1 must be greater 0');
-    return;
-  }
-
-  if(locomotive.type.toUpperCase() === "SIMULATED-MFX") {
-
-    if(!locomotive.address2 || locomotive.address2 < 1) {
-      fn(true, 'address 2 must be greater 0');
-      return false;
-    }
-  }
-
 
   console.log('adding new locomotive ' + JSON.stringify(locomotive));
   new LocomotiveModel(locomotive).save(function(err, addedLocomotive) {
@@ -164,6 +141,9 @@ exports.addLocomotive = function(socket, locomotive, fn) {
 
 exports.updateLocomotive = function(socket, locomotive, fn) {
   console.log('updating locomotive ' + JSON.stringify(locomotive));
+  if(!validateLocomotive(locomotive, fn)){
+    return;
+  }
 
   var id = locomotive._id;
   delete locomotive._id;
@@ -199,17 +179,27 @@ exports.removeLocomotive = function(socket, locomotive, fn) {
   });
 }
 
-exports.clearLocomotive = function (socket, fn) {
-  LocomotiveGroupModel.collection.drop(function(err) {
-    LocomotiveModel.collection.drop(function(err) {
-      if(!err) {
-        fn(err, "sucessfully removed all locomotives");
-      }else {
-        fn(err, "failed to remove all locomotives");
-      }
-    })
+exports.clear = function(socket, fn) {
+  LocomotiveModel.remove( function (err) {
+    if(!err) {
+      LocomotiveGroupModel.remove( function (err) {
+        if(!err) {
+          getAllLocomotiveData(function(err, result) {
+            if(!err) {
+              socket.broadcast.emit('locomotive:init', result);
+              fn(false, '', result);
+            }
+          });
+        } else {
+          fn(true, 'failed to clear locomotive groups', '');
+        }
+      });
+    } else {
+      fn(true, 'failed to clear locomotives', '');
+    }
   });
 }
+
 /* PRIVATE HELPERS */
 getAllLocomotiveData = function(fn) {
 
@@ -246,5 +236,35 @@ getAllLocomotiveData = function(fn) {
       fn(false, result);
     });
   });
+}
+
+validateLocomotive = function(locomotive, fn) {
+  if(!locomotive.name || locomotive.name.length < 1) {
+    fn(true, 'name must be specified');
+    return false;
+  }
+  if(!locomotive.type || locomotive.type.length < 1) {
+    fn(true, 'type must be specified');
+    return false;
+  }
+
+  if(!locomotive.bus || locomotive.bus < 1) {
+    fn(true, 'bus must be greater 0');
+    return false;
+  }
+
+  if(!locomotive.address1|| locomotive.address1 < 1) {
+    fn(true, 'address 1 must be greater 0');
+    return false;
+  }
+
+  if(locomotive.type.toUpperCase() === "SIMULATED-MFX") {
+
+    if(!locomotive.address2 || locomotive.address2 < 1) {
+      fn(true, 'address 2 must be greater 0');
+      return false;
+    }
+  }
+  return true;
 }
 

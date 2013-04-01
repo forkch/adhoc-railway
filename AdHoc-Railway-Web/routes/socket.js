@@ -61,6 +61,11 @@ module.exports = function (socket) {
         turnoutController.removeTurnout(socket, turnout, fn);
     });
 
+    socket.on('turnout:clear', function (dummy, fn) {
+      console.log('turnout:clear');
+      turnoutController.clear(socket, fn);
+    });
+
     /* ROUTES */
 
     socket.on('routeGroup:getAll', function (dummy, fn) {
@@ -106,6 +111,11 @@ module.exports = function (socket) {
     socket.on('route:remove', function (route, fn) {
         console.log('route:remove');
         routeController.removeRoute(socket, route, fn);
+    });
+
+    socket.on('route:clear', function (dummy, fn) {
+      console.log('route:clear');
+      routeController.clear(socket, fn);
     });
 
     /* LOCOMOTIVES */
@@ -155,8 +165,8 @@ module.exports = function (socket) {
         locomotiveController.removeLocomotive(socket, locomotive, fn);
     });
 
-    socket.on('locomotive:clear', function (locomotive, fn) {
-        console.log('locomotive:clear');
-        locomotiveController.clearLocomotive(socket, fn);
+    socket.on('locomotive:clear', function (dummy, fn) {
+      console.log('locomotive:clear');
+      locomotiveController.clear(socket, fn);
     });
 };
