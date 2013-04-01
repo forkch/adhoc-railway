@@ -18,17 +18,18 @@ public enum SIOLocomotiveServiceEvent {
 
 	LOCOMOTIVE_ADD_REQUEST("locomotive:add"),
 	LOCOMOTIVE_REMOVE_REQUEST("locomotive:remove"),
-	LOCOMOTIVE_UPDATE_REQUEST("locomotive:update");
+	LOCOMOTIVE_UPDATE_REQUEST("locomotive:update"),
+	LOCOMOTIVE_CLEAR_REQUEST("locomotive:clear");
 
 	// @formatter:on
 	private final String event;
 
-	private SIOLocomotiveServiceEvent(String event) {
+	private SIOLocomotiveServiceEvent(final String event) {
 		this.event = event;
 	}
 
-	public static SIOLocomotiveServiceEvent fromEvent(String event2) {
-		for (SIOLocomotiveServiceEvent e : values()) {
+	public static SIOLocomotiveServiceEvent fromEvent(final String event2) {
+		for (final SIOLocomotiveServiceEvent e : values()) {
 			if (e.getEvent().equalsIgnoreCase(event2)) {
 				return e;
 			}

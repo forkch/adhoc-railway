@@ -13,6 +13,7 @@
 	<property name="build.dir" value="build" />
 	<property name="javadoc.dir" value="javadoc" />
 	<property name="release.dir" value="release/" />
+	<property name="jsrcpc.dir" value="../../jsrcpc/trunk/jsrcpc/"/>
 	<property environment="env" />
 	<!-- main class for run target -->
 	<path id="compile.classpath">
@@ -50,6 +51,7 @@
 	<target name="init">
 		<!-- Create the build directory structure used by compile -->
 		<mkdir dir="${build.dir}" />
+		<copy file="${jsrcpc.dir}/jsrcpc-latest.jar" todir="${lib.dir}"></copy>
 	</target>
 	<!-- =================================================================== -->
 	<!-- CopyImages -->
@@ -91,12 +93,14 @@
 	<!-- =================================================================== -->
 	<target name="deploy" depends="bin"
 		description="Deploys a release to the AdHoc-Server">
-		<scp todir="pi:raspberry@192.168.2.100:/home/pi/AdHoc-Railway" trust="true">
+		<scp todir="baehnle:adhocbaehnle@192.168.2.100:/home/baehnle/AdHoc-Railway" trust="true">
 			<fileset dir="${release.dir}" />
 		</scp>
 
-		<scp todir="pi:raspberry@192.168.2.100:/home/pi/AdHoc-Railway/AdHoc-Railway-${release}-bin" trust="true">
+		<scp todir="baehnle:adhocbaehnle@192.168.2.100:/home/baehnle/AdHoc-Railway/AdHoc-Railway-${release}-bin" trust="true">
 			<fileset file="adhocrailway.conf" />
+			<fileset file="start.bat" />
+			<fileset file="start.sh" />
 		</scp>
 	</target>
 

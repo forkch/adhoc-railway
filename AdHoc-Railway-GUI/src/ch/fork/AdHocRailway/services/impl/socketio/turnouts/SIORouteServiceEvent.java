@@ -20,7 +20,8 @@ public enum SIORouteServiceEvent {
 
 	ROUTE_REMOVE_REQUEST("route:remove"),
 
-	ROUTE_UPDATE_REQUEST("route:update");
+	ROUTE_UPDATE_REQUEST("route:update"), 
+	ROUTE_CLEAR_REQUEST("route:clear");
 	// @formatter:on
 	private final String event;
 

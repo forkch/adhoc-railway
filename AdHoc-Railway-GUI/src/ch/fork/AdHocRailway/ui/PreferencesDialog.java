@@ -111,7 +111,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		builder.add(createAdHocServerTab(), cc.xy(4, 8));
 
 		JButton okButton = new JButton("OK",
-				ImageTools.createImageIconFromIconSet("ok.png"));
+				ImageTools.createImageIconFromIconSet("dialog-ok-apply.png"));
 		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -129,7 +129,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 			}
 		});
 		JButton cancelButton = new JButton("Cancel",
-				ImageTools.createImageIconFromIconSet("cancel.png"));
+				ImageTools.createImageIconFromIconSet("dialog-cancel.png"));
 		cancelPressed = false;
 		cancelButton.addActionListener(new ActionListener() {
 			@Override

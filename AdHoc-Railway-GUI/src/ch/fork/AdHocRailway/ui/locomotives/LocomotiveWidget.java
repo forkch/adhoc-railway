@@ -43,6 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 
@@ -162,7 +163,7 @@ public class LocomotiveWidget extends JPanel implements
 		imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
 		add(controlPanel, "span 3, grow");
-		add(imageLabel, "span 3, grow, width 200, height 60");
+		// add(imageLabel, "span 3, grow, width 200, height 60");
 
 		addMouseWheelListener(new WheelControl());
 
@@ -395,7 +396,13 @@ public class LocomotiveWidget extends JPanel implements
 			return;
 		}
 		if (myLocomotive.equals(changedLocomotive)) {
-			// SwingUtilities.invokeLater(new LocomotiveWidgetUpdater());
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+					updateWidget();
+				}
+			});
 		}
 	}
 
@@ -486,7 +493,7 @@ public class LocomotiveWidget extends JPanel implements
 				try {
 					if (myLocomotive != null
 							&& AdHocRailway.getInstance().getSession() != null) {
-						locomotiveControl.setSpeed(myLocomotive, 0, null);
+						locomotiveControl.deactivateLoco(myLocomotive);
 					}
 				} catch (final LocomotiveException e1) {
 					ExceptionProcessor.getInstance().processException(e1);
@@ -500,9 +507,13 @@ public class LocomotiveWidget extends JPanel implements
 				locomotiveControl.addLocomotiveChangeListener(myLocomotive,
 						LocomotiveWidget.this);
 
+				locomotiveControl.activateLoco(myLocomotive);
 				updateFunctions();
 				updateWidget();
 				speedBar.requestFocus();
+
+				final Thread blinkOnSelection = new BlinkLightsOnSelectLocomotiveThread();
+				blinkOnSelection.start();
 			} else {
 				locomotiveGroupComboBox
 						.setSelectedItem(myLocomotive.getGroup());
@@ -798,6 +809,27 @@ public class LocomotiveWidget extends JPanel implements
 				return;
 			}
 			a.actionPerformed(null);
+		}
+	}
+
+	private class BlinkLightsOnSelectLocomotiveThread extends Thread {
+
+		@Override
+		public void run() {
+			try {
+				final boolean[] functions = locomotiveControl
+						.getFunctions(myLocomotive);
+
+				for (int i = 0; i < 7; i++) {
+					functions[0] = i % 2 == 0;
+					locomotiveControl.setFunctions(myLocomotive, functions);
+					Thread.sleep(750);
+				}
+			} catch (final InterruptedException e) {
+			} catch (final LocomotiveException e) {
+				AdHocRailway.getInstance().handleException(e);
+			}
+
 		}
 	}
 

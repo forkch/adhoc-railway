@@ -19,14 +19,11 @@
 package ch.fork.AdHocRailway.ui.routes;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -35,6 +32,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
@@ -45,9 +43,6 @@ import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1639307474591899703L;
 	private Route route;
 	private JLabel nameLabel;
@@ -55,67 +50,56 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 	private Icon routeStopIcon;
 	private Icon routeStartIcon;
 	private JProgressBar routingProgress;
-	private JPanel southPanel;
 	private MouseAction mouseAction;
 	private JLabel numberLabel;
+	private JLabel orientationLabel;
 
-	public RouteWidget(Route route) {
+	public RouteWidget(final Route route) {
 		this.route = route;
-		RouteControlIface routeControl = AdHocRailway.getInstance()
+		final RouteControlIface routeControl = AdHocRailway.getInstance()
 				.getRouteControl();
 		initGUI();
 		routeControl.addRouteChangeListener(route, this);
-		update();
+		updateRoute();
 	}
 
 	private void initGUI() {
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		setLayout(new MigLayout());
 		setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-		JPanel northPanel = new JPanel();
-		northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.LINE_AXIS));
 		routeStopIcon = new ImageIcon(
 				ClassLoader.getSystemResource("routes/route_stop.png"));
 		routeStartIcon = new ImageIcon(
 				ClassLoader.getSystemResource("routes/route_start.png"));
 
 		numberLabel = new JLabel();
+		orientationLabel = new JLabel();
+		orientationLabel.setFont(new Font("Dialog", Font.PLAIN, 10));
 		nameLabel = new JLabel();
-		numberLabel.setFont(new Font("Dialog", Font.BOLD, 30));
+		nameLabel.setFont(new Font("Dialog", Font.PLAIN, 10));
+		numberLabel.setFont(new Font("Dialog", Font.BOLD, 25));
 		iconLabel = new JLabel(routeStopIcon);
 
 		routingProgress = new JProgressBar(SwingConstants.HORIZONTAL, 0, route
 				.getRouteItems().size());
-		routingProgress.setPreferredSize(new Dimension((int) routingProgress
-				.getPreferredSize().getWidth(), 8));
 		routingProgress.setBorder(BorderFactory.createEmptyBorder());
 
 		routingProgress.setBackground(Color.RED);
 		routingProgress.setForeground(Color.GREEN);
 		addMouseListener(new MouseAction());
 
-		northPanel.add(Box.createHorizontalStrut(5));
-		northPanel.add(numberLabel);
-		northPanel.add(Box.createHorizontalStrut(5));
-		northPanel.add(nameLabel);
-		northPanel.add(Box.createGlue());
-		northPanel.add(Box.createHorizontalStrut(5));
-		northPanel.add(iconLabel);
-		northPanel.add(Box.createHorizontalStrut(5));
+		add(numberLabel, "span 1 2");
+		add(orientationLabel, "");
+		add(iconLabel, "span 1 2, align right, wrap");
+		add(nameLabel, "wrap");
 
-		southPanel = new JPanel();
-		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.LINE_AXIS));
-		southPanel.add(Box.createHorizontalStrut(5));
-		southPanel.add(routingProgress);
-		southPanel.add(Box.createHorizontalStrut(5));
-		add(Box.createVerticalStrut(5));
-		add(northPanel);
-		add(southPanel);
-		add(Box.createVerticalStrut(5));
+		add(routingProgress, "span 3, h 5!, w 125!");
+
 	}
 
-	private void update() {
+	private void updateRoute() {
 		numberLabel.setText("" + route.getNumber());
+		orientationLabel.setText(route.getOrientation());
 		nameLabel.setText(route.getName());
 		routingProgress.setMaximum(route.getRouteItems().size());
 	}
@@ -123,10 +107,10 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 	private class MouseAction extends MouseAdapter {
 
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseClicked(final MouseEvent e) {
 			try {
-				RouteControlIface routeControl = AdHocRailway.getInstance()
-						.getRouteControl();
+				final RouteControlIface routeControl = AdHocRailway
+						.getInstance().getRouteControl();
 				if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON1) {
 					if (routeControl.isRouting(route)) {
@@ -142,13 +126,13 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 						&& e.getButton() == MouseEvent.BUTTON3) {
 					displayRouteConfig();
 				}
-			} catch (RouteException e1) {
+			} catch (final RouteException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
 			}
 		}
 
 		private void displayRouteConfig() {
-			RouteControlIface routeControl = AdHocRailway.getInstance()
+			final RouteControlIface routeControl = AdHocRailway.getInstance()
 					.getRouteControl();
 			routeControl.removeRouteChangeListener(route, RouteWidget.this);
 			new RouteConfig(AdHocRailway.getInstance(), route);
@@ -159,55 +143,47 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 	}
 
 	@Override
-	public void routeChanged(Route changedRoute) {
+	public void routeChanged(final Route changedRoute) {
 		if (route.equals(changedRoute)) {
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override
 				public void run() {
-					RouteControlIface routeControl = AdHocRailway.getInstance()
-							.getRouteControl();
+					final RouteControlIface routeControl = AdHocRailway
+							.getInstance().getRouteControl();
 					if (routeControl.isRouteEnabled(route)) {
 						iconLabel.setIcon(routeStartIcon);
-						// routingProgress.setForeground(Color.GREEN);
 						routingProgress.setValue(routingProgress.getMaximum());
 					} else {
 						iconLabel.setIcon(routeStopIcon);
-						// routingProgress.setBackground(Color.RED);
 						routingProgress.setValue(routingProgress.getMinimum());
 					}
-					RouteWidget.this.revalidate();
-					RouteWidget.this.repaint();
 				}
 			});
 		}
 	}
 
 	@Override
-	public void nextSwitchRouted(Route changedRoute) {
+	public void nextSwitchRouted(final Route changedRoute) {
 		if (route.equals(changedRoute)) {
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override
 				public void run() {
-					// routingProgress.setValue(routingProgress.getValue() + 1);
-					RouteWidget.this.revalidate();
-					RouteWidget.this.repaint();
+					routingProgress.setValue(routingProgress.getValue() + 1);
 				}
 			});
 		}
 	}
 
 	@Override
-	public void nextSwitchDerouted(Route changedRoute) {
+	public void nextSwitchDerouted(final Route changedRoute) {
 		if (route.equals(changedRoute)) {
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override
 				public void run() {
-					// routingProgress.setValue(routingProgress.getValue() - 1);
-					RouteWidget.this.revalidate();
-					RouteWidget.this.repaint();
+					routingProgress.setValue(routingProgress.getValue() - 1);
 				}
 			});
 		}
@@ -217,8 +193,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		return route;
 	}
 
-	public void setRoute(Route route) {
+	public void setRoute(final Route route) {
 		this.route = route;
-		update();
+		updateRoute();
 	}
 }

@@ -153,8 +153,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 	}
 
 	private void initComponents() {
-		locomotiveGroups = new ArrayListModel<LocomotiveGroup>(
-				locomotivePersistence.getAllLocomotiveGroups());
+		locomotiveGroups = new ArrayListModel<LocomotiveGroup>();
 
 		locomotiveGroupModel = new SelectionInList<LocomotiveGroup>(
 				(ListModel<?>) locomotiveGroups);
@@ -185,7 +184,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 		removeLocomotiveButton = new JButton(new RemoveLocomotiveAction());
 
 		okButton = new JButton("OK",
-				ImageTools.createImageIconFromIconSet("ok.png"));
+				ImageTools.createImageIconFromIconSet("dialog-ok-apply.png"));
 		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
@@ -250,7 +249,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = -6754626146363603303L;
 
 		public AddLocomotiveGroupAction() {
-			super("Add", ImageTools.createImageIconFromIconSet("add.png"));
+			super("Add", ImageTools.createImageIconFromIconSet("list-add.png"));
 		}
 
 		@Override
@@ -272,7 +271,9 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = 5332973509659278121L;
 
 		public EditLocomotiveGroupAction() {
-			super("Edit Group");
+
+			super("Edit Group", ImageTools
+					.createImageIconFromIconSet("edit.png"));
 		}
 
 		@Override
@@ -292,7 +293,8 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = 6014881261911976113L;
 
 		public RemoveLocomotiveGroupAction() {
-			super("Remove", ImageTools.createImageIconFromIconSet("remove.png"));
+			super("Remove", ImageTools
+					.createImageIconFromIconSet("list-remove.png"));
 		}
 
 		@Override
@@ -321,7 +323,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = 7522044592371429190L;
 
 		public AddLocomotiveAction() {
-			super("Add", ImageTools.createImageIconFromIconSet("add.png"));
+			super("Add", ImageTools.createImageIconFromIconSet("list-add.png"));
 		}
 
 		@Override
@@ -383,7 +385,8 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = 1606368554698945245L;
 
 		public RemoveLocomotiveAction() {
-			super("Remove", ImageTools.createImageIconFromIconSet("remove.png"));
+			super("Remove", ImageTools
+					.createImageIconFromIconSet("list-remove.png"));
 		}
 
 		@Override
@@ -431,6 +434,13 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 	}
 
 	@Override
+	public void locomotivesUpdated(
+			final SortedSet<LocomotiveGroup> updatedLocomotiveGroups) {
+		locomotiveGroups.addAll(updatedLocomotiveGroups);
+
+	}
+
+	@Override
 	public void locomotiveAdded(final Locomotive locomotive) {
 		if (locomotive.getGroup().equals(locomotiveGroupModel.getSelection())) {
 			locomotives.add(locomotive);
@@ -473,12 +483,6 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			locomotives.clear();
 		}
 		locomotiveGroups.remove(group);
-	}
-
-	@Override
-	public void locomotivesUpdated(
-			final SortedSet<LocomotiveGroup> locomotiveGroups) {
-
 	}
 
 	@Override

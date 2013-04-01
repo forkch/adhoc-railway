@@ -18,7 +18,8 @@ public enum SIOTurnoutServiceEvent {
 
 	TURNOUT_ADD_REQUEST("turnout:add"),
 	TURNOUT_REMOVE_REQUEST("turnout:remove"),
-	TURNOUT_UPDATE_REQUEST("turnout:update");
+	TURNOUT_UPDATE_REQUEST("turnout:update"), 
+	TURNOUT_CLEAR_REQUEST("turnout:clear");
 
 	// @formatter:on
 	private final String event;

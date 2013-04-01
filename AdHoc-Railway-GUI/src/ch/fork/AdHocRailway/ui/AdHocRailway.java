@@ -32,6 +32,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -63,11 +64,16 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import net.miginfocom.swing.MigLayout;
+
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
 
-import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControlAdapter;
@@ -107,6 +113,7 @@ import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.SERVER;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
+import de.dermoba.srcp.model.locking.SRCPLockingException;
 import de.dermoba.srcp.model.power.SRCPPowerControl;
 import de.dermoba.srcp.model.power.SRCPPowerState;
 import de.dermoba.srcp.model.power.SRCPPowerSupplyException;
@@ -193,7 +200,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	public AdHocRailway(final String file) {
 		super(TITLE);
 		try {
-			PropertyConfigurator.configure("etc/log4j.properties");
+			setUpLogging();
+
+			LOGGER.info("****************************************");
+			LOGGER.info("AdHoc-Railway starting up!!!");
+			LOGGER.info("****************************************");
+
 			PlasticLookAndFeel
 					.setTabStyle(PlasticLookAndFeel.TAB_STYLE_DEFAULT_VALUE);
 			PlasticLookAndFeel.setHighContrastFocusColorsEnabled(false);
@@ -244,6 +256,37 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		} catch (final UnsupportedLookAndFeelException e) {
 			ExceptionProcessor.getInstance().processException(e);
 		}
+	}
+
+	private void setUpLogging() {
+		PropertyConfigurator.configure("etc/log4j.properties");
+
+		final FileAppender appender = new FileAppender();
+		appender.setName("MyFileAppender");
+		appender.setLayout(new PatternLayout("%d [%t] %-5p %c{1} - %m%n"));
+		String localhostname = "";
+		try {
+			localhostname = java.net.InetAddress.getLocalHost().getHostName();
+		} catch (final UnknownHostException e) {
+			e.printStackTrace();
+		}
+		final String userName = System.getProperty("user.name");
+		String current;
+		try {
+			current = new java.io.File(".").getCanonicalPath();
+			System.out.println("Current dir:" + current);
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+		final String currentDir = System.getProperty("user.dir");
+		System.out.println("Current dir using System:" + currentDir);
+
+		appender.setFile("./logs/" + localhostname + "_" + userName + ".log");
+		appender.setAppend(true);
+		appender.setThreshold(Level.DEBUG);
+		appender.activateOptions();
+		Logger.getRootLogger().addAppender(appender);
+
 	}
 
 	public static AdHocRailway getInstance() {
@@ -368,26 +411,37 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		setFont(new Font("Verdana", Font.PLAIN, 19));
 		setLayout(new BorderLayout());
-
 		initMenu();
 		initToolbar();
 		statusBarPanel = initStatusBar();
-		add(statusBarPanel, BorderLayout.SOUTH);
 		mainPanel = new JPanel();
 
-		mainPanel = new JPanel(new BorderLayout());
+		mainPanel = new JPanel(new MigLayout());
+
+		final JPanel segmentPanel = new KeyTrackControl();
 
 		trackControlPanel = new TrackControlPanel();
 		locomotiveControlPanel = new LocomotiveControlPanel();
 		powerControlPanel = new PowerControlPanel();
-
-		final JPanel southPanel = new JPanel(new BorderLayout());
-		southPanel.add(locomotiveControlPanel, BorderLayout.WEST);
-		southPanel.add(powerControlPanel, BorderLayout.CENTER);
 		powerControlPanel.setConnected(false);
-		mainPanel.add(trackControlPanel, BorderLayout.CENTER);
-		mainPanel.add(southPanel, BorderLayout.SOUTH);
+
+		/*
+		 * add(statusBarPanel, BorderLayout.SOUTH); final JPanel southPanel =
+		 * new JPanel(new BorderLayout());
+		 * southPanel.add(locomotiveControlPanel, BorderLayout.WEST);
+		 * southPanel.add(powerControlPanel, BorderLayout.CENTER);
+		 * mainPanel.add(trackControlPanel, BorderLayout.CENTER);
+		 * mainPanel.add(southPanel, BorderLayout.SOUTH); add(mainPanel,
+		 * BorderLayout.CENTER);
+		 */
+
+		mainPanel.add(segmentPanel, "dock west");
+		mainPanel.add(trackControlPanel, "gap unrelated, wrap");
+		mainPanel.add(powerControlPanel, "");
+		mainPanel.add(locomotiveControlPanel, "wrap");
+
 		add(mainPanel, BorderLayout.CENTER);
+		add(statusBarPanel, BorderLayout.PAGE_END);
 
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -559,6 +613,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
 				ActionEvent.CTRL_MASK));
 
+		final JMenuItem openDatabaseItem = new JMenuItem(
+				new OpenDatabaseAction());
+
 		saveItem = new JMenuItem(new SaveAction());
 		saveItem.setMnemonic(KeyEvent.VK_S);
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
@@ -573,28 +630,34 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		final JMenuItem exportLocomotivesItem = new JMenuItem(
 				new ExportLocomotivesAction());
 
-		new JMenuItem(new OpenDatabaseAction());
+		final JMenu importMenu = new JMenu("Import");
+		importMenu.add(importLocomotivesItem);
+		final JMenu exportMenu = new JMenu("Export");
+		exportMenu.add(exportLocomotivesItem);
+
+		final JMenuItem clearLocomotivesItem = new JMenuItem(
+				new ClearLocomotivesAction());
+		final JMenuItem clearTurnoutsRoutesItem = new JMenuItem(
+				new ClearTurnoutsAndRoutesAction());
+
+		final JMenu clearMenu = new JMenu("Clear");
+		clearMenu.add(clearLocomotivesItem);
+		clearMenu.add(clearTurnoutsRoutesItem);
 
 		final JMenuItem exitItem = new JMenuItem(new ExitAction());
 		exitItem.setMnemonic(KeyEvent.VK_X);
 		exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
 				ActionEvent.CTRL_MASK));
 
-		final JMenu importMenu = new JMenu("Import");
-		final JMenu exportMenu = new JMenu("Export");
-		importMenu.add(importLocomotivesItem);
-		exportMenu.add(exportLocomotivesItem);
-
 		fileMenu.add(newItem);
 		fileMenu.add(openItem);
-		// fileMenu.add(openDatabaseItem);
+		fileMenu.add(openDatabaseItem);
 		fileMenu.add(saveItem);
 		fileMenu.add(saveAsItem);
 		fileMenu.add(new JSeparator());
-		// fileMenu.add(openDatabaseItem);
-		// fileMenu.add(new JSeparator());
 		fileMenu.add(importMenu);
 		fileMenu.add(exportMenu);
+		fileMenu.add(clearMenu);
 		fileMenu.add(new JSeparator());
 		fileMenu.add(exitItem);
 
@@ -796,7 +859,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		private static final long serialVersionUID = 2206015736690123233L;
 
 		public NewFileAction() {
-			super("New\u2026", createImageIconFromIconSet("filenew.png"));
+			super("New\u2026", createImageIconFromIconSet("document-new.png"));
 		}
 
 		@Override
@@ -809,7 +872,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 						"Do you want to save the actual configuration?",
 						"Export to database", JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE,
-						createImageIconFromIconSet("messagebox_info.png"));
+						createImageIconFromIconSet("dialog-information.png"));
 				if (result == JOptionPane.YES_OPTION) {
 					saveActualFile();
 				}
@@ -820,7 +883,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 			loadPersistenceLayer();
 
-			locomotivePersistence.clear(false);
+			locomotivePersistence.clear();
 			turnoutPersistence.clear();
 			routePersistence.clear();
 
@@ -844,7 +907,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		private static final long serialVersionUID = -3333376253277589231L;
 
 		public OpenFileAction() {
-			super("Open\u2026", createImageIconFromIconSet("fileopen.png"));
+			super("Open\u2026", createImageIconFromIconSet("document-open.png"));
 		}
 
 		@Override
@@ -874,7 +937,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 						switchToFileMode();
 
 						loadPersistenceLayer();
-						locomotivePersistence.clear(false);
+						locomotivePersistence.clear();
 						turnoutPersistence.clear();
 						routePersistence.clear();
 
@@ -901,14 +964,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private class OpenDatabaseAction extends AbstractAction {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -4287132162321389954L;
 
 		public OpenDatabaseAction() {
 			super("Open Database\u2026",
-					createImageIconFromIconSet("database.png"));
+					createImageIconFromIconSet("network-server-database.png"));
 		}
 
 		@Override
@@ -931,6 +991,75 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 	}
 
+	private class ClearLocomotivesAction extends AbstractAction {
+
+		private static final long serialVersionUID = -4287132162321389954L;
+
+		public ClearLocomotivesAction() {
+			super("Clear Locomotives\u2026",
+					createImageIconFromIconSet("list-remove.png"));
+		}
+
+		@Override
+		public void actionPerformed(final ActionEvent e) {
+
+			try {
+				progressBar.setIndeterminate(true);
+				final int result = JOptionPane.showConfirmDialog(
+						AdHocRailway.this,
+						"Do you REALLY want to remove all locomotives?",
+						"Export to database", JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE,
+						createImageIconFromIconSet("dialog-warning.png"));
+				if (result == JOptionPane.YES_OPTION) {
+					locomotivePersistence.clearToService();
+				}
+
+			} catch (final PersistenceException ex) {
+				ExceptionProcessor.getInstance().processException(
+						"Failed to connect to database", ex);
+			}
+			updateGUI();
+			progressBar.setIndeterminate(false);
+		}
+	}
+
+	private class ClearTurnoutsAndRoutesAction extends AbstractAction {
+
+		private static final long serialVersionUID = -4287132162321389954L;
+
+		public ClearTurnoutsAndRoutesAction() {
+			super("Clear Turnouts and Routes\u2026",
+					createImageIconFromIconSet("list-remove.png"));
+		}
+
+		@Override
+		public void actionPerformed(final ActionEvent e) {
+
+			try {
+				progressBar.setIndeterminate(true);
+				final int result = JOptionPane
+						.showConfirmDialog(
+								AdHocRailway.this,
+								"Do you REALLY want to remove all turnouts and routes?",
+								"Export to database",
+								JOptionPane.YES_NO_OPTION,
+								JOptionPane.QUESTION_MESSAGE,
+								createImageIconFromIconSet("dialog-warning.png"));
+				if (result == JOptionPane.YES_OPTION) {
+					routePersistence.clearToService();
+					turnoutPersistence.clearToService();
+				}
+
+			} catch (final PersistenceException ex) {
+				ExceptionProcessor.getInstance().processException(
+						"Failed to connect to database", ex);
+			}
+			updateGUI();
+			progressBar.setIndeterminate(false);
+		}
+	}
+
 	private class SaveAction extends AbstractAction {
 		/**
 		 * 
@@ -938,7 +1067,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		private static final long serialVersionUID = 3017204569992757846L;
 
 		public SaveAction() {
-			super("Save", createImageIconFromIconSet("filesave.png"));
+			super("Save", createImageIconFromIconSet("document-save.png"));
 		}
 
 		@Override
@@ -957,7 +1086,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		private static final long serialVersionUID = -4841045364461725101L;
 
 		public SaveAsAction() {
-			super("Save as\u2026", createImageIconFromIconSet("filesave.png"));
+			super("Save as\u2026",
+					createImageIconFromIconSet("document-save-as.png"));
 		}
 
 		@Override
@@ -988,6 +1118,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
+
+			progressBar.setIndeterminate(true);
 			final JFileChooser fileChooser = new JFileChooser(new File("."));
 			final int returnVal = fileChooser.showSaveDialog(AdHocRailway.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -995,6 +1127,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 						fileChooser.getSelectedFile(),
 						getLocomotivePersistence());
 			}
+
+			progressBar.setIndeterminate(false);
 		}
 	}
 
@@ -1033,22 +1167,22 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		private static final long serialVersionUID = -1614667243269636455L;
 
 		public ExitAction() {
-			super("Exit", createImageIconFromIconSet("exit.png"));
+			super("Exit", createImageIconFromIconSet("application-exit.png"));
 		}
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			// int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
-			// "Really exit ?", "Exit", JOptionPane.YES_NO_OPTION,
-			// JOptionPane.QUESTION_MESSAGE,
-			// createImageIcon("messagebox_warning.png"));
+
 			final int result = JOptionPane.YES_OPTION;
 			if (result == JOptionPane.YES_OPTION) {
 
 				try {
-					// SRCPLockControl.getInstance().releaseAllLocks();
-				} catch (final LockingException e1) {
-					e1.printStackTrace();
+					SRCPLockControl.getInstance().releaseAllLocks();
+					getLocomotiveControl().emergencyStopActiveLocos();
+				} catch (final SRCPLockingException e1) {
+					handleException(e1);
+				} catch (final LocomotiveException e1) {
+					handleException(e1);
 				}
 
 				if (actualFile != null) {
@@ -1141,7 +1275,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		public PreferencesAction() {
 			super("Preferences\u2026",
-					createImageIconFromIconSet("package_settings.png"));
+					createImageIconFromIconSet("preferences-system.png"));
 		}
 
 		@Override
@@ -1231,6 +1365,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			try {
 				final String host = preferences.getStringValue(SRCP_HOSTNAME);
 				final int port = preferences.getIntValue(SRCP_PORT);
+
+				locomotiveControl.emergencyStopActiveLocos();
+
 				session.disconnect();
 				session = null;
 				((SRCPTurnoutControlAdapter) turnoutControl).setSession(null);
@@ -1248,6 +1385,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 						+ " on port " + port);
 			} catch (final SRCPException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
+			} catch (final LocomotiveException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 		}
 	}
@@ -1338,7 +1478,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		private static final long serialVersionUID = 6402433986415682675L;
 
 		public RefreshAction() {
-			super("Refresh", createImageIconFromIconSet("reload.png"));
+			super("Refresh", createImageIconFromIconSet("view-refresh.png"));
 		}
 
 		@Override
@@ -1357,7 +1497,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		public ToggleFullscreenAction() {
 			super("ToggleFullscreen",
-					createImageIconFromIconSet("window_fullscreen.png"));
+					createImageIconFromIconSet("view-fullscreen.png"));
 		}
 
 		@Override
@@ -1370,7 +1510,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				setSize(1000, 700);
 				setVisible(true);
 				toggleFullscreenButton
-						.setIcon(createImageIconFromIconSet("window_fullscreen.png"));
+						.setIcon(createImageIconFromIconSet("view-fullscreen.png"));
 				fullscreen = false;
 			} else {
 				dispose();
@@ -1380,7 +1520,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
 				setVisible(true);
 				toggleFullscreenButton
-						.setIcon(createImageIconFromIconSet("window_nofullscreen.png"));
+						.setIcon(createImageIconFromIconSet("view-fullscreen.png"));
 				fullscreen = true;
 			}
 		}

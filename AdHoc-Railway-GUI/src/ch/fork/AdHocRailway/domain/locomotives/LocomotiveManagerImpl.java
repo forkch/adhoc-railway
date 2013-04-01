@@ -79,14 +79,15 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	}
 
 	@Override
-	public void clear(final boolean deepClear) {
-		addressLocomotiveCache.clear();
-		locomotiveGroups.clear();
-		if (deepClear) {
-			locomotiveService.clear();
-		}
+	public void clear() {
+		clearCache();
 		locomotivesUpdated(getAllLocomotiveGroups());
+	}
 
+	@Override
+	public void clearToService() {
+		LOGGER.debug("clearToService()");
+		locomotiveService.clear();
 	}
 
 	@Override
@@ -171,7 +172,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
 	@Override
 	public void initialize() {
-		clear(false);
+		clear();
 		cleanupListeners();
 		locomotiveService.init(this);
 	}
@@ -184,17 +185,18 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
 	@Override
 	public void locomotivesUpdated(
-			final SortedSet<LocomotiveGroup> locomotiveGroups) {
-		LOGGER.info("locomotivesUpdated: " + locomotiveGroups);
+			final SortedSet<LocomotiveGroup> updatedLocomotiveGroups) {
+		LOGGER.info("locomotivesUpdated: " + updatedLocomotiveGroups);
 		cleanupListeners();
-		for (final LocomotiveGroup group : locomotiveGroups) {
+		clearCache();
+		for (final LocomotiveGroup group : updatedLocomotiveGroups) {
 			putLocomotiveGroupInCache(group);
 			for (final Locomotive locomotive : group.getLocomotives()) {
 				putInCache(locomotive);
 			}
 		}
 		for (final LocomotiveManagerListener l : listeners) {
-			l.locomotivesUpdated(locomotiveGroups);
+			l.locomotivesUpdated(updatedLocomotiveGroups);
 		}
 	}
 
@@ -269,6 +271,13 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 		}
 	}
 
+	@Override
+	public void disconnect() {
+		cleanupListeners();
+		locomotiveService.disconnect();
+		locomotivesUpdated(new TreeSet<LocomotiveGroup>());
+	}
+
 	private void putLocomotiveGroupInCache(final LocomotiveGroup group) {
 		locomotiveGroups.add(group);
 	}
@@ -289,10 +298,9 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 		addressLocomotiveCache.values().remove(locomotive);
 	}
 
-	@Override
-	public void disconnect() {
-		locomotiveService.disconnect();
-		locomotivesUpdated(new TreeSet<LocomotiveGroup>());
+	private void clearCache() {
+		addressLocomotiveCache.clear();
+		locomotiveGroups.clear();
 	}
 
 }

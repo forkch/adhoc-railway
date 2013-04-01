@@ -22,7 +22,9 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
@@ -30,6 +32,7 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -39,6 +42,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.table.TableColumn;
 
+import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
@@ -59,15 +63,11 @@ import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
 import com.jgoodies.binding.adapter.SpinnerAdapterFactory;
 import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.binding.value.Trigger;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 public class RouteConfig extends JDialog {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6408833917980514400L;
 	private boolean okPressed;
 	private boolean cancelPressed;
@@ -76,7 +76,7 @@ public class RouteConfig extends JDialog {
 	private JButton okButton;
 	private JButton cancelButton;
 	private PanelBuilder builder;
-	private JSpinner routeNumberField;
+	private JSpinner routeNumberSpinner;
 	private JTextField routeNameField;
 	private SelectionInList<RouteItem> routeItemModel;
 	private JTable routeItemTable;
@@ -86,34 +86,23 @@ public class RouteConfig extends JDialog {
 	private JButton removeRouteItemButton;
 	public ThreeDigitDisplay digitDisplay;
 	private JTextField routeOrientationField;
+	private JPanel mainPanel;
+	private final Trigger trigger = new Trigger();
 
 	public RouteConfig(final JDialog owner, final Route myRoute) {
-		this(owner, new PresentationModel<Route>(myRoute));
+		super(owner, "Route Config", true);
+		this.presentationModel = new PresentationModel<Route>(myRoute, trigger);
+		initGUI();
 	}
 
 	public RouteConfig(final Frame owner, final Route myRoute) {
 		super(owner, "Route Config", true);
-		this.presentationModel = new PresentationModel<Route>(myRoute);
-		initGUI();
-	}
+		this.presentationModel = new PresentationModel<Route>(myRoute, trigger);
 
-	public RouteConfig(final JDialog owner,
-			final PresentationModel<Route> presentationModel) {
-		super(owner, "Route Config", true);
-		this.presentationModel = presentationModel;
-		initGUI();
-	}
-
-	public RouteConfig(final Frame owner,
-			final PresentationModel<Route> presentationModel) {
-		super(owner, "Route Config", true);
-		this.presentationModel = presentationModel;
 		initGUI();
 	}
 
 	private void initGUI() {
-		// usedRouteNumbers = routePersistence.getUsedRouteNumbers();
-		// usedRouteNumbers.remove(presentationModel.getBean().getNumber());
 		buildPanel();
 
 		pack();
@@ -124,19 +113,20 @@ public class RouteConfig extends JDialog {
 
 	private void initComponents() {
 
-		routeNumberField = new JSpinner();
-		routeNumberField.setModel(SpinnerAdapterFactory.createNumberAdapter(
-				presentationModel.getModel("number"), 1, // defaultValue
+		routeNumberSpinner = new JSpinner();
+		routeNumberSpinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
+				presentationModel.getBufferedModel("number"), 1, // defaultValue
 				0, // minValue
 				1000, // maxValue
 				1)); // step
 
 		routeOrientationField = BasicComponentFactory
-				.createTextField(presentationModel.getModel("orientation"));
+				.createTextField(presentationModel
+						.getBufferedModel("orientation"));
 		routeOrientationField.setColumns(5);
 
 		routeNameField = BasicComponentFactory
-				.createTextField(presentationModel.getModel("name"));
+				.createTextField(presentationModel.getBufferedModel("name"));
 		routeNameField.setColumns(5);
 
 		routeItemModel = new SelectionInList<RouteItem>();
@@ -166,35 +156,31 @@ public class RouteConfig extends JDialog {
 	private void buildPanel() {
 		initComponents();
 
-		final FormLayout layout = new FormLayout(
-				"pref, 5dlu, pref, 3dlu, pref:grow",
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref");
-		builder = new PanelBuilder(layout);
+		mainPanel = new JPanel(new MigLayout());
+		mainPanel.add(digitDisplay);
 
-		builder.setDefaultDialogBorder();
-		final CellConstraints cc = new CellConstraints();
+		final JPanel infoPanel = new JPanel(new MigLayout());
+		infoPanel.add(new JLabel("Route Number"));
+		infoPanel.add(routeNumberSpinner, "wrap, w 150!");
 
-		builder.add(digitDisplay, cc.xywh(1, 1, 1, 7));
-		builder.addLabel("Route Number", cc.xy(3, 1));
-		builder.add(routeNumberField, cc.xy(5, 1));
+		infoPanel.add(new JLabel("Route Name"));
+		infoPanel.add(routeNameField, "wrap, w 150!");
 
-		builder.addLabel("Route Name", cc.xy(3, 3));
-		builder.add(routeNameField, cc.xy(5, 3));
+		infoPanel.add(new JLabel("Route Orienation"));
+		infoPanel.add(routeOrientationField, "w 150!, top");
 
-		builder.addLabel("Route Orientation", cc.xy(3, 5));
-		builder.add(routeOrientationField, cc.xy(5, 5));
+		mainPanel.add(infoPanel, "gap unrelated, wrap");
+		mainPanel.add(buildRouteItemButtonBar(), "span 2, align center, wrap");
+		mainPanel.add(new JScrollPane(routeItemTable), "span 2, grow x, wrap");
 
-		builder.add(new JScrollPane(routeItemTable), cc.xyw(3, 7, 3));
+		mainPanel.add(buildButtonBar(), "span 2, align right");
 
-		builder.add(buildRouteItemButtonBar(), cc.xyw(3, 9, 3));
-		builder.add(buildButtonBar(), cc.xyw(1, 11, 5));
-
-		add(builder.getPanel());
+		add(mainPanel);
 	}
 
 	private Component buildRouteItemButtonBar() {
-		return ButtonBarFactory.buildCenteredBar(addRouteItemButton,
-				recordRouteButton, removeRouteItemButton);
+		return ButtonBarFactory.buildCenteredBar(recordRouteButton,
+				removeRouteItemButton);
 	}
 
 	private JComponent buildButtonBar() {
@@ -203,14 +189,11 @@ public class RouteConfig extends JDialog {
 
 	private class AddRouteItemAction extends AbstractAction {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -2588582945532694902L;
 
 		public AddRouteItemAction() {
 			super("Add Turnout", ImageTools
-					.createImageIconFromIconSet("add.png"));
+					.createImageIconFromIconSet("list-add.png"));
 		}
 
 		@Override
@@ -229,7 +212,7 @@ public class RouteConfig extends JDialog {
 
 		public RecordRouteAction() {
 			super("Record", ImageTools
-					.createImageIconFromIconSet("record_off.png"));
+					.createImageIconFromIconSet("media-playback-stop.png"));
 		}
 
 		@Override
@@ -244,27 +227,29 @@ public class RouteConfig extends JDialog {
 									"Error",
 									JOptionPane.ERROR_MESSAGE,
 									ImageTools
-											.createImageIconFromIconSet("messagebox_critical.png"));
+											.createImageIconFromIconSet("dialog-error.png"));
 					return;
 				}
 
 				recordRouteButton.setIcon(ImageTools
-						.createImageIconFromIconSet("record.png"));
+						.createImageIconFromIconSet("media-record.png"));
 				initKeyboardActions(selectedRoute);
 				recording = true;
 			} else {
 				recordRouteButton.setIcon(ImageTools
-						.createImageIconFromIconSet("record_off.png"));
+						.createImageIconFromIconSet("media-playback-stop.png"));
 				recording = false;
 			}
 		}
 
 		private void initKeyboardActions(final Route route) {
 			enteredNumberKeys = new StringBuffer();
-			final JPanel routeItemPanel = builder.getPanel();
-			final JPanel[] panels = new JPanel[] { routeItemPanel, digitDisplay };
-			for (int i = 0; i <= 10; i++) {
-				for (final JPanel p : panels) {
+			final Set<JPanel> panels = new HashSet<JPanel>();
+
+			panels.add(digitDisplay);
+			panels.add(mainPanel);
+			for (final JPanel p : panels) {
+				for (int i = 0; i <= 10; i++) {
 					p.registerKeyboardAction(new NumberEnteredAction(),
 							Integer.toString(i),
 							KeyStroke.getKeyStroke(Integer.toString(i)),
@@ -276,7 +261,6 @@ public class RouteConfig extends JDialog {
 									+ Integer.toString(i)),
 							JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 				}
-
 			}
 			for (final JPanel p : panels) {
 				final KeyBoardLayout kbl = Preferences.getInstance()
@@ -319,7 +303,6 @@ public class RouteConfig extends JDialog {
 				return;
 			}
 			final int enteredNumber = Integer.parseInt(enteredNumberAsString);
-			System.out.println(enteredNumber);
 			Turnout turnout;
 			try {
 				final RouteManager routePersistence = AdHocRailway
@@ -327,7 +310,6 @@ public class RouteConfig extends JDialog {
 				final TurnoutManager turnoutPersistence = AdHocRailway
 						.getInstance().getTurnoutPersistence();
 				turnout = turnoutPersistence.getTurnoutByNumber(enteredNumber);
-				System.out.println(turnout);
 				if (turnout == null) {
 					JOptionPane
 							.showMessageDialog(
@@ -337,7 +319,7 @@ public class RouteConfig extends JDialog {
 									"Error",
 									JOptionPane.ERROR_MESSAGE,
 									ImageTools
-											.createImageIconFromIconSet("messagebox_critical.png"));
+											.createImageIconFromIconSet("dialog-error.png"));
 				} else {
 					TurnoutState routedState = null;
 					if (this instanceof CurvedLeftAction) {
@@ -489,7 +471,7 @@ public class RouteConfig extends JDialog {
 
 		public RemoveRouteItemAction() {
 			super("Remove Turnout", ImageTools
-					.createImageIconFromIconSet("remove.png"));
+					.createImageIconFromIconSet("list-remove.png"));
 		}
 
 		@Override
@@ -520,11 +502,13 @@ public class RouteConfig extends JDialog {
 		private static final long serialVersionUID = -7279880783090999221L;
 
 		public ApplyChangesAction() {
-			super("OK");
+			super("OK", ImageTools
+					.createImageIconFromIconSet("dialog-ok-apply.png"));
 		}
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
+			trigger.triggerCommit();
 			final RouteManager routePersistence = AdHocRailway.getInstance()
 					.getRoutePersistence();
 			final Route route = presentationModel.getBean();
@@ -580,11 +564,13 @@ public class RouteConfig extends JDialog {
 		private static final long serialVersionUID = -8783083615316968787L;
 
 		public CancelAction() {
-			super("Cancel");
+			super("Cancel", ImageTools
+					.createImageIconFromIconSet("dialog-cancel.png"));
 		}
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
+			trigger.triggerFlush();
 			okPressed = false;
 			cancelPressed = true;
 			RouteConfig.this.setVisible(false);

@@ -48,9 +48,6 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerListener;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutOrientation;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
@@ -58,7 +55,6 @@ import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.TableResizer;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.common.collect.ArrayListModel;
@@ -158,8 +154,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	}
 
 	private void initComponents() {
-		turnoutGroups = new ArrayListModel<TurnoutGroup>(
-				turnoutPersistence.getAllTurnoutGroups());
+		turnoutGroups = new ArrayListModel<TurnoutGroup>();
 
 		turnoutGroupModel = new SelectionInList<TurnoutGroup>(
 				(ListModel<?>) turnoutGroups);
@@ -214,7 +209,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		removeTurnoutButton = new JButton(new RemoveTurnoutAction());
 
 		okButton = new JButton("OK",
-				ImageTools.createImageIconFromIconSet("ok.png"));
+				ImageTools.createImageIconFromIconSet("dialog-ok-apply.png"));
 		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
@@ -282,7 +277,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = 2098239263496275812L;
 
 		public EditTurnoutGroupAction() {
-			super("Edit Group");
+			super("Edit Group", ImageTools
+					.createImageIconFromIconSet("edit.png"));
 		}
 
 		@Override
@@ -301,7 +297,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = 7442768865195498598L;
 
 		public AddTurnoutGroupAction() {
-			super("Add Group", ImageTools.createImageIconFromIconSet("add.png"));
+			super("Add Group", ImageTools
+					.createImageIconFromIconSet("list-add.png"));
 		}
 
 		@Override
@@ -344,7 +341,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 		public RemoveTurnoutGroupAction() {
 			super("Remove Group", ImageTools
-					.createImageIconFromIconSet("remove.png"));
+					.createImageIconFromIconSet("list-remove.png"));
 		}
 
 		@Override
@@ -375,7 +372,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = 2097710453761242564L;
 
 		public AddTurnoutAction() {
-			super("Add", ImageTools.createImageIconFromIconSet("add.png"));
+			super("Add", ImageTools.createImageIconFromIconSet("list-add.png"));
 		}
 
 		@Override
@@ -404,28 +401,13 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			} else {
 				nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
 			}
-			final Turnout newTurnout = createDefaultTurnout(
-					selectedTurnoutGroup, nextNumber);
+			final Turnout newTurnout = TurnoutHelper.createDefaultTurnout(
+					turnoutPersistence, selectedTurnoutGroup, nextNumber);
 
-			new TurnoutConfig(TurnoutConfigurationDialog.this, newTurnout);
+			new TurnoutConfig(TurnoutConfigurationDialog.this, newTurnout,
+					selectedTurnoutGroup);
 		}
 
-		private Turnout createDefaultTurnout(
-				final TurnoutGroup selectedTurnoutGroup, final int nextNumber) {
-			final Turnout newTurnout = new Turnout();
-			newTurnout.setNumber(nextNumber);
-
-			newTurnout.setBus1(Preferences.getInstance().getIntValue(
-					PreferencesKeys.DEFAULT_TURNOUT_BUS));
-			newTurnout.setBus2(Preferences.getInstance().getIntValue(
-					PreferencesKeys.DEFAULT_TURNOUT_BUS));
-
-			newTurnout.setTurnoutGroup(selectedTurnoutGroup);
-			newTurnout.setDefaultState(TurnoutState.STRAIGHT);
-			newTurnout.setOrientation(TurnoutOrientation.EAST);
-			newTurnout.setTurnoutType(TurnoutType.DEFAULT);
-			return newTurnout;
-		}
 	}
 
 	private class RemoveTurnoutAction extends AbstractAction {
@@ -436,7 +418,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = 3406975342633828556L;
 
 		public RemoveTurnoutAction() {
-			super("Remove", ImageTools.createImageIconFromIconSet("remove.png"));
+			super("Remove", ImageTools
+					.createImageIconFromIconSet("list-remove.png"));
 		}
 
 		@Override
@@ -479,10 +462,9 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		public void actionPerformed(final ActionEvent e) {
 
 			final int row = turnoutsTable.getSelectedRow();
-			final int number = (Integer) turnoutsTable.getValueAt(row, 0);
-			final PresentationModel<Turnout> model = new PresentationModel<Turnout>(
-					turnoutPersistence.getTurnoutByNumber(number));
-			new TurnoutConfig(TurnoutConfigurationDialog.this, model);
+			final Turnout turnout = turnoutModel.getElementAt(row);
+			new TurnoutConfig(TurnoutConfigurationDialog.this, turnout,
+					turnout.getTurnoutGroup());
 		}
 	}
 
@@ -491,7 +473,9 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	}
 
 	@Override
-	public void turnoutsUpdated(final SortedSet<TurnoutGroup> turnoutGroups) {
+	public void turnoutsUpdated(
+			final SortedSet<TurnoutGroup> updatedTurnoutGroups) {
+		this.turnoutGroups.addAll(updatedTurnoutGroups);
 	}
 
 	@Override

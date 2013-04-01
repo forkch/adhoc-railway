@@ -65,6 +65,7 @@ import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.SpinnerAdapterFactory;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.binding.value.Trigger;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -119,10 +120,13 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private SelectionInList<LocomotiveFunction> functionsModel;
 
+	private final Trigger trigger = new Trigger();
+
 	public LocomotiveConfig(final Frame owner, final Locomotive myLocomotive,
 			final LocomotiveGroup selectedLocomotiveGroup) {
 		super(owner, "Locomotive Config", true);
-		this.presentationModel = new PresentationModel<Locomotive>(myLocomotive);
+		this.presentationModel = new PresentationModel<Locomotive>(
+				myLocomotive, trigger);
 		initGUI();
 	}
 
@@ -130,7 +134,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 			final LocomotiveGroup selectedLocomotiveGroup) {
 		super(owner, "Locomotive Config", true);
 		this.selectedLocomotiveGroup = selectedLocomotiveGroup;
-		this.presentationModel = new PresentationModel<Locomotive>(myLocomotive);
+		this.presentationModel = new PresentationModel<Locomotive>(
+				myLocomotive, trigger);
 		initGUI();
 	}
 
@@ -146,18 +151,18 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 	private void initComponents() {
 
 		nameTextField = BasicComponentFactory.createTextField(presentationModel
-				.getModel(Locomotive.PROPERTYNAME_NAME));
+				.getBufferedModel(Locomotive.PROPERTYNAME_NAME));
 		nameTextField.setColumns(30);
 
 		descTextField = BasicComponentFactory.createTextField(presentationModel
-				.getModel(Locomotive.PROPERTYNAME_DESCRIPTION));
+				.getBufferedModel(Locomotive.PROPERTYNAME_DESCRIPTION));
 		descTextField.setColumns(30);
 
 		imageChoserPanel = new JPanel(new MigLayout("fill"));
 
 		imageTextField = BasicComponentFactory
 				.createTextField(presentationModel
-						.getModel(Locomotive.PROPERTYNAME_IMAGE));
+						.getBufferedModel(Locomotive.PROPERTYNAME_IMAGE));
 		imageTextField.setColumns(30);
 
 		chooseImageButton = new JButton("Choose...");
@@ -174,36 +179,32 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 		imageLabel = new JLabel();
 		imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		final String image = presentationModel.getBean().getImage();
 
-		if (image != null && !image.isEmpty()
-				&& new File("locoimages/" + image).exists()) {
-			imageLabel.setIcon(ImageTools
-					.createImageIconFileSystem("locoimages/" + image));
-		} else {
-			imageLabel.setIcon(ImageTools
-					.createImageIconFileSystem(ImageTools.EMTPY_LOCO_ICON));
-		}
+		imageLabel.setIcon(ImageTools.getLocomotiveIcon(presentationModel
+				.getBean()));
 
 		busSpinner = new JSpinner();
-		busSpinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
-				presentationModel.getModel(Locomotive.PROPERTYNAME_BUS), 1, // defaultValue
-				0, // minValue
-				100, // maxValue
-				1)); // step
+		busSpinner
+				.setModel(SpinnerAdapterFactory.createNumberAdapter(
+						presentationModel
+								.getBufferedModel(Locomotive.PROPERTYNAME_BUS),
+						1, // defaultValue
+						0, // minValue
+						100, // maxValue
+						1)); // step
 
 		address1Spinner = new JSpinner();
 		address1Spinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
-				presentationModel.getModel(Locomotive.PROPERTYNAME_ADDRESS1),
-				1, // defaultValue
+				presentationModel
+						.getBufferedModel(Locomotive.PROPERTYNAME_ADDRESS1), 1, // defaultValue
 				0, // minValue
 				324, // maxValue
 				1)); // step
 
 		address2Spinner = new JSpinner();
 		address2Spinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
-				presentationModel.getModel(Locomotive.PROPERTYNAME_ADDRESS2),
-				1, // defaultValue
+				presentationModel
+						.getBufferedModel(Locomotive.PROPERTYNAME_ADDRESS2), 1, // defaultValue
 				0, // minValue
 				324, // maxValue
 				1)); // step
@@ -212,7 +213,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 				.asList(LocomotiveType.values());
 
 		final ValueModel locomotiveTypeModel = presentationModel
-				.getModel(Locomotive.PROPERTYNAME_LOCOMOTIVE_TYPE);
+				.getBufferedModel(Locomotive.PROPERTYNAME_LOCOMOTIVE_TYPE);
 		locomotiveTypeComboBox = BasicComponentFactory
 				.createComboBox(new SelectionInList<LocomotiveType>(
 						locomotiveTypes, locomotiveTypeModel));
@@ -340,12 +341,14 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		private final boolean createNextTurnout;
 
 		public ApplyChangesAction(final boolean createNextTurnout) {
-			super("OK", ImageTools.createImageIconFromIconSet("ok.png"));
+			super("OK", ImageTools
+					.createImageIconFromIconSet("dialog-ok-apply.png"));
 			this.createNextTurnout = createNextTurnout;
 		}
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
+			trigger.triggerCommit();
 			final Locomotive locomotive = presentationModel.getBean();
 			locomotivePersistence
 					.addLocomotiveManagerListener(new LocomotiveAddListener() {
@@ -403,11 +406,13 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		private static final long serialVersionUID = 4584003062339520111L;
 
 		public CancelAction() {
-			super("Cancel", ImageTools.createImageIconFromIconSet("cancel.png"));
+			super("Cancel", ImageTools
+					.createImageIconFromIconSet("dialog-cancel.png"));
 		}
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
+			trigger.triggerFlush();
 			cancelPressed = true;
 			LocomotiveConfig.this.setVisible(false);
 		}
@@ -563,7 +568,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 			if (image != null && !image.isEmpty()
 					&& new File("locoimages/" + image).exists()) {
 				imageLabel.setIcon(ImageTools
-						.createImageIconFileSystem("locoimages/" + image));
+						.getLocomotiveIcon(presentationModel.getBean()));
 				pack();
 			} else {
 				imageLabel.setIcon(null);

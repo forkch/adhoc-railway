@@ -19,7 +19,6 @@
 package ch.fork.AdHocRailway.ui;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 
@@ -29,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
+import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteException;
@@ -40,7 +40,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
-import ch.fork.AdHocRailway.ui.turnouts.StaticTurnoutWidget;
+import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 
 public class KeyTrackControl extends SimpleInternalFrame {
 
@@ -83,7 +83,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		switchesHistory = new JPanel();
 		final JPanel sh1 = new JPanel(new BorderLayout());
 
-		switchesHistory.setLayout(new GridLayout(HISTORY_LENGTH, 1));
+		switchesHistory.setLayout(new MigLayout("insets 5"));
 
 		switchesHistoryPane = new JScrollPane(switchesHistory,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -141,13 +141,10 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		}
 		historyStack.addLast(obj);
 		JPanel w = null;
-		final TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
-				.getTurnoutControl();
 
 		if (obj instanceof Turnout) {
 			final Turnout turnout = (Turnout) obj;
-			w = new StaticTurnoutWidget(turnout,
-					turnoutControl.getTurnoutState(turnout));
+			w = new TurnoutWidget(turnout, false, true);
 		} else if (obj instanceof Route) {
 			w = new RouteWidget((Route) obj);
 		} else {
@@ -161,7 +158,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 		switchesHistory.removeAll();
 
 		for (final JPanel p : historyWidgets) {
-			switchesHistory.add(p);
+			switchesHistory.add(p, "wrap");
 		}
 		revalidate();
 		repaint();

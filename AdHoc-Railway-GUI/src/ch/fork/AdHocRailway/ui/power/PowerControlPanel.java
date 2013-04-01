@@ -70,7 +70,7 @@ public class PowerControlPanel extends JPanel implements
 		initKeyboardActions();
 		update();
 
-		final SimpleInternalFrame frame = new SimpleInternalFrame("Power");
+		final SimpleInternalFrame frame = new SimpleInternalFrame("Boosters");
 		frame.add(powerControlPanel, BorderLayout.CENTER);
 		add(frame, BorderLayout.CENTER);
 
@@ -153,20 +153,20 @@ public class PowerControlPanel extends JPanel implements
 				PreferencesKeys.NUMBER_OF_BOOSTERS);
 		powerControlPanel.removeAll();
 
-		allBoostersOn = new JButton("Boosters On", goIcon);
-		allBoostersOff = new JButton("Boosters Off", stopIcon);
+		allBoostersOn = new JButton("All On", goIcon);
+		allBoostersOff = new JButton("All Off", stopIcon);
 		allBoostersOff.setFocusable(false);
 		allBoostersOn.setFocusable(false);
 		allBoostersOn.addActionListener(new AllBoostersOnAction());
 		allBoostersOff.addActionListener(new AllBoostersOffAction());
 
 		powerControlPanel.add(allBoostersOn, "");
-		powerControlPanel.add(allBoostersOff, "");
+		powerControlPanel.add(allBoostersOff, "wrap 15");
 
 		for (int i = 0; i < numberOfBoosters; i++) {
 
-			final JToggleButton boosterButton = new JToggleButton("Booster "
-					+ (i + 1), stopIcon);
+			final JToggleButton boosterButton = new JToggleButton(
+					"F" + (i + 1), stopIcon);
 			boosterButton.setHorizontalAlignment(SwingConstants.LEADING);
 			final ToggleBoosterAction action = new ToggleBoosterAction();
 			boosterButton.addActionListener(action);

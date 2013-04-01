@@ -83,10 +83,14 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	@Override
 	public void clear() {
 		LOGGER.debug("clear()");
-		routeGroups.clear();
-		numberToRouteCache.clear();
-
+		clearCache();
 		routesUpdated(getAllRouteGroups());
+	}
+
+	@Override
+	public void clearToService() {
+		LOGGER.debug("clearToService()");
+		routeService.clear();
 	}
 
 	private List<Route> getAllRoutes() {
@@ -277,31 +281,6 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 		return -1;
 	}
 
-	private void reassignTurnoutToRouteItem(final RouteItem routeItem) {
-		final TurnoutManager tm = TurnoutManagerImpl.getInstance();
-
-		final int number = routeItem.getTurnout().getNumber();
-		routeItem.setTurnout(tm.getTurnoutByNumber(number));
-	}
-
-	private void putInCache(final Route route) {
-		numberToRouteCache.put(route.getNumber(), route);
-		routeControl.addOrUpdateRoute(route);
-
-	}
-
-	private void putRouteGroupInCache(final RouteGroup group) {
-		routeGroups.add(group);
-	}
-
-	private void removeFromCache(final Route route) {
-		numberToRouteCache.values().remove(route.getNumber());
-	}
-
-	private void removeRouteGroupInCache(final RouteGroup group) {
-		routeGroups.remove(group);
-	}
-
 	@Override
 	public void setRouteService(final RouteService instance) {
 		this.routeService = instance;
@@ -321,9 +300,11 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	}
 
 	@Override
-	public void routesUpdated(final SortedSet<RouteGroup> routeGroups) {
-		LOGGER.info("routesUpdated: " + routeGroups);
-		for (final RouteGroup group : routeGroups) {
+	public void routesUpdated(final SortedSet<RouteGroup> updatedRouteGroups) {
+		LOGGER.info("routesUpdated: " + updatedRouteGroups);
+		cleanupListeners();
+		clearCache();
+		for (final RouteGroup group : updatedRouteGroups) {
 			putRouteGroupInCache(group);
 			for (final Route route : group.getRoutes()) {
 				putInCache(route);
@@ -333,13 +314,14 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 			}
 		}
 		for (final RouteManagerListener l : listeners) {
-			l.routesUpdated(routeGroups);
+			l.routesUpdated(updatedRouteGroups);
 		}
 	}
 
 	@Override
 	public void routeAdded(final Route route) {
 		LOGGER.info("routeAdded: " + route);
+		cleanupListeners();
 		putInCache(route);
 		for (final RouteManagerListener l : listeners) {
 			l.routeAdded(route);
@@ -359,6 +341,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	@Override
 	public void routeRemoved(final Route route) {
 		LOGGER.info("routeRemoved: " + route);
+		cleanupListeners();
 		removeFromCache(route);
 		for (final RouteManagerListener l : listeners) {
 			l.routeRemoved(route);
@@ -407,7 +390,39 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 
 	@Override
 	public void disconnect() {
+		cleanupListeners();
 		routeService.disconnect();
 		routesUpdated(new TreeSet<RouteGroup>());
 	}
+
+	private void reassignTurnoutToRouteItem(final RouteItem routeItem) {
+		final TurnoutManager tm = TurnoutManagerImpl.getInstance();
+
+		final int number = routeItem.getTurnout().getNumber();
+		routeItem.setTurnout(tm.getTurnoutByNumber(number));
+	}
+
+	private void putInCache(final Route route) {
+		numberToRouteCache.put(route.getNumber(), route);
+		routeControl.addOrUpdateRoute(route);
+
+	}
+
+	private void putRouteGroupInCache(final RouteGroup group) {
+		routeGroups.add(group);
+	}
+
+	private void removeFromCache(final Route route) {
+		numberToRouteCache.values().remove(route.getNumber());
+	}
+
+	private void removeRouteGroupInCache(final RouteGroup group) {
+		routeGroups.remove(group);
+	}
+
+	private void clearCache() {
+		routeGroups.clear();
+		numberToRouteCache.clear();
+	}
+
 }

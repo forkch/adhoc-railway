@@ -26,13 +26,21 @@ import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 
 public interface TurnoutManager {
 
+	public abstract void initialize();
+
+	public abstract void addTurnoutManagerListener(
+			TurnoutManagerListener listener);
+
+	public abstract void removeTurnoutManagerListenerInNextEvent(
+			TurnoutManagerListener turnoutAddListener);
+
 	public abstract List<Turnout> getAllTurnouts();
 
 	public abstract Turnout getTurnoutByNumber(int number);
 
 	public abstract Turnout getTurnoutByAddressBus(int bus, int address);
 
-	public abstract void addTurnout(Turnout turnout);
+	public abstract void addTurnoutToGroup(Turnout turnout, TurnoutGroup group);
 
 	public abstract void removeTurnout(Turnout turnout);
 
@@ -48,27 +56,23 @@ public interface TurnoutManager {
 
 	public abstract void updateTurnoutGroup(TurnoutGroup group);
 
+	public int getLastProgrammedAddress();
+
 	public int getNextFreeTurnoutNumber();
 
 	public Set<Integer> getUsedTurnoutNumbers();
 
-	public abstract void clear();
+	public void enlargeTurnoutGroups();
 
 	public int getNextFreeTurnoutNumberOfGroup(TurnoutGroup turnoutGroup);
 
-	public void enlargeTurnoutGroups();
-
-	public abstract void initialize();
-
 	void setTurnoutControl(TurnoutControlIface turnoutControl);
 
-	public abstract void addTurnoutManagerListener(
-			TurnoutManagerListener listener);
-
-	public abstract void removeTurnoutManagerListenerInNextEvent(
-			TurnoutManagerListener turnoutAddListener);
-
 	public abstract void setTurnoutService(TurnoutService instance);
+
+	public abstract void clear();
+
+	public abstract void clearToService();
 
 	public abstract void disconnect();
 }

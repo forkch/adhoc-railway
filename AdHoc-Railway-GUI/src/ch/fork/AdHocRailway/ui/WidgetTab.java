@@ -20,6 +20,7 @@ package ch.fork.AdHocRailway.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -50,6 +51,11 @@ public class WidgetTab extends JPanel {
 
 	public void remove(final JPanel widget) {
 		widgets.remove(widget);
+	}
+
+	@Override
+	public void addMouseListener(final MouseListener l) {
+		widgets.addMouseListener(l);
 	}
 
 }

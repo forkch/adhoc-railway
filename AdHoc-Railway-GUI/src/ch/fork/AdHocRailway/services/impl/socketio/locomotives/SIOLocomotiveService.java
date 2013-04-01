@@ -7,7 +7,7 @@ import io.socket.SocketIOException;
 import java.util.Arrays;
 import java.util.SortedSet;
 
-import org.jboss.logging.Logger;
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,7 +44,33 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
 
 	@Override
 	public void clear() {
+		LOGGER.info(SIOLocomotiveServiceEvent.LOCOMOTIVE_CLEAR_REQUEST);
+		sioService.checkSocket();
+		final IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
+			@Override
+			public void ack(final Object... arg0) {
+				LOGGER.info("ack: " + Arrays.toString(arg0));
+				final Boolean err = (Boolean) arg0[0];
+				final String msg = (String) arg0[1];
+				if (err) {
+					listener.failure(new LocomotiveManagerException(msg));
+				} else {
+					final JSONObject data = (JSONObject) arg0[2];
+					try {
+						SIOLocomotiveServiceEventHandler.handleLocomotiveInit(
+								data, listener);
+					} catch (final JSONException e) {
+						listener.failure(new LocomotiveManagerException(
+								"error clearing locomotives", e));
+					}
+				}
+			}
+		};
+
+		sioService.getSocket().emit(
+				SIOLocomotiveServiceEvent.LOCOMOTIVE_CLEAR_REQUEST.getEvent(),
+				ioAcknowledge, "");
 	}
 
 	@Override

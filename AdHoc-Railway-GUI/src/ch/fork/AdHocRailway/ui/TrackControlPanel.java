@@ -20,11 +20,8 @@ package ch.fork.AdHocRailway.ui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -50,7 +47,6 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	public TrackControlPanel() {
 		initGUI();
-		// initKeyboardActions();
 	}
 
 	private void initGUI() {
@@ -59,9 +55,6 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 		initTurnoutPanel();
 		initRoutesPanel();
 
-		final JPanel segmentPanel = new KeyTrackControl();
-
-		add(segmentPanel, BorderLayout.WEST);
 		final JPanel controlPanel = new JPanel(new GridLayout(1, 2));
 		if (preferences.getBooleanValue(TABBED_TRACK)) {
 			trackControlPane = new JTabbedPane();
@@ -93,29 +86,6 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private void initRoutesPanel() {
 		routeGroupsTabbedPane = new RouteGroupsPanel(JTabbedPane.BOTTOM);
-	}
-
-	private void initKeyboardActions() {
-		getActionMap().put("NextSelected", new AbstractAction() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = -6347728432292797201L;
-
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				if (trackControlPane.getSelectedIndex() == 0) {
-					trackControlPane.setSelectedIndex(1);
-				} else {
-					trackControlPane.setSelectedIndex(0);
-				}
-			}
-		});
-		Preferences
-				.getInstance()
-				.getKeyBoardLayout()
-				.assignKeys(getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW),
-						"NextSelected");
 	}
 
 }

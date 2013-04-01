@@ -55,6 +55,10 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
 	private final Set<TurnoutManagerListener> listenersToBeRemovedInNextEvent = new HashSet<TurnoutManagerListener>();
 
+	private int lastProgrammedAddress = 1;
+
+	private int lastProgrammedNummer = 0;
+
 	private TurnoutManagerImpl() {
 		LOGGER.info("TurnoutManagerImpl loaded");
 	}
@@ -86,11 +90,14 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	@Override
 	public void clear() {
 		LOGGER.debug("clear()");
-		this.addressTurnoutCache.clear();
-		this.addressThreewayCache.clear();
-		this.numberToTurnoutCache.clear();
-		this.turnoutGroups.clear();
+		clearCache();
 		turnoutsUpdated(getAllTurnoutGroups());
+	}
+
+	@Override
+	public void clearToService() {
+		LOGGER.debug("clearToService()");
+		turnoutService.clear();
 	}
 
 	@Override
@@ -132,14 +139,21 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	@Override
-	public void addTurnout(final Turnout turnout)
-			throws TurnoutManagerException {
+	public void addTurnoutToGroup(final Turnout turnout,
+			final TurnoutGroup group) throws TurnoutManagerException {
 		LOGGER.debug("addTurnout()");
-		if (turnout.getTurnoutGroup() == null) {
+		if (group == null) {
 			throw new TurnoutManagerException("Turnout has no associated Group");
 		}
-		turnout.getTurnoutGroup().getTurnouts().add(turnout);
+		group.getTurnouts().add(turnout);
+		turnout.setTurnoutGroup(group);
 		turnoutService.addTurnout(turnout);
+		if (turnout.getTurnoutType().equals(TurnoutType.THREEWAY)) {
+			lastProgrammedAddress = turnout.getAddress2();
+		} else {
+			lastProgrammedAddress = turnout.getAddress1();
+		}
+		lastProgrammedNummer = turnout.getNumber();
 
 	}
 
@@ -207,12 +221,13 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	@Override
 	public int getNextFreeTurnoutNumber() {
 		LOGGER.debug("getNextFreeTurnoutNumber()");
-		final SortedSet<Turnout> turnouts = new TreeSet<Turnout>(
-				getAllTurnouts());
-		if (turnouts.isEmpty()) {
-			return 1;
-		}
-		return turnouts.last().getNumber() + 1;
+
+		/*
+		 * final SortedSet<Turnout> turnouts = new TreeSet<Turnout>(
+		 * getAllTurnouts()); if (turnouts.isEmpty()) { return 1; } return
+		 * turnouts.last().getNumber() + 1;
+		 */
+		return lastProgrammedNummer + 1;
 	}
 
 	@Override
@@ -301,11 +316,11 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	@Override
-	public void turnoutsUpdated(final SortedSet<TurnoutGroup> turnoutGroups) {
-		LOGGER.info("turnoutsUpdated: " + turnoutGroups);
+	public void turnoutsUpdated(final SortedSet<TurnoutGroup> updatedTurnouts) {
+		LOGGER.info("turnoutsUpdated: " + updatedTurnouts);
 		cleanupListeners();
-
-		for (final TurnoutGroup group : turnoutGroups) {
+		clearCache();
+		for (final TurnoutGroup group : updatedTurnouts) {
 			putTurnoutGroupInCache(group);
 			for (final Turnout turnout : group.getTurnouts()) {
 				numberToTurnoutCache.put(turnout.getNumber(), turnout);
@@ -387,6 +402,18 @@ public class TurnoutManagerImpl implements TurnoutManager,
 		}
 	}
 
+	@Override
+	public void disconnect() {
+		cleanupListeners();
+		turnoutService.disconnect();
+		turnoutsUpdated(new TreeSet<TurnoutGroup>());
+	}
+
+	@Override
+	public int getLastProgrammedAddress() {
+		return lastProgrammedAddress;
+	}
+
 	private void putTurnoutGroupInCache(final TurnoutGroup group) {
 		turnoutGroups.add(group);
 	}
@@ -416,10 +443,11 @@ public class TurnoutManagerImpl implements TurnoutManager,
 		addressThreewayCache.values().remove(turnout);
 	}
 
-	@Override
-	public void disconnect() {
-		turnoutService.disconnect();
-		turnoutsUpdated(new TreeSet<TurnoutGroup>());
+	private void clearCache() {
+		this.addressTurnoutCache.clear();
+		this.addressThreewayCache.clear();
+		this.numberToTurnoutCache.clear();
+		this.turnoutGroups.clear();
 	}
 
 }

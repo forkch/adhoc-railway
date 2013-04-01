@@ -25,7 +25,7 @@ public class LocomotiveImporter implements LocomotiveManagerListener {
 
 		this.locomotivePersistence = locomotivePersistence;
 		this.groups = new ArrayList<LocomotiveGroup>(groups);
-		locomotivePersistence.clear(true);
+		locomotivePersistence.clearToService();
 		locomotivePersistence.addLocomotiveManagerListener(this);
 
 		locomotivePersistence.addLocomotiveGroup(this.groups.get(0));

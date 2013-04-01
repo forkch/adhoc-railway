@@ -3,6 +3,8 @@ package ch.fork.AdHocRailway.ui.turnouts;
 import static ch.fork.AdHocRailway.ui.ImageTools.createImageIconFromIconSet;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -24,15 +26,12 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerListener;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutOrientation;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.SmallToolbarButton;
-import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
+import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 
 public class TurnoutGroupsPanel extends JTabbedPane implements
 		TurnoutManagerListener {
@@ -54,11 +53,26 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 		initToolBar();
 		initMenuBar();
+		initActionListeners();
+	}
+
+	private void initActionListeners() {
+
+		addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(final MouseEvent e) {
+
+				System.out.println("sdljasdjsd");
+			}
+		});
 	}
 
 	private void updateTurnouts(final SortedSet<TurnoutGroup> turnoutGroups) {
 		indexToTurnoutGroup.clear();
 		removeAll();
+		revalidate();
+		repaint();
 		turnoutGroupToTurnoutGroupTab.clear();
 		int i = 1;
 		final TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
@@ -68,17 +82,16 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 		for (final TurnoutGroup turnoutGroup : turnoutGroups) {
 			indexToTurnoutGroup.put(i - 1, turnoutGroup);
-			addTurnoutGroup(i, turnoutGroup);
+			addTurnoutGroup(turnoutGroup);
 			i++;
 		}
 	}
 
-	public void addTurnoutGroup(final int groupNumber,
-			final TurnoutGroup turnoutGroup) {
+	public void addTurnoutGroup(final TurnoutGroup turnoutGroup) {
 		final TurnoutGroupTab turnoutGroupTab = new TurnoutGroupTab(
 				turnoutGroup);
 
-		add(turnoutGroupTab, "F" + groupNumber + ": " + turnoutGroup.getName());
+		add(turnoutGroupTab, turnoutGroup.getName());
 		turnoutGroupToTurnoutGroupTab.put(turnoutGroup, turnoutGroupTab);
 
 	}
@@ -148,7 +161,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 							"Rearranging Turnout and Route numbers",
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.QUESTION_MESSAGE,
-							createImageIconFromIconSet("messagebox_info.png"));
+							createImageIconFromIconSet("dialog-information.png"));
 			if (result == JOptionPane.OK_OPTION) {
 				final TurnoutManager turnoutPersistence = AdHocRailway
 						.getInstance().getTurnoutPersistence();
@@ -169,7 +182,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 		public AddTurnoutsAction() {
 			super("Add Turnouts\u2026",
-					createImageIconFromIconSet("filenew.png"));
+					createImageIconFromIconSet("document-new.png"));
 		}
 
 		@Override
@@ -178,46 +191,15 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 				JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
 						"Please configure a group first", "Add Turnouts",
 						JOptionPane.INFORMATION_MESSAGE,
-						createImageIconFromIconSet("messagebox_info.png"));
+						createImageIconFromIconSet("dialog-information.png"));
 				return;
 			}
 			final int selectedGroupPane = getSelectedIndex();
 
 			final TurnoutGroup selectedTurnoutGroup = indexToTurnoutGroup
 					.get(selectedGroupPane);
-			int nextNumber = 0;
-			final TurnoutManager turnoutPersistence = AdHocRailway
-					.getInstance().getTurnoutPersistence();
-			if (Preferences.getInstance().getBooleanValue(
-					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-				nextNumber = turnoutPersistence
-						.getNextFreeTurnoutNumberOfGroup(selectedTurnoutGroup);
-				if (nextNumber == -1) {
-					JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
-							"No more free numbers in this group", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					setSelectedIndex(selectedGroupPane);
-					return;
-				}
-			} else {
-				nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
-			}
 
-			final Turnout newTurnout = new Turnout();
-			newTurnout.setNumber(nextNumber);
-
-			newTurnout.setBus1(Preferences.getInstance().getIntValue(
-					PreferencesKeys.DEFAULT_TURNOUT_BUS));
-			newTurnout.setBus2(Preferences.getInstance().getIntValue(
-					PreferencesKeys.DEFAULT_TURNOUT_BUS));
-
-			newTurnout.setTurnoutGroup(selectedTurnoutGroup);
-			newTurnout.setDefaultState(TurnoutState.STRAIGHT);
-			newTurnout.setOrientation(TurnoutOrientation.EAST);
-			newTurnout.setTurnoutType(TurnoutType.DEFAULT);
-
-			new TurnoutConfig(AdHocRailway.getInstance(), newTurnout);
-			setSelectedIndex(selectedGroupPane);
+			TurnoutHelper.addNewTurnoutDialog(selectedTurnoutGroup);
 		}
 	}
 
@@ -372,7 +354,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 			@Override
 			public void run() {
-				addTurnoutGroup(-1, group);
+				addTurnoutGroup(group);
 				revalidate();
 				repaint();
 			}

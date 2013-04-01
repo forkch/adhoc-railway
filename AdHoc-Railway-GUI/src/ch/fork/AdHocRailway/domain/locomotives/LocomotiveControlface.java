@@ -104,4 +104,11 @@ public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 
 	public abstract void addOrUpdateLocomotive(Locomotive locomotive);
 
+	public void activateLoco(final Locomotive locomotive);
+
+	public void deactivateLoco(final Locomotive locomotive)
+			throws LocomotiveException;
+
+	public abstract void emergencyStopActiveLocos() throws LocomotiveException;
+
 }

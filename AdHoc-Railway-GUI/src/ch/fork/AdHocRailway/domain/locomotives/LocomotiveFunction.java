@@ -43,7 +43,10 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction> {
 	}
 
 	public String getShortDescription() {
-		return "F" + (number);
+		if (number == 0) {
+			return "Fn";
+		}
+		return "Fn" + (number);
 	}
 
 	public static SortedSet<LocomotiveFunction> getDeltaFunctions() {

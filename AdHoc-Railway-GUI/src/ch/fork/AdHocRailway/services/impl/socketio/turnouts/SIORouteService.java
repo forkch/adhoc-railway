@@ -7,7 +7,7 @@ import io.socket.SocketIOException;
 import java.util.Arrays;
 import java.util.SortedSet;
 
-import org.jboss.logging.Logger;
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,7 +45,33 @@ public class SIORouteService implements RouteService, IOCallback {
 
 	@Override
 	public void clear() {
+		LOGGER.info(SIORouteServiceEvent.ROUTE_CLEAR_REQUEST);
+		sioService.checkSocket();
+		final IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
+			@Override
+			public void ack(final Object... arg0) {
+				LOGGER.info("ack: " + Arrays.toString(arg0));
+				final Boolean err = (Boolean) arg0[0];
+				final String msg = (String) arg0[1];
+				if (err) {
+					listener.failure(new RouteManagerException(msg));
+				} else {
+					final JSONObject data = (JSONObject) arg0[2];
+					try {
+						SIORouteServiceEventHandler.handleRouteInit(data,
+								listener);
+					} catch (final JSONException e) {
+						listener.failure(new RouteManagerException(
+								"error clearing rutnouts", e));
+					}
+				}
+			}
+		};
+
+		sioService.getSocket().emit(
+				SIORouteServiceEvent.ROUTE_CLEAR_REQUEST.getEvent(),
+				ioAcknowledge, "");
 	}
 
 	@Override

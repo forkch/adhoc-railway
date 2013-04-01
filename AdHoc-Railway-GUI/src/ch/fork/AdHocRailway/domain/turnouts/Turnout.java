@@ -82,10 +82,11 @@ public class Turnout extends Model implements java.io.Serializable,
 	public Turnout() {
 	}
 
-	public Turnout(int number, TurnoutType turnoutType, int bus1, int address1,
-			boolean address1_switched, TurnoutState defaultState,
-			TurnoutOrientation orientation, String description,
-			TurnoutGroup turnoutGroup) {
+	public Turnout(final int number, final TurnoutType turnoutType,
+			final int bus1, final int address1,
+			final boolean address1_switched, final TurnoutState defaultState,
+			final TurnoutOrientation orientation, final String description,
+			final TurnoutGroup turnoutGroup) {
 		this.turnoutType = turnoutType;
 		this.turnoutGroup = turnoutGroup;
 		this.number = number;
@@ -101,8 +102,8 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.turnoutType;
 	}
 
-	public void setTurnoutType(TurnoutType turnoutType) {
-		TurnoutType old = this.turnoutType;
+	public void setTurnoutType(final TurnoutType turnoutType) {
+		final TurnoutType old = this.turnoutType;
 		this.turnoutType = turnoutType;
 		firePropertyChange(PROPERTYNAME_TURNOUT_TYPE, old, turnoutType);
 	}
@@ -111,8 +112,8 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.turnoutGroup;
 	}
 
-	public void setTurnoutGroup(TurnoutGroup turnoutGroup) {
-		TurnoutGroup old = this.turnoutGroup;
+	public void setTurnoutGroup(final TurnoutGroup turnoutGroup) {
+		final TurnoutGroup old = this.turnoutGroup;
 		this.turnoutGroup = turnoutGroup;
 		firePropertyChange(PROPERTYNAME_TURNOUT_GROUP, old, turnoutGroup);
 	}
@@ -121,8 +122,8 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.number;
 	}
 
-	public void setNumber(int number) {
-		int old = this.number;
+	public void setNumber(final int number) {
+		final int old = this.number;
 		this.number = number;
 		firePropertyChange(PROPERTYNAME_NUMBER, old, number);
 	}
@@ -131,8 +132,8 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.description;
 	}
 
-	public void setDescription(String description) {
-		String old = this.description;
+	public void setDescription(final String description) {
+		final String old = this.description;
 		this.description = description;
 		firePropertyChange(PROPERTYNAME_DESCRIPTION, old, description);
 	}
@@ -141,8 +142,8 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.defaultState;
 	}
 
-	public void setDefaultState(TurnoutState defaultState) {
-		TurnoutState old = this.defaultState;
+	public void setDefaultState(final TurnoutState defaultState) {
+		final TurnoutState old = this.defaultState;
 		this.defaultState = defaultState;
 		firePropertyChange(PROPERTYNAME_DEFAULT_STATE, old, defaultState);
 	}
@@ -151,8 +152,8 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.orientation;
 	}
 
-	public void setOrientation(TurnoutOrientation orientation) {
-		TurnoutOrientation old = this.orientation;
+	public void setOrientation(final TurnoutOrientation orientation) {
+		final TurnoutOrientation old = this.orientation;
 		this.orientation = orientation;
 		firePropertyChange(PROPERTYNAME_ORIENTATION, old, orientation);
 	}
@@ -161,7 +162,7 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.routeItems;
 	}
 
-	public void setRouteItems(Set<RouteItem> routeItems) {
+	public void setRouteItems(final Set<RouteItem> routeItems) {
 		this.routeItems = routeItems;
 	}
 
@@ -169,8 +170,8 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.address1;
 	}
 
-	public void setAddress1(int address1) {
-		int old = this.address1;
+	public void setAddress1(final int address1) {
+		final int old = this.address1;
 		this.address1 = address1;
 		firePropertyChange(PROPERTYNAME_ADDRESS1, old, address1);
 	}
@@ -179,8 +180,8 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.address2;
 	}
 
-	public void setAddress2(int address2) {
-		int old = this.address2;
+	public void setAddress2(final int address2) {
+		final int old = this.address2;
 		this.address2 = address2;
 		firePropertyChange(PROPERTYNAME_ADDRESS2, old, address2);
 	}
@@ -189,8 +190,8 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.bus1;
 	}
 
-	public void setBus1(int bus1) {
-		int old = this.bus1;
+	public void setBus1(final int bus1) {
+		final int old = this.bus1;
 		this.bus1 = bus1;
 		firePropertyChange(PROPERTYNAME_BUS1, old, bus1);
 	}
@@ -199,8 +200,8 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.bus2;
 	}
 
-	public void setBus2(int bus2) {
-		int old = this.bus2;
+	public void setBus2(final int bus2) {
+		final int old = this.bus2;
 		this.bus2 = bus2;
 		firePropertyChange(PROPERTYNAME_BUS2, old, bus2);
 	}
@@ -209,8 +210,8 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.address1Switched;
 	}
 
-	public void setAddress1Switched(boolean address1Switched) {
-		boolean old = this.address1Switched;
+	public void setAddress1Switched(final boolean address1Switched) {
+		final boolean old = this.address1Switched;
 		this.address1Switched = address1Switched;
 		firePropertyChange(PROPERTYNAME_ADDRESS1_SWITCHED, old,
 				address1Switched);
@@ -220,8 +221,8 @@ public class Turnout extends Model implements java.io.Serializable,
 		return this.address2Switched;
 	}
 
-	public void setAddress2Switched(boolean address2Switched) {
-		boolean old = this.address2Switched;
+	public void setAddress2Switched(final boolean address2Switched) {
+		final boolean old = this.address2Switched;
 		this.address2Switched = address2Switched;
 		firePropertyChange(PROPERTYNAME_ADDRESS2_SWITCHED, old,
 				address2Switched);
@@ -252,7 +253,7 @@ public class Turnout extends Model implements java.io.Serializable,
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -262,7 +263,7 @@ public class Turnout extends Model implements java.io.Serializable,
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Turnout other = (Turnout) obj;
+		final Turnout other = (Turnout) obj;
 		if (id != other.id) {
 			return false;
 		}
@@ -270,7 +271,7 @@ public class Turnout extends Model implements java.io.Serializable,
 	}
 
 	@Override
-	public int compareTo(Turnout o) {
+	public int compareTo(final Turnout o) {
 		if (this == o) {
 			return 0;
 		}
@@ -296,7 +297,7 @@ public class Turnout extends Model implements java.io.Serializable,
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 }

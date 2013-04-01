@@ -7,7 +7,7 @@ import io.socket.SocketIOException;
 import java.util.Arrays;
 import java.util.SortedSet;
 
-import org.jboss.logging.Logger;
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,7 +44,33 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 	@Override
 	public void clear() {
+		LOGGER.info(SIOTurnoutServiceEvent.TURNOUT_CLEAR_REQUEST);
+		sioService.checkSocket();
+		final IOAcknowledge ioAcknowledge = new IOAcknowledge() {
 
+			@Override
+			public void ack(final Object... arg0) {
+				LOGGER.info("ack: " + Arrays.toString(arg0));
+				final Boolean err = (Boolean) arg0[0];
+				final String msg = (String) arg0[1];
+				if (err) {
+					listener.failure(new TurnoutManagerException(msg));
+				} else {
+					final JSONObject data = (JSONObject) arg0[2];
+					try {
+						SIOTurnoutServiceEventHandler.handleTurnoutInit(data,
+								listener);
+					} catch (final JSONException e) {
+						listener.failure(new TurnoutManagerException(
+								"error clearing rutnouts", e));
+					}
+				}
+			}
+		};
+
+		sioService.getSocket().emit(
+				SIOTurnoutServiceEvent.TURNOUT_CLEAR_REQUEST.getEvent(),
+				ioAcknowledge, "");
 	}
 
 	@Override

@@ -2,8 +2,10 @@ package ch.fork.AdHocRailway.domain.locomotives;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -35,6 +37,8 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	private final Map<SRCPLocomotive, List<LocomotiveChangeListener>> listeners = new HashMap<SRCPLocomotive, List<LocomotiveChangeListener>>();
 
 	private final SRCPLocomotiveControl locomotiveControl;
+
+	private final Set<Locomotive> activeLocomotives = new HashSet<Locomotive>();
 
 	private SRCPLocomotiveControlAdapter() {
 		locomotiveControl = SRCPLocomotiveControl.getInstance();
@@ -309,6 +313,26 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 
 	public SRCPLocomotive getSrcpLocomotive(final Locomotive locomotive) {
 		return locomotiveSRCPLocomotiveMap.get(locomotive);
+	}
+
+	@Override
+	public void activateLoco(final Locomotive locomotive) {
+
+		this.activeLocomotives.add(locomotive);
+	}
+
+	@Override
+	public void deactivateLoco(final Locomotive locomotive)
+			throws LocomotiveException {
+		emergencyStop(locomotive);
+		this.activeLocomotives.add(locomotive);
+	}
+
+	@Override
+	public void emergencyStopActiveLocos() throws LocomotiveException {
+		for (final Locomotive locomotive : activeLocomotives) {
+			emergencyStop(locomotive);
+		}
 	}
 
 }

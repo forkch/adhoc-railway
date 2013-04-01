@@ -53,7 +53,6 @@ import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.common.collect.ArrayListModel;
@@ -98,6 +97,8 @@ public class RoutesConfigurationDialog extends JDialog implements
 			.getRoutePersistence();
 
 	private JButton editGroupButton;
+
+	private JButton duplicateRouteButton;
 
 	public RoutesConfigurationDialog(final JFrame parent) {
 		super(parent, "Edit Routes", true);
@@ -147,7 +148,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 
 	private Component buildRouteButtonBar() {
 		return ButtonBarFactory.buildCenteredBar(addRouteButton,
-				removeRouteButton);
+				duplicateRouteButton, removeRouteButton);
 	}
 
 	private Component buildMainButtonBar() {
@@ -156,8 +157,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 
 	@SuppressWarnings("unchecked")
 	private void initComponents() {
-		routeGroups = new ArrayListModel<RouteGroup>(
-				routePersistence.getAllRouteGroups());
+		routeGroups = new ArrayListModel<RouteGroup>();
 		routeGroupModel = new SelectionInList<RouteGroup>(
 				(ListModel<?>) routeGroups);
 
@@ -182,10 +182,11 @@ public class RoutesConfigurationDialog extends JDialog implements
 		routesList.setCellRenderer(new RouteListCellRenderer());
 
 		addRouteButton = new JButton(new AddRouteAction());
+		duplicateRouteButton = new JButton(new DuplicateRouteAction());
 		removeRouteButton = new JButton(new RemoveRouteAction());
 
 		okButton = new JButton("OK",
-				ImageTools.createImageIconFromIconSet("ok.png"));
+				ImageTools.createImageIconFromIconSet("dialog-ok-apply.png"));
 		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
@@ -320,7 +321,8 @@ public class RoutesConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = 5693865195234842058L;
 
 		public EditRouteGroupAction() {
-			super("Edit Group");
+			super("Edit Group", ImageTools
+					.createImageIconFromIconSet("edit.png"));
 		}
 
 		@Override
@@ -340,7 +342,8 @@ public class RoutesConfigurationDialog extends JDialog implements
 		private static final long serialVersionUID = -3045858271545335261L;
 
 		public AddRouteGroupAction() {
-			super("Add Group", ImageTools.createImageIconFromIconSet("add.png"));
+			super("Add Group", ImageTools
+					.createImageIconFromIconSet("list-add.png"));
 		}
 
 		@Override
@@ -378,14 +381,11 @@ public class RoutesConfigurationDialog extends JDialog implements
 
 	private class RemoveRouteGroupAction extends AbstractAction {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -2720292570898525106L;
 
 		public RemoveRouteGroupAction() {
 			super("Remove Group", ImageTools
-					.createImageIconFromIconSet("remove.png"));
+					.createImageIconFromIconSet("list-remove.png"));
 		}
 
 		@Override
@@ -417,13 +417,10 @@ public class RoutesConfigurationDialog extends JDialog implements
 
 	private class AddRouteAction extends AbstractAction {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 712960776135284412L;
 
 		public AddRouteAction() {
-			super("Add Route", ImageTools.createImageIconFromIconSet("add.png"));
+			super("Add", ImageTools.createImageIconFromIconSet("list-add.png"));
 		}
 
 		@Override
@@ -436,34 +433,52 @@ public class RoutesConfigurationDialog extends JDialog implements
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			int nextNumber = 0;
-			if (Preferences.getInstance().getBooleanValue(
-					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-				nextNumber = routePersistence
-						.getNextFreeRouteNumberOfGroup(selectedRouteGroup);
-				if (nextNumber == -1) {
-					JOptionPane.showMessageDialog(
-							RoutesConfigurationDialog.this,
-							"No more free numbers in this group", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-			} else {
-				nextNumber = routePersistence.getNextFreeRouteNumber();
+			final int nextNumber = getNextRouteNumber(selectedRouteGroup);
+			if (nextNumber == -1) {
+				return;
 			}
 
-			final Route newRoute = createDefaultRoute(selectedRouteGroup,
-					nextNumber);
+			final Route newRoute = RouteHelper.createDefaultRoute(
+					routePersistence, selectedRouteGroup, nextNumber);
 
 			new RouteConfig(RoutesConfigurationDialog.this, newRoute);
 		}
+	}
 
-		private Route createDefaultRoute(final RouteGroup selectedRouteGroup,
-				final int nextNumber) {
-			final Route newRoute = new Route();
-			newRoute.setNumber(nextNumber);
-			newRoute.setRouteGroup(selectedRouteGroup);
-			return newRoute;
+	private class DuplicateRouteAction extends AbstractAction {
+
+		private static final long serialVersionUID = 712960776135284412L;
+
+		public DuplicateRouteAction() {
+			super("Duplicate", ImageTools
+					.createImageIconFromIconSet("editcopy.png"));
+
+		}
+
+		@Override
+		public void actionPerformed(final ActionEvent e) {
+			final RouteGroup selectedRouteGroup = routeGroupModel
+					.getSelection();
+			if (selectedRouteGroup == null) {
+				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
+						"Please select a route group", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			final Route selectedRoute = routesModel.getElementAt(routesList
+					.getSelectedIndex());
+			if (selectedRoute == null) {
+				return;
+			}
+			final int nextNumber = getNextRouteNumber(selectedRouteGroup);
+			if (nextNumber == -1) {
+				return;
+			}
+
+			final Route newRoute = RouteHelper.copyRoute(routePersistence,
+					selectedRoute, selectedRouteGroup, nextNumber);
+
+			new RouteConfig(RoutesConfigurationDialog.this, newRoute);
 		}
 	}
 
@@ -476,26 +491,17 @@ public class RoutesConfigurationDialog extends JDialog implements
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 
-			// PresentationModel<Turnout> model = new
-			// PresentationModel<Turnout>(
-			// turnoutModel);
 			final Route route = (Route) routesList.getSelectedValue();
-			final PresentationModel<Route> model = new PresentationModel<Route>(
-					route);
-			new RouteConfig(RoutesConfigurationDialog.this, model);
+			new RouteConfig(RoutesConfigurationDialog.this, route);
 		}
 	}
 
 	private class RemoveRouteAction extends AbstractAction {
-
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -1067155603250166588L;
 
 		public RemoveRouteAction() {
-			super("Remove Route", ImageTools
-					.createImageIconFromIconSet("remove.png"));
+			super("Remove", ImageTools
+					.createImageIconFromIconSet("list-remove.png"));
 		}
 
 		@Override
@@ -524,7 +530,8 @@ public class RoutesConfigurationDialog extends JDialog implements
 	}
 
 	@Override
-	public void routesUpdated(final SortedSet<RouteGroup> allRouteGroups) {
+	public void routesUpdated(final SortedSet<RouteGroup> updatedRouteGroups) {
+		routeGroups.addAll(updatedRouteGroups);
 	}
 
 	@Override
@@ -572,5 +579,23 @@ public class RoutesConfigurationDialog extends JDialog implements
 	@Override
 	public void failure(final RouteManagerException routeManagerException) {
 
+	}
+
+	private int getNextRouteNumber(final RouteGroup selectedRouteGroup) {
+		int nextNumber = 0;
+		if (Preferences.getInstance().getBooleanValue(
+				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
+			nextNumber = routePersistence
+					.getNextFreeRouteNumberOfGroup(selectedRouteGroup);
+			if (nextNumber == -1) {
+				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
+						"No more free numbers in this group", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return -1;
+			}
+		} else {
+			nextNumber = routePersistence.getNextFreeRouteNumber();
+		}
+		return nextNumber;
 	}
 }
