@@ -1,6 +1,10 @@
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.JOptionPane;
+
+import org.apache.commons.beanutils.BeanUtils;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
@@ -67,5 +71,26 @@ public class RouteHelper {
 
 		new RouteConfig(AdHocRailway.getInstance(), newTurnout,
 				selectedRouteGroup);
+	}
+
+	public static Route copyRoute(final Route old) {
+		final Route r = new Route();
+		try {
+			BeanUtils.copyProperties(r, old);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return r;
+	}
+
+	public static void update(final Route testRoute, final String property,
+			final Object newValue) {
+		try {
+			BeanUtils.setProperty(testRoute, property, newValue);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

@@ -314,27 +314,27 @@ public class TurnoutConfig extends JDialog {
 	}
 
 	private void initEventHandling() {
-		numberModel.addValueChangeListener(new ChangeListener(
+		numberModel.addValueChangeListener(new TurnoutChangeListener(
 				Turnout.PROPERTYNAME_NUMBER));
-		descriptionModel.addValueChangeListener(new ChangeListener(
+		descriptionModel.addValueChangeListener(new TurnoutChangeListener(
 				Turnout.PROPERTYNAME_DESCRIPTION));
-		bus1Model.addValueChangeListener(new ChangeListener(
+		bus1Model.addValueChangeListener(new TurnoutChangeListener(
 				Turnout.PROPERTYNAME_BUS1));
-		address1Model.addValueChangeListener(new ChangeListener(
+		address1Model.addValueChangeListener(new TurnoutChangeListener(
 				Turnout.PROPERTYNAME_ADDRESS1));
-		bus2Model.addValueChangeListener(new ChangeListener(
+		bus2Model.addValueChangeListener(new TurnoutChangeListener(
 				Turnout.PROPERTYNAME_BUS2));
-		address2Model.addValueChangeListener(new ChangeListener(
+		address2Model.addValueChangeListener(new TurnoutChangeListener(
 				Turnout.PROPERTYNAME_ADDRESS2));
-		swiched1Model.addValueChangeListener(new ChangeListener(
+		swiched1Model.addValueChangeListener(new TurnoutChangeListener(
 				Turnout.PROPERTYNAME_ADDRESS1_SWITCHED));
-		switched2Model.addValueChangeListener(new ChangeListener(
+		switched2Model.addValueChangeListener(new TurnoutChangeListener(
 				Turnout.PROPERTYNAME_ADDRESS2_SWITCHED));
-		turnoutTypeModel.addValueChangeListener(new ChangeListener(
+		turnoutTypeModel.addValueChangeListener(new TurnoutChangeListener(
 				Turnout.PROPERTYNAME_TURNOUT_TYPE));
-		defaultStateModel.addValueChangeListener(new ChangeListener(
+		defaultStateModel.addValueChangeListener(new TurnoutChangeListener(
 				Turnout.PROPERTYNAME_DEFAULT_STATE));
-		orientationModel.addValueChangeListener(new ChangeListener(
+		orientationModel.addValueChangeListener(new TurnoutChangeListener(
 				Turnout.PROPERTYNAME_ORIENTATION));
 
 	}
@@ -379,10 +379,10 @@ public class TurnoutConfig extends JDialog {
 
 	}
 
-	class ChangeListener implements PropertyChangeListener {
+	class TurnoutChangeListener implements PropertyChangeListener {
 		private final String property;
 
-		public ChangeListener(final String property) {
+		public TurnoutChangeListener(final String property) {
 			this.property = property;
 		}
 

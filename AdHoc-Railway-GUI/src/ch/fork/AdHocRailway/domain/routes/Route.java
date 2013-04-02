@@ -18,20 +18,19 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
+import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.jgoodies.binding.beans.Model;
+import com.jgoodies.binding.beans.ExtendedPropertyChangeSupport;
 
-public class Route extends Model implements java.io.Serializable,
-		Comparable<Route> {
+public class Route implements java.io.Serializable, Comparable<Route> {
 
-	/**
-	 * 
-	 */
+	private final ExtendedPropertyChangeSupport changeSupport = new ExtendedPropertyChangeSupport(
+			this);
 	private static final long serialVersionUID = 2382655333966102806L;
 
 	private int id = -1;
@@ -46,20 +45,26 @@ public class Route extends Model implements java.io.Serializable,
 
 	private SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>();
 
-	private int routeGroupId;
+	public static final String PROPERTYNAME_ID = "id";
+	public static final String PROPERTYNAME_NUMBER = "number";
+	public static final String PROPERTYNAME_NAME = "name";
+	public static final String PROPERTYNAME_ORIENTATION = "orientation";
+	public static final String PROPERTYNAME_ROUTE_GROUP = "routeGroup";
+	public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
 
 	public Route() {
 	}
 
-	public Route(int id, RouteGroup routeGroup, int number, String name) {
+	public Route(final int id, final RouteGroup routeGroup, final int number,
+			final String name) {
 		this.id = id;
 		this.routeGroup = routeGroup;
 		this.number = number;
 		this.name = name;
 	}
 
-	public Route(int id, RouteGroup routeGroup, int number, String name,
-			SortedSet<RouteItem> routeItems) {
+	public Route(final int id, final RouteGroup routeGroup, final int number,
+			final String name, final SortedSet<RouteItem> routeItems) {
 		this.id = id;
 		this.routeGroup = routeGroup;
 		this.number = number;
@@ -71,7 +76,7 @@ public class Route extends Model implements java.io.Serializable,
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -79,49 +84,61 @@ public class Route extends Model implements java.io.Serializable,
 		return this.routeGroup;
 	}
 
-	public void setRouteGroup(RouteGroup routeGroup) {
+	public void setRouteGroup(final RouteGroup routeGroup) {
+		final RouteGroup old = this.routeGroup;
 		this.routeGroup = routeGroup;
+		changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_GROUP, old,
+				routeGroup);
 	}
 
 	public int getNumber() {
 		return this.number;
 	}
 
-	public void setNumber(int number) {
+	public void setNumber(final int number) {
+		final int old = this.number;
 		this.number = number;
+		changeSupport.firePropertyChange(PROPERTYNAME_NUMBER, old, number);
+	}
+
+	public String getOrientation() {
+		return orientation;
+	}
+
+	public void setOrientation(final String orientation) {
+		final String old = orientation;
+		this.orientation = orientation;
+		changeSupport.firePropertyChange(PROPERTYNAME_ORIENTATION, old,
+				orientation);
 	}
 
 	public String getName() {
 		return this.name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
+		final String old = name;
 		this.name = name;
+		changeSupport.firePropertyChange(PROPERTYNAME_NAME, old, name);
 	}
 
 	public SortedSet<RouteItem> getRouteItems() {
 		return this.routeItems;
 	}
 
-	public void setRouteItems(SortedSet<RouteItem> routeItems) {
+	public void setRouteItems(final SortedSet<RouteItem> routeItems) {
+		final SortedSet<RouteItem> old = this.routeItems;
 		this.routeItems = routeItems;
+		changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_ITEMS, old,
+				routeItems);
 	}
 
-	public void setRouteGroupId(int routeGroupId) {
-		this.routeGroupId = routeGroupId;
-
-	}
-
-	public int getRouteGroupId() {
-		return routeGroupId;
-	}
-
-	public void addRouteItem(RouteItem routeItem) {
+	public void addRouteItem(final RouteItem routeItem) {
 		routeItems.add(routeItem);
 	}
 
 	@Override
-	public int compareTo(Route o) {
+	public int compareTo(final Route o) {
 		if (this == o) {
 			return 0;
 		}
@@ -146,7 +163,7 @@ public class Route extends Model implements java.io.Serializable,
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -156,7 +173,7 @@ public class Route extends Model implements java.io.Serializable,
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Route other = (Route) obj;
+		final Route other = (Route) obj;
 		if (id != other.id) {
 			return false;
 		}
@@ -169,11 +186,11 @@ public class Route extends Model implements java.io.Serializable,
 				ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
-	public String getOrientation() {
-		return orientation;
+	public void addPropertyChangeListener(final PropertyChangeListener x) {
+		changeSupport.addPropertyChangeListener(x);
 	}
 
-	public void setOrientation(String orientation) {
-		this.orientation = orientation;
+	public void removePropertyChangeListener(final PropertyChangeListener x) {
+		changeSupport.removePropertyChangeListener(x);
 	}
 }

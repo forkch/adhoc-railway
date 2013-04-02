@@ -40,4 +40,8 @@ public interface RouteControlIface {
 
 	void addOrUpdateRoute(Route route);
 
+	public abstract void toggle(Route route) throws RouteException;
+
+	public abstract void toggleTest(Route route) throws RouteException;
+
 }

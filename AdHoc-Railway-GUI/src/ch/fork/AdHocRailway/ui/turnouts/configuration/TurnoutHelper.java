@@ -65,17 +65,6 @@ public class TurnoutHelper {
 		return newTurnout;
 	}
 
-	public static Turnout copyTurnout(final Turnout old) {
-		final Turnout t = new Turnout();
-		try {
-			BeanUtils.copyProperties(t, old);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return t;
-	}
-
 	public static void validateTurnout(final TurnoutManager turnoutPersistence,
 			final Turnout turnout, final JPanel panel) {
 		boolean bus1Valid = true;
@@ -152,6 +141,17 @@ public class TurnoutHelper {
 				}
 			}
 		}
+	}
+
+	public static Turnout copyTurnout(final Turnout old) {
+		final Turnout t = new Turnout();
+		try {
+			BeanUtils.copyProperties(t, old);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return t;
 	}
 
 	public static void update(final Turnout testTurnout, final String property,

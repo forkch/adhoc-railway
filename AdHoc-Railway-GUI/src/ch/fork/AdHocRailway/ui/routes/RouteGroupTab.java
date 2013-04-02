@@ -44,7 +44,7 @@ public class RouteGroupTab extends WidgetTab {
 	}
 
 	public void addRoute(final Route route) {
-		final RouteWidget routeWidget = new RouteWidget(route);
+		final RouteWidget routeWidget = new RouteWidget(route, false);
 		addWidget(routeWidget);
 		routeToRouteWidget.put(route, routeWidget);
 	}

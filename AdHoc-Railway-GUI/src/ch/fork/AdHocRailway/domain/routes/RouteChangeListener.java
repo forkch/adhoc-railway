@@ -19,9 +19,9 @@
 package ch.fork.AdHocRailway.domain.routes;
 
 public interface RouteChangeListener {
-	public void nextSwitchRouted(Route changedRoute);
+	public void nextTurnoutRouted(Route changedRoute);
 
-	public void nextSwitchDerouted(Route changedRoute);
+	public void nextTurnoutDerouted(Route changedRoute);
 
 	public void routeChanged(Route changedRoute);
 }

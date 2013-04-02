@@ -21,11 +21,14 @@ package ch.fork.AdHocRailway.ui.routes.configuration;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.InputMap;
@@ -59,12 +62,14 @@ import ch.fork.AdHocRailway.ui.ErrorPanel;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
+import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
 import com.jgoodies.binding.adapter.SpinnerAdapterFactory;
 import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.binding.value.BufferedValueModel;
 import com.jgoodies.binding.value.Trigger;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
@@ -89,10 +94,17 @@ public class RouteConfig extends JDialog {
 	private final Trigger trigger = new Trigger();
 	private final RouteGroup selectedRouteGroup;
 	private ErrorPanel errorPanel;
+	private RouteWidget testRouteWidget;
+	private final Route testRoute;
+	private BufferedValueModel routeNumberModel;
+	private BufferedValueModel routeNameModel;
+	private BufferedValueModel routeOrientationModel;
 
 	public RouteConfig(final JDialog owner, final Route myRoute,
 			final RouteGroup selectedRouteGroup) {
 		super(owner, "Route Config", true);
+
+		testRoute = RouteHelper.copyRoute(myRoute);
 		this.selectedRouteGroup = selectedRouteGroup;
 		this.presentationModel = new PresentationModel<Route>(myRoute, trigger);
 		initGUI();
@@ -101,6 +113,7 @@ public class RouteConfig extends JDialog {
 	public RouteConfig(final Frame owner, final Route myRoute,
 			final RouteGroup selectedRouteGroup) {
 		super(owner, "Route Config", true);
+		testRoute = RouteHelper.copyRoute(myRoute);
 		this.selectedRouteGroup = selectedRouteGroup;
 		this.presentationModel = new PresentationModel<Route>(myRoute, trigger);
 
@@ -108,7 +121,9 @@ public class RouteConfig extends JDialog {
 	}
 
 	private void initGUI() {
+		initComponents();
 		buildPanel();
+		initEventHandling();
 
 		pack();
 		setLocationRelativeTo(getParent());
@@ -118,21 +133,21 @@ public class RouteConfig extends JDialog {
 
 	private void initComponents() {
 
+		routeNumberModel = getBufferedModel(Route.PROPERTYNAME_NUMBER);
+		routeOrientationModel = getBufferedModel(Route.PROPERTYNAME_ORIENTATION);
+		routeNameModel = getBufferedModel(Route.PROPERTYNAME_NAME);
+
 		routeNumberSpinner = new JSpinner();
 		routeNumberSpinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
-				presentationModel.getBufferedModel("number"), 1, // defaultValue
+				routeNumberModel, 1, // defaultValue
 				0, // minValue
 				1000, // maxValue
 				1)); // step
 
 		routeOrientationField = BasicComponentFactory
-				.createTextField(presentationModel
-						.getBufferedModel("orientation"));
-		routeOrientationField.setColumns(5);
+				.createTextField(routeOrientationModel);
 
-		routeNameField = BasicComponentFactory
-				.createTextField(presentationModel.getBufferedModel("name"));
-		routeNameField.setColumns(5);
+		routeNameField = BasicComponentFactory.createTextField(routeNameModel);
 
 		routeItemModel = new SelectionInList<RouteItem>();
 		routeItemTable = new JTable();
@@ -155,12 +170,17 @@ public class RouteConfig extends JDialog {
 
 		errorPanel = new ErrorPanel();
 
+		testRouteWidget = new RouteWidget(testRoute, true);
 		okButton = new JButton(new ApplyChangesAction());
 		cancelButton = new JButton(new CancelAction());
 	}
 
+	private BufferedValueModel getBufferedModel(final String propertynameNumber) {
+		return presentationModel.getBufferedModel(propertynameNumber);
+
+	}
+
 	private void buildPanel() {
-		initComponents();
 
 		mainPanel = new JPanel(new MigLayout());
 		mainPanel.add(digitDisplay);
@@ -175,14 +195,49 @@ public class RouteConfig extends JDialog {
 		infoPanel.add(new JLabel("Route Orienation"));
 		infoPanel.add(routeOrientationField, "w 150!, top");
 
-		mainPanel.add(infoPanel, "gap unrelated, wrap");
-		mainPanel.add(buildRouteItemButtonBar(), "span 2, align center, wrap");
-		mainPanel.add(new JScrollPane(routeItemTable), "span 2, grow x, wrap");
+		mainPanel.add(infoPanel, "gap unrelated");
+		mainPanel.add(testRouteWidget, "wrap");
+		mainPanel.add(buildRouteItemButtonBar(), "span 3, align center, wrap");
+		mainPanel.add(new JScrollPane(routeItemTable), "span 3, grow x, wrap");
 
-		mainPanel.add(errorPanel);
+		mainPanel.add(errorPanel, "span 2");
 		mainPanel.add(buildButtonBar(), "span 1, align right");
 
 		add(mainPanel);
+	}
+
+	private void initEventHandling() {
+
+		routeNumberModel.addValueChangeListener(new RouteChangeListener(
+				Route.PROPERTYNAME_NUMBER));
+		routeNameModel.addValueChangeListener(new RouteChangeListener(
+				Route.PROPERTYNAME_NAME));
+		routeOrientationModel.addValueChangeListener(new RouteChangeListener(
+				Route.PROPERTYNAME_ORIENTATION));
+		routeItemModel.addPropertyChangeListener(new RouteChangeListener(
+				Route.PROPERTYNAME_ROUTE_ITEMS));
+	}
+
+	class RouteChangeListener implements PropertyChangeListener {
+
+		private final String property;
+
+		public RouteChangeListener(final String property) {
+			this.property = property;
+		}
+
+		@Override
+		public void propertyChange(final PropertyChangeEvent evt) {
+			if (property.equals(Route.PROPERTYNAME_ROUTE_ITEMS)) {
+				@SuppressWarnings("unchecked")
+				final SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>(
+						(ArrayList<RouteItem>) evt.getNewValue());
+				RouteHelper.update(testRoute, property, routeItems);
+			} else {
+				RouteHelper.update(testRoute, property, evt.getNewValue());
+			}
+			testRouteWidget.setRoute(testRoute);
+		}
 	}
 
 	private Component buildRouteItemButtonBar() {

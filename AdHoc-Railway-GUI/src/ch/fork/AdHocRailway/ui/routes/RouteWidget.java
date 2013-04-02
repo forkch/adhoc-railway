@@ -53,9 +53,11 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 	private MouseAction mouseAction;
 	private JLabel numberLabel;
 	private JLabel orientationLabel;
+	private final boolean testMode;
 
-	public RouteWidget(final Route route) {
+	public RouteWidget(final Route route, final boolean testMode) {
 		this.route = route;
+		this.testMode = testMode;
 		final RouteControlIface routeControl = AdHocRailway.getInstance()
 				.getRouteControl();
 		initGUI();
@@ -116,11 +118,16 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 					if (routeControl.isRouting(route)) {
 						return;
 					}
-					if (routeControl.isRouteEnabled(route)) {
-						routeControl.disableRoute(route);
+					if (!testMode) {
+						routeControl.toggle(route);
 					} else {
-						routeControl.enableRoute(route);
+						routeControl.toggleTest(route);
 					}
+					// if (routeControl.isRouteEnabled(route)) {
+					// routeControl.disableRoute(route);
+					// } else {
+					// routeControl.enableRoute(route);
+					// }
 					removeMouseListener(mouseAction);
 				} else if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON3) {
@@ -165,7 +172,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 	}
 
 	@Override
-	public void nextSwitchRouted(final Route changedRoute) {
+	public void nextTurnoutRouted(final Route changedRoute) {
 		if (route.equals(changedRoute)) {
 			SwingUtilities.invokeLater(new Runnable() {
 
@@ -178,7 +185,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 	}
 
 	@Override
-	public void nextSwitchDerouted(final Route changedRoute) {
+	public void nextTurnoutDerouted(final Route changedRoute) {
 		if (route.equals(changedRoute)) {
 			SwingUtilities.invokeLater(new Runnable() {
 

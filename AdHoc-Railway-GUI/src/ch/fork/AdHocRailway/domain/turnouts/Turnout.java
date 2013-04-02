@@ -52,7 +52,7 @@ public class Turnout implements java.io.Serializable, Comparable<Turnout> {
 
 	private TurnoutOrientation orientation;
 
-	private Set<RouteItem> routeItems = new HashSet<RouteItem>(0);
+	private Set<RouteItem> routeItems = new HashSet<RouteItem>();
 
 	private int address1;
 

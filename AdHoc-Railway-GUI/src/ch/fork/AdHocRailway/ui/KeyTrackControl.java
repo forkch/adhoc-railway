@@ -146,7 +146,7 @@ public class KeyTrackControl extends SimpleInternalFrame {
 			final Turnout turnout = (Turnout) obj;
 			w = new TurnoutWidget(turnout, true);
 		} else if (obj instanceof Route) {
-			w = new RouteWidget((Route) obj);
+			w = new RouteWidget((Route) obj, false);
 		} else {
 			return;
 		}
