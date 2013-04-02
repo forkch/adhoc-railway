@@ -33,6 +33,7 @@ import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Mode;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveImageHelper;
 
 public class ImageTools {
 
@@ -73,8 +74,8 @@ public class ImageTools {
 		if (locomotive == null) {
 			return null;
 		}
-		String image = locomotive.getImage();
-		image = "locoimages/" + image;
+		String image = LocomotiveImageHelper.getImagePath(
+				locomotive);
 		if (!cache.containsKey(image)) {
 			if (StringUtils.isNotBlank(image) && new File(image).exists()) {
 				return getScaledImage(image, scale);

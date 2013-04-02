@@ -56,7 +56,6 @@ public class Preferences implements PreferencesKeys {
 		setBooleanValue(SRCP_AUTOCONNECT, false);
 		setStringValue(ADHOC_SERVER_HOSTNAME, "localhost");
 		setIntValue(ADHOC_SERVER_PORT, 3000);
-		setBooleanValue(ADHOC_SERVER_AUTOCONNECT, false);
 		setIntValue(ACTIVATION_TIME, 50);
 		setIntValue(ROUTING_DELAY, 150);
 		setIntValue(LOCK_DURATION, 0);

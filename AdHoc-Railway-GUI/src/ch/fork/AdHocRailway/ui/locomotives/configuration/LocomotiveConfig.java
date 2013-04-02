@@ -44,6 +44,8 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
@@ -552,7 +554,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 				if (f.isDirectory()) {
 					return true;
 				}
-				if (f.getName().matches(".*\\.png")) {
+				if (StringUtils.endsWithAny(f.getName().toLowerCase(), ".png", ".gif",".bmp",".jpg")) {
 					return true;
 				}
 				return false;
@@ -565,8 +567,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 					chooser.getSelectedFile().getName());
 			final String image = presentationModel.getBean().getImage();
 
-			if (image != null && !image.isEmpty()
-					&& new File("locoimages/" + image).exists()) {
+			if (image != null && !image.isEmpty()) {
 				imageLabel.setIcon(ImageTools
 						.getLocomotiveIcon(presentationModel.getBean()));
 				pack();

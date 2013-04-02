@@ -436,9 +436,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		 */
 
 		mainPanel.add(segmentPanel, "grow");
-		mainPanel.add(trackControlPanel, "gap unrelated, grow, wrap");
+		mainPanel.add(trackControlPanel, "grow, wrap");
 		mainPanel.add(powerControlPanel, "grow");
-		mainPanel.add(locomotiveControlPanel, "gap unrelated, shrink 0, wrap");
+		mainPanel.add(locomotiveControlPanel, "shrink 0, wrap");
 
 		add(mainPanel, BorderLayout.CENTER);
 		add(statusBarPanel, BorderLayout.PAGE_END);
@@ -511,6 +511,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				@Override
 				public void connectionError(final Exception ex) {
 					updateCommandHistory("Connection error: " + ex.getMessage());
+					preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, false);
+					try {
+						preferences.save();
+					} catch (IOException e) {
+					handleException(e);
+					}
 					handleException(ex);
 				}
 
@@ -1323,7 +1329,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				((SRCPLocomotiveControlAdapter) locomotiveControl)
 						.setSession(session);
 				((SRCPRouteControlAdapter) routeControl).setSession(session);
-				// ((SRCPRouteControl) routeControl).setSession(session);
 				lockControl.setSession(session);
 				session.connect();
 				daemonConnectItem.setEnabled(false);
@@ -1334,15 +1339,19 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 				powerControlPanel.setConnected(true);
 
-				// EnablerDisabler.setEnable(true, trackControlPanel);
-				// EnablerDisabler.setEnable(true, locomotiveControlPanel);
-				// updateGUI();
 				updateCommandHistory("Connected to server " + host
 						+ " on port " + port);
 			} catch (final SRCPException e1) {
 
-				ExceptionProcessor.getInstance().processException(
+				preferences.setBooleanValue(PreferencesKeys.SRCP_AUTOCONNECT, false);
+				try {
+					preferences.save();
+				} catch (IOException e2) {
+					ExceptionProcessor.getInstance().processException(
+							"Server not running", e2);
+				}ExceptionProcessor.getInstance().processException(
 						"Server not running", e1);
+				
 
 			}
 		}

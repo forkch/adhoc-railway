@@ -51,7 +51,6 @@ public interface PreferencesKeys {
 	public static final String ADHOC_SERVER_HOSTNAME = "AdHocServerHostname";
 	public static final String ADHOC_SERVER_PORT = "AdHocServerPort";
 	public static final String ADHOC_SERVER_COLLECTION = "AdHocServerCollection";
-	public static final String ADHOC_SERVER_AUTOCONNECT = "AdHocServerAutoconnect";
 
 	// Database
 	public static final String USE_DATABASE = "UseDatabase";

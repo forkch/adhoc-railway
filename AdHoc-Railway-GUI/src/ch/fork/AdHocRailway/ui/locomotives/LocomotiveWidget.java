@@ -800,8 +800,11 @@ public class LocomotiveWidget extends JPanel implements
 				for (int i = 0; i < 7; i++) {
 					functions[0] = i % 2 == 0;
 					locomotiveControl.setFunctions(myLocomotive, functions);
-					Thread.sleep(750);
+					Thread.sleep(500);
 				}
+				functions[0] = false;
+				locomotiveControl.setFunctions(myLocomotive, functions);
+
 			} catch (final InterruptedException e) {
 			} catch (final LocomotiveException e) {
 				AdHocRailway.getInstance().handleException(e);
