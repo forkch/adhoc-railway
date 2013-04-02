@@ -46,40 +46,40 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 	}
 
 	@Override
-	public void disableRoute(Route route) throws RouteException {
-		SRCPRoute sRoute = getSRCPRoute(route);
+	public void disableRoute(final Route route) throws RouteException {
+		final SRCPRoute sRoute = getSRCPRoute(route);
 		try {
 			routeControl.disableRoute(sRoute);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new RouteException("Route Error", e);
 		}
 	}
 
-	public SRCPRoute getSRCPRoute(Route route) {
-		SRCPRoute sRoute = routesSRCPRoutesMap.get(route);
+	public SRCPRoute getSRCPRoute(final Route route) {
+		final SRCPRoute sRoute = routesSRCPRoutesMap.get(route);
 		return sRoute;
 	}
 
 	@Override
-	public void enableRoute(Route route) throws RouteException {
-		SRCPRoute sRoute = getSRCPRoute(route);
+	public void enableRoute(final Route route) throws RouteException {
+		final SRCPRoute sRoute = getSRCPRoute(route);
 		try {
 			routeControl.enableRoute(sRoute);
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new RouteException("Route Error", e);
 		}
 
 	}
 
 	@Override
-	public boolean isRouteEnabled(Route route) {
-		SRCPRoute sRoute = getSRCPRoute(route);
+	public boolean isRouteEnabled(final Route route) {
+		final SRCPRoute sRoute = getSRCPRoute(route);
 		return sRoute.getRouteState().equals(SRCPRouteState.ENABLED);
 	}
 
 	@Override
-	public boolean isRouting(Route route) {
-		SRCPRoute sRoute = getSRCPRoute(route);
+	public boolean isRouting(final Route route) {
+		final SRCPRoute sRoute = getSRCPRoute(route);
 		return sRoute.getRouteState().equals(SRCPRouteState.ROUTING);
 	}
 
@@ -87,13 +87,14 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 	public void previousDeviceToDefault() throws RouteException {
 		try {
 			routeControl.previousDeviceToDefault();
-		} catch (SRCPModelException e) {
+		} catch (final SRCPModelException e) {
 			throw new RouteException("Route Error", e);
 		}
 	}
 
 	@Override
-	public void addRouteChangeListener(Route route, RouteChangeListener listener) {
+	public void addRouteChangeListener(final Route route,
+			final RouteChangeListener listener) {
 
 		listeners.add(listener);
 	}
@@ -104,36 +105,27 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 	}
 
 	@Override
-	public void removeRouteChangeListener(Route route,
-			RouteChangeListener listener) {
+	public void removeRouteChangeListener(final Route route,
+			final RouteChangeListener listener) {
 		listeners.remove(listener);
 	}
 
 	@Override
-	public void undoLastChange() throws RouteException {
-		try {
-			routeControl.undoLastChange();
-		} catch (SRCPModelException e) {
-			throw new RouteException("Route Error", e);
-		}
-	}
+	public void addOrUpdateRoute(final Route route) {
 
-	@Override
-	public void addOrUpdateRoute(Route route) {
-
-		SRCPRoute sRoute = createSRCPRoute(turnoutControl, route);
+		final SRCPRoute sRoute = createSRCPRoute(turnoutControl, route);
 		routesSRCPRoutesMap.put(route, sRoute);
 		SRCPRoutesRoutesMap.put(sRoute, route);
 	}
 
-	public SRCPRoute createSRCPRoute(SRCPTurnoutControlAdapter turnoutControl,
-			Route route) {
-		SRCPRoute sRoute = new SRCPRoute();
-		for (RouteItem routeItem : route.getRouteItems()) {
+	public SRCPRoute createSRCPRoute(
+			final SRCPTurnoutControlAdapter turnoutControl, final Route route) {
+		final SRCPRoute sRoute = new SRCPRoute();
+		for (final RouteItem routeItem : route.getRouteItems()) {
 
-			SRCPRouteItem sRouteItem = new SRCPRouteItem();
-			SRCPTurnout sTurnout = turnoutControl.getSRCPTurnout(routeItem
-					.getTurnout());
+			final SRCPRouteItem sRouteItem = new SRCPRouteItem();
+			final SRCPTurnout sTurnout = turnoutControl
+					.getSRCPTurnout(routeItem.getTurnout());
 			sRouteItem.setTurnout(sTurnout);
 			switch (routeItem.getRoutedState()) {
 			case LEFT:
@@ -161,31 +153,31 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 	}
 
 	@Override
-	public void nextTurnoutDerouted(SRCPRoute sRoute) {
-		Route route = SRCPRoutesRoutesMap.get(sRoute);
-		for (RouteChangeListener listener : listeners) {
+	public void nextTurnoutDerouted(final SRCPRoute sRoute) {
+		final Route route = SRCPRoutesRoutesMap.get(sRoute);
+		for (final RouteChangeListener listener : listeners) {
 			listener.nextSwitchDerouted(route);
 		}
 	}
 
 	@Override
-	public void nextTurnoutRouted(SRCPRoute sRoute) {
-		Route route = SRCPRoutesRoutesMap.get(sRoute);
-		for (RouteChangeListener listener : listeners) {
+	public void nextTurnoutRouted(final SRCPRoute sRoute) {
+		final Route route = SRCPRoutesRoutesMap.get(sRoute);
+		for (final RouteChangeListener listener : listeners) {
 			listener.nextSwitchRouted(route);
 		}
 	}
 
 	@Override
-	public void routeChanged(SRCPRoute sRoute) {
-		Route route = SRCPRoutesRoutesMap.get(sRoute);
-		for (RouteChangeListener listener : listeners) {
+	public void routeChanged(final SRCPRoute sRoute) {
+		final Route route = SRCPRoutesRoutesMap.get(sRoute);
+		for (final RouteChangeListener listener : listeners) {
 			listener.routeChanged(route);
 		}
 
 	}
 
-	public void setSession(SRCPSession session) {
+	public void setSession(final SRCPSession session) {
 		routeControl.setSession(session);
 	}
 }

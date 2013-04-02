@@ -97,6 +97,8 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 						.setIcon(ImageTools
 								.createImageIcon("switches/three_way_switch_right.png"));
 				break;
+			default:
+				break;
 			}
 		}
 

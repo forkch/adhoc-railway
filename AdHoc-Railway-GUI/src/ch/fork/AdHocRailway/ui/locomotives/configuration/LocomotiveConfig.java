@@ -44,9 +44,10 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.apache.commons.lang3.StringUtils;
 
-import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -100,8 +101,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 	private JButton okButton;
 
 	private JButton cancelButton;
-
-	private boolean cancelPressed;
 
 	private JLabel imageLabel;
 
@@ -415,7 +414,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 			trigger.triggerFlush();
-			cancelPressed = true;
 			LocomotiveConfig.this.setVisible(false);
 		}
 	}
@@ -554,7 +552,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 				if (f.isDirectory()) {
 					return true;
 				}
-				if (StringUtils.endsWithAny(f.getName().toLowerCase(), ".png", ".gif",".bmp",".jpg")) {
+				if (StringUtils.endsWithAny(f.getName().toLowerCase(), ".png",
+						".gif", ".bmp", ".jpg")) {
 					return true;
 				}
 				return false;

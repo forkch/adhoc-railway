@@ -32,8 +32,6 @@ public interface RouteControlIface {
 	public abstract void removeRouteChangeListener(Route r,
 			RouteChangeListener listener);
 
-	public abstract void undoLastChange() throws RouteException;
-
 	public abstract void previousDeviceToDefault() throws RouteException;
 
 	public abstract boolean isRouteEnabled(Route route);

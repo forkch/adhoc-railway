@@ -100,7 +100,6 @@ import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
 import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
-import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
@@ -511,11 +510,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				@Override
 				public void connectionError(final Exception ex) {
 					updateCommandHistory("Connection error: " + ex.getMessage());
-					preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, false);
+					preferences.setBooleanValue(
+							PreferencesKeys.USE_ADHOC_SERVER, false);
 					try {
 						preferences.save();
-					} catch (IOException e) {
-					handleException(e);
+					} catch (final IOException e) {
+						handleException(e);
 					}
 					handleException(ex);
 				}
@@ -558,12 +558,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		}
 	}
 
-	private void updatePower() {
-		powerControlPanel.update();
-	}
-
 	private void initProceeded(final String message) {
-		// logger.info(message);
 		splash.nextStep(message);
 	}
 
@@ -1179,35 +1174,30 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 
-			final int result = JOptionPane.YES_OPTION;
-			if (result == JOptionPane.YES_OPTION) {
-
-				try {
-					SRCPLockControl.getInstance().releaseAllLocks();
-					getLocomotiveControl().emergencyStopActiveLocos();
-				} catch (final SRCPLockingException e1) {
-					handleException(e1);
-				} catch (final LocomotiveException e1) {
-					handleException(e1);
-				}
-
-				if (actualFile != null) {
-					preferences.setStringValue(
-							PreferencesKeys.LAST_OPENED_FILE,
-							actualFile.getAbsolutePath());
-					try {
-						preferences.save();
-					} catch (final FileNotFoundException e1) {
-						ExceptionProcessor.getInstance().processException(e1);
-					} catch (final IOException e1) {
-						ExceptionProcessor.getInstance().processException(e1);
-					}
-				}
-				if (!fileMode) {
-					disconnectFromCurrentPersistence();
-				}
-				System.exit(0);
+			try {
+				SRCPLockControl.getInstance().releaseAllLocks();
+				getLocomotiveControl().emergencyStopActiveLocos();
+			} catch (final SRCPLockingException e1) {
+				handleException(e1);
+			} catch (final LocomotiveException e1) {
+				handleException(e1);
 			}
+
+			if (actualFile != null) {
+				preferences.setStringValue(PreferencesKeys.LAST_OPENED_FILE,
+						actualFile.getAbsolutePath());
+				try {
+					preferences.save();
+				} catch (final FileNotFoundException e1) {
+					ExceptionProcessor.getInstance().processException(e1);
+				} catch (final IOException e1) {
+					ExceptionProcessor.getInstance().processException(e1);
+				}
+			}
+			if (!fileMode) {
+				disconnectFromCurrentPersistence();
+			}
+			System.exit(0);
 		}
 	}
 
@@ -1245,8 +1235,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			final RoutesConfigurationDialog routesConfig = new RoutesConfigurationDialog(
-					AdHocRailway.this);
 		}
 	}
 
@@ -1343,15 +1331,16 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 						+ " on port " + port);
 			} catch (final SRCPException e1) {
 
-				preferences.setBooleanValue(PreferencesKeys.SRCP_AUTOCONNECT, false);
+				preferences.setBooleanValue(PreferencesKeys.SRCP_AUTOCONNECT,
+						false);
 				try {
 					preferences.save();
-				} catch (IOException e2) {
+				} catch (final IOException e2) {
 					ExceptionProcessor.getInstance().processException(
 							"Server not running", e2);
-				}ExceptionProcessor.getInstance().processException(
+				}
+				ExceptionProcessor.getInstance().processException(
 						"Server not running", e1);
-				
 
 			}
 		}

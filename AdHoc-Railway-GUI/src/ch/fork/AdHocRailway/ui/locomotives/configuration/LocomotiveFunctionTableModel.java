@@ -64,6 +64,7 @@ public class LocomotiveFunctionTableModel extends
 		return false;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Class getColumnClass(final int c) {
 		return getValueAt(0, c).getClass();

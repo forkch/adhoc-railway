@@ -40,7 +40,6 @@ import javax.swing.JTextField;
 
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
@@ -107,8 +106,6 @@ public class TurnoutConfig extends JDialog {
 	private BufferedValueModel turnoutTypeModel;
 	private BufferedValueModel defaultStateModel;
 	private BufferedValueModel orientationModel;
-	private final TurnoutControlIface turnoutControl = AdHocRailway
-			.getInstance().getTurnoutControl();
 
 	public TurnoutConfig(final JDialog owner, final Turnout myTurnout,
 			final TurnoutGroup selectedTurnoutGroup) {
@@ -622,8 +619,6 @@ public class TurnoutConfig extends JDialog {
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 			trigger.triggerFlush();
-			final Turnout turnout = presentationModel.getBean();
-			// turnout.removePropertyChangeListener(TurnoutConfig.this);
 			okPressed = false;
 			cancelPressed = true;
 			TurnoutConfig.this.setVisible(false);

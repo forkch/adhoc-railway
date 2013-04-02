@@ -65,7 +65,6 @@ public class TurnoutHelper {
 		return newTurnout;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static Turnout copyTurnout(final Turnout old) {
 		final Turnout t = new Turnout();
 		try {
