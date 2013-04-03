@@ -70,4 +70,9 @@ public interface LocomotiveManager {
 
 	public abstract void disconnect();
 
+	public abstract void setActiveLocomotive(int locomotiveNumber,
+			Locomotive locomotive);
+
+	public abstract Locomotive getActiveLocomotive(int locomotiveNumber);
+
 }

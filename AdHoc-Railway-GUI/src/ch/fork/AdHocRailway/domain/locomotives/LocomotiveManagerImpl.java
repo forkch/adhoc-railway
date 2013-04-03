@@ -48,6 +48,8 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
 	private final Set<LocomotiveManagerListener> listenersToBeRemovedInNextEvent = new HashSet<LocomotiveManagerListener>();
 
+	private final Map<Integer, Locomotive> numberToLocomotiveMap = new HashMap<Integer, Locomotive>();
+
 	private LocomotiveManagerImpl() {
 		LOGGER.info("LocomotiveManager loaded");
 
@@ -301,6 +303,17 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	private void clearCache() {
 		addressLocomotiveCache.clear();
 		locomotiveGroups.clear();
+	}
+
+	@Override
+	public void setActiveLocomotive(final int locomotiveNumber,
+			final Locomotive locomotive) {
+		numberToLocomotiveMap.put(locomotiveNumber, locomotive);
+	}
+
+	@Override
+	public Locomotive getActiveLocomotive(final int locomotiveNumber) {
+		return numberToLocomotiveMap.get(locomotiveNumber);
 	}
 
 }

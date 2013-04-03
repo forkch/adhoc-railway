@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.services.impl.socketio.locomotives;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,7 +61,13 @@ public class SIOLocomotiveMapper {
 		locomotive.setName(locomotiveJSON.getString("name"));
 		locomotive.setDesc(locomotiveJSON.optString("description", ""));
 
-		locomotive.setImage(locomotiveJSON.optString("image", ""));
+		final String imageString = locomotiveJSON.optString("image", "");
+		if (StringUtils.isNotBlank(imageString)
+				&& !StringUtils.equalsIgnoreCase(imageString, "null")) {
+			locomotive.setImage(imageString);
+		} else {
+			locomotive.setImage("");
+		}
 		locomotive.setBus(locomotiveJSON.getInt("bus"));
 		locomotive.setAddress1(locomotiveJSON.getInt("address1"));
 		locomotive.setAddress2(locomotiveJSON.optInt("address2", 0));

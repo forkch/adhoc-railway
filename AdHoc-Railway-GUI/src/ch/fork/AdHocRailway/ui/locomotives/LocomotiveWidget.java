@@ -54,6 +54,7 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveHelper;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
@@ -61,13 +62,15 @@ import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
+import ch.fork.AdHocRailway.ui.EditingModeListener;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 
 public class LocomotiveWidget extends JPanel implements
-		LocomotiveChangeListener, LocomotiveManagerListener {
+		LocomotiveChangeListener, LocomotiveManagerListener,
+		EditingModeListener {
 
 	private static final long serialVersionUID = -9150574905752177937L;
 
@@ -173,6 +176,10 @@ public class LocomotiveWidget extends JPanel implements
 		locomotiveComboBox.setFocusable(false);
 		locomotiveSelectAction = new LocomotiveSelectAction();
 		locomotiveComboBox.setRenderer(new LocomotiveComboBoxRenderer());
+
+		final String locomotiveDescriptionToolTip = LocomotiveHelper
+				.getLocomotiveDescription(myLocomotive);
+		locomotiveComboBox.setToolTipText(locomotiveDescriptionToolTip);
 
 		add(locomotiveGroupComboBox, "span 3, grow, width 200");
 		add(locomotiveComboBox, "span 3, grow, width 200");
@@ -464,6 +471,7 @@ public class LocomotiveWidget extends JPanel implements
 			if (locomotiveComboBox.getItemCount() == 0
 					|| locomotiveComboBox.getSelectedIndex() == -1) {
 				myLocomotive = null;
+				locomotivePersistence.setActiveLocomotive(number, null);
 				return;
 			}
 			if (isFree()) {
@@ -481,10 +489,14 @@ public class LocomotiveWidget extends JPanel implements
 						.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
 				lockButton.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
 
+				locomotivePersistence.setActiveLocomotive(number, myLocomotive);
 				locomotiveControl.addLocomotiveChangeListener(myLocomotive,
 						LocomotiveWidget.this);
 
 				locomotiveControl.activateLoco(myLocomotive);
+				final String locomotiveDescriptionToolTip = LocomotiveHelper
+						.getLocomotiveDescription(myLocomotive);
+				locomotiveComboBox.setToolTipText(locomotiveDescriptionToolTip);
 				updateFunctions();
 				updateWidget();
 				speedBar.requestFocus();
@@ -753,13 +765,17 @@ public class LocomotiveWidget extends JPanel implements
 			}
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
 
-				if (!isFree()) {
-					return;
-				}
+				if (AdHocRailway.getInstance().isEditingMode()) {
+					if (!isFree()) {
+						return;
+					}
 
-				new LocomotiveConfig(frame, myLocomotive,
-						myLocomotive.getGroup());
-				locomotiveChanged(myLocomotive);
+					new LocomotiveConfig(frame, myLocomotive,
+							myLocomotive.getGroup());
+					locomotiveChanged(myLocomotive);
+				} else {
+
+				}
 			} else if (e.getButton() == MouseEvent.BUTTON2) {
 				final ToggleDirectionAction a = new ToggleDirectionAction();
 				a.actionPerformed(null);
@@ -816,6 +832,12 @@ public class LocomotiveWidget extends JPanel implements
 	@Override
 	public void failure(
 			final LocomotiveManagerException locomotiveManagerException) {
+
+	}
+
+	@Override
+	public void editingModeChanged(final boolean editing) {
+		// TODO Auto-generated method stub
 
 	}
 }

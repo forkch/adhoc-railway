@@ -121,7 +121,7 @@ import de.dermoba.srcp.model.power.SRCPPowerState;
 import de.dermoba.srcp.model.power.SRCPPowerSupplyException;
 
 public class AdHocRailway extends JFrame implements CommandDataListener,
-		InfoDataListener, PreferencesKeys {
+		InfoDataListener, PreferencesKeys, EditingModeListener {
 
 	private static final long serialVersionUID = -6033036063027343513L;
 
@@ -206,6 +206,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private boolean editingMode = false;
 
 	private final List<EditingModeListener> editingModeListeners = new ArrayList<EditingModeListener>();
+
+	private JButton turnoutsToolBarButton;
+
+	private JButton routesToolBarButton;
+
+	private JButton locomotivesToolBarButton;
 
 	public AdHocRailway() {
 		this(null);
@@ -440,22 +446,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		mainPanel = new JPanel(new MigLayout("", "[][grow]", "[grow][]"));
 
-		final JPanel segmentPanel = new KeyTrackControl();
+		final JPanel segmentPanel = new KeyControl();
 
 		trackControlPanel = new TrackControlPanel();
 		locomotiveControlPanel = new LocomotiveControlPanel();
 		powerControlPanel = new PowerControlPanel();
 		powerControlPanel.setConnected(false);
-
-		/*
-		 * add(statusBarPanel, BorderLayout.SOUTH); final JPanel southPanel =
-		 * new JPanel(new BorderLayout());
-		 * southPanel.add(locomotiveControlPanel, BorderLayout.WEST);
-		 * southPanel.add(powerControlPanel, BorderLayout.CENTER);
-		 * mainPanel.add(trackControlPanel, BorderLayout.CENTER);
-		 * mainPanel.add(southPanel, BorderLayout.SOUTH); add(mainPanel,
-		 * BorderLayout.CENTER);
-		 */
 
 		mainPanel.add(segmentPanel, "grow");
 		mainPanel.add(trackControlPanel, "grow, wrap");
@@ -474,8 +470,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		});
 		hostnameLabel.setText(preferences
 				.getStringValue(PreferencesKeys.SRCP_HOSTNAME));
-
-		toggleEditingMode();
+		addEditingModeListener(this);
 		for (final EditingModeListener l : editingModeListeners) {
 			l.editingModeChanged(editingMode);
 		}
@@ -795,16 +790,14 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		/* DIGITAL */
 		final JToolBar digitalToolBar = new JToolBar();
-		final JButton switchesToolBarButton = new SmallToolbarButton(
-				new TurnoutAction());
-		final JButton routesToolBarButton = new SmallToolbarButton(
-				new RoutesAction());
-		final JButton locomotivesToolBarButton = new SmallToolbarButton(
+		turnoutsToolBarButton = new SmallToolbarButton(new TurnoutAction());
+		routesToolBarButton = new SmallToolbarButton(new RoutesAction());
+		locomotivesToolBarButton = new SmallToolbarButton(
 				new LocomotivesAction());
 		final JButton preferencesToolBarButton = new SmallToolbarButton(
 				new PreferencesAction());
 
-		digitalToolBar.add(switchesToolBarButton);
+		digitalToolBar.add(turnoutsToolBarButton);
 		digitalToolBar.add(routesToolBarButton);
 		digitalToolBar.add(locomotivesToolBarButton);
 		digitalToolBar.add(preferencesToolBarButton);
@@ -864,12 +857,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		statusBarPanel.add(progressBar, BorderLayout.WEST);
 		statusBarPanel.add(commandHistory, BorderLayout.CENTER);
 		return statusBarPanel;
-	}
-
-	private void toggleEditingMode() {
-		switchesItem.setEnabled(editingMode);
-		routesItem.setEnabled(editingMode);
-		locomotivesItem.setEnabled(editingMode);
 	}
 
 	private class CommandHistoryUpdater implements Runnable {
@@ -1572,7 +1559,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 			editingMode = enableEditing.isSelected();
-			toggleEditingMode();
 
 			for (final EditingModeListener l : editingModeListeners) {
 				l.editingModeChanged(editingMode);
@@ -1586,5 +1572,16 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		} else {
 			new AdHocRailway();
 		}
+	}
+
+	@Override
+	public void editingModeChanged(final boolean editing) {
+		switchesItem.setEnabled(editing);
+		routesItem.setEnabled(editing);
+		locomotivesItem.setEnabled(editing);
+		turnoutsToolBarButton.setEnabled(editing);
+		routesToolBarButton.setEnabled(editing);
+		locomotivesToolBarButton.setEnabled(editing);
+
 	}
 }

@@ -29,6 +29,10 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteException;
@@ -42,34 +46,37 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 
-public class KeyTrackControl extends SimpleInternalFrame {
+public class KeyControl extends SimpleInternalFrame {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3052109699874529256L;
 
+	private static final int HISTORY_LENGTH = 5;
 	private StringBuffer enteredNumberKeys;
 
-	private JPanel switchesHistory;
+	private JPanel turnoutsHistory;
 
 	private final LinkedList<Object> historyStack;
 
 	private final LinkedList<JPanel> historyWidgets;
 
-	public boolean routeMode;
+	private boolean periodMode = false;
 
-	public boolean changedSwitch = false;
+	private final boolean changedSwitch = false;
 
-	public boolean changedRoute = false;
+	private final boolean changedRoute = false;
 
-	public static final int HISTORY_LENGTH = 5;
-
-	private JScrollPane switchesHistoryPane;
+	private JScrollPane historyPane;
 
 	private ThreeDigitDisplay digitDisplay;
 
-	public KeyTrackControl() {
+	private boolean locomotiveFunctionMode = false;
+
+	private int locomotiveNumber = -1;
+
+	public KeyControl() {
 		super("Track Control / History");
 		this.historyStack = new LinkedList<Object>();
 		this.historyWidgets = new LinkedList<JPanel>();
@@ -80,15 +87,15 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 	private void initGUI() {
 		final JPanel segmentPanelNorth = initSegmentPanel();
-		switchesHistory = new JPanel();
+		turnoutsHistory = new JPanel();
 		final JPanel sh1 = new JPanel(new BorderLayout());
 
-		switchesHistory.setLayout(new MigLayout("insets 5"));
+		turnoutsHistory.setLayout(new MigLayout("insets 5"));
 
-		switchesHistoryPane = new JScrollPane(switchesHistory,
+		historyPane = new JScrollPane(turnoutsHistory,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		sh1.add(switchesHistoryPane, BorderLayout.CENTER);
+		sh1.add(historyPane, BorderLayout.CENTER);
 
 		add(segmentPanelNorth, BorderLayout.NORTH);
 		add(sh1, BorderLayout.CENTER);
@@ -155,10 +162,10 @@ public class KeyTrackControl extends SimpleInternalFrame {
 	}
 
 	private void updateHistory() {
-		switchesHistory.removeAll();
+		turnoutsHistory.removeAll();
 
 		for (final JPanel p : historyWidgets) {
-			switchesHistory.add(p, "wrap");
+			turnoutsHistory.add(p, "wrap");
 		}
 		revalidate();
 		repaint();
@@ -179,6 +186,9 @@ public class KeyTrackControl extends SimpleInternalFrame {
 			if (switchNumber > 999) {
 				digitDisplay.reset();
 				enteredNumberKeys = new StringBuffer();
+				periodMode = false;
+				locomotiveFunctionMode = false;
+				locomotiveNumber = -1;
 				return;
 			}
 			digitDisplay.setNumber(switchNumber);
@@ -187,15 +197,27 @@ public class KeyTrackControl extends SimpleInternalFrame {
 
 	private class PeriodEnteredAction extends AbstractAction {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 6709249386564202875L;
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			routeMode = true;
-			digitDisplay.setPeriod(true);
+			if (enteredNumberKeys.length() == 0 && periodMode) {
+				// reset if no number is entered
+				periodMode = false;
+				locomotiveFunctionMode = false;
+				locomotiveNumber = -1;
+				digitDisplay.setPeriod(false);
+			} else if (enteredNumberKeys.length() != 0 && periodMode) {
+				// someone entered a number followed by a period
+				locomotiveFunctionMode = true;
+				locomotiveNumber = Integer.parseInt(enteredNumberKeys
+						.toString());
+				enteredNumberKeys = new StringBuffer();
+				digitDisplay.setNumber(-1);
+			} else {
+				periodMode = true;
+				digitDisplay.setPeriod(true);
+			}
 		}
 	}
 
@@ -235,8 +257,10 @@ public class KeyTrackControl extends SimpleInternalFrame {
 				} else {
 					final int enteredNumber = Integer
 							.parseInt(enteredNumberAsString);
-					if (routeMode) {
+					if (periodMode && !locomotiveFunctionMode) {
 						handleRouteChange(e, enteredNumber);
+					} else if (periodMode && locomotiveFunctionMode) {
+						handleLocomotiveChange(e, enteredNumber);
 					} else {
 						handleSwitchChange(e, enteredNumber);
 					}
@@ -246,9 +270,13 @@ public class KeyTrackControl extends SimpleInternalFrame {
 				ExceptionProcessor.getInstance().processException(e1);
 			} catch (final TurnoutException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
+			} catch (final LocomotiveException e1) {
+				e1.printStackTrace();
 			}
 			enteredNumberKeys = new StringBuffer();
-			routeMode = false;
+			periodMode = false;
+			locomotiveFunctionMode = false;
+			locomotiveNumber = -1;
 			digitDisplay.reset();
 		}
 
@@ -302,6 +330,39 @@ public class KeyTrackControl extends SimpleInternalFrame {
 				routeControl.disableRoute(searchedRoute);
 			}
 			updateHistory(searchedRoute);
+		}
+
+		private void handleLocomotiveChange(final ActionEvent e,
+				final int functionNumber) throws LocomotiveException {
+			Locomotive searchedLocomotive = null;
+
+			if (functionNumber > 16) {
+				return;
+			}
+			final LocomotiveControlface locomotiveControl = AdHocRailway
+					.getInstance().getLocomotiveControl();
+			final LocomotiveManager locomotivePersistence = AdHocRailway
+					.getInstance().getLocomotivePersistence();
+			searchedLocomotive = locomotivePersistence
+					.getActiveLocomotive(locomotiveNumber - 1);
+			if (searchedLocomotive == null) {
+				return;
+			}
+
+			final boolean[] functions = locomotiveControl
+					.getFunctions(searchedLocomotive);
+			if (functionNumber >= functions.length) {
+				return;
+			}
+
+			if (this instanceof EnableRouteAction) {
+
+				functions[functionNumber] = true;
+			} else if (this instanceof DisableRouteAction) {
+
+				functions[functionNumber] = false;
+			}
+			locomotiveControl.setFunctions(searchedLocomotive, functions);
 		}
 	}
 

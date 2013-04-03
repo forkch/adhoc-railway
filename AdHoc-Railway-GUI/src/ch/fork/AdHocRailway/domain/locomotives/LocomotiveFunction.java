@@ -55,10 +55,10 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction> {
 	}
 
 	public static SortedSet<LocomotiveFunction> getDigitalFunctions() {
-		final LocomotiveFunction f1 = new LocomotiveFunction(1, "F1", false);
-		final LocomotiveFunction f2 = new LocomotiveFunction(2, "F2", false);
-		final LocomotiveFunction f3 = new LocomotiveFunction(3, "F3", false);
-		final LocomotiveFunction f4 = new LocomotiveFunction(4, "F4", true);
+		final LocomotiveFunction f1 = new LocomotiveFunction(1, "-", false);
+		final LocomotiveFunction f2 = new LocomotiveFunction(2, "-", false);
+		final LocomotiveFunction f3 = new LocomotiveFunction(3, "-", false);
+		final LocomotiveFunction f4 = new LocomotiveFunction(4, "ABV", true);
 		final SortedSet<LocomotiveFunction> fns = getDeltaFunctions();
 		fns.addAll(Arrays.asList(f1, f2, f3, f4));
 		return fns;
@@ -66,10 +66,10 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction> {
 	}
 
 	public static SortedSet<LocomotiveFunction> getSimulatedMfxFunctions() {
-		final LocomotiveFunction f5 = new LocomotiveFunction(5, "F5", false);
-		final LocomotiveFunction f6 = new LocomotiveFunction(6, "F6", false);
-		final LocomotiveFunction f7 = new LocomotiveFunction(7, "F7", false);
-		final LocomotiveFunction f8 = new LocomotiveFunction(8, "F8", false);
+		final LocomotiveFunction f5 = new LocomotiveFunction(5, "-", false);
+		final LocomotiveFunction f6 = new LocomotiveFunction(6, "-", false);
+		final LocomotiveFunction f7 = new LocomotiveFunction(7, "-", false);
+		final LocomotiveFunction f8 = new LocomotiveFunction(8, "-", false);
 		final SortedSet<LocomotiveFunction> fns = getDigitalFunctions();
 		fns.addAll(Arrays.asList(f5, f6, f7, f8));
 		return fns;

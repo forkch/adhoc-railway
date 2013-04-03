@@ -126,7 +126,10 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 				}
 			} else if (e.getClickCount() == 1
 					&& e.getButton() == MouseEvent.BUTTON3) {
-				displaySwitchConfig();
+
+				if (AdHocRailway.getInstance().isEditingMode()) {
+					displaySwitchConfig();
+				}
 			}
 
 		}

@@ -93,11 +93,12 @@
 	<!-- =================================================================== -->
 	<target name="deploy" depends="bin"
 		description="Deploys a release to the AdHoc-Server">
-		<scp todir="baehnle:adhocbaehnle@192.168.2.100:/home/baehnle/AdHoc-Railway" trust="true">
-			<fileset dir="${release.dir}" />
+		<sshexec failonerror="false" trust="true" host="192.168.2.100" username="baehnle" password="adhocbaehnle" command="rm /home/baehnle/AdHoc-Railway/AdHoc-Railway-${release}-bin/*.obj"/>
+		<scp verbose="no" todir="baehnle:adhocbaehnle@192.168.2.100:/home/baehnle/AdHoc-Railway" trust="true">
+			<fileset dir="${release.dir}"/>
 		</scp>
 
-		<scp todir="baehnle:adhocbaehnle@192.168.2.100:/home/baehnle/AdHoc-Railway/AdHoc-Railway-${release}-bin" trust="true">
+		<scp verbose="no" todir="baehnle:adhocbaehnle@192.168.2.100:/home/baehnle/AdHoc-Railway/AdHoc-Railway-${release}-bin" trust="true">
 			<fileset file="adhocrailway.conf" />
 			<fileset file="start.bat" />
 			<fileset file="start.sh" />

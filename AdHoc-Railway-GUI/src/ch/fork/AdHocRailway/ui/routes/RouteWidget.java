@@ -123,15 +123,13 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 					} else {
 						routeControl.toggleTest(route);
 					}
-					// if (routeControl.isRouteEnabled(route)) {
-					// routeControl.disableRoute(route);
-					// } else {
-					// routeControl.enableRoute(route);
-					// }
 					removeMouseListener(mouseAction);
 				} else if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON3) {
-					displayRouteConfig();
+
+					if (AdHocRailway.getInstance().isEditingMode()) {
+						displayRouteConfig();
+					}
 				}
 			} catch (final RouteException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
