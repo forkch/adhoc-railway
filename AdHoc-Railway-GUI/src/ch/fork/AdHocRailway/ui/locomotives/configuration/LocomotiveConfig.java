@@ -544,7 +544,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 			@Override
 			public String getDescription() {
-				return "*.png";
+				return "Image Files";
 			}
 
 			@Override

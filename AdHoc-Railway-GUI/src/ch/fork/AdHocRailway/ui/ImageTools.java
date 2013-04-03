@@ -70,20 +70,20 @@ public class ImageTools {
 	}
 
 	public static ImageIcon getLocomotiveIcon(final Locomotive locomotive,
-			final int scale) {
+			final int height) {
 		if (locomotive == null) {
 			return null;
 		}
-		String image = LocomotiveImageHelper.getImagePath(
-				locomotive);
-		if (!cache.containsKey(image)) {
+		final String image = LocomotiveImageHelper.getImagePath(locomotive);
+		final String key = getKey(image, height);
+		if (!cache.containsKey(key)) {
 			if (StringUtils.isNotBlank(image) && new File(image).exists()) {
-				return getScaledImage(image, scale);
+				return getScaledImage(image, height);
 			} else {
-				return getScaledImage(EMTPY_LOCO_ICON, scale);
+				return getScaledImage(EMTPY_LOCO_ICON, height);
 			}
 		} else {
-			return cache.get(image);
+			return cache.get(key);
 		}
 	}
 
@@ -94,13 +94,24 @@ public class ImageTools {
 			if (height > 0) {
 				img = Scalr.resize(img, Mode.FIT_TO_WIDTH, height);
 			}
+			final String key = getKey(image, height);
 			final ImageIcon icon = new ImageIcon(img);
-			cache.put(image, icon);
-			LOGGER.info("cache-miss: put icon for " + image + " in cache");
+			cache.put(key, icon);
+			LOGGER.info("cache-miss: put icon for " + key + " in cache");
 			return icon;
 
 		} catch (final IOException e) {
 			return null;
 		}
+	}
+
+	private static String getKey(final String image, final int height) {
+		String key;
+		if (height > 0) {
+			key = image + "_" + height;
+		} else {
+			key = image + "_orig";
+		}
+		return key;
 	}
 }

@@ -16,7 +16,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
-import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
@@ -27,12 +26,13 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
+import ch.fork.AdHocRailway.ui.EditingModeListener;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.SmallToolbarButton;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 
 public class TurnoutGroupsPanel extends JTabbedPane implements
-		TurnoutManagerListener {
+		TurnoutManagerListener, EditingModeListener {
 	/**
 	 * 
 	 */
@@ -45,6 +45,14 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 	private final TurnoutManager turnoutPersistence = AdHocRailway
 			.getInstance().getTurnoutPersistence();
 
+	private JMenuItem addTurnoutsItem;
+
+	private JMenuItem turnoutsProgrammerItem;
+
+	private JButton addTurnoutsButton;
+
+	private JButton turnoutProgrammerButton;
+
 	public TurnoutGroupsPanel(final int tabPlacement) {
 		super(tabPlacement);
 		turnoutPersistence.addTurnoutManagerListener(this);
@@ -52,6 +60,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 		initToolBar();
 		initMenuBar();
 		initActionListeners();
+		AdHocRailway.getInstance().addEditingModeListener(this);
 	}
 
 	private void initActionListeners() {
@@ -128,41 +137,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 		}
 	}
 
-	private class EnlargeTurnoutGroups extends AbstractAction {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -1229887213395163349L;
-
-		public EnlargeTurnoutGroups() {
-			super("Rearranging Turnout and Route numbers (enlarge groups)");
-		}
-
-		@Override
-		public void actionPerformed(final ActionEvent arg0) {
-			final int result = JOptionPane
-					.showConfirmDialog(
-							AdHocRailway.getInstance(),
-							"The numbering of the Turnout- and Route-Groups is now being adjusted\n"
-									+ "such that each group has at least 5 free slots for the turnouts\n"
-									+ "(each group has a multiple of 10 turnouts)\n\n"
-									+ "Do you want to proceed ?",
-							"Rearranging Turnout and Route numbers",
-							JOptionPane.YES_NO_OPTION,
-							JOptionPane.QUESTION_MESSAGE,
-							createImageIconFromIconSet("dialog-information.png"));
-			if (result == JOptionPane.OK_OPTION) {
-				final TurnoutManager turnoutPersistence = AdHocRailway
-						.getInstance().getTurnoutPersistence();
-				final RouteManager routePersistence = AdHocRailway
-						.getInstance().getRoutePersistence();
-
-				turnoutPersistence.enlargeTurnoutGroups();
-				routePersistence.enlargeRouteGroups();
-			}
-		}
-	}
-
 	private class AddTurnoutsAction extends AbstractAction {
 		/**
 		 * 
@@ -232,16 +206,15 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 	private void initToolBar() {
 		/* Turnout Tools */
 		final JToolBar turnoutToolsToolBar = new JToolBar();
-		final JButton addTurnoutsButton = new SmallToolbarButton(
-				new AddTurnoutsAction());
+		addTurnoutsButton = new SmallToolbarButton(new AddTurnoutsAction());
 		final JButton setAllSwitchesStraightButton = new SmallToolbarButton(
 				new TurnoutsStraightAction());
-		final JButton switchProgrammerButton = new SmallToolbarButton(
+		turnoutProgrammerButton = new SmallToolbarButton(
 				new TurnoutProgrammerAction());
 
-		turnoutToolsToolBar.add(addTurnoutsButton);
 		turnoutToolsToolBar.add(setAllSwitchesStraightButton);
-		turnoutToolsToolBar.add(switchProgrammerButton);
+		turnoutToolsToolBar.add(addTurnoutsButton);
+		turnoutToolsToolBar.add(turnoutProgrammerButton);
 
 		AdHocRailway.getInstance().addToolBar(turnoutToolsToolBar);
 	}
@@ -249,23 +222,18 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 	private void initMenuBar() {
 		/* TOOLS */
 		final JMenu toolsMenu = new JMenu("Tools");
-		final JMenuItem addTurnoutsItem = new JMenuItem(new AddTurnoutsAction());
+		addTurnoutsItem = new JMenuItem(new AddTurnoutsAction());
 		final JMenuItem turnoutsStraightItem = new JMenuItem(
 				new TurnoutsStraightAction());
 		final JMenuItem turnoutsWarmerItem = new JMenuItem(
 				new TurnoutWarmerAction());
-		final JMenuItem turnoutsProgrammerItem = new JMenuItem(
-				new TurnoutProgrammerAction());
+		turnoutsProgrammerItem = new JMenuItem(new TurnoutProgrammerAction());
 
-		final JMenuItem enlargeTurnoutGroupsItem = new JMenuItem(
-				new EnlargeTurnoutGroups());
-
-		toolsMenu.add(addTurnoutsItem);
 		toolsMenu.add(turnoutsStraightItem);
 		toolsMenu.add(turnoutsWarmerItem);
-		toolsMenu.add(turnoutsProgrammerItem);
 		toolsMenu.addSeparator();
-		toolsMenu.add(enlargeTurnoutGroupsItem);
+		toolsMenu.add(addTurnoutsItem);
+		toolsMenu.add(turnoutsProgrammerItem);
 
 		AdHocRailway.getInstance().addMenu(toolsMenu);
 	}
@@ -383,6 +351,15 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void failure(final TurnoutManagerException arg0) {
+
+	}
+
+	@Override
+	public void editingModeChanged(final boolean editing) {
+		addTurnoutsItem.setEnabled(editing);
+		addTurnoutsButton.setEnabled(editing);
+		turnoutsProgrammerItem.setEnabled(editing);
+		turnoutProgrammerButton.setEnabled(editing);
 
 	}
 }

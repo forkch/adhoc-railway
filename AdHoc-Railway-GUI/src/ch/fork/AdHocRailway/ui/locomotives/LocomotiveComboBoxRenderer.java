@@ -9,8 +9,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
-import org.apache.commons.lang3.StringUtils;
-
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
@@ -60,9 +58,7 @@ public class LocomotiveComboBoxRenderer extends JPanel implements
 		// Set the icon and text. If icon was null, say so.
 		// setLocomotiveImage(locomotive);
 		textLabel.setText(locomotive.getName());
-		if (StringUtils.isNotBlank(locomotive.getImage())) {
-			iconLabel.setIcon(ImageTools.getLocomotiveIcon(locomotive, 100));
-		}
+		iconLabel.setIcon(ImageTools.getLocomotiveIcon(locomotive, 120));
 
 		return this;
 

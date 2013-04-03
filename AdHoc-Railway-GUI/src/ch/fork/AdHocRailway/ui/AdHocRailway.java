@@ -35,7 +35,9 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.PersistenceException;
@@ -43,6 +45,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -191,6 +194,18 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	private JMenuItem saveItem;
 
 	private JMenuItem saveAsItem;
+
+	private JMenuItem switchesItem;
+
+	private JMenuItem routesItem;
+
+	private JMenuItem locomotivesItem;
+
+	private JCheckBoxMenuItem enableEditing;
+
+	private boolean editingMode = false;
+
+	private final List<EditingModeListener> editingModeListeners = new ArrayList<EditingModeListener>();
 
 	public AdHocRailway() {
 		this(null);
@@ -357,6 +372,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		return routePersistence;
 	}
 
+	public boolean isEditingMode() {
+		return editingMode;
+	}
+
 	public void registerEscapeKey(final Action action) {
 		final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
 		final JRootPane rootPane = getRootPane();
@@ -388,6 +407,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			updateCommandHistory("From Server: " + infoData);
 		}
 		LOGGER.info("From Server: " + infoData.trim());
+	}
+
+	public void addEditingModeListener(final EditingModeListener l) {
+		editingModeListeners.add(l);
 	}
 
 	private void loadControlLayer() {
@@ -451,6 +474,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		});
 		hostnameLabel.setText(preferences
 				.getStringValue(PreferencesKeys.SRCP_HOSTNAME));
+
+		toggleEditingMode();
+		for (final EditingModeListener l : editingModeListeners) {
+			l.editingModeChanged(editingMode);
+		}
 	}
 
 	private void updateGUI() {
@@ -664,9 +692,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		/* EDIT */
 		final JMenu editMenu = new JMenu("Edit");
-		final JMenuItem switchesItem = new JMenuItem(new TurnoutAction());
-		final JMenuItem routesItem = new JMenuItem(new RoutesAction());
-		final JMenuItem locomotivesItem = new JMenuItem(new LocomotivesAction());
+		enableEditing = new JCheckBoxMenuItem(new EnableEditingAction());
+
+		switchesItem = new JMenuItem(new TurnoutAction());
+		routesItem = new JMenuItem(new RoutesAction());
+		locomotivesItem = new JMenuItem(new LocomotivesAction());
 		final JMenuItem preferencesItem = new JMenuItem(new PreferencesAction());
 		editMenu.setMnemonic(KeyEvent.VK_E);
 		switchesItem.setMnemonic(KeyEvent.VK_S);
@@ -681,6 +711,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		preferencesItem.setMnemonic(KeyEvent.VK_P);
 		preferencesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
 				ActionEvent.ALT_MASK));
+		editMenu.add(enableEditing);
+		editMenu.add(new JSeparator());
 		editMenu.add(switchesItem);
 		editMenu.add(routesItem);
 		editMenu.add(locomotivesItem);
@@ -832,6 +864,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		statusBarPanel.add(progressBar, BorderLayout.WEST);
 		statusBarPanel.add(commandHistory, BorderLayout.CENTER);
 		return statusBarPanel;
+	}
+
+	private void toggleEditingMode() {
+		switchesItem.setEnabled(editingMode);
+		routesItem.setEnabled(editingMode);
+		locomotivesItem.setEnabled(editingMode);
 	}
 
 	private class CommandHistoryUpdater implements Runnable {
@@ -1384,7 +1422,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			} catch (final SRCPException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
 			} catch (final LocomotiveException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -1520,6 +1557,25 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				toggleFullscreenButton
 						.setIcon(createImageIconFromIconSet("view-fullscreen.png"));
 				fullscreen = true;
+			}
+		}
+	}
+
+	private class EnableEditingAction extends AbstractAction {
+
+		private static final long serialVersionUID = 2409376830847967919L;
+
+		public EnableEditingAction() {
+			super("Edit mode");
+		}
+
+		@Override
+		public void actionPerformed(final ActionEvent e) {
+			editingMode = enableEditing.isSelected();
+			toggleEditingMode();
+
+			for (final EditingModeListener l : editingModeListeners) {
+				l.editingModeChanged(editingMode);
 			}
 		}
 	}

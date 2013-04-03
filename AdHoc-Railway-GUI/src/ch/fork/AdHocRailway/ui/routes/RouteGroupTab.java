@@ -7,6 +7,7 @@ import java.util.Map;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
+import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.WidgetTab;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteHelper;
 
@@ -31,7 +32,9 @@ public class RouteGroupTab extends WidgetTab {
 				if (e.getClickCount() == 2
 						&& e.getButton() == MouseEvent.BUTTON1) {
 
-					RouteHelper.addNewRouteDialog(routeGroup);
+					if (AdHocRailway.getInstance().isEditingMode()) {
+						RouteHelper.addNewRouteDialog(routeGroup);
+					}
 				}
 			}
 		});
