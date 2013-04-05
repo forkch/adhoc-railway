@@ -93,4 +93,43 @@ public class RouteHelper {
 			e.printStackTrace();
 		}
 	}
+
+	public static String getRouteDescription(final Route route) {
+		if (route == null) {
+			return "Please choose a route...";
+		}
+		final StringBuilder description = new StringBuilder();
+		description.append("<html>");
+		description.append("<h1>" + route.getNumber() + "</h1>");
+		description.append("<table>");
+
+		addTableRow("Name:", route.getName(), description);
+		addTableRow("Orientation:", route.getOrientation().toString(),
+				description);
+
+		description.append("</table>");
+		description.append("<h3>Turnouts</h3>");
+		description.append("<table>");
+
+		for (final RouteItem item : route.getRouteItems()) {
+			addTableRow("", "" + item.getTurnout().getNumber() + ": "
+					+ item.getRoutedState().toString(), description);
+		}
+
+		description.append("</table>");
+		description.append("</html>");
+		return description.toString();
+	}
+
+	private static void addTableRow(final String key, final String value,
+			final StringBuilder description) {
+		description.append("<tr>");
+		description.append("<td>");
+		description.append(key);
+		description.append("</td>");
+		description.append("<td>");
+		description.append(value);
+		description.append("</td>");
+		description.append("</tr>");
+	}
 }

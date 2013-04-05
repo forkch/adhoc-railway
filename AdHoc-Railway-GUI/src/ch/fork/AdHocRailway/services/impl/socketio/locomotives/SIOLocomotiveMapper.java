@@ -120,7 +120,7 @@ public class SIOLocomotiveMapper {
 		locomotiveJSON.put("address2", locomotive.getAddress2());
 		locomotiveJSON.put("image", locomotive.getImage());
 		locomotiveJSON
-				.put("type", locomotive.getType().getName().toLowerCase());
+				.put("type", locomotive.getType().getId().toLowerCase());
 
 		final org.json.JSONArray functionsJSON = new org.json.JSONArray();
 		for (final LocomotiveFunction function : locomotive.getFunctions()) {

@@ -36,6 +36,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
+import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
@@ -96,13 +97,19 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			add(turnoutCanvas);
 		} else {
 			add(numberLabel, "");
-			add(statePanel, "wrap, w 15!, h 5!, align right");
+			add(statePanel, "wrap, w 20!, h 7!, align right");
 			add(turnoutCanvas, "span 2");
 		}
+
 	}
 
 	public void updateTurnout() {
 		numberLabel.setText(Integer.toString(turnout.getNumber()));
+
+		final String turnoutDescription = TurnoutHelper
+				.getTurnoutDescription(turnout);
+		setToolTipText(turnoutDescription);
+		turnoutCanvas.setToolTipText(turnoutDescription);
 	}
 
 	private class MouseAction extends MouseAdapter {
@@ -173,18 +180,18 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 					case RIGHT:
 						if (turnout.getDefaultState().equals(
 								TurnoutState.STRAIGHT)) {
-							statePanel.setBackground(Color.RED);
+							statePanel.setBackground(UIConstants.STATE_RED);
 						} else {
-							statePanel.setBackground(Color.GREEN);
+							statePanel.setBackground(UIConstants.STATE_GREEN);
 						}
 
 						break;
 					case STRAIGHT:
 						if (turnout.getDefaultState().equals(
 								TurnoutState.STRAIGHT)) {
-							statePanel.setBackground(Color.GREEN);
+							statePanel.setBackground(UIConstants.STATE_GREEN);
 						} else {
-							statePanel.setBackground(Color.RED);
+							statePanel.setBackground(UIConstants.STATE_RED);
 						}
 
 						break;

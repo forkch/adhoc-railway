@@ -395,6 +395,7 @@ public class LocomotiveWidget extends JPanel implements
 	public void locomotivesUpdated(
 			final SortedSet<LocomotiveGroup> locomotiveGroups) {
 		updateLocomotiveGroups(locomotiveGroups);
+		locomotiveGroupComboBox.setSelectedIndex(0);
 
 	}
 

@@ -39,7 +39,9 @@ import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteException;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
+import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
+import ch.fork.AdHocRailway.ui.routes.configuration.RouteHelper;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
@@ -86,8 +88,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 				.getRouteItems().size());
 		routingProgress.setBorder(BorderFactory.createEmptyBorder());
 
-		routingProgress.setBackground(Color.RED);
-		routingProgress.setForeground(Color.GREEN);
+		routingProgress.setBackground(UIConstants.STATE_RED);
+		routingProgress.setForeground(UIConstants.STATE_GREEN);
 		addMouseListener(new MouseAction());
 
 		add(numberLabel, "span 1 2");
@@ -104,6 +106,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		orientationLabel.setText(route.getOrientation());
 		nameLabel.setText(route.getName());
 		routingProgress.setMaximum(route.getRouteItems().size());
+		setToolTipText(RouteHelper.getRouteDescription(route));
 	}
 
 	private class MouseAction extends MouseAdapter {

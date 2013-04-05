@@ -148,7 +148,6 @@ public class TurnoutHelper {
 		try {
 			BeanUtils.copyProperties(t, old);
 		} catch (IllegalAccessException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return t;
@@ -159,8 +158,48 @@ public class TurnoutHelper {
 		try {
 			BeanUtils.setProperty(testTurnout, property, newValue);
 		} catch (IllegalAccessException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static String getTurnoutDescription(final Turnout turnout) {
+		if (turnout == null) {
+			return "Please choose a turnout...";
+		}
+		final StringBuilder description = new StringBuilder();
+		description.append("<html>");
+		description.append("<h1>" + turnout.getNumber() + "</h1>");
+		description.append("<table>");
+
+		addTableRow("Type:", turnout.getTurnoutType().toString(), description);
+		addTableRow("Default-State:", turnout.getDefaultState().toString(),
+				description);
+		addTableRow("Orientation:", turnout.getOrientation().toString(),
+				description);
+
+		addTableRow("Bus / Address 1:", "" + turnout.getBus1() + " / "
+				+ turnout.getAddress1(), description);
+		addTableRow("Address 1 Inverted:", "" + turnout.isAddress1Switched(),
+				description);
+
+		addTableRow("Bus / Address 2:", "" + turnout.getBus2() + " / "
+				+ turnout.getAddress2(), description);
+		addTableRow("Address 2 Inverted:", "" + turnout.isAddress2Switched(),
+				description);
+		description.append("</table>");
+		description.append("</html>");
+		return description.toString();
+	}
+
+	private static void addTableRow(final String key, final String value,
+			final StringBuilder description) {
+		description.append("<tr>");
+		description.append("<td>");
+		description.append(key);
+		description.append("</td>");
+		description.append("<td>");
+		description.append(value);
+		description.append("</td>");
+		description.append("</tr>");
 	}
 }

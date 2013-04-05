@@ -33,4 +33,7 @@ public interface UIConstants {
 																.getBackground();
 	public static final Color	DEFAULT_PANEL_COLOR		= new JPanel()
 																.getBackground();
+	public static final Color STATE_RED = new Color(255, 0, 0);
+	public static final Color STATE_GREEN = new Color(0, 192, 0);
+	static final int HISTORY_LENGTH = 5;
 }

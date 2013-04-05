@@ -47,13 +47,24 @@ import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 
 public class KeyControl extends SimpleInternalFrame {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3052109699874529256L;
 
-	private static final int HISTORY_LENGTH = 5;
+	private enum KeyControlMode {
+		TURNOUT_MODE, ROUTE_MODE, LOCOMOTIVE_FUNCTION_MODE;
+
+		public boolean isRouteMode() {
+			return this.equals(KeyControlMode.ROUTE_MODE);
+		}
+
+		public boolean isLocomotiveFunctionMode() {
+			return this.equals(KeyControlMode.LOCOMOTIVE_FUNCTION_MODE);
+		}
+
+	};
+
+	private KeyControlMode mode = KeyControlMode.TURNOUT_MODE;
+	private int locomotiveNumber = -1;
+
 	private StringBuffer enteredNumberKeys;
 
 	private JPanel turnoutsHistory;
@@ -62,19 +73,9 @@ public class KeyControl extends SimpleInternalFrame {
 
 	private final LinkedList<JPanel> historyWidgets;
 
-	private boolean periodMode = false;
-
-	private final boolean changedSwitch = false;
-
-	private final boolean changedRoute = false;
-
 	private JScrollPane historyPane;
 
 	private ThreeDigitDisplay digitDisplay;
-
-	private boolean locomotiveFunctionMode = false;
-
-	private int locomotiveNumber = -1;
 
 	public KeyControl() {
 		super("Track Control / History");
@@ -138,7 +139,7 @@ public class KeyControl extends SimpleInternalFrame {
 	}
 
 	private void updateHistory(final Object obj) {
-		if (historyStack.size() == HISTORY_LENGTH) {
+		if (historyStack.size() == UIConstants.HISTORY_LENGTH) {
 			historyStack.removeFirst();
 			historyWidgets.removeFirst();
 		}
@@ -186,8 +187,7 @@ public class KeyControl extends SimpleInternalFrame {
 			if (switchNumber > 999) {
 				digitDisplay.reset();
 				enteredNumberKeys = new StringBuffer();
-				periodMode = false;
-				locomotiveFunctionMode = false;
+				mode = KeyControlMode.TURNOUT_MODE;
 				locomotiveNumber = -1;
 				return;
 			}
@@ -201,21 +201,20 @@ public class KeyControl extends SimpleInternalFrame {
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			if (enteredNumberKeys.length() == 0 && periodMode) {
+			if (enteredNumberKeys.length() == 0 && mode.isRouteMode()) {
 				// reset if no number is entered
-				periodMode = false;
-				locomotiveFunctionMode = false;
+				mode = KeyControlMode.TURNOUT_MODE;
 				locomotiveNumber = -1;
 				digitDisplay.setPeriod(false);
-			} else if (enteredNumberKeys.length() != 0 && periodMode) {
+			} else if (enteredNumberKeys.length() != 0 && mode.isRouteMode()) {
 				// someone entered a number followed by a period
-				locomotiveFunctionMode = true;
+				mode = KeyControlMode.LOCOMOTIVE_FUNCTION_MODE;
 				locomotiveNumber = Integer.parseInt(enteredNumberKeys
 						.toString());
 				enteredNumberKeys = new StringBuffer();
 				digitDisplay.setNumber(-1);
 			} else {
-				periodMode = true;
+				mode = KeyControlMode.ROUTE_MODE;
 				digitDisplay.setPeriod(true);
 			}
 		}
@@ -257,9 +256,9 @@ public class KeyControl extends SimpleInternalFrame {
 				} else {
 					final int enteredNumber = Integer
 							.parseInt(enteredNumberAsString);
-					if (periodMode && !locomotiveFunctionMode) {
+					if (mode.isRouteMode()) {
 						handleRouteChange(e, enteredNumber);
-					} else if (periodMode && locomotiveFunctionMode) {
+					} else if (mode.isLocomotiveFunctionMode()) {
 						handleLocomotiveChange(e, enteredNumber);
 					} else {
 						handleSwitchChange(e, enteredNumber);
@@ -274,8 +273,7 @@ public class KeyControl extends SimpleInternalFrame {
 				e1.printStackTrace();
 			}
 			enteredNumberKeys = new StringBuffer();
-			periodMode = false;
-			locomotiveFunctionMode = false;
+			mode = KeyControlMode.TURNOUT_MODE;
 			locomotiveNumber = -1;
 			digitDisplay.reset();
 		}

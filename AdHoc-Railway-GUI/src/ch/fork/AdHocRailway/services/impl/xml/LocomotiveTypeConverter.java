@@ -18,7 +18,7 @@ public class LocomotiveTypeConverter implements SingleValueConverter {
 
 	@Override
 	public String toString(final Object arg0) {
-		return ((LocomotiveType) arg0).getName();
+		return ((LocomotiveType) arg0).getId();
 	}
 
 }
