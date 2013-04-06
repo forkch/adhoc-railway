@@ -14,12 +14,15 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction> {
 	private String description;
 	private boolean isEmergencyBrakeFunction;
 
+	private int deactivationDelay;
+
 	public LocomotiveFunction(final int number, final String description,
-			final boolean isEmergencyBrakeFunction) {
+			final boolean isEmergencyBrakeFunction, final int deactivationDelay) {
 		super();
 		this.number = number;
 		this.description = description;
 		this.isEmergencyBrakeFunction = isEmergencyBrakeFunction;
+		this.setDeactivationDelay(deactivationDelay);
 	}
 
 	public boolean isEmergencyBrakeFunction() {
@@ -50,15 +53,16 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction> {
 	}
 
 	public static SortedSet<LocomotiveFunction> getDeltaFunctions() {
-		final LocomotiveFunction fn = new LocomotiveFunction(0, "Licht", false);
+		final LocomotiveFunction fn = new LocomotiveFunction(0, "Licht", false,
+				-1);
 		return new TreeSet<LocomotiveFunction>(Arrays.asList(fn));
 	}
 
 	public static SortedSet<LocomotiveFunction> getDigitalFunctions() {
-		final LocomotiveFunction f1 = new LocomotiveFunction(1, "-", false);
-		final LocomotiveFunction f2 = new LocomotiveFunction(2, "-", false);
-		final LocomotiveFunction f3 = new LocomotiveFunction(3, "-", false);
-		final LocomotiveFunction f4 = new LocomotiveFunction(4, "ABV", true);
+		final LocomotiveFunction f1 = new LocomotiveFunction(1, "-", false, -1);
+		final LocomotiveFunction f2 = new LocomotiveFunction(2, "-", false, -1);
+		final LocomotiveFunction f3 = new LocomotiveFunction(3, "-", false, -1);
+		final LocomotiveFunction f4 = new LocomotiveFunction(4, "ABV", true, -1);
 		final SortedSet<LocomotiveFunction> fns = getDeltaFunctions();
 		fns.addAll(Arrays.asList(f1, f2, f3, f4));
 		return fns;
@@ -66,10 +70,10 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction> {
 	}
 
 	public static SortedSet<LocomotiveFunction> getSimulatedMfxFunctions() {
-		final LocomotiveFunction f5 = new LocomotiveFunction(5, "-", false);
-		final LocomotiveFunction f6 = new LocomotiveFunction(6, "-", false);
-		final LocomotiveFunction f7 = new LocomotiveFunction(7, "-", false);
-		final LocomotiveFunction f8 = new LocomotiveFunction(8, "-", false);
+		final LocomotiveFunction f5 = new LocomotiveFunction(5, "-", false, -1);
+		final LocomotiveFunction f6 = new LocomotiveFunction(6, "-", false, -1);
+		final LocomotiveFunction f7 = new LocomotiveFunction(7, "-", false, -1);
+		final LocomotiveFunction f8 = new LocomotiveFunction(8, "-", false, -1);
 		final SortedSet<LocomotiveFunction> fns = getDigitalFunctions();
 		fns.addAll(Arrays.asList(f5, f6, f7, f8));
 		return fns;
@@ -85,6 +89,14 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction> {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this,
 				ToStringStyle.SIMPLE_STYLE);
+	}
+
+	public int getDeactivationDelay() {
+		return deactivationDelay;
+	}
+
+	public void setDeactivationDelay(final int deactivationDelay) {
+		this.deactivationDelay = deactivationDelay;
 	}
 
 }

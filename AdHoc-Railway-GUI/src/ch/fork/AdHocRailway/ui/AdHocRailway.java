@@ -103,6 +103,7 @@ import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
 import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
+import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
@@ -279,7 +280,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	}
 
 	private void setUpLogging() {
-		PropertyConfigurator.configure("etc/log4j.properties");
+		PropertyConfigurator.configure("./etc/log4j.properties");
 
 		final FileAppender appender = new FileAppender();
 		appender.setName("MyFileAppender");
@@ -291,15 +292,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			e.printStackTrace();
 		}
 		final String userName = System.getProperty("user.name");
-		String current;
-		try {
-			current = new java.io.File(".").getCanonicalPath();
-			System.out.println("Current dir:" + current);
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
-		final String currentDir = System.getProperty("user.dir");
-		System.out.println("Current dir using System:" + currentDir);
 
 		appender.setFile("./logs/" + localhostname + "_" + userName + ".log");
 		appender.setAppend(true);
@@ -820,11 +812,11 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		final JToolBar viewToolBar = new JToolBar();
 		final JButton refreshButton = new SmallToolbarButton(
 				new RefreshAction());
-		// toggleFullscreenButton = new SmallToolbarButton(
-		// new ToggleFullscreenAction());
+		toggleFullscreenButton = new SmallToolbarButton(
+				new ToggleFullscreenAction());
 
 		viewToolBar.add(refreshButton);
-		// viewToolBar.add(toggleFullscreenButton);
+		viewToolBar.add(toggleFullscreenButton);
 
 		/* ERROR */
 		final ErrorPanel errorPanel = new ErrorPanel();
@@ -835,7 +827,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		addToolBar(digitalToolBar);
 		addToolBar(daemonToolBar);
 		addToolBar(viewToolBar);
-		// toolbarPanel.add(errorPanel);
 
 		final JPanel toolbarErrorPanel = new JPanel(new BorderLayout(10, 10));
 		toolbarErrorPanel.add(toolbarPanel, BorderLayout.WEST);
@@ -1260,6 +1251,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
+			new RoutesConfigurationDialog(AdHocRailway.this);
 		}
 	}
 

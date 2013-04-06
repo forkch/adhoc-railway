@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,15 +34,19 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -53,14 +58,12 @@ import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
+import ch.fork.AdHocRailway.ui.TableColumnAdjuster;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.common.collect.ArrayListModel;
-import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 public class LocomotiveConfigurationDialog extends JDialog implements
 		LocomotiveManagerListener {
@@ -100,56 +103,26 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 	public boolean disableListener;
 
+	private JScrollPane groupScrollPane;
+
+	private JScrollPane locomotiveTableScrollPane;
+
+	private LocomotiveGroupConfigPanel locomotiveGroupConfig;
+
+	private TableColumnAdjuster tca;
+
 	public LocomotiveConfigurationDialog(final JFrame owner) {
 		super(owner, "Locomotive Configuration", true);
 		initGUI();
 	}
 
 	private void initGUI() {
+		initComponents();
 		buildPanel();
+		initEventHandling();
 		locomotivePersistence.addLocomotiveManagerListener(this);
 		pack();
-		setLocationRelativeTo(getParent());
 		setVisible(true);
-	}
-
-	private void buildPanel() {
-		initComponents();
-		initEventHandling();
-
-		final FormLayout layout = new FormLayout("pref, 10dlu, pref:grow",
-				"pref, 3dlu, fill:pref:grow, 10dlu, pref, 10dlu, pref");
-
-		final PanelBuilder builder = new PanelBuilder(layout);
-		builder.setDefaultDialogBorder();
-		final CellConstraints cc = new CellConstraints();
-
-		builder.addSeparator("Locomotive Groups", cc.xyw(1, 1, 1));
-
-		builder.add(new JScrollPane(locomotiveGroupList), cc.xy(1, 3));
-		builder.add(buildGroupButtonBar(), cc.xy(1, 5));
-
-		builder.addSeparator("Locomotives", cc.xyw(3, 1, 1));
-		builder.add(new JScrollPane(locomotivesTable), cc.xy(3, 3));
-		builder.add(buildLocomotiveButtonBar(), cc.xy(3, 5));
-
-		builder.add(buildMainButtonBar(), cc.xyw(1, 7, 3));
-		add(builder.getPanel());
-
-	}
-
-	private Component buildLocomotiveButtonBar() {
-		return ButtonBarFactory.buildCenteredBar(addLocomotiveButton,
-				removeLocomotiveButton);
-	}
-
-	private Component buildGroupButtonBar() {
-		return ButtonBarFactory.buildCenteredBar(addGroupButton,
-				editGroupButton, removeGroupButton);
-	}
-
-	private Component buildMainButtonBar() {
-		return ButtonBarFactory.buildRightAlignedBar(okButton);
 	}
 
 	private void initComponents() {
@@ -164,6 +137,10 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 				.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		locomotiveGroupList
 				.setCellRenderer(new LocomotiveGroupListCellRenderer());
+
+		groupScrollPane = new JScrollPane(locomotiveGroupList);
+
+		locomotiveGroupConfig = new LocomotiveGroupConfigPanel();
 
 		addGroupButton = new JButton(new AddLocomotiveGroupAction());
 		editGroupButton = new JButton(new EditLocomotiveGroupAction());
@@ -180,6 +157,13 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 		locomotivesTable
 				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
+		locomotiveTableScrollPane = new JScrollPane(locomotivesTable,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+		locomotivesTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+		tca = new TableColumnAdjuster(locomotivesTable, 10);
 		addLocomotiveButton = new JButton(new AddLocomotiveAction());
 		removeLocomotiveButton = new JButton(new RemoveLocomotiveAction());
 
@@ -214,6 +198,45 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 	}
 
+	private void buildPanel() {
+
+		setLayout(new BorderLayout());
+		final JPanel mainPanel = new JPanel(new MigLayout("fill",
+				"[shrink][shrink][shrink][grow]", "[shrink][grow][shrink]"));
+
+		mainPanel.add(new JLabel("Locomotive Groups"));
+		mainPanel.add(new JSeparator(), "growx");
+		mainPanel.add(new JLabel("Locomotives"), "gap unrelated");
+		mainPanel.add(new JSeparator(), "growx, wrap");
+
+		mainPanel.add(groupScrollPane, "grow, span 2");
+		mainPanel.add(locomotiveTableScrollPane,
+				"gap unrelated, grow, span 2 2, w 900, wrap");
+
+		mainPanel.add(locomotiveGroupConfig, "shrink, span 2, wrap");
+
+		mainPanel.add(buildGroupButtonBar(), "span 2, align center");
+		mainPanel.add(buildLocomotiveButtonBar(),
+				"gap unrelated, span 2, align center, wrap");
+		mainPanel.add(buildMainButtonBar(), "span 4, align right");
+		add(mainPanel, BorderLayout.CENTER);
+
+	}
+
+	private Component buildLocomotiveButtonBar() {
+		return ButtonBarFactory.buildCenteredBar(addLocomotiveButton,
+				removeLocomotiveButton);
+	}
+
+	private Component buildGroupButtonBar() {
+		return ButtonBarFactory.buildCenteredBar(addGroupButton,
+				editGroupButton, removeGroupButton);
+	}
+
+	private Component buildMainButtonBar() {
+		return ButtonBarFactory.buildRightAlignedBar(okButton);
+	}
+
 	/**
 	 * Sets the selected group as bean in the details model.
 	 */
@@ -238,6 +261,8 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			locomotives.addAll(selectedGroup.getLocomotives());
 
 			locomotiveModel.setList(locomotives);
+			locomotiveGroupConfig.setLocomotiveGroup(selectedGroup);
+			tca.adjustColumns();
 		}
 	}
 
@@ -261,6 +286,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			final LocomotiveGroup newSection = new LocomotiveGroup(0,
 					newGroupName);
 			locomotivePersistence.addLocomotiveGroup(newSection);
+			locomotiveGroupConfig.setLocomotiveGroup(null);
 		}
 	}
 
@@ -309,6 +335,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			if (response == JOptionPane.YES_OPTION) {
 				try {
 					locomotivePersistence.deleteLocomotiveGroup(groupToDelete);
+					locomotiveGroupConfig.setLocomotiveGroup(null);
 				} catch (final LocomotiveManagerException e) {
 					ExceptionProcessor.getInstance().processException(e);
 				}

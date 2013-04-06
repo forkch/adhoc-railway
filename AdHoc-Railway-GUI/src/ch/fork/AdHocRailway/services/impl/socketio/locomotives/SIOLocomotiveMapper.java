@@ -84,7 +84,8 @@ public class SIOLocomotiveMapper {
 				final LocomotiveFunction function = new LocomotiveFunction(
 						functionJSON.getInt("number"),
 						functionJSON.getString("description"),
-						functionJSON.getBoolean("emergencyBrakeFunction"));
+						functionJSON.getBoolean("emergencyBrakeFunction"),
+						functionJSON.optInt("deactivationDelay", -1));
 
 				locomotive.addLocomotiveFunction(function);
 			}
@@ -119,8 +120,7 @@ public class SIOLocomotiveMapper {
 		locomotiveJSON.put("address1", locomotive.getAddress1());
 		locomotiveJSON.put("address2", locomotive.getAddress2());
 		locomotiveJSON.put("image", locomotive.getImage());
-		locomotiveJSON
-				.put("type", locomotive.getType().getId().toLowerCase());
+		locomotiveJSON.put("type", locomotive.getType().getId().toLowerCase());
 
 		final org.json.JSONArray functionsJSON = new org.json.JSONArray();
 		for (final LocomotiveFunction function : locomotive.getFunctions()) {
@@ -129,6 +129,8 @@ public class SIOLocomotiveMapper {
 			functionJSON.put("description", function.getDescription());
 			functionJSON.put("emergencyBrakeFunction",
 					function.isEmergencyBrakeFunction());
+			functionJSON.put("deactivationDelay",
+					function.getDeactivationDelay());
 			functionsJSON.put(functionJSON);
 		}
 		locomotiveJSON.put("functions", functionsJSON);

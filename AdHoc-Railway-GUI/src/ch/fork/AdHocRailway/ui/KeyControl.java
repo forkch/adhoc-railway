@@ -32,6 +32,7 @@ import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
@@ -353,14 +354,18 @@ public class KeyControl extends SimpleInternalFrame {
 				return;
 			}
 
+			boolean state = false;
 			if (this instanceof EnableRouteAction) {
-
-				functions[functionNumber] = true;
+				state = true;
 			} else if (this instanceof DisableRouteAction) {
-
-				functions[functionNumber] = false;
+				state = false;
 			}
-			locomotiveControl.setFunctions(searchedLocomotive, functions);
+			final LocomotiveFunction locomotiveFunction = searchedLocomotive
+					.getFunction(functionNumber);
+			final int deactivationDelay = locomotiveFunction != null ? locomotiveFunction
+					.getDeactivationDelay() : -1;
+			locomotiveControl.setFunction(searchedLocomotive, functionNumber,
+					state, deactivationDelay);
 		}
 	}
 

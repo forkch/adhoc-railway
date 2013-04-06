@@ -13,7 +13,7 @@ public class LocomotiveFunctionTableModel extends
 	 */
 	private static final long serialVersionUID = -3279273929330645457L;
 	private static final String[] COLUMNS = { "Function", "Description",
-			"E. Stop" };
+			"E. Stop", "Deactivation Delay" };
 
 	public LocomotiveFunctionTableModel(final ListModel<?> listModel) {
 		super(listModel, COLUMNS);
@@ -29,6 +29,8 @@ public class LocomotiveFunctionTableModel extends
 			return function.getDescription();
 		case 2:
 			return function.isEmergencyBrakeFunction();
+		case 3:
+			return function.getDeactivationDelay();
 		default:
 			throw new IllegalStateException("Unknown column");
 		}
@@ -43,6 +45,9 @@ public class LocomotiveFunctionTableModel extends
 			break;
 		case 2:
 			function.setEmergencyBrakeFunction(((Boolean) value).booleanValue());
+			break;
+		case 3:
+			function.setDeactivationDelay(((Integer) value).intValue());
 			break;
 		default:
 			throw new IllegalStateException("Unknown column");
@@ -59,6 +64,8 @@ public class LocomotiveFunctionTableModel extends
 		case 1:
 			return true;
 		case 2:
+			return true;
+		case 3:
 			return true;
 		}
 		return false;

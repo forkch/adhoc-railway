@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,9 +33,12 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.ListModel;
@@ -43,6 +47,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
+import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
@@ -53,22 +58,16 @@ import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
-import ch.fork.AdHocRailway.ui.TableResizer;
+import ch.fork.AdHocRailway.ui.TableColumnAdjuster;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.common.collect.ArrayListModel;
-import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 public class TurnoutConfigurationDialog extends JDialog implements
 		TurnoutManagerListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8428097435012625412L;
 
 	private boolean okPressed;
@@ -100,57 +99,24 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 	private SelectionInList<Turnout> turnoutModel;
 
+	private JScrollPane groupScrollPane;
+
+	private JScrollPane turnoutTableScrollPane;
+
+	private TableColumnAdjuster tca;
+
 	public TurnoutConfigurationDialog(final JFrame owner) {
 		super(owner, "Turnout Configuration", true);
 		initGUI();
 	}
 
 	private void initGUI() {
+		initComponents();
 		buildPanel();
+		initEventHandling();
 		turnoutPersistence.addTurnoutManagerListener(this);
 		pack();
-		setLocationRelativeTo(getParent());
 		setVisible(true);
-	}
-
-	private void buildPanel() {
-		initComponents();
-		initEventHandling();
-
-		final FormLayout layout = new FormLayout("pref, 10dlu, pref:grow",
-				"pref, 3dlu, fill:pref:grow, 3dlu, pref, 3dlu, pref, 3dlu, pref");
-
-		final PanelBuilder builder = new PanelBuilder(layout);
-		builder.setDefaultDialogBorder();
-		final CellConstraints cc = new CellConstraints();
-
-		builder.addSeparator("Turnout Groups", cc.xyw(1, 1, 1));
-
-		builder.add(new JScrollPane(turnoutGroupList), cc.xy(1, 3));
-		builder.add(turnoutGroupConfig, cc.xy(1, 5));
-		builder.add(buildGroupButtonBar(), cc.xy(1, 7));
-
-		builder.addSeparator("Turnouts", cc.xyw(3, 1, 1));
-		builder.add(new JScrollPane(turnoutsTable), cc.xy(3, 3));
-		builder.add(buildTurnoutButtonBar(), cc.xy(3, 7));
-
-		builder.add(buildMainButtonBar(), cc.xyw(1, 9, 3));
-		add(builder.getPanel());
-
-	}
-
-	private Component buildTurnoutButtonBar() {
-		return ButtonBarFactory.buildCenteredBar(addTurnoutButton,
-				removeTurnoutButton);
-	}
-
-	private Component buildGroupButtonBar() {
-		return ButtonBarFactory.buildCenteredBar(addGroupButton,
-				editGroupButton, removeGroupButton);
-	}
-
-	private Component buildMainButtonBar() {
-		return ButtonBarFactory.buildRightAlignedBar(okButton);
 	}
 
 	private void initComponents() {
@@ -172,6 +138,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		turnoutGroupList.getActionMap().put("deleteTurnoutGroup",
 				new RemoveTurnoutGroupAction());
 
+		groupScrollPane = new JScrollPane(turnoutGroupList);
+
 		turnoutGroupConfig = new TurnoutGroupConfigPanel();
 
 		addGroupButton = new JButton(new AddTurnoutGroupAction());
@@ -182,7 +150,14 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		turnoutModel = new SelectionInList<Turnout>();
 
 		turnoutModel.setList(turnouts);
-		turnoutsTable = new JTable();
+		turnoutsTable = new JTable() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean getScrollableTracksViewportWidth() {
+				return getPreferredSize().width < getParent().getWidth();
+			}
+		};
 		turnoutsTable.setModel(new TurnoutTableModel(turnoutModel));
 
 		turnoutsTable
@@ -195,6 +170,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 				"deleteTurnout");
 		turnoutsTable.getActionMap().put("deleteTurnout",
 				new RemoveTurnoutAction());
+
 		final TableColumn typeColumn = turnoutsTable.getColumnModel()
 				.getColumn(1);
 		typeColumn.setCellRenderer(new TurnoutTypeCellRenderer());
@@ -205,6 +181,13 @@ public class TurnoutConfigurationDialog extends JDialog implements
 				.setCellRenderer(new TurnoutDefaultStateCellRenderer());
 		turnoutsTable.setRowHeight(30);
 
+		turnoutTableScrollPane = new JScrollPane(turnoutsTable,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+		turnoutsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+		tca = new TableColumnAdjuster(turnoutsTable, 10);
 		addTurnoutButton = new JButton(new AddTurnoutAction());
 		removeTurnoutButton = new JButton(new RemoveTurnoutAction());
 
@@ -240,6 +223,43 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 	}
 
+	private void buildPanel() {
+		setLayout(new BorderLayout());
+		final JPanel mainPanel = new JPanel(new MigLayout("fill",
+				"[shrink][shrink][shrink][grow]", "[shrink][grow][shrink]"));
+
+		mainPanel.add(new JLabel("Turnout Groups"));
+		mainPanel.add(new JSeparator(), "growx");
+		mainPanel.add(new JLabel("Turnouts"), "gap unrelated");
+		mainPanel.add(new JSeparator(), "growx, wrap");
+
+		mainPanel.add(groupScrollPane, "grow, span 2");
+		mainPanel.add(turnoutTableScrollPane,
+				"gap unrelated, grow, span 2 2, w 900, wrap");
+
+		mainPanel.add(turnoutGroupConfig, "shrink, span 2, wrap");
+
+		mainPanel.add(buildGroupButtonBar(), "span 2, align center");
+		mainPanel.add(buildTurnoutButtonBar(),
+				"gap unrelated, span 2, align center, wrap");
+		mainPanel.add(buildMainButtonBar(), "span 4, align right");
+		add(mainPanel, BorderLayout.CENTER);
+	}
+
+	private Component buildTurnoutButtonBar() {
+		return ButtonBarFactory.buildCenteredBar(addTurnoutButton,
+				removeTurnoutButton);
+	}
+
+	private Component buildGroupButtonBar() {
+		return ButtonBarFactory.buildCenteredBar(addGroupButton,
+				editGroupButton, removeGroupButton);
+	}
+
+	private Component buildMainButtonBar() {
+		return ButtonBarFactory.buildRightAlignedBar(okButton);
+	}
+
 	/**
 	 * Sets the selected group as bean in the details model.
 	 */
@@ -266,7 +286,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			turnouts.addAll(selectedGroup.getTurnouts());
 
 			turnoutGroupConfig.setTurnoutGroup(selectedGroup);
-			TableResizer.adjustColumnWidths(turnoutsTable, 5);
+
+			tca.adjustColumns();
 		}
 	}
 

@@ -218,4 +218,13 @@ public class Locomotive extends Model implements Serializable,
 		return -1;
 	}
 
+	public LocomotiveFunction getFunction(final int functionNumber) {
+		for (final LocomotiveFunction function : functions) {
+			if (function.getNumber() == functionNumber) {
+				return function;
+			}
+		}
+		return null;
+	}
+
 }

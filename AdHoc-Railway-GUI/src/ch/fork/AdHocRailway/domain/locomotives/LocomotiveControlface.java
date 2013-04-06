@@ -92,10 +92,16 @@ public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 	public abstract void setFunctions(Locomotive locomotive, boolean[] functions)
 			throws LocomotiveException;
 
+	public abstract void setFunction(Locomotive locomotive, int functionNumber,
+			boolean state, int deactivationDelay) throws LocomotiveException;
+
 	public boolean[] getFunctions(Locomotive locomotive);
 
 	public abstract void addLocomotiveChangeListener(Locomotive loco,
 			LocomotiveChangeListener l);
+
+	public void removeLocomotiveChangeListener(final Locomotive locomotive,
+			final LocomotiveChangeListener listener);
 
 	public abstract void removeAllLocomotiveChangeListener();
 
@@ -104,7 +110,8 @@ public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 
 	public abstract void addOrUpdateLocomotive(Locomotive locomotive);
 
-	public void activateLoco(final Locomotive locomotive);
+	public void activateLoco(final Locomotive locomotive,
+			final boolean[] functions) throws LocomotiveException;
 
 	public void deactivateLoco(final Locomotive locomotive)
 			throws LocomotiveException;
