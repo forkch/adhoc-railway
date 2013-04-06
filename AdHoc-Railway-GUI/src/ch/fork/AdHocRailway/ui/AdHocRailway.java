@@ -411,6 +411,17 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		editingModeListeners.add(l);
 	}
 
+	@Override
+	public void editingModeChanged(final boolean editing) {
+		switchesItem.setEnabled(editing);
+		routesItem.setEnabled(editing);
+		locomotivesItem.setEnabled(editing);
+		turnoutsToolBarButton.setEnabled(editing);
+		routesToolBarButton.setEnabled(editing);
+		locomotivesToolBarButton.setEnabled(editing);
+	
+	}
+
 	private void loadControlLayer() {
 		powerControl = SRCPPowerControl.getInstance();
 
@@ -1564,16 +1575,5 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		} else {
 			new AdHocRailway();
 		}
-	}
-
-	@Override
-	public void editingModeChanged(final boolean editing) {
-		switchesItem.setEnabled(editing);
-		routesItem.setEnabled(editing);
-		locomotivesItem.setEnabled(editing);
-		turnoutsToolBarButton.setEnabled(editing);
-		routesToolBarButton.setEnabled(editing);
-		locomotivesToolBarButton.setEnabled(editing);
-
 	}
 }

@@ -288,7 +288,6 @@ public class LocomotiveWidget extends JPanel implements
 	}
 
 	public void updateWidget() {
-		System.out.println("updateWidget()");
 		if (myLocomotive == null) {
 			return;
 		}

@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -17,6 +18,9 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 import net.miginfocom.swing.MigLayout;
+
+import org.apache.log4j.Logger;
+
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -34,6 +38,8 @@ import de.dermoba.srcp.model.power.SRCPPowerSupplyException;
 public class PowerControlPanel extends JPanel implements
 		SRCPPowerSupplyChangeListener {
 
+	private static final Logger LOGGER = Logger
+			.getLogger(PowerControlPanel.class);
 	private static final long serialVersionUID = -4402814993315460803L;
 	private int numberOfBoosters;
 	private final ImageIcon stopIcon;
@@ -92,13 +98,17 @@ public class PowerControlPanel extends JPanel implements
 	public void powerSupplyChanged(final SRCPPowerSupply powerSupply,
 			final String freeText) {
 		if (freeText == null || freeText.isEmpty()) {
+			return;
+		}
+		if (freeText.toUpperCase().contains("AUTO")) {
+			return;
+		}
+		LOGGER.info("Power freeText: " + freeText);
 
-		} else {
-			if (freeText.toUpperCase().contains("AUTO")) {
-				return;
-			}
+		final Map<Integer, BoosterState> boosterStates = new HashMap<Integer, BoosterState>();
+		final StringTokenizer tokenizer = new StringTokenizer(freeText);
+		while (tokenizer.hasMoreTokens()) {
 			int boosterNumber = -1;
-			final StringTokenizer tokenizer = new StringTokenizer(freeText);
 			if (tokenizer.hasMoreTokens()) {
 
 				final String t = tokenizer.nextToken().trim();
@@ -109,15 +119,23 @@ public class PowerControlPanel extends JPanel implements
 				}
 
 			}
-			boolean shortcut = false;
 			if (tokenizer.hasMoreTokens()) {
 
-				final String t = tokenizer.nextToken().trim();
-				if (t.toUpperCase().equals("SHORTCUT")) {
-					shortcut = true;
+				final String srcpState = tokenizer.nextToken().trim();
+				if (BoosterState.isActive(srcpState)) {
+					boosterStates.put(boosterNumber, BoosterState.ACTIVE);
+				} else if (BoosterState.isShortcut(srcpState)) {
+					boosterStates.put(boosterNumber, BoosterState.SHORTCUT);
+				} else if (BoosterState.isInActive(srcpState)) {
+					boosterStates.put(boosterNumber, BoosterState.INACTIVE);
 				}
 			}
+		}
 
+		for (final Entry<Integer, BoosterState> state : boosterStates
+				.entrySet()) {
+			final int boosterNumber = state.getKey();
+			final BoosterState bs = state.getValue();
 			if (boosterNumber != -1) {
 				final JToggleButton button = numberToPowerToggleButtons
 						.get(boosterNumber);
@@ -128,12 +146,12 @@ public class PowerControlPanel extends JPanel implements
 				button.removeActionListener(numberToActionListener
 						.get(boosterNumber));
 
-				if (powerSupply.getState().equals(SRCPPowerState.ON)) {
+				if (bs.equals(BoosterState.ACTIVE)) {
 					button.setSelected(true);
 					button.setIcon(goIcon);
 				} else {
 					button.setSelected(false);
-					if (shortcut) {
+					if (bs.equals(BoosterState.SHORTCUT)) {
 						button.setIcon(shortcutIcon);
 					} else {
 						button.setIcon(stopIcon);
@@ -143,6 +161,7 @@ public class PowerControlPanel extends JPanel implements
 						.get(boosterNumber));
 			}
 		}
+
 	}
 
 	public void update() {

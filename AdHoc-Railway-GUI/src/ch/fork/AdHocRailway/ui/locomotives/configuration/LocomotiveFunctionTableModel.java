@@ -47,7 +47,13 @@ public class LocomotiveFunctionTableModel extends
 			function.setEmergencyBrakeFunction(((Boolean) value).booleanValue());
 			break;
 		case 3:
-			function.setDeactivationDelay(((Integer) value).intValue());
+			int intValue = ((Integer) value).intValue();
+			if (intValue < 2 && intValue >= 0) {
+				intValue = 2;
+			} else if (intValue < 0) {
+				intValue = -1;
+			}
+			function.setDeactivationDelay(intValue);
 			break;
 		default:
 			throw new IllegalStateException("Unknown column");

@@ -381,14 +381,12 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 			@Override
 			public void run() {
 				try {
-					Thread.sleep(deactivationDelay);
+					Thread.sleep(deactivationDelay * 1000);
 
 					setFunction(locomotive, functionNumber, false, -1);
 				} catch (final InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (final LocomotiveException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
