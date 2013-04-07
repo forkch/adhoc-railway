@@ -1,0 +1,161 @@
+#! /bin/sh
+# original copyright:
+#
+# Copyright (c) 1995-2000 SuSE GmbH Nuernberg, Germany.
+#
+# Author: Kurt Garloff <feedback@suse.de>
+# modified by Matthias Trute
+#
+# init.d/srcpd
+#
+#   and symbolic its link
+#
+# /usr/sbin/rcsrcpd
+#
+# System startup script for the srcp backend srcpd
+#
+### BEGIN INIT INFO
+# Provides: srcpd
+# Required-Start: $syslog
+# Required-Stop:  $syslog
+# Default-Start:  3 5
+# Default-Stop:   0 1 2 6
+# Description:    Start srcpd to let locos drive ;=)
+### END INIT INFO
+
+# Source old SuSE config (pre 8.1)
+test -e /etc/rc.config && . /etc/rc.config
+
+# Determine the base and follow a runlevel link name.
+base=${0##*/}
+link=${base#*[SK][0-9][0-9]}
+
+# Force execution if not called by a runlevel directory.
+test $link = $base && START_srcpd=yes
+test "$START_srcpd" = yes || exit 0
+
+srcpd_BIN=/usr/sbin/srcpd
+test -x $srcpd_BIN || exit 5
+
+# Shell functions sourced from /etc/rc.status:
+#      rc_check         check and set local and overall rc status
+#      rc_status        check and set local and overall rc status
+#      rc_status -v     ditto but be verbose in local rc status
+#      rc_status -v -r  ditto and clear the local rc status
+#      rc_failed        set local and overall rc status to failed
+#      rc_reset         clear local rc status (overall remains)
+#      rc_exit          exit appropriate to overall rc status
+. /etc/rc.status
+
+# First reset status of this service
+rc_reset
+
+# Return values acc. to LSB for all commands but status:
+# 0 - success
+# 1 - misc error
+# 2 - invalid or excess args
+# 3 - unimplemented feature (e.g. reload)
+# 4 - insufficient privilege
+# 5 - program not installed
+# 6 - program not configured
+# 7 - program is not running
+# 
+# Note that starting an already running service, stopping
+# or restarting a not-running service as well as the restart
+# with force-reload (in case signalling is not supported) are
+# considered a success.
+
+case "$1" in
+    start)
+	echo -n "Starting srcpd"
+	## Start daemon with startproc(8). If this fails
+	## the echo return value is set appropriate.
+
+	# startproc should return 0, even if service is 
+	# already running to match LSB spec.
+	startproc $srcpd_BIN -f /etc/srcpd.conf
+
+	# Remember status and be verbose
+	rc_status -v
+	;;
+    stop)
+	echo -n "Shutting down srcpd"
+	## Stop daemon with killproc(8) and if this fails
+	## set echo the echo return value.
+
+	killproc -TERM $srcpd_BIN
+
+	# Remember status and be verbose
+	rc_status -v
+	;;
+    try-restart)
+	## Stop the service and if this succeeds (i.e. the 
+	## service was running before), start it again.
+	$0 stop  &&  $0 start
+
+	# Remember status and be quiet
+	rc_status
+	;;
+    restart)
+	## Stop the service and regardless of whether it was
+	## running or not, start it again.
+	$0 stop
+	$0 start
+
+	# Remember status and be quiet
+	rc_status
+	;;
+    force-reload)
+	## Signal the daemon to reload its config. Most daemons
+	## do this on signal 1 (SIGHUP).
+	## If it does not support it, restart.
+
+	echo -n "Reload service srcpd"
+	## if it supports it:
+	killproc -HUP $srcpd_BIN
+	rc_status -v
+
+	## Otherwise:
+	#$0 stop  &&  $0 start
+	#rc_status
+
+	;;
+    reload)
+	## Like force-reload, but if daemon does not support
+	## signalling, do nothing (!)
+
+	# If it supports signalling:
+	echo -n "Reload service srcpd"
+	killproc -HUP $srcpd_BIN
+	rc_status -v
+	
+	# If it does not support reload:
+	#exit 3
+	;;
+    status)
+	echo -n "Checking for srcpd: "
+	## Check status with checkproc(8), if process is running
+	## checkproc will return with exit status 0.
+
+	# Status has a slightly different for the status command:
+	# 0 - service running
+	# 1 - service dead, but /var/run/  pid  file exists
+	# 2 - service dead, but /var/lock/ lock file exists
+	# 3 - service not running
+
+	# If checkproc would return LSB compliant ret values,
+	# things could be a little bit easier here. This will 
+	# probably soon be the case ...
+	checkproc $srcpd_BIN; rc=$?
+	if test $rc = 0; then echo "OK"
+	else echo "No process" 
+	exit 3
+	fi
+	#rc_status
+	;;
+    *)
+	echo "Usage: $0 {start|stop|status|try-restart|restart|force-reload|reload}"
+	exit 1
+	;;
+esac
+rc_exit

@@ -1,0 +1,311 @@
+Autor: Matthias Trute, et al
+Datum: Mai 2004
+Version: 2.0.6 ($Id: README 1375 2009-08-08 21:08:47Z gscholz $)
+Lizenz: GNU General Public License Version 2 für das gesamte Packet
+
+Zweck des Programms
+    SRCP Kommandos werden über das Netzwerk entgegengenommen und mit
+    am Server angeschlossener Interfaces an die Modellbahn übermittelt 
+    und die Rückmeldemodule eingelesen.
+
+SRCP
+    Simple Railroad Command Protocol, eine Entwicklung aus dem Usenet
+    (news:de.rec.modelle.bahn) um Modellbahnen mit dem Computer zu
+    steuern. Die Betonung liegt auf dem S ;=). Aktuell ist Version 0.8.3.
+
+Konfiguration
+    Der Dämon wird ausschließlich über eine Konfigurationsdatei
+    konfiguriert.  Diese heißt standardmäßig /etc/srcpd.conf. Es
+    handelt sich um eine Textdatei im XML Format, die mit jedem Editor
+    bearbeitet werden kann.
+    
+    Die Dokumentstruktur basiert auf der Busstruktur des SRCP
+    0.8.x. Eine DTD ist in Arbeit.
+    
+    Die Datei wird sequentiell ausgewertet. Dies bedeutet, das die
+    Busse in der numerisch korrekten Reihenfolge angegeben werden
+    müssen. Zu beachten ist, dass einige Treiber mehr als nur einen
+    Bus belegen. Dies muß in der korrekten Nummerierung beachtet
+    werden. Etwaige Fehler werden nicht immer erkannt. Bei Problemen
+    an dieser Stelle bitte immer die Konfigurationsdatei _und_ eine
+    verbale Beschreibung der angeschlossenen Hardware mitteilen!
+    
+    Per Voreinstellung werden einige Parameter vorgegeben. Dies hat
+    den Effekt, dass nur Änderungen angeben werden müssen. Die
+    voreingestellten Werte werden sich nicht "heimlich" ändern.
+
+    Grundsätzliche Struktur
+    Ein Bus wird durch das <bus> Tag definiert. In ihm sind einige
+    Attribute und weitere Tags enthalten.
+
+      <bus number="lfd.nr">
+         <device>/dev/ttyS1</device>
+         <use_watchdog>yes</use_watchdog>
+         <restore_device_settings>no</restore_device_settings>
+         <verbosity>1</verbosity>
+         <!-- es folgt die Definition des Treibermoduls -->
+         <driver>
+           <driverdata1>value</driverdata1>
+         </driver>
+      <bus>
+    
+    Device
+    Das Device ist der Pfadname, der das betreffende Gerät im
+    Unix-Verzeichnissystem bezeichnet. Er muß vollständig und ohne
+    umrahmende Leerzeichen oder Zeilenvorschübe angegeben werden.
+    
+    use_watchdog
+    Einige Treiber unterstützen einen Watchdog, der den
+    betreffenden Programmteil bei Störungen der Kommunikation neu
+    startet. Defaultwert: no.
+    
+    restore_device_settings
+    Beim Programmende sollen die Geräteeinstellungen auf den
+    ursprünglichen Zustand zurückgesetzt werden. Dies ist nur für
+    serielle Geräte sinnvoll und wird nicht von allen Treibern
+    unterstützt. Defaultwert no.
+    
+    verbosity
+    Dieses Tag stellt den Umfang der Syslog-Meldungen ein.
+    
+       0 keine Meldungen außer Start/Stop
+       1 nur Fatale Fehler
+       2 zusätzlich Fehler
+       3 zusätzlich Warnungen
+       4 zusätzlich Informationen
+       5 zusätzlich Debugmeldungen
+      >5 Hardware nicht immer tatsächlich angesprochen
+    
+    Busspezifikation (driver)
+    
+    In jedem Bus muß eine Busspezifikation enthalten sein. Diese wird
+    durch das nachfolgend angeführt xml-Tag ausgewählt. Innerhalb
+    dieser kann es (und wird es i.d.R.) weitere Angaben geben.
+    
+    Anstelle von »driver« ist der nachfolgend bezeichnete xml-Tag
+    einzusetzen. Anstelle von »driverdata1« die angegebenen
+    Parameter. Als »value« wird alles inkl. Leerzeichen zwischen dem
+    beginnenden und dem abschließendem Tag übernommen.
+    Groß/Kleinschreibung ist signifikant.
+    
+    Loopback
+    ~~~~~~~
+    Dieser Bus dient zum einen zur offline Entwicklung von
+    Client-Programmen als auch als Skelett für neue Busse. Er verwaltet
+    die Geräte ohne jeglichen Hardwarebezug.
+    
+    xmltag: loopback
+    
+    Parameter
+    
+    	number_ga: Größte GA Adresse (256)
+	number_gl: Größte GL Adresse (80)
+	number_fb: Anzahl FB Kontakte (0)
+	
+    Die FB koennen jeden numerischen Wert annehmen.
+    Die GA und GL werden eingehende Befehle sofort 
+    als ausgeführt markieren.
+    
+    DDL S88
+    ~~~~~~~
+    Dieser Treiber unterstützt 1 oder 4 S88 Stränge am
+    Parallelport. Dies wird entsprechend dem Anschlußschema des DDL
+    Dämonen (http://www.vogt-it.com/OpenSource/DDL) übernommen. Die
+    Anschlußstränge entsprechend der Schaltung von Martin Wolf werden
+    als separate Busse geführt. Auch wenn nur ein Bus angeschlossen
+    ist, werden immer 4 Busse belegt. Der »ioport« sollte im
+    Hexadezimalformat angegeben werden (mit führendem 0x).
+  
+    xmltag: ddl-s88
+    
+    ioport: Portadresse des Parallelports (z.B. 0x378)
+    number_fb_1: Anzahl S88 Module am Strang 1
+    number_fb_2: Anzahl S88 Module am Strang 2 (0)
+    number_fb_3: Anzahl S88 Module am Strang 3 (0)
+    number_fb_4: Anzahl S88 Module am Strang 4 (0)
+    
+    Auch ohne die Schaltung von Martin Wolf werden 4 Busse belegt, dann
+    ist allerdings nur der erste wirksam.
+    
+    Märklin 6051
+    ~~~~~~~~~~~~
+    xmltag: m605x
+    
+    Das Märklin Interface belegt einen Bus, der die Gerätegruppen
+    GA, GL, FB, LOCK und POWER unterstützt. Ebenso wird ein Watchdog 
+    unterstützt. Die Kombination mit dem 6050 und 6020 (und baugleiche)
+    wird ebenso unterstützt.
+    
+	number_ga: Größte GA Adresse (256)
+	number_gl: Größte GL Adresse (80)
+	number_fb: Anzahl S88 Module (0)
+	
+	mode_m6020: Features des 6021 abschalten (erweitertes
+	            MM Protokoll abschalten)
+	
+    Folgende Parameter dienen dem Finetuning, sie sollten nicht
+    geändert werden:
+	
+      ga_min_activetime
+        Minimale Einschaltdauer für GA in Millisekunden (75 ms)
+
+      pause_between_commands
+        Pause zwischen 2 Befehlen in Millisekunden (200 ms)
+
+      pause_between_bytes
+        Pause zwischen 2 Bytes bei Mehrbytebefehlen (2 ms)
+
+    Das Timing der Datenübermittlung ist kritisch und "handverlesen",
+    die voreingestellten Werte haben sich aber für einen
+    betriebsstabilen Zustand als zweckmäßig erwiesen.
+
+    Die Totzeit bis zum Wirksamwerden eines Befehls kann schon mal
+    länger dauern, vor allem wenn viele Befehle für ein Gerät anstehen.
+
+    Beim 6021, das einige Befehle vom 6051 erst beim normalen Refresh 
+    einarbeitet, kann es systembedingt einige Sekunden dauern ohne, dass
+    man was daran ändern könnte.
+
+    Um den Defaultzustand herzustellen, sollte vor dem Starten des srcpd
+    am 6021 die Adressfolge 9193 eingegeben werden. Damit werden alle
+    Loks auf einen definierten Zustand gesetzt. Dieserwird vom srcpd
+    vorausgesetzt. Quelle: Undocumented Features of the Maerklin 6021
+    
+    Intellibox
+    ~~~~~~~~~~
+    xmltag: intellibox
+    
+    i2c dev
+    ~~~~~~~
+    xmltag: i2c-dev
+    
+    Das I2C Modul ist eine Eigenentwicklung. Für Details der Hardware
+    bitte http://www.matronix.de/ konsultieren.
+    
+    Zimo MX1
+    ~~~~~~~~
+    xmltag: zimo
+    
+    Derzeit wird nur das kurze Lokformat und die Stromversorgung
+    geschaltet. Der Code für die GA ist ungetestet.
+    
+    HSI S88
+    ~~~~~~~
+    Das Highperformance S88 Interface von Littfinski.
+    
+    xmltag: hsi-88
+    
+    refresh: Wartezeit zwischen zwei Abfragezyklen in Mikrosekunden.
+             Voreinstellung: 10 000  (= 10 Millisekunden)
+    number_fb_left:  Anzahl der S88 Module am "linken" Kanel
+    number_fb_center:Anzahl der S88 Module am "mittleren" Kanel
+    number_fb_right: Anzahl der S88 Module am "rechten" Kanel
+
+
+    DDL
+    ~~~
+    Erzeugen der Signale direkt am tty des PC, einzig ein Booster
+    wird benötigt. Achtung: Derzeit ist nur eine Instanz dieses
+    Bustyps möglich, da verschiedene Datenstrukturen noch global
+    benutzt werden. Wenn mehrere Busse diesen Typs eingerichtet
+    werden, wird vermutlich keiner so funktionieren, wie er soll.
+    
+    Kernroutinen zur Signalgenerierung aus erddcd von Torsten Vogt,
+    Packet DDL (erddcd-1.5.0wip5)
+    
+    xmltag: ddl
+    
+    spezifische Parameter:
+
+    enable-maerklin
+      Yes/No
+
+    enable-nmradcc
+      Yes/No
+
+    improve-nmradcc-timing
+      Yes/No recommended: Yes
+
+    nmradcc-translation-routine
+      1, 2 or 3 recommended: 3
+
+    enable-usleep-patch
+      Yes/No recommended: No
+
+    usleep-usecs
+      Voreingestellt: 500, usecs to sleep, recommended 100 - 5000
+
+    enable-shortcut-checking
+      Yes/No recommended: Yes, if booster supports
+
+    inverse-dsr-handling
+      Yes/No recommended: Yes, if booster supports
+
+    shortcut-failure-delay
+      Voreingestellt: 500, wait usecs before handle failure
+
+    enable-ringindicator-checking
+      Yes/No recommended: No
+
+        
+Installieren und Benutzen
+    Installation der rpm Packete erfolgt auf dem üblichen Weg mit
+    "rpm -i <dateiname>.rpm". Dabei werden die erforderlichen
+    Links zum Starten des Daemons in /etc/init.d angelegt (aber
+    nicht automatisch gestartet). Manuell kann der Daemon dann mit den
+    Standardverfahren gestartet und gestoppt werden.
+    
+    Das Deinstallieren stoppt einen laufenden Daemon zuerst, bevor
+    die Dateien entfernt werden.
+
+    Hardware sollte im eigenen Interesse nur im komplett ausgeschaltetem
+    Zustand angeschlossen und entfernt werden.
+    
+    Mit srcpd -h erhält man eine Übersicht über die möglichen
+    Parameter, das sind aber nicht allzuviele. Alle Einstellungen
+    werden ausschließlich über die beschriebene Konfigurationsdatei
+    vorgenommen.
+    
+    Dann mit Administrationsberechtigung das Programm mit
+    "/etc/init.d/srcpd start" starten. 
+
+    Je nach eingestellter <verbosity> werden mehr oder weniger viele
+    Daten an den Syslog-Daemon gesendet, der die Meldungen nach
+    /var/log/messages schreibt.  Wird die <verbosity> auf null gesetzt,
+    werden nur gravierende Meldungen geschrieben, höherer Werte können,
+    je nach Treiber, zu einem bitgenauem Tätigkeitsprotokoll führen.
+
+Verwandte Programme
+    Siehe http://www.der-moba.de/index.php/Digitalprojekt 
+
+Rechtliches
+    Für die vorliegende Software wird keine Haftung übernommen. Aus
+    der Tatsache, das es bei den Autoren zu deren Zufriedenheit
+    funktioniert kann niemals geschlußfolgert werden, das es auch
+    bei anderen funktioniert und keinen Schaden anrichtet. Wer
+    dieses Programm benutzt, tut es auf eigene Gefahr. Es gab schon
+    irreparable Hardwareschäden! Wenn jemanden dies widerfährt, hat er
+    unser Mitgefühl. Mehr aber auch nicht. Wir erstellen die Software
+    nicht gewerblich.
+
+Sonst noch was?
+    Jede Änderung und jeder Erfahrungsbericht ist a) willkommen und
+    sollte b) irgendwie auch bei den Autoren ankommen. Hilfreich sind
+    dann Angaben zur Version (steht im Welcome des laufenden Servers).
+
+Weitere Informationen
+    http://srcpd.sourceforge.net/
+    http://www.der-moba.de/index.php/Digitalprojekt
+
+
+
+SVN checkout
+------------
+
+If you start with a fresh svn checkout, please first apply
+
+  autoreconf -i
+
+to get a proper configure script. For more instructions about compiling
+and installing this application please refer to the INSTALL file.
+

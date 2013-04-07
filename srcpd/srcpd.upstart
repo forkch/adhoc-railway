@@ -1,0 +1,15 @@
+# starts the srcpd daemon with the upstart system
+# place this file as srcpd into /etc/event.d
+#  initctl start/stop srcpd 
+
+description "Simple Railroad Command Protocol Daemon"
+author "srcpd team at sourceforge.net"
+
+start on startup
+stop  on runlevel 0
+stop  on runlevel 1
+stop  on runlevel 6
+respawn
+respawn limit 5 120
+exec /usr/sbin/srcpd -f /etc/srcpd.conf -n
+post-stop rm -f /var/run/srcpd.pid

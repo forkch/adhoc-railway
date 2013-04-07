@@ -1,0 +1,3 @@
+srcp-lock.o: srcp-lock.c srcp-lock.h
+
+srcp-lock.h:

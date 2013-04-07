@@ -1,0 +1,10 @@
+Bugs to fix
+-----------
+
+
+Features to implement
+---------------------
+* SRCP server reset
+* Event driven code for all modules using serial device
+  communication
+

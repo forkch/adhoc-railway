@@ -1,0 +1,14 @@
+Begin3
+Title:          srcpd 
+Version:        2.0
+Entered-date:   2002-2008
+Description:    srcpd is a model railroading interface daemon for SRCP
+Keywords:       SRCP der-moba.de maerklin intellibox hsi-88 ddl zimo selectrix lenz
+Author:         see AUTHORS
+Maintained-by:  srcpd Team
+Primary-site:	http://srcpd.sourceforge.net/
+Home-page:      http://srcpd.sourceforge.net/
+Original-site:  http://srcpd.sourceforge.net/
+Platforms:      Linux and other Unices
+Copying-policy: GNU Public License v2
+End
