@@ -7,13 +7,13 @@ import java.util.SortedSet;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
+import ch.fork.AdHocRailway.domain.RouteContext;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
 import ch.fork.AdHocRailway.domain.routes.RouteManagerListener;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 
 public class RouteGroupsPanel extends JTabbedPane implements
 		RouteManagerListener {
@@ -26,11 +26,16 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 	private final Map<RouteGroup, RouteGroupTab> routeGroupToRouteGroupTab = new HashMap<RouteGroup, RouteGroupTab>();
 
-	private final RouteManager routePersistence = AdHocRailway.getInstance()
-			.getRoutePersistence();
+	private final RouteManager routePersistence;
+	private final RouteControlIface routeControl;
 
-	public RouteGroupsPanel(final int tabPlacement) {
+	private final RouteContext ctx;
+
+	public RouteGroupsPanel(final RouteContext ctx, final int tabPlacement) {
 		super(tabPlacement);
+		this.ctx = ctx;
+		routePersistence = ctx.getRouteManager();
+		routeControl = ctx.getRouteControl();
 		routePersistence.addRouteManagerListener(this);
 
 	}
@@ -41,8 +46,6 @@ public class RouteGroupsPanel extends JTabbedPane implements
 		routeGroupToRouteGroupTab.clear();
 
 		int i = 1;
-		final RouteControlIface routeControl = AdHocRailway.getInstance()
-				.getRouteControl();
 
 		routeControl.removeAllRouteChangeListeners();
 
@@ -54,7 +57,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 	}
 
 	public void addRouteGroup(final int groupNumber, final RouteGroup routeGroup) {
-		final RouteGroupTab routeGroupTab = new RouteGroupTab(routeGroup);
+		final RouteGroupTab routeGroupTab = new RouteGroupTab(ctx, routeGroup);
 
 		add(routeGroupTab, "F" + groupNumber + ": " + routeGroup.getName());
 		routeGroupToRouteGroupTab.put(routeGroup, routeGroupTab);

@@ -24,6 +24,9 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import ch.fork.AdHocRailway.domain.RouteContext;
+import ch.fork.AdHocRailway.domain.TrackContext;
+import ch.fork.AdHocRailway.domain.TurnoutContext;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.routes.RouteGroupsPanel;
@@ -44,7 +47,13 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 	private JTabbedPane trackControlPane;
 
-	public TrackControlPanel() {
+	private final TurnoutContext turnoutCtx;
+
+	private final RouteContext routeContext;
+
+	public TrackControlPanel(final TrackContext ctx) {
+		this.turnoutCtx = ctx;
+		this.routeContext = ctx;
 		initGUI();
 	}
 
@@ -79,11 +88,13 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 	}
 
 	private void initTurnoutPanel() {
-		turnoutGroupsTabbedPane = new TurnoutGroupsPanel(JTabbedPane.BOTTOM);
+		turnoutGroupsTabbedPane = new TurnoutGroupsPanel(turnoutCtx,
+				JTabbedPane.BOTTOM);
 	}
 
 	private void initRoutesPanel() {
-		routeGroupsTabbedPane = new RouteGroupsPanel(JTabbedPane.BOTTOM);
+		routeGroupsTabbedPane = new RouteGroupsPanel(routeContext,
+				JTabbedPane.BOTTOM);
 	}
 
 }

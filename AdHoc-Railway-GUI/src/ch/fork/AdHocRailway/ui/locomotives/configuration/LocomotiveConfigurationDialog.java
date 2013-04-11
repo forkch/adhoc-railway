@@ -54,7 +54,6 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
@@ -91,8 +90,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 	private LocomotiveGroupSelectionHandler groupSelectionHandler;
 
-	private final LocomotiveManager locomotivePersistence = AdHocRailway
-			.getInstance().getLocomotivePersistence();
+	private final LocomotiveManager locomotiveManager;
 
 	private JButton editGroupButton;
 
@@ -111,8 +109,10 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 	private TableColumnAdjuster tca;
 
-	public LocomotiveConfigurationDialog(final JFrame owner) {
+	public LocomotiveConfigurationDialog(
+			final LocomotiveManager locomotiveManager, final JFrame owner) {
 		super(owner, "Locomotive Configuration", true);
+		this.locomotiveManager = locomotiveManager;
 		initGUI();
 	}
 
@@ -120,7 +120,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 		initComponents();
 		buildPanel();
 		initEventHandling();
-		locomotivePersistence.addLocomotiveManagerListener(this);
+		locomotiveManager.addLocomotiveManagerListener(this);
 		pack();
 		setVisible(true);
 	}
@@ -174,7 +174,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			public void actionPerformed(final ActionEvent e) {
 				okPressed = true;
 				setVisible(false);
-				locomotivePersistence
+				locomotiveManager
 						.removeLocomotiveManagerListenerInNextEvent(LocomotiveConfigurationDialog.this);
 			}
 		});
@@ -285,7 +285,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 					"Add Locomotive-Group", JOptionPane.QUESTION_MESSAGE);
 			final LocomotiveGroup newSection = new LocomotiveGroup(0,
 					newGroupName);
-			locomotivePersistence.addLocomotiveGroup(newSection);
+			locomotiveManager.addLocomotiveGroup(newSection);
 			locomotiveGroupConfig.setLocomotiveGroup(null);
 		}
 	}
@@ -307,7 +307,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			final LocomotiveGroup groupToEdit = locomotiveGroupModel
 					.getSelection();
 
-			locomotivePersistence.updateLocomotiveGroup(groupToEdit);
+			locomotiveManager.updateLocomotiveGroup(groupToEdit);
 
 		}
 	}
@@ -334,7 +334,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 					"Remove Locomotive-Group", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
 				try {
-					locomotivePersistence.deleteLocomotiveGroup(groupToDelete);
+					locomotiveManager.deleteLocomotiveGroup(groupToDelete);
 					locomotiveGroupConfig.setLocomotiveGroup(null);
 				} catch (final LocomotiveManagerException e) {
 					ExceptionProcessor.getInstance().processException(e);
@@ -367,7 +367,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 			final Locomotive newLocomotive = createDefaultLocomotive();
 
 			new LocomotiveConfig(LocomotiveConfigurationDialog.this,
-					newLocomotive, selectedLocomotiveGroup);
+					locomotiveManager, newLocomotive, selectedLocomotiveGroup);
 		}
 
 		private Locomotive createDefaultLocomotive() {
@@ -397,6 +397,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 					.getSelection();
 			final int selectedRow = locomotivesTable.getSelectedRow();
 			new LocomotiveConfig(LocomotiveConfigurationDialog.this,
+					locomotiveManager,
 					locomotiveModel.getElementAt(selectedRow),
 					selectedLocomotiveGroup);
 			final List<Locomotive> locomotives = new ArrayList<Locomotive>(
@@ -445,7 +446,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 				}
 				for (final Locomotive locomotive : locomotivesToRemove) {
 
-					locomotivePersistence.removeLocomotiveFromGroup(locomotive,
+					locomotiveManager.removeLocomotiveFromGroup(locomotive,
 							selectedLocomotiveGroup);
 					locomotives.remove(locomotive);
 

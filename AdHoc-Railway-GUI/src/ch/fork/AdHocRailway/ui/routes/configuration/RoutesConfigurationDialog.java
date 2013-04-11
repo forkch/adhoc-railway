@@ -40,6 +40,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import ch.fork.AdHocRailway.domain.RouteContext;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
@@ -47,7 +48,6 @@ import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
 import ch.fork.AdHocRailway.domain.routes.RouteManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
@@ -93,21 +93,24 @@ public class RoutesConfigurationDialog extends JDialog implements
 	private com.jgoodies.common.collect.ArrayListModel<RouteGroup> routeGroups;
 	private com.jgoodies.common.collect.ArrayListModel<Route> routes;
 
-	private final RouteManager routePersistence = AdHocRailway.getInstance()
-			.getRoutePersistence();
+	private final RouteManager routeManager;
 
 	private JButton editGroupButton;
 
 	private JButton duplicateRouteButton;
 
-	public RoutesConfigurationDialog(final JFrame parent) {
+	private final RouteContext ctx;
+
+	public RoutesConfigurationDialog(final JFrame parent, final RouteContext ctx) {
 		super(parent, "Edit Routes", true);
+		this.ctx = ctx;
+		routeManager = ctx.getRouteManager();
 		initGUI();
 	}
 
 	private void initGUI() {
 		buildPanel();
-		routePersistence.addRouteManagerListener(this);
+		routeManager.addRouteManagerListener(this);
 		pack();
 		setLocationRelativeTo(getParent());
 		setVisible(true);
@@ -192,7 +195,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 			public void actionPerformed(final ActionEvent e) {
 				okPressed = true;
 				setVisible(false);
-				routePersistence
+				routeManager
 						.removeRouteManagerListenerInNextEvent(RoutesConfigurationDialog.this);
 			}
 
@@ -329,7 +332,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 		public void actionPerformed(final ActionEvent arg0) {
 			final RouteGroup groupToEdit = routeGroupModel.getSelection();
 
-			routePersistence.updateRouteGroup(groupToEdit);
+			routeManager.updateRouteGroup(groupToEdit);
 
 		}
 	}
@@ -365,15 +368,14 @@ public class RoutesConfigurationDialog extends JDialog implements
 						RoutesConfigurationDialog.this,
 						"How many Routes should be in this group?", "10");
 				int newOffset = 1;
-				for (final RouteGroup group : routePersistence
-						.getAllRouteGroups()) {
+				for (final RouteGroup group : routeManager.getAllRouteGroups()) {
 					newOffset += group.getRouteNumberAmount();
 				}
 				newRouteGroup.setRouteNumberOffset(newOffset);
 				newRouteGroup.setRouteNumberAmount(Integer.parseInt(newAmount));
 			}
 
-			routePersistence.addRouteGroup(newRouteGroup);
+			routeManager.addRouteGroup(newRouteGroup);
 
 		}
 
@@ -405,7 +407,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 					"Remove Route-Group", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
 				try {
-					routePersistence.removeRouteGroup(routeGroupToDelete);
+					routeManager.removeRouteGroup(routeGroupToDelete);
 					routeGroupConfig.setRouteGroup(null);
 					routeGroups.remove(routeGroupToDelete);
 				} catch (final RouteManagerException e1) {
@@ -438,10 +440,10 @@ public class RoutesConfigurationDialog extends JDialog implements
 				return;
 			}
 
-			final Route newRoute = RouteHelper.createDefaultRoute(
-					routePersistence, nextNumber);
+			final Route newRoute = RouteHelper.createDefaultRoute(routeManager,
+					nextNumber);
 
-			new RouteConfig(RoutesConfigurationDialog.this, newRoute,
+			new RouteConfig(RoutesConfigurationDialog.this, ctx, newRoute,
 					selectedRouteGroup);
 		}
 	}
@@ -476,10 +478,10 @@ public class RoutesConfigurationDialog extends JDialog implements
 				return;
 			}
 
-			final Route newRoute = RouteHelper.copyRoute(routePersistence,
+			final Route newRoute = RouteHelper.copyRoute(routeManager,
 					selectedRoute, selectedRouteGroup, nextNumber);
 
-			new RouteConfig(RoutesConfigurationDialog.this, newRoute,
+			new RouteConfig(RoutesConfigurationDialog.this, ctx, newRoute,
 					selectedRouteGroup);
 		}
 	}
@@ -494,7 +496,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 		public void actionPerformed(final ActionEvent e) {
 
 			final Route route = (Route) routesList.getSelectedValue();
-			new RouteConfig(RoutesConfigurationDialog.this, route,
+			new RouteConfig(RoutesConfigurationDialog.this, ctx, route,
 					route.getRouteGroup());
 		}
 	}
@@ -525,7 +527,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 					routesToRemove.add(routesModel.getElementAt(row));
 				}
 				for (final Route route : routesToRemove) {
-					routePersistence.removeRoute(route);
+					routeManager.removeRoute(route);
 				}
 				routesList.clearSelection();
 			}
@@ -588,7 +590,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 		int nextNumber = 0;
 		if (Preferences.getInstance().getBooleanValue(
 				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-			nextNumber = routePersistence
+			nextNumber = routeManager
 					.getNextFreeRouteNumberOfGroup(selectedRouteGroup);
 			if (nextNumber == -1) {
 				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
@@ -597,7 +599,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 				return -1;
 			}
 		} else {
-			nextNumber = routePersistence.getNextFreeRouteNumber();
+			nextNumber = routeManager.getNextFreeRouteNumber();
 		}
 		return nextNumber;
 	}

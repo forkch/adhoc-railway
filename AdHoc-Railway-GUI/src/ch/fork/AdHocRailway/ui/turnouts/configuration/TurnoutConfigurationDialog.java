@@ -48,6 +48,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.domain.TurnoutContext;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
@@ -55,7 +56,6 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.TableColumnAdjuster;
@@ -94,8 +94,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	private com.jgoodies.common.collect.ArrayListModel<TurnoutGroup> turnoutGroups;
 
 	private com.jgoodies.common.collect.ArrayListModel<Turnout> turnouts;
-	private final TurnoutManager turnoutPersistence = AdHocRailway
-			.getInstance().getTurnoutPersistence();
 
 	private SelectionInList<Turnout> turnoutModel;
 
@@ -104,9 +102,15 @@ public class TurnoutConfigurationDialog extends JDialog implements
 	private JScrollPane turnoutTableScrollPane;
 
 	private TableColumnAdjuster tca;
+	private final TurnoutManager turnoutManager;
 
-	public TurnoutConfigurationDialog(final JFrame owner) {
+	private final TurnoutContext ctx;
+
+	public TurnoutConfigurationDialog(final JFrame owner,
+			final TurnoutContext ctx) {
 		super(owner, "Turnout Configuration", true);
+		this.ctx = ctx;
+		turnoutManager = ctx.getTurnoutManager();
 		initGUI();
 	}
 
@@ -114,7 +118,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		initComponents();
 		buildPanel();
 		initEventHandling();
-		turnoutPersistence.addTurnoutManagerListener(this);
+		turnoutManager.addTurnoutManagerListener(this);
 		pack();
 		setVisible(true);
 	}
@@ -198,7 +202,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			public void actionPerformed(final ActionEvent e) {
 				okPressed = true;
 				setVisible(false);
-				turnoutPersistence
+				turnoutManager
 						.removeTurnoutManagerListenerInNextEvent(TurnoutConfigurationDialog.this);
 			}
 		});
@@ -306,7 +310,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 		public void actionPerformed(final ActionEvent arg0) {
 			final TurnoutGroup groupToEdit = turnoutGroupModel.getSelection();
 
-			turnoutPersistence.updateTurnoutGroup(groupToEdit);
+			turnoutManager.updateTurnoutGroup(groupToEdit);
 
 		}
 	}
@@ -339,7 +343,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 						TurnoutConfigurationDialog.this,
 						"How many Turnouts should be in this group?", "10");
 				int newOffset = 1;
-				for (final TurnoutGroup group : turnoutPersistence
+				for (final TurnoutGroup group : turnoutManager
 						.getAllTurnoutGroups()) {
 					newOffset += group.getTurnoutNumberAmount();
 				}
@@ -348,7 +352,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 						.parseInt(newAmount));
 			}
 
-			turnoutPersistence.addTurnoutGroup(newTurnoutGroup);
+			turnoutManager.addTurnoutGroup(newTurnoutGroup);
 			turnoutGroupConfig.setTurnoutGroup(null);
 
 		}
@@ -380,7 +384,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 							+ "' ?", "Remove Turnout-Group",
 					JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
-				turnoutPersistence.removeTurnoutGroup(groupToDelete);
+				turnoutManager.removeTurnoutGroup(groupToDelete);
 				turnoutGroupConfig.setTurnoutGroup(null);
 			}
 		}
@@ -410,7 +414,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			int nextNumber = 0;
 			if (Preferences.getInstance().getBooleanValue(
 					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-				nextNumber = turnoutPersistence
+				nextNumber = turnoutManager
 						.getNextFreeTurnoutNumberOfGroup(selectedTurnoutGroup);
 				if (nextNumber == -1) {
 					JOptionPane.showMessageDialog(
@@ -420,12 +424,12 @@ public class TurnoutConfigurationDialog extends JDialog implements
 					return;
 				}
 			} else {
-				nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
+				nextNumber = turnoutManager.getNextFreeTurnoutNumber();
 			}
 			final Turnout newTurnout = TurnoutHelper.createDefaultTurnout(
-					turnoutPersistence, nextNumber);
+					turnoutManager, nextNumber);
 
-			new TurnoutConfig(TurnoutConfigurationDialog.this, newTurnout,
+			new TurnoutConfig(TurnoutConfigurationDialog.this, ctx, newTurnout,
 					selectedTurnoutGroup);
 		}
 
@@ -466,7 +470,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 					turnoutsToRemove.add(turnoutModel.getElementAt(row));
 				}
 				for (final Turnout turnout : turnoutsToRemove) {
-					turnoutPersistence.removeTurnout(turnout);
+					turnoutManager.removeTurnout(turnout);
 				}
 				turnoutsTable.clearSelection();
 			}
@@ -484,7 +488,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
 			final int row = turnoutsTable.getSelectedRow();
 			final Turnout turnout = turnoutModel.getElementAt(row);
-			new TurnoutConfig(TurnoutConfigurationDialog.this, turnout,
+			new TurnoutConfig(TurnoutConfigurationDialog.this, ctx, turnout,
 					turnout.getTurnoutGroup());
 		}
 	}

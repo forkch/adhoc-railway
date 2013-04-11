@@ -30,7 +30,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -48,6 +47,7 @@ import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.domain.LocomotiveContext;
 import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
@@ -103,25 +103,32 @@ public class LocomotiveWidget extends JPanel implements
 
 	private final JFrame frame;
 
-	private final LocomotiveManager locomotivePersistence = AdHocRailway
-			.getInstance().getLocomotivePersistence();
-	private final LocomotiveControlface locomotiveControl = AdHocRailway
-			.getInstance().getLocomotiveControl();
+	private final LocomotiveManager locomotiveManager;
+
+	private final LocomotiveControlface locomotiveControl;
 
 	private final LocomotiveGroup allLocomotivesGroup;
 
 	private JPanel functionsPanel;
 
-	public LocomotiveWidget(final int number, final JFrame frame) {
+	private final LocomotiveContext ctx;
+
+	public LocomotiveWidget(final LocomotiveContext ctx, final int number,
+			final JFrame frame) {
 		super();
+		this.ctx = ctx;
 		this.number = number;
 		this.frame = frame;
+
+		locomotiveManager = ctx.getLocomotiveManager();
+		locomotiveControl = ctx.getLocomotiveControl();
+
 		initGUI();
 		initKeyboardActions();
 
 		allLocomotivesGroup = new LocomotiveGroup();
 		allLocomotivesGroup.setName("All");
-		locomotivePersistence.addLocomotiveManagerListener(this);
+		locomotiveManager.addLocomotiveManagerListener(this);
 	}
 
 	public void updateLocomotiveGroups(final SortedSet<LocomotiveGroup> groups) {
@@ -295,7 +302,7 @@ public class LocomotiveWidget extends JPanel implements
 				.getCurrentSpeed(myLocomotive);
 		final boolean functions[] = locomotiveControl
 				.getFunctions(myLocomotive);
-		System.out.println(Arrays.toString(functions));
+
 		final boolean locked = locomotiveControl.isLocked(myLocomotive);
 
 		final float speedInPercent = ((float) currentSpeed)
@@ -386,7 +393,6 @@ public class LocomotiveWidget extends JPanel implements
 	@Override
 	public void locomotiveChanged(final Locomotive changedLocomotive) {
 
-		System.out.println("locomotiveChanged()");
 		if (myLocomotive == null) {
 			return;
 		}
@@ -410,37 +416,37 @@ public class LocomotiveWidget extends JPanel implements
 
 	@Override
 	public void locomotiveAdded(final Locomotive locomotive) {
-		updateLocomotiveGroups(locomotivePersistence.getAllLocomotiveGroups());
+		updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
 
 	}
 
 	@Override
 	public void locomotiveUpdated(final Locomotive locomotive) {
-		updateLocomotiveGroups(locomotivePersistence.getAllLocomotiveGroups());
+		updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
 
 	}
 
 	@Override
 	public void locomotiveGroupAdded(final LocomotiveGroup group) {
-		updateLocomotiveGroups(locomotivePersistence.getAllLocomotiveGroups());
+		updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
 
 	}
 
 	@Override
 	public void locomotiveRemoved(final Locomotive locomotive) {
-		updateLocomotiveGroups(locomotivePersistence.getAllLocomotiveGroups());
+		updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
 
 	}
 
 	@Override
 	public void locomotiveGroupRemoved(final LocomotiveGroup group) {
-		updateLocomotiveGroups(locomotivePersistence.getAllLocomotiveGroups());
+		updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
 
 	}
 
 	@Override
 	public void locomotiveGroupUpdated(final LocomotiveGroup group) {
-		updateLocomotiveGroups(locomotivePersistence.getAllLocomotiveGroups());
+		updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
 
 	}
 
@@ -504,16 +510,14 @@ public class LocomotiveWidget extends JPanel implements
 				}
 				if (isFree()) {
 
-					if (myLocomotive != null
-							&& AdHocRailway.getInstance().getSession() != null) {
+					if (myLocomotive != null && ctx.getSession() != null) {
 						resetLoco();
 					}
 
 					myLocomotive = (Locomotive) locomotiveComboBox
 							.getSelectedItem();
 
-					locomotivePersistence.setActiveLocomotive(number,
-							myLocomotive);
+					locomotiveManager.setActiveLocomotive(number, myLocomotive);
 					locomotiveControl.addLocomotiveChangeListener(myLocomotive,
 							LocomotiveWidget.this);
 
@@ -569,8 +573,6 @@ public class LocomotiveWidget extends JPanel implements
 				return;
 			}
 			try {
-				final LocomotiveControlface locomotiveControl = AdHocRailway
-						.getInstance().getLocomotiveControl();
 				doPerformAction(locomotiveControl, myLocomotive);
 				if (time == 0) {
 					time = System.currentTimeMillis();
@@ -690,8 +692,6 @@ public class LocomotiveWidget extends JPanel implements
 				return;
 			}
 			try {
-				final LocomotiveControlface locomotiveControl = AdHocRailway
-						.getInstance().getLocomotiveControl();
 				locomotiveControl.setSpeed(myLocomotive, 0, null);
 				updateWidget();
 				speedBar.requestFocus();
@@ -714,8 +714,6 @@ public class LocomotiveWidget extends JPanel implements
 				return;
 			}
 			try {
-				final LocomotiveControlface locomotiveControl = AdHocRailway
-						.getInstance().getLocomotiveControl();
 				if (Preferences.getInstance().getBooleanValue(
 						PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
 						&& locomotiveControl.getCurrentSpeed(myLocomotive) != 0) {
@@ -745,8 +743,6 @@ public class LocomotiveWidget extends JPanel implements
 			}
 			final boolean lockButtonState = lockButton.isSelected();
 			try {
-				final LocomotiveControlface locomotiveControl = AdHocRailway
-						.getInstance().getLocomotiveControl();
 				if (lockButtonState) {
 					final boolean succeeded = locomotiveControl
 							.acquireLock(myLocomotive);
@@ -785,8 +781,8 @@ public class LocomotiveWidget extends JPanel implements
 
 					locomotiveControl.removeLocomotiveChangeListener(
 							myLocomotive, LocomotiveWidget.this);
-					new LocomotiveConfig(frame, myLocomotive,
-							myLocomotive.getGroup());
+					new LocomotiveConfig(frame, locomotiveManager,
+							myLocomotive, myLocomotive.getGroup());
 
 					locomotiveControl.addLocomotiveChangeListener(myLocomotive,
 							LocomotiveWidget.this);

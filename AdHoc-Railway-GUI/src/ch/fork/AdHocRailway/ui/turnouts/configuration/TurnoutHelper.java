@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+import ch.fork.AdHocRailway.domain.TurnoutContext;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
@@ -21,14 +22,13 @@ import de.dermoba.srcp.model.turnouts.MMTurnout;
 
 public class TurnoutHelper {
 
-	public static void addNewTurnoutDialog(
+	public static void addNewTurnoutDialog(final TurnoutContext ctx,
 			final TurnoutGroup selectedTurnoutGroup) {
 		int nextNumber = 0;
-		final TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
-				.getTurnoutPersistence();
+		final TurnoutManager turnoutManager = ctx.getTurnoutManager();
 		if (Preferences.getInstance().getBooleanValue(
 				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-			nextNumber = turnoutPersistence
+			nextNumber = turnoutManager
 					.getNextFreeTurnoutNumberOfGroup(selectedTurnoutGroup);
 			if (nextNumber == -1) {
 				JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
@@ -37,13 +37,13 @@ public class TurnoutHelper {
 				return;
 			}
 		} else {
-			nextNumber = turnoutPersistence.getNextFreeTurnoutNumber();
+			nextNumber = turnoutManager.getNextFreeTurnoutNumber();
 		}
 
 		final Turnout newTurnout = TurnoutHelper.createDefaultTurnout(
-				turnoutPersistence, nextNumber);
+				turnoutManager, nextNumber);
 
-		new TurnoutConfig(AdHocRailway.getInstance(), newTurnout,
+		new TurnoutConfig(AdHocRailway.getInstance(), ctx, newTurnout,
 				selectedTurnoutGroup);
 	}
 

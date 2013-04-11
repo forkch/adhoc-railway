@@ -28,10 +28,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
+
+	private final TurnoutManager turnoutManager;
+
+	public RoutedTurnoutStateCellRenderer(final TurnoutManager turnoutManager) {
+		this.turnoutManager = turnoutManager;
+	}
 
 	/**
 	 * 
@@ -47,9 +52,7 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		Turnout currentTurnout;
 		iconLabel.setText("");
-		final TurnoutManager persistence = AdHocRailway.getInstance()
-				.getTurnoutPersistence();
-		currentTurnout = persistence.getTurnoutByNumber(Integer
+		currentTurnout = turnoutManager.getTurnoutByNumber(Integer
 				.valueOf((Integer) table.getValueAt(row, 0)));
 		if (currentTurnout == null) {
 			return iconLabel;

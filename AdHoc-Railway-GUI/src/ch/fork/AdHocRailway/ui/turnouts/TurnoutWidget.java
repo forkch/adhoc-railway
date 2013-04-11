@@ -29,10 +29,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.domain.TurnoutContext;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
@@ -61,22 +63,31 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
 	private JPanel statePanel;
 
-	public TurnoutWidget(final Turnout turnout, final boolean forHistory) {
-		this(turnout, forHistory, false);
+	private final TurnoutManager turnoutManager;
+
+	private final TurnoutControlIface turnoutControl;
+
+	private final TurnoutContext ctx;
+
+	public TurnoutWidget(final TurnoutContext ctx, final Turnout turnout,
+			final boolean forHistory) {
+		this(ctx, turnout, forHistory, false);
 	}
 
-	public TurnoutWidget(final Turnout turnout, final boolean forHistory,
-			final boolean testMode) {
+	public TurnoutWidget(final TurnoutContext ctx, final Turnout turnout,
+			final boolean forHistory, final boolean testMode) {
+		this.ctx = ctx;
 		this.turnout = turnout;
 		this.forHistory = forHistory;
 		this.testMode = testMode;
 
+		turnoutControl = ctx.getTurnoutControl();
+		turnoutManager = ctx.getTurnoutManager();
 		widgetEnabled = true;
 
 		initGUI();
 		updateTurnout();
-		TurnoutHelper.validateTurnout(AdHocRailway.getInstance()
-				.getTurnoutPersistence(), turnout, this);
+		TurnoutHelper.validateTurnout(turnoutManager, turnout, this);
 		setEnabled(true);
 	}
 
@@ -118,8 +129,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			if (!widgetEnabled) {
 				return;
 			}
-			final TurnoutControlIface turnoutControl = AdHocRailway
-					.getInstance().getTurnoutControl();
 
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
 				try {
@@ -145,14 +154,12 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			if (testMode) {
 				return;
 			}
-			final TurnoutControlIface turnoutControl = AdHocRailway
-					.getInstance().getTurnoutControl();
 
 			turnoutControl.removeTurnoutChangeListener(TurnoutWidget.this);
-			new TurnoutConfig(AdHocRailway.getInstance(), turnout,
+			new TurnoutConfig(AdHocRailway.getInstance(), ctx, turnout,
 					turnout.getTurnoutGroup());
-			TurnoutHelper.validateTurnout(AdHocRailway.getInstance()
-					.getTurnoutPersistence(), turnout, TurnoutWidget.this);
+			TurnoutHelper.validateTurnout(turnoutManager, turnout,
+					TurnoutWidget.this);
 			turnoutControl.addOrUpdateTurnout(turnout);
 			turnoutControl
 					.addTurnoutChangeListener(turnout, TurnoutWidget.this);
@@ -212,8 +219,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	public void setEnabled(final boolean enabled) {
 		super.setEnabled(enabled);
 
-		final TurnoutControlIface turnoutControl = AdHocRailway.getInstance()
-				.getTurnoutControl();
 		turnoutControl.removeTurnoutChangeListener(this);
 		if (!enabled) {
 			setBackground(new Color(255, 177, 177));

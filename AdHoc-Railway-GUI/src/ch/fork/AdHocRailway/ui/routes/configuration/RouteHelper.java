@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+import ch.fork.AdHocRailway.domain.RouteContext;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
@@ -48,10 +49,10 @@ public class RouteHelper {
 		return item;
 	}
 
-	public static void addNewRouteDialog(final RouteGroup selectedRouteGroup) {
+	public static void addNewRouteDialog(final RouteContext ctx,
+			final RouteGroup selectedRouteGroup) {
 		int nextNumber = 0;
-		final RouteManager routePersistence = AdHocRailway.getInstance()
-				.getRoutePersistence();
+		final RouteManager routePersistence = ctx.getRouteManager();
 		if (Preferences.getInstance().getBooleanValue(
 				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
 			nextNumber = routePersistence
@@ -69,7 +70,7 @@ public class RouteHelper {
 		final Route newTurnout = createDefaultRoute(routePersistence,
 				nextNumber);
 
-		new RouteConfig(AdHocRailway.getInstance(), newTurnout,
+		new RouteConfig(AdHocRailway.getInstance(), ctx, newTurnout,
 				selectedRouteGroup);
 	}
 
@@ -104,8 +105,11 @@ public class RouteHelper {
 		description.append("<table>");
 
 		addTableRow("Name:", route.getName(), description);
-		addTableRow("Orientation:", route.getOrientation().toString(),
-				description);
+		String orientation = "";
+		if (route.getOrientation() != null) {
+			orientation = route.getOrientation().toString();
+		}
+		addTableRow("Orientation:", orientation, description);
 
 		description.append("</table>");
 		description.append("<h3>Turnouts</h3>");

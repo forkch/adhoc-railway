@@ -39,6 +39,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
 import ch.fork.AdHocRailway.domain.Constants;
+import ch.fork.AdHocRailway.domain.TurnoutContext;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
@@ -106,11 +107,15 @@ public class TurnoutConfig extends JDialog {
 	private BufferedValueModel turnoutTypeModel;
 	private BufferedValueModel defaultStateModel;
 	private BufferedValueModel orientationModel;
+	private final TurnoutManager turnoutManager;
+	private TurnoutContext ctx;
 
-	public TurnoutConfig(final JDialog owner, final Turnout myTurnout,
-			final TurnoutGroup selectedTurnoutGroup) {
+	public TurnoutConfig(final JDialog owner, final TurnoutContext ctx,
+			final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup) {
 		super(owner, "Turnout Config", true);
+		this.ctx = ctx;
 
+		turnoutManager = ctx.getTurnoutManager();
 		testTurnout = TurnoutHelper.copyTurnout(myTurnout);
 		this.presentationModel = new PresentationModel<Turnout>(myTurnout,
 				trigger);
@@ -118,9 +123,10 @@ public class TurnoutConfig extends JDialog {
 		initGUI();
 	}
 
-	public TurnoutConfig(final Frame owner, final Turnout myTurnout,
-			final TurnoutGroup selectedTurnoutGroup) {
+	public TurnoutConfig(final Frame owner, final TurnoutContext ctx,
+			final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup) {
 		super(owner, "Turnout Config", true);
+		turnoutManager = ctx.getTurnoutManager();
 		testTurnout = TurnoutHelper.copyTurnout(myTurnout);
 		this.presentationModel = new PresentationModel<Turnout>(myTurnout,
 				trigger);
@@ -129,16 +135,14 @@ public class TurnoutConfig extends JDialog {
 	}
 
 	private void initGUI() {
-		final TurnoutManager turnoutPersistence = AdHocRailway.getInstance()
-				.getTurnoutPersistence();
 		usedTurnoutNumbers = new HashSet<Integer>();
-		for (final int number : turnoutPersistence.getUsedTurnoutNumbers()) {
+		for (final int number : turnoutManager.getUsedTurnoutNumbers()) {
 			if (number != presentationModel.getBean().getNumber()) {
 				usedTurnoutNumbers.add(number);
 			}
 		}
 
-		allTurnouts = turnoutPersistence.getAllTurnouts();
+		allTurnouts = turnoutManager.getAllTurnouts();
 		initComponents();
 		buildPanel();
 		initEventHandling();
@@ -245,7 +249,7 @@ public class TurnoutConfig extends JDialog {
 				.createComboBox(new SelectionInList<TurnoutOrientation>(
 						TurnoutOrientation.values(), orientationModel));
 
-		testTurnoutWidget = new TurnoutWidget(testTurnout, false, true);
+		testTurnoutWidget = new TurnoutWidget(ctx, testTurnout, false, true);
 		if (!isTurnoutReadyToTest(presentationModel.getBean())) {
 			testTurnoutWidget.setEnabled(false);
 		}
@@ -553,52 +557,45 @@ public class TurnoutConfig extends JDialog {
 		public void actionPerformed(final ActionEvent e) {
 
 			trigger.triggerCommit();
-			final TurnoutManager turnoutPersistence = AdHocRailway
-					.getInstance().getTurnoutPersistence();
-
 			final Turnout turnout = presentationModel.getBean();
 
-			turnoutPersistence
-					.addTurnoutManagerListener(new TurnoutAddListener() {
+			turnoutManager.addTurnoutManagerListener(new TurnoutAddListener() {
 
-						@Override
-						public void turnoutAdded(final Turnout turnout) {
-							success(turnoutPersistence, turnout);
-						}
+				@Override
+				public void turnoutAdded(final Turnout turnout) {
+					success(turnout);
+				}
 
-						@Override
-						public void turnoutUpdated(final Turnout turnout) {
-							success(turnoutPersistence, turnout);
-						}
+				@Override
+				public void turnoutUpdated(final Turnout turnout) {
+					success(turnout);
+				}
 
-						private void success(
-								final TurnoutManager turnoutPersistence,
-								final Turnout turnout) {
-							turnoutPersistence
-									.removeTurnoutManagerListenerInNextEvent(this);
+				private void success(final Turnout turnout) {
+					turnoutManager
+							.removeTurnoutManagerListenerInNextEvent(this);
 
-							okPressed = true;
-							// turnout.removePropertyChangeListener(TurnoutConfig.this);
-							TurnoutConfig.this.setVisible(false);
+					okPressed = true;
+					// turnout.removePropertyChangeListener(TurnoutConfig.this);
+					TurnoutConfig.this.setVisible(false);
 
-							if (Preferences.getInstance().getBooleanValue(
-									PreferencesKeys.AUTOSAVE)) {
-								AdHocRailway.getInstance().saveActualFile();
-							}
-						}
+					if (Preferences.getInstance().getBooleanValue(
+							PreferencesKeys.AUTOSAVE)) {
+						AdHocRailway.getInstance().saveActualFile();
+					}
+				}
 
-						@Override
-						public void failure(final TurnoutManagerException arg0) {
-							errorPanel.setErrorText(arg0.getMessage());
-						}
+				@Override
+				public void failure(final TurnoutManagerException arg0) {
+					errorPanel.setErrorText(arg0.getMessage());
+				}
 
-					});
+			});
 
 			if (turnout.getId() != -1) {
-				turnoutPersistence.updateTurnout(turnout);
+				turnoutManager.updateTurnout(turnout);
 			} else {
-				turnoutPersistence.addTurnoutToGroup(turnout,
-						selectedTurnoutGroup);
+				turnoutManager.addTurnoutToGroup(turnout, selectedTurnoutGroup);
 			}
 
 		}

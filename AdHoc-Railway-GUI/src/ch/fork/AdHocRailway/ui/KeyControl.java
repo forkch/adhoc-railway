@@ -29,15 +29,14 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.domain.ApplicationContext;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteException;
-import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
@@ -70,18 +69,26 @@ public class KeyControl extends SimpleInternalFrame {
 
 	private JPanel turnoutsHistory;
 
-	private final LinkedList<Object> historyStack;
+	private final LinkedList<Object> historyStack = new LinkedList<Object>();;
 
-	private final LinkedList<JPanel> historyWidgets;
+	private final LinkedList<JPanel> historyWidgets = new LinkedList<JPanel>();;
 
 	private JScrollPane historyPane;
 
 	private ThreeDigitDisplay digitDisplay;
+	private final RouteControlIface routeControl;
+	private final TurnoutControlIface turnoutControl;
+	private final TurnoutManager turnoutManager;
+	private final ApplicationContext ctx;
 
-	public KeyControl() {
+	public KeyControl(final ApplicationContext ctx) {
 		super("Track Control / History");
-		this.historyStack = new LinkedList<Object>();
-		this.historyWidgets = new LinkedList<JPanel>();
+		this.ctx = ctx;
+
+		routeControl = ctx.getRouteControl();
+		turnoutControl = ctx.getTurnoutControl();
+		turnoutManager = ctx.getTurnoutManager();
+
 		enteredNumberKeys = new StringBuffer();
 		initGUI();
 		initKeyboardActions();
@@ -153,9 +160,9 @@ public class KeyControl extends SimpleInternalFrame {
 
 		if (obj instanceof Turnout) {
 			final Turnout turnout = (Turnout) obj;
-			w = new TurnoutWidget(turnout, true);
+			w = new TurnoutWidget(ctx, turnout, true);
 		} else if (obj instanceof Route) {
-			w = new RouteWidget((Route) obj, false);
+			w = new RouteWidget(ctx, (Route) obj, false);
 		} else {
 			return;
 		}
@@ -231,11 +238,6 @@ public class KeyControl extends SimpleInternalFrame {
 		public void actionPerformed(final ActionEvent e) {
 
 			try {
-				final RouteControlIface routeControl = AdHocRailway
-						.getInstance().getRouteControl();
-				final TurnoutControlIface turnoutControl = AdHocRailway
-						.getInstance().getTurnoutControl();
-
 				final String enteredNumberAsString = enteredNumberKeys
 						.toString();
 				if (enteredNumberKeys.toString().equals("")) {
@@ -281,16 +283,11 @@ public class KeyControl extends SimpleInternalFrame {
 
 		private void handleSwitchChange(final ActionEvent e,
 				final int enteredNumber) throws TurnoutException {
-			final TurnoutManager turnoutPersistence = AdHocRailway
-					.getInstance().getTurnoutPersistence();
 			Turnout searchedTurnout = null;
-			searchedTurnout = turnoutPersistence
-					.getTurnoutByNumber(enteredNumber);
+			searchedTurnout = turnoutManager.getTurnoutByNumber(enteredNumber);
 			if (searchedTurnout == null) {
 				return;
 			}
-			final TurnoutControlIface turnoutControl = AdHocRailway
-					.getInstance().getTurnoutControl();
 
 			if (this instanceof CurvedLeftAction) {
 				turnoutControl.setCurvedLeft(searchedTurnout);
@@ -315,11 +312,8 @@ public class KeyControl extends SimpleInternalFrame {
 				RouteException {
 			Route searchedRoute = null;
 
-			final RouteControlIface routeControl = AdHocRailway.getInstance()
-					.getRouteControl();
-			final RouteManager routePersistence = AdHocRailway.getInstance()
-					.getRoutePersistence();
-			searchedRoute = routePersistence.getRouteByNumber(enteredNumber);
+			searchedRoute = ctx.getRouteManager().getRouteByNumber(
+					enteredNumber);
 			if (searchedRoute == null) {
 				return;
 			}
@@ -338,16 +332,14 @@ public class KeyControl extends SimpleInternalFrame {
 			if (functionNumber > 16) {
 				return;
 			}
-			final LocomotiveControlface locomotiveControl = AdHocRailway
-					.getInstance().getLocomotiveControl();
-			final LocomotiveManager locomotivePersistence = AdHocRailway
-					.getInstance().getLocomotivePersistence();
-			searchedLocomotive = locomotivePersistence
+			searchedLocomotive = ctx.getLocomotiveManager()
 					.getActiveLocomotive(locomotiveNumber - 1);
 			if (searchedLocomotive == null) {
 				return;
 			}
 
+			final LocomotiveControlface locomotiveControl = ctx
+					.getLocomotiveControl();
 			final boolean[] functions = locomotiveControl
 					.getFunctions(searchedLocomotive);
 			if (functionNumber >= functions.length) {

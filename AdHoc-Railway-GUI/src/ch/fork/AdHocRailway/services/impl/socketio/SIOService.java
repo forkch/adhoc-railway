@@ -13,8 +13,6 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
-import ch.fork.AdHocRailway.technical.configuration.Preferences;
-import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 public class SIOService {
 
@@ -22,10 +20,8 @@ public class SIOService {
 	private static final SIOService INSTANCE = new SIOService();
 
 	private static SocketIO socket;
-	private static String url;
 
 	private final Set<IOCallback> otherCallbacks = new HashSet<IOCallback>();
-	private static Preferences preferences;
 
 	private SIOService() {
 
@@ -33,19 +29,10 @@ public class SIOService {
 
 	public static SIOService getInstance() {
 
-		preferences = Preferences.getInstance();
-		final StringBuilder b = new StringBuilder();
-		b.append("http://");
-
-		b.append(preferences
-				.getStringValue(PreferencesKeys.ADHOC_SERVER_HOSTNAME));
-		b.append(":");
-		b.append(preferences.getStringValue(PreferencesKeys.ADHOC_SERVER_PORT));
-		url = b.toString();
 		return INSTANCE;
 	}
 
-	public void connect(final ServiceListener mainCallback) {
+	public void connect(final String url, final ServiceListener mainCallback) {
 		try {
 			if (socket == null) {
 				socket = new SocketIO(url);

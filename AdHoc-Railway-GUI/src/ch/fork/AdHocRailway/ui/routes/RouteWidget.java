@@ -33,6 +33,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.domain.RouteContext;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
@@ -56,12 +57,15 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 	private JLabel numberLabel;
 	private JLabel orientationLabel;
 	private final boolean testMode;
+	private final RouteControlIface routeControl;
+	private final RouteContext ctx;
 
-	public RouteWidget(final Route route, final boolean testMode) {
+	public RouteWidget(final RouteContext ctx, final Route route,
+			final boolean testMode) {
+		this.ctx = ctx;
 		this.route = route;
 		this.testMode = testMode;
-		final RouteControlIface routeControl = AdHocRailway.getInstance()
-				.getRouteControl();
+		routeControl = ctx.getRouteControl();
 		initGUI();
 		routeControl.addRouteChangeListener(route, this);
 		updateRoute();
@@ -114,8 +118,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		@Override
 		public void mouseClicked(final MouseEvent e) {
 			try {
-				final RouteControlIface routeControl = AdHocRailway
-						.getInstance().getRouteControl();
 				if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON1) {
 					if (routeControl.isRouting(route)) {
@@ -140,10 +142,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		}
 
 		private void displayRouteConfig() {
-			final RouteControlIface routeControl = AdHocRailway.getInstance()
-					.getRouteControl();
 			routeControl.removeRouteChangeListener(route, RouteWidget.this);
-			new RouteConfig(AdHocRailway.getInstance(), route,
+			new RouteConfig(AdHocRailway.getInstance(), ctx, route,
 					route.getRouteGroup());
 			routeControl.addRouteChangeListener(route, RouteWidget.this);
 
@@ -158,8 +158,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 				@Override
 				public void run() {
-					final RouteControlIface routeControl = AdHocRailway
-							.getInstance().getRouteControl();
 					if (routeControl.isRouteEnabled(route)) {
 						iconLabel.setIcon(routeStartIcon);
 						routingProgress.setValue(routingProgress.getMaximum());

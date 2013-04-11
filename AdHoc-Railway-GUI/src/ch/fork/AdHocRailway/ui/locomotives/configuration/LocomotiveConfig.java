@@ -116,24 +116,30 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 	private ErrorPanel errorPanel;
 
-	private final LocomotiveManager locomotivePersistence = AdHocRailway
-			.getInstance().getLocomotivePersistence();
+	private final LocomotiveManager locomotiveManager;
 
 	private SelectionInList<LocomotiveFunction> functionsModel;
 
 	private final Trigger trigger = new Trigger();
 
-	public LocomotiveConfig(final Frame owner, final Locomotive myLocomotive,
+	public LocomotiveConfig(final Frame owner,
+			final LocomotiveManager locomotiveManager,
+			final Locomotive myLocomotive,
 			final LocomotiveGroup selectedLocomotiveGroup) {
 		super(owner, "Locomotive Config", true);
+		this.locomotiveManager = locomotiveManager;
+
 		this.presentationModel = new PresentationModel<Locomotive>(
 				myLocomotive, trigger);
 		initGUI();
 	}
 
-	public LocomotiveConfig(final JDialog owner, final Locomotive myLocomotive,
+	public LocomotiveConfig(final JDialog owner,
+			final LocomotiveManager locomotiveManager,
+			final Locomotive myLocomotive,
 			final LocomotiveGroup selectedLocomotiveGroup) {
 		super(owner, "Locomotive Config", true);
+		this.locomotiveManager = locomotiveManager;
 		this.selectedLocomotiveGroup = selectedLocomotiveGroup;
 		this.presentationModel = new PresentationModel<Locomotive>(
 				myLocomotive, trigger);
@@ -351,18 +357,18 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		public void actionPerformed(final ActionEvent e) {
 			trigger.triggerCommit();
 			final Locomotive locomotive = presentationModel.getBean();
-			locomotivePersistence
+			locomotiveManager
 					.addLocomotiveManagerListener(new LocomotiveAddListener() {
 
 						@Override
 						public void locomotiveAdded(final Locomotive locomotive) {
-							success(locomotivePersistence, locomotive);
+							success(locomotiveManager, locomotive);
 						}
 
 						@Override
 						public void locomotiveUpdated(
 								final Locomotive locomotive) {
-							success(locomotivePersistence, locomotive);
+							success(locomotiveManager, locomotive);
 						}
 
 						private void success(
@@ -390,9 +396,9 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 					});
 			if (locomotive.getId() != -1) {
-				locomotivePersistence.updateLocomotive(locomotive);
+				locomotiveManager.updateLocomotive(locomotive);
 			} else {
-				locomotivePersistence.addLocomotiveToGroup(locomotive,
+				locomotiveManager.addLocomotiveToGroup(locomotive,
 						selectedLocomotiveGroup);
 			}
 
@@ -456,8 +462,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 	private boolean validate(final Locomotive locomotive,
 			final PropertyChangeEvent event) {
 
-		final LocomotiveManager locomotivePersistence = AdHocRailway
-				.getInstance().getLocomotivePersistence();
 		boolean validate = true;
 		if (event == null
 				|| event.getPropertyName().equals(Locomotive.PROPERTYNAME_NAME)) {
@@ -501,8 +505,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 				final int address = ((Integer) address1Spinner.getValue())
 						.intValue();
 				boolean unique = true;
-				for (final Locomotive l : locomotivePersistence
-						.getAllLocomotives()) {
+				for (final Locomotive l : locomotiveManager.getAllLocomotives()) {
 					if (l.getBus() == bus && l.getAddress1() == address
 							&& !l.equals(locomotive)) {
 						unique = false;

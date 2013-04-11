@@ -41,6 +41,9 @@ public interface PreferencesKeys {
 	public static final String DEFAULT_LOCOMOTIVE_BUS = "DefaultLocomotiveBus";
 	public static final String NUMBER_OF_BOOSTERS = "NumberOfBoosters";
 
+	// SERVERS
+	public static final String AUTO_DISCOVER_AND_CONNECT_SERVERS = "AutoDiscoverAndConnectServers";
+
 	// SRCP Server
 	public static final String SRCP_HOSTNAME = "SRCPHostname";
 	public static final String SRCP_PORT = "SRCPPort";

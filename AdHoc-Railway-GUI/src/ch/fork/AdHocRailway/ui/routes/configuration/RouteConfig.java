@@ -46,6 +46,7 @@ import javax.swing.KeyStroke;
 import javax.swing.table.TableColumn;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.domain.RouteContext;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
@@ -99,10 +100,16 @@ public class RouteConfig extends JDialog {
 	private BufferedValueModel routeNumberModel;
 	private BufferedValueModel routeNameModel;
 	private BufferedValueModel routeOrientationModel;
+	private final RouteContext routeContext;
+	private final RouteManager routePersistence;
+	private final TurnoutManager turnoutManager;
 
-	public RouteConfig(final JDialog owner, final Route myRoute,
-			final RouteGroup selectedRouteGroup) {
+	public RouteConfig(final JDialog owner, final RouteContext ctx,
+			final Route myRoute, final RouteGroup selectedRouteGroup) {
 		super(owner, "Route Config", true);
+		this.routeContext = ctx;
+		routePersistence = ctx.getRouteManager();
+		turnoutManager = ctx.getTurnoutManager();
 
 		testRoute = RouteHelper.copyRoute(myRoute);
 		this.selectedRouteGroup = selectedRouteGroup;
@@ -110,9 +117,13 @@ public class RouteConfig extends JDialog {
 		initGUI();
 	}
 
-	public RouteConfig(final Frame owner, final Route myRoute,
-			final RouteGroup selectedRouteGroup) {
+	public RouteConfig(final Frame owner, final RouteContext ctx,
+			final Route myRoute, final RouteGroup selectedRouteGroup) {
 		super(owner, "Route Config", true);
+		this.routeContext = ctx;
+		routePersistence = ctx.getRouteManager();
+		turnoutManager = ctx.getTurnoutManager();
+
 		testRoute = RouteHelper.copyRoute(myRoute);
 		this.selectedRouteGroup = selectedRouteGroup;
 		this.presentationModel = new PresentationModel<Route>(myRoute, trigger);
@@ -161,7 +172,8 @@ public class RouteConfig extends JDialog {
 
 		final TableColumn routedStateColumn = routeItemTable.getColumnModel()
 				.getColumn(1);
-		routedStateColumn.setCellRenderer(new RoutedTurnoutStateCellRenderer());
+		routedStateColumn.setCellRenderer(new RoutedTurnoutStateCellRenderer(
+				routeContext.getTurnoutManager()));
 
 		recordRouteButton = new JButton(new RecordRouteAction());
 		removeRouteItemButton = new JButton(new RemoveRouteItemAction());
@@ -170,7 +182,7 @@ public class RouteConfig extends JDialog {
 
 		errorPanel = new ErrorPanel();
 
-		testRouteWidget = new RouteWidget(testRoute, true);
+		testRouteWidget = new RouteWidget(routeContext, testRoute, true);
 		okButton = new JButton(new ApplyChangesAction());
 		cancelButton = new JButton(new CancelAction());
 	}
@@ -352,11 +364,7 @@ public class RouteConfig extends JDialog {
 			final int enteredNumber = Integer.parseInt(enteredNumberAsString);
 			Turnout turnout;
 			try {
-				final RouteManager routePersistence = AdHocRailway
-						.getInstance().getRoutePersistence();
-				final TurnoutManager turnoutPersistence = AdHocRailway
-						.getInstance().getTurnoutPersistence();
-				turnout = turnoutPersistence.getTurnoutByNumber(enteredNumber);
+				turnout = turnoutManager.getTurnoutByNumber(enteredNumber);
 				if (turnout == null) {
 					JOptionPane
 							.showMessageDialog(
@@ -528,8 +536,6 @@ public class RouteConfig extends JDialog {
 			if (routeItem == null) {
 				return;
 			}
-			final RouteManager routePersistence = AdHocRailway.getInstance()
-					.getRoutePersistence();
 			routePersistence.removeRouteItem(routeItem);
 			final List<RouteItem> routeItems = new ArrayList<RouteItem>(
 					selectedRoute.getRouteItems());
@@ -556,8 +562,6 @@ public class RouteConfig extends JDialog {
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 			trigger.triggerCommit();
-			final RouteManager routePersistence = AdHocRailway.getInstance()
-					.getRoutePersistence();
 			final Route route = presentationModel.getBean();
 
 			routePersistence.addRouteManagerListener(new RouteAddListener() {

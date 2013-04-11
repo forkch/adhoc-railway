@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.fork.AdHocRailway.domain.RouteContext;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
@@ -19,8 +20,10 @@ public class RouteGroupTab extends WidgetTab {
 	private static final long serialVersionUID = 1559441698783240568L;
 	private final RouteGroup routeGroup;
 	private final Map<Route, RouteWidget> routeToRouteWidget = new HashMap<Route, RouteWidget>();
+	private final RouteContext ctx;
 
-	public RouteGroupTab(final RouteGroup routeGroup) {
+	public RouteGroupTab(final RouteContext ctx, final RouteGroup routeGroup) {
+		this.ctx = ctx;
 		this.routeGroup = routeGroup;
 
 		initTab();
@@ -33,7 +36,7 @@ public class RouteGroupTab extends WidgetTab {
 						&& e.getButton() == MouseEvent.BUTTON1) {
 
 					if (AdHocRailway.getInstance().isEditingMode()) {
-						RouteHelper.addNewRouteDialog(routeGroup);
+						RouteHelper.addNewRouteDialog(ctx, routeGroup);
 					}
 				}
 			}
@@ -47,7 +50,7 @@ public class RouteGroupTab extends WidgetTab {
 	}
 
 	public void addRoute(final Route route) {
-		final RouteWidget routeWidget = new RouteWidget(route, false);
+		final RouteWidget routeWidget = new RouteWidget(ctx, route, false);
 		addWidget(routeWidget);
 		routeToRouteWidget.put(route, routeWidget);
 	}

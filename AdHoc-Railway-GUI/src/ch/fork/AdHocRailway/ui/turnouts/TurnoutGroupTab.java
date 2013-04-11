@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.fork.AdHocRailway.domain.TurnoutContext;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.ui.AdHocRailway;
@@ -19,8 +20,11 @@ public class TurnoutGroupTab extends WidgetTab {
 	private static final long serialVersionUID = 1877319981355821341L;
 	private final TurnoutGroup turnoutGroup;
 	private final Map<Turnout, TurnoutWidget> turnoutToTurnoutWidget = new HashMap<Turnout, TurnoutWidget>();
+	private final TurnoutContext ctx;
 
-	public TurnoutGroupTab(final TurnoutGroup turnoutGroup) {
+	public TurnoutGroupTab(final TurnoutContext ctx,
+			final TurnoutGroup turnoutGroup) {
+		this.ctx = ctx;
 		this.turnoutGroup = turnoutGroup;
 
 		initTab();
@@ -33,7 +37,7 @@ public class TurnoutGroupTab extends WidgetTab {
 						&& e.getButton() == MouseEvent.BUTTON1) {
 
 					if (AdHocRailway.getInstance().isEditingMode()) {
-						TurnoutHelper.addNewTurnoutDialog(turnoutGroup);
+						TurnoutHelper.addNewTurnoutDialog(ctx, turnoutGroup);
 					}
 				}
 			}
@@ -48,7 +52,8 @@ public class TurnoutGroupTab extends WidgetTab {
 	}
 
 	public void addTurnout(final Turnout turnout) {
-		final TurnoutWidget turnoutWidget = new TurnoutWidget(turnout, false);
+		final TurnoutWidget turnoutWidget = new TurnoutWidget(ctx, turnout,
+				false);
 		addWidget(turnoutWidget);
 		turnoutToTurnoutWidget.put(turnout, turnoutWidget);
 	}

@@ -30,12 +30,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
+import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
@@ -82,21 +84,23 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private JSpinner numberOfBoosters;
 	private JSpinner adHocServerPortField;
 	private SpinnerNumberModel adHocServerPortModel;
+	private JCheckBox autoDiscoverAndConnectServersCheckBox;
 
-	public PreferencesDialog(JFrame owner) {
+	public PreferencesDialog(final JFrame owner) {
 		super(owner, "Preferences", true);
 		initGUI();
 	}
 
 	private void initGUI() {
 
-		FormLayout layout = new FormLayout("5dlu, pref, 10dlu, pref, 5dlu",
+		final FormLayout layout = new FormLayout(
+				"5dlu, pref, 10dlu, pref, 5dlu",
 				"5dlu, pref, 3dlu, top:pref,3dlu, pref, 3dlu, top:pref, 3dlu, pref, 5dlu");
 
 		layout.setColumnGroups(new int[][] { { 2, 4 } });
 
-		PanelBuilder builder = new PanelBuilder(layout);
-		CellConstraints cc = new CellConstraints();
+		final PanelBuilder builder = new PanelBuilder(layout);
+		final CellConstraints cc = new CellConstraints();
 
 		builder.addSeparator("General", cc.xy(2, 2));
 		builder.add(createGUISettingsTab(), cc.xy(2, 4));
@@ -105,16 +109,16 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		builder.add(createDigitalDataTab(), cc.xy(4, 4));
 
 		builder.addSeparator("SRCP-Server", cc.xy(2, 6));
-		builder.add(createServerTab(), cc.xy(2, 8));
+		builder.add(createSrcpServerTab(), cc.xy(2, 8));
 
 		builder.addSeparator("AdHoc-Server", cc.xy(4, 6));
 		builder.add(createAdHocServerTab(), cc.xy(4, 8));
 
-		JButton okButton = new JButton("OK",
+		final JButton okButton = new JButton("OK",
 				ImageTools.createImageIconFromIconSet("dialog-ok-apply.png"));
 		okButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				okPressed = true;
 
 				JOptionPane
@@ -128,12 +132,12 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				savePreferences();
 			}
 		});
-		JButton cancelButton = new JButton("Cancel",
+		final JButton cancelButton = new JButton("Cancel",
 				ImageTools.createImageIconFromIconSet("dialog-cancel.png"));
 		cancelPressed = false;
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				cancelPressed = true;
 				PreferencesDialog.this.setVisible(false);
 			}
@@ -159,9 +163,9 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		fixedTurnoutGroupSizesCheckBox = new JCheckBox();
 
 		keyBoardLayoutComboBox = new JComboBox<String>();
-		Set<String> sortedLayoutNames = new TreeSet<String>(Preferences
+		final Set<String> sortedLayoutNames = new TreeSet<String>(Preferences
 				.getInstance().getKeyBoardLayoutNames());
-		for (String name : sortedLayoutNames) {
+		for (final String name : sortedLayoutNames) {
 			keyBoardLayoutComboBox.addItem(name);
 		}
 
@@ -171,37 +175,34 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		autoSave = new JCheckBox();
 		openLastFileCheckBox = new JCheckBox();
 
-		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, fill:pref",
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
-		PanelBuilder builder = new PanelBuilder(layout);
-		CellConstraints cc = new CellConstraints();
+		autoDiscoverAndConnectServersCheckBox = new JCheckBox();
+		autoDiscoverAndConnectServersCheckBox
+				.addActionListener(new ActionListener() {
 
-		builder.addLabel("Locomotive Controls", cc.xy(1, 1));
-		builder.add(locomotiveControlNumber, cc.xy(3, 1));
+					@Override
+					public void actionPerformed(final ActionEvent e) {
+						final boolean en = autoDiscoverAndConnectServersCheckBox
+								.isSelected();
+						enableDisableNetworking(en);
+					}
+				});
 
-		builder.addLabel("Keyboard-Layout", cc.xy(1, 7));
-		builder.add(keyBoardLayoutComboBox, cc.xy(3, 7));
-
-		builder.addLabel("Write Log", cc.xy(1, 9));
-		builder.add(writeLog, cc.xy(3, 9));
-
-		builder.addLabel("Fullscreen", cc.xy(1, 11));
-		builder.add(fullscreen, cc.xy(3, 11));
-
-		builder.addLabel("Tabbed Track-Control", cc.xy(1, 13));
-		builder.add(tabbedTrackCheckBox, cc.xy(3, 13));
-
-		builder.addLabel("Fixed Turnout- and Route-Group sizes", cc.xy(1, 15));
-		builder.add(fixedTurnoutGroupSizesCheckBox, cc.xy(3, 15));
-
-		builder.addLabel("Autosave", cc.xy(1, 17));
-		builder.add(autoSave, cc.xy(3, 17));
-
-		builder.addLabel("Open last file", cc.xy(1, 19));
-		builder.add(openLastFileCheckBox, cc.xy(3, 19));
-
-		return builder.getPanel();
+		final JPanel p = new JPanel(new MigLayout("wrap 2"));
+		p.add(new JLabel("Locomotive Controls"));
+		p.add(locomotiveControlNumber);
+		p.add(new JLabel("Keyboard-Layout"));
+		p.add(keyBoardLayoutComboBox);
+		p.add(new JLabel("Write Log"));
+		p.add(writeLog);
+		p.add(new JLabel("Tabbed Track-Control"));
+		p.add(tabbedTrackCheckBox);
+		p.add(new JLabel("Open last file"));
+		p.add(openLastFileCheckBox);
+		p.add(new JLabel("Autosave File"));
+		p.add(autoSave);
+		p.add(new JLabel("Auto Discover and Connect"));
+		p.add(autoDiscoverAndConnectServersCheckBox);
+		return p;
 	}
 
 	private JPanel createDigitalDataTab() {
@@ -224,11 +225,11 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		interface6051 = new JCheckBox();
 
-		FormLayout layout = new FormLayout(
+		final FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, fill:pref",
 				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
-		PanelBuilder builder = new PanelBuilder(layout);
-		CellConstraints cc = new CellConstraints();
+		final PanelBuilder builder = new PanelBuilder(layout);
+		final CellConstraints cc = new CellConstraints();
 
 		builder.addLabel("Number of Boosters", cc.xy(1, 1));
 		builder.add(numberOfBoosters, cc.xy(3, 1));
@@ -254,7 +255,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		return builder.getPanel();
 	}
 
-	private JPanel createServerTab() {
+	private JPanel createSrcpServerTab() {
 
 		srcpHostnameTextField = new JTextField(15);
 
@@ -262,10 +263,10 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		srcpAutoconnectCheckBox = new JCheckBox();
 
-		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
+		final FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
 				"pref, 3dlu, pref, 3dlu, pref, 3dlu");
-		PanelBuilder builder = new PanelBuilder(layout);
-		CellConstraints cc = new CellConstraints();
+		final PanelBuilder builder = new PanelBuilder(layout);
+		final CellConstraints cc = new CellConstraints();
 		builder.addLabel("Hostname (Name or IP)", cc.xy(1, 1));
 		builder.add(srcpHostnameTextField, cc.xy(3, 1));
 
@@ -289,10 +290,10 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		adHocServerCollectionField = new JTextField(15);
 
-		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
+		final FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
 				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
-		PanelBuilder builder = new PanelBuilder(layout);
-		CellConstraints cc = new CellConstraints();
+		final PanelBuilder builder = new PanelBuilder(layout);
+		final CellConstraints cc = new CellConstraints();
 
 		builder.addLabel("Use AdHoc-Server", cc.xy(1, 1));
 		builder.add(useAdHocServerCheckBox, cc.xy(3, 1));
@@ -318,7 +319,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	}
 
 	private void loadPreferences() {
-		Preferences p = Preferences.getInstance();
+		final Preferences p = Preferences.getInstance();
 		locomotiveControlNumberModel.setValue(p
 				.getIntValue(LOCOMOTIVE_CONTROLES));
 		keyBoardLayoutComboBox.setSelectedItem(p
@@ -330,6 +331,9 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				.getBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES));
 		autoSave.setSelected(p.getBooleanValue(AUTOSAVE));
 		openLastFileCheckBox.setSelected(p.getBooleanValue(OPEN_LAST_FILE));
+
+		autoDiscoverAndConnectServersCheckBox.setSelected(p
+				.getBooleanValue(AUTO_DISCOVER_AND_CONNECT_SERVERS));
 
 		numberOfBoostersModel.setValue(p.getIntValue(NUMBER_OF_BOOSTERS));
 		defaultTurnoutBusModel.setValue(p.getIntValue(DEFAULT_TURNOUT_BUS));
@@ -351,10 +355,13 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		adHocServerPortField.setValue(p.getIntValue(ADHOC_SERVER_PORT));
 		adHocServerCollectionField.setText(p
 				.getStringValue(ADHOC_SERVER_COLLECTION));
+
+		enableDisableNetworking(autoDiscoverAndConnectServersCheckBox
+				.isSelected());
 	}
 
 	public void savePreferences() {
-		Preferences p = Preferences.getInstance();
+		final Preferences p = Preferences.getInstance();
 		p.setIntValue(LOCOMOTIVE_CONTROLES, locomotiveControlNumberModel
 				.getNumber().intValue());
 		p.setStringValue(KEYBOARD_LAYOUT, keyBoardLayoutComboBox
@@ -366,6 +373,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				fixedTurnoutGroupSizesCheckBox.isSelected());
 		p.setBooleanValue(OPEN_LAST_FILE, openLastFileCheckBox.isSelected());
 		p.setBooleanValue(AUTOSAVE, autoSave.isSelected());
+		p.setBooleanValue(AUTO_DISCOVER_AND_CONNECT_SERVERS,
+				autoDiscoverAndConnectServersCheckBox.isSelected());
 
 		p.setIntValue(NUMBER_OF_BOOSTERS, numberOfBoostersModel.getNumber()
 				.intValue());
@@ -395,10 +404,20 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				adHocServerCollectionField.getText());
 		try {
 			p.save();
-		} catch (FileNotFoundException e) {
+		} catch (final FileNotFoundException e) {
 			ExceptionProcessor.getInstance().processException(e);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			ExceptionProcessor.getInstance().processException(e);
 		}
+	}
+
+	private void enableDisableNetworking(final boolean en) {
+		srcpAutoconnectCheckBox.setEnabled(!en);
+		srcpHostnameTextField.setEnabled(!en);
+		srcpPortnumberTextField.setEnabled(!en);
+
+		useAdHocServerCheckBox.setEnabled(!en);
+		adHocServerHostField.setEnabled(!en);
+		adHocServerPortField.setEnabled(!en);
 	}
 }

@@ -47,7 +47,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
 	private final SortedSet<TurnoutGroup> turnoutGroups = new TreeSet<TurnoutGroup>();
 
-	private static TurnoutManager instance = null;
+	private static final TurnoutManager INSTANCE = new TurnoutManagerImpl();
 
 	private TurnoutControlIface turnoutControl = null;
 
@@ -64,10 +64,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	public static TurnoutManager getInstance() {
-		if (instance == null) {
-			instance = new TurnoutManagerImpl();
-		}
-		return instance;
+		return INSTANCE;
 	}
 
 	@Override

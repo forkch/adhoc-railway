@@ -31,16 +31,15 @@ import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 
+import ch.fork.AdHocRailway.domain.TurnoutContext;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
-import de.dermoba.srcp.client.SRCPSession;
 
 public class TurnoutWarmer extends ConfigurationDialog {
 	/**
@@ -49,21 +48,21 @@ public class TurnoutWarmer extends ConfigurationDialog {
 	private static final long serialVersionUID = 5791582705451816603L;
 	private JSpinner turnoutNumberField;
 	private JToggleButton warmButton;
-	private TurnoutManager turnoutPersistence;
+	private final TurnoutManager turnoutPersistence;
 	private TurnoutControlIface turnoutControl;
 	private TurnoutWarmupThread t;
 
-	public TurnoutWarmer(JFrame owner, SRCPSession session) {
+	public TurnoutWarmer(final JFrame owner, final TurnoutContext ctx) {
 		super(owner, "Switch Programmer");
+		turnoutPersistence = ctx.getTurnoutManager();
 		initGUI();
 	}
 
 	private void initGUI() {
-		turnoutPersistence = AdHocRailway.getInstance().getTurnoutPersistence();
-		turnoutControl = AdHocRailway.getInstance().getTurnoutControl();
-		JPanel mainPanel = new JPanel(new FlowLayout());
+		final JPanel mainPanel = new JPanel(new FlowLayout());
 
-		SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1, 1000, 1);
+		final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1,
+				1000, 1);
 		turnoutNumberField = new JSpinner(spinnerModel);
 		warmButton = new JToggleButton(new WarmupAction());
 		mainPanel.add(turnoutNumberField);
@@ -72,24 +71,30 @@ public class TurnoutWarmer extends ConfigurationDialog {
 
 		okButton.addActionListener(new ActionListener() {
 
-			public void actionPerformed(ActionEvent arg0) {
-				if (t != null)
+			@Override
+			public void actionPerformed(final ActionEvent arg0) {
+				if (t != null) {
 					t.stopWarmup();
+				}
 			}
 
 		});
 		cancelButton.addActionListener(new ActionListener() {
 
-			public void actionPerformed(ActionEvent arg0) {
-				if (t != null)
+			@Override
+			public void actionPerformed(final ActionEvent arg0) {
+				if (t != null) {
 					t.stopWarmup();
+				}
 			}
 
 		});
 		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent arg0) {
-				if (t != null)
+			@Override
+			public void windowClosing(final WindowEvent arg0) {
+				if (t != null) {
 					t.stopWarmup();
+				}
 			}
 
 		});
@@ -110,7 +115,8 @@ public class TurnoutWarmer extends ConfigurationDialog {
 			super("Start");
 		}
 
-		public void actionPerformed(ActionEvent e) {
+		@Override
+		public void actionPerformed(final ActionEvent e) {
 			if (warmButton.isSelected()) {
 				warmButton.setText("Stop");
 				t = new TurnoutWarmupThread();
@@ -131,24 +137,22 @@ public class TurnoutWarmer extends ConfigurationDialog {
 			enabled = false;
 		}
 
+		@Override
 		public void run() {
 			try {
 
 				while (enabled) {
-					System.out.println(enabled);
-
-					Turnout turnout = turnoutPersistence
+					final Turnout turnout = turnoutPersistence
 							.getTurnoutByNumber((Integer) turnoutNumberField
 									.getValue());
 					turnoutControl.toggle(turnout);
 					Thread.sleep(Preferences.getInstance().getIntValue(
 							PreferencesKeys.ROUTING_DELAY));
 				}
-				System.out.println("DONE");
-			} catch (TurnoutException e1) {
+			} catch (final TurnoutException e1) {
 				ExceptionProcessor.getInstance().processException(e1);
 				return;
-			} catch (InterruptedException e2) {
+			} catch (final InterruptedException e2) {
 				e2.printStackTrace();
 			}
 		}

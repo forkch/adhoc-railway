@@ -38,7 +38,7 @@ import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
 public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	private static Logger LOGGER = Logger.getLogger(RouteManagerImpl.class);
 
-	private static RouteManagerImpl instance;
+	private static final RouteManagerImpl INSTANCE = new RouteManagerImpl();
 
 	private RouteService routeService;
 
@@ -55,14 +55,10 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 
 	private RouteManagerImpl() {
 		LOGGER.info("RouteMangerImpl loaded");
-
 	}
 
 	public static RouteManager getInstance() {
-		if (instance == null) {
-			instance = new RouteManagerImpl();
-		}
-		return instance;
+		return INSTANCE;
 	}
 
 	@Override

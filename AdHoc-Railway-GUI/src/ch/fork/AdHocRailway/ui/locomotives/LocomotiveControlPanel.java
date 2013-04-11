@@ -28,6 +28,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.domain.LocomotiveContext;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
@@ -49,9 +50,14 @@ public class LocomotiveControlPanel extends JPanel implements
 	private static final long serialVersionUID = -149795300932888094L;
 	private final List<LocomotiveWidget> locomotiveWidgets;
 	private JPanel controlPanel;
+	private final LocomotiveControlface locomotiveControl;
+	private final LocomotiveContext ctx;
 
-	public LocomotiveControlPanel() {
+	public LocomotiveControlPanel(final LocomotiveContext ctx) {
 		super();
+		this.ctx = ctx;
+
+		locomotiveControl = ctx.getLocomotiveControl();
 		locomotiveWidgets = new ArrayList<LocomotiveWidget>();
 		initGUI();
 	}
@@ -76,8 +82,6 @@ public class LocomotiveControlPanel extends JPanel implements
 	}
 
 	public void update() {
-		final LocomotiveControlface locomotiveControl = AdHocRailway
-				.getInstance().getLocomotiveControl();
 		locomotiveControl.removeAllLocomotiveChangeListener();
 
 		controlPanel.removeAll();
@@ -85,7 +89,7 @@ public class LocomotiveControlPanel extends JPanel implements
 
 		for (int i = 0; i < Preferences.getInstance().getIntValue(
 				PreferencesKeys.LOCOMOTIVE_CONTROLES); i++) {
-			final LocomotiveWidget w = new LocomotiveWidget(i,
+			final LocomotiveWidget w = new LocomotiveWidget(ctx, i,
 					AdHocRailway.getInstance());
 			controlPanel.add(w);
 			locomotiveWidgets.add(w);
@@ -111,8 +115,6 @@ public class LocomotiveControlPanel extends JPanel implements
 		@Override
 		public void run() {
 			try {
-				final LocomotiveControlface locomotiveControl = AdHocRailway
-						.getInstance().getLocomotiveControl();
 				for (final LocomotiveWidget widget : locomotiveWidgets) {
 					final Locomotive myLocomotive = widget.getMyLocomotive();
 					if (myLocomotive == null) {
