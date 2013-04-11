@@ -26,7 +26,6 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.EditingModeListener;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.SmallToolbarButton;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
@@ -129,10 +128,10 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 						Thread.sleep(delay);
 					}
 				} catch (final TurnoutException e1) {
-					ExceptionProcessor.getInstance().processException(e1);
+					ctx.getMainApp().handleException(e1);
 					return;
-				} catch (final InterruptedException e2) {
-					e2.printStackTrace();
+				} catch (final InterruptedException e1) {
+					ctx.getMainApp().handleException(e1);
 				}
 			}
 		}
@@ -181,7 +180,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			new TurnoutProgrammer(ctx.getMainFrame(), ctx.getSession());
+			new TurnoutProgrammer(ctx.getMainFrame(), ctx);
 		}
 	}
 

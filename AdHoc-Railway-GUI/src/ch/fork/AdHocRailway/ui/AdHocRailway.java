@@ -388,6 +388,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 	}
 
+	@Override
 	public void handleException(final String message, final Exception e) {
 		final ExceptionProcessor instance2 = ExceptionProcessor.getInstance();
 		if (instance2 != null) {
@@ -1344,7 +1345,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 			final LocomotiveConfigurationDialog locomotiveConfigDialog = new LocomotiveConfigurationDialog(
-					appContext.getLocomotiveManager(), AdHocRailway.this);
+					appContext, AdHocRailway.this);
 			if (locomotiveConfigDialog.isOkPressed()) {
 				updateCommandHistory("Locomotive configuration changed");
 			}
@@ -1365,7 +1366,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			final PreferencesDialog p = new PreferencesDialog(AdHocRailway.this);
+			final PreferencesDialog p = new PreferencesDialog(
+					AdHocRailway.this, appContext);
 			if (p.isOkPressed()) {
 				updateGUI();
 				hostnameLabel.setText(preferences

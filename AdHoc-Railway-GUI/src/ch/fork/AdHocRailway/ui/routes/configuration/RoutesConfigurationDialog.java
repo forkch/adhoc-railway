@@ -47,7 +47,6 @@ import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
 import ch.fork.AdHocRailway.domain.routes.RouteManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
@@ -411,7 +410,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 					routeGroupConfig.setRouteGroup(null);
 					routeGroups.remove(routeGroupToDelete);
 				} catch (final RouteManagerException e1) {
-					ExceptionProcessor.getInstance().processException(e1);
+					ctx.getMainApp().handleException(e1);
 				}
 			}
 		}

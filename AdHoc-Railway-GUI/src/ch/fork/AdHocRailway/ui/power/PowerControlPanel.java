@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
 import ch.fork.AdHocRailway.ui.context.PowerContext;
@@ -251,9 +250,9 @@ public class PowerControlPanel extends JPanel implements
 				source.setIcon(stopIcon);
 			}
 		} catch (final SRCPPowerSupplyException e) {
-			ExceptionProcessor.getInstance().processException(e);
+			ctx.getMainApp().handleException(e);
 		} catch (final SRCPModelException e) {
-			ExceptionProcessor.getInstance().processException(e);
+			ctx.getMainApp().handleException(e);
 		}
 	}
 
@@ -273,9 +272,9 @@ public class PowerControlPanel extends JPanel implements
 			try {
 				SRCPPowerControl.getInstance().setAllStates(SRCPPowerState.ON);
 			} catch (final SRCPPowerSupplyException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+				ctx.getMainApp().handleException(e1);
 			} catch (final SRCPModelException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+				ctx.getMainApp().handleException(e1);
 			}
 
 		}
@@ -297,9 +296,9 @@ public class PowerControlPanel extends JPanel implements
 			try {
 				powerControl.setAllStates(SRCPPowerState.OFF);
 			} catch (final SRCPPowerSupplyException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+				ctx.getMainApp().handleException(e1);
 			} catch (final SRCPModelException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+				ctx.getMainApp().handleException(e1);
 			}
 
 		}

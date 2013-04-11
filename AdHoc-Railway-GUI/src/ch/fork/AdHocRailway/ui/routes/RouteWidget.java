@@ -37,7 +37,6 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteException;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
@@ -136,7 +135,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 					}
 				}
 			} catch (final RouteException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+				ctx.getMainApp().handleException(e1);
 			}
 		}
 

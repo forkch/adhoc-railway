@@ -36,7 +36,6 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 
@@ -127,7 +126,7 @@ public class LocomotiveControlPanel extends JPanel implements
 					widget.updateWidget();
 				}
 			} catch (final LocomotiveException e3) {
-				ExceptionProcessor.getInstance().processException(e3);
+				ctx.getMainApp().handleException(e3);
 			}
 		}
 	}

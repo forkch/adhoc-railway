@@ -40,6 +40,7 @@ import javax.swing.SpinnerNumberModel;
 import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.context.ApplicationContext;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -85,9 +86,11 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private JSpinner adHocServerPortField;
 	private SpinnerNumberModel adHocServerPortModel;
 	private JCheckBox autoDiscoverAndConnectServersCheckBox;
+	private final ApplicationContext ctx;
 
-	public PreferencesDialog(final JFrame owner) {
+	public PreferencesDialog(final JFrame owner, final ApplicationContext ctx) {
 		super(owner, "Preferences", true);
+		this.ctx = ctx;
 		initGUI();
 	}
 
@@ -405,9 +408,9 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		try {
 			p.save();
 		} catch (final FileNotFoundException e) {
-			ExceptionProcessor.getInstance().processException(e);
+			ctx.getMainApp().handleException(e);
 		} catch (final IOException e) {
-			ExceptionProcessor.getInstance().processException(e);
+			ctx.getMainApp().handleException(e);
 		}
 	}
 

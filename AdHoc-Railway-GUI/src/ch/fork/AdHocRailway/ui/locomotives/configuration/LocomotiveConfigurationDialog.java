@@ -54,10 +54,10 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.TableColumnAdjuster;
+import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.list.SelectionInList;
@@ -99,7 +99,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 	private ArrayListModel<LocomotiveGroup> locomotiveGroups;
 	private ArrayListModel<Locomotive> locomotives;
 
-	public boolean disableListener;
+	private boolean disableListener;
 
 	private JScrollPane groupScrollPane;
 
@@ -109,10 +109,13 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
 	private TableColumnAdjuster tca;
 
-	public LocomotiveConfigurationDialog(
-			final LocomotiveManager locomotiveManager, final JFrame owner) {
+	private final LocomotiveContext ctx;
+
+	public LocomotiveConfigurationDialog(final LocomotiveContext ctx,
+			final JFrame owner) {
 		super(owner, "Locomotive Configuration", true);
-		this.locomotiveManager = locomotiveManager;
+		this.ctx = ctx;
+		this.locomotiveManager = ctx.getLocomotiveManager();
 		initGUI();
 	}
 
@@ -337,7 +340,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 					locomotiveManager.deleteLocomotiveGroup(groupToDelete);
 					locomotiveGroupConfig.setLocomotiveGroup(null);
 				} catch (final LocomotiveManagerException e) {
-					ExceptionProcessor.getInstance().processException(e);
+					ctx.getMainApp().handleException(e);
 				}
 			}
 		}

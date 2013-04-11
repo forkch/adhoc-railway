@@ -29,8 +29,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.SwingUtils;
+import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GA;
@@ -41,34 +41,36 @@ public class TurnoutProgrammer extends ConfigurationDialog {
 	 */
 	private static final long serialVersionUID = 5978084216666903357L;
 	private final SRCPSession session;
+	private final TurnoutContext ctx;
 
-	public TurnoutProgrammer(JFrame owner, SRCPSession session) {
-		super(owner, "Switch Programmer");
-		this.session = session;
+	public TurnoutProgrammer(final JFrame owner, final TurnoutContext ctx) {
+		super(owner, "Turnout Programmer");
+		this.ctx = ctx;
+		this.session = ctx.getSession();
 		initGUI();
 	}
 
 	private void initGUI() {
-		JPanel mainPanel = new JPanel(new BorderLayout());
-		JPanel buttonPanel = new JPanel(new GridLayout(4, 4));
+		final JPanel mainPanel = new JPanel(new BorderLayout());
+		final JPanel buttonPanel = new JPanel(new GridLayout(4, 4));
 		for (int i = 1; i <= 252; i = i + 4) {
-			JButton button = new JButton("" + i);
+			final JButton button = new JButton("" + i);
 			buttonPanel.add(button);
 			button.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {
-					int address = Integer.parseInt(e.getActionCommand());
-					GA ga = new GA(session, 1);
+				public void actionPerformed(final ActionEvent e) {
+					final int address = Integer.parseInt(e.getActionCommand());
+					final GA ga = new GA(session, 1);
 					ga.setAddress(address);
 					try {
 						ga.set(0, 1, 1000);
-					} catch (SRCPException e1) {
-						ExceptionProcessor.getInstance().processException(e1);
+					} catch (final SRCPException e1) {
+						ctx.getMainApp().handleException(e1);
 					}
 				}
 			});
 		}
-		JLabel titleLabel = new JLabel("Enter first address of decoder");
+		final JLabel titleLabel = new JLabel("Enter first address of decoder");
 		mainPanel.add(titleLabel, BorderLayout.NORTH);
 		mainPanel.add(buttonPanel, BorderLayout.CENTER);
 

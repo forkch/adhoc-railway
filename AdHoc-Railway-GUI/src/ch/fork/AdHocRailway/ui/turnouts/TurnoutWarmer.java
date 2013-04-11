@@ -38,7 +38,6 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.ConfigurationDialog;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 
 public class TurnoutWarmer extends ConfigurationDialog {
@@ -51,9 +50,11 @@ public class TurnoutWarmer extends ConfigurationDialog {
 	private final TurnoutManager turnoutPersistence;
 	private TurnoutControlIface turnoutControl;
 	private TurnoutWarmupThread t;
+	private final TurnoutContext ctx;
 
 	public TurnoutWarmer(final JFrame owner, final TurnoutContext ctx) {
-		super(owner, "Switch Programmer");
+		super(owner, "Turnout Programmer");
+		this.ctx = ctx;
 		turnoutPersistence = ctx.getTurnoutManager();
 		initGUI();
 	}
@@ -150,7 +151,7 @@ public class TurnoutWarmer extends ConfigurationDialog {
 							PreferencesKeys.ROUTING_DELAY));
 				}
 			} catch (final TurnoutException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+				ctx.getMainApp().handleException(e1);
 				return;
 			} catch (final InterruptedException e2) {
 				e2.printStackTrace();

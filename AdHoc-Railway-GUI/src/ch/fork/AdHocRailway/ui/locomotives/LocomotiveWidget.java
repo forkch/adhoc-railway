@@ -62,7 +62,6 @@ import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.EditingModeListener;
-import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
@@ -488,7 +487,7 @@ public class LocomotiveWidget extends JPanel implements
 				resetLoco();
 				locomotiveGroupComboBox.setSelectedIndex(idx);
 			} catch (final LocomotiveException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+				ctx.getMainApp().handleException(e1);
 			}
 
 		}
@@ -551,7 +550,7 @@ public class LocomotiveWidget extends JPanel implements
 					locomotiveComboBox.setSelectedItem(myLocomotive);
 				}
 			} catch (final LocomotiveException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+				ctx.getMainApp().handleException(e1);
 			}
 		}
 
@@ -580,9 +579,8 @@ public class LocomotiveWidget extends JPanel implements
 				}
 				updateWidget();
 				speedBar.requestFocus();
-				// SwingUtilities.invokeLater(new LocomotiveWidgetUpdater());
 			} catch (final LocomotiveException e3) {
-				ExceptionProcessor.getInstance().processException(e3);
+				ctx.getMainApp().handleException(e3);
 			}
 
 		}
@@ -620,7 +618,7 @@ public class LocomotiveWidget extends JPanel implements
 						deactivationDelay);
 
 			} catch (final LocomotiveException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+				ctx.getMainApp().handleException(e1);
 			}
 			speedBar.requestFocus();
 		}
@@ -695,7 +693,7 @@ public class LocomotiveWidget extends JPanel implements
 				updateWidget();
 				speedBar.requestFocus();
 			} catch (final LocomotiveException e3) {
-				ExceptionProcessor.getInstance().processException(e3);
+				ctx.getMainApp().handleException(e3);
 			}
 		}
 	}
@@ -723,7 +721,7 @@ public class LocomotiveWidget extends JPanel implements
 				speedBar.requestFocus();
 				updateWidget();
 			} catch (final LocomotiveException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+				ctx.getMainApp().handleException(e1);
 			}
 		}
 	}
@@ -757,7 +755,7 @@ public class LocomotiveWidget extends JPanel implements
 				}
 				speedBar.requestFocus();
 			} catch (final LockingException ex) {
-				ExceptionProcessor.getInstance().processException(ex);
+				ctx.getMainApp().handleException(ex);
 				lockButton.setSelected(lockButtonState);
 			}
 			updateWidget();
