@@ -36,20 +36,12 @@ import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
 
 public class HibernateLocomotiveService implements LocomotiveService {
-	private static HibernateLocomotiveService instance;
 	private static Logger LOGGER = Logger
 			.getLogger(HibernateLocomotiveService.class);
 	private LocomotiveServiceListener listener;
 
-	private HibernateLocomotiveService() {
+	public HibernateLocomotiveService() {
 		LOGGER.info("HibernateLocomotivePersistence loaded");
-	}
-
-	public static LocomotiveService getInstance() {
-		if (instance == null) {
-			instance = new HibernateLocomotiveService();
-		}
-		return instance;
 	}
 
 	@Override

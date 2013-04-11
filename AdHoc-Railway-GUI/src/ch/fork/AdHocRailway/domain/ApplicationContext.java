@@ -1,5 +1,7 @@
 package ch.fork.AdHocRailway.domain;
 
+import javax.swing.JFrame;
+
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
@@ -12,7 +14,11 @@ import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.power.SRCPPowerControl;
 
 public class ApplicationContext implements TurnoutContext, RouteContext,
-		LocomotiveContext, TrackContext {
+		LocomotiveContext, TrackContext, PowerContext {
+
+	private JFrame mainFrame;
+
+	private AdHocRailwayIface mainApp;
 
 	private Preferences preferences;
 
@@ -29,6 +35,8 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 	private SRCPLockControl lockControl;
 
 	private SRCPSession session;
+
+	private boolean isEditingMode;
 
 	public Preferences getPreferences() {
 		return preferences;
@@ -124,6 +132,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		this.locomotiveManager = locomotivePersistence;
 	}
 
+	@Override
 	public SRCPPowerControl getPowerControl() {
 		return powerControl;
 	}
@@ -147,6 +156,33 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 
 	public void setSession(final SRCPSession session) {
 		this.session = session;
+	}
+
+	@Override
+	public boolean isEditingMode() {
+		return isEditingMode;
+	}
+
+	public void setEditingMode(final boolean isEditingMode) {
+		this.isEditingMode = isEditingMode;
+	}
+
+	@Override
+	public JFrame getMainFrame() {
+		return mainFrame;
+	}
+
+	public void setMainFrame(final JFrame mainFrame) {
+		this.mainFrame = mainFrame;
+	}
+
+	@Override
+	public AdHocRailwayIface getMainApp() {
+		return mainApp;
+	}
+
+	public void setMainApp(final AdHocRailwayIface mainApp) {
+		this.mainApp = mainApp;
 	}
 
 }

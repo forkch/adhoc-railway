@@ -21,10 +21,10 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.log4j.Logger;
 
+import ch.fork.AdHocRailway.domain.PowerContext;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
@@ -53,9 +53,11 @@ public class PowerControlPanel extends JPanel implements
 	private JPanel powerControlPanel;
 	private JButton allBoostersOn;
 	private JButton allBoostersOff;
+	private final PowerContext ctx;
 
-	public PowerControlPanel() {
+	public PowerControlPanel(final PowerContext ctx) {
 		super();
+		this.ctx = ctx;
 
 		stopIcon = ImageTools.createImageIconFromIconSet("stop_22.png");
 		goIcon = ImageTools.createImageIconFromIconSet("go_22.png");
@@ -216,8 +218,7 @@ public class PowerControlPanel extends JPanel implements
 			kbl.assignKeys(inputMap, "ToggleBooster" + i);
 		}
 
-		AdHocRailway.getInstance()
-				.registerEscapeKey(new AllBoostersOffAction());
+		ctx.getMainApp().registerEscapeKey(new AllBoostersOffAction());
 	}
 
 	private void toogleBooster(final int boosterNumber, final boolean on) {

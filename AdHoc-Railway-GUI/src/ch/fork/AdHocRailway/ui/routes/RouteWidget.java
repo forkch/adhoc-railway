@@ -38,7 +38,6 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteException;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
@@ -132,7 +131,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 				} else if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON3) {
 
-					if (AdHocRailway.getInstance().isEditingMode()) {
+					if (ctx.isEditingMode()) {
 						displayRouteConfig();
 					}
 				}
@@ -143,7 +142,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 		private void displayRouteConfig() {
 			routeControl.removeRouteChangeListener(route, RouteWidget.this);
-			new RouteConfig(AdHocRailway.getInstance(), ctx, route,
+			new RouteConfig(ctx.getMainFrame(), ctx, route,
 					route.getRouteGroup());
 			routeControl.addRouteChangeListener(route, RouteWidget.this);
 

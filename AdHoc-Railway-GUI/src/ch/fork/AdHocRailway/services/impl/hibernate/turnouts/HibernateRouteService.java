@@ -40,19 +40,11 @@ import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
 public class HibernateRouteService implements RouteService {
 	private static Logger logger = Logger
 			.getLogger(HibernateRouteService.class);
-	private static RouteService instance;
 	private RouteServiceListener listener;
 
-	private HibernateRouteService() {
+	public HibernateRouteService() {
 		logger.info("HibernateRoutePersistence loaded");
 
-	}
-
-	public static RouteService getInstance() {
-		if (instance == null) {
-			instance = new HibernateRouteService();
-		}
-		return instance;
 	}
 
 	@Override

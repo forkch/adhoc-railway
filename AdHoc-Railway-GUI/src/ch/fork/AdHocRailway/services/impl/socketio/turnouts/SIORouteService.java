@@ -24,16 +24,10 @@ public class SIORouteService implements RouteService, IOCallback {
 
 	private static Logger LOGGER = Logger.getLogger(SIORouteService.class);
 
-	private static final SIORouteService INSTANCE = new SIORouteService();
-
 	private RouteServiceListener listener;
 	private SIOService sioService;
 
-	private SIORouteService() {
-	}
-
-	public static SIORouteService getInstance() {
-		return INSTANCE;
+	public SIORouteService() {
 	}
 
 	@Override

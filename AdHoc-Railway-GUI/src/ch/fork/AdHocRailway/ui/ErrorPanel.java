@@ -31,7 +31,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -44,9 +43,6 @@ public class ErrorPanel extends JPanel {
 	private final int pause = 5000;
 	private float alpha = 1.0f;
 	boolean active = true;
-	private String cause;
-	private String text;
-	private Icon icon;
 
 	public ErrorPanel() {
 		initGUI();
@@ -73,7 +69,6 @@ public class ErrorPanel extends JPanel {
 	}
 
 	public void setErrorTextIcon(final String text, final Icon icon) {
-		this.icon = icon;
 		iconLabel.setIcon(icon);
 		iconLabel.setBackground(new Color(255, 177, 177));
 		setErrorText(text);
@@ -82,13 +77,10 @@ public class ErrorPanel extends JPanel {
 
 	public void setErrorTextIcon(final String text, final String cause,
 			final Icon icon) {
-		this.cause = cause;
 		setErrorTextIcon(text, icon);
-		// setToolTipText(cause);
 	}
 
 	public void setErrorText(final String text) {
-		this.text = text;
 		alpha = 1.0f;
 		active = true;
 		errorTextArea.setText(text);
@@ -107,10 +99,6 @@ public class ErrorPanel extends JPanel {
 		public void mouseClicked(final MouseEvent e) {
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
 				SwingUtilities.invokeLater(closerRunner);
-			} else if (e.getClickCount() == 1
-					&& e.getButton() == MouseEvent.BUTTON3) {
-				JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
-						cause, text, JOptionPane.ERROR_MESSAGE, icon);
 			}
 		}
 	}

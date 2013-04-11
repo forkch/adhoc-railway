@@ -8,7 +8,6 @@ import java.util.Map;
 import ch.fork.AdHocRailway.domain.TurnoutContext;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.WidgetTab;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 
@@ -36,7 +35,7 @@ public class TurnoutGroupTab extends WidgetTab {
 				if (e.getClickCount() == 2
 						&& e.getButton() == MouseEvent.BUTTON1) {
 
-					if (AdHocRailway.getInstance().isEditingMode()) {
+					if (ctx.isEditingMode()) {
 						TurnoutHelper.addNewTurnoutDialog(ctx, turnoutGroup);
 					}
 				}

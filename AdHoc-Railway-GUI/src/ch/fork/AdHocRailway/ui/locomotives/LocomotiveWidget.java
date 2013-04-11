@@ -62,7 +62,6 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.EditingModeListener;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
@@ -774,7 +773,7 @@ public class LocomotiveWidget extends JPanel implements
 			}
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
 
-				if (AdHocRailway.getInstance().isEditingMode()) {
+				if (ctx.isEditingMode()) {
 					if (!isFree()) {
 						return;
 					}
@@ -840,7 +839,7 @@ public class LocomotiveWidget extends JPanel implements
 
 			} catch (final InterruptedException e) {
 			} catch (final LocomotiveException e) {
-				AdHocRailway.getInstance().handleException(e);
+				ctx.getMainApp().handleException(e);
 			}
 
 		}

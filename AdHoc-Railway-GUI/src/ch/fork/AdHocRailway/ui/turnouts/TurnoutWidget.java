@@ -36,7 +36,6 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
@@ -143,11 +142,10 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			} else if (e.getClickCount() == 1
 					&& e.getButton() == MouseEvent.BUTTON3) {
 
-				if (AdHocRailway.getInstance().isEditingMode()) {
+				if (ctx.isEditingMode()) {
 					displaySwitchConfig();
 				}
 			}
-
 		}
 
 		private void displaySwitchConfig() {
@@ -156,7 +154,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			}
 
 			turnoutControl.removeTurnoutChangeListener(TurnoutWidget.this);
-			new TurnoutConfig(AdHocRailway.getInstance(), ctx, turnout,
+			new TurnoutConfig(ctx.getMainFrame(), ctx, turnout,
 					turnout.getTurnoutGroup());
 			TurnoutHelper.validateTurnout(turnoutManager, turnout,
 					TurnoutWidget.this);

@@ -23,11 +23,9 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 	private static Logger logger = Logger
 			.getLogger(SRCPTurnoutControlAdapter.class);
 
-	private static SRCPTurnoutControlAdapter instance;
-
-	private final Map<Turnout, SRCPTurnout> turnoutsSRCPTurnoutsMap;
-	private final Map<SRCPTurnout, Turnout> SRCPTurnoutsTurnoutsMap;
-	private final List<TurnoutChangeListener> listeners;
+	private final Map<Turnout, SRCPTurnout> turnoutsSRCPTurnoutsMap = new HashMap<Turnout, SRCPTurnout>();
+	private final Map<SRCPTurnout, Turnout> SRCPTurnoutsTurnoutsMap = new HashMap<SRCPTurnout, Turnout>();
+	private final List<TurnoutChangeListener> listeners = new ArrayList<TurnoutChangeListener>();;
 
 	SRCPTurnoutControl turnoutControl;
 
@@ -35,23 +33,12 @@ public class SRCPTurnoutControlAdapter implements TurnoutControlIface,
 
 	Turnout turnoutTemp;
 
-	private SRCPTurnoutControlAdapter() {
-
-		turnoutsSRCPTurnoutsMap = new HashMap<Turnout, SRCPTurnout>();
-		SRCPTurnoutsTurnoutsMap = new HashMap<SRCPTurnout, Turnout>();
-		listeners = new ArrayList<TurnoutChangeListener>();
+	public SRCPTurnoutControlAdapter() {
 
 		turnoutControl = SRCPTurnoutControl.getInstance();
 
 		turnoutControl.addTurnoutChangeListener(this);
 		reloadConfiguration();
-	}
-
-	public static SRCPTurnoutControlAdapter getInstance() {
-		if (instance == null) {
-			instance = new SRCPTurnoutControlAdapter();
-		}
-		return instance;
 	}
 
 	@Override

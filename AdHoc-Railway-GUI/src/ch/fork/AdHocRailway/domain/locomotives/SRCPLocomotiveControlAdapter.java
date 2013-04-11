@@ -30,8 +30,6 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	private static Logger logger = Logger
 			.getLogger(SRCPLocomotiveControlAdapter.class);
 
-	private static LocomotiveControlface instance;
-
 	private final Map<Locomotive, SRCPLocomotive> locomotiveSRCPLocomotiveMap = new HashMap<Locomotive, SRCPLocomotive>();
 	private final Map<SRCPLocomotive, Locomotive> SRCPLocomotiveLocomotiveMap = new HashMap<SRCPLocomotive, Locomotive>();
 	private final Map<SRCPLocomotive, List<LocomotiveChangeListener>> listeners = new HashMap<SRCPLocomotive, List<LocomotiveChangeListener>>();
@@ -40,18 +38,11 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 
 	private final Set<Locomotive> activeLocomotives = new HashSet<Locomotive>();
 
-	private SRCPLocomotiveControlAdapter() {
+	public SRCPLocomotiveControlAdapter() {
 		locomotiveControl = SRCPLocomotiveControl.getInstance();
 
 		locomotiveControl.addLocomotiveChangeListener(this, this);
 		reloadConfiguration();
-	}
-
-	public static LocomotiveControlface getInstance() {
-		if (instance == null) {
-			instance = new SRCPLocomotiveControlAdapter();
-		}
-		return instance;
 	}
 
 	@Override
@@ -394,5 +385,4 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		});
 		t.start();
 	}
-
 }

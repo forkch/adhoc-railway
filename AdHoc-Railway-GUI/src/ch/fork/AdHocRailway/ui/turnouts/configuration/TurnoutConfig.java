@@ -47,9 +47,6 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
-import ch.fork.AdHocRailway.technical.configuration.Preferences;
-import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ErrorPanel;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
@@ -579,10 +576,6 @@ public class TurnoutConfig extends JDialog {
 					// turnout.removePropertyChangeListener(TurnoutConfig.this);
 					TurnoutConfig.this.setVisible(false);
 
-					if (Preferences.getInstance().getBooleanValue(
-							PreferencesKeys.AUTOSAVE)) {
-						AdHocRailway.getInstance().saveActualFile();
-					}
 				}
 
 				@Override

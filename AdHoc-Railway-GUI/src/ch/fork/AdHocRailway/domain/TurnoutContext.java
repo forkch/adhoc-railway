@@ -2,11 +2,8 @@ package ch.fork.AdHocRailway.domain;
 
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
-import de.dermoba.srcp.client.SRCPSession;
 
-public interface TurnoutContext {
-
-	public abstract SRCPSession getSession();
+public interface TurnoutContext extends ControllerContext {
 
 	public abstract TurnoutControlIface getTurnoutControl();
 

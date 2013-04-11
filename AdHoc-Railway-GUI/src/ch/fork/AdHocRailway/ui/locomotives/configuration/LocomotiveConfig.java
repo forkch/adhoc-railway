@@ -54,9 +54,6 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.technical.configuration.Preferences;
-import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.ErrorPanel;
 import ch.fork.AdHocRailway.ui.ImagePreviewPanel;
 import ch.fork.AdHocRailway.ui.ImageTools;
@@ -381,10 +378,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
 							} else {
 								LocomotiveConfig.this.setVisible(false);
-							}
-							if (Preferences.getInstance().getBooleanValue(
-									PreferencesKeys.AUTOSAVE)) {
-								AdHocRailway.getInstance().saveActualFile();
 							}
 						}
 

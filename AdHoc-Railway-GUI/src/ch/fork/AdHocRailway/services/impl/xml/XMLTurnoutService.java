@@ -31,21 +31,13 @@ import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
 
 public class XMLTurnoutService implements TurnoutService {
 	static Logger logger = Logger.getLogger(XMLTurnoutService.class);
-	private static XMLTurnoutService instance;
 	private final SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
 	private final SortedSet<TurnoutGroup> turnoutGroups = new TreeSet<TurnoutGroup>();
 	private TurnoutServiceListener listener;
 
-	private XMLTurnoutService() {
+	public XMLTurnoutService() {
 		logger.info("FileTurnoutPersistence loaded");
 
-	}
-
-	public static XMLTurnoutService getInstance() {
-		if (instance == null) {
-			instance = new XMLTurnoutService();
-		}
-		return instance;
 	}
 
 	@Override

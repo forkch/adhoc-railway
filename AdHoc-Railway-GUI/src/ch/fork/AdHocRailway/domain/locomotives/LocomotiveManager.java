@@ -75,4 +75,6 @@ public interface LocomotiveManager {
 
 	public abstract Locomotive getActiveLocomotive(int locomotiveNumber);
 
+	public abstract LocomotiveService getService();
+
 }

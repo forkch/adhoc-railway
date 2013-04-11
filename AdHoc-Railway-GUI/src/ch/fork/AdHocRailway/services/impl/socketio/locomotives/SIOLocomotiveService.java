@@ -22,16 +22,10 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
 
 	private static Logger LOGGER = Logger.getLogger(SIOLocomotiveService.class);
 
-	private static final SIOLocomotiveService INSTANCE = new SIOLocomotiveService();
-
 	private LocomotiveServiceListener listener;
 	private SIOService sioService;
 
-	private SIOLocomotiveService() {
-	}
-
-	public static SIOLocomotiveService getInstance() {
-		return INSTANCE;
+	public SIOLocomotiveService() {
 	}
 
 	@Override

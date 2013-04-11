@@ -16,7 +16,6 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import de.dermoba.srcp.model.turnouts.MMTurnout;
 
@@ -31,7 +30,7 @@ public class TurnoutHelper {
 			nextNumber = turnoutManager
 					.getNextFreeTurnoutNumberOfGroup(selectedTurnoutGroup);
 			if (nextNumber == -1) {
-				JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
+				JOptionPane.showMessageDialog(ctx.getMainFrame(),
 						"No more free numbers in this group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
@@ -43,7 +42,7 @@ public class TurnoutHelper {
 		final Turnout newTurnout = TurnoutHelper.createDefaultTurnout(
 				turnoutManager, nextNumber);
 
-		new TurnoutConfig(AdHocRailway.getInstance(), ctx, newTurnout,
+		new TurnoutConfig(ctx.getMainFrame(), ctx, newTurnout,
 				selectedTurnoutGroup);
 	}
 

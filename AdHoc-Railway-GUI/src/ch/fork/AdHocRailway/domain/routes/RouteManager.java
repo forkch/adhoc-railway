@@ -70,4 +70,6 @@ public interface RouteManager {
 
 	public abstract void disconnect();
 
+	public abstract RouteService getService();
+
 }

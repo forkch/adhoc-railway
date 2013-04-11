@@ -47,8 +47,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
 	private final SortedSet<TurnoutGroup> turnoutGroups = new TreeSet<TurnoutGroup>();
 
-	private static final TurnoutManager INSTANCE = new TurnoutManagerImpl();
-
 	private TurnoutControlIface turnoutControl = null;
 
 	private final Set<TurnoutManagerListener> listeners = new HashSet<TurnoutManagerListener>();
@@ -59,12 +57,8 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
 	private int lastProgrammedNummer = 0;
 
-	private TurnoutManagerImpl() {
+	public TurnoutManagerImpl() {
 		LOGGER.info("TurnoutManagerImpl loaded");
-	}
-
-	public static TurnoutManager getInstance() {
-		return INSTANCE;
 	}
 
 	@Override
@@ -447,4 +441,8 @@ public class TurnoutManagerImpl implements TurnoutManager,
 		this.turnoutGroups.clear();
 	}
 
+	@Override
+	public TurnoutService getService() {
+		return turnoutService;
+	}
 }

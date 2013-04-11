@@ -22,16 +22,10 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
 	private static Logger LOGGER = Logger.getLogger(SIOTurnoutService.class);
 
-	private static final SIOTurnoutService INSTANCE = new SIOTurnoutService();
-
 	private TurnoutServiceListener listener;
 	private SIOService sioService;
 
-	private SIOTurnoutService() {
-	}
-
-	public static SIOTurnoutService getInstance() {
-		return INSTANCE;
+	public SIOTurnoutService() {
 	}
 
 	@Override

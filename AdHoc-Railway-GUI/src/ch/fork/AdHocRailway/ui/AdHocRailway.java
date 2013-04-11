@@ -30,7 +30,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
@@ -78,6 +77,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
 
+import ch.fork.AdHocRailway.domain.AdHocRailwayIface;
 import ch.fork.AdHocRailway.domain.ApplicationContext;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
@@ -121,8 +121,9 @@ import de.dermoba.srcp.model.power.SRCPPowerControl;
 import de.dermoba.srcp.model.power.SRCPPowerState;
 import de.dermoba.srcp.model.power.SRCPPowerSupplyException;
 
-public class AdHocRailway extends JFrame implements CommandDataListener,
-		InfoDataListener, PreferencesKeys, EditingModeListener {
+public class AdHocRailway extends JFrame implements AdHocRailwayIface,
+		CommandDataListener, InfoDataListener, PreferencesKeys,
+		EditingModeListener {
 
 	private static final String _ADHOC_SERVER_TCP_LOCAL = "_adhoc-server._tcp.local.";
 
@@ -130,11 +131,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private static Logger LOGGER = Logger.getLogger(AdHocRailway.class);
 
-	private static AdHocRailway instance;
-
 	private static final String TITLE = "AdHoc-Railway";
 
-	private static final String _SRCP_SERVER_TCP_LOCAL = "_srcpd._tcp.local.";
+	private static final String SRCP_SERVER_TCP_LOCAL = "_srcpd._tcp.local.";
 
 	private TrackControlPanel trackControlPanel;
 
@@ -187,8 +186,6 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private JCheckBoxMenuItem enableEditing;
 
-	private boolean editingMode = false;
-
 	private final List<EditingModeListener> editingModeListeners = new ArrayList<EditingModeListener>();
 
 	private JButton turnoutsToolBarButton;
@@ -210,6 +207,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		try {
 
 			appContext = new ApplicationContext();
+			appContext.setMainApp(this);
+			appContext.setMainFrame(this);
 			setUpLogging();
 
 			LOGGER.info("****************************************");
@@ -222,9 +221,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 			UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
 
-			instance = this;
 			splash = new SplashWindow(createImageIconFromIconSet("splash.png"),
-					this, 500, 11);
+					this, 500, 12);
 			setIconImage(createImageIconFromIconSet("RailControl.png")
 					.getImage());
 
@@ -263,7 +261,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			updateCommandHistory("AdHoc-Railway started");
 			setVisible(true);
 		} catch (final UnsupportedLookAndFeelException e) {
-			ExceptionProcessor.getInstance().processException(e);
+			handleException(e);
 		}
 	}
 
@@ -294,11 +292,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 							@Override
 							public void serviceAdded(final ServiceEvent event) {
-								LOGGER.info("found AdHoc-Server on " + event);
 								final ServiceInfo info = adhocServermDNS
 										.getServiceInfo(event.getType(),
 												event.getName(), true);
-								System.out.println(info);
+								LOGGER.info("found AdHoc-Server on " + info);
 
 								final String url = "http://"
 										+ info.getInet4Addresses()[0]
@@ -310,7 +307,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 						});
 
 				final JmDNS srcpdmDNS = JmDNS.create();
-				srcpdmDNS.addServiceListener("_srcpd._tcp.local.",
+				srcpdmDNS.addServiceListener(SRCP_SERVER_TCP_LOCAL,
 						new javax.jmdns.ServiceListener() {
 
 							@Override
@@ -326,11 +323,10 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 							@Override
 							public void serviceAdded(final ServiceEvent event) {
-								LOGGER.info("found SRCPD on " + event);
 								final ServiceInfo info = adhocServermDNS
 										.getServiceInfo(event.getType(),
 												event.getName(), true);
-								System.out.println(info);
+								LOGGER.info("found SRCPD on " + info);
 
 							}
 						});
@@ -338,7 +334,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			}
 
 		} catch (final IOException e) {
-			ExceptionProcessor.getInstance().processException(e);
+			handleException(e);
 		}
 	}
 
@@ -364,20 +360,18 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	}
 
-	public static AdHocRailway getInstance() {
-		return instance;
-	}
-
 	public void saveActualFile() {
 		if (fileMode) {
 			saveFile(AdHocRailway.this.actualFile);
 		}
 	}
 
+	@Override
 	public void addMenu(final JMenu menu) {
 		menuBar.add(menu);
 	}
 
+	@Override
 	public void addToolBar(final JToolBar toolbar) {
 		toolbarPanel.add(toolbar);
 	}
@@ -389,17 +383,20 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
 	}
 
+	@Override
 	public void handleException(final Exception ex) {
+		handleException(null, ex);
+
+	}
+
+	public void handleException(final String message, final Exception e) {
 		final ExceptionProcessor instance2 = ExceptionProcessor.getInstance();
 		if (instance2 != null) {
-			instance2.processException(ex);
+			instance2.processException(message, e);
 		}
 	}
 
-	public boolean isEditingMode() {
-		return editingMode;
-	}
-
+	@Override
 	public void registerEscapeKey(final Action action) {
 		final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
 		final JRootPane rootPane = getRootPane();
@@ -433,6 +430,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		LOGGER.info("From Server: " + infoData.trim());
 	}
 
+	@Override
 	public void addEditingModeListener(final EditingModeListener l) {
 		editingModeListeners.add(l);
 	}
@@ -449,17 +447,18 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 	}
 
 	private void loadControlLayer() {
+		initProceeded("Loading Control Layer (Power)");
 		appContext.setPowerControl(SRCPPowerControl.getInstance());
 
 		initProceeded("Loading Control Layer (Locomotives)");
-		appContext.setLocomotiveControl(SRCPLocomotiveControlAdapter
-				.getInstance());
+		appContext.setLocomotiveControl(new SRCPLocomotiveControlAdapter());
 
 		initProceeded("Loading Control Layer (Turnouts)");
-		appContext.setTurnoutControl(SRCPTurnoutControlAdapter.getInstance());
+		final SRCPTurnoutControlAdapter turnoutControl = new SRCPTurnoutControlAdapter();
+		appContext.setTurnoutControl(turnoutControl);
 
 		initProceeded("Loading Control Layer (Routes)");
-		appContext.setRouteControl(SRCPRouteControlAdapter.getInstance());
+		appContext.setRouteControl(new SRCPRouteControlAdapter(turnoutControl));
 
 		initProceeded("Loading Control Layer (Locks)");
 		appContext.setLockControl(SRCPLockControl.getInstance());
@@ -480,7 +479,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		trackControlPanel = new TrackControlPanel(appContext);
 		locomotiveControlPanel = new LocomotiveControlPanel(appContext);
-		powerControlPanel = new PowerControlPanel();
+		powerControlPanel = new PowerControlPanel(appContext);
 		powerControlPanel.setConnected(false);
 
 		mainPanel.add(segmentPanel, "grow");
@@ -502,7 +501,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				.getStringValue(PreferencesKeys.SRCP_HOSTNAME));
 		addEditingModeListener(this);
 		for (final EditingModeListener l : editingModeListeners) {
-			l.editingModeChanged(editingMode);
+			l.editingModeChanged(appContext.isEditingMode());
 		}
 	}
 
@@ -517,41 +516,49 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER);
 
 		initProceeded("Loading Persistence Layer (Locomotives)");
-		final LocomotiveManager locomotiveManager = LocomotiveManagerImpl
-				.getInstance();
-		appContext.setLocomotiveManager(locomotiveManager);
+		LocomotiveManager locomotiveManager = appContext.getLocomotiveManager();
+		if (locomotiveManager == null) {
+			locomotiveManager = new LocomotiveManagerImpl();
+			appContext.setLocomotiveManager(locomotiveManager);
+		}
 
 		locomotiveManager.setLocomotiveControl(appContext
 				.getLocomotiveControl());
 		if (useAdHocServer) {
-			locomotiveManager.setLocomotiveService(SIOLocomotiveService
-					.getInstance());
+			locomotiveManager.setLocomotiveService(new SIOLocomotiveService());
 		} else {
-			locomotiveManager.setLocomotiveService(XMLLocomotiveService
-					.getInstance());
+			locomotiveManager.setLocomotiveService(new XMLLocomotiveService());
 		}
 
 		locomotiveManager.initialize();
 
 		initProceeded("Loading Persistence Layer (Turnouts)");
-		final TurnoutManager turnoutManager = TurnoutManagerImpl.getInstance();
+
+		TurnoutManager turnoutManager = appContext.getTurnoutManager();
+		if (turnoutManager == null) {
+			turnoutManager = new TurnoutManagerImpl();
+		}
 		appContext.setTurnoutManager(turnoutManager);
 		turnoutManager.setTurnoutControl(appContext.getTurnoutControl());
 		if (useAdHocServer) {
-			turnoutManager.setTurnoutService(SIOTurnoutService.getInstance());
+			turnoutManager.setTurnoutService(new SIOTurnoutService());
 		} else {
-			turnoutManager.setTurnoutService(XMLTurnoutService.getInstance());
+			turnoutManager.setTurnoutService(new XMLTurnoutService());
 		}
 		turnoutManager.initialize();
 
 		initProceeded("Loading Persistence Layer (Routes)");
-		final RouteManager routeManager = RouteManagerImpl.getInstance();
+		RouteManager routeManager = appContext.getRouteManager();
+
+		if (routeManager == null) {
+			routeManager = new RouteManagerImpl(turnoutManager);
+		}
 		appContext.setRouteManager(routeManager);
 		routeManager.setRouteControl(appContext.getRouteControl());
 		if (useAdHocServer) {
-			routeManager.setRouteService(SIORouteService.getInstance());
+			routeManager.setRouteService(new SIORouteService());
 		} else {
-			routeManager.setRouteService(XMLRouteService.getInstance());
+			routeManager.setRouteService(new XMLRouteService());
 		}
 		routeManager.initialize();
 
@@ -644,7 +651,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		try {
 			preferences.save();
 		} catch (final IOException e) {
-			ExceptionProcessor.getInstance().processException(e);
+			handleException(e);
 		}
 	}
 
@@ -654,7 +661,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 		try {
 			preferences.save();
 		} catch (final IOException e) {
-			ExceptionProcessor.getInstance().processException(e);
+			handleException(e);
 		}
 	}
 
@@ -666,10 +673,12 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 	private void saveFile(final File file) {
 		try {
-			XMLService.getInstance().saveToFile(file);
+			final XMLService xmlService = new XMLService();
+			xmlService.saveFile(appContext, file);
+
 		} catch (final IOException e) {
 
-			ExceptionProcessor.getInstance().processException(e);
+			handleException(e);
 		}
 		updateCommandHistory("AdHoc-Railway Configuration saved (" + file + ")");
 	}
@@ -1030,7 +1039,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 						disableEnableMenuItems();
 
-						XMLService.getInstance().loadFromFile(file);
+						new XMLService().loadFile(appContext, file);
 
 						setTitle(AdHocRailway.TITLE + " ["
 								+ file.getAbsolutePath() + "]");
@@ -1039,7 +1048,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 						updateCommandHistory("AdHoc-Railway Configuration loaded ("
 								+ file + ")");
 					} catch (final ConfigurationException e) {
-						ExceptionProcessor.getInstance().processException(e);
+						handleException(e);
 					}
 					progressBar.setIndeterminate(false);
 
@@ -1070,8 +1079,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				disableEnableMenuItems();
 
 			} catch (final PersistenceException ex) {
-				ExceptionProcessor.getInstance().processException(
-						"Failed to connect to database", ex);
+
+				handleException("Failed to connect to database", ex);
 			}
 			updateGUI();
 			progressBar.setIndeterminate(false);
@@ -1103,8 +1112,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				}
 
 			} catch (final PersistenceException ex) {
-				ExceptionProcessor.getInstance().processException(
-						"Failed to connect to database", ex);
+				handleException("Failed to connect to database", ex);
 			}
 			updateGUI();
 			progressBar.setIndeterminate(false);
@@ -1139,8 +1147,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				}
 
 			} catch (final PersistenceException ex) {
-				ExceptionProcessor.getInstance().processException(
-						"Failed to connect to database", ex);
+				handleException("Failed to connect to database", ex);
 			}
 			updateGUI();
 			progressBar.setIndeterminate(false);
@@ -1210,7 +1217,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			final JFileChooser fileChooser = new JFileChooser(new File("."));
 			final int returnVal = fileChooser.showSaveDialog(AdHocRailway.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				XMLService.getInstance().importLocomotivesFromFile(
+				new XMLService().importLocomotivesFromFile(
 						fileChooser.getSelectedFile(),
 						appContext.getLocomotiveManager());
 			}
@@ -1236,7 +1243,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			final int returnVal = fileChooser.showSaveDialog(AdHocRailway.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				try {
-					XMLService.getInstance().exportLocomotivesToFile(
+					new XMLService().exportLocomotivesToFile(
 							fileChooser.getSelectedFile(),
 							appContext.getLocomotiveManager());
 				} catch (final IOException e1) {
@@ -1274,10 +1281,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 						actualFile.getAbsolutePath());
 				try {
 					preferences.save();
-				} catch (final FileNotFoundException e1) {
-					ExceptionProcessor.getInstance().processException(e1);
 				} catch (final IOException e1) {
-					ExceptionProcessor.getInstance().processException(e1);
+					handleException(e1);
 				}
 			}
 			if (!fileMode) {
@@ -1413,11 +1418,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				try {
 					preferences.save();
 				} catch (final IOException e2) {
-					ExceptionProcessor.getInstance().processException(
-							"Server not running", e2);
+					handleException("Server not running", e2);
 				}
-				ExceptionProcessor.getInstance().processException(
-						"Server not running", e1);
+				handleException("Server not running", e1);
 
 			}
 		}
@@ -1452,7 +1455,7 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 				updateCommandHistory("Disconnected from server " + host
 						+ " on port " + port);
 			} catch (final SRCPException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
+				handleException(e1);
 			} catch (final LocomotiveException e1) {
 				e1.printStackTrace();
 			}
@@ -1481,9 +1484,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			try {
 				appContext.getPowerControl().setAllStates(SRCPPowerState.ON);
 			} catch (final SRCPPowerSupplyException e) {
-				ExceptionProcessor.getInstance().processException(e);
+				handleException(e);
 			} catch (final SRCPModelException e) {
-				ExceptionProcessor.getInstance().processException(e);
+				handleException(e);
 			}
 		}
 	}
@@ -1509,9 +1512,9 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 			try {
 				appContext.getPowerControl().setAllStates(SRCPPowerState.OFF);
 			} catch (final SRCPPowerSupplyException e) {
-				ExceptionProcessor.getInstance().processException(e);
+				handleException(e);
 			} catch (final SRCPModelException e) {
-				ExceptionProcessor.getInstance().processException(e);
+				handleException(e);
 			}
 		}
 	}
@@ -1582,7 +1585,8 @@ public class AdHocRailway extends JFrame implements CommandDataListener,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			editingMode = enableEditing.isSelected();
+			final boolean editingMode = enableEditing.isSelected();
+			appContext.setEditingMode(editingMode);
 
 			for (final EditingModeListener l : editingModeListeners) {
 				l.editingModeChanged(editingMode);

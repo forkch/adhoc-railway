@@ -75,4 +75,6 @@ public interface TurnoutManager {
 	public abstract void clearToService();
 
 	public abstract void disconnect();
+
+	public abstract TurnoutService getService();
 }

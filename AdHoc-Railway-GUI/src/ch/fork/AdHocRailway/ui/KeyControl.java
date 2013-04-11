@@ -268,12 +268,9 @@ public class KeyControl extends SimpleInternalFrame {
 					}
 				}
 
-			} catch (final RouteException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
-			} catch (final TurnoutException e1) {
-				ExceptionProcessor.getInstance().processException(e1);
-			} catch (final LocomotiveException e1) {
-				e1.printStackTrace();
+			} catch (final LocomotiveException | TurnoutException
+					| RouteException e1) {
+				ctx.getMainApp().handleException(e1);
 			}
 			enteredNumberKeys = new StringBuffer();
 			mode = KeyControlMode.TURNOUT_MODE;

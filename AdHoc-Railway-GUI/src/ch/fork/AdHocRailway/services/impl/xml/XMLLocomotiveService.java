@@ -32,7 +32,6 @@ import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
 
 public class XMLLocomotiveService implements LocomotiveService {
-	private static XMLLocomotiveService instance;
 
 	private static Logger logger = Logger.getLogger(LocomotiveManager.class);
 
@@ -42,7 +41,7 @@ public class XMLLocomotiveService implements LocomotiveService {
 
 	private LocomotiveServiceListener listener;
 
-	private XMLLocomotiveService() {
+	public XMLLocomotiveService() {
 		logger.info("FileLocomotivePersistence loaded");
 	}
 
@@ -50,13 +49,6 @@ public class XMLLocomotiveService implements LocomotiveService {
 	public void clear() {
 		locomotives.clear();
 		locomotiveGroups.clear();
-	}
-
-	public static XMLLocomotiveService getInstance() {
-		if (instance == null) {
-			instance = new XMLLocomotiveService();
-		}
-		return instance;
 	}
 
 	@Override

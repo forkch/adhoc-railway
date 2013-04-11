@@ -37,15 +37,10 @@ import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
 
 public class HibernateTurnoutService implements TurnoutService {
 	static Logger LOGGER = Logger.getLogger(HibernateTurnoutService.class);
-	private static final HibernateTurnoutService INSTANCE = new HibernateTurnoutService();
 	private TurnoutServiceListener listener;
 
-	private HibernateTurnoutService() {
+	public HibernateTurnoutService() {
 		LOGGER.info("HibernateTurnoutPersistence loaded");
-	}
-
-	public static TurnoutService getInstance() {
-		return INSTANCE;
 	}
 
 	@Override

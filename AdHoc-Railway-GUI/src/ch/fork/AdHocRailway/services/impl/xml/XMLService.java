@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.io.FileUtils;
 
+import ch.fork.AdHocRailway.domain.ApplicationContext;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -21,34 +22,30 @@ import com.thoughtworks.xstream.XStream;
 
 public class XMLService {
 
-	private final XMLLocomotiveService locomotiveService;
-	private final XMLTurnoutService turnoutService;
-	private final XMLRouteService routeService;
-
-	private static XMLService INSTANCE = new XMLService();
-
 	private static final AtomicInteger counter = new AtomicInteger();
 
 	public static int nextValue() {
 		return counter.getAndIncrement();
 	}
 
-	private XMLService() {
-		locomotiveService = XMLLocomotiveService.getInstance();
-		turnoutService = XMLTurnoutService.getInstance();
-		routeService = XMLRouteService.getInstance();
+	public XMLService() {
 	}
 
-	public static XMLService getInstance() {
-		return INSTANCE;
-	}
-
-	public void loadFromFile(final File xmlFile) {
+	public void loadFile(final ApplicationContext appContext,
+			final File xmlFile) {
 		final XStream xstream = getXStream();
 
 		final AdHocRailwayData data = (AdHocRailwayData) xstream
 				.fromXML(xmlFile);
 		addFunctionsIfNeccesaray(data);
+
+		final XMLLocomotiveService locomotiveService = (XMLLocomotiveService) appContext
+				.getLocomotiveManager().getService();
+		final XMLTurnoutService turnoutService = (XMLTurnoutService) appContext
+				.getTurnoutManager().getService();
+		final XMLRouteService routeService = (XMLRouteService) appContext
+				.getRouteManager().getService();
+
 		locomotiveService.loadLocomotiveGroupsFromXML(data
 				.getLocomotiveGroups());
 		turnoutService.loadTurnoutGroupsFromXML(data.getTurnoutGroups());
@@ -56,15 +53,16 @@ public class XMLService {
 
 	}
 
-	public void saveToFile(final File xmlFile) throws IOException {
+	public void saveFile(final ApplicationContext appContext,
+			final File xmlFile) throws IOException {
 
-		final SortedSet<LocomotiveGroup> locomotiveGroups = locomotiveService
-				.getAllLocomotiveGroups();
+		final SortedSet<LocomotiveGroup> locomotiveGroups = appContext
+				.getLocomotiveManager().getAllLocomotiveGroups();
 
-		final SortedSet<TurnoutGroup> turnoutGroups = turnoutService
-				.getAllTurnoutGroups();
+		final SortedSet<TurnoutGroup> turnoutGroups = appContext
+				.getTurnoutManager().getAllTurnoutGroups();
 
-		final SortedSet<RouteGroup> routeGroups = routeService
+		final SortedSet<RouteGroup> routeGroups = appContext.getRouteManager()
 				.getAllRouteGroups();
 
 		final AdHocRailwayData data = new AdHocRailwayData(locomotiveGroups,

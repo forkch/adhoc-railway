@@ -13,7 +13,6 @@ import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.AdHocRailway;
 
 public class RouteHelper {
 
@@ -58,7 +57,7 @@ public class RouteHelper {
 			nextNumber = routePersistence
 					.getNextFreeRouteNumberOfGroup(selectedRouteGroup);
 			if (nextNumber == -1) {
-				JOptionPane.showMessageDialog(AdHocRailway.getInstance(),
+				JOptionPane.showMessageDialog(ctx.getMainFrame(),
 						"No more free numbers in this group", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
@@ -70,8 +69,7 @@ public class RouteHelper {
 		final Route newTurnout = createDefaultRoute(routePersistence,
 				nextNumber);
 
-		new RouteConfig(AdHocRailway.getInstance(), ctx, newTurnout,
-				selectedRouteGroup);
+		new RouteConfig(ctx.getMainFrame(), ctx, newTurnout, selectedRouteGroup);
 	}
 
 	public static Route copyRoute(final Route old) {

@@ -31,14 +31,11 @@ import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerImpl;
 import ch.fork.AdHocRailway.services.turnouts.RouteService;
 import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
 
 public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	private static Logger LOGGER = Logger.getLogger(RouteManagerImpl.class);
-
-	private static final RouteManagerImpl INSTANCE = new RouteManagerImpl();
 
 	private RouteService routeService;
 
@@ -53,12 +50,11 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 
 	private int lastProgrammedNumber = 0;
 
-	private RouteManagerImpl() {
-		LOGGER.info("RouteMangerImpl loaded");
-	}
+	private final TurnoutManager turnoutManager;
 
-	public static RouteManager getInstance() {
-		return INSTANCE;
+	public RouteManagerImpl(final TurnoutManager turnoutManager) {
+		this.turnoutManager = turnoutManager;
+		LOGGER.info("RouteMangerImpl loaded");
 	}
 
 	@Override
@@ -396,10 +392,9 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	}
 
 	private void reassignTurnoutToRouteItem(final RouteItem routeItem) {
-		final TurnoutManager tm = TurnoutManagerImpl.getInstance();
 
 		final int number = routeItem.getTurnout().getNumber();
-		routeItem.setTurnout(tm.getTurnoutByNumber(number));
+		routeItem.setTurnout(turnoutManager.getTurnoutByNumber(number));
 	}
 
 	private void putInCache(final Route route) {
@@ -425,4 +420,8 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 		numberToRouteCache.clear();
 	}
 
+	@Override
+	public RouteService getService() {
+		return routeService;
+	}
 }

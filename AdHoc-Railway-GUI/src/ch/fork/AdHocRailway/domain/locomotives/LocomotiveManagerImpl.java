@@ -37,7 +37,6 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 		LocomotiveServiceListener {
 	private static Logger LOGGER = Logger.getLogger(LocomotiveManager.class);
 
-	private static final LocomotiveManager INSTANCE = new LocomotiveManagerImpl();
 	private LocomotiveControlface locomotiveControl;
 
 	private final Map<SRCPAddress, Locomotive> addressLocomotiveCache = new HashMap<SRCPAddress, Locomotive>();
@@ -50,13 +49,8 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
 	private final Map<Integer, Locomotive> numberToLocomotiveMap = new HashMap<Integer, Locomotive>();
 
-	private LocomotiveManagerImpl() {
+	public LocomotiveManagerImpl() {
 		LOGGER.info("LocomotiveManager loaded");
-
-	}
-
-	public static LocomotiveManager getInstance() {
-		return INSTANCE;
 	}
 
 	@Override
@@ -311,6 +305,11 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	@Override
 	public Locomotive getActiveLocomotive(final int locomotiveNumber) {
 		return numberToLocomotiveMap.get(locomotiveNumber);
+	}
+
+	@Override
+	public LocomotiveService getService() {
+		return locomotiveService;
 	}
 
 }

@@ -20,10 +20,8 @@ import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class SRCPRouteControlAdapter implements RouteControlIface,
 		SRCPRouteChangeListener {
-	private static SRCPRouteControlAdapter instance;
 
-	private static final SRCPTurnoutControlAdapter turnoutControl = SRCPTurnoutControlAdapter
-			.getInstance();
+	private final SRCPTurnoutControlAdapter turnoutControl;
 	private final Map<Route, SRCPRoute> routesSRCPRoutesMap = new HashMap<Route, SRCPRoute>();
 
 	private final Map<SRCPRoute, Route> SRCPRoutesRoutesMap = new HashMap<SRCPRoute, Route>();
@@ -34,19 +32,13 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 
 	private SRCPRoute sRouteTemp;
 
-	private SRCPRouteControlAdapter() {
+	public SRCPRouteControlAdapter(
+			final SRCPTurnoutControlAdapter turnoutControl) {
+		this.turnoutControl = turnoutControl;
 		routeControl = SRCPRouteControl.getInstance();
-
 		routeControl.addRouteChangeListener(this);
 		reloadConfiguration();
 
-	}
-
-	public static SRCPRouteControlAdapter getInstance() {
-		if (instance == null) {
-			instance = new SRCPRouteControlAdapter();
-		}
-		return instance;
 	}
 
 	@Override
