@@ -7,13 +7,13 @@ import java.util.SortedSet;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
-import ch.fork.AdHocRailway.domain.RouteContext;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
 import ch.fork.AdHocRailway.domain.routes.RouteManagerListener;
+import ch.fork.AdHocRailway.ui.context.RouteContext;
 
 public class RouteGroupsPanel extends JTabbedPane implements
 		RouteManagerListener {

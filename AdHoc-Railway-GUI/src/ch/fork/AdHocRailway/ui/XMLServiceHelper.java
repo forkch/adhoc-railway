@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.services.impl.xml;
+package ch.fork.AdHocRailway.ui;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.io.FileUtils;
 
-import ch.fork.AdHocRailway.domain.ApplicationContext;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -17,10 +16,17 @@ import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.services.impl.xml.AdHocRailwayData;
+import ch.fork.AdHocRailway.services.impl.xml.LocomotiveImporter;
+import ch.fork.AdHocRailway.services.impl.xml.LocomotiveTypeConverter;
+import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
+import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
+import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
+import ch.fork.AdHocRailway.ui.context.ApplicationContext;
 
 import com.thoughtworks.xstream.XStream;
 
-public class XMLService {
+public class XMLServiceHelper {
 
 	private static final AtomicInteger counter = new AtomicInteger();
 
@@ -28,7 +34,7 @@ public class XMLService {
 		return counter.getAndIncrement();
 	}
 
-	public XMLService() {
+	public XMLServiceHelper() {
 	}
 
 	public void loadFile(final ApplicationContext appContext,

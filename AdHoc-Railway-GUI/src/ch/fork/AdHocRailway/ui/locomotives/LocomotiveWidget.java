@@ -47,7 +47,6 @@ import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 
 import net.miginfocom.swing.MigLayout;
-import ch.fork.AdHocRailway.domain.LocomotiveContext;
 import ch.fork.AdHocRailway.domain.locking.LockingException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
@@ -66,6 +65,7 @@ import ch.fork.AdHocRailway.ui.EditingModeListener;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.UIConstants;
+import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 
 public class LocomotiveWidget extends JPanel implements

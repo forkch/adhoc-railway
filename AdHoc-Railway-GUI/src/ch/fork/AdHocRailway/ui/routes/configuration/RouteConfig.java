@@ -46,7 +46,6 @@ import javax.swing.KeyStroke;
 import javax.swing.table.TableColumn;
 
 import net.miginfocom.swing.MigLayout;
-import ch.fork.AdHocRailway.domain.RouteContext;
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
@@ -61,6 +60,7 @@ import ch.fork.AdHocRailway.ui.ErrorPanel;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
+import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 
 import com.jgoodies.binding.PresentationModel;

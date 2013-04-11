@@ -77,8 +77,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
 
-import ch.fork.AdHocRailway.domain.AdHocRailwayIface;
-import ch.fork.AdHocRailway.domain.ApplicationContext;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerImpl;
@@ -96,11 +94,12 @@ import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
-import ch.fork.AdHocRailway.services.impl.xml.XMLService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.context.AdHocRailwayIface;
+import ch.fork.AdHocRailway.ui.context.ApplicationContext;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
 import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
@@ -673,7 +672,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 	private void saveFile(final File file) {
 		try {
-			final XMLService xmlService = new XMLService();
+			final XMLServiceHelper xmlService = new XMLServiceHelper();
 			xmlService.saveFile(appContext, file);
 
 		} catch (final IOException e) {
@@ -1039,7 +1038,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 						disableEnableMenuItems();
 
-						new XMLService().loadFile(appContext, file);
+						new XMLServiceHelper().loadFile(appContext, file);
 
 						setTitle(AdHocRailway.TITLE + " ["
 								+ file.getAbsolutePath() + "]");
@@ -1217,7 +1216,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			final JFileChooser fileChooser = new JFileChooser(new File("."));
 			final int returnVal = fileChooser.showSaveDialog(AdHocRailway.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				new XMLService().importLocomotivesFromFile(
+				new XMLServiceHelper().importLocomotivesFromFile(
 						fileChooser.getSelectedFile(),
 						appContext.getLocomotiveManager());
 			}
@@ -1243,7 +1242,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			final int returnVal = fileChooser.showSaveDialog(AdHocRailway.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				try {
-					new XMLService().exportLocomotivesToFile(
+					new XMLServiceHelper().exportLocomotivesToFile(
 							fileChooser.getSelectedFile(),
 							appContext.getLocomotiveManager());
 				} catch (final IOException e1) {

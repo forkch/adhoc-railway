@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.domain;
+package ch.fork.AdHocRailway.ui.context;
 
 import javax.swing.Action;
 import javax.swing.JMenu;

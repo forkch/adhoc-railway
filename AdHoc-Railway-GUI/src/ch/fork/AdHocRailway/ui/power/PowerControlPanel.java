@@ -21,13 +21,13 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.log4j.Logger;
 
-import ch.fork.AdHocRailway.domain.PowerContext;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
+import ch.fork.AdHocRailway.ui.context.PowerContext;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.power.SRCPPowerControl;
 import de.dermoba.srcp.model.power.SRCPPowerState;

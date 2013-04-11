@@ -28,6 +28,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
+import ch.fork.AdHocRailway.ui.XMLServiceHelper;
 
 public class XMLTurnoutService implements TurnoutService {
 	static Logger logger = Logger.getLogger(XMLTurnoutService.class);
@@ -43,7 +44,7 @@ public class XMLTurnoutService implements TurnoutService {
 	@Override
 	public void addTurnout(final Turnout turnout) {
 		turnouts.add(turnout);
-		turnout.setId(XMLService.nextValue());
+		turnout.setId(XMLServiceHelper.nextValue());
 		listener.turnoutAdded(turnout);
 	}
 
@@ -70,7 +71,7 @@ public class XMLTurnoutService implements TurnoutService {
 	@Override
 	public void addTurnoutGroup(final TurnoutGroup group) {
 		turnoutGroups.add(group);
-		group.setId(XMLService.nextValue());
+		group.setId(XMLServiceHelper.nextValue());
 		listener.turnoutGroupAdded(group);
 	}
 

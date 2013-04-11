@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-import ch.fork.AdHocRailway.domain.TurnoutContext;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
@@ -17,6 +16,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.UIConstants;
+import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import de.dermoba.srcp.model.turnouts.MMTurnout;
 
 public class TurnoutHelper {

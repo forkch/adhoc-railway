@@ -24,11 +24,11 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import ch.fork.AdHocRailway.domain.RouteContext;
-import ch.fork.AdHocRailway.domain.TrackContext;
-import ch.fork.AdHocRailway.domain.TurnoutContext;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.context.RouteContext;
+import ch.fork.AdHocRailway.ui.context.TrackContext;
+import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.routes.RouteGroupsPanel;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutGroupsPanel;
 

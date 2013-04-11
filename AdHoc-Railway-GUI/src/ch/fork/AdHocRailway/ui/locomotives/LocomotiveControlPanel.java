@@ -28,7 +28,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
-import ch.fork.AdHocRailway.domain.LocomotiveContext;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
@@ -39,6 +38,7 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
+import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 
 public class LocomotiveControlPanel extends JPanel implements
 		LocomotiveManagerListener {

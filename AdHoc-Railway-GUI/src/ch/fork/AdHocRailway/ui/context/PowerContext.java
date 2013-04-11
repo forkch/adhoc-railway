@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.domain;
+package ch.fork.AdHocRailway.ui.context;
 
 import de.dermoba.srcp.model.power.SRCPPowerControl;
 
