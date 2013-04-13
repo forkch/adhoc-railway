@@ -105,7 +105,7 @@ public class TurnoutConfig extends JDialog {
 	private BufferedValueModel defaultStateModel;
 	private BufferedValueModel orientationModel;
 	private final TurnoutManager turnoutManager;
-	private TurnoutContext ctx;
+	private final TurnoutContext ctx;
 
 	public TurnoutConfig(final JDialog owner, final TurnoutContext ctx,
 			final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup) {
@@ -123,6 +123,7 @@ public class TurnoutConfig extends JDialog {
 	public TurnoutConfig(final Frame owner, final TurnoutContext ctx,
 			final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup) {
 		super(owner, "Turnout Config", true);
+		this.ctx = ctx;
 		turnoutManager = ctx.getTurnoutManager();
 		testTurnout = TurnoutHelper.copyTurnout(myTurnout);
 		this.presentationModel = new PresentationModel<Turnout>(myTurnout,

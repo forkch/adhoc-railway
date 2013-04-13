@@ -111,6 +111,8 @@ public class LocomotiveWidget extends JPanel implements
 
 	private final LocomotiveContext ctx;
 
+	public boolean directionToggeled;
+
 	public LocomotiveWidget(final LocomotiveContext ctx, final int number,
 			final JFrame frame) {
 		super();
@@ -394,6 +396,7 @@ public class LocomotiveWidget extends JPanel implements
 		if (myLocomotive == null) {
 			return;
 		}
+
 		if (myLocomotive.equals(changedLocomotive)) {
 			SwingUtilities.invokeLater(new Runnable() {
 
@@ -402,7 +405,17 @@ public class LocomotiveWidget extends JPanel implements
 					updateWidget();
 				}
 			});
+			// if (directionToggeled) {
+			// directionToggeled = false;
+			// try {
+			// locomotiveControl.setSpeed(myLocomotive, 0,
+			// locomotiveControl.getFunctions(myLocomotive));
+			// } catch (final LocomotiveException e) {
+			// e.printStackTrace();
+			// }
+			// }
 		}
+
 	}
 
 	@Override
@@ -672,6 +685,7 @@ public class LocomotiveWidget extends JPanel implements
 				locomotiveControl.setSpeed(myLocomotive, 0,
 						locomotiveControl.getFunctions(myLocomotive));
 			}
+			directionToggeled = true;
 			locomotiveControl.toggleDirection(myLocomotive);
 		}
 	}
@@ -717,9 +731,9 @@ public class LocomotiveWidget extends JPanel implements
 					locomotiveControl.setSpeed(myLocomotive, 0,
 							locomotiveControl.getFunctions(myLocomotive));
 				}
+				directionToggeled = true;
 				locomotiveControl.toggleDirection(myLocomotive);
 				speedBar.requestFocus();
-				updateWidget();
 			} catch (final LocomotiveException e1) {
 				ctx.getMainApp().handleException(e1);
 			}

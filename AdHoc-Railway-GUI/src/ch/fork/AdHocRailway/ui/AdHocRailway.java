@@ -264,101 +264,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		}
 	}
 
-	private void autoConnect() {
-
-		try {
-			if (preferences.getBooleanValue(SRCP_AUTOCONNECT)
-					&& !preferences
-							.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
-				new ConnectAction().actionPerformed(null);
-			} else if (preferences
-					.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
-
-				final JmDNS adhocServermDNS = JmDNS.create();
-				adhocServermDNS.addServiceListener(_ADHOC_SERVER_TCP_LOCAL,
-						new javax.jmdns.ServiceListener() {
-
-							@Override
-							public void serviceResolved(final ServiceEvent event) {
-								LOGGER.info("resolved AdHoc-Server on " + event);
-
-							}
-
-							@Override
-							public void serviceRemoved(final ServiceEvent event) {
-
-							}
-
-							@Override
-							public void serviceAdded(final ServiceEvent event) {
-								final ServiceInfo info = adhocServermDNS
-										.getServiceInfo(event.getType(),
-												event.getName(), true);
-								LOGGER.info("found AdHoc-Server on " + info);
-
-								final String url = "http://"
-										+ info.getInet4Addresses()[0]
-												.getHostAddress() + ":"
-										+ info.getPort();
-
-								connectToAdHocServer(url);
-							}
-						});
-
-				final JmDNS srcpdmDNS = JmDNS.create();
-				srcpdmDNS.addServiceListener(SRCP_SERVER_TCP_LOCAL,
-						new javax.jmdns.ServiceListener() {
-
-							@Override
-							public void serviceResolved(final ServiceEvent event) {
-								LOGGER.info("resolved SRCPD on " + event);
-
-							}
-
-							@Override
-							public void serviceRemoved(final ServiceEvent event) {
-
-							}
-
-							@Override
-							public void serviceAdded(final ServiceEvent event) {
-								final ServiceInfo info = adhocServermDNS
-										.getServiceInfo(event.getType(),
-												event.getName(), true);
-								LOGGER.info("found SRCPD on " + info);
-
-							}
-						});
-
-			}
-
-		} catch (final IOException e) {
-			handleException(e);
-		}
-	}
-
-	private void setUpLogging() {
-		PropertyConfigurator.configure("./etc/log4j.properties");
-
-		final FileAppender appender = new FileAppender();
-		appender.setName("MyFileAppender");
-		appender.setLayout(new PatternLayout("%d [%t] %-5p %c{1} - %m%n"));
-		String localhostname = "";
-		try {
-			localhostname = java.net.InetAddress.getLocalHost().getHostName();
-		} catch (final UnknownHostException e) {
-			e.printStackTrace();
-		}
-		final String userName = System.getProperty("user.name");
-
-		appender.setFile("./logs/" + localhostname + "_" + userName + ".log");
-		appender.setAppend(true);
-		appender.setThreshold(Level.DEBUG);
-		appender.activateOptions();
-		Logger.getRootLogger().addAppender(appender);
-
-	}
-
 	public void saveActualFile() {
 		if (fileMode) {
 			saveFile(AdHocRailway.this.actualFile);
@@ -373,13 +278,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	@Override
 	public void addToolBar(final JToolBar toolbar) {
 		toolbarPanel.add(toolbar);
-	}
-
-	public void updateCommandHistory(final String text) {
-		final DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
-		final String date = df.format(Calendar.getInstance().getTime());
-		final String fullText = "[" + date + "]: " + text;
-		SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
 	}
 
 	@Override
@@ -402,6 +300,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		final JRootPane rootPane = getRootPane();
 		rootPane.registerKeyboardAction(action, stroke,
 				JComponent.WHEN_IN_FOCUSED_WINDOW);
+	}
+
+	@Override
+	public void addEditingModeListener(final EditingModeListener l) {
+		editingModeListeners.add(l);
 	}
 
 	@Override
@@ -431,11 +334,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	}
 
 	@Override
-	public void addEditingModeListener(final EditingModeListener l) {
-		editingModeListeners.add(l);
-	}
-
-	@Override
 	public void editingModeChanged(final boolean editing) {
 		switchesItem.setEnabled(editing);
 		routesItem.setEnabled(editing);
@@ -444,6 +342,108 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		routesToolBarButton.setEnabled(editing);
 		locomotivesToolBarButton.setEnabled(editing);
 
+	}
+
+	private void autoConnect() {
+	
+		try {
+			if (preferences.getBooleanValue(SRCP_AUTOCONNECT)
+					&& !preferences
+							.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
+				new ConnectAction().actionPerformed(null);
+			} else if (preferences
+					.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
+	
+				final JmDNS adhocServermDNS = JmDNS.create();
+				adhocServermDNS.addServiceListener(_ADHOC_SERVER_TCP_LOCAL,
+						new javax.jmdns.ServiceListener() {
+	
+							@Override
+							public void serviceResolved(final ServiceEvent event) {
+								LOGGER.info("resolved AdHoc-Server on " + event);
+	
+							}
+	
+							@Override
+							public void serviceRemoved(final ServiceEvent event) {
+	
+							}
+	
+							@Override
+							public void serviceAdded(final ServiceEvent event) {
+								final ServiceInfo info = adhocServermDNS
+										.getServiceInfo(event.getType(),
+												event.getName(), true);
+								LOGGER.info("found AdHoc-Server on " + info);
+	
+								final String url = "http://"
+										+ info.getInet4Addresses()[0]
+												.getHostAddress() + ":"
+										+ info.getPort();
+	
+								connectToAdHocServer(url);
+							}
+						});
+	
+				final JmDNS srcpdmDNS = JmDNS.create();
+				srcpdmDNS.addServiceListener(SRCP_SERVER_TCP_LOCAL,
+						new javax.jmdns.ServiceListener() {
+	
+							@Override
+							public void serviceResolved(final ServiceEvent event) {
+								LOGGER.info("resolved SRCPD on " + event);
+	
+							}
+	
+							@Override
+							public void serviceRemoved(final ServiceEvent event) {
+	
+							}
+	
+							@Override
+							public void serviceAdded(final ServiceEvent event) {
+								final ServiceInfo info = adhocServermDNS
+										.getServiceInfo(event.getType(),
+												event.getName(), true);
+								LOGGER.info("found SRCPD on " + info);
+	
+							}
+						});
+	
+			}
+	
+		} catch (final IOException e) {
+			handleException(e);
+		}
+	}
+
+	private void setUpLogging() {
+		PropertyConfigurator.configure("./etc/log4j.properties");
+	
+		final FileAppender appender = new FileAppender();
+		appender.setName("MyFileAppender");
+		appender.setLayout(new PatternLayout("%d [%t] %-5p %c{1} - %m%n"));
+		String localhostname = "";
+		try {
+			localhostname = java.net.InetAddress.getLocalHost().getHostName();
+		} catch (final UnknownHostException e) {
+			e.printStackTrace();
+		}
+		final String userName = System.getProperty("user.name");
+	
+		appender.setFile("./logs/" + localhostname + "_" + userName + ".log");
+		appender.setAppend(true);
+		appender.setThreshold(Level.DEBUG);
+		appender.activateOptions();
+		Logger.getRootLogger().addAppender(appender);
+	
+	}
+
+	private void updateCommandHistory(final String text) {
+		final DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
+		final String date = df.format(Calendar.getInstance().getTime());
+		final String fullText = "[" + date + "]: " + text;
+		SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
 	}
 
 	private void loadControlLayer() {
