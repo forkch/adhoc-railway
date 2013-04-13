@@ -9,6 +9,8 @@ var mongoose = require('mongoose');
 
 var colorize = require('colorize');
 
+var mdns = require('mdns');
+
 
 var app = module.exports = express(); var server =
 require('http').createServer(app);
@@ -59,3 +61,5 @@ io.sockets.on('connection', socket);
 server.listen(3000, function(){
     console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 });
+var ad = mdns.createAdvertisement(mdns.tcp('adhoc-server'), 3000);
+ad.start();

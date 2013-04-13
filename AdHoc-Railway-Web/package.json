@@ -9,5 +9,6 @@
     , "mongoose" : ""
     , "colorize": ""
     , "ain2": ""
+    , "mdns": ""
   }
 }
