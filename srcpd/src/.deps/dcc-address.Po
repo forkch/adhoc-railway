@@ -1,3 +1,0 @@
-dcc-address.o: dcc-address.c dcc-address.h
-
-dcc-address.h:
