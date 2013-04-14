@@ -345,7 +345,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	}
 
 	private void autoConnect() {
-	
+
 		try {
 			if (preferences.getBooleanValue(SRCP_AUTOCONNECT)
 					&& !preferences
@@ -353,65 +353,66 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				new ConnectAction().actionPerformed(null);
 			} else if (preferences
 					.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
-	
+
 				final JmDNS adhocServermDNS = JmDNS.create();
 				adhocServermDNS.addServiceListener(_ADHOC_SERVER_TCP_LOCAL,
 						new javax.jmdns.ServiceListener() {
-	
+
 							@Override
 							public void serviceResolved(final ServiceEvent event) {
 								LOGGER.info("resolved AdHoc-Server on " + event);
-	
+
 							}
-	
+
 							@Override
 							public void serviceRemoved(final ServiceEvent event) {
-	
+
 							}
-	
+
 							@Override
 							public void serviceAdded(final ServiceEvent event) {
 								final ServiceInfo info = adhocServermDNS
 										.getServiceInfo(event.getType(),
 												event.getName(), true);
 								LOGGER.info("found AdHoc-Server on " + info);
-	
+
 								final String url = "http://"
 										+ info.getInet4Addresses()[0]
 												.getHostAddress() + ":"
 										+ info.getPort();
-	
+
 								connectToAdHocServer(url);
 							}
 						});
-	
+
 				final JmDNS srcpdmDNS = JmDNS.create();
 				srcpdmDNS.addServiceListener(SRCP_SERVER_TCP_LOCAL,
 						new javax.jmdns.ServiceListener() {
-	
+
 							@Override
 							public void serviceResolved(final ServiceEvent event) {
 								LOGGER.info("resolved SRCPD on " + event);
-	
+
 							}
-	
+
 							@Override
 							public void serviceRemoved(final ServiceEvent event) {
-	
+
 							}
-	
+
 							@Override
 							public void serviceAdded(final ServiceEvent event) {
 								final ServiceInfo info = adhocServermDNS
 										.getServiceInfo(event.getType(),
 												event.getName(), true);
 								LOGGER.info("found SRCPD on " + info);
-	
+								connectToSRCPServer(info.getInet4Addresses()[0]
+										.getHostAddress(), info.getPort());
 							}
 						});
-	
+
 			}
-	
+
 		} catch (final IOException e) {
 			handleException(e);
 		}
@@ -419,7 +420,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 	private void setUpLogging() {
 		PropertyConfigurator.configure("./etc/log4j.properties");
-	
+
 		final FileAppender appender = new FileAppender();
 		appender.setName("MyFileAppender");
 		appender.setLayout(new PatternLayout("%d [%t] %-5p %c{1} - %m%n"));
@@ -430,13 +431,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			e.printStackTrace();
 		}
 		final String userName = System.getProperty("user.name");
-	
+
 		appender.setFile("./logs/" + localhostname + "_" + userName + ".log");
 		appender.setAppend(true);
 		appender.setThreshold(Level.DEBUG);
 		appender.activateOptions();
 		Logger.getRootLogger().addAppender(appender);
-	
+
 	}
 
 	private void updateCommandHistory(final String text) {
@@ -608,14 +609,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 			@Override
 			public void connected() {
-				final String host = preferences
-						.getStringValue(PreferencesKeys.ADHOC_SERVER_HOSTNAME)
-						+ ":"
-						+ preferences
-								.getStringValue(PreferencesKeys.ADHOC_SERVER_PORT);
-				final String collection = preferences
-						.getStringValue(PreferencesKeys.ADHOC_SERVER_COLLECTION);
-				final String url = "adhocserver://" + host + "/" + collection;
 				setTitle(AdHocRailway.TITLE + " [" + url + "]");
 
 				updateCommandHistory("Successfully connected to AdHoc-Server: "
@@ -1396,34 +1389,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			try {
-				final String host = preferences.getStringValue(SRCP_HOSTNAME);
-				final int port = preferences.getIntValue(SRCP_PORT);
+			final String host = preferences.getStringValue(SRCP_HOSTNAME);
+			final int port = preferences.getIntValue(SRCP_PORT);
 
-				final SRCPSession session = new SRCPSession(host, port, false);
-				appContext.setSession(session);
-				session.getCommandChannel().addCommandDataListener(
-						AdHocRailway.this);
-				session.getInfoChannel().addInfoDataListener(AdHocRailway.this);
-				setSessionOnControllers(session);
-				session.connect();
-
-				enableDisableDueToSessionState(true);
-
-				updateCommandHistory("Connected to server " + host
-						+ " on port " + port);
-			} catch (final SRCPException e1) {
-
-				preferences.setBooleanValue(PreferencesKeys.SRCP_AUTOCONNECT,
-						false);
-				try {
-					preferences.save();
-				} catch (final IOException e2) {
-					handleException("Server not running", e2);
-				}
-				handleException("Server not running", e1);
-
-			}
+			connectToSRCPServer(host, port);
 		}
 	}
 
@@ -1601,6 +1570,32 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		connectToolBarButton.setEnabled(!connected);
 		disconnectToolBarButton.setEnabled(connected);
 		powerControlPanel.setConnected(connected);
+	}
+
+	private void connectToSRCPServer(final String host, final int port) {
+		try {
+			final SRCPSession session = new SRCPSession(host, port, false);
+			appContext.setSession(session);
+			session.getCommandChannel().addCommandDataListener(
+					AdHocRailway.this);
+			session.getInfoChannel().addInfoDataListener(AdHocRailway.this);
+			setSessionOnControllers(session);
+			session.connect();
+			enableDisableDueToSessionState(true);
+
+			updateCommandHistory("Connected to server " + host + " on port "
+					+ port);
+		} catch (final SRCPException e) {
+			preferences
+					.setBooleanValue(PreferencesKeys.SRCP_AUTOCONNECT, false);
+			try {
+				preferences.save();
+			} catch (final IOException e2) {
+				handleException("Server not running", e2);
+			}
+			handleException("SRCP server not running", e);
+		}
+
 	}
 
 	public static void main(final String[] args) {

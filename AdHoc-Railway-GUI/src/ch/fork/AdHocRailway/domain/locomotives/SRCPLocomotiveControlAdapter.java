@@ -17,13 +17,13 @@ import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
+import de.dermoba.srcp.model.locomotives.DoubleMMDigitalLocomotive;
 import de.dermoba.srcp.model.locomotives.MMDeltaLocomotive;
 import de.dermoba.srcp.model.locomotives.MMDigitalLocomotive;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotive;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotiveChangeListener;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotiveControl;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotiveDirection;
-import de.dermoba.srcp.model.turnouts.DoubleMMDigitalLocomotive;
 
 public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		SRCPLocomotiveChangeListener, SRCPLockChangeListener {
@@ -338,7 +338,8 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	public void activateLoco(final Locomotive locomotive,
 			final boolean[] functions) throws LocomotiveException {
 		this.activeLocomotives.add(locomotive);
-		setSpeed(locomotive, 0, functions);
+		setSpeed(locomotive, 0,
+				locomotiveControl.getFunctions(getSrcpLocomotive(locomotive)));
 	}
 
 	@Override
@@ -368,10 +369,10 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	private void informListeners(final SRCPLocomotive changedLocomotive) {
 		logger.debug("locomotiveChanged(" + changedLocomotive + ")");
 		final List<LocomotiveChangeListener> ll = getListenersForSRCPLocomotive(changedLocomotive);
-	
+
 		final Locomotive locomotive = SRCPLocomotiveLocomotiveMap
 				.get(changedLocomotive);
-	
+
 		for (final LocomotiveChangeListener scl : ll) {
 			scl.locomotiveChanged(locomotive);
 		}
