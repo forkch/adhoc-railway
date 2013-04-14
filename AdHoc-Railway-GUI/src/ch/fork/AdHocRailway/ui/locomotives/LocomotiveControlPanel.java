@@ -123,7 +123,6 @@ public class LocomotiveControlPanel extends JPanel implements
 						continue;
 					}
 					locomotiveControl.emergencyStop(myLocomotive);
-					widget.updateWidget();
 				}
 			} catch (final LocomotiveException e3) {
 				ctx.getMainApp().handleException(e3);

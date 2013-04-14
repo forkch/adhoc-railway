@@ -405,15 +405,6 @@ public class LocomotiveWidget extends JPanel implements
 					updateWidget();
 				}
 			});
-			// if (directionToggeled) {
-			// directionToggeled = false;
-			// try {
-			// locomotiveControl.setSpeed(myLocomotive, 0,
-			// locomotiveControl.getFunctions(myLocomotive));
-			// } catch (final LocomotiveException e) {
-			// e.printStackTrace();
-			// }
-			// }
 		}
 
 	}
@@ -838,16 +829,17 @@ public class LocomotiveWidget extends JPanel implements
 				if (myLocomotive == null) {
 					return;
 				}
-				final boolean[] functions = locomotiveControl
-						.getFunctions(myLocomotive);
 
 				for (int i = 0; i < 7; i++) {
-					functions[0] = i % 2 == 0;
-					locomotiveControl.setFunctions(myLocomotive, functions);
+					if (i % 2 == 0) {
+						locomotiveControl.setFunction(myLocomotive, 0, true, 0);
+					} else {
+						locomotiveControl
+								.setFunction(myLocomotive, 0, false, 0);
+					}
 					Thread.sleep(500);
 				}
-				functions[0] = false;
-				locomotiveControl.setFunctions(myLocomotive, functions);
+				locomotiveControl.setFunction(myLocomotive, 0, false, 0);
 
 			} catch (final InterruptedException e) {
 			} catch (final LocomotiveException e) {

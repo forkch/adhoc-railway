@@ -84,7 +84,23 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	@Override
 	public boolean[] getFunctions(final Locomotive locomotive) {
 		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
-		return sLocomotive.getFunctions();
+		final boolean[] functions = sLocomotive.getFunctions();
+
+		if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
+
+			final boolean[] functionsForSimulatedMfx = new boolean[9];
+
+			for (int i = 0; i < 5; i++) {
+				functionsForSimulatedMfx[i] = functions[i];
+			}
+
+			for (int i = 5; i < 9; i++) {
+				functionsForSimulatedMfx[i] = functions[i + 1];
+			}
+			return functionsForSimulatedMfx;
+		}
+
+		return functions;
 	}
 
 	@Override
@@ -110,33 +126,29 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	}
 
 	@Override
-	public void setFunction(final Locomotive locomotive,
-			final int functionNumber, final boolean state,
-			final int deactivationDelay) throws LocomotiveException {
+	public void setFunction(final Locomotive locomotive, int functionNumber,
+			final boolean state, final int deactivationDelay)
+			throws LocomotiveException {
 		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		final boolean[] functions = locomotiveControl.getFunctions(sLocomotive);
 
 		if (functionNumber >= functions.length) {
 			return;
 		}
+
+		if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
+			if (functionNumber >= 5) {
+				functionNumber += 1;
+			}
+		}
+
 		functions[functionNumber] = state;
 
 		setFunctions(locomotive, functions);
 
 		if (deactivationDelay > 0) {
-			startFunctionDeactivationThread(locomotive, functionNumber,
+			startFunctionDeactivationThread(locomotive, functionNumber - 1,
 					deactivationDelay);
-		}
-	}
-
-	@Override
-	public void setFunctions(final Locomotive locomotive,
-			final boolean[] functions) throws LocomotiveException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
-		try {
-			locomotiveControl.setFunctions(sLocomotive, functions);
-		} catch (final SRCPModelException e) {
-			throw new LocomotiveException("Locomotive Error", e);
 		}
 	}
 
@@ -318,28 +330,6 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		informListeners(changedLocomotive);
 	}
 
-	private void informListeners(final SRCPLocomotive changedLocomotive) {
-		logger.debug("locomotiveChanged(" + changedLocomotive + ")");
-		final List<LocomotiveChangeListener> ll = getListenersForSRCPLocomotive(changedLocomotive);
-
-		final Locomotive locomotive = SRCPLocomotiveLocomotiveMap
-				.get(changedLocomotive);
-
-		for (final LocomotiveChangeListener scl : ll) {
-			scl.locomotiveChanged(locomotive);
-		}
-	}
-
-	private List<LocomotiveChangeListener> getListenersForSRCPLocomotive(
-			final SRCPLocomotive changedLocomotive) {
-		final List<LocomotiveChangeListener> ll = listeners
-				.get(changedLocomotive);
-		if (ll == null) {
-			return new ArrayList<LocomotiveChangeListener>();
-		}
-		return ll;
-	}
-
 	public SRCPLocomotive getSrcpLocomotive(final Locomotive locomotive) {
 		return locomotiveSRCPLocomotiveMap.get(locomotive);
 	}
@@ -363,6 +353,38 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		for (final Locomotive locomotive : activeLocomotives) {
 			emergencyStop(locomotive);
 		}
+	}
+
+	private void setFunctions(final Locomotive locomotive,
+			final boolean[] functions) throws LocomotiveException {
+		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		try {
+			locomotiveControl.setFunctions(sLocomotive, functions);
+		} catch (final SRCPModelException e) {
+			throw new LocomotiveException("Locomotive Error", e);
+		}
+	}
+
+	private void informListeners(final SRCPLocomotive changedLocomotive) {
+		logger.debug("locomotiveChanged(" + changedLocomotive + ")");
+		final List<LocomotiveChangeListener> ll = getListenersForSRCPLocomotive(changedLocomotive);
+	
+		final Locomotive locomotive = SRCPLocomotiveLocomotiveMap
+				.get(changedLocomotive);
+	
+		for (final LocomotiveChangeListener scl : ll) {
+			scl.locomotiveChanged(locomotive);
+		}
+	}
+
+	private List<LocomotiveChangeListener> getListenersForSRCPLocomotive(
+			final SRCPLocomotive changedLocomotive) {
+		final List<LocomotiveChangeListener> ll = listeners
+				.get(changedLocomotive);
+		if (ll == null) {
+			return new ArrayList<LocomotiveChangeListener>();
+		}
+		return ll;
 	}
 
 	private void startFunctionDeactivationThread(final Locomotive locomotive,

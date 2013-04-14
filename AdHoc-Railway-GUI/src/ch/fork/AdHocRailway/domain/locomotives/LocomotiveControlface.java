@@ -82,16 +82,6 @@ public interface LocomotiveControlface extends LockControlIface<Locomotive> {
 	public abstract void decreaseSpeedStep(Locomotive locomotive)
 			throws LocomotiveException;
 
-	/**
-	 * Sets the functions of the Locomotive on or off.
-	 * 
-	 * @param locomotive
-	 * @param functions
-	 * @throws LocomotiveException
-	 */
-	public abstract void setFunctions(Locomotive locomotive, boolean[] functions)
-			throws LocomotiveException;
-
 	public abstract void setFunction(Locomotive locomotive, int functionNumber,
 			boolean state, int deactivationDelay) throws LocomotiveException;
 
