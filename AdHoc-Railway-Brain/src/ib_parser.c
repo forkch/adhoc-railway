@@ -102,10 +102,10 @@ uint8_t ib_go_cmd(char** tokens, uint8_t nTokens) {
 		go_all_boosters();
 
 	} else {
+		number = atoi(tokens[1]);
 #ifdef DEBUG
 		log_debug3("turn on booster ", number);
 #endif
-		number = atoi(tokens[1]);
 		go_booster(number);
 	}
 

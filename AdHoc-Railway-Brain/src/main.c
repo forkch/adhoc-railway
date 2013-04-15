@@ -119,28 +119,29 @@ int main() {
 
 		//Verz�gerung Weichen-Deaktivierung in 13ms-Schritten
 #ifdef AUTO_SOLENOID
-		if (timer0_interrupt > 40) {
+		if (timer0_interrupt > 5 && !deactivatingSolenoid) {
 #else
-		if (timer0_interrupt > 20) {
+		if (timer0_interrupt > 5 && !deactivatingSolenoid) {
 #endif
 			timer0_interrupt = 0;
-			for (int i = 0; i < MAX_SOLENOID_QUEUE; i++) {
-				if (solenoidQueue[i].active
-						&& solenoidQueue[i].timerDetected == 0) {
+			if (solenoidQueue[solenoidQueueIdxFront2].active
+					&& solenoidQueue[solenoidQueueIdxFront2].timerDetected == 0) {
 
-					// fairly recent solenoid command...defer deactivation to next cycle
-					solenoidQueue[i].timerDetected = 1;
-				} else if (solenoidQueue[i].active
-						&& solenoidQueue[i].timerDetected == 1
-						&& !deactivatingSolenoid) {
+				// fairly recent solenoid command...defer deactivation to next cycle
+				solenoidQueue[solenoidQueueIdxFront2].timerDetected = 1;
 
-					// deactivate solenoid
-					deactivatingSolenoid = 1;
+			} else if (solenoidQueue[solenoidQueueIdxFront2].active
+					&& solenoidQueue[solenoidQueueIdxFront2].timerDetected == 1
+					&& !deactivatingSolenoid) {
 
-					solenoidToDeactivate = i;
-					break;
-				}
+				// deactivate solenoid
+				deactivatingSolenoid = 1;
+
+				solenoidToDeactivate = solenoidQueueIdxFront2;
+				solenoidQueueIdxFront2++;
+				solenoidQueueIdxFront2 = solenoidQueueIdxFront2 % MAX_SOLENOID_QUEUE;
 			}
+
 		}
 
 		if (prepareNextData == 1) {
@@ -520,7 +521,7 @@ void sendSolenoidPacket(uint8_t solenoidIdx, unsigned char queueIdxLoc) {
 	} else {
 		// active solenoid --> deactivate port
 #ifdef DEBUG
-		log_debug3("deactivating decoder ", solenoidIdx);
+		log_debug3("deactivating decoder ", address);
 #endif
 		commandQueue[queueIdxLoc][16] = 0;
 		commandQueue[queueIdxLoc][17] = 0;
@@ -819,6 +820,184 @@ void initLocoData() {
 	locoData[77].address = 42;
 	locoData[78].address = 234;
 	locoData[79].address = 0;
+//	locoData[80].address = 64;
+//	locoData[81].address = 96;
+//	locoData[82].address = 151;
+//	locoData[83].address = 112;
+//	locoData[84].address = 72;
+//	locoData[85].address = 104;
+//	locoData[86].address = 88;
+//	locoData[87].address = 120;
+//	locoData[88].address = 68;
+//	locoData[89].address = 100;
+//	locoData[90].address = 84;
+//	locoData[91].address = 116;
+//	locoData[92].address = 76;
+//	locoData[93].address = 108;
+//	locoData[94].address = 92;
+//	locoData[95].address = 124;
+//	locoData[96].address = 66;
+//	locoData[97].address = 98;
+//	locoData[98].address = 82;
+//	locoData[99].address = 114;
+//	locoData[100].address = 74;
+//	locoData[101].address = 106;
+//	locoData[102].address = 90;
+//	locoData[103].address = 122;
+//	locoData[104].address = 70;
+//	locoData[105].address = 102;
+//	locoData[106].address = 86;
+//	locoData[107].address = 118;
+//	locoData[108].address = 78;
+//	locoData[109].address = 110;
+//	locoData[110].address = 94;
+//	locoData[111].address = 0;
+//	locoData[112].address = 0;
+//	locoData[113].address = 0;
+//	locoData[114].address = 0;
+//	locoData[115].address = 0;
+//	locoData[116].address = 0;
+//	locoData[117].address = 0;
+//	locoData[118].address = 0;
+//	locoData[119].address = 0;
+//	locoData[120].address = 0;
+//	locoData[121].address = 0;
+//	locoData[122].address = 0;
+//	locoData[123].address = 0;
+//	locoData[124].address = 0;
+//	locoData[125].address = 0;
+//	locoData[126].address = 0;
+//	locoData[127].address = 0;
+//	locoData[128].address = 0;
+//	locoData[129].address = 0;
+//	locoData[130].address = 0;
+//	locoData[131].address = 0;
+//	locoData[132].address = 0;
+//	locoData[133].address = 0;
+//	locoData[134].address = 0;
+//	locoData[135].address = 0;
+//	locoData[136].address = 0;
+//	locoData[137].address = 0;
+//	locoData[138].address = 0;
+//	locoData[139].address = 0;
+//	locoData[140].address = 0;
+//	locoData[141].address = 0;
+//	locoData[142].address = 0;
+//	locoData[143].address = 0;
+//	locoData[144].address = 0;
+//	locoData[145].address = 0;
+//	locoData[146].address = 0;
+//	locoData[147].address = 0;
+//	locoData[148].address = 0;
+//	locoData[149].address = 0;
+//	locoData[150].address = 0;
+//	locoData[151].address = 0;
+//	locoData[152].address = 0;
+//	locoData[153].address = 0;
+//	locoData[154].address = 0;
+//	locoData[155].address = 0;
+//	locoData[156].address = 0;
+//	locoData[157].address = 0;
+//	locoData[158].address = 0;
+//	locoData[159].address = 0;
+//	locoData[160].address = 0;
+//	locoData[161].address = 0;
+//	locoData[162].address = 0;
+//	locoData[163].address = 0;
+//	locoData[164].address = 0;
+//	locoData[165].address = 0;
+//	locoData[166].address = 0;
+//	locoData[167].address = 0;
+//	locoData[168].address = 0;
+//	locoData[169].address = 0;
+//	locoData[170].address = 0;
+//	locoData[171].address = 0;
+//	locoData[172].address = 0;
+//	locoData[173].address = 0;
+//	locoData[174].address = 0;
+//	locoData[175].address = 0;
+//	locoData[176].address = 0;
+//	locoData[177].address = 0;
+//	locoData[178].address = 0;
+//	locoData[179].address = 0;
+//	locoData[180].address = 0;
+//	locoData[181].address = 0;
+//	locoData[182].address = 0;
+//	locoData[183].address = 0;
+//	locoData[184].address = 0;
+//	locoData[185].address = 0;
+//	locoData[186].address = 0;
+//	locoData[187].address = 0;
+//	locoData[188].address = 0;
+//	locoData[189].address = 0;
+//	locoData[190].address = 0;
+//	locoData[191].address = 0;
+//	locoData[192].address = 0;
+//	locoData[193].address = 0;
+//	locoData[194].address = 0;
+//	locoData[195].address = 0;
+//	locoData[196].address = 0;
+//	locoData[197].address = 0;
+//	locoData[198].address = 0;
+//	locoData[199].address = 0;
+//	locoData[200].address = 0;
+//	locoData[201].address = 134;
+//	locoData[202].address = 133;
+//	locoData[203].address = 135;
+//	locoData[204].address = 52;
+//	locoData[205].address = 54;
+//	locoData[206].address = 53;
+//	locoData[207].address = 0;
+//	locoData[208].address = 0;
+//	locoData[209].address = 0;
+//	locoData[210].address = 0;
+//	locoData[211].address = 0;
+//	locoData[212].address = 0;
+//	locoData[213].address = 0;
+//	locoData[214].address = 0;
+//	locoData[215].address = 0;
+//	locoData[216].address = 0;
+//	locoData[217].address = 0;
+//	locoData[218].address = 0;
+//	locoData[219].address = 0;
+//	locoData[220].address = 0;
+//	locoData[221].address = 0;
+//	locoData[222].address = 0;
+//	locoData[223].address = 0;
+//	locoData[224].address = 0;
+//	locoData[225].address = 0;
+//	locoData[226].address = 0;
+//	locoData[227].address = 0;
+//	locoData[228].address = 0;
+//	locoData[229].address = 0;
+//	locoData[230].address = 0;
+//	locoData[231].address = 0;
+//	locoData[232].address = 0;
+//	locoData[233].address = 0;
+//	locoData[234].address = 0;
+//	locoData[235].address = 0;
+//	locoData[236].address = 0;
+//	locoData[237].address = 0;
+//	locoData[238].address = 0;
+//	locoData[239].address = 0;
+//	locoData[240].address = 0;
+//	locoData[241].address = 0;
+//	locoData[242].address = 0;
+//	locoData[243].address = 0;
+//	locoData[244].address = 0;
+//	locoData[245].address = 0;
+//	locoData[246].address = 0;
+//	locoData[247].address = 0;
+//	locoData[248].address = 0;
+//	locoData[249].address = 0;
+//	locoData[250].address = 0;
+//	locoData[251].address = 0;
+//	locoData[252].address = 0;
+//	locoData[253].address = 0;
+//	locoData[254].address = 0;
+//	locoData[255].address = 0;
+//
+
 
 	for (uint8_t i = 0; i < 80; i++) {
 

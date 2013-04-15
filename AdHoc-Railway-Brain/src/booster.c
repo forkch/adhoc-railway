@@ -37,6 +37,12 @@ void check_shorts() {
 
 	uint8_t shortDetected = 0;
 	unsigned char shorts = SPI_MasterReceiveShort();
+#ifdef DEBUG
+	if (shorts > 0){
+		logit_binary("short:", shorts);
+	}
+#endif
+
 	for (int i = 0; i < BOOSTER_COUNT; i++) {
 		if ((shorts & (1 << i)) && booster_state[i].active == 1) {
 			booster_state[i].shortcut = 1;

@@ -26,6 +26,7 @@ uint8_t currentRefreshCycleFunction;
 
 int solenoidQueueIdxEnter;
 uint8_t solenoidQueueIdxFront;
+uint8_t solenoidQueueIdxFront2;
 
 uint8_t deactivatingSolenoid;
 uint8_t solenoidToDeactivate;
@@ -76,8 +77,9 @@ inline void init() {
 	currentRefreshCycleLocoIdx = 79;
 	currentRefreshCycleFunction = 0;
 
-	solenoidQueueIdxEnter = 0;
-	solenoidQueueIdxFront = 0;
+	solenoidQueueIdxEnter = 0; 		// new Solenoid inserted
+	solenoidQueueIdxFront = 0; 		// Solenoid to activate
+	solenoidQueueIdxFront2 = 0; 	// Solenoid to deactivate
 
 	newLocoQueueIdxEnter  = 0;
 	newLocoQueueIdxFront = 0;
