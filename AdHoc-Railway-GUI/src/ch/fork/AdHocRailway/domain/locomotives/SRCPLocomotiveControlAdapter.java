@@ -126,9 +126,9 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	}
 
 	@Override
-	public void setFunction(final Locomotive locomotive, int functionNumber,
-			final boolean state, final int deactivationDelay)
-			throws LocomotiveException {
+	public void setFunction(final Locomotive locomotive,
+			final int functionNumber, final boolean state,
+			final int deactivationDelay) throws LocomotiveException {
 		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		final boolean[] functions = locomotiveControl.getFunctions(sLocomotive);
 
@@ -136,13 +136,10 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 			return;
 		}
 
-		if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
-			if (functionNumber >= 5) {
-				functionNumber += 1;
-			}
-		}
+		final int srcpFunctionNumber = computeSRCPFunctionNumber(locomotive,
+				functionNumber);
 
-		functions[functionNumber] = state;
+		functions[srcpFunctionNumber] = state;
 
 		setFunctions(locomotive, functions);
 
@@ -150,6 +147,24 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 			startFunctionDeactivationThread(locomotive, functionNumber - 1,
 					deactivationDelay);
 		}
+	}
+
+	/**
+	 * For SimulatedMFX Locomotives the higher functions of the second address
+	 * need to be offsetted by 1 since there is no "F0" on the second address
+	 * 
+	 * @param locomotive
+	 * @param functionNumber
+	 * @return
+	 */
+	private int computeSRCPFunctionNumber(final Locomotive locomotive,
+			int functionNumber) {
+		if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
+			if (functionNumber >= 5) {
+				functionNumber += 1;
+			}
+		}
+		return functionNumber;
 	}
 
 	@Override
@@ -170,7 +185,11 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		try {
 			final int emergencyStopFunction = locomotive
 					.getEmergencyStopFunction();
-			locomotiveControl.emergencyStop(sLocomotive, emergencyStopFunction);
+
+			final int srcpEmergencyStopFunction = computeSRCPFunctionNumber(
+					locomotive, emergencyStopFunction);
+			locomotiveControl.emergencyStop(sLocomotive,
+					srcpEmergencyStopFunction);
 		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}
