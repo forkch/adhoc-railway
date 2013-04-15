@@ -37,6 +37,7 @@ import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
 import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
 import ch.fork.AdHocRailway.domain.routes.RouteException;
+import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
@@ -86,8 +87,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		numberLabel.setFont(new Font("Dialog", Font.BOLD, 25));
 		iconLabel = new JLabel(routeStopIcon);
 
-		routingProgress = new JProgressBar(SwingConstants.HORIZONTAL, 0, route
-				.getRouteItems().size());
+		routingProgress = new JProgressBar(SwingConstants.HORIZONTAL, 0,
+				getRouteItemCount());
 		routingProgress.setBorder(BorderFactory.createEmptyBorder());
 
 		routingProgress.setBackground(UIConstants.STATE_RED);
@@ -107,8 +108,20 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		numberLabel.setText("" + route.getNumber());
 		orientationLabel.setText(route.getOrientation());
 		nameLabel.setText(route.getName());
-		routingProgress.setMaximum(route.getRouteItems().size());
+		routingProgress.setMaximum(getRouteItemCount());
 		setToolTipText(RouteHelper.getRouteDescription(route));
+	}
+
+	private int getRouteItemCount() {
+		int count = 0;
+		for (final RouteItem routeItem : route.getRouteItems()) {
+			if (routeItem.getTurnout().isThreeWay()) {
+				count += 2;
+			} else {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	private class MouseAction extends MouseAdapter {

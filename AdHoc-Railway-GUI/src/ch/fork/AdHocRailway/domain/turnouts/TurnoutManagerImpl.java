@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,7 +56,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
 	private int lastProgrammedAddress = 1;
 
-	private int lastProgrammedNummer = 0;
+	private int lastProgrammedNumber = 0;
 
 	public TurnoutManagerImpl() {
 		LOGGER.info("TurnoutManagerImpl loaded");
@@ -144,7 +145,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 		} else {
 			lastProgrammedAddress = turnout.getAddress1();
 		}
-		lastProgrammedNummer = turnout.getNumber();
+		lastProgrammedNumber = turnout.getNumber();
 
 	}
 
@@ -213,12 +214,25 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	public int getNextFreeTurnoutNumber() {
 		LOGGER.debug("getNextFreeTurnoutNumber()");
 
-		/*
-		 * final SortedSet<Turnout> turnouts = new TreeSet<Turnout>(
-		 * getAllTurnouts()); if (turnouts.isEmpty()) { return 1; } return
-		 * turnouts.last().getNumber() + 1;
-		 */
-		return lastProgrammedNummer + 1;
+		if (lastProgrammedNumber == 0) {
+			final SortedSet<Turnout> turnoutsNumbers = new TreeSet<Turnout>(
+					new Comparator<Turnout>() {
+
+						@Override
+						public int compare(final Turnout o1, final Turnout o2) {
+							return Integer.valueOf(o1.getNumber()).compareTo(
+									Integer.valueOf(o2.getNumber()));
+						}
+					});
+			turnoutsNumbers.addAll(getAllTurnouts());
+			if (turnoutsNumbers.isEmpty()) {
+				lastProgrammedNumber = 0;
+			}
+			lastProgrammedNumber = turnoutsNumbers.last().getNumber();
+
+		}
+
+		return lastProgrammedNumber + 1;
 	}
 
 	@Override

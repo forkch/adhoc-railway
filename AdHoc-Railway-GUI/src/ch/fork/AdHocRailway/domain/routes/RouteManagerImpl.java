@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.domain.routes;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -213,11 +214,23 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	@Override
 	public int getNextFreeRouteNumber() {
 		LOGGER.debug("getNextFreeRouteNumber()");
-		// final SortedSet<Route> turnouts = new TreeSet<Route>(getAllRoutes());
-		// if (turnouts.isEmpty()) {
-		// return 1;
-		// }
-		// return turnouts.last().getNumber() + 1;
+		if (lastProgrammedNumber == 0) {
+			final SortedSet<Route> routesNumbers = new TreeSet<Route>(
+					new Comparator<Route>() {
+
+						@Override
+						public int compare(final Route o1, final Route o2) {
+							return Integer.valueOf(o1.getNumber()).compareTo(
+									Integer.valueOf(o2.getNumber()));
+						}
+					});
+			routesNumbers.addAll(getAllRoutes());
+			if (routesNumbers.isEmpty()) {
+				lastProgrammedNumber = 0;
+			}
+			lastProgrammedNumber = routesNumbers.last().getNumber();
+
+		}
 		return lastProgrammedNumber + 1;
 	}
 

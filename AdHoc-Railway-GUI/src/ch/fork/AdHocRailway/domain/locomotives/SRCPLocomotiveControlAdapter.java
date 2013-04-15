@@ -27,7 +27,7 @@ import de.dermoba.srcp.model.locomotives.SRCPLocomotiveDirection;
 
 public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		SRCPLocomotiveChangeListener, SRCPLockChangeListener {
-	private static Logger logger = Logger
+	private static Logger LOGGER = Logger
 			.getLogger(SRCPLocomotiveControlAdapter.class);
 
 	private final Map<Locomotive, SRCPLocomotive> locomotiveSRCPLocomotiveMap = new HashMap<Locomotive, SRCPLocomotive>();
@@ -144,7 +144,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 		setFunctions(locomotive, functions);
 
 		if (deactivationDelay > 0) {
-			startFunctionDeactivationThread(locomotive, functionNumber - 1,
+			startFunctionDeactivationThread(locomotive, functionNumber,
 					deactivationDelay);
 		}
 	}
@@ -386,7 +386,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	}
 
 	private void informListeners(final SRCPLocomotive changedLocomotive) {
-		logger.debug("locomotiveChanged(" + changedLocomotive + ")");
+		LOGGER.debug("locomotiveChanged(" + changedLocomotive + ")");
 		final List<LocomotiveChangeListener> ll = getListenersForSRCPLocomotive(changedLocomotive);
 
 		final Locomotive locomotive = SRCPLocomotiveLocomotiveMap
@@ -415,8 +415,10 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 			public void run() {
 				try {
 					Thread.sleep(deactivationDelay * 1000);
-
+					LOGGER.info("deactivating function (due to delay): "
+							+ functionNumber);
 					setFunction(locomotive, functionNumber, false, -1);
+
 				} catch (final InterruptedException e) {
 					e.printStackTrace();
 				} catch (final LocomotiveException e) {

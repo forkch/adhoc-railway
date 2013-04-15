@@ -534,7 +534,7 @@ public class LocomotiveWidget extends JPanel implements
 					locomotiveControl.activateLoco(myLocomotive, functions);
 
 					final Thread blinkOnSelection = new BlinkLightsOnSelectLocomotiveThread();
-					// blinkOnSelection.start();
+					blinkOnSelection.start();
 
 					locomotiveComboBox
 							.setBackground(UIConstants.DEFAULT_PANEL_COLOR);

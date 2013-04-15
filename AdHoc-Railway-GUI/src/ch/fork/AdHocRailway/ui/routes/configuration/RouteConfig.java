@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.InputMap;
@@ -238,11 +237,17 @@ public class RouteConfig extends JDialog {
 
 		@Override
 		public void propertyChange(final PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equalsIgnoreCase("selectionIndex")) {
+				return;
+			}
+			if (evt.getPropertyName().equalsIgnoreCase("selection")) {
+				return;
+			}
 			if (property.equals(Route.PROPERTYNAME_ROUTE_ITEMS)) {
-				@SuppressWarnings("unchecked")
-				final SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>(
-						(ArrayList<RouteItem>) evt.getNewValue());
-				RouteHelper.update(testRoute, property, routeItems);
+				// final SortedSet<RouteItem> routeItems = new
+				// TreeSet<RouteItem>(
+				// (ArrayList<RouteItem>) evt.getNewValue());
+				// RouteHelper.update(testRoute, property, routeItems);
 			} else {
 				RouteHelper.update(testRoute, property, evt.getNewValue());
 			}
