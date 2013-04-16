@@ -32,9 +32,6 @@ import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 
 public class TurnoutGroupsPanel extends JTabbedPane implements
 		TurnoutManagerListener, EditingModeListener {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4422288695074160221L;
 
 	private final Map<Integer, TurnoutGroup> indexToTurnoutGroup = new HashMap<Integer, TurnoutGroup>();
@@ -84,16 +81,17 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 		for (final TurnoutGroup turnoutGroup : turnoutGroups) {
 			indexToTurnoutGroup.put(i - 1, turnoutGroup);
-			addTurnoutGroup(turnoutGroup);
+			addTurnoutGroup(i, turnoutGroup);
 			i++;
 		}
 	}
 
-	public void addTurnoutGroup(final TurnoutGroup turnoutGroup) {
+	public void addTurnoutGroup(final int groupNumber,
+			final TurnoutGroup turnoutGroup) {
 		final TurnoutGroupTab turnoutGroupTab = new TurnoutGroupTab(ctx,
 				turnoutGroup);
 
-		add(turnoutGroupTab, turnoutGroup.getName());
+		add(turnoutGroupTab, groupNumber + ": " + turnoutGroup.getName());
 		turnoutGroupToTurnoutGroupTab.put(turnoutGroup, turnoutGroupTab);
 
 	}
@@ -243,10 +241,10 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 			@Override
 			public void run() {
 				updateTurnouts(turnoutGroups);
+				revalidate();
+				repaint();
 			}
 		});
-		revalidate();
-		repaint();
 	}
 
 	@Override
@@ -259,10 +257,12 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 				final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
 						.get(turnout.getTurnoutGroup());
 				turnoutGroupTab.updateTurnout(turnout);
+				revalidateAllTurnouts();
 				revalidate();
 				repaint();
 
 			}
+
 		});
 
 	}
@@ -278,9 +278,9 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 						.get(turnout.getTurnoutGroup());
 				turnoutGroupTab.removeTurnout(turnout);
 
+				revalidateAllTurnouts();
 				revalidate();
 				repaint();
-
 			}
 		});
 
@@ -295,6 +295,8 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 				final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
 						.get(turnout.getTurnoutGroup());
 				turnoutGroupTab.addTurnout(turnout);
+
+				revalidateAllTurnouts();
 				revalidate();
 				repaint();
 
@@ -309,9 +311,8 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 			@Override
 			public void run() {
-				addTurnoutGroup(group);
-				revalidate();
-				repaint();
+				addTurnoutGroup(-1, group);
+
 			}
 		});
 	}
@@ -359,5 +360,11 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 		turnoutsProgrammerItem.setEnabled(editing);
 		turnoutProgrammerButton.setEnabled(editing);
 
+	}
+
+	private void revalidateAllTurnouts() {
+		for (final TurnoutGroupTab tgt : turnoutGroupToTurnoutGroupTab.values()) {
+			tgt.revalidateTurnouts();
+		}
 	}
 }

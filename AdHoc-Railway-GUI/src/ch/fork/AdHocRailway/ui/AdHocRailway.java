@@ -668,9 +668,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		try {
 			final XMLServiceHelper xmlService = new XMLServiceHelper();
 			xmlService.saveFile(appContext, file);
-
 		} catch (final IOException e) {
-
 			handleException(e);
 		}
 		updateCommandHistory("AdHoc-Railway Configuration saved (" + file + ")");
@@ -708,11 +706,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				new ImportLocomotivesAction());
 		final JMenuItem exportLocomotivesItem = new JMenuItem(
 				new ExportLocomotivesAction());
+		final JMenuItem exportAllItem = new JMenuItem(new ExportAllAction());
 
 		final JMenu importMenu = new JMenu("Import");
 		importMenu.add(importLocomotivesItem);
 		final JMenu exportMenu = new JMenu("Export");
 		exportMenu.add(exportLocomotivesItem);
+		exportMenu.add(exportAllItem);
 
 		final JMenuItem clearLocomotivesItem = new JMenuItem(
 				new ClearLocomotivesAction());
@@ -1221,9 +1221,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 	private class ExportLocomotivesAction extends AbstractAction {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -2387864940540796841L;
 
 		public ExportLocomotivesAction() {
@@ -1239,6 +1236,29 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 					new XMLServiceHelper().exportLocomotivesToFile(
 							fileChooser.getSelectedFile(),
 							appContext.getLocomotiveManager());
+				} catch (final IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+	}
+
+	private class ExportAllAction extends AbstractAction {
+
+		private static final long serialVersionUID = -2387864940540796841L;
+
+		public ExportAllAction() {
+			super("Export Locomotives, Turnouts, Routes");
+		}
+
+		@Override
+		public void actionPerformed(final ActionEvent e) {
+			final JFileChooser fileChooser = new JFileChooser(new File("."));
+			final int returnVal = fileChooser.showSaveDialog(AdHocRailway.this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				try {
+					new XMLServiceHelper().saveFile(appContext,
+							fileChooser.getSelectedFile());
 				} catch (final IOException e1) {
 					e1.printStackTrace();
 				}

@@ -70,4 +70,10 @@ public class TurnoutGroupTab extends WidgetTab {
 
 	}
 
+	public void revalidateTurnouts() {
+		for (final TurnoutWidget widget : turnoutToTurnoutWidget.values()) {
+			widget.revalidateTurnout();
+		}
+	}
+
 }

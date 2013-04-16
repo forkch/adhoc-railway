@@ -227,79 +227,17 @@ public class TurnoutManagerImpl implements TurnoutManager,
 			turnoutsNumbers.addAll(getAllTurnouts());
 			if (turnoutsNumbers.isEmpty()) {
 				lastProgrammedNumber = 0;
+			} else {
+				lastProgrammedNumber = turnoutsNumbers.last().getNumber();
 			}
-			lastProgrammedNumber = turnoutsNumbers.last().getNumber();
-
 		}
 
 		return lastProgrammedNumber + 1;
 	}
 
 	@Override
-	public Set<Integer> getUsedTurnoutNumbers() {
-		LOGGER.debug("getUsedTurnoutNumbers()");
-		return numberToTurnoutCache.keySet();
-	}
-
-	@Override
-	public int getNextFreeTurnoutNumberOfGroup(final TurnoutGroup turnoutGroup) {
-		final SortedSet<Turnout> turnouts = new TreeSet<Turnout>(
-				turnoutGroup.getTurnouts());
-		final int offset = turnoutGroup.getTurnoutNumberOffset();
-		final int amount = turnoutGroup.getTurnoutNumberAmount();
-
-		if (turnouts.isEmpty()) {
-			return offset;
-		}
-		final int nextNumber = turnouts.last().getNumber() + 1;
-		if (nextNumber < offset + amount) {
-			return nextNumber;
-		}
-		return -1;
-	}
-
-	@Override
-	public void enlargeTurnoutGroups() {
-		LOGGER.debug("enlargeTurnoutGroups()");
-		int runningNumber = 1;
-		for (final TurnoutGroup group : getAllTurnoutGroups()) {
-			LOGGER.debug("offset of group " + group.getName() + ": "
-					+ runningNumber);
-
-			group.setTurnoutNumberOffset(runningNumber);
-			int turnoutsInThisGroup = 0;
-			for (final Turnout turnout : group.getTurnouts()) {
-				turnout.setNumber(runningNumber);
-				turnoutsInThisGroup++;
-				runningNumber++;
-			}
-
-			LOGGER.debug("actual turnoutNumberAmount "
-					+ group.getTurnoutNumberAmount());
-			LOGGER.debug("turnouts in this group " + turnoutsInThisGroup);
-			final int diff = group.getTurnoutNumberAmount()
-					- turnoutsInThisGroup;
-			LOGGER.debug("difference " + diff);
-			if (diff <= 5 && diff >= 0) {
-				LOGGER.debug("setting turnout amount of group "
-						+ group.getName() + " to "
-						+ (group.getTurnoutNumberAmount() + 10));
-				group.setTurnoutNumberAmount(group.getTurnoutNumberAmount() + 10);
-			} else if (diff < 0) {
-				final int newAmount = (int) Math.ceil(Math.abs(diff) / 10.0) * 10;
-				LOGGER.debug("setting turnout amount of group "
-						+ group.getName() + " to " + newAmount);
-				group.setTurnoutNumberAmount(newAmount);
-			}
-			runningNumber = group.getTurnoutNumberOffset()
-					+ group.getTurnoutNumberAmount();
-			LOGGER.debug("offset of next group: " + runningNumber);
-		}
-		numberToTurnoutCache.clear();
-		for (final Turnout t : getAllTurnouts()) {
-			numberToTurnoutCache.put(t.getNumber(), t);
-		}
-
+	public boolean isTurnoutNumberFree(final int number) {
+		return !numberToTurnoutCache.containsKey(number);
 	}
 
 	@Override

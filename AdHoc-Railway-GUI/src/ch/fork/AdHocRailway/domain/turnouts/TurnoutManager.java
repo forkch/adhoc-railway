@@ -19,7 +19,6 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
@@ -60,13 +59,9 @@ public interface TurnoutManager {
 
 	public int getNextFreeTurnoutNumber();
 
-	public Set<Integer> getUsedTurnoutNumbers();
+	public boolean isTurnoutNumberFree(int number);
 
-	public void enlargeTurnoutGroups();
-
-	public int getNextFreeTurnoutNumberOfGroup(TurnoutGroup turnoutGroup);
-
-	void setTurnoutControl(TurnoutControlIface turnoutControl);
+	public void setTurnoutControl(TurnoutControlIface turnoutControl);
 
 	public abstract void setTurnoutService(TurnoutService instance);
 

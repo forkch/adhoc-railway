@@ -25,9 +25,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -64,8 +62,6 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import de.dermoba.srcp.model.turnouts.MMTurnout;
-
 public class TurnoutConfig extends JDialog {
 	private static final long serialVersionUID = -2417439618995313840L;
 	private boolean okPressed;
@@ -81,7 +77,6 @@ public class TurnoutConfig extends JDialog {
 	private JComboBox<?> turnoutTypeComboBox;
 	private JComboBox<?> turnoutDefaultStateComboBox;
 	private JComboBox<?> turnoutOrientationComboBox;
-	private Set<Integer> usedTurnoutNumbers;
 
 	private final TurnoutGroup selectedTurnoutGroup;
 	private final PresentationModel<Turnout> presentationModel;
@@ -133,12 +128,6 @@ public class TurnoutConfig extends JDialog {
 	}
 
 	private void initGUI() {
-		usedTurnoutNumbers = new HashSet<Integer>();
-		for (final int number : turnoutManager.getUsedTurnoutNumbers()) {
-			if (number != presentationModel.getBean().getNumber()) {
-				usedTurnoutNumbers.add(number);
-			}
-		}
 
 		allTurnouts = turnoutManager.getAllTurnouts();
 		initComponents();
@@ -248,7 +237,7 @@ public class TurnoutConfig extends JDialog {
 						TurnoutOrientation.values(), orientationModel));
 
 		testTurnoutWidget = new TurnoutWidget(ctx, testTurnout, false, true);
-		if (!isTurnoutReadyToTest(presentationModel.getBean())) {
+		if (!TurnoutHelper.isTurnoutReadyToTest(presentationModel.getBean())) {
 			testTurnoutWidget.setEnabled(false);
 		}
 
@@ -353,6 +342,84 @@ public class TurnoutConfig extends JDialog {
 		return ButtonBarFactory.buildRightAlignedBar(okButton, cancelButton);
 	}
 
+	private boolean validate(final Turnout turnoutToValidate) {
+		boolean valid = true;
+		if (TurnoutHelper.isNumberValid(turnoutToValidate,
+				presentationModel.getBean(), turnoutManager)) {
+			setSpinnerColor(numberTextField,
+					UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			okButton.setEnabled(true);
+		} else {
+			setSpinnerColor(numberTextField, UIConstants.ERROR_COLOR);
+			valid = false;
+			okButton.setEnabled(false);
+		}
+
+		if (TurnoutHelper.isBusValid(turnoutToValidate.getBus1())) {
+			setSpinnerColor(bus1TextField, UIConstants.DEFAULT_TEXTFIELD_COLOR);
+		} else {
+			setSpinnerColor(bus1TextField, UIConstants.ERROR_COLOR);
+			valid = false;
+		}
+
+		if (TurnoutHelper.isAddressValid(turnoutToValidate.getAddress1())) {
+			setSpinnerColor(address1TextField,
+					UIConstants.DEFAULT_TEXTFIELD_COLOR);
+		} else {
+			setSpinnerColor(address1TextField, UIConstants.ERROR_COLOR);
+			valid = false;
+		}
+
+		if (TurnoutHelper
+				.isBusAddressUnique(turnoutToValidate.getBus1(),
+						turnoutToValidate.getAddress1(), turnoutToValidate,
+						allTurnouts)) {
+			setSpinnerColor(bus1TextField, UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			setSpinnerColor(address1TextField,
+					UIConstants.DEFAULT_TEXTFIELD_COLOR);
+		} else {
+			setSpinnerColor(bus1TextField, UIConstants.WARN_COLOR);
+			setSpinnerColor(address1TextField, UIConstants.WARN_COLOR);
+		}
+
+		if (turnoutToValidate.isThreeWay()) {
+			if (TurnoutHelper.isBusValid(turnoutToValidate.getBus2())) {
+				setSpinnerColor(bus2TextField,
+						UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			} else {
+				setSpinnerColor(bus2TextField, UIConstants.ERROR_COLOR);
+				valid = false;
+			}
+
+			if (TurnoutHelper.isAddressValid(turnoutToValidate.getAddress2())) {
+				setSpinnerColor(address2TextField,
+						UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			} else {
+				setSpinnerColor(address2TextField, UIConstants.ERROR_COLOR);
+				valid = false;
+			}
+
+			if (TurnoutHelper.isBusAddressUnique(turnoutToValidate.getBus2(),
+					turnoutToValidate.getAddress2(), turnoutToValidate,
+					allTurnouts)) {
+				setSpinnerColor(bus2TextField,
+						UIConstants.DEFAULT_TEXTFIELD_COLOR);
+				setSpinnerColor(address2TextField,
+						UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			} else {
+				setSpinnerColor(bus2TextField, UIConstants.WARN_COLOR);
+				setSpinnerColor(address2TextField, UIConstants.WARN_COLOR);
+			}
+		}
+		return valid;
+	}
+
+	private void setSpinnerColor(final JSpinner spinner, final Color color) {
+		final JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner
+				.getEditor();
+		editor.getTextField().setBackground(color);
+	}
+
 	class TurnoutTypeSelectionListener implements ActionListener {
 
 		@Override
@@ -390,16 +457,16 @@ public class TurnoutConfig extends JDialog {
 
 		@Override
 		public void propertyChange(final PropertyChangeEvent evt) {
-			final Turnout turnout = presentationModel.getBean();
-			if (!validate(turnout)) {
-				return;
-			}
 
 			TurnoutHelper.update(testTurnout, property, evt.getNewValue());
 
 			testTurnoutWidget.setTurnout(testTurnout);
 
-			if (!isTurnoutReadyToTest(turnout)) {
+			if (!validate(testTurnout)) {
+				return;
+			}
+
+			if (!TurnoutHelper.isTurnoutReadyToTest(testTurnout)) {
 				testTurnoutWidget.setEnabled(false);
 				return;
 			}
@@ -408,142 +475,8 @@ public class TurnoutConfig extends JDialog {
 		}
 	}
 
-	private boolean validate(final Turnout turnout) {
-		boolean validate = true;
-		if (turnout.getNumber() == 0
-				|| usedTurnoutNumbers.contains(turnout.getNumber())) {
-			setSpinnerColor(numberTextField, UIConstants.ERROR_COLOR);
-			validate = false;
-			okButton.setEnabled(false);
-		} else {
-			setSpinnerColor(numberTextField,
-					UIConstants.DEFAULT_TEXTFIELD_COLOR);
-			okButton.setEnabled(true);
-		}
-		boolean bus1Valid = true;
-		if (turnout.getBus1() == 0) {
-			setSpinnerColor(bus1TextField, UIConstants.ERROR_COLOR);
-			validate = false;
-			bus1Valid = false;
-		} else {
-			setSpinnerColor(bus1TextField, UIConstants.DEFAULT_TEXTFIELD_COLOR);
-		}
-
-		boolean address1Valid = true;
-		if (turnout.getAddress1() == 0
-				|| turnout.getAddress1() > MMTurnout.MAX_MM_TURNOUT_ADDRESS) {
-			setSpinnerColor(address1TextField, UIConstants.ERROR_COLOR);
-			validate = false;
-			address1Valid = false;
-		} else {
-			setSpinnerColor(address1TextField,
-					UIConstants.DEFAULT_TEXTFIELD_COLOR);
-		}
-
-		if (bus1Valid && address1Valid) {
-
-			final int bus1 = ((Integer) bus1TextField.getValue()).intValue();
-			final int address1 = ((Integer) address1TextField.getValue())
-					.intValue();
-			boolean unique1 = true;
-			for (final Turnout t : allTurnouts) {
-				if (t.equals(turnout)) {
-					continue;
-				}
-				if ((t.getBus1() == bus1 && t.getAddress1() == address1)
-						|| (t.getBus1() == bus1 && t.getAddress2() == address1)) {
-					unique1 = false;
-				}
-			}
-
-			if (!unique1) {
-				setSpinnerColor(bus1TextField, UIConstants.WARN_COLOR);
-				setSpinnerColor(address1TextField, UIConstants.WARN_COLOR);
-			} else {
-				setSpinnerColor(bus1TextField,
-						UIConstants.DEFAULT_TEXTFIELD_COLOR);
-				setSpinnerColor(address1TextField,
-						UIConstants.DEFAULT_TEXTFIELD_COLOR);
-			}
-		}
-
-		if (turnout.isThreeWay()) {
-			boolean bus2Valid = true;
-			if (turnout.getBus2() == 0) {
-				setSpinnerColor(bus2TextField, UIConstants.ERROR_COLOR);
-				validate = false;
-				bus2Valid = false;
-			} else {
-				setSpinnerColor(bus2TextField,
-						UIConstants.DEFAULT_TEXTFIELD_COLOR);
-			}
-			boolean address2Valid = true;
-			if (turnout.getAddress2() == 0
-					|| turnout.getAddress2() > MMTurnout.MAX_MM_TURNOUT_ADDRESS) {
-				setSpinnerColor(address2TextField, UIConstants.ERROR_COLOR);
-				validate = false;
-				address2Valid = false;
-			} else {
-				setSpinnerColor(address2TextField,
-						UIConstants.DEFAULT_TEXTFIELD_COLOR);
-			}
-			if (bus2Valid && address2Valid) {
-				final int bus2 = ((Integer) bus2TextField.getValue())
-						.intValue();
-				final int address2 = ((Integer) address2TextField.getValue())
-						.intValue();
-				boolean unique2 = true;
-				for (final Turnout t : allTurnouts) {
-					if (t.equals(turnout)) {
-						continue;
-					}
-					if ((t.getBus1() == bus2 && t.getAddress1() == address2)
-							|| (t.getBus2() == bus2 && t.getAddress2() == address2)) {
-						unique2 = false;
-					}
-				}
-				if (!unique2) {
-					setSpinnerColor(bus2TextField, UIConstants.WARN_COLOR);
-					setSpinnerColor(address2TextField, UIConstants.WARN_COLOR);
-				} else {
-					setSpinnerColor(bus2TextField,
-							UIConstants.DEFAULT_TEXTFIELD_COLOR);
-					setSpinnerColor(address2TextField,
-							UIConstants.DEFAULT_TEXTFIELD_COLOR);
-				}
-			}
-		}
-		return validate;
-	}
-
-	private void setSpinnerColor(final JSpinner spinner, final Color color) {
-		final JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner
-				.getEditor();
-		editor.getTextField().setBackground(color);
-	}
-
-	private boolean isTurnoutReadyToTest(final Turnout turnout) {
-		if (turnout.getAddress1() == 0 || turnout.getBus1() == 0) {
-			return false;
-		}
-		if (turnout.isThreeWay()) {
-			if (turnout.getAddress2() == 0 || turnout.getBus2() == 0) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	public boolean isOkPressed() {
-		return okPressed;
-	}
-
 	class ApplyChangesAction extends AbstractAction {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 151119861825112011L;
 
 		public ApplyChangesAction() {

@@ -1,8 +1,8 @@
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -25,19 +25,7 @@ public class TurnoutHelper {
 			final TurnoutGroup selectedTurnoutGroup) {
 		int nextNumber = 0;
 		final TurnoutManager turnoutManager = ctx.getTurnoutManager();
-		if (Preferences.getInstance().getBooleanValue(
-				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-			nextNumber = turnoutManager
-					.getNextFreeTurnoutNumberOfGroup(selectedTurnoutGroup);
-			if (nextNumber == -1) {
-				JOptionPane.showMessageDialog(ctx.getMainFrame(),
-						"No more free numbers in this group", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		} else {
-			nextNumber = turnoutManager.getNextFreeTurnoutNumber();
-		}
+		nextNumber = turnoutManager.getNextFreeTurnoutNumber();
 
 		final Turnout newTurnout = TurnoutHelper.createDefaultTurnout(
 				turnoutManager, nextNumber);
@@ -66,30 +54,61 @@ public class TurnoutHelper {
 
 	public static void validateTurnout(final TurnoutManager turnoutPersistence,
 			final Turnout turnout, final JPanel panel) {
-		boolean bus1Valid = true;
-		if (turnout.getBus1() == 0) {
-			panel.setBackground(UIConstants.ERROR_COLOR);
-			bus1Valid = false;
-		} else {
+		if (isBusValid(turnout.getBus1())) {
 			panel.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
-		}
-		boolean address1Valid = true;
-		if (turnout.getAddress1() == 0
-				|| turnout.getAddress1() > MMTurnout.MAX_MM_TURNOUT_ADDRESS) {
-			panel.setBackground(UIConstants.ERROR_COLOR);
-			address1Valid = false;
-
 		} else {
-			panel.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
-
+			panel.setBackground(UIConstants.ERROR_COLOR);
 		}
-		if (bus1Valid && address1Valid) {
-			final int bus1 = turnout.getBus1();
-			final int address1 = turnout.getAddress1();
+		if (isAddressValid(turnout.getAddress1())) {
+			panel.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
+		} else {
+			panel.setBackground(UIConstants.ERROR_COLOR);
+		}
+		if (isBusAddressUnique(turnout.getBus1(), turnout.getAddress1(),
+				turnout, turnoutPersistence.getAllTurnouts())) {
+			panel.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
+		} else {
+			panel.setBackground(UIConstants.WARN_COLOR);
+		}
+
+		if (turnout.isThreeWay()) {
+			if (isBusAddressUnique(turnout.getBus2(), turnout.getAddress2(),
+					turnout, turnoutPersistence.getAllTurnouts())) {
+				panel.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
+			} else {
+				panel.setBackground(UIConstants.WARN_COLOR);
+			}
+		}
+	}
+
+	public static boolean isNumberValid(final Turnout tempTurnout,
+			final Turnout currentTurnout, final TurnoutManager turnoutManager) {
+		if (tempTurnout.getNumber() == 0) {
+			return false;
+		}
+		if (!turnoutManager.isTurnoutNumberFree(tempTurnout.getNumber())
+				&& tempTurnout.getNumber() != currentTurnout.getNumber()) {
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean isAddressValid(final int address) {
+		return address != 0 || address > MMTurnout.MAX_MM_TURNOUT_ADDRESS;
+	}
+
+	public static boolean isBusValid(final int bus) {
+		return bus != 0;
+	}
+
+	public static boolean isBusAddressUnique(final int bus1,
+			final int address1, final Turnout turnoutToValidate,
+			final List<Turnout> allTurnouts) {
+		if (isBusValid(bus1) && isAddressValid(address1)) {
 
 			boolean unique1 = true;
-			for (final Turnout t : turnoutPersistence.getAllTurnouts()) {
-				if (t.equals(turnout)) {
+			for (final Turnout t : allTurnouts) {
+				if (t.equals(turnoutToValidate)) {
 					continue;
 				}
 				if ((t.getBus1() == bus1 && t.getAddress1() == address1)
@@ -97,49 +116,24 @@ public class TurnoutHelper {
 					unique1 = false;
 				}
 			}
-			if (!unique1) {
-				panel.setBackground(UIConstants.WARN_COLOR);
-			} else {
-				panel.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
+			return unique1;
+		}
+		return false;
+	}
+
+	public static boolean isTurnoutReadyToTest(final Turnout turnout) {
+		if (!isAddressValid(turnout.getAddress1())
+				|| !isBusValid(turnout.getBus1())) {
+			return false;
+		}
+		if (turnout.isThreeWay()) {
+			if (!isAddressValid(turnout.getAddress2())
+					|| !isBusValid(turnout.getBus2())) {
+				return false;
 			}
 		}
 
-		if (turnout.isThreeWay()) {
-			boolean bus2Valid = true;
-			if (turnout.getBus2() == 0) {
-				panel.setBackground(UIConstants.ERROR_COLOR);
-				bus2Valid = false;
-			} else {
-				panel.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
-			}
-			boolean address2Valid = true;
-			if (turnout.getAddress2() == 0
-					|| turnout.getAddress2() > MMTurnout.MAX_MM_TURNOUT_ADDRESS) {
-				panel.setBackground(UIConstants.ERROR_COLOR);
-				address2Valid = false;
-			} else {
-				panel.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
-			}
-			if (bus2Valid && address2Valid) {
-				final int bus2 = turnout.getBus2();
-				final int address2 = turnout.getAddress2();
-				boolean unique2 = true;
-				for (final Turnout t : turnoutPersistence.getAllTurnouts()) {
-					if (t.equals(turnout)) {
-						continue;
-					}
-					if ((t.getBus1() == bus2 && t.getAddress1() == address2)
-							|| (t.getBus2() == bus2 && t.getAddress2() == address2)) {
-						unique2 = false;
-					}
-				}
-				if (!unique2) {
-					panel.setBackground(UIConstants.WARN_COLOR);
-				} else {
-					panel.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
-				}
-			}
-		}
+		return true;
 	}
 
 	public static Turnout copyTurnout(final Turnout old) {

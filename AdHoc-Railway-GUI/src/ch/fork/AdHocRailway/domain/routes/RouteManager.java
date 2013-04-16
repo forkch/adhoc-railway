@@ -49,9 +49,7 @@ public interface RouteManager {
 
 	public abstract int getNextFreeRouteNumber();
 
-	public abstract int getNextFreeRouteNumberOfGroup(RouteGroup routeGroup);
-
-	public abstract void enlargeRouteGroups();
+	public abstract boolean isRouteNumberFree(int number);
 
 	public abstract void clear();
 

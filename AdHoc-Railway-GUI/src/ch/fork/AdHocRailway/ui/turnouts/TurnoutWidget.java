@@ -114,12 +114,15 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	}
 
 	public void updateTurnout() {
+		turnoutControl.removeTurnoutChangeListener(this);
+
 		numberLabel.setText(Integer.toString(turnout.getNumber()));
 
 		final String turnoutDescription = TurnoutHelper
 				.getTurnoutDescription(turnout);
 		setToolTipText(turnoutDescription);
 		turnoutCanvas.setToolTipText(turnoutDescription);
+		turnoutControl.addTurnoutChangeListener(turnout, this);
 	}
 
 	private class MouseAction extends MouseAdapter {
@@ -230,5 +233,9 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	public void setTurnout(final Turnout turnout) {
 		this.turnout = turnout;
 		updateTurnout();
+	}
+
+	public void revalidateTurnout() {
+		TurnoutHelper.validateTurnout(turnoutManager, turnout, this);
 	}
 }

@@ -6,6 +6,7 @@ import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
@@ -28,6 +29,8 @@ import com.thoughtworks.xstream.XStream;
 
 public class XMLServiceHelper {
 
+	private static final Logger LOGGER = Logger
+			.getLogger(XMLServiceHelper.class);
 	private static final AtomicInteger counter = new AtomicInteger();
 
 	public static int nextValue() {
@@ -37,8 +40,9 @@ public class XMLServiceHelper {
 	public XMLServiceHelper() {
 	}
 
-	public void loadFile(final ApplicationContext appContext,
-			final File xmlFile) {
+	public void loadFile(final ApplicationContext appContext, final File xmlFile) {
+		LOGGER.info("start loading locomotives, turnout and routes  from file: "
+				+ xmlFile);
 		final XStream xstream = getXStream();
 
 		final AdHocRailwayData data = (AdHocRailwayData) xstream
@@ -57,11 +61,16 @@ public class XMLServiceHelper {
 		turnoutService.loadTurnoutGroupsFromXML(data.getTurnoutGroups());
 		routeService.loadRouteGroupsFromXML(data.getRouteGroups());
 
+		LOGGER.info("finished loading locomotives, turnout and routes  from file: "
+				+ xmlFile);
+
 	}
 
-	public void saveFile(final ApplicationContext appContext,
-			final File xmlFile) throws IOException {
+	public void saveFile(final ApplicationContext appContext, final File xmlFile)
+			throws IOException {
 
+		LOGGER.info("start saving/exporting locomotives, turnout and routes to file: "
+				+ xmlFile);
 		final SortedSet<LocomotiveGroup> locomotiveGroups = appContext
 				.getLocomotiveManager().getAllLocomotiveGroups();
 
@@ -78,28 +87,35 @@ public class XMLServiceHelper {
 		final String xml = xstream.toXML(data);
 		FileUtils.writeStringToFile(xmlFile, xml);
 
+		LOGGER.info("finished saving locomotives, turnout and routes  to file: "
+				+ xmlFile);
+
 	}
 
 	public void exportLocomotivesToFile(final File fileToExport,
 			final LocomotiveManager locomotivePersistence) throws IOException {
+		LOGGER.info("start exporting locomotives to file: " + fileToExport);
 
 		final AdHocRailwayData data = new AdHocRailwayData(
 				locomotivePersistence.getAllLocomotiveGroups(), null, null);
 		final XStream xstream = getXStream();
 		final String xml = xstream.toXML(data);
 		FileUtils.writeStringToFile(fileToExport, xml);
+		LOGGER.info("finished exporting locomotives to file: " + fileToExport);
 	}
 
-	public void importLocomotivesFromFile(final File selectedFile,
+	public void importLocomotivesFromFile(final File fileToImport,
 			final LocomotiveManager locomotivePersistence) {
+		LOGGER.info("start importing locomotives from file: " + fileToImport);
 
 		final XStream xstream = getXStream();
 		final AdHocRailwayData data = (AdHocRailwayData) xstream
-				.fromXML(selectedFile);
+				.fromXML(fileToImport);
 
 		addFunctionsIfNeccesaray(data);
 		new LocomotiveImporter().importLocomotives(locomotivePersistence,
 				data.getLocomotiveGroups());
+		LOGGER.info("finished importing locomotives from file: " + fileToImport);
 	}
 
 	private void addFunctionsIfNeccesaray(final AdHocRailwayData data) {
@@ -138,7 +154,7 @@ public class XMLServiceHelper {
 		xstream.omitField(Locomotive.class, "locomotiveGroup");
 		xstream.omitField(Turnout.class, "turnoutGroup");
 		xstream.omitField(Route.class, "routeGroup");
-		xstream.omitField(RouteItem.class, "turnout");
+		xstream.omitField(RouteItem.class, "route");
 
 		xstream.alias("AdHocRailwayData", AdHocRailwayData.class);
 		xstream.alias("locomotive", Locomotive.class);

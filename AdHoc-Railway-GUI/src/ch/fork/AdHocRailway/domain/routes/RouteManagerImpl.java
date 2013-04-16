@@ -227,67 +227,16 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 			routesNumbers.addAll(getAllRoutes());
 			if (routesNumbers.isEmpty()) {
 				lastProgrammedNumber = 0;
+			} else {
+				lastProgrammedNumber = routesNumbers.last().getNumber();
 			}
-			lastProgrammedNumber = routesNumbers.last().getNumber();
-
 		}
 		return lastProgrammedNumber + 1;
 	}
 
 	@Override
-	public void enlargeRouteGroups() {
-		LOGGER.debug("enlargeRouteGroups()");
-		int runningNumber = 1;
-		for (final RouteGroup group : getAllRouteGroups()) {
-			LOGGER.debug("offset of group " + group.getName() + ": "
-					+ runningNumber);
-
-			group.setRouteNumberOffset(runningNumber);
-			int routesInThisGroup = 0;
-			for (final Route route : group.getRoutes()) {
-				route.setNumber(runningNumber);
-				routesInThisGroup++;
-				runningNumber++;
-			}
-
-			LOGGER.debug("actual routeNumberAmount "
-					+ group.getRouteNumberAmount());
-			LOGGER.debug("routes in this group " + routesInThisGroup);
-			final int diff = group.getRouteNumberAmount() - routesInThisGroup;
-			LOGGER.debug("difference " + diff);
-			if (diff <= 5 && diff >= 0) {
-				LOGGER.debug("setting turnout amount of group "
-						+ group.getName() + " to "
-						+ (group.getRouteNumberAmount() + 10));
-				group.setRouteNumberAmount(group.getRouteNumberAmount() + 10);
-			} else if (diff < 0) {
-				final int newAmount = (int) Math.ceil(Math.abs(diff) / 10.0) * 10;
-				LOGGER.debug("setting turnout amount of group "
-						+ group.getName() + " to " + newAmount);
-				group.setRouteNumberAmount(newAmount);
-			}
-			runningNumber = group.getRouteNumberOffset()
-					+ group.getRouteNumberAmount();
-			LOGGER.debug("offset of next group: " + runningNumber);
-		}
-
-	}
-
-	@Override
-	public int getNextFreeRouteNumberOfGroup(final RouteGroup routeGroup) {
-		final SortedSet<Route> routes = new TreeSet<Route>(
-				routeGroup.getRoutes());
-		final int offset = routeGroup.getRouteNumberOffset();
-		final int amount = routeGroup.getRouteNumberAmount();
-
-		if (routes.isEmpty()) {
-			return offset;
-		}
-		final int nextNumber = routes.last().getNumber() + 1;
-		if (nextNumber < offset + amount) {
-			return nextNumber;
-		}
-		return -1;
+	public boolean isRouteNumberFree(final int number) {
+		return numberToRouteCache.containsKey(number);
 	}
 
 	@Override

@@ -18,6 +18,8 @@
 
 package ch.fork.AdHocRailway.domain.routes;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 
@@ -45,18 +47,24 @@ public class RouteItem extends Model implements java.io.Serializable,
 	public static final String PROPERTYNAME_ROUTED_STATE = "routedState";
 
 	@Override
-	public int compareTo(RouteItem o) {
+	public int compareTo(final RouteItem o) {
 		if (this == o) {
 			return 0;
 		}
 		if (o == null) {
 			return -1;
 		}
+		if (turnout == null) {
+			return -1;
+		}
+		if (o.getTurnout() == null) {
+			return 1;
+		}
 		return turnout.compareTo(o.getTurnout());
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -84,14 +92,14 @@ public class RouteItem extends Model implements java.io.Serializable,
 
 	@Override
 	public String toString() {
-		return turnout.hashCode() + ":" + routedState;
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 	public RouteItem() {
 	}
 
-	public RouteItem(int id, Turnout turnout, Route route,
-			TurnoutState routedState) {
+	public RouteItem(final int id, final Turnout turnout, final Route route,
+			final TurnoutState routedState) {
 		this.id = id;
 		this.turnout = turnout;
 		this.route = route;
@@ -102,7 +110,7 @@ public class RouteItem extends Model implements java.io.Serializable,
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -110,8 +118,8 @@ public class RouteItem extends Model implements java.io.Serializable,
 		return this.turnout;
 	}
 
-	public void setTurnout(Turnout turnout) {
-		Turnout old = this.turnout;
+	public void setTurnout(final Turnout turnout) {
+		final Turnout old = this.turnout;
 		this.turnout = turnout;
 		firePropertyChange(PROPERTYNAME_TURNOUT, old, turnout);
 	}
@@ -120,8 +128,8 @@ public class RouteItem extends Model implements java.io.Serializable,
 		return this.route;
 	}
 
-	public void setRoute(Route route) {
-		Route old = this.route;
+	public void setRoute(final Route route) {
+		final Route old = this.route;
 		this.route = route;
 		firePropertyChange(PROPERTYNAME_ROUTE, old, route);
 	}
@@ -130,8 +138,8 @@ public class RouteItem extends Model implements java.io.Serializable,
 		return this.routedState;
 	}
 
-	public void setRoutedState(TurnoutState routedState) {
-		TurnoutState old = this.routedState;
+	public void setRoutedState(final TurnoutState routedState) {
+		final TurnoutState old = this.routedState;
 		this.routedState = routedState;
 		firePropertyChange(PROPERTYNAME_ROUTED_STATE, old, routedState);
 	}

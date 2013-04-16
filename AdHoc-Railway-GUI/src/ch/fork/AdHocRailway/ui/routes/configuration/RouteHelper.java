@@ -2,16 +2,12 @@ package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.JOptionPane;
-
 import org.apache.commons.beanutils.BeanUtils;
 
 import ch.fork.AdHocRailway.domain.routes.Route;
 import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
-import ch.fork.AdHocRailway.technical.configuration.Preferences;
-import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 
 public class RouteHelper {
@@ -50,21 +46,8 @@ public class RouteHelper {
 
 	public static void addNewRouteDialog(final RouteContext ctx,
 			final RouteGroup selectedRouteGroup) {
-		int nextNumber = 0;
 		final RouteManager routePersistence = ctx.getRouteManager();
-		if (Preferences.getInstance().getBooleanValue(
-				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-			nextNumber = routePersistence
-					.getNextFreeRouteNumberOfGroup(selectedRouteGroup);
-			if (nextNumber == -1) {
-				JOptionPane.showMessageDialog(ctx.getMainFrame(),
-						"No more free numbers in this group", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		} else {
-			nextNumber = routePersistence.getNextFreeRouteNumber();
-		}
+		final int nextNumber = routePersistence.getNextFreeRouteNumber();
 
 		final Route newTurnout = createDefaultRoute(routePersistence,
 				nextNumber);

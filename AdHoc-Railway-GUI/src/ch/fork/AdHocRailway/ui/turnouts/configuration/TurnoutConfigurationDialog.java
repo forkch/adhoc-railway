@@ -412,20 +412,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
 				return;
 			}
 			int nextNumber = 0;
-			if (Preferences.getInstance().getBooleanValue(
-					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-				nextNumber = turnoutManager
-						.getNextFreeTurnoutNumberOfGroup(selectedTurnoutGroup);
-				if (nextNumber == -1) {
-					JOptionPane.showMessageDialog(
-							TurnoutConfigurationDialog.this,
-							"No more free numbers in this group", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-			} else {
-				nextNumber = turnoutManager.getNextFreeTurnoutNumber();
-			}
+			nextNumber = turnoutManager.getNextFreeTurnoutNumber();
 			final Turnout newTurnout = TurnoutHelper.createDefaultTurnout(
 					turnoutManager, nextNumber);
 

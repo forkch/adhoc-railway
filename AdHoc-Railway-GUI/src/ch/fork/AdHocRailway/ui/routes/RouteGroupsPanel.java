@@ -59,7 +59,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 	public void addRouteGroup(final int groupNumber, final RouteGroup routeGroup) {
 		final RouteGroupTab routeGroupTab = new RouteGroupTab(ctx, routeGroup);
 
-		add(routeGroupTab, "F" + groupNumber + ": " + routeGroup.getName());
+		add(routeGroupTab, groupNumber + ": " + routeGroup.getName());
 		routeGroupToRouteGroupTab.put(routeGroup, routeGroupTab);
 
 	}

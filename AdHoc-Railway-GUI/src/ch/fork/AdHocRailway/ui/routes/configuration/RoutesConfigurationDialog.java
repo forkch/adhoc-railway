@@ -586,20 +586,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 	}
 
 	private int getNextRouteNumber(final RouteGroup selectedRouteGroup) {
-		int nextNumber = 0;
-		if (Preferences.getInstance().getBooleanValue(
-				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-			nextNumber = routeManager
-					.getNextFreeRouteNumberOfGroup(selectedRouteGroup);
-			if (nextNumber == -1) {
-				JOptionPane.showMessageDialog(RoutesConfigurationDialog.this,
-						"No more free numbers in this group", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				return -1;
-			}
-		} else {
-			nextNumber = routeManager.getNextFreeRouteNumber();
-		}
+		final int nextNumber = routeManager.getNextFreeRouteNumber();
 		return nextNumber;
 	}
 }
