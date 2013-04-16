@@ -133,6 +133,7 @@ public class PowerControlPanel extends JPanel implements
 			}
 		}
 
+		int activeBoosterCount = 0;
 		for (final Entry<Integer, BoosterState> state : boosterStates
 				.entrySet()) {
 			final int boosterNumber = state.getKey();
@@ -150,10 +151,12 @@ public class PowerControlPanel extends JPanel implements
 				if (bs.equals(BoosterState.ACTIVE)) {
 					button.setSelected(true);
 					button.setIcon(goIcon);
+					activeBoosterCount++;
 				} else {
 					button.setSelected(false);
 					if (bs.equals(BoosterState.SHORTCUT)) {
 						button.setIcon(shortcutIcon);
+						activeBoosterCount++;
 					} else {
 						button.setIcon(stopIcon);
 					}
@@ -162,6 +165,7 @@ public class PowerControlPanel extends JPanel implements
 						.get(boosterNumber));
 			}
 		}
+		ctx.setActiveBoosterCount(activeBoosterCount);
 
 	}
 

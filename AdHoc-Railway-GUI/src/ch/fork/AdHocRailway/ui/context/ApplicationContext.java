@@ -32,6 +32,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 	private LocomotiveManager locomotiveManager;
 
 	private SRCPPowerControl powerControl;
+	private int activeBoosterCount;
 	private SRCPLockControl lockControl;
 
 	private SRCPSession session;
@@ -139,6 +140,14 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 
 	public void setPowerControl(final SRCPPowerControl powerControl) {
 		this.powerControl = powerControl;
+	}
+
+	public void setActiveBoosterCount(final int activeBoosterCount) {
+		this.activeBoosterCount = activeBoosterCount;
+	}
+
+	public int getActiveBoosterCount() {
+		return this.activeBoosterCount;
 	}
 
 	public SRCPLockControl getLockControl() {

@@ -1280,6 +1280,23 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 
+			final int activeBoosterCount = appContext.getActiveBoosterCount();
+			if (activeBoosterCount > 0) {
+				final int exit = JOptionPane
+						.showConfirmDialog(
+								AdHocRailway.this,
+								"There are still "
+										+ activeBoosterCount
+										+ " boosters running.\nDo you really want to exit the application?",
+								"Active Boosters",
+								JOptionPane.YES_NO_OPTION,
+								JOptionPane.QUESTION_MESSAGE,
+								createImageIconFromIconSet("dialog-warning.png"));
+				if (exit == JOptionPane.NO_OPTION) {
+					return;
+				}
+			}
+
 			try {
 				SRCPLockControl.getInstance().releaseAllLocks();
 				appContext.getLocomotiveControl().emergencyStopActiveLocos();
