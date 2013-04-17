@@ -1627,7 +1627,7 @@
           <ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction>
             <number>8</number>
             <description>Rangiergang</description>
-            <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
+            <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
             <deactivationDelay>-1</deactivationDelay>
           </ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction>
         </functions>

@@ -52,7 +52,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	 * 
 	 */
 	private static final long serialVersionUID = 6559383494970215298L;
-	private JSpinner defaultActivationTime;
 	private JSpinner defaultRoutingDelay;
 	private JSpinner defaultLockDuration;
 	private SpinnerNumberModel defaultActivationTimeModel;
@@ -65,12 +64,9 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private JTextField srcpHostnameTextField;
 	private JTextField srcpPortnumberTextField;
 	private JComboBox<String> keyBoardLayoutComboBox;
-	private JCheckBox interface6051;
 	private JCheckBox writeLog;
 	private JCheckBox fullscreen;
 	private JCheckBox tabbedTrackCheckBox;
-	private JCheckBox fixedTurnoutGroupSizesCheckBox;
-	private JCheckBox autoSave;
 
 	private boolean okPressed;
 	private boolean cancelPressed;
@@ -163,8 +159,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		locomotiveControlNumberModel = new SpinnerNumberModel(5, 1, 10, 1);
 		locomotiveControlNumber = new JSpinner(locomotiveControlNumberModel);
 
-		fixedTurnoutGroupSizesCheckBox = new JCheckBox();
-
 		keyBoardLayoutComboBox = new JComboBox<String>();
 		final Set<String> sortedLayoutNames = new TreeSet<String>(Preferences
 				.getInstance().getKeyBoardLayoutNames());
@@ -175,7 +169,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		writeLog = new JCheckBox();
 		fullscreen = new JCheckBox();
 		tabbedTrackCheckBox = new JCheckBox();
-		autoSave = new JCheckBox();
 		openLastFileCheckBox = new JCheckBox();
 
 		autoDiscoverAndConnectServersCheckBox = new JCheckBox();
@@ -201,8 +194,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		p.add(tabbedTrackCheckBox);
 		p.add(new JLabel("Open last file"));
 		p.add(openLastFileCheckBox);
-		p.add(new JLabel("Autosave File"));
-		p.add(autoSave);
 		p.add(new JLabel("Auto Discover and Connect"));
 		p.add(autoDiscoverAndConnectServersCheckBox);
 		return p;
@@ -214,7 +205,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		numberOfBoosters = new JSpinner(numberOfBoostersModel);
 
 		defaultActivationTimeModel = new SpinnerNumberModel(50, 50, 1000, 10);
-		defaultActivationTime = new JSpinner(defaultActivationTimeModel);
 
 		defaultRoutingDelayModel = new SpinnerNumberModel(250, 10, 10000000, 10);
 		defaultRoutingDelay = new JSpinner(defaultRoutingDelayModel);
@@ -226,36 +216,20 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		defaultLocomotiveBusModel = new SpinnerNumberModel(0, 0, 60, 1);
 		defaultLocomotiveBus = new JSpinner(defaultLocomotiveBusModel);
 
-		interface6051 = new JCheckBox();
+		final JPanel p = new JPanel(new MigLayout("wrap 2"));
+		p.add(new JLabel("Number of Boosters"));
+		p.add(numberOfBoosters);
 
-		final FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, fill:pref",
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
-		final PanelBuilder builder = new PanelBuilder(layout);
-		final CellConstraints cc = new CellConstraints();
+		p.add(new JLabel("Default Turnout Bus"));
+		p.add(defaultTurnoutBus);
 
-		builder.addLabel("Number of Boosters", cc.xy(1, 1));
-		builder.add(numberOfBoosters, cc.xy(3, 1));
+		p.add(new JLabel("Default Locomotive Bus"));
+		p.add(defaultLocomotiveBus);
 
-		builder.addLabel("Default Turnout Bus", cc.xy(1, 3));
-		builder.add(defaultTurnoutBus, cc.xy(3, 3));
+		p.add(new JLabel("Routing delay [ms]"));
+		p.add(defaultRoutingDelay);
 
-		builder.addLabel("Default Locomotive Bus", cc.xy(1, 5));
-		builder.add(defaultLocomotiveBus, cc.xy(3, 5));
-
-		builder.addLabel("Solenoid activation time [ms]", cc.xy(1, 7));
-		builder.add(defaultActivationTime, cc.xy(3, 7));
-
-		builder.addLabel("Routing delay [ms]", cc.xy(1, 9));
-		builder.add(defaultRoutingDelay, cc.xy(3, 9));
-
-		builder.addLabel("Lock time (0 means forever) [s]", cc.xy(1, 11));
-		builder.add(defaultLockDuration, cc.xy(3, 11));
-
-		builder.addLabel("Interface 6051 attached", cc.xy(1, 13));
-		builder.add(interface6051, cc.xy(3, 13));
-
-		return builder.getPanel();
+		return p;
 	}
 
 	private JPanel createSrcpServerTab() {
@@ -266,20 +240,15 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		srcpAutoconnectCheckBox = new JCheckBox();
 
-		final FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu");
-		final PanelBuilder builder = new PanelBuilder(layout);
-		final CellConstraints cc = new CellConstraints();
-		builder.addLabel("Hostname (Name or IP)", cc.xy(1, 1));
-		builder.add(srcpHostnameTextField, cc.xy(3, 1));
+		final JPanel p = new JPanel(new MigLayout("wrap 2"));
+		p.add(new JLabel("Autoconnect"));
+		p.add(srcpAutoconnectCheckBox);
+		p.add(new JLabel("Hostname (Name or IP)"));
+		p.add(srcpHostnameTextField);
+		p.add(new JLabel("Portnumber (e.g. 4303)"));
+		p.add(srcpPortnumberTextField);
 
-		builder.addLabel("Portnumber (e.g. 12345)", cc.xy(1, 3));
-		builder.add(srcpPortnumberTextField, cc.xy(3, 3));
-
-		builder.addLabel("Autoconnect", cc.xy(1, 5));
-		builder.add(srcpAutoconnectCheckBox, cc.xy(3, 5));
-
-		return builder.getPanel();
+		return p;
 	}
 
 	private JPanel createAdHocServerTab() {
@@ -293,24 +262,18 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		adHocServerCollectionField = new JTextField(15);
 
-		final FormLayout layout = new FormLayout("right:pref, 3dlu, fill:pref",
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu");
-		final PanelBuilder builder = new PanelBuilder(layout);
-		final CellConstraints cc = new CellConstraints();
+		final JPanel p = new JPanel(new MigLayout("wrap 2"));
 
-		builder.addLabel("Use AdHoc-Server", cc.xy(1, 1));
-		builder.add(useAdHocServerCheckBox, cc.xy(3, 1));
+		p.add(new JLabel("Use AdHoc-Server"));
+		p.add(useAdHocServerCheckBox);
+		p.add(new JLabel("Host"));
+		p.add(adHocServerHostField);
+		p.add(new JLabel("Port"));
+		p.add(adHocServerPortField);
+		p.add(new JLabel("Collection"));
+		p.add(adHocServerCollectionField);
 
-		builder.addLabel("Host", cc.xy(1, 3));
-		builder.add(adHocServerHostField, cc.xy(3, 3));
-
-		builder.addLabel("Port", cc.xy(1, 5));
-		builder.add(adHocServerPortField, cc.xy(3, 5));
-
-		builder.addLabel("Collection", cc.xy(1, 7));
-		builder.add(adHocServerCollectionField, cc.xy(3, 7));
-
-		return builder.getPanel();
+		return p;
 	}
 
 	public boolean isCancelPressed() {
@@ -330,9 +293,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		writeLog.setSelected(p.getBooleanValue(LOGGING));
 		fullscreen.setSelected(p.getBooleanValue(FULLSCREEN));
 		tabbedTrackCheckBox.setSelected(p.getBooleanValue(TABBED_TRACK));
-		fixedTurnoutGroupSizesCheckBox.setSelected(p
-				.getBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES));
-		autoSave.setSelected(p.getBooleanValue(AUTOSAVE));
 		openLastFileCheckBox.setSelected(p.getBooleanValue(OPEN_LAST_FILE));
 
 		autoDiscoverAndConnectServersCheckBox.setSelected(p
@@ -345,7 +305,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		defaultActivationTimeModel.setValue(p.getIntValue(ACTIVATION_TIME));
 		defaultRoutingDelayModel.setValue(p.getIntValue(ROUTING_DELAY));
 		defaultLockDurationModel.setValue(p.getIntValue(LOCK_DURATION));
-		interface6051.setSelected(p.getBooleanValue(INTERFACE_6051));
 
 		srcpHostnameTextField.setText(p.getStringValue(SRCP_HOSTNAME));
 		srcpPortnumberTextField.setText(Integer.toString(p
@@ -372,10 +331,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		p.setBooleanValue(LOGGING, writeLog.isSelected());
 		p.setBooleanValue(FULLSCREEN, fullscreen.isSelected());
 		p.setBooleanValue(TABBED_TRACK, tabbedTrackCheckBox.isSelected());
-		p.setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES,
-				fixedTurnoutGroupSizesCheckBox.isSelected());
 		p.setBooleanValue(OPEN_LAST_FILE, openLastFileCheckBox.isSelected());
-		p.setBooleanValue(AUTOSAVE, autoSave.isSelected());
 		p.setBooleanValue(AUTO_DISCOVER_AND_CONNECT_SERVERS,
 				autoDiscoverAndConnectServersCheckBox.isSelected());
 
@@ -391,7 +347,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				.intValue());
 		p.setIntValue(LOCK_DURATION, defaultLockDurationModel.getNumber()
 				.intValue());
-		p.setBooleanValue(INTERFACE_6051, interface6051.isSelected());
 
 		p.setStringValue(SRCP_HOSTNAME, srcpHostnameTextField.getText());
 		p.setIntValue(SRCP_PORT,

@@ -121,7 +121,6 @@ public class SRCPRouteControlAdapter implements RouteControlIface,
 		} catch (final SRCPModelException e) {
 			throw new RouteException("Route Error", e);
 		}
-
 	}
 
 	@Override

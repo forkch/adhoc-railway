@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.ui;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import de.dermoba.srcp.common.exception.SRCPException;
@@ -56,6 +57,9 @@ public class ExceptionProcessor {
 
 		if (e instanceof SRCPException) {
 			msg = "SRCP: " + msg;
+		}
+		if (StringUtils.isBlank(msg)) {
+			msg = e.getMessage();
 		}
 		errorPanel.setErrorTextIcon(msg, e.getMessage(),
 				ImageTools.createImageIconFromIconSet("dialog-error.png"));

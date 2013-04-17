@@ -1292,7 +1292,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 								JOptionPane.YES_NO_OPTION,
 								JOptionPane.QUESTION_MESSAGE,
 								createImageIconFromIconSet("dialog-warning.png"));
-				if (exit == JOptionPane.NO_OPTION) {
+				if (exit == JOptionPane.NO_OPTION
+						|| exit == JOptionPane.CANCEL_OPTION || exit == -1) {
 					return;
 				}
 			}

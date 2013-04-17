@@ -48,7 +48,7 @@ public class TurnoutWarmer extends ConfigurationDialog {
 	private JSpinner turnoutNumberField;
 	private JToggleButton warmButton;
 	private final TurnoutManager turnoutPersistence;
-	private TurnoutControlIface turnoutControl;
+	private final TurnoutControlIface turnoutControl;
 	private TurnoutWarmupThread t;
 	private final TurnoutContext ctx;
 
@@ -56,6 +56,7 @@ public class TurnoutWarmer extends ConfigurationDialog {
 		super(owner, "Turnout Programmer");
 		this.ctx = ctx;
 		turnoutPersistence = ctx.getTurnoutManager();
+		turnoutControl = ctx.getTurnoutControl();
 		initGUI();
 	}
 
