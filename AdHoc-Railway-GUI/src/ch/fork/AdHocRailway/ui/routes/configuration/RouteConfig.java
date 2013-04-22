@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -59,6 +60,7 @@ import ch.fork.AdHocRailway.ui.ErrorPanel;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
+import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 
@@ -98,14 +100,14 @@ public class RouteConfig extends JDialog {
 	private BufferedValueModel routeNameModel;
 	private BufferedValueModel routeOrientationModel;
 	private final RouteContext routeContext;
-	private final RouteManager routePersistence;
+	private final RouteManager routeManager;
 	private final TurnoutManager turnoutManager;
 
 	public RouteConfig(final JDialog owner, final RouteContext ctx,
 			final Route myRoute, final RouteGroup selectedRouteGroup) {
 		super(owner, "Route Config", true);
 		this.routeContext = ctx;
-		routePersistence = ctx.getRouteManager();
+		routeManager = ctx.getRouteManager();
 		turnoutManager = ctx.getTurnoutManager();
 
 		testRoute = RouteHelper.copyRoute(myRoute);
@@ -118,7 +120,7 @@ public class RouteConfig extends JDialog {
 			final Route myRoute, final RouteGroup selectedRouteGroup) {
 		super(owner, "Route Config", true);
 		this.routeContext = ctx;
-		routePersistence = ctx.getRouteManager();
+		routeManager = ctx.getRouteManager();
 		turnoutManager = ctx.getTurnoutManager();
 
 		testRoute = RouteHelper.copyRoute(myRoute);
@@ -252,12 +254,38 @@ public class RouteConfig extends JDialog {
 				RouteHelper.update(testRoute, property, evt.getNewValue());
 			}
 			testRouteWidget.setRoute(testRoute);
+
+			if (!validate(testRoute)) {
+				return;
+			}
 		}
 	}
 
 	private Component buildRouteItemButtonBar() {
 		return ButtonBarFactory.buildCenteredBar(recordRouteButton,
 				removeRouteItemButton);
+	}
+
+	public boolean validate(final Route routeToValidate) {
+		boolean valid = true;
+		if (RouteHelper.isNumberValid(routeToValidate,
+				presentationModel.getBean(), routeManager)) {
+			setSpinnerColor(routeNumberSpinner,
+					UIConstants.DEFAULT_TEXTFIELD_COLOR);
+			okButton.setEnabled(true);
+		} else {
+			setSpinnerColor(routeNumberSpinner, UIConstants.ERROR_COLOR);
+			valid = false;
+			okButton.setEnabled(false);
+		}
+
+		return valid;
+	}
+
+	private void setSpinnerColor(final JSpinner spinner, final Color color) {
+		final JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner
+				.getEditor();
+		editor.getTextField().setBackground(color);
 	}
 
 	private JComponent buildButtonBar() {
@@ -417,7 +445,7 @@ public class RouteConfig extends JDialog {
 						}
 					}
 					if (itemToRemove != null) {
-						routePersistence.removeRouteItem(itemToRemove);
+						routeManager.removeRouteItem(itemToRemove);
 					}
 					final RouteItem i = new RouteItem();
 					i.setRoute(route);
@@ -425,7 +453,7 @@ public class RouteConfig extends JDialog {
 					i.setTurnout(turnout);
 
 					try {
-						routePersistence.addRouteItem(i);
+						routeManager.addRouteItem(i);
 						final List<RouteItem> routeItems = new ArrayList<RouteItem>(
 								route.getRouteItems());
 						routeItemModel.setList(routeItems);
@@ -539,7 +567,7 @@ public class RouteConfig extends JDialog {
 			if (routeItem == null) {
 				return;
 			}
-			routePersistence.removeRouteItem(routeItem);
+			routeManager.removeRouteItem(routeItem);
 			final List<RouteItem> routeItems = new ArrayList<RouteItem>(
 					selectedRoute.getRouteItems());
 			routeItemModel.setList(routeItems);
@@ -567,16 +595,16 @@ public class RouteConfig extends JDialog {
 			trigger.triggerCommit();
 			final Route route = presentationModel.getBean();
 
-			routePersistence.addRouteManagerListener(new RouteAddListener() {
+			routeManager.addRouteManagerListener(new RouteAddListener() {
 
 				@Override
 				public void routeAdded(final Route route) {
-					success(routePersistence, route);
+					success(routeManager, route);
 				}
 
 				@Override
 				public void routeUpdated(final Route route) {
-					success(routePersistence, route);
+					success(routeManager, route);
 
 				}
 
@@ -599,9 +627,9 @@ public class RouteConfig extends JDialog {
 
 			});
 			if (route.getId() == -1) {
-				routePersistence.addRouteToGroup(route, selectedRouteGroup);
+				routeManager.addRouteToGroup(route, selectedRouteGroup);
 			} else {
-				routePersistence.updateRoute(route);
+				routeManager.updateRoute(route);
 			}
 
 		}

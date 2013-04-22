@@ -53,7 +53,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	 */
 	private static final long serialVersionUID = 6559383494970215298L;
 	private JSpinner defaultRoutingDelay;
-	private JSpinner defaultLockDuration;
 	private SpinnerNumberModel defaultActivationTimeModel;
 	private SpinnerNumberModel defaultRoutingDelayModel;
 	private SpinnerNumberModel defaultLockDurationModel;
@@ -209,8 +208,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		defaultRoutingDelayModel = new SpinnerNumberModel(250, 10, 10000000, 10);
 		defaultRoutingDelay = new JSpinner(defaultRoutingDelayModel);
 
-		defaultLockDurationModel = new SpinnerNumberModel(0, 0, 60, 1);
-		defaultLockDuration = new JSpinner(defaultLockDurationModel);
 		defaultTurnoutBusModel = new SpinnerNumberModel(0, 0, 60, 1);
 		defaultTurnoutBus = new JSpinner(defaultTurnoutBusModel);
 		defaultLocomotiveBusModel = new SpinnerNumberModel(0, 0, 60, 1);

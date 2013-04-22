@@ -64,8 +64,6 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class TurnoutConfig extends JDialog {
 	private static final long serialVersionUID = -2417439618995313840L;
-	private boolean okPressed;
-	private boolean cancelPressed;
 	private JSpinner numberTextField;
 	private JTextField descTextField;
 	private JSpinner bus1TextField;
@@ -506,8 +504,6 @@ public class TurnoutConfig extends JDialog {
 					turnoutManager
 							.removeTurnoutManagerListenerInNextEvent(this);
 
-					okPressed = true;
-					// turnout.removePropertyChangeListener(TurnoutConfig.this);
 					TurnoutConfig.this.setVisible(false);
 
 				}
@@ -543,14 +539,8 @@ public class TurnoutConfig extends JDialog {
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 			trigger.triggerFlush();
-			okPressed = false;
-			cancelPressed = true;
 			TurnoutConfig.this.setVisible(false);
 		}
-	}
-
-	public boolean isCancelPressed() {
-		return cancelPressed;
 	}
 
 }

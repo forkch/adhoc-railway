@@ -132,6 +132,7 @@ public class ErrorPanel extends JPanel {
 				repaint();
 				ErrorPanel.this.alpha -= 0.05f;
 				if (ErrorPanel.this.alpha < 0.1f) {
+					ErrorPanel.this.alpha = 0.0f;
 					active = false;
 				}
 				try {

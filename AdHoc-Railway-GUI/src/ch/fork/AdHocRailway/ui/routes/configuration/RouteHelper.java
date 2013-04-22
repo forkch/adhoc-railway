@@ -117,4 +117,16 @@ public class RouteHelper {
 		description.append("</td>");
 		description.append("</tr>");
 	}
+
+	public static boolean isNumberValid(final Route routeToValidate,
+			final Route currentRoute, final RouteManager routeManager) {
+		if (routeToValidate.getNumber() == 0) {
+			return false;
+		}
+		if (!routeManager.isRouteNumberFree(routeToValidate.getNumber())
+				&& routeToValidate.getNumber() != currentRoute.getNumber()) {
+			return false;
+		}
+		return true;
+	}
 }

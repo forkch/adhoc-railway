@@ -47,6 +47,7 @@
 	<classpathentry kind="lib" path="lib/commons-logging-adapters-1.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-api-1.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/jmdns.jar" sourcepath="/home/fork/Downloads/jmdns-3.4.1/src"/>
+	<classpathentry kind="lib" path="lib/memefx.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jsrcpc"/>

@@ -236,7 +236,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 
 	@Override
 	public boolean isRouteNumberFree(final int number) {
-		return numberToRouteCache.containsKey(number);
+		return !numberToRouteCache.containsKey(number);
 	}
 
 	@Override

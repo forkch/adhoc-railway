@@ -468,7 +468,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	private void initGUI() {
 
 		setFont(new Font("Verdana", Font.PLAIN, 19));
-		setLayout(new BorderLayout());
+		setLayout(new BorderLayout(0, 0));
 		initMenu();
 		initToolbar();
 		statusBarPanel = initStatusBar();
