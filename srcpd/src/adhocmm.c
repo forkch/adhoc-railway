@@ -234,6 +234,12 @@ static void check_status(bus_t busnumber) {
 
 	int i = 0;
 	char c;
+	int bytesToRead;
+
+	int status = ioctl(buses[busnumber].device.file.fd, FIONREAD, &bytesToRead);
+	if(bytesToRead == 0) {
+		return;
+	}
 	while (readByte(busnumber, 0, &c) == 0) {
 		if (c == END_CMD || c == 0x00 || c == '\r' || c == '\n') {
 			msg[i] = 0;

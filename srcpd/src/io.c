@@ -113,7 +113,11 @@ void writeStringLength(bus_t bus, const char *s, size_t len,
 	size_t i;
 
 	for (i = 0; i < len; i++) {
+		if(s[i] != 0) {
 		writeByte(bus, s[i], msecs);
+		} else {
+			return;
+		}
 	}
 }
 
