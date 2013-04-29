@@ -301,7 +301,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				.getIntValue(DEFAULT_LOCOMOTIVE_BUS));
 		defaultActivationTimeModel.setValue(p.getIntValue(ACTIVATION_TIME));
 		defaultRoutingDelayModel.setValue(p.getIntValue(ROUTING_DELAY));
-		defaultLockDurationModel.setValue(p.getIntValue(LOCK_DURATION));
 
 		srcpHostnameTextField.setText(p.getStringValue(SRCP_HOSTNAME));
 		srcpPortnumberTextField.setText(Integer.toString(p
@@ -341,8 +340,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 		p.setIntValue(ACTIVATION_TIME, defaultActivationTimeModel.getNumber()
 				.intValue());
 		p.setIntValue(ROUTING_DELAY, defaultRoutingDelayModel.getNumber()
-				.intValue());
-		p.setIntValue(LOCK_DURATION, defaultLockDurationModel.getNumber()
 				.intValue());
 
 		p.setStringValue(SRCP_HOSTNAME, srcpHostnameTextField.getText());

@@ -34,7 +34,6 @@ public interface PreferencesKeys {
 	// Digital Data
 	public static final String ACTIVATION_TIME = "DefaultActivationTime";
 	public static final String ROUTING_DELAY = "DefaultRoutingDelay";
-	public static final String LOCK_DURATION = "DefaultLockDuration";
 	public static final String INTERFACE_6051 = "Interface6051";
 	public static final String LOGGING = "WriteLog";
 	public static final String DEFAULT_TURNOUT_BUS = "DefaultTurnoutBus";

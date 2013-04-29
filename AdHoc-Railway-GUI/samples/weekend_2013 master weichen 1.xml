@@ -1881,4 +1881,743 @@
       </locomotive>
     </locomotiveGroup>
   </locomotiveGroups>
+  <turnoutGroups>
+    <turnoutGroup>
+      <id>-229039879</id>
+      <name>1 links</name>
+      <turnoutNumberOffset>0</turnoutNumberOffset>
+      <turnoutNumberAmount>0</turnoutNumberAmount>
+    </turnoutGroup>
+    <turnoutGroup>
+      <id>775392548</id>
+      <name>2 mitte</name>
+      <turnoutNumberOffset>0</turnoutNumberOffset>
+      <turnoutNumberAmount>0</turnoutNumberAmount>
+    </turnoutGroup>
+    <turnoutGroup>
+      <id>2071782713</id>
+      <name>3 rechts</name>
+      <turnoutNumberOffset>0</turnoutNumberOffset>
+      <turnoutNumberAmount>0</turnoutNumberAmount>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>-461148765</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>1</number>
+        <description></description>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>SOUTH</orientation>
+        <routeItems/>
+        <address1>109</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>false</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>1399595460</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>2</number>
+        <description></description>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>255</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>1862311796</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>3</number>
+        <description></description>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>252</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>174844976</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>4</number>
+        <defaultState>LEFT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>194</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>false</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>1717555521</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>5</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>EAST</orientation>
+        <routeItems/>
+        <address1>112</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>false</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>1197919652</id>
+        <turnoutType>DOUBLECROSS</turnoutType>
+        <number>6</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>111</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>896640791</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>7</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>195</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>false</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>1374077251</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>8</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>196</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>-206910577</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>9</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>193</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>1794594203</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>10</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>165</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>1858873810</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>11</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>166</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>1153759196</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>12</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>167</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>false</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>-1894377395</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>13</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>SOUTH</orientation>
+        <routeItems/>
+        <address1>9</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>-1185340677</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>14</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>SOUTH</orientation>
+        <routeItems/>
+        <address1>10</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>false</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>-359026922</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>15</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>SOUTH</orientation>
+        <routeItems/>
+        <address1>12</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>false</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>-1591137479</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>16</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>SOUTH</orientation>
+        <routeItems/>
+        <address1>11</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>353447768</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>17</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>SOUTH</orientation>
+        <routeItems/>
+        <address1>126</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>-1227540021</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>18</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>SOUTH</orientation>
+        <routeItems/>
+        <address1>128</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>false</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>482007021</id>
+        <turnoutType>DOUBLECROSS</turnoutType>
+        <number>19</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>SOUTH</orientation>
+        <routeItems/>
+        <address1>125</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>false</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>-232428717</id>
+        <turnoutType>DOUBLECROSS</turnoutType>
+        <number>20</number>
+        <defaultState>LEFT</defaultState>
+        <orientation>SOUTH</orientation>
+        <routeItems/>
+        <address1>105</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>17329635</id>
+        <turnoutType>DOUBLECROSS</turnoutType>
+        <number>21</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>SOUTH</orientation>
+        <routeItems/>
+        <address1>106</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>2018834415</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>22</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>107</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>1021762063</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>23</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>108</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>true</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+      <turnout>
+        <changeSupport serialization="custom">
+          <java.beans.PropertyChangeSupport>
+            <default>
+              <source class="turnout" reference="../../../.."/>
+              <propertyChangeSupportSerializedDataVersion>2</propertyChangeSupportSerializedDataVersion>
+            </default>
+            <null/>
+          </java.beans.PropertyChangeSupport>
+          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+            <default>
+              <checkIdentityDefault>false</checkIdentityDefault>
+              <source class="turnout" reference="../../../.."/>
+            </default>
+          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
+        </changeSupport>
+        <id>-904180958</id>
+        <turnoutType>DEFAULT_LEFT</turnoutType>
+        <number>24</number>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>NORTH</orientation>
+        <routeItems/>
+        <address1>127</address1>
+        <address2>0</address2>
+        <bus1>1</bus1>
+        <bus2>0</bus2>
+        <address1Switched>false</address1Switched>
+        <address2Switched>false</address2Switched>
+      </turnout>
+    </turnoutGroup>
+  </turnoutGroups>
+  <routeGroups>
+    <routeGroup>
+      <id>2079142787</id>
+      <name>1 Bhf links</name>
+      <routeNumberOffset>0</routeNumberOffset>
+      <routeNumberAmount>0</routeNumberAmount>
+    </routeGroup>
+    <routeGroup>
+      <id>547714419</id>
+      <name>2 Bhf mitte</name>
+      <routeNumberOffset>0</routeNumberOffset>
+      <routeNumberAmount>0</routeNumberAmount>
+    </routeGroup>
+    <routeGroup>
+      <id>847032231</id>
+      <name>3 Bhf rechts</name>
+      <routeNumberOffset>0</routeNumberOffset>
+      <routeNumberAmount>0</routeNumberAmount>
+    </routeGroup>
+  </routeGroups>
 </AdHocRailwayData>

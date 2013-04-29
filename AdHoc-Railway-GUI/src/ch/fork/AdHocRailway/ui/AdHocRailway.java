@@ -303,6 +303,14 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	}
 
 	@Override
+	public void registerSpaceKey(final Action action) {
+		final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0);
+		final JRootPane rootPane = getRootPane();
+		rootPane.registerKeyboardAction(action, stroke,
+				JComponent.WHEN_IN_FOCUSED_WINDOW);
+	}
+
+	@Override
 	public void addEditingModeListener(final EditingModeListener l) {
 		editingModeListeners.add(l);
 	}

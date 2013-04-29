@@ -47,24 +47,12 @@ public class RouteGroup extends Model implements java.io.Serializable,
 	public static final String PROPERTYNAME_ROUTES = "routes";
 
 	@Override
-	public int compareTo(RouteGroup o) {
-		if (this == o) {
-			return 0;
-		}
-		if (o == null) {
-			return -1;
-		}
-		if (id > o.getId()) {
-			return 1;
-		} else if (id < o.getId()) {
-			return -1;
-		} else {
-			return 0;
-		}
+	public int compareTo(final RouteGroup o) {
+		return name.compareTo(o.getName());
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -92,16 +80,17 @@ public class RouteGroup extends Model implements java.io.Serializable,
 	public RouteGroup() {
 	}
 
-	public RouteGroup(int id, String name, int routeNumberOffset,
-			int routeNumberAmount) {
+	public RouteGroup(final int id, final String name,
+			final int routeNumberOffset, final int routeNumberAmount) {
 		this.id = id;
 		this.name = name;
 		this.routeNumberOffset = routeNumberOffset;
 		this.routeNumberAmount = routeNumberAmount;
 	}
 
-	public RouteGroup(int id, String name, int routeNumberOffset,
-			int routeNumberAmount, SortedSet<Route> routes) {
+	public RouteGroup(final int id, final String name,
+			final int routeNumberOffset, final int routeNumberAmount,
+			final SortedSet<Route> routes) {
 		this.id = id;
 		this.name = name;
 		this.routeNumberOffset = routeNumberOffset;
@@ -113,7 +102,7 @@ public class RouteGroup extends Model implements java.io.Serializable,
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -125,8 +114,8 @@ public class RouteGroup extends Model implements java.io.Serializable,
 		return this.routeNumberOffset;
 	}
 
-	public void setRouteNumberOffset(int turnoutNumberOffset) {
-		int old = this.routeNumberOffset;
+	public void setRouteNumberOffset(final int turnoutNumberOffset) {
+		final int old = this.routeNumberOffset;
 		this.routeNumberOffset = turnoutNumberOffset;
 		firePropertyChange(PROPERTYNAME_ID, old, turnoutNumberOffset);
 	}
@@ -135,14 +124,14 @@ public class RouteGroup extends Model implements java.io.Serializable,
 		return this.routeNumberAmount;
 	}
 
-	public void setRouteNumberAmount(int turnoutNumberAmount) {
-		int old = this.routeNumberAmount;
+	public void setRouteNumberAmount(final int turnoutNumberAmount) {
+		final int old = this.routeNumberAmount;
 		this.routeNumberAmount = turnoutNumberAmount;
 		firePropertyChange(PROPERTYNAME_ID, old, turnoutNumberAmount);
 	}
 
-	public void setName(String name) {
-		String old = this.name;
+	public void setName(final String name) {
+		final String old = this.name;
 		this.name = name;
 		firePropertyChange(PROPERTYNAME_NAME, old, name);
 	}
@@ -151,16 +140,16 @@ public class RouteGroup extends Model implements java.io.Serializable,
 		return this.routes;
 	}
 
-	public void setRoutes(SortedSet<Route> routes) {
+	public void setRoutes(final SortedSet<Route> routes) {
 		this.routes = routes;
 	}
 
-	public void addRoute(Route route) {
+	public void addRoute(final Route route) {
 		this.routes.add(route);
 
 	}
 
-	public void removeRoute(Route route) {
+	public void removeRoute(final Route route) {
 		this.routes.remove(route);
 
 	}

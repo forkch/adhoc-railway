@@ -131,9 +131,12 @@ public class XMLRouteService implements RouteService {
 			for (final RouteGroup group : groups) {
 				group.setId(UUID.randomUUID().hashCode());
 				routeGroups.add(group);
-				for (final Route turnout : group.getRoutes()) {
-					turnout.setId(UUID.randomUUID().hashCode());
-					routes.add(turnout);
+				if (group.getRoutes() == null || group.getRoutes().isEmpty()) {
+					group.setRoutes(new TreeSet<Route>());
+				}
+				for (final Route route : group.getRoutes()) {
+					route.setId(UUID.randomUUID().hashCode());
+					routes.add(route);
 				}
 			}
 		}

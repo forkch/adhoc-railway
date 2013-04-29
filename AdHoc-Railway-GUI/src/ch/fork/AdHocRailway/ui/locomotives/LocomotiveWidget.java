@@ -291,7 +291,6 @@ public class LocomotiveWidget extends JPanel implements
 			functionButton.setFocusable(false);
 			functionsPanel.add(functionButton, "height 30, width 60");
 		}
-
 	}
 
 	public void updateWidget() {
@@ -534,7 +533,7 @@ public class LocomotiveWidget extends JPanel implements
 					locomotiveControl.activateLoco(myLocomotive, functions);
 
 					final Thread blinkOnSelection = new BlinkLightsOnSelectLocomotiveThread();
-					blinkOnSelection.start();
+					// blinkOnSelection.start();
 
 					locomotiveComboBox
 							.setBackground(UIConstants.DEFAULT_PANEL_COLOR);

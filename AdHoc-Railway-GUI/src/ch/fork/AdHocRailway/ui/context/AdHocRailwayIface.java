@@ -18,4 +18,6 @@ public interface AdHocRailwayIface {
 	public void handleException(final Exception ex);
 
 	public void handleException(final String message, final Exception ex);
+
+	public void registerSpaceKey(Action action);
 }

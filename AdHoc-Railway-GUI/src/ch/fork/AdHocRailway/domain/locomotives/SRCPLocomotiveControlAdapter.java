@@ -10,8 +10,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.domain.locking.LockingException;
-import ch.fork.AdHocRailway.technical.configuration.Preferences;
-import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
@@ -207,9 +205,9 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveControlface,
 	}
 
 	public void reloadConfiguration() {
-		SRCPLockControl.getInstance().setLockDuration(
-				Preferences.getInstance().getIntValue(
-						PreferencesKeys.LOCK_DURATION));
+		SRCPLockControl.getInstance().setLockDuration(0);
+		// Preferences.getInstance().getIntValue(
+		// PreferencesKeys.LOCK_DURATION)
 	}
 
 	@Override

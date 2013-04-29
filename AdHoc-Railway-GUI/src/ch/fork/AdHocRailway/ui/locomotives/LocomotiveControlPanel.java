@@ -70,12 +70,13 @@ public class LocomotiveControlPanel extends JPanel implements
 		setLayout(new BorderLayout());
 		add(locomotivesFrame, BorderLayout.NORTH);
 
-		getActionMap().put("LocomotiveStop", new LocomotiveStopAction());
-		Preferences
-				.getInstance()
-				.getKeyBoardLayout()
-				.assignKeys(getInputMap(WHEN_IN_FOCUSED_WINDOW),
-						"LocomotiveStop");
+		ctx.getMainApp().registerSpaceKey(new LocomotiveStopAction());
+		// getActionMap().put("LocomotiveStop", new LocomotiveStopAction());
+		// Preferences
+		// .getInstance()
+		// .getKeyBoardLayout()
+		// .assignKeys(getInputMap(WHEN_IN_FOCUSED_WINDOW),
+		// "LocomotiveStop");
 		update();
 	}
 
