@@ -59,8 +59,6 @@ public class HibernateTurnoutMapper {
 		final TurnoutGroup group = new TurnoutGroup();
 		group.setId(hGroup.getId());
 		group.setName(hGroup.getName());
-		group.setTurnoutNumberAmount(hGroup.getTurnoutNumberAmount());
-		group.setTurnoutNumberOffset(hGroup.getTurnoutNumberOffset());
 		for (final HibernateTurnout hTurnout : hGroup.getTurnouts()) {
 			final Turnout turnout = mapTurnout(hTurnout);
 			turnout.setTurnoutGroup(group);
@@ -110,8 +108,6 @@ public class HibernateTurnoutMapper {
 		final HibernateTurnoutGroup hTurnoutGroup = new HibernateTurnoutGroup();
 
 		hTurnoutGroup.setName(group.getName());
-		hTurnoutGroup.setTurnoutNumberAmount(group.getTurnoutNumberAmount());
-		hTurnoutGroup.setTurnoutNumberOffset(group.getTurnoutNumberOffset());
 
 		return hTurnoutGroup;
 	}

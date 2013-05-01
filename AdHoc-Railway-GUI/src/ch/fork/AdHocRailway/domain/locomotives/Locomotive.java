@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -25,9 +26,9 @@ import java.util.TreeSet;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.jgoodies.binding.beans.Model;
+import ch.fork.AdHocRailway.domain.AbstractItem;
 
-public class Locomotive extends Model implements Serializable,
+public class Locomotive extends AbstractItem implements Serializable,
 		Comparable<Locomotive> {
 
 	/**
@@ -37,16 +38,12 @@ public class Locomotive extends Model implements Serializable,
 
 	private int id = -1;
 
-	private LocomotiveGroup group;
-
-	private LocomotiveType type;
-
 	private String name;
 
 	private String desc;
 
 	private String image;
-
+	private LocomotiveType type;
 	private int address1;
 	private int address2;
 
@@ -54,17 +51,148 @@ public class Locomotive extends Model implements Serializable,
 
 	private SortedSet<LocomotiveFunction> functions = new TreeSet<LocomotiveFunction>();
 
+	private LocomotiveGroup group;
 	public static final String PROPERTYNAME_ID = "id";
-	public static final String PROPERTYNAME_LOCOMOTIVE_GROUP = "group";
-	public static final String PROPERTYNAME_LOCOMOTIVE_TYPE = "type";
 	public static final String PROPERTYNAME_NAME = "name";
 	public static final String PROPERTYNAME_DESCRIPTION = "desc";
 	public static final String PROPERTYNAME_IMAGE = "image";
+	public static final String PROPERTYNAME_LOCOMOTIVE_TYPE = "type";
 	public static final String PROPERTYNAME_ADDRESS1 = "address1";
 	public static final String PROPERTYNAME_ADDRESS2 = "address2";
 	public static final String PROPERTYNAME_BUS = "bus";
 
+	public static final String PROPERTYNAME_FUNCTIONS = "functions";
+	public static final String PROPERTYNAME_LOCOMOTIVE_GROUP = "group";
+
 	public Locomotive() {
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(final int id) {
+		final int old = this.id;
+		this.id = id;
+		changeSupport.firePropertyChange(PROPERTYNAME_ID, old, this.id);
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(final String name) {
+		final String old = this.name;
+		this.name = name;
+		changeSupport.firePropertyChange(PROPERTYNAME_NAME, old, this.name);
+	}
+
+	public String getDesc() {
+		return this.desc;
+	}
+
+	public void setDesc(final String description) {
+		final String old = this.desc;
+		this.desc = description;
+		changeSupport.firePropertyChange(PROPERTYNAME_DESCRIPTION, old,
+				this.desc);
+	}
+
+	public String getImage() {
+		return this.image;
+	}
+
+	public void setImage(final String image) {
+		final String old = this.image;
+		this.image = image;
+		changeSupport.firePropertyChange(PROPERTYNAME_IMAGE, old, this.image);
+	}
+
+	public LocomotiveType getType() {
+		return this.type;
+	}
+
+	public void setType(final LocomotiveType locomotiveType) {
+		final LocomotiveType old = this.type;
+		this.type = locomotiveType;
+		changeSupport.firePropertyChange(PROPERTYNAME_LOCOMOTIVE_TYPE, old,
+				this.type);
+	}
+
+	public int getAddress1() {
+		return this.address1;
+	}
+
+	public void setAddress1(final int address1) {
+		final int old = this.address1;
+		this.address1 = address1;
+		changeSupport.firePropertyChange(PROPERTYNAME_ADDRESS1, old,
+				this.address1);
+	}
+
+	public int getAddress2() {
+		return this.address2;
+	}
+
+	public void setAddress2(final int address2) {
+		final int old = this.address2;
+		this.address2 = address2;
+		changeSupport.firePropertyChange(PROPERTYNAME_ADDRESS2, old,
+				this.address2);
+	}
+
+	public int getBus() {
+		return bus;
+	}
+
+	public void setBus(final int bus) {
+		this.bus = bus;
+	}
+
+	public SortedSet<LocomotiveFunction> getFunctions() {
+		return functions;
+	}
+
+	public void setFunctions(final SortedSet<LocomotiveFunction> functions) {
+		final SortedSet<LocomotiveFunction> old = this.functions;
+		this.functions = functions;
+		changeSupport
+				.firePropertyChange(PROPERTYNAME_NAME, old, this.functions);
+	}
+
+	public void addLocomotiveFunction(final LocomotiveFunction function) {
+		this.functions.add(function);
+	}
+
+	public int getEmergencyStopFunction() {
+		int i = 0;
+		for (final LocomotiveFunction function : functions) {
+			if (function.isEmergencyBrakeFunction()) {
+				return i;
+			}
+			i++;
+		}
+		return -1;
+	}
+
+	public LocomotiveFunction getFunction(final int functionNumber) {
+		for (final LocomotiveFunction function : functions) {
+			if (function.getNumber() == functionNumber) {
+				return function;
+			}
+		}
+		return null;
+	}
+
+	public LocomotiveGroup getGroup() {
+		return this.group;
+	}
+
+	public void setGroup(final LocomotiveGroup locomotiveGroup) {
+		final LocomotiveGroup old = this.group;
+		this.group = locomotiveGroup;
+		changeSupport.firePropertyChange(PROPERTYNAME_LOCOMOTIVE_GROUP, old,
+				this.group);
 	}
 
 	@Override
@@ -107,46 +235,6 @@ public class Locomotive extends Model implements Serializable,
 		return true;
 	}
 
-	public int getAddress1() {
-		return this.address1;
-	}
-
-	public int getAddress2() {
-		return this.address2;
-	}
-
-	public String getDesc() {
-		return this.desc;
-	}
-
-	public SortedSet<LocomotiveFunction> getFunctions() {
-		return functions;
-	}
-
-	public void setFunctions(final SortedSet<LocomotiveFunction> functions) {
-		this.functions = functions;
-	}
-
-	public LocomotiveGroup getGroup() {
-		return this.group;
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public String getImage() {
-		return this.image;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public LocomotiveType getType() {
-		return this.type;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -155,76 +243,17 @@ public class Locomotive extends Model implements Serializable,
 		return result;
 	}
 
-	public void setAddress1(final int address1) {
-		this.address1 = address1;
-	}
-
-	public void setAddress2(final int address2) {
-		this.address2 = address2;
-	}
-
-	public void setDesc(final String description) {
-		this.desc = description;
-	}
-
-	public void setGroup(final LocomotiveGroup locomotiveGroup) {
-		this.group = locomotiveGroup;
-	}
-
-	public void setId(final int id) {
-		this.id = id;
-	}
-
-	public void setImage(final String image) {
-		this.image = image;
-	}
-
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	public void setType(final LocomotiveType locomotiveType) {
-		final LocomotiveType old = this.type;
-		this.type = locomotiveType;
-		firePropertyChange(PROPERTYNAME_LOCOMOTIVE_TYPE, old, locomotiveType);
-	}
-
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this,
 				ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
-	public void addLocomotiveFunction(final LocomotiveFunction function) {
-		this.functions.add(function);
+	public void addPropertyChangeListener(final PropertyChangeListener x) {
+		changeSupport.addPropertyChangeListener(x);
 	}
 
-	public int getBus() {
-		return bus;
+	public void removePropertyChangeListener(final PropertyChangeListener x) {
+		changeSupport.removePropertyChangeListener(x);
 	}
-
-	public void setBus(final int bus) {
-		this.bus = bus;
-	}
-
-	public int getEmergencyStopFunction() {
-		int i = 0;
-		for (final LocomotiveFunction function : functions) {
-			if (function.isEmergencyBrakeFunction()) {
-				return i;
-			}
-			i++;
-		}
-		return -1;
-	}
-
-	public LocomotiveFunction getFunction(final int functionNumber) {
-		for (final LocomotiveFunction function : functions) {
-			if (function.getNumber() == functionNumber) {
-				return function;
-			}
-		}
-		return null;
-	}
-
 }

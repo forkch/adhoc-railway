@@ -6,31 +6,32 @@ import ch.fork.AdHocRailway.domain.routes.RouteItem;
 
 public class HibernateRouteMapper {
 
-	public static Route mapHibernateRoute(HibernateRoute hRoute) {
-		Route route = new Route();
+	public static Route mapHibernateRoute(final HibernateRoute hRoute) {
+		final Route route = new Route();
 		updateRoute(hRoute, route);
 		return route;
 	}
 
-	private static void updateRoute(HibernateRoute hRoute, Route route) {
+	private static void updateRoute(final HibernateRoute hRoute,
+			final Route route) {
 		route.setId(hRoute.getId());
 		route.setName(hRoute.getName());
 		route.setNumber(hRoute.getNumber());
 	}
 
 	public static RouteGroup mapHibernateRouteGroup(
-			HibernateRouteGroup hRouteGroup) {
-		RouteGroup group = new RouteGroup();
+			final HibernateRouteGroup hRouteGroup) {
+		final RouteGroup group = new RouteGroup();
 
 		updateRouteGroup(hRouteGroup, group);
 
-		for (HibernateRoute hRoute : hRouteGroup.getRoutes()) {
-			Route route = mapHibernateRoute(hRoute);
+		for (final HibernateRoute hRoute : hRouteGroup.getRoutes()) {
+			final Route route = mapHibernateRoute(hRoute);
 			group.addRoute(route);
 			route.setRouteGroup(group);
 
-			for (HibernateRouteItem hRouteItem : hRoute.getRouteItems()) {
-				RouteItem routeItem = mapHibernateRouteItem(hRouteItem);
+			for (final HibernateRouteItem hRouteItem : hRoute.getRouteItems()) {
+				final RouteItem routeItem = mapHibernateRouteItem(hRouteItem);
 				routeItem.setRoute(route);
 				route.addRouteItem(routeItem);
 				routeItem.setRoute(route);
@@ -39,23 +40,22 @@ public class HibernateRouteMapper {
 		return group;
 	}
 
-	private static void updateRouteGroup(HibernateRouteGroup hRouteGroup,
-			RouteGroup group) {
+	private static void updateRouteGroup(final HibernateRouteGroup hRouteGroup,
+			final RouteGroup group) {
 		group.setId(hRouteGroup.getId());
 		group.setName(hRouteGroup.getName());
-		group.setRouteNumberAmount(hRouteGroup.getRouteNumberAmount());
-		group.setRouteNumberOffset(hRouteGroup.getRouteNumberOffset());
 	}
 
-	public static RouteItem mapHibernateRouteItem(HibernateRouteItem hRouteItem) {
-		RouteItem item = new RouteItem();
+	public static RouteItem mapHibernateRouteItem(
+			final HibernateRouteItem hRouteItem) {
+		final RouteItem item = new RouteItem();
 		updateRouteItem(item, hRouteItem);
 
 		return item;
 	}
 
-	private static void updateRouteItem(RouteItem item,
-			HibernateRouteItem hRouteItem) {
+	private static void updateRouteItem(final RouteItem item,
+			final HibernateRouteItem hRouteItem) {
 		item.setId(hRouteItem.getId());
 		item.setRoutedState(HibernateTurnoutMapper.mapTurnoutState(hRouteItem
 				.getRoutedState()));
@@ -63,40 +63,39 @@ public class HibernateRouteMapper {
 				.getTurnout()));
 	}
 
-	public static HibernateRoute mapRoute(Route route) {
-		HibernateRoute hRoute = new HibernateRoute();
+	public static HibernateRoute mapRoute(final Route route) {
+		final HibernateRoute hRoute = new HibernateRoute();
 		updateHibernateRoute(hRoute, route);
 		return hRoute;
 	}
 
-	public static void updateHibernateRoute(HibernateRoute hRoute, Route route) {
+	public static void updateHibernateRoute(final HibernateRoute hRoute,
+			final Route route) {
 		hRoute.setId(route.getId());
 		hRoute.setName(route.getName());
 		hRoute.setNumber(route.getNumber());
 	}
 
-	public static HibernateRouteGroup map(RouteGroup routeGroup) {
-		HibernateRouteGroup hRouteGroup = new HibernateRouteGroup();
+	public static HibernateRouteGroup map(final RouteGroup routeGroup) {
+		final HibernateRouteGroup hRouteGroup = new HibernateRouteGroup();
 		updateHibernateRouteGroup(hRouteGroup, routeGroup);
 		return hRouteGroup;
 	}
 
 	public static void updateHibernateRouteGroup(
-			HibernateRouteGroup hRouteGroup, RouteGroup routeGroup) {
+			final HibernateRouteGroup hRouteGroup, final RouteGroup routeGroup) {
 		hRouteGroup.setId(routeGroup.getId());
 		hRouteGroup.setName(routeGroup.getName());
-		hRouteGroup.setRouteNumberAmount(routeGroup.getRouteNumberAmount());
-		hRouteGroup.setRouteNumberOffset(routeGroup.getRouteNumberOffset());
 	}
 
-	public static HibernateRouteItem mapRouteItem(RouteItem item) {
-		HibernateRouteItem hRouteItem = new HibernateRouteItem();
+	public static HibernateRouteItem mapRouteItem(final RouteItem item) {
+		final HibernateRouteItem hRouteItem = new HibernateRouteItem();
 		updateHibernateRouteItem(hRouteItem, item);
 		return hRouteItem;
 	}
 
-	public static void updateHibernateRouteItem(HibernateRouteItem hRouteItem,
-			RouteItem item) {
+	public static void updateHibernateRouteItem(
+			final HibernateRouteItem hRouteItem, final RouteItem item) {
 		hRouteItem.setId(item.getId());
 		hRouteItem.setRoute(mapRoute(item.getRoute()));
 		hRouteItem.setRoutedState(HibernateTurnoutMapper.mapTurnoutState(item

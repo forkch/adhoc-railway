@@ -26,7 +26,6 @@
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
@@ -35,7 +34,6 @@ import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.adapter.SpinnerAdapterFactory;
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -51,10 +49,8 @@ public class TurnoutGroupConfigPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -1287114708577602193L;
-	private PresentationModel<TurnoutGroup>	presentationModel;
-	private JTextField						turnoutGroupName;
-	private JSpinner						turnoutNumberOffset;
-	private JSpinner						turnoutNumberAmount;
+	private final PresentationModel<TurnoutGroup> presentationModel;
+	private JTextField turnoutGroupName;
 
 	public TurnoutGroupConfigPanel() {
 		presentationModel = new PresentationModel<TurnoutGroup>(
@@ -63,12 +59,10 @@ public class TurnoutGroupConfigPanel extends JPanel {
 		setTurnoutGroup(null);
 	}
 
-	public void setTurnoutGroup(TurnoutGroup group) {
+	public void setTurnoutGroup(final TurnoutGroup group) {
 		turnoutGroupName.setEnabled(group != null);
 		if (Preferences.getInstance().getBooleanValue(
 				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-			turnoutNumberOffset.setEnabled(group != null);
-			turnoutNumberAmount.setEnabled(group != null);
 		}
 		presentationModel.setBean(group);
 	}
@@ -76,22 +70,15 @@ public class TurnoutGroupConfigPanel extends JPanel {
 	private void buildPanel() {
 		initComponents();
 
-		FormLayout layout = new FormLayout("right:pref, 3dlu, pref:grow",
-				"p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu");
-		layout.setColumnGroups(new int[][] { { 1, 3 } });
-		layout.setRowGroups(new int[][] { { 1, 3, 5 } });
+		final FormLayout layout = new FormLayout("right:pref, 3dlu, pref:grow",
+				"p:grow, 3dlu");
 
-		PanelBuilder builder = new PanelBuilder(layout);
+		final PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		CellConstraints cc = new CellConstraints();
+		final CellConstraints cc = new CellConstraints();
 
 		builder.addLabel("Name", cc.xy(1, 1));
 		builder.add(turnoutGroupName, cc.xy(3, 1));
-		builder.addLabel("Turnout Number Offset", cc.xy(1, 3));
-		builder.add(turnoutNumberOffset, cc.xy(3, 3));
-		builder.addLabel("Turnout Amount", cc.xy(1, 5));
-		builder.add(turnoutNumberAmount, cc.xy(3, 5));
-
 		add(builder.getPanel());
 	}
 
@@ -101,32 +88,5 @@ public class TurnoutGroupConfigPanel extends JPanel {
 						.getModel(TurnoutGroup.PROPERTYNAME_NAME));
 		turnoutGroupName.setColumns(5);
 
-		turnoutNumberOffset = new JSpinner();
-		turnoutNumberOffset
-				.setModel(SpinnerAdapterFactory
-						.createNumberAdapter(
-								presentationModel
-										.getModel(TurnoutGroup.PROPERTYNAME_TURNOUT_NUMBER_OFFSET),
-								0, // defaultValue
-								0, // minValue
-								1000, // maxValue
-								10)); // step
-
-		turnoutNumberAmount = new JSpinner();
-		turnoutNumberAmount
-				.setModel(SpinnerAdapterFactory
-						.createNumberAdapter(
-								presentationModel
-										.getModel(TurnoutGroup.PROPERTYNAME_TURNOUT_NUMBER_AMOUNT),
-								0, // defaultValue
-								0, // minValue
-								1000, // maxValue
-								10)); // step
-		if (!Preferences.getInstance().getBooleanValue(
-				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-			turnoutNumberOffset.setEnabled(false);
-			turnoutNumberAmount.setEnabled(false);
-
-		}
 	}
 }

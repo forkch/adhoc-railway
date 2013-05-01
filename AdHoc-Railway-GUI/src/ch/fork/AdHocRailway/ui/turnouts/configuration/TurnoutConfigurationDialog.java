@@ -53,8 +53,6 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerListener;
-import ch.fork.AdHocRailway.technical.configuration.Preferences;
-import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.TableColumnAdjuster;
@@ -337,20 +335,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
 			}
 			final TurnoutGroup newTurnoutGroup = new TurnoutGroup();
 			newTurnoutGroup.setName(newGroupName);
-			if (Preferences.getInstance().getBooleanValue(
-					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-				final String newAmount = JOptionPane.showInputDialog(
-						TurnoutConfigurationDialog.this,
-						"How many Turnouts should be in this group?", "10");
-				int newOffset = 1;
-				for (final TurnoutGroup group : turnoutManager
-						.getAllTurnoutGroups()) {
-					newOffset += group.getTurnoutNumberAmount();
-				}
-				newTurnoutGroup.setTurnoutNumberOffset(newOffset);
-				newTurnoutGroup.setTurnoutNumberAmount(Integer
-						.parseInt(newAmount));
-			}
 
 			turnoutManager.addTurnoutGroup(newTurnoutGroup);
 			turnoutGroupConfig.setTurnoutGroup(null);

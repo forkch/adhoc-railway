@@ -18,17 +18,15 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.jgoodies.binding.beans.Model;
+import ch.fork.AdHocRailway.domain.AbstractItem;
 
-public class LocomotiveGroup extends Model implements java.io.Serializable,
-		Comparable<LocomotiveGroup> {
+public class LocomotiveGroup extends AbstractItem implements
+		java.io.Serializable, Comparable<LocomotiveGroup> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7262606789136545713L;
 
 	private int id;
@@ -37,7 +35,71 @@ public class LocomotiveGroup extends Model implements java.io.Serializable,
 
 	private SortedSet<Locomotive> locomotives = new TreeSet<Locomotive>();
 
-	private static final String PROPERTYNAME_NAME = "name";
+	public static final String PROPERTYNAME_ID = "id";
+	public static final String PROPERTYNAME_NAME = "name";
+	public static final String PROPERTYNAME_LOCOMOTIVES = "locomotives";
+
+	public LocomotiveGroup() {
+	}
+
+	public LocomotiveGroup(final int id, final String name) {
+		this.id = id;
+		this.name = name;
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(final int id) {
+		final int old = this.id;
+		this.id = id;
+		changeSupport.firePropertyChange(PROPERTYNAME_ID, old, this.id);
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(final String name) {
+		final String old = this.name;
+		this.name = name;
+		changeSupport.firePropertyChange(PROPERTYNAME_NAME, old, this.name);
+	}
+
+	public SortedSet<Locomotive> getLocomotives() {
+		return this.locomotives;
+	}
+
+	public void setLocomotives(final SortedSet<Locomotive> locomotives) {
+		final SortedSet<Locomotive> old = this.locomotives;
+		this.locomotives = locomotives;
+		changeSupport.firePropertyChange(PROPERTYNAME_LOCOMOTIVES, old,
+				this.locomotives);
+
+	}
+
+	public void addLocomotive(final Locomotive locomotive) {
+		if (!locomotives.contains(locomotive)) {
+			locomotives.add(locomotive);
+		}
+		changeSupport.firePropertyChange(PROPERTYNAME_LOCOMOTIVES,
+				this.locomotives, this.locomotives);
+	}
+
+	public void removeLocomotive(final Locomotive locomotive) {
+		locomotives.remove(locomotive);
+		changeSupport.firePropertyChange(PROPERTYNAME_LOCOMOTIVES,
+				this.locomotives, this.locomotives);
+	}
+
+	public void addPropertyChangeListener(final PropertyChangeListener x) {
+		changeSupport.addPropertyChangeListener(x);
+	}
+
+	public void removePropertyChangeListener(final PropertyChangeListener x) {
+		changeSupport.removePropertyChangeListener(x);
+	}
 
 	@Override
 	public int compareTo(final LocomotiveGroup o) {
@@ -83,50 +145,6 @@ public class LocomotiveGroup extends Model implements java.io.Serializable,
 	@Override
 	public String toString() {
 		return name;
-	}
-
-	public LocomotiveGroup() {
-	}
-
-	public LocomotiveGroup(final int id, final String name) {
-		this.id = id;
-		this.name = name;
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(final int id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(final String name) {
-		final String old = this.name;
-		this.name = name;
-		firePropertyChange(PROPERTYNAME_NAME, old, name);
-	}
-
-	public SortedSet<Locomotive> getLocomotives() {
-		return this.locomotives;
-	}
-
-	public void setLocomotives(final SortedSet<Locomotive> locomotives) {
-		this.locomotives = locomotives;
-	}
-
-	public void addLocomotive(final Locomotive locomotive) {
-		if (!locomotives.contains(locomotive)) {
-			locomotives.add(locomotive);
-		}
-	}
-
-	public void removeLocomotive(final Locomotive locomotive) {
-		locomotives.remove(locomotive);
 	}
 
 }

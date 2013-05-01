@@ -25,79 +25,70 @@ import java.util.Set;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import ch.fork.AdHocRailway.domain.AbstractItem;
 import ch.fork.AdHocRailway.domain.routes.RouteItem;
 
-import com.jgoodies.binding.beans.ExtendedPropertyChangeSupport;
+public class Turnout extends AbstractItem implements java.io.Serializable,
+		Comparable<Turnout> {
 
-public class Turnout implements java.io.Serializable, Comparable<Turnout> {
-
-	private final ExtendedPropertyChangeSupport changeSupport = new ExtendedPropertyChangeSupport(
-			this);
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8221315886983696988L;
 
 	private int id = -1;
 
-	private TurnoutType turnoutType;
-
-	private TurnoutGroup turnoutGroup;
-
 	private int number;
-
 	private String description;
+	private TurnoutType turnoutType;
 
 	private TurnoutState defaultState;
 
 	private TurnoutOrientation orientation;
 
-	private Set<RouteItem> routeItems = new HashSet<RouteItem>();
-
+	private int bus1;
 	private int address1;
 
+	private boolean address1Switched;
+	private int bus2;
 	private int address2;
 
-	private int bus1;
-
-	private int bus2;
-
-	private boolean address1Switched;
-
 	private boolean address2Switched;
-
+	private Set<RouteItem> routeItems = new HashSet<RouteItem>();
+	private TurnoutGroup turnoutGroup;
 	public static final String PROPERTYNAME_ID = "id";
-	public static final String PROPERTYNAME_TURNOUT_TYPE = "turnoutType";
-	public static final String PROPERTYNAME_TURNOUT_GROUP = "turnoutGroup";
 	public static final String PROPERTYNAME_NUMBER = "number";
 	public static final String PROPERTYNAME_DESCRIPTION = "description";
+	public static final String PROPERTYNAME_TURNOUT_TYPE = "turnoutType";
 	public static final String PROPERTYNAME_DEFAULT_STATE = "defaultState";
 	public static final String PROPERTYNAME_ORIENTATION = "orientation";
-	public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
-	public static final String PROPERTYNAME_ADDRESS1 = "address1";
-	public static final String PROPERTYNAME_ADDRESS2 = "address2";
 	public static final String PROPERTYNAME_BUS1 = "bus1";
-	public static final String PROPERTYNAME_BUS2 = "bus2";
+	public static final String PROPERTYNAME_ADDRESS1 = "address1";
 	public static final String PROPERTYNAME_ADDRESS1_SWITCHED = "address1Switched";
+	public static final String PROPERTYNAME_BUS2 = "bus2";
+	public static final String PROPERTYNAME_ADDRESS2 = "address2";
 	public static final String PROPERTYNAME_ADDRESS2_SWITCHED = "address2Switched";
+
+	public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
+
+	public static final String PROPERTYNAME_TURNOUT_GROUP = "turnoutGroup";
 
 	public Turnout() {
 	}
 
-	public Turnout(final int number, final TurnoutType turnoutType,
-			final int bus1, final int address1,
-			final boolean address1_switched, final TurnoutState defaultState,
-			final TurnoutOrientation orientation, final String description,
-			final TurnoutGroup turnoutGroup) {
-		this.turnoutType = turnoutType;
-		this.turnoutGroup = turnoutGroup;
+	public int getId() {
+		return id;
+	}
+
+	public void setId(final int id) {
+		this.id = id;
+	}
+
+	public int getNumber() {
+		return this.number;
+	}
+
+	public void setNumber(final int number) {
+		final int old = this.number;
 		this.number = number;
-		this.description = description;
-		this.defaultState = defaultState;
-		this.orientation = orientation;
-		this.address1 = address1;
-		this.bus1 = bus1;
-		this.address1Switched = address1_switched;
+		changeSupport.firePropertyChange(PROPERTYNAME_NUMBER, old, this.number);
 	}
 
 	public TurnoutType getTurnoutType() {
@@ -108,28 +99,7 @@ public class Turnout implements java.io.Serializable, Comparable<Turnout> {
 		final TurnoutType old = this.turnoutType;
 		this.turnoutType = turnoutType;
 		changeSupport.firePropertyChange(PROPERTYNAME_TURNOUT_TYPE, old,
-				turnoutType);
-	}
-
-	public TurnoutGroup getTurnoutGroup() {
-		return this.turnoutGroup;
-	}
-
-	public void setTurnoutGroup(final TurnoutGroup turnoutGroup) {
-		final TurnoutGroup old = this.turnoutGroup;
-		this.turnoutGroup = turnoutGroup;
-		changeSupport.firePropertyChange(PROPERTYNAME_TURNOUT_GROUP, old,
-				turnoutGroup);
-	}
-
-	public int getNumber() {
-		return this.number;
-	}
-
-	public void setNumber(final int number) {
-		final int old = this.number;
-		this.number = number;
-		changeSupport.firePropertyChange(PROPERTYNAME_NUMBER, old, number);
+				this.turnoutType);
 	}
 
 	public String getDescription() {
@@ -140,7 +110,7 @@ public class Turnout implements java.io.Serializable, Comparable<Turnout> {
 		final String old = this.description;
 		this.description = description;
 		changeSupport.firePropertyChange(PROPERTYNAME_DESCRIPTION, old,
-				description);
+				this.description);
 	}
 
 	public TurnoutState getDefaultState() {
@@ -151,7 +121,7 @@ public class Turnout implements java.io.Serializable, Comparable<Turnout> {
 		final TurnoutState old = this.defaultState;
 		this.defaultState = defaultState;
 		changeSupport.firePropertyChange(PROPERTYNAME_DEFAULT_STATE, old,
-				defaultState);
+				this.defaultState);
 	}
 
 	public TurnoutOrientation getOrientation() {
@@ -162,35 +132,7 @@ public class Turnout implements java.io.Serializable, Comparable<Turnout> {
 		final TurnoutOrientation old = this.orientation;
 		this.orientation = orientation;
 		changeSupport.firePropertyChange(PROPERTYNAME_ORIENTATION, old,
-				orientation);
-	}
-
-	public Set<RouteItem> getRouteItems() {
-		return this.routeItems;
-	}
-
-	public void setRouteItems(final Set<RouteItem> routeItems) {
-		this.routeItems = routeItems;
-	}
-
-	public int getAddress1() {
-		return this.address1;
-	}
-
-	public void setAddress1(final int address1) {
-		final int old = this.address1;
-		this.address1 = address1;
-		changeSupport.firePropertyChange(PROPERTYNAME_ADDRESS1, old, address1);
-	}
-
-	public int getAddress2() {
-		return this.address2;
-	}
-
-	public void setAddress2(final int address2) {
-		final int old = this.address2;
-		this.address2 = address2;
-		changeSupport.firePropertyChange(PROPERTYNAME_ADDRESS2, old, address2);
+				this.orientation);
 	}
 
 	public int getBus1() {
@@ -200,17 +142,18 @@ public class Turnout implements java.io.Serializable, Comparable<Turnout> {
 	public void setBus1(final int bus1) {
 		final int old = this.bus1;
 		this.bus1 = bus1;
-		changeSupport.firePropertyChange(PROPERTYNAME_BUS1, old, bus1);
+		changeSupport.firePropertyChange(PROPERTYNAME_BUS1, old, this.bus1);
 	}
 
-	public int getBus2() {
-		return this.bus2;
+	public int getAddress1() {
+		return this.address1;
 	}
 
-	public void setBus2(final int bus2) {
-		final int old = this.bus2;
-		this.bus2 = bus2;
-		changeSupport.firePropertyChange(PROPERTYNAME_BUS2, old, bus2);
+	public void setAddress1(final int address1) {
+		final int old = this.address1;
+		this.address1 = address1;
+		changeSupport.firePropertyChange(PROPERTYNAME_ADDRESS1, old,
+				this.address1);
 	}
 
 	public boolean isAddress1Switched() {
@@ -221,7 +164,28 @@ public class Turnout implements java.io.Serializable, Comparable<Turnout> {
 		final boolean old = this.address1Switched;
 		this.address1Switched = address1Switched;
 		changeSupport.firePropertyChange(PROPERTYNAME_ADDRESS1_SWITCHED, old,
-				address1Switched);
+				this.address1Switched);
+	}
+
+	public int getBus2() {
+		return this.bus2;
+	}
+
+	public void setBus2(final int bus2) {
+		final int old = this.bus2;
+		this.bus2 = bus2;
+		changeSupport.firePropertyChange(PROPERTYNAME_BUS2, old, this.bus2);
+	}
+
+	public int getAddress2() {
+		return this.address2;
+	}
+
+	public void setAddress2(final int address2) {
+		final int old = this.address2;
+		this.address2 = address2;
+		changeSupport.firePropertyChange(PROPERTYNAME_ADDRESS2, old,
+				this.address2);
 	}
 
 	public boolean isAddress2Switched() {
@@ -232,7 +196,7 @@ public class Turnout implements java.io.Serializable, Comparable<Turnout> {
 		final boolean old = this.address2Switched;
 		this.address2Switched = address2Switched;
 		changeSupport.firePropertyChange(PROPERTYNAME_ADDRESS2_SWITCHED, old,
-				address2Switched);
+				this.address2Switched);
 	}
 
 	public boolean isDefaultLeft() {
@@ -253,6 +217,28 @@ public class Turnout implements java.io.Serializable, Comparable<Turnout> {
 
 	public boolean isCutter() {
 		return getTurnoutType() == TurnoutType.CUTTER;
+	}
+
+	public TurnoutGroup getTurnoutGroup() {
+		return this.turnoutGroup;
+	}
+
+	public void setTurnoutGroup(final TurnoutGroup turnoutGroup) {
+		final TurnoutGroup old = this.turnoutGroup;
+		this.turnoutGroup = turnoutGroup;
+		changeSupport.firePropertyChange(PROPERTYNAME_TURNOUT_GROUP, old,
+				this.turnoutGroup);
+	}
+
+	public Set<RouteItem> getRouteItems() {
+		return this.routeItems;
+	}
+
+	public void setRouteItems(final Set<RouteItem> routeItems) {
+		final Set<RouteItem> old = this.routeItems;
+		this.routeItems = routeItems;
+		changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_ITEMS, old,
+				this.orientation);
 	}
 
 	@Override
@@ -302,14 +288,6 @@ public class Turnout implements java.io.Serializable, Comparable<Turnout> {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this,
 				ToStringStyle.SHORT_PREFIX_STYLE);
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(final int id) {
-		this.id = id;
 	}
 
 	public void addPropertyChangeListener(final PropertyChangeListener x) {

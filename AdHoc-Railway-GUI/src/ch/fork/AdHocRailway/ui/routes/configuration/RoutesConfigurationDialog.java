@@ -45,8 +45,6 @@ import ch.fork.AdHocRailway.domain.routes.RouteGroup;
 import ch.fork.AdHocRailway.domain.routes.RouteManager;
 import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
 import ch.fork.AdHocRailway.domain.routes.RouteManagerListener;
-import ch.fork.AdHocRailway.technical.configuration.Preferences;
-import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
@@ -361,18 +359,6 @@ public class RoutesConfigurationDialog extends JDialog implements
 
 			final RouteGroup newRouteGroup = new RouteGroup();
 			newRouteGroup.setName(newRouteGroupName);
-			if (Preferences.getInstance().getBooleanValue(
-					PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-				final String newAmount = JOptionPane.showInputDialog(
-						RoutesConfigurationDialog.this,
-						"How many Routes should be in this group?", "10");
-				int newOffset = 1;
-				for (final RouteGroup group : routeManager.getAllRouteGroups()) {
-					newOffset += group.getRouteNumberAmount();
-				}
-				newRouteGroup.setRouteNumberOffset(newOffset);
-				newRouteGroup.setRouteNumberAmount(Integer.parseInt(newAmount));
-			}
 
 			routeManager.addRouteGroup(newRouteGroup);
 

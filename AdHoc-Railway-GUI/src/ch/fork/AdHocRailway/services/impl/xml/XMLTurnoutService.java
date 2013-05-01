@@ -111,9 +111,11 @@ public class XMLTurnoutService implements TurnoutService {
 		turnouts.clear();
 		if (groups != null) {
 			for (final TurnoutGroup group : groups) {
+				group.init();
 				group.setId(UUID.randomUUID().hashCode());
 				turnoutGroups.add(group);
 				for (final Turnout turnout : group.getTurnouts()) {
+					turnout.init();
 					turnout.setId(UUID.randomUUID().hashCode());
 					turnouts.add(turnout);
 				}

@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
+import ch.fork.AdHocRailway.domain.AbstractItem;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -165,16 +166,31 @@ public class XMLServiceHelper {
 		xstream.alias("routeGroup", RouteGroup.class);
 		xstream.alias("routeItem", RouteItem.class);
 
-		xstream.useAttributeFor(LocomotiveGroup.class, "id");
-		xstream.useAttributeFor(LocomotiveGroup.class, "name");
-		xstream.useAttributeFor(Locomotive.class, "id");
-		xstream.useAttributeFor(Locomotive.class, "name");
-		xstream.useAttributeFor(Locomotive.class, "desc");
-		xstream.useAttributeFor(Locomotive.class, "image");
-		xstream.useAttributeFor(Locomotive.class, "bus");
-		xstream.useAttributeFor(Locomotive.class, "address1");
-		xstream.useAttributeFor(Locomotive.class, "address2");
-		xstream.useAttributeFor(Locomotive.class, "type");
+		xstream.useAttributeFor(LocomotiveGroup.class,
+				LocomotiveGroup.PROPERTYNAME_ID);
+		xstream.useAttributeFor(LocomotiveGroup.class,
+				LocomotiveGroup.PROPERTYNAME_NAME);
+		xstream.useAttributeFor(Locomotive.class, Locomotive.PROPERTYNAME_ID);
+		xstream.useAttributeFor(Locomotive.class, Locomotive.PROPERTYNAME_NAME);
+		xstream.useAttributeFor(Locomotive.class,
+				Locomotive.PROPERTYNAME_DESCRIPTION);
+		xstream.useAttributeFor(Locomotive.class, Locomotive.PROPERTYNAME_IMAGE);
+		xstream.useAttributeFor(Locomotive.class, Locomotive.PROPERTYNAME_BUS);
+		xstream.useAttributeFor(Locomotive.class,
+				Locomotive.PROPERTYNAME_ADDRESS1);
+		xstream.useAttributeFor(Locomotive.class,
+				Locomotive.PROPERTYNAME_ADDRESS2);
+		xstream.useAttributeFor(Locomotive.class,
+				Locomotive.PROPERTYNAME_LOCOMOTIVE_TYPE);
+
+		xstream.omitField(Locomotive.class, "changeSupport");
+		xstream.omitField(LocomotiveGroup.class, "changeSupport");
+		xstream.omitField(Turnout.class, "changeSupport");
+		xstream.omitField(TurnoutGroup.class, "changeSupport");
+		xstream.omitField(Route.class, "changeSupport");
+		xstream.omitField(RouteGroup.class, "changeSupport");
+		xstream.omitField(RouteItem.class, "changeSupport");
+		xstream.omitField(AbstractItem.class, "changeSupport");
 
 		xstream.addImplicitCollection(LocomotiveGroup.class, "locomotives");
 		xstream.addImplicitCollection(TurnoutGroup.class, "turnouts");

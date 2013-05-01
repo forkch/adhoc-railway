@@ -3,6 +3,7 @@
 	<classpathentry excluding="ch/fork/AdHocRailway/technical/configuration/exporter/|ch/fork/AdHocRailway/technical/configuration/importer/" kind="src" path="src"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="src" path="etc"/>
+	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.0.7-bin.jar" sourcepath="/home/fork/downloads/mysql-connector-java-5.0.7/src"/>
 	<classpathentry kind="lib" path="lib/looks-2.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/forms-1.1.0.jar" sourcepath="/home/fork/downloads/forms-1.1.0/src/core"/>

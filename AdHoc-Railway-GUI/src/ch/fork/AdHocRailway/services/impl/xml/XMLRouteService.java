@@ -129,14 +129,19 @@ public class XMLRouteService implements RouteService {
 		routes.clear();
 		if (groups != null) {
 			for (final RouteGroup group : groups) {
+				group.init();
 				group.setId(UUID.randomUUID().hashCode());
 				routeGroups.add(group);
 				if (group.getRoutes() == null || group.getRoutes().isEmpty()) {
 					group.setRoutes(new TreeSet<Route>());
 				}
 				for (final Route route : group.getRoutes()) {
+					route.init();
 					route.setId(UUID.randomUUID().hashCode());
 					routes.add(route);
+					for (final RouteItem item : route.getRouteItems()) {
+						item.init();
+					}
 				}
 			}
 		}

@@ -25,12 +25,11 @@ import java.util.TreeSet;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.jgoodies.binding.beans.ExtendedPropertyChangeSupport;
+import ch.fork.AdHocRailway.domain.AbstractItem;
 
-public class Route implements java.io.Serializable, Comparable<Route> {
+public class Route extends AbstractItem implements java.io.Serializable,
+		Comparable<Route> {
 
-	private final ExtendedPropertyChangeSupport changeSupport = new ExtendedPropertyChangeSupport(
-			this);
 	private static final long serialVersionUID = 2382655333966102806L;
 
 	private int id = -1;
@@ -55,40 +54,14 @@ public class Route implements java.io.Serializable, Comparable<Route> {
 	public Route() {
 	}
 
-	public Route(final int id, final RouteGroup routeGroup, final int number,
-			final String name) {
-		this.id = id;
-		this.routeGroup = routeGroup;
-		this.number = number;
-		this.name = name;
-	}
-
-	public Route(final int id, final RouteGroup routeGroup, final int number,
-			final String name, final SortedSet<RouteItem> routeItems) {
-		this.id = id;
-		this.routeGroup = routeGroup;
-		this.number = number;
-		this.name = name;
-		this.routeItems = routeItems;
-	}
-
 	public int getId() {
 		return this.id;
 	}
 
 	public void setId(final int id) {
+		final int old = this.id;
 		this.id = id;
-	}
-
-	public RouteGroup getRouteGroup() {
-		return this.routeGroup;
-	}
-
-	public void setRouteGroup(final RouteGroup routeGroup) {
-		final RouteGroup old = this.routeGroup;
-		this.routeGroup = routeGroup;
-		changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_GROUP, old,
-				routeGroup);
+		changeSupport.firePropertyChange(PROPERTYNAME_ID, old, this.id);
 	}
 
 	public int getNumber() {
@@ -98,7 +71,17 @@ public class Route implements java.io.Serializable, Comparable<Route> {
 	public void setNumber(final int number) {
 		final int old = this.number;
 		this.number = number;
-		changeSupport.firePropertyChange(PROPERTYNAME_NUMBER, old, number);
+		changeSupport.firePropertyChange(PROPERTYNAME_NUMBER, old, this.number);
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(final String name) {
+		final String old = name;
+		this.name = name;
+		changeSupport.firePropertyChange(PROPERTYNAME_NAME, old, this.name);
 	}
 
 	public String getOrientation() {
@@ -109,17 +92,7 @@ public class Route implements java.io.Serializable, Comparable<Route> {
 		final String old = orientation;
 		this.orientation = orientation;
 		changeSupport.firePropertyChange(PROPERTYNAME_ORIENTATION, old,
-				orientation);
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(final String name) {
-		final String old = name;
-		this.name = name;
-		changeSupport.firePropertyChange(PROPERTYNAME_NAME, old, name);
+				this.orientation);
 	}
 
 	public SortedSet<RouteItem> getRouteItems() {
@@ -130,11 +103,22 @@ public class Route implements java.io.Serializable, Comparable<Route> {
 		final SortedSet<RouteItem> old = this.routeItems;
 		this.routeItems = routeItems;
 		changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_ITEMS, old,
-				routeItems);
+				this.routeItems);
 	}
 
 	public void addRouteItem(final RouteItem routeItem) {
 		routeItems.add(routeItem);
+	}
+
+	public RouteGroup getRouteGroup() {
+		return this.routeGroup;
+	}
+
+	public void setRouteGroup(final RouteGroup routeGroup) {
+		final RouteGroup old = this.routeGroup;
+		this.routeGroup = routeGroup;
+		changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_GROUP, old,
+				this.routeGroup);
 	}
 
 	@Override

@@ -18,39 +18,77 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
+import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 
-import com.jgoodies.binding.beans.Model;
+import ch.fork.AdHocRailway.domain.AbstractItem;
 
-public class TurnoutGroup extends Model implements java.io.Serializable,
+public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
 		Comparable<TurnoutGroup> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8822984732725579518L;
 
 	private int id;
 
 	private String name;
 
-	private int turnoutNumberOffset;
-
-	private int turnoutNumberAmount;
-
 	private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
 
 	public static final String PROPERTYNAME_ID = "id";
 	public static final String PROPERTYNAME_NAME = "name";
-	public static final String PROPERTYNAME_TURNOUT_NUMBER_OFFSET = "turnoutNumberOffset";
-	public static final String PROPERTYNAME_TURNOUT_NUMBER_AMOUNT = "turnoutNumberAmount";
+
+	public TurnoutGroup() {
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(final int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(final String name) {
+		final String old = this.name;
+		this.name = name;
+		changeSupport.firePropertyChange(PROPERTYNAME_NAME, old, name);
+	}
+
+	public SortedSet<Turnout> getTurnouts() {
+		return this.turnouts;
+	}
+
+	@Sort(type = SortType.NATURAL)
+	public void setTurnouts(final SortedSet<Turnout> turnouts) {
+		this.turnouts = turnouts;
+	}
+
+	public void addTurnout(final Turnout turnout) {
+		this.turnouts.add(turnout);
+	}
+
+	public void removeTurnout(final Turnout turnout) {
+		this.turnouts.remove(turnout);
+	}
+
+	public void addPropertyChangeListener(final PropertyChangeListener x) {
+		changeSupport.addPropertyChangeListener(x);
+	}
+
+	public void removePropertyChangeListener(final PropertyChangeListener x) {
+		changeSupport.removePropertyChangeListener(x);
+	}
 
 	@Override
-	public int compareTo(TurnoutGroup o) {
+	public int compareTo(final TurnoutGroup o) {
 		return name.compareTo(o.getName());
 	}
 
@@ -60,7 +98,7 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -70,7 +108,7 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		TurnoutGroup other = (TurnoutGroup) obj;
+		final TurnoutGroup other = (TurnoutGroup) obj;
 		if (id != other.id) {
 			return false;
 		}
@@ -81,70 +119,4 @@ public class TurnoutGroup extends Model implements java.io.Serializable,
 	public String toString() {
 		return name;
 	}
-
-	public TurnoutGroup() {
-	}
-
-	public TurnoutGroup(String name, int turnoutNumberOffset,
-			int turnoutNumberAmount) {
-		this.name = name;
-		this.turnoutNumberOffset = turnoutNumberOffset;
-		this.turnoutNumberAmount = turnoutNumberAmount;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		String old = this.name;
-		this.name = name;
-		firePropertyChange(PROPERTYNAME_NAME, old, name);
-	}
-
-	public int getTurnoutNumberOffset() {
-		return this.turnoutNumberOffset;
-	}
-
-	public void setTurnoutNumberOffset(int turnoutNumberOffset) {
-		int old = this.turnoutNumberOffset;
-		this.turnoutNumberOffset = turnoutNumberOffset;
-		firePropertyChange(PROPERTYNAME_ID, old, turnoutNumberOffset);
-	}
-
-	public int getTurnoutNumberAmount() {
-		return this.turnoutNumberAmount;
-	}
-
-	public void setTurnoutNumberAmount(int turnoutNumberAmount) {
-		int old = this.turnoutNumberAmount;
-		this.turnoutNumberAmount = turnoutNumberAmount;
-		firePropertyChange(PROPERTYNAME_ID, old, turnoutNumberAmount);
-	}
-
-	public SortedSet<Turnout> getTurnouts() {
-		return this.turnouts;
-	}
-
-	@Sort(type = SortType.NATURAL)
-	public void setTurnouts(SortedSet<Turnout> turnouts) {
-		this.turnouts = turnouts;
-	}
-
-	public void addTurnout(Turnout turnout) {
-		this.turnouts.add(turnout);
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public void removeTurnout(Turnout turnout) {
-		this.turnouts.remove(turnout);
-	}
-
 }

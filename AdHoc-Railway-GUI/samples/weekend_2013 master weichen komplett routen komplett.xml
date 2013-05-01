@@ -2049,8 +2049,6 @@
     <turnoutGroup>
       <id>-229039879</id>
       <name>1 links</name>
-      <turnoutNumberOffset>0</turnoutNumberOffset>
-      <turnoutNumberAmount>0</turnoutNumberAmount>
       <turnout>
         <changeSupport serialization="custom">
           <java.beans.PropertyChangeSupport>
@@ -3075,8 +3073,6 @@
     <turnoutGroup>
       <id>775392548</id>
       <name>2 mitte</name>
-      <turnoutNumberOffset>0</turnoutNumberOffset>
-      <turnoutNumberAmount>0</turnoutNumberAmount>
       <turnout>
         <changeSupport serialization="custom">
           <java.beans.PropertyChangeSupport>
@@ -3861,8 +3857,6 @@
     <turnoutGroup>
       <id>2071782713</id>
       <name>3 rechts</name>
-      <turnoutNumberOffset>0</turnoutNumberOffset>
-      <turnoutNumberAmount>0</turnoutNumberAmount>
       <turnout>
         <changeSupport serialization="custom">
           <java.beans.PropertyChangeSupport>
@@ -4979,8 +4973,6 @@
     <routeGroup>
       <id>2079142787</id>
       <name>1 Bhf links</name>
-      <routeNumberOffset>0</routeNumberOffset>
-      <routeNumberAmount>0</routeNumberAmount>
       <route>
         <changeSupport serialization="custom">
           <java.beans.PropertyChangeSupport>
@@ -5641,8 +5633,6 @@
     <routeGroup>
       <id>547714419</id>
       <name>2 Bhf mitte</name>
-      <routeNumberOffset>0</routeNumberOffset>
-      <routeNumberAmount>0</routeNumberAmount>
       <route>
         <changeSupport serialization="custom">
           <java.beans.PropertyChangeSupport>
@@ -6550,8 +6540,6 @@
     <routeGroup>
       <id>847032231</id>
       <name>3 Bhf rechts</name>
-      <routeNumberOffset>0</routeNumberOffset>
-      <routeNumberAmount>0</routeNumberAmount>
       <route>
         <changeSupport serialization="custom">
           <java.beans.PropertyChangeSupport>
@@ -6561,12 +6549,6 @@
             </default>
             <null/>
           </java.beans.PropertyChangeSupport>
-          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
-            <default>
-              <checkIdentityDefault>false</checkIdentityDefault>
-              <source class="route" reference="../../../.."/>
-            </default>
-          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
         </changeSupport>
         <id>-1759089376</id>
         <number>11</number>
@@ -6622,12 +6604,6 @@
             </default>
             <null/>
           </java.beans.PropertyChangeSupport>
-          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
-            <default>
-              <checkIdentityDefault>false</checkIdentityDefault>
-              <source class="route" reference="../../../.."/>
-            </default>
-          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
         </changeSupport>
         <id>-75060477</id>
         <number>12</number>
@@ -6683,12 +6659,6 @@
             </default>
             <null/>
           </java.beans.PropertyChangeSupport>
-          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
-            <default>
-              <checkIdentityDefault>false</checkIdentityDefault>
-              <source class="route" reference="../../../.."/>
-            </default>
-          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
         </changeSupport>
         <id>-910695323</id>
         <number>13</number>
@@ -6739,12 +6709,6 @@
             </default>
             <null/>
           </java.beans.PropertyChangeSupport>
-          <com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
-            <default>
-              <checkIdentityDefault>false</checkIdentityDefault>
-              <source class="route" reference="../../../.."/>
-            </default>
-          </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
         </changeSupport>
         <id>-554457995</id>
         <number>14</number>

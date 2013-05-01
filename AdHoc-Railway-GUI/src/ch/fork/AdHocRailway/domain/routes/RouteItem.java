@@ -20,17 +20,13 @@ package ch.fork.AdHocRailway.domain.routes;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import ch.fork.AdHocRailway.domain.AbstractItem;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 
-import com.jgoodies.binding.beans.Model;
-
-public class RouteItem extends Model implements java.io.Serializable,
+public class RouteItem extends AbstractItem implements java.io.Serializable,
 		Comparable<RouteItem> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7776737980695074105L;
 
 	private int id;
@@ -121,7 +117,8 @@ public class RouteItem extends Model implements java.io.Serializable,
 	public void setTurnout(final Turnout turnout) {
 		final Turnout old = this.turnout;
 		this.turnout = turnout;
-		firePropertyChange(PROPERTYNAME_TURNOUT, old, turnout);
+		changeSupport.firePropertyChange(PROPERTYNAME_TURNOUT, old,
+				this.turnout);
 	}
 
 	public Route getRoute() {
@@ -131,7 +128,7 @@ public class RouteItem extends Model implements java.io.Serializable,
 	public void setRoute(final Route route) {
 		final Route old = this.route;
 		this.route = route;
-		firePropertyChange(PROPERTYNAME_ROUTE, old, route);
+		changeSupport.firePropertyChange(PROPERTYNAME_ROUTE, old, this.route);
 	}
 
 	public TurnoutState getRoutedState() {
@@ -141,7 +138,8 @@ public class RouteItem extends Model implements java.io.Serializable,
 	public void setRoutedState(final TurnoutState routedState) {
 		final TurnoutState old = this.routedState;
 		this.routedState = routedState;
-		firePropertyChange(PROPERTYNAME_ROUTED_STATE, old, routedState);
+		changeSupport.firePropertyChange(PROPERTYNAME_ROUTED_STATE, old,
+				this.routedState);
 	}
 
 }
