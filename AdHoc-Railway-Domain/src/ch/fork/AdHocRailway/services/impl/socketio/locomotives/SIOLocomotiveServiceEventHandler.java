@@ -18,8 +18,9 @@ public class SIOLocomotiveServiceEventHandler {
 	private static Map<String, LocomotiveGroup> sioIdToLocomotiveGroupMap = new HashMap<String, LocomotiveGroup>();
 	private static Map<String, Locomotive> sioIdToLocomotiveMap = new HashMap<String, Locomotive>();
 
-	public static void handleLocomotiveInit(final JSONObject data,
-			final LocomotiveServiceListener listener) throws JSONException {
+	public static SortedSet<LocomotiveGroup> handleLocomotiveInit(
+			final JSONObject data, final LocomotiveServiceListener listener)
+			throws JSONException {
 		final JSONArray locomotiveGroupsJ = data
 				.getJSONArray("locomotiveGroups");
 		final SortedSet<LocomotiveGroup> locomotiveGroups = new TreeSet<LocomotiveGroup>();
@@ -40,10 +41,12 @@ public class SIOLocomotiveServiceEventHandler {
 		}
 
 		listener.locomotivesUpdated(locomotiveGroups);
+		return locomotiveGroups;
 
 	}
 
-	public static void handleLocomotiveAdded(final JSONObject locomotiveJSON,
+	public static Locomotive handleLocomotiveAdded(
+			final JSONObject locomotiveJSON,
 			final LocomotiveServiceListener listener) throws JSONException {
 		final Locomotive locomotive = SIOLocomotiveMapper
 				.mapLocomotiveFromJSON(locomotiveJSON);
@@ -53,9 +56,11 @@ public class SIOLocomotiveServiceEventHandler {
 		locomotive.setGroup(locomotiveGroup);
 		locomotiveGroup.addLocomotive(locomotive);
 		listener.locomotiveAdded(locomotive);
+		return locomotive;
 	}
 
-	public static void handleLocomotiveUpdated(final JSONObject locomotiveJSON,
+	public static Locomotive handleLocomotiveUpdated(
+			final JSONObject locomotiveJSON,
 			final LocomotiveServiceListener listener) throws JSONException {
 		final Locomotive locomotive = sioIdToLocomotiveMap.get(locomotiveJSON
 				.getString("_id"));
@@ -64,10 +69,12 @@ public class SIOLocomotiveServiceEventHandler {
 		locomotive.setGroup(sioIdToLocomotiveGroupMap.get(locomotiveJSON
 				.getString("group")));
 		listener.locomotiveUpdated(locomotive);
+		return locomotive;
 
 	}
 
-	public static void handleLocomotiveRemoved(final JSONObject locomotiveJSON,
+	public static Locomotive handleLocomotiveRemoved(
+			final JSONObject locomotiveJSON,
 			final LocomotiveServiceListener listener) throws JSONException {
 		final Locomotive locomotive = sioIdToLocomotiveMap
 				.remove(locomotiveJSON.getString("_id"));
@@ -78,9 +85,10 @@ public class SIOLocomotiveServiceEventHandler {
 		locomotiveGroup.removeLocomotive(locomotive);
 		listener.locomotiveRemoved(locomotive);
 
+		return locomotive;
 	}
 
-	public static void handleLocomotiveGroupAdded(
+	public static LocomotiveGroup handleLocomotiveGroupAdded(
 			final JSONObject locomotiveGroupJSON,
 			final LocomotiveServiceListener listener) throws JSONException {
 		final LocomotiveGroup locomotiveGroup = SIOLocomotiveMapper
@@ -88,9 +96,10 @@ public class SIOLocomotiveServiceEventHandler {
 		sioIdToLocomotiveGroupMap.put(locomotiveGroupJSON.getString("_id"),
 				locomotiveGroup);
 		listener.locomotiveGroupAdded(locomotiveGroup);
+		return locomotiveGroup;
 	}
 
-	public static void handleLocomotiveGroupUpdated(
+	public static LocomotiveGroup handleLocomotiveGroupUpdated(
 			final JSONObject locomotiveGroupJSON,
 			final LocomotiveServiceListener listener) throws JSONException {
 		final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
@@ -98,9 +107,10 @@ public class SIOLocomotiveServiceEventHandler {
 		SIOLocomotiveMapper.mergeLocomotiveGroupBaseInfo(locomotiveGroup,
 				locomotiveGroupJSON);
 		listener.locomotiveGroupUpdated(locomotiveGroup);
+		return locomotiveGroup;
 	}
 
-	public static void handleLocomotiveGroupRemoved(
+	public static LocomotiveGroup handleLocomotiveGroupRemoved(
 			final JSONObject locomotiveGroupJSON,
 			final LocomotiveServiceListener listener) throws JSONException {
 		final LocomotiveGroup locomotiveGroup = SIOLocomotiveMapper
@@ -109,6 +119,7 @@ public class SIOLocomotiveServiceEventHandler {
 		SIOLocomotiveMapper.locomotiveGroupIdMap
 				.remove(locomotiveGroup.getId());
 		listener.locomotiveGroupRemoved(locomotiveGroup);
+		return locomotiveGroup;
 	}
 
 	public static Locomotive getLocomotiveBySIOId(final String sioId) {
