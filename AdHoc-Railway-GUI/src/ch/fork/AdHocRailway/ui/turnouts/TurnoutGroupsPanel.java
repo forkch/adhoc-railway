@@ -16,13 +16,13 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
+import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerListener;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.EditingModeListener;
@@ -50,7 +50,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	private final TurnoutContext ctx;
 
-	private final TurnoutControlIface turnoutControl;
+	private final TurnoutController turnoutControl;
 
 	public TurnoutGroupsPanel(final TurnoutContext turnoutCtx,
 			final int tabPlacement) {

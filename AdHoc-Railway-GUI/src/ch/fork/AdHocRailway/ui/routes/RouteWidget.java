@@ -33,11 +33,11 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
-import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteChangeListener;
-import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
-import ch.fork.AdHocRailway.domain.routes.RouteException;
-import ch.fork.AdHocRailway.domain.routes.RouteItem;
+import ch.fork.AdHocRailway.controllers.RouteChangeListener;
+import ch.fork.AdHocRailway.controllers.RouteController;
+import ch.fork.AdHocRailway.domain.turnouts.Route;
+import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
+import ch.fork.AdHocRailway.manager.turnouts.RouteException;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
@@ -56,7 +56,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 	private JLabel numberLabel;
 	private JLabel orientationLabel;
 	private final boolean testMode;
-	private final RouteControlIface routeControl;
+	private final RouteController routeControl;
 	private final RouteContext ctx;
 
 	public RouteWidget(final RouteContext ctx, final Route route,

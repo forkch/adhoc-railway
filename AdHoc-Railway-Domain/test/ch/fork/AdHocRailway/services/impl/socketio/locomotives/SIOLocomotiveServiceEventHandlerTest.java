@@ -20,8 +20,8 @@ import org.mockito.MockitoAnnotations;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.domain.utils.Tuple;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
+import ch.fork.AdHocRailway.utils.Tuple;
 
 public class SIOLocomotiveServiceEventHandlerTest {
 

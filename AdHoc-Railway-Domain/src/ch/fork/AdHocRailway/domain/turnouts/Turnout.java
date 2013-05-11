@@ -26,7 +26,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
-import ch.fork.AdHocRailway.domain.routes.RouteItem;
 
 public class Turnout extends AbstractItem implements java.io.Serializable,
 		Comparable<Turnout> {

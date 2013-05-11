@@ -29,12 +29,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.controllers.TurnoutChangeListener;
+import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutChangeListener;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
@@ -64,7 +64,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
 	private final TurnoutManager turnoutManager;
 
-	private final TurnoutControlIface turnoutControl;
+	private final TurnoutController turnoutControl;
 
 	private final TurnoutContext ctx;
 

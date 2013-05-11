@@ -12,7 +12,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 
 public class SIOService {
 

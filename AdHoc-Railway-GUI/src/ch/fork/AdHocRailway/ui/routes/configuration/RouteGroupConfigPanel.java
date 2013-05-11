@@ -28,7 +28,7 @@ package ch.fork.AdHocRailway.ui.routes.configuration;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import ch.fork.AdHocRailway.domain.routes.RouteGroup;
+import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;

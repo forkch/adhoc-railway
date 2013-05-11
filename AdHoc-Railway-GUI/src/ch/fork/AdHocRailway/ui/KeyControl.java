@@ -29,17 +29,17 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.controllers.LocomotiveController;
+import ch.fork.AdHocRailway.controllers.RouteController;
+import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
-import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
-import ch.fork.AdHocRailway.domain.routes.RouteException;
+import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutException;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
+import ch.fork.AdHocRailway.manager.turnouts.RouteException;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
@@ -76,8 +76,8 @@ public class KeyControl extends SimpleInternalFrame {
 	private JScrollPane historyPane;
 
 	private ThreeDigitDisplay digitDisplay;
-	private final RouteControlIface routeControl;
-	private final TurnoutControlIface turnoutControl;
+	private final RouteController routeControl;
+	private final TurnoutController turnoutControl;
 	private final TurnoutManager turnoutManager;
 	private final ApplicationContext ctx;
 
@@ -335,7 +335,7 @@ public class KeyControl extends SimpleInternalFrame {
 				return;
 			}
 
-			final LocomotiveControlface locomotiveControl = ctx
+			final LocomotiveController locomotiveControl = ctx
 					.getLocomotiveControl();
 			final boolean[] functions = locomotiveControl
 					.getFunctions(searchedLocomotive);

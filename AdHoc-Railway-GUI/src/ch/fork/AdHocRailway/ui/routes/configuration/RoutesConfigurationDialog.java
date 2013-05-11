@@ -40,11 +40,11 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteGroup;
-import ch.fork.AdHocRailway.domain.routes.RouteManager;
-import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
-import ch.fork.AdHocRailway.domain.routes.RouteManagerListener;
+import ch.fork.AdHocRailway.domain.turnouts.Route;
+import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
+import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
+import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
+import ch.fork.AdHocRailway.manager.turnouts.RouteManagerListener;
 import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SwingUtils;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;

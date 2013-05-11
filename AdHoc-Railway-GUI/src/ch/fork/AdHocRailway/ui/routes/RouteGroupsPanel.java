@@ -7,12 +7,12 @@ import java.util.SortedSet;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
-import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
-import ch.fork.AdHocRailway.domain.routes.RouteGroup;
-import ch.fork.AdHocRailway.domain.routes.RouteManager;
-import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
-import ch.fork.AdHocRailway.domain.routes.RouteManagerListener;
+import ch.fork.AdHocRailway.controllers.RouteController;
+import ch.fork.AdHocRailway.domain.turnouts.Route;
+import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
+import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
+import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
+import ch.fork.AdHocRailway.manager.turnouts.RouteManagerListener;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 
 public class RouteGroupsPanel extends JTabbedPane implements
@@ -27,7 +27,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 	private final Map<RouteGroup, RouteGroupTab> routeGroupToRouteGroupTab = new HashMap<RouteGroup, RouteGroupTab>();
 
 	private final RouteManager routePersistence;
-	private final RouteControlIface routeControl;
+	private final RouteController routeControl;
 
 	private final RouteContext ctx;
 

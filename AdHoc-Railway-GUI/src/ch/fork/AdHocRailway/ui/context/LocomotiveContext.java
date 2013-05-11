@@ -1,11 +1,11 @@
 package ch.fork.AdHocRailway.ui.context;
 
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
+import ch.fork.AdHocRailway.controllers.LocomotiveController;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
 
 public interface LocomotiveContext extends ControllerContext {
 
-	public abstract LocomotiveControlface getLocomotiveControl();
+	public abstract LocomotiveController getLocomotiveControl();
 
 	public abstract LocomotiveManager getLocomotiveManager();
 

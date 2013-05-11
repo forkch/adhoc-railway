@@ -55,7 +55,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private JSpinner defaultRoutingDelay;
 	private SpinnerNumberModel defaultActivationTimeModel;
 	private SpinnerNumberModel defaultRoutingDelayModel;
-	private SpinnerNumberModel defaultLockDurationModel;
 	private JSpinner locomotiveControlNumber;
 	private JSpinner defaultTurnoutBus;
 	private JSpinner defaultLocomotiveBus;

@@ -4,7 +4,7 @@ import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
 
 public abstract class LocomotiveAddListener implements
 		LocomotiveManagerListener {

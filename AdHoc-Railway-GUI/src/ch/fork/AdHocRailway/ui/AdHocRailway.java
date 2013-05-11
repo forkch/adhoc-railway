@@ -42,7 +42,6 @@ import java.util.Set;
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
-import javax.persistence.PersistenceException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
@@ -77,16 +76,16 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
 
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerImpl;
-import ch.fork.AdHocRailway.domain.locomotives.SRCPLocomotiveControlAdapter;
-import ch.fork.AdHocRailway.domain.routes.RouteManager;
-import ch.fork.AdHocRailway.domain.routes.RouteManagerImpl;
-import ch.fork.AdHocRailway.domain.routes.SRCPRouteControlAdapter;
-import ch.fork.AdHocRailway.domain.turnouts.SRCPTurnoutControlAdapter;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerImpl;
+import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
+import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
+import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
+import ch.fork.AdHocRailway.manager.impl.locomotives.LocomotiveManagerImpl;
+import ch.fork.AdHocRailway.manager.impl.turnouts.RouteManagerImpl;
+import ch.fork.AdHocRailway.manager.impl.turnouts.TurnoutManagerImpl;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
+import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.services.impl.socketio.ServiceListener;
 import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
@@ -94,6 +93,7 @@ import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
+import ch.fork.AdHocRailway.services.impl.xml.XMLServiceHelper;
 import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
@@ -467,7 +467,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		appContext.setTurnoutControl(turnoutControl);
 
 		initProceeded("Loading Control Layer (Routes)");
-		appContext.setRouteControl(new SRCPRouteControlAdapter(turnoutControl));
+		final SRCPRouteControlAdapter routeControl = new SRCPRouteControlAdapter(
+				turnoutControl);
+		routeControl.setRoutingDelay(Preferences.getInstance().getIntValue(
+				PreferencesKeys.ROUTING_DELAY));
+		appContext.setRouteControl(routeControl);
 
 		initProceeded("Loading Control Layer (Locks)");
 		appContext.setLockControl(SRCPLockControl.getInstance());
@@ -675,7 +679,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	private void saveFile(final File file) {
 		try {
 			final XMLServiceHelper xmlService = new XMLServiceHelper();
-			xmlService.saveFile(appContext, file);
+			xmlService.saveFile(appContext.getLocomotiveManager(),
+					appContext.getTurnoutManager(),
+					appContext.getRouteManager(), file);
 		} catch (final IOException e) {
 			handleException(e);
 		}
@@ -1040,7 +1046,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 						disableEnableMenuItems();
 
-						new XMLServiceHelper().loadFile(appContext, file);
+						new XMLServiceHelper().loadFile(
+								(XMLLocomotiveService) appContext
+										.getLocomotiveManager().getService(),
+								(XMLTurnoutService) appContext
+										.getTurnoutManager().getService(),
+								(XMLRouteService) appContext.getRouteManager()
+										.getService(), file);
 
 						setTitle(AdHocRailway.TITLE + " ["
 								+ file.getAbsolutePath() + "]");
@@ -1071,18 +1083,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 
-			try {
-				progressBar.setIndeterminate(true);
+			progressBar.setIndeterminate(true);
 
-				disconnectFromCurrentPersistence();
-				switchToServerMode();
-				loadPersistenceLayer();
-				disableEnableMenuItems();
+			disconnectFromCurrentPersistence();
+			switchToServerMode();
+			loadPersistenceLayer();
+			disableEnableMenuItems();
 
-			} catch (final PersistenceException ex) {
-
-				handleException("Failed to connect to database", ex);
-			}
 			updateGUI();
 			progressBar.setIndeterminate(false);
 		}
@@ -1100,21 +1107,16 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 
-			try {
-				progressBar.setIndeterminate(true);
-				final int result = JOptionPane.showConfirmDialog(
-						AdHocRailway.this,
-						"Do you REALLY want to remove all locomotives?",
-						"Export to database", JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE,
-						createImageIconFromIconSet("dialog-warning.png"));
-				if (result == JOptionPane.YES_OPTION) {
-					appContext.getLocomotiveManager().clearToService();
-				}
-
-			} catch (final PersistenceException ex) {
-				handleException("Failed to connect to database", ex);
+			progressBar.setIndeterminate(true);
+			final int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
+					"Do you REALLY want to remove all locomotives?",
+					"Export to database", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					createImageIconFromIconSet("dialog-warning.png"));
+			if (result == JOptionPane.YES_OPTION) {
+				appContext.getLocomotiveManager().clearToService();
 			}
+
 			updateGUI();
 			progressBar.setIndeterminate(false);
 		}
@@ -1132,24 +1134,17 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 
-			try {
-				progressBar.setIndeterminate(true);
-				final int result = JOptionPane
-						.showConfirmDialog(
-								AdHocRailway.this,
-								"Do you REALLY want to remove all turnouts and routes?",
-								"Export to database",
-								JOptionPane.YES_NO_OPTION,
-								JOptionPane.QUESTION_MESSAGE,
-								createImageIconFromIconSet("dialog-warning.png"));
-				if (result == JOptionPane.YES_OPTION) {
-					appContext.getTurnoutManager().clearToService();
-					appContext.getRouteManager().clearToService();
-				}
-
-			} catch (final PersistenceException ex) {
-				handleException("Failed to connect to database", ex);
+			progressBar.setIndeterminate(true);
+			final int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
+					"Do you REALLY want to remove all turnouts and routes?",
+					"Export to database", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					createImageIconFromIconSet("dialog-warning.png"));
+			if (result == JOptionPane.YES_OPTION) {
+				appContext.getTurnoutManager().clearToService();
+				appContext.getRouteManager().clearToService();
 			}
+
 			updateGUI();
 			progressBar.setIndeterminate(false);
 		}
@@ -1265,7 +1260,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			final int returnVal = fileChooser.showSaveDialog(AdHocRailway.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				try {
-					new XMLServiceHelper().saveFile(appContext,
+					new XMLServiceHelper().saveFile(
+							appContext.getLocomotiveManager(),
+							appContext.getTurnoutManager(),
+							appContext.getRouteManager(),
 							fileChooser.getSelectedFile());
 				} catch (final IOException e1) {
 					e1.printStackTrace();

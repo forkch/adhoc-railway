@@ -4,26 +4,17 @@
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="src" path="etc"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="lib" path="lib/mysql-connector-java-5.0.7-bin.jar" sourcepath="/home/fork/downloads/mysql-connector-java-5.0.7/src"/>
 	<classpathentry kind="lib" path="lib/looks-2.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/forms-1.1.0.jar" sourcepath="/home/fork/downloads/forms-1.1.0/src/core"/>
 	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/miglayout-4.0-swing.jar"/>
 	<classpathentry kind="lib" path="lib/miglayout-4.0.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-2.7.7.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-commons-annotations-4.0.1.Final.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-core-4.1.6.Final.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
 	<classpathentry kind="lib" path="lib/javassist-3.15.0-GA.jar"/>
-	<classpathentry kind="lib" path="lib/jboss-logging-3.1.0.GA.jar"/>
-	<classpathentry kind="lib" path="lib/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-impl-2.0-alpha2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="lib/socketio.jar"/>
-	<classpathentry kind="lib" path="lib/xstream-1.4.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
-	<classpathentry kind="lib" path="lib/xmlpull-1.1.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/jgoodies-binding-2.8.0.jar" sourcepath="/home/fork/Downloads/jgoodies-binding-2.8.0/jgoodies-binding-2.8.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jgoodies-common-1.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/binding-2.0.2.jar"/>
@@ -32,12 +23,8 @@
 	<classpathentry kind="lib" path="lib/jettison-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/joda-time-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/jsch-0.1.49.jar"/>
-	<classpathentry kind="lib" path="lib/json-20080701.jar"/>
 	<classpathentry kind="lib" path="lib/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/kxml2-min-2.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/stax-1.2.0.jar"/>
-	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
-	<classpathentry kind="lib" path="lib/wstx-asl-3.2.7.jar"/>
 	<classpathentry kind="lib" path="lib/xom-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="lib/imgscalr-lib-4.2.jar"/>
@@ -48,8 +35,10 @@
 	<classpathentry kind="lib" path="lib/commons-logging-adapters-1.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-api-1.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/jmdns.jar" sourcepath="/home/fork/Downloads/jmdns-3.4.1/src"/>
+	<classpathentry kind="lib" path="lib/socketio.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jsrcpc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/AdHoc-Railway-Domain"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

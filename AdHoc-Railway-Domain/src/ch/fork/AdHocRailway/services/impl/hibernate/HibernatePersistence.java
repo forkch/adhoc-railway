@@ -29,7 +29,7 @@ import javax.persistence.PersistenceException;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 
 public abstract class HibernatePersistence {
 	private static Logger logger = Logger.getLogger(HibernatePersistence.class);

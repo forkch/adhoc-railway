@@ -237,7 +237,7 @@ static void check_status(bus_t busnumber) {
 	int bytesToRead;
 
 	int status = ioctl(buses[busnumber].device.file.fd, FIONREAD, &bytesToRead);
-	if(bytesToRead == 0) {
+	if (bytesToRead == 0) {
 		return;
 	}
 	while (readByte(busnumber, 0, &c) == 0) {
@@ -325,34 +325,17 @@ static void check_status(bus_t busnumber) {
 			}
 
 			char power_msg[110];
-			sprintf(power_msg, "%d %c %d %c %d %c %d %c %d %c %d %c %d %c %d %c", 0, booster_state[0], 1, booster_state[1], 2,
-					booster_state[2], 3, booster_state[3], 4, booster_state[4],
-					5, booster_state[5], 6, booster_state[6], 7,
-					booster_state[7]);
+			sprintf(power_msg,
+					"%d %c %d %c %d %c %d %c %d %c %d %c %d %c %d %c", 0,
+					booster_state[0], 1, booster_state[1], 2, booster_state[2],
+					3, booster_state[3], 4, booster_state[4], 5,
+					booster_state[5], 6, booster_state[6], 7, booster_state[7]);
 			strcpy(buses[busnumber].power_msg, power_msg);
 		}
 	} else {
 
 	}
 
-}
-
-static int readByte_(bus_t busnumber, int wait, unsigned char *the_byte) {
-	int i, status;
-
-	for (i = 0; i < 10; i++) {
-		status = readByte(busnumber, wait, the_byte);
-		if (status == 0)
-			return 0;
-
-		/* wait 10 ms */
-		if (usleep(10000) == -1) {
-			syslog_bus(busnumber, DBG_ERROR,
-					"usleep() failed: %s (errno = %d)\n", strerror(errno),
-					errno);
-		}
-	}
-	return -1;
 }
 
 static void handle_power_command(bus_t busnumber) {
@@ -595,30 +578,6 @@ void *thr_sendrec_ADHOCMM(void *v) {
 					/*POWER action arrived */
 					if (buses[btd->bus].power_changed == 1)
 						handle_power_command(btd->bus);
-
-					/* loop shortcut to prevent processing of GA, GL (and FB)
-					 * without power on; arriving commands will flood the command
-					 * queue */
-					if (buses[btd->bus].power_state == 0) {
-
-						gl_state_t gltmp;
-						while (!queue_GL_isempty(btd->bus)) {
-							dequeueNextGL(btd->bus, &gltmp);
-						}
-						ga_state_t gatmp;
-
-						/*GA action arrived */
-						while (!queue_GA_isempty(btd->bus))
-							dequeueNextGA(btd->bus, &gatmp);
-
-						/* wait 50 ms */
-						if (usleep(5000) == -1) {
-							syslog_bus(btd->bus, DBG_ERROR,
-									"usleep() failed: %s (errno = %d)\n",
-									strerror(errno), errno);
-						}
-						continue;
-					}
 
 					/*GL action arrived */
 					if (!queue_GL_isempty(btd->bus))

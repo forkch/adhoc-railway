@@ -1,8 +1,8 @@
 package ch.fork.AdHocRailway.services.impl.hibernate.turnouts;
 
-import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteGroup;
-import ch.fork.AdHocRailway.domain.routes.RouteItem;
+import ch.fork.AdHocRailway.domain.turnouts.Route;
+import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
+import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 
 public class HibernateRouteMapper {
 

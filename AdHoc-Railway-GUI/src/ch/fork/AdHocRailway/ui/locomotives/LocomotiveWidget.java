@@ -47,17 +47,17 @@ import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 
 import net.miginfocom.swing.MigLayout;
-import ch.fork.AdHocRailway.domain.locking.LockingException;
+import ch.fork.AdHocRailway.controllers.LockingException;
+import ch.fork.AdHocRailway.controllers.LocomotiveChangeListener;
+import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveChangeListener;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveHelper;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveHelper;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -103,7 +103,7 @@ public class LocomotiveWidget extends JPanel implements
 
 	private final LocomotiveManager locomotiveManager;
 
-	private final LocomotiveControlface locomotiveControl;
+	private final LocomotiveController locomotiveControl;
 
 	private final LocomotiveGroup allLocomotivesGroup;
 
@@ -532,9 +532,6 @@ public class LocomotiveWidget extends JPanel implements
 					}
 					locomotiveControl.activateLoco(myLocomotive, functions);
 
-					final Thread blinkOnSelection = new BlinkLightsOnSelectLocomotiveThread();
-					// blinkOnSelection.start();
-
 					locomotiveComboBox
 							.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
 					lockButton.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
@@ -589,7 +586,7 @@ public class LocomotiveWidget extends JPanel implements
 		}
 
 		protected abstract void doPerformAction(
-				LocomotiveControlface locomotiveControl, Locomotive myLocomotive)
+				LocomotiveController locomotiveControl, Locomotive myLocomotive)
 				throws LocomotiveException;
 	}
 
@@ -607,7 +604,7 @@ public class LocomotiveWidget extends JPanel implements
 
 		@Override
 		protected void doPerformAction(
-				final LocomotiveControlface locomotiveControl,
+				final LocomotiveController locomotiveControl,
 				final Locomotive myLocomotive) throws LocomotiveException {
 			try {
 				final boolean state = functionToggleButtons.get(function)
@@ -636,7 +633,7 @@ public class LocomotiveWidget extends JPanel implements
 
 		@Override
 		protected void doPerformAction(
-				final LocomotiveControlface locomotiveControl,
+				final LocomotiveController locomotiveControl,
 				final Locomotive myLocomotive) throws LocomotiveException {
 			locomotiveControl.increaseSpeed(myLocomotive);
 		}
@@ -651,7 +648,7 @@ public class LocomotiveWidget extends JPanel implements
 
 		@Override
 		protected void doPerformAction(
-				final LocomotiveControlface locomotiveControl,
+				final LocomotiveController locomotiveControl,
 				final Locomotive myLocomotive) throws LocomotiveException {
 			locomotiveControl.decreaseSpeed(myLocomotive);
 		}
@@ -667,7 +664,7 @@ public class LocomotiveWidget extends JPanel implements
 
 		@Override
 		protected void doPerformAction(
-				final LocomotiveControlface locomotiveControl,
+				final LocomotiveController locomotiveControl,
 				final Locomotive myLocomotive) throws LocomotiveException {
 			if (Preferences.getInstance().getBooleanValue(
 					PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
@@ -820,38 +817,9 @@ public class LocomotiveWidget extends JPanel implements
 		}
 	}
 
-	private class BlinkLightsOnSelectLocomotiveThread extends Thread {
-
-		@Override
-		public void run() {
-			try {
-				if (myLocomotive == null) {
-					return;
-				}
-
-				for (int i = 0; i < 7; i++) {
-					if (i % 2 == 0) {
-						locomotiveControl.setFunction(myLocomotive, 0, true, 0);
-					} else {
-						locomotiveControl
-								.setFunction(myLocomotive, 0, false, 0);
-					}
-					Thread.sleep(500);
-				}
-				locomotiveControl.setFunction(myLocomotive, 0, false, 0);
-
-			} catch (final InterruptedException e) {
-			} catch (final LocomotiveException e) {
-				ctx.getMainApp().handleException(e);
-			}
-
-		}
-	}
-
 	@Override
 	public void failure(
 			final LocomotiveManagerException locomotiveManagerException) {
-
 	}
 
 	@Override

@@ -6,9 +6,9 @@ import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
 
 public class LocomotiveImporter implements LocomotiveManagerListener {
 

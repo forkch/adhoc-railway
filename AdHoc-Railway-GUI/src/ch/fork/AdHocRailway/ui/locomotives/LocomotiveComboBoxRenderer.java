@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveHelper;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveHelper;
 import ch.fork.AdHocRailway.ui.ImageTools;
 
 public class LocomotiveComboBoxRenderer extends JPanel implements

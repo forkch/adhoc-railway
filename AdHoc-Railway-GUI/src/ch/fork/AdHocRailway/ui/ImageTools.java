@@ -33,7 +33,7 @@ import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Mode;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveImageHelper;
+import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
 
 public class ImageTools {
 

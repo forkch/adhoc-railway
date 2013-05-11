@@ -4,7 +4,7 @@ import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManagerException;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 
 public interface TurnoutServiceListener {
 

@@ -2,12 +2,12 @@ package ch.fork.AdHocRailway.ui.context;
 
 import javax.swing.JFrame;
 
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.domain.routes.RouteControlIface;
-import ch.fork.AdHocRailway.domain.routes.RouteManager;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutControlIface;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.controllers.LocomotiveController;
+import ch.fork.AdHocRailway.controllers.RouteController;
+import ch.fork.AdHocRailway.controllers.TurnoutController;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
+import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
@@ -22,13 +22,13 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 
 	private Preferences preferences;
 
-	private TurnoutControlIface turnoutControl;
+	private TurnoutController turnoutControl;
 	private TurnoutManager turnoutManager;
 
-	private RouteControlIface routeControl;
+	private RouteController routeControl;
 	private RouteManager routeManager;
 
-	private LocomotiveControlface locomotiveControl;
+	private LocomotiveController locomotiveControl;
 	private LocomotiveManager locomotiveManager;
 
 	private SRCPPowerControl powerControl;
@@ -53,11 +53,11 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 	 * @see ch.fork.AdHocRailway.domain.TurnoutContext#getTurnoutControl()
 	 */
 	@Override
-	public TurnoutControlIface getTurnoutControl() {
+	public TurnoutController getTurnoutControl() {
 		return turnoutControl;
 	}
 
-	public void setTurnoutControl(final TurnoutControlIface turnoutControl) {
+	public void setTurnoutControl(final TurnoutController turnoutControl) {
 		this.turnoutControl = turnoutControl;
 	}
 
@@ -81,11 +81,11 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 	 * @see ch.fork.AdHocRailway.domain.RouteContext#getRouteControl()
 	 */
 	@Override
-	public RouteControlIface getRouteControl() {
+	public RouteController getRouteControl() {
 		return routeControl;
 	}
 
-	public void setRouteControl(final RouteControlIface routeControl) {
+	public void setRouteControl(final RouteController routeControl) {
 		this.routeControl = routeControl;
 	}
 
@@ -109,12 +109,12 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 	 * @see ch.fork.AdHocRailway.domain.LocomotiveContext#getLocomotiveControl()
 	 */
 	@Override
-	public LocomotiveControlface getLocomotiveControl() {
+	public LocomotiveController getLocomotiveControl() {
 		return locomotiveControl;
 	}
 
 	public void setLocomotiveControl(
-			final LocomotiveControlface locomotiveControl) {
+			final LocomotiveController locomotiveControl) {
 		this.locomotiveControl = locomotiveControl;
 	}
 

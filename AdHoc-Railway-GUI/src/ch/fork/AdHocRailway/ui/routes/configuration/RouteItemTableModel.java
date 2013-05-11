@@ -2,7 +2,7 @@ package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import javax.swing.ListModel;
 
-import ch.fork.AdHocRailway.domain.routes.RouteItem;
+import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 
 import com.jgoodies.binding.adapter.AbstractTableAdapter;
 

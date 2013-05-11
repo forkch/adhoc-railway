@@ -28,12 +28,12 @@ import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveControlface;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerException;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveManagerListener;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
@@ -48,7 +48,7 @@ public class LocomotiveControlPanel extends JPanel implements
 	private static final long serialVersionUID = -149795300932888094L;
 	private final List<LocomotiveWidget> locomotiveWidgets;
 	private JPanel controlPanel;
-	private final LocomotiveControlface locomotiveControl;
+	private final LocomotiveController locomotiveControl;
 	private final LocomotiveContext ctx;
 
 	public LocomotiveControlPanel(final LocomotiveContext ctx) {

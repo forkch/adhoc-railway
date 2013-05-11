@@ -20,10 +20,10 @@ package ch.fork.AdHocRailway.services.turnouts;
 
 import java.util.SortedSet;
 
-import ch.fork.AdHocRailway.domain.routes.Route;
-import ch.fork.AdHocRailway.domain.routes.RouteGroup;
-import ch.fork.AdHocRailway.domain.routes.RouteItem;
-import ch.fork.AdHocRailway.domain.routes.RouteManagerException;
+import ch.fork.AdHocRailway.domain.turnouts.Route;
+import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
+import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
+import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
 
 public interface RouteService {
 
