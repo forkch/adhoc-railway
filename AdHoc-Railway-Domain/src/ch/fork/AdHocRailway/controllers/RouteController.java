@@ -27,6 +27,16 @@ public interface RouteController {
 
 	public abstract void disableRoute(Route r) throws RouteException;
 
+	public abstract boolean isRouteEnabled(Route route);
+
+	public abstract boolean isRouting(Route route);
+
+	public abstract void toggle(Route route) throws RouteException;
+
+	public abstract void toggleTest(Route route) throws RouteException;
+
+	public abstract void addOrUpdateRoute(Route route);
+
 	public abstract void addRouteChangeListener(Route r,
 			RouteChangeListener listener);
 
@@ -34,17 +44,4 @@ public interface RouteController {
 
 	public abstract void removeRouteChangeListener(Route r,
 			RouteChangeListener listener);
-
-	public abstract void previousDeviceToDefault() throws RouteException;
-
-	public abstract boolean isRouteEnabled(Route route);
-
-	public abstract boolean isRouting(Route route);
-
-	void addOrUpdateRoute(Route route);
-
-	public abstract void toggle(Route route) throws RouteException;
-
-	public abstract void toggleTest(Route route) throws RouteException;
-
 }

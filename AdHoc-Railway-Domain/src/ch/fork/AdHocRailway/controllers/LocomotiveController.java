@@ -22,7 +22,7 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotiveDirection;
 
-public interface LocomotiveController extends LockControlIface<Locomotive> {
+public interface LocomotiveController extends LockController<Locomotive> {
 
 	/**
 	 * Toggles the direction of the Locomotive
@@ -65,41 +65,13 @@ public interface LocomotiveController extends LockControlIface<Locomotive> {
 	public abstract void decreaseSpeed(Locomotive locomotive)
 			throws LocomotiveException;
 
-	/**
-	 * Increases the speed of the Locomotive by a step.
-	 * 
-	 * @param locomotive
-	 * @throws LocomotiveException
-	 */
-	public abstract void increaseSpeedStep(Locomotive locomotive)
-			throws LocomotiveException;
-
-	/**
-	 * Decreases the speed of the Locomotive by a step.
-	 * 
-	 * @param locomotive
-	 * @throws LocomotiveException
-	 */
-	public abstract void decreaseSpeedStep(Locomotive locomotive)
-			throws LocomotiveException;
-
 	public abstract void setFunction(Locomotive locomotive, int functionNumber,
 			boolean state, int deactivationDelay) throws LocomotiveException;
 
 	public boolean[] getFunctions(Locomotive locomotive);
 
-	public abstract void addLocomotiveChangeListener(Locomotive loco,
-			LocomotiveChangeListener l);
-
-	public void removeLocomotiveChangeListener(final Locomotive locomotive,
-			final LocomotiveChangeListener listener);
-
-	public abstract void removeAllLocomotiveChangeListener();
-
 	public abstract void emergencyStop(Locomotive myLocomotive)
 			throws LocomotiveException;
-
-	public abstract void addOrUpdateLocomotive(Locomotive locomotive);
 
 	public void activateLoco(final Locomotive locomotive,
 			final boolean[] functions) throws LocomotiveException;
@@ -109,4 +81,13 @@ public interface LocomotiveController extends LockControlIface<Locomotive> {
 
 	public abstract void emergencyStopActiveLocos() throws LocomotiveException;
 
+	public abstract void addOrUpdateLocomotive(Locomotive locomotive);
+
+	public abstract void addLocomotiveChangeListener(Locomotive loco,
+			LocomotiveChangeListener l);
+
+	public void removeLocomotiveChangeListener(final Locomotive locomotive,
+			final LocomotiveChangeListener listener);
+
+	public abstract void removeAllLocomotiveChangeListener();
 }

@@ -61,18 +61,6 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveController,
 	}
 
 	@Override
-	public void decreaseSpeedStep(final Locomotive locomotive)
-			throws LocomotiveException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
-		try {
-			locomotiveControl.decreaseSpeedStep(sLocomotive);
-		} catch (final SRCPModelException e) {
-			throw new LocomotiveException("Locomotive Error", e);
-		}
-
-	}
-
-	@Override
 	public int getCurrentSpeed(final Locomotive locomotive) {
 		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		return sLocomotive.getCurrentSpeed();
@@ -112,17 +100,6 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveController,
 		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.increaseSpeed(sLocomotive);
-		} catch (final SRCPModelException e) {
-			throw new LocomotiveException("Locomotive Error", e);
-		}
-	}
-
-	@Override
-	public void increaseSpeedStep(final Locomotive locomotive)
-			throws LocomotiveException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
-		try {
-			locomotiveControl.increaseSpeedStep(sLocomotive);
 		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}

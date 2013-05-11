@@ -11,7 +11,6 @@ import ch.fork.AdHocRailway.controllers.TurnoutChangeListener;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
-
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.turnouts.MMTurnout;
@@ -42,12 +41,6 @@ public class SRCPTurnoutControlAdapter implements TurnoutController,
 
 		turnoutControl.addTurnoutChangeListener(this);
 		reloadConfiguration();
-	}
-
-	@Override
-	public SRCPTurnoutState getTurnoutState(final Turnout turnout) {
-		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
-		return sTurnout.getTurnoutState();
 	}
 
 	@Override
@@ -158,25 +151,6 @@ public class SRCPTurnoutControlAdapter implements TurnoutController,
 		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
-
-	}
-
-	@Override
-	public void undoLastChange() throws TurnoutException {
-		try {
-			turnoutControl.undoLastChange();
-		} catch (final SRCPModelException e) {
-			throw new TurnoutException("Turnout Error", e);
-		}
-	}
-
-	@Override
-	public void update() {
-		turnoutTemp = null;
-		sTurnoutTemp = null;
-		turnoutsSRCPTurnoutsMap.clear();
-		SRCPTurnoutsTurnoutsMap.clear();
-		turnoutControl.removeTurnoutChangeListener(this);
 
 	}
 

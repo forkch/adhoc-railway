@@ -19,7 +19,7 @@
 package ch.fork.AdHocRailway.controllers;
 
 
-public interface LockControlIface<E> {
+public interface LockController<E> {
 
 	public boolean isLocked(E object) throws LockingException;
 

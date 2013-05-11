@@ -10,7 +10,6 @@ import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 import ch.fork.AdHocRailway.manager.turnouts.RouteException;
-
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.routes.SRCPRoute;
@@ -135,15 +134,6 @@ public class SRCPRouteControlAdapter implements RouteController,
 	public boolean isRouting(final Route route) {
 		final SRCPRoute sRoute = getSRCPRoute(route);
 		return sRoute.getRouteState().equals(SRCPRouteState.ROUTING);
-	}
-
-	@Override
-	public void previousDeviceToDefault() throws RouteException {
-		try {
-			routeControl.previousDeviceToDefault();
-		} catch (final SRCPModelException e) {
-			throw new RouteException("Route Error", e);
-		}
 	}
 
 	@Override

@@ -20,11 +20,8 @@ package ch.fork.AdHocRailway.controllers;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public interface TurnoutController {
-
-	public void update();
 
 	public void toggle(Turnout turnout) throws TurnoutException;
 
@@ -38,25 +35,21 @@ public interface TurnoutController {
 
 	public void setCurvedRight(Turnout turnout) throws TurnoutException;
 
-	public void addTurnoutChangeListener(Turnout turnout,
-			TurnoutChangeListener listener);
-
-	public void removeTurnoutChangeListener(Turnout turnout);
-
-	public void removeAllTurnoutChangeListener();
-
-	public void removeTurnoutChangeListener(TurnoutChangeListener listener);
-
-	public void undoLastChange() throws TurnoutException;
-
 	public void previousDeviceToDefault() throws TurnoutException;
-
-	public SRCPTurnoutState getTurnoutState(Turnout turnout);
 
 	public void toggleTest(Turnout turnout) throws TurnoutException;
 
 	public abstract void addOrUpdateTurnout(Turnout turnout);
 
 	public abstract void reloadConfiguration();
+
+	public void addTurnoutChangeListener(Turnout turnout,
+			TurnoutChangeListener listener);
+
+	public void removeAllTurnoutChangeListener();
+
+	public void removeTurnoutChangeListener(Turnout turnout);
+
+	public void removeTurnoutChangeListener(TurnoutChangeListener listener);
 
 }
