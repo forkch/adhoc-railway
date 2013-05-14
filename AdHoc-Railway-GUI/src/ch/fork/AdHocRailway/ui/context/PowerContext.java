@@ -1,9 +1,9 @@
 package ch.fork.AdHocRailway.ui.context;
 
-import de.dermoba.srcp.model.power.SRCPPowerControl;
+import ch.fork.AdHocRailway.controllers.PowerController;
 
 public interface PowerContext extends ControllerContext {
-	public SRCPPowerControl getPowerControl();
+	public PowerController getPowerControl();
 
 	public void setActiveBoosterCount(final int activeBoosterCount);
 }

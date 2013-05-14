@@ -286,8 +286,8 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 					LocomotiveConfigurationDialog.this,
 					"Enter the name of the new Locomotive-Group",
 					"Add Locomotive-Group", JOptionPane.QUESTION_MESSAGE);
-			final LocomotiveGroup newGroup = new LocomotiveGroup();
-			newGroup.setName(newGroupName);
+			final LocomotiveGroup newGroup = new LocomotiveGroup(-1,
+					newGroupName);
 			locomotiveManager.addLocomotiveGroup(newGroup);
 			locomotiveGroupConfig.setLocomotiveGroup(null);
 		}
@@ -337,7 +337,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 					"Remove Locomotive-Group", JOptionPane.YES_NO_OPTION);
 			if (response == JOptionPane.YES_OPTION) {
 				try {
-					locomotiveManager.deleteLocomotiveGroup(groupToDelete);
+					locomotiveManager.removeLocomotiveGroup(groupToDelete);
 					locomotiveGroupConfig.setLocomotiveGroup(null);
 				} catch (final LocomotiveManagerException e) {
 					ctx.getMainApp().handleException(e);

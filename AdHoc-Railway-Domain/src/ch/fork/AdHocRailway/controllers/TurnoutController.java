@@ -25,6 +25,8 @@ public interface TurnoutController {
 
 	public void toggle(Turnout turnout) throws TurnoutException;
 
+	public void toggleTest(Turnout turnout) throws TurnoutException;
+
 	public void setDefaultState(Turnout turnout) throws TurnoutException;
 
 	public void setNonDefaultState(Turnout turnout) throws TurnoutException;
@@ -34,10 +36,6 @@ public interface TurnoutController {
 	public void setCurvedLeft(Turnout turnout) throws TurnoutException;
 
 	public void setCurvedRight(Turnout turnout) throws TurnoutException;
-
-	public void previousDeviceToDefault() throws TurnoutException;
-
-	public void toggleTest(Turnout turnout) throws TurnoutException;
 
 	public abstract void addOrUpdateTurnout(Turnout turnout);
 

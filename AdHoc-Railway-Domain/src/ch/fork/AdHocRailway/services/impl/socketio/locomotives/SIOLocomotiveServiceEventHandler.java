@@ -122,14 +122,6 @@ public class SIOLocomotiveServiceEventHandler {
 		return locomotiveGroup;
 	}
 
-	public static Locomotive getLocomotiveBySIOId(final String sioId) {
-		return sioIdToLocomotiveMap.get(sioId);
-	}
-
-	public static String getSIOIdByLocomotive(final Locomotive locomotive) {
-		return SIOLocomotiveMapper.locomotiveIdMap.get(locomotive.getId());
-	}
-
 	public static void addIdToLocomotive(final Locomotive locomotive,
 			final String sioId) {
 		final int id = sioId.hashCode();

@@ -20,11 +20,10 @@ public class SIOLocomotiveMapper {
 
 	public static LocomotiveGroup mapLocomotiveGroupFromJSON(
 			final JSONObject locomotiveGroupJSON) throws JSONException {
-		final LocomotiveGroup locomotiveGroup = new LocomotiveGroup();
 		final String sioId = locomotiveGroupJSON.getString("_id");
 		final int id = sioId.hashCode();
 		locomotiveGroupIdMap.put(id, sioId);
-		locomotiveGroup.setId(id);
+		final LocomotiveGroup locomotiveGroup = new LocomotiveGroup(id, "temp");
 
 		mergeLocomotiveGroupBaseInfo(locomotiveGroup, locomotiveGroupJSON);
 

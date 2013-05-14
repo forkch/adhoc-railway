@@ -29,9 +29,8 @@ public class HibernateLocomotiveMapper {
 
 	public static LocomotiveGroup mapHibernateLocomotiveGroup(
 			final HibernateLocomotiveGroup hLocomotiveGroup) {
-		final LocomotiveGroup group = new LocomotiveGroup();
-		group.setId(hLocomotiveGroup.getId());
-		group.setName(hLocomotiveGroup.getName());
+		final LocomotiveGroup group = new LocomotiveGroup(
+				hLocomotiveGroup.getId(), hLocomotiveGroup.getName());
 		for (final HibernateLocomotive hLocomotive : hLocomotiveGroup
 				.getLocomotives()) {
 			final Locomotive locomotive = mapLocomotive(hLocomotive);

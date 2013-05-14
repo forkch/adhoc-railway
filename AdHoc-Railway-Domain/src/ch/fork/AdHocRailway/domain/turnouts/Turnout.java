@@ -70,6 +70,7 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
 	public static final String PROPERTYNAME_TURNOUT_GROUP = "turnoutGroup";
 
 	public Turnout() {
+
 	}
 
 	public int getId() {

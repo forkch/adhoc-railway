@@ -40,8 +40,6 @@ public interface TurnoutManager {
 
 	public abstract Turnout getTurnoutByNumber(int number);
 
-	public abstract Turnout getTurnoutByAddressBus(int bus, int address);
-
 	public abstract void addTurnoutToGroup(Turnout turnout, TurnoutGroup group);
 
 	public abstract void removeTurnout(Turnout turnout);

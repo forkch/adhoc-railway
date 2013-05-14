@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.ui.context;
 import javax.swing.JFrame;
 
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
+import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
@@ -11,7 +12,6 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
-import de.dermoba.srcp.model.power.SRCPPowerControl;
 
 public class ApplicationContext implements TurnoutContext, RouteContext,
 		LocomotiveContext, TrackContext, PowerContext {
@@ -31,7 +31,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 	private LocomotiveController locomotiveControl;
 	private LocomotiveManager locomotiveManager;
 
-	private SRCPPowerControl powerControl;
+	private PowerController powerControl;
 	private int activeBoosterCount;
 	private SRCPLockControl lockControl;
 
@@ -134,14 +134,15 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 	}
 
 	@Override
-	public SRCPPowerControl getPowerControl() {
+	public PowerController getPowerControl() {
 		return powerControl;
 	}
 
-	public void setPowerControl(final SRCPPowerControl powerControl) {
+	public void setPowerController(final PowerController powerControl) {
 		this.powerControl = powerControl;
 	}
 
+	@Override
 	public void setActiveBoosterCount(final int activeBoosterCount) {
 		this.activeBoosterCount = activeBoosterCount;
 	}

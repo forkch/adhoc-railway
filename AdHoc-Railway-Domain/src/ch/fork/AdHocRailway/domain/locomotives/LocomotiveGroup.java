@@ -39,9 +39,6 @@ public class LocomotiveGroup extends AbstractItem implements
 	public static final String PROPERTYNAME_NAME = "name";
 	public static final String PROPERTYNAME_LOCOMOTIVES = "locomotives";
 
-	public LocomotiveGroup() {
-	}
-
 	public LocomotiveGroup(final int id, final String name) {
 		this.id = id;
 		this.name = name;

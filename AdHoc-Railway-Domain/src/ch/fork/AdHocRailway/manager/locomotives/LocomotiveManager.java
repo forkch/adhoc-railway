@@ -18,7 +18,6 @@
 
 package ch.fork.AdHocRailway.manager.locomotives;
 
-import java.util.List;
 import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
@@ -35,7 +34,7 @@ public interface LocomotiveManager {
 	void removeLocomotiveManagerListenerInNextEvent(
 			LocomotiveManagerListener listener);
 
-	public abstract List<Locomotive> getAllLocomotives()
+	public abstract SortedSet<Locomotive> getAllLocomotives()
 			throws LocomotiveManagerException;
 
 	public abstract SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
@@ -53,7 +52,7 @@ public interface LocomotiveManager {
 	public abstract void addLocomotiveGroup(LocomotiveGroup group)
 			throws LocomotiveManagerException;
 
-	public abstract void deleteLocomotiveGroup(LocomotiveGroup group)
+	public abstract void removeLocomotiveGroup(LocomotiveGroup group)
 			throws LocomotiveManagerException;
 
 	public abstract void updateLocomotiveGroup(LocomotiveGroup group)

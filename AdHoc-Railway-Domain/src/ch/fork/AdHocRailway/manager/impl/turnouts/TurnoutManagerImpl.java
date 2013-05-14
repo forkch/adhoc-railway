@@ -41,14 +41,11 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerListener;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
-import de.dermoba.srcp.model.SRCPAddress;
 
 public class TurnoutManagerImpl implements TurnoutManager,
 		TurnoutServiceListener {
 	static Logger LOGGER = Logger.getLogger(TurnoutManagerImpl.class);
 
-	private final Map<SRCPAddress, Turnout> addressTurnoutCache = new HashMap<SRCPAddress, Turnout>();
-	private final Map<SRCPAddress, Turnout> addressThreewayCache = new HashMap<SRCPAddress, Turnout>();
 	private final Map<Integer, Turnout> numberToTurnoutCache = new HashMap<Integer, Turnout>();
 
 	private TurnoutService turnoutService;
@@ -109,32 +106,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
 			throws TurnoutManagerException {
 		LOGGER.debug("getTurnoutByNumber()");
 		return numberToTurnoutCache.get(number);
-	}
-
-	@Override
-	public Turnout getTurnoutByAddressBus(final int bus, final int address) {
-		LOGGER.debug("getTurnoutByAddressBus()");
-		final SRCPAddress key1 = new SRCPAddress(bus, address, 0, 0);
-		final Turnout lookup1 = addressTurnoutCache.get(key1);
-		if (lookup1 != null) {
-			return lookup1;
-		}
-		final SRCPAddress key2 = new SRCPAddress(0, 0, bus, address);
-		final Turnout lookup2 = addressTurnoutCache.get(key2);
-		if (lookup2 != null) {
-			return lookup2;
-		}
-		final Turnout threewayLookup1 = addressThreewayCache.get(key1);
-		if (threewayLookup1 != null) {
-			return threewayLookup1;
-		}
-
-		final Turnout threewayLookup2 = addressThreewayCache.get(key2);
-		if (threewayLookup2 != null) {
-			return threewayLookup2;
-		}
-
-		return null;
 	}
 
 	@Override
@@ -373,29 +344,15 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	private void putInCache(final Turnout turnout) {
-		addressTurnoutCache.put(
-				new SRCPAddress(turnout.getBus1(), turnout.getAddress1(),
-						turnout.getBus2(), turnout.getAddress2()), turnout);
-		if (turnout.isThreeWay()) {
-			addressThreewayCache.put(
-					new SRCPAddress(turnout.getBus1(), turnout.getAddress1(),
-							0, 0), turnout);
-			addressThreewayCache.put(new SRCPAddress(0, 0, turnout.getBus2(),
-					turnout.getAddress2()), turnout);
-		}
 		numberToTurnoutCache.put(turnout.getNumber(), turnout);
 		turnoutControl.addOrUpdateTurnout(turnout);
 	}
 
 	private void removeFromCache(final Turnout turnout) {
 		numberToTurnoutCache.values().remove(turnout);
-		addressTurnoutCache.values().remove(turnout);
-		addressThreewayCache.values().remove(turnout);
 	}
 
 	private void clearCache() {
-		this.addressTurnoutCache.clear();
-		this.addressThreewayCache.clear();
 		this.numberToTurnoutCache.clear();
 		this.turnoutGroups.clear();
 	}

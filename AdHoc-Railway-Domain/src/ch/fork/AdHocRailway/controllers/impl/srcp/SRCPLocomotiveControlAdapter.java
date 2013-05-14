@@ -129,24 +129,6 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveController,
 		}
 	}
 
-	/**
-	 * For SimulatedMFX Locomotives the higher functions of the second address
-	 * need to be offsetted by 1 since there is no "F0" on the second address
-	 * 
-	 * @param locomotive
-	 * @param functionNumber
-	 * @return
-	 */
-	private int computeSRCPFunctionNumber(final Locomotive locomotive,
-			int functionNumber) {
-		if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
-			if (functionNumber >= 5) {
-				functionNumber += 1;
-			}
-		}
-		return functionNumber;
-	}
-
 	@Override
 	public void setSpeed(final Locomotive locomotive, final int speed,
 			final boolean[] functions) throws LocomotiveException {
@@ -188,12 +170,13 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveController,
 
 	public void reloadConfiguration() {
 		SRCPLockControl.getInstance().setLockDuration(0);
-		// Preferences.getInstance().getIntValue(
-		// PreferencesKeys.LOCK_DURATION)
 	}
 
 	@Override
 	public void addOrUpdateLocomotive(final Locomotive locomotive) {
+		if (locomotive == null) {
+			throw new IllegalArgumentException("locomotive must not be null");
+		}
 		final SRCPLocomotive srcpLocomotive = getSrcpLocomotive(locomotive);
 		if (srcpLocomotive != null) {
 			SRCPLocomotiveLocomotiveMap.remove(srcpLocomotive);
@@ -205,7 +188,7 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveController,
 		SRCPLocomotiveLocomotiveMap.put(sLocomotive, locomotive);
 	}
 
-	public SRCPLocomotive createSRCPLocomotive(final Locomotive locomotive) {
+	private SRCPLocomotive createSRCPLocomotive(final Locomotive locomotive) {
 		final LocomotiveType type = locomotive.getType();
 		SRCPLocomotive sLocomotive = null;
 		switch (type) {
@@ -363,6 +346,24 @@ public class SRCPLocomotiveControlAdapter implements LocomotiveController,
 		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}
+	}
+
+	/**
+	 * For SimulatedMFX Locomotives the higher functions of the second address
+	 * need to be offsetted by 1 since there is no "F0" on the second address
+	 * 
+	 * @param locomotive
+	 * @param functionNumber
+	 * @return
+	 */
+	private int computeSRCPFunctionNumber(final Locomotive locomotive,
+			int functionNumber) {
+		if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
+			if (functionNumber >= 5) {
+				functionNumber += 1;
+			}
+		}
+		return functionNumber;
 	}
 
 	private void informListeners(final SRCPLocomotive changedLocomotive) {

@@ -76,9 +76,12 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
 
+import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
+import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPPowerControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
+import ch.fork.AdHocRailway.domain.power.PowerSupply;
 import ch.fork.AdHocRailway.manager.impl.locomotives.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.turnouts.RouteManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.turnouts.TurnoutManagerImpl;
@@ -113,12 +116,8 @@ import de.dermoba.srcp.client.CommandDataListener;
 import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
-import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
-import de.dermoba.srcp.model.power.SRCPPowerControl;
-import de.dermoba.srcp.model.power.SRCPPowerState;
-import de.dermoba.srcp.model.power.SRCPPowerSupplyException;
 
 public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		CommandDataListener, InfoDataListener, PreferencesKeys,
@@ -457,7 +456,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 	private void loadControlLayer() {
 		initProceeded("Loading Control Layer (Power)");
-		appContext.setPowerControl(SRCPPowerControl.getInstance());
+		final SRCPPowerControlAdapter powerControl = new SRCPPowerControlAdapter();
+
+		powerControl.addOrUpdatePowerSupply(new PowerSupply(1));
+		appContext.setPowerController(powerControl);
 
 		initProceeded("Loading Control Layer (Locomotives)");
 		appContext.setLocomotiveControl(new SRCPLocomotiveControlAdapter());
@@ -925,7 +927,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	}
 
 	private void setSessionOnControllers(final SRCPSession session) {
-		appContext.getPowerControl().setSession(session);
+		((SRCPPowerControlAdapter) appContext.getPowerControl())
+				.setSession(session);
 		((SRCPTurnoutControlAdapter) appContext.getTurnoutControl())
 				.setSession(session);
 		((SRCPLocomotiveControlAdapter) appContext.getLocomotiveControl())
@@ -1495,13 +1498,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		 */
 		@Override
 		public void actionPerformed(final ActionEvent arg0) {
-			try {
-				appContext.getPowerControl().setAllStates(SRCPPowerState.ON);
-			} catch (final SRCPPowerSupplyException e) {
-				handleException(e);
-			} catch (final SRCPModelException e) {
-				handleException(e);
-			}
+			final PowerController powerControl = appContext.getPowerControl();
+			powerControl.powerOn(powerControl.getPowerSupply(1));
 		}
 	}
 
@@ -1523,13 +1521,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		 */
 		@Override
 		public void actionPerformed(final ActionEvent arg0) {
-			try {
-				appContext.getPowerControl().setAllStates(SRCPPowerState.OFF);
-			} catch (final SRCPPowerSupplyException e) {
-				handleException(e);
-			} catch (final SRCPModelException e) {
-				handleException(e);
-			}
+			final PowerController powerControl = appContext.getPowerControl();
+			powerControl.powerOff(powerControl.getPowerSupply(1));
 		}
 	}
 
