@@ -18,36 +18,77 @@
 
 package ch.fork.AdHocRailway.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
+import ch.fork.AdHocRailway.controllers.impl.brain.BrainTurnoutControlAdapter;
+import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
 
-public interface TurnoutController {
+public abstract class TurnoutController {
 
-	public void toggle(Turnout turnout) throws TurnoutException;
+	private final List<TurnoutChangeListener> listeners = new ArrayList<TurnoutChangeListener>();
 
-	public void toggleTest(Turnout turnout) throws TurnoutException;
+	public void addTurnoutChangeListener(final Turnout turnout,
+			final TurnoutChangeListener listener) {
+		listeners.add(listener);
+	}
 
-	public void setDefaultState(Turnout turnout) throws TurnoutException;
+	public void removeAllTurnoutChangeListener() {
+		listeners.clear();
+	}
 
-	public void setNonDefaultState(Turnout turnout) throws TurnoutException;
+	public void removeTurnoutChangeListener(final TurnoutChangeListener listener) {
+		listeners.remove(listener);
+	}
 
-	public void setStraight(Turnout turnout) throws TurnoutException;
+	protected void informListeners(final Turnout turnout,
+			final TurnoutState state) {
 
-	public void setCurvedLeft(Turnout turnout) throws TurnoutException;
+		for (final TurnoutChangeListener scl : listeners) {
+			scl.turnoutChanged(turnout, state);
+		}
+	}
 
-	public void setCurvedRight(Turnout turnout) throws TurnoutException;
+	public abstract void toggle(Turnout turnout) throws TurnoutException;
+
+	public abstract void toggleTest(Turnout turnout) throws TurnoutException;
+
+	public abstract void setDefaultState(Turnout turnout)
+			throws TurnoutException;
+
+	public abstract void setNonDefaultState(Turnout turnout)
+			throws TurnoutException;
+
+	public abstract void setStraight(Turnout turnout) throws TurnoutException;
+
+	public abstract void setCurvedLeft(Turnout turnout) throws TurnoutException;
+
+	public abstract void setCurvedRight(Turnout turnout)
+			throws TurnoutException;
 
 	public abstract void addOrUpdateTurnout(Turnout turnout);
 
 	public abstract void reloadConfiguration();
 
-	public void addTurnoutChangeListener(Turnout turnout,
-			TurnoutChangeListener listener);
+	public static TurnoutController createTurnoutController(
+			final RailwayDevice railwayDevice) {
 
-	public void removeAllTurnoutChangeListener();
+		switch (railwayDevice) {
+		case ADHOC_BRAIN:
+			return new BrainTurnoutControlAdapter(BrainController.getInstance());
+		case SRCP:
+			return new SRCPTurnoutControlAdapter();
+		default:
 
-	public void removeTurnoutChangeListener(Turnout turnout);
+			throw new IllegalArgumentException("unknown railway-device"
+					+ railwayDevice);
 
-	public void removeTurnoutChangeListener(TurnoutChangeListener listener);
+		}
+
+	}
 
 }

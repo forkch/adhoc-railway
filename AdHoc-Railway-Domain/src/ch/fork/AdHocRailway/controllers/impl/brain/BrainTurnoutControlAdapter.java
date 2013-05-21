@@ -2,12 +2,11 @@ package ch.fork.AdHocRailway.controllers.impl.brain;
 
 import java.io.IOException;
 
-import ch.fork.AdHocRailway.controllers.TurnoutChangeListener;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
 
-public class BrainTurnoutControlAdapter implements TurnoutController {
+public class BrainTurnoutControlAdapter extends TurnoutController {
 
 	private final BrainController brain;
 
@@ -83,36 +82,11 @@ public class BrainTurnoutControlAdapter implements TurnoutController {
 
 	}
 
-	@Override
-	public void addTurnoutChangeListener(final Turnout turnout,
-			final TurnoutChangeListener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeAllTurnoutChangeListener() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeTurnoutChangeListener(final Turnout turnout) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeTurnoutChangeListener(final TurnoutChangeListener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public static void main(final String[] args) throws Exception {
 		final Turnout t = new Turnout();
 		t.setAddress1(1);
 
-		final BrainController brain2 = new BrainController("/dev/ttyUSB0");
+		final BrainController brain2 = BrainController.getInstance();
 		final BrainTurnoutControlAdapter brainTurnoutControlAdapter = new BrainTurnoutControlAdapter(
 				brain2);
 		System.in.read();

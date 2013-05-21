@@ -18,10 +18,12 @@
 
 package ch.fork.AdHocRailway.controllers;
 
+import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
+import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.manager.turnouts.RouteException;
 
-public interface RouteController {
+public abstract class RouteController {
 
 	public abstract void enableRoute(Route r) throws RouteException;
 
@@ -44,4 +46,22 @@ public interface RouteController {
 
 	public abstract void removeRouteChangeListener(Route r,
 			RouteChangeListener listener);
+
+	public static RouteController createLocomotiveController(
+			final RailwayDevice railwayDevice,
+			final TurnoutController turnoutController) {
+		switch (railwayDevice) {
+		case ADHOC_BRAIN:
+			return null;
+		case SRCP:
+			return new SRCPRouteControlAdapter(
+					(SRCPTurnoutControlAdapter) turnoutController);
+		default:
+			throw new IllegalArgumentException("unknown railway-device"
+					+ railwayDevice);
+
+		}
+	}
+
+	public abstract void setRoutingDelay(final int intValue);
 }

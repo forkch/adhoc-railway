@@ -1,15 +1,12 @@
 package ch.fork.AdHocRailway.controllers.impl.srcp;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-
-import ch.fork.AdHocRailway.controllers.TurnoutChangeListener;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
@@ -20,14 +17,13 @@ import de.dermoba.srcp.model.turnouts.SRCPTurnoutControl;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
 
-public class SRCPTurnoutControlAdapter implements TurnoutController,
+public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		SRCPTurnoutChangeListener {
 	private static Logger logger = Logger
 			.getLogger(SRCPTurnoutControlAdapter.class);
 
 	private final Map<Turnout, SRCPTurnout> turnoutsSRCPTurnoutsMap = new HashMap<Turnout, SRCPTurnout>();
 	private final Map<SRCPTurnout, Turnout> SRCPTurnoutsTurnoutsMap = new HashMap<SRCPTurnout, Turnout>();
-	private final List<TurnoutChangeListener> listeners = new ArrayList<TurnoutChangeListener>();;
 
 	SRCPTurnoutControl turnoutControl;
 
@@ -148,29 +144,6 @@ public class SRCPTurnoutControlAdapter implements TurnoutController,
 	}
 
 	@Override
-	public void addTurnoutChangeListener(final Turnout turnout,
-			final TurnoutChangeListener listener) {
-		listeners.add(listener);
-	}
-
-	@Override
-	public void removeAllTurnoutChangeListener() {
-		listeners.clear();
-	}
-
-	@Override
-	public void removeTurnoutChangeListener(final Turnout turnout) {
-		// SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
-		// listeners.remove(sTurnout);
-	}
-
-	@Override
-	public void removeTurnoutChangeListener(final TurnoutChangeListener listener) {
-		// listeners.keySet().remove(listener);
-		listeners.remove(listener);
-	}
-
-	@Override
 	public void turnoutChanged(final SRCPTurnout changedTurnout,
 			final SRCPTurnoutState newState) {
 		informListeners(changedTurnout);
@@ -261,10 +234,27 @@ public class SRCPTurnoutControlAdapter implements TurnoutController,
 		if (turnout == null) {
 			turnout = turnoutTemp;
 		}
-		for (final TurnoutChangeListener scl : listeners) {
-			scl.turnoutChanged(turnout, changedTurnout.getTurnoutState());
-		}
+
+		informListeners(turnout,
+				getTurnoutStateFromSRCPTurnoutState(changedTurnout
+						.getTurnoutState()));
 		logger.debug("turnoutChanged(" + changedTurnout + ")");
 
+	}
+
+	private TurnoutState getTurnoutStateFromSRCPTurnoutState(
+			final SRCPTurnoutState turnoutState) {
+		switch (turnoutState) {
+		case LEFT:
+			return TurnoutState.LEFT;
+		case RIGHT:
+			return TurnoutState.RIGHT;
+		case STRAIGHT:
+
+			return TurnoutState.STRAIGHT;
+		case UNDEF:
+		default:
+			return TurnoutState.UNDEF;
+		}
 	}
 }

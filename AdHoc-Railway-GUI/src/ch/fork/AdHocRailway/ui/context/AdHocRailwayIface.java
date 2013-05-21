@@ -20,4 +20,10 @@ public interface AdHocRailwayIface {
 	public void handleException(final String message, final Exception ex);
 
 	public void registerSpaceKey(Action action);
+
+	public void initProceeded(String string);
+
+	public void updateCommandHistory(String string);
+
+	public void setTitle(String string);
 }

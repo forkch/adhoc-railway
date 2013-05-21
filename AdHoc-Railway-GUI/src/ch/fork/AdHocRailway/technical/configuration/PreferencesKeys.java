@@ -39,6 +39,7 @@ public interface PreferencesKeys {
 	public static final String DEFAULT_TURNOUT_BUS = "DefaultTurnoutBus";
 	public static final String DEFAULT_LOCOMOTIVE_BUS = "DefaultLocomotiveBus";
 	public static final String NUMBER_OF_BOOSTERS = "NumberOfBoosters";
+	public static final String RAILWAY_DEVICE = "RailwayDevice";
 
 	// SERVERS
 	public static final String AUTO_DISCOVER_AND_CONNECT_SERVERS = "AutoDiscoverAndConnectServers";

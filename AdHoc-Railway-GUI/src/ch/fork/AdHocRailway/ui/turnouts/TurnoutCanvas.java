@@ -29,7 +29,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 
 public class TurnoutCanvas extends JPanel {
 	/**
@@ -37,7 +37,7 @@ public class TurnoutCanvas extends JPanel {
 	 */
 	private static final long serialVersionUID = -7177529935222900726L;
 	protected Turnout turnout;
-	protected SRCPTurnoutState turnoutState = SRCPTurnoutState.UNDEF;
+	protected TurnoutState turnoutState = TurnoutState.UNDEF;
 
 	public TurnoutCanvas(final Turnout turnout) {
 		this.turnout = turnout;
@@ -287,7 +287,7 @@ public class TurnoutCanvas extends JPanel {
 		return true;
 	}
 
-	public void setTurnoutState(final SRCPTurnoutState turnoutState) {
+	public void setTurnoutState(final TurnoutState turnoutState) {
 		this.turnoutState = turnoutState;
 	}
 }

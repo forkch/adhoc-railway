@@ -1,11 +1,10 @@
 package ch.fork.AdHocRailway.controllers.impl.srcp;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.StringTokenizer;
+
 import ch.fork.AdHocRailway.controllers.PowerChangeListener;
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.PowerException;
@@ -19,13 +18,12 @@ import de.dermoba.srcp.model.power.SRCPPowerState;
 import de.dermoba.srcp.model.power.SRCPPowerSupply;
 import de.dermoba.srcp.model.power.SRCPPowerSupplyChangeListener;
 
-public class SRCPPowerControlAdapter implements PowerController,
+public class SRCPPowerControlAdapter extends PowerController implements
 		SRCPPowerSupplyChangeListener {
 
 	private final Map<PowerSupply, SRCPPowerSupply> powerSupplyToSRCPPowerSupply = new HashMap<PowerSupply, SRCPPowerSupply>();
 	private final Map<SRCPPowerSupply, PowerSupply> srcpPowerSupplyToPowerSupply = new HashMap<SRCPPowerSupply, PowerSupply>();
 	private final SRCPPowerControl powerControl;
-	private final Set<PowerChangeListener> listeners = new HashSet<PowerChangeListener>();
 	private final Map<Integer, PowerSupply> busToPowerSupply = new HashMap<Integer, PowerSupply>();
 
 	public SRCPPowerControlAdapter() {
@@ -161,21 +159,6 @@ public class SRCPPowerControlAdapter implements PowerController,
 			l.powerChanged(supply);
 		}
 
-	}
-
-	@Override
-	public void addPowerChangeListener(final PowerChangeListener listener) {
-		listeners.add(listener);
-	}
-
-	@Override
-	public void removePowerChangeListener(final PowerChangeListener listener) {
-		listeners.remove(listener);
-	}
-
-	@Override
-	public void removeAllPowerChangeListener() {
-		listeners.clear();
 	}
 
 	private SRCPPowerSupply createSRCPPowerSupply(final PowerSupply supply) {

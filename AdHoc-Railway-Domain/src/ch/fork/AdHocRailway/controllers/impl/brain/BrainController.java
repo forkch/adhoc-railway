@@ -11,18 +11,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 
-/**
- * This version of the TwoWaySerialComm example makes use of the
- * SerialPortEventListener to avoid polling.
- * 
- */
+import org.apache.log4j.Logger;
+
 public class BrainController {
+	private static Logger LOGGER = Logger.getLogger(BrainController.class);
 	private OutputStream out;
+	private final List<BrainListener> listeners = new ArrayList<BrainListener>();
+	private static BrainController INSTANCE = new BrainController(
+			"/dev/ttyUSB2");
 
-	public BrainController(final String comport) {
+	private BrainController(final String comport) {
 		super();
 		try {
 			connect(comport);
@@ -32,11 +35,15 @@ public class BrainController {
 		}
 	}
 
+	public static BrainController getInstance() {
+		return INSTANCE;
+	}
+
 	void connect(final String portName) throws Exception {
 		final CommPortIdentifier portIdentifier = CommPortIdentifier
 				.getPortIdentifier(portName);
 		if (portIdentifier.isCurrentlyOwned()) {
-			System.out.println("Error: Port is currently in use");
+			LOGGER.error("Port " + portName + " is currently in use");
 		} else {
 			final CommPort commPort = portIdentifier.open(this.getClass()
 					.getName(), 2000);
@@ -53,8 +60,7 @@ public class BrainController {
 				serialPort.notifyOnDataAvailable(true);
 
 			} else {
-				System.out
-						.println("Error: Only serial ports are handled by this example.");
+				LOGGER.error("Only serial ports are allowed");
 			}
 		}
 	}
@@ -63,7 +69,7 @@ public class BrainController {
 	 * Handles the input coming from the serial port. A new line character is
 	 * treated as the end of a block in this example.
 	 */
-	public static class SerialReader implements SerialPortEventListener {
+	public class SerialReader implements SerialPortEventListener {
 		private final InputStream in;
 		private final byte[] buffer = new byte[1024];
 
@@ -83,10 +89,13 @@ public class BrainController {
 					}
 					buffer[len++] = (byte) data;
 				}
-				System.out.println(new String(buffer, 0, len));
+				final String receivedString = new String(buffer, 0, len);
+				for (final BrainListener listener : listeners) {
+					listener.receivedMessage(receivedString);
+				}
+				LOGGER.debug(receivedString);
 			} catch (final IOException e) {
-				e.printStackTrace();
-				System.exit(-1);
+				LOGGER.error("error receiving data from serialport", e);
 			}
 		}
 
@@ -104,6 +113,7 @@ public class BrainController {
 	 * @return A HashSet containing the CommPortIdentifier for all serial ports
 	 *         that are not currently being used.
 	 */
+	@SuppressWarnings("rawtypes")
 	public static HashSet<CommPortIdentifier> getAvailableSerialPorts() {
 		final HashSet<CommPortIdentifier> h = new HashSet<CommPortIdentifier>();
 		final Enumeration thePorts = CommPortIdentifier.getPortIdentifiers();
@@ -117,10 +127,9 @@ public class BrainController {
 					thePort.close();
 					h.add(com);
 				} catch (final PortInUseException e) {
-					System.out.println("Port, " + com.getName()
-							+ ", is in use.");
+					LOGGER.error("Port, " + com.getName() + ", is in use.");
 				} catch (final Exception e) {
-					System.err.println("Failed to open port " + com.getName());
+					LOGGER.error("Failed to open port " + com.getName());
 					e.printStackTrace();
 				}
 			}
@@ -128,15 +137,29 @@ public class BrainController {
 		return h;
 	}
 
+	public static List<String> getAvailableSerialPortsAsString() {
+
+		final List<String> ports = new ArrayList<String>();
+		final HashSet<CommPortIdentifier> availableSerialPorts = getAvailableSerialPorts();
+		for (final CommPortIdentifier i : availableSerialPorts) {
+			ports.add(i.getName());
+		}
+		return ports;
+	}
+
+	public void addBrainListener(final BrainListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeBrainListener(final BrainListener listener) {
+		listeners.remove(listener);
+	}
+
 	public static void main(final String[] args) {
 		try {
-			final HashSet<CommPortIdentifier> availableSerialPorts = getAvailableSerialPorts();
-			for (final CommPortIdentifier i : availableSerialPorts) {
-				System.out.println(i.getName());
-			}
-			new BrainController("/dev/ttyUSB0");
+
+			new BrainController("/dev/ttyUSB1");
 		} catch (final Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

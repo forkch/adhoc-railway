@@ -20,7 +20,7 @@ import de.dermoba.srcp.model.routes.SRCPRouteState;
 import de.dermoba.srcp.model.turnouts.SRCPTurnout;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
-public class SRCPRouteControlAdapter implements RouteController,
+public class SRCPRouteControlAdapter extends RouteController implements
 		SRCPRouteChangeListener {
 
 	private final SRCPTurnoutControlAdapter turnoutControl;

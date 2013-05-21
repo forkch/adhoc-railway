@@ -19,8 +19,8 @@
 package ch.fork.AdHocRailway.controllers;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 
 public interface TurnoutChangeListener {
-	public void turnoutChanged(Turnout changedTurnout, SRCPTurnoutState newState);
+	public void turnoutChanged(Turnout changedTurnout, TurnoutState newState);
 }

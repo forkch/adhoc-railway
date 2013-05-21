@@ -28,8 +28,8 @@ import de.dermoba.srcp.model.locomotives.SRCPLocomotiveChangeListener;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotiveControl;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotiveDirection;
 
-public class SRCPLocomotiveControlAdapter implements LocomotiveController,
-		SRCPLocomotiveChangeListener, SRCPLockChangeListener {
+public class SRCPLocomotiveControlAdapter extends LocomotiveController
+		implements SRCPLocomotiveChangeListener, SRCPLockChangeListener {
 	private static Logger LOGGER = Logger
 			.getLogger(SRCPLocomotiveControlAdapter.class);
 

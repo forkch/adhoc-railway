@@ -40,7 +40,6 @@ import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
@@ -52,7 +51,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
 	private TurnoutCanvas turnoutCanvas;
 
-	private SRCPTurnoutState actualTurnoutState = SRCPTurnoutState.UNDEF;
+	private TurnoutState actualTurnoutState = TurnoutState.UNDEF;
 
 	private boolean widgetEnabled;
 
@@ -175,7 +174,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
 	@Override
 	public void turnoutChanged(final Turnout changedTurnout,
-			final SRCPTurnoutState newState) {
+			final TurnoutState newState) {
 		if (turnout.equals(changedTurnout)) {
 			actualTurnoutState = newState;
 			SwingUtilities.invokeLater(new Runnable() {
@@ -227,7 +226,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			turnoutControl.addTurnoutChangeListener(turnout, this);
 		}
 		widgetEnabled = enabled;
-		turnoutCanvas.setTurnoutState(SRCPTurnoutState.UNDEF);
+		turnoutCanvas.setTurnoutState(TurnoutState.UNDEF);
 	}
 
 	public void setTurnout(final Turnout turnout) {

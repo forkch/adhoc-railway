@@ -39,9 +39,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceEvent;
-import javax.jmdns.ServiceInfo;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
@@ -77,23 +74,7 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
 
 import ch.fork.AdHocRailway.controllers.PowerController;
-import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
-import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPPowerControlAdapter;
-import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
-import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
-import ch.fork.AdHocRailway.domain.power.PowerSupply;
-import ch.fork.AdHocRailway.manager.impl.locomotives.LocomotiveManagerImpl;
-import ch.fork.AdHocRailway.manager.impl.turnouts.RouteManagerImpl;
-import ch.fork.AdHocRailway.manager.impl.turnouts.TurnoutManagerImpl;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
-import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
-import ch.fork.AdHocRailway.services.impl.socketio.ServiceListener;
-import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
-import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
-import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLServiceHelper;
@@ -112,26 +93,16 @@ import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 
-import de.dermoba.srcp.client.CommandDataListener;
-import de.dermoba.srcp.client.InfoDataListener;
-import de.dermoba.srcp.client.SRCPSession;
-import de.dermoba.srcp.common.exception.SRCPException;
-import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
 
 public class AdHocRailway extends JFrame implements AdHocRailwayIface,
-		CommandDataListener, InfoDataListener, PreferencesKeys,
-		EditingModeListener {
-
-	private static final String _ADHOC_SERVER_TCP_LOCAL = "_adhoc-server._tcp.local.";
+		PreferencesKeys, EditingModeListener {
 
 	private static final long serialVersionUID = -6033036063027343513L;
 
 	private static Logger LOGGER = Logger.getLogger(AdHocRailway.class);
 
-	private static final String TITLE = "AdHoc-Railway";
-
-	private static final String SRCP_SERVER_TCP_LOCAL = "_srcpd._tcp.local.";
+	public static final String TITLE = "AdHoc-Railway";
 
 	private TrackControlPanel trackControlPanel;
 
@@ -161,7 +132,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 	private JMenuBar menuBar;
 
-	boolean fullscreen = false;
+	private boolean fullscreen = false;
 
 	private SplashWindow splash;
 
@@ -196,6 +167,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 	private Preferences preferences;
 
+	private PersistenceManager persistenceManager;
+
+	private RailwayDeviceManager railwayDeviceManager;
+
 	public AdHocRailway() {
 		this(null);
 	}
@@ -229,9 +204,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			preferences = Preferences.getInstance();
 			appContext.setPreferences(preferences);
 
-			loadControlLayer();
+			railwayDeviceManager = new RailwayDeviceManager(appContext);
+			railwayDeviceManager.loadControlLayer();
 
-			loadPersistenceLayer();
+			persistenceManager = new PersistenceManager(appContext);
+			persistenceManager.loadPersistenceLayer();
 
 			initProceeded("Creating GUI ...");
 
@@ -260,12 +237,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			setVisible(true);
 		} catch (final UnsupportedLookAndFeelException e) {
 			handleException(e);
-		}
-	}
-
-	public void saveActualFile() {
-		if (fileMode) {
-			saveFile(AdHocRailway.this.actualFile);
 		}
 	}
 
@@ -315,32 +286,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	}
 
 	@Override
-	public void commandDataReceived(final String response) {
-
-	}
-
-	@Override
-	public void infoDataSent(final String infoData) {
-
-	}
-
-	@Override
-	public void commandDataSent(final String commandData) {
-		if (preferences.getBooleanValue(LOGGING)) {
-			updateCommandHistory("To Server: " + commandData);
-		}
-		LOGGER.info("To Server: " + commandData.trim());
-	}
-
-	@Override
-	public void infoDataReceived(final String infoData) {
-		if (preferences.getBooleanValue(LOGGING)) {
-			updateCommandHistory("From Server: " + infoData);
-		}
-		LOGGER.info("From Server: " + infoData.trim());
-	}
-
-	@Override
 	public void editingModeChanged(final boolean editing) {
 		switchesItem.setEnabled(editing);
 		routesItem.setEnabled(editing);
@@ -351,78 +296,36 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 	}
 
+	@Override
+	public void updateCommandHistory(final String text) {
+		final DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
+		final String date = df.format(Calendar.getInstance().getTime());
+		final String fullText = "[" + date + "]: " + text;
+		SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
+	}
+
+	@Override
+	public void initProceeded(final String message) {
+		splash.nextStep(message);
+	}
+
+	public void saveActualFile() {
+		if (fileMode) {
+			saveFile(AdHocRailway.this.actualFile);
+		}
+	}
+
 	private void autoConnect() {
 
-		try {
-			if (preferences.getBooleanValue(SRCP_AUTOCONNECT)
-					&& !preferences
-							.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
-				new ConnectAction().actionPerformed(null);
-			} else if (preferences
-					.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
+		if (preferences.getBooleanValue(SRCP_AUTOCONNECT)
+				&& !preferences
+						.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
+			new ConnectAction().actionPerformed(null);
+		} else if (preferences
+				.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
 
-				final JmDNS adhocServermDNS = JmDNS.create();
-				adhocServermDNS.addServiceListener(_ADHOC_SERVER_TCP_LOCAL,
-						new javax.jmdns.ServiceListener() {
-
-							@Override
-							public void serviceResolved(final ServiceEvent event) {
-								LOGGER.info("resolved AdHoc-Server on " + event);
-
-							}
-
-							@Override
-							public void serviceRemoved(final ServiceEvent event) {
-
-							}
-
-							@Override
-							public void serviceAdded(final ServiceEvent event) {
-								final ServiceInfo info = adhocServermDNS
-										.getServiceInfo(event.getType(),
-												event.getName(), true);
-								LOGGER.info("found AdHoc-Server on " + info);
-
-								final String url = "http://"
-										+ info.getInet4Addresses()[0]
-												.getHostAddress() + ":"
-										+ info.getPort();
-
-								connectToAdHocServer(url);
-							}
-						});
-
-				final JmDNS srcpdmDNS = JmDNS.create();
-				srcpdmDNS.addServiceListener(SRCP_SERVER_TCP_LOCAL,
-						new javax.jmdns.ServiceListener() {
-
-							@Override
-							public void serviceResolved(final ServiceEvent event) {
-								LOGGER.info("resolved SRCPD on " + event);
-
-							}
-
-							@Override
-							public void serviceRemoved(final ServiceEvent event) {
-
-							}
-
-							@Override
-							public void serviceAdded(final ServiceEvent event) {
-								final ServiceInfo info = adhocServermDNS
-										.getServiceInfo(event.getType(),
-												event.getName(), true);
-								LOGGER.info("found SRCPD on " + info);
-								connectToSRCPServer(info.getInet4Addresses()[0]
-										.getHostAddress(), info.getPort());
-							}
-						});
-
-			}
-
-		} catch (final IOException e) {
-			handleException(e);
 		}
+
 	}
 
 	private void setUpLogging() {
@@ -445,38 +348,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		appender.activateOptions();
 		Logger.getRootLogger().addAppender(appender);
 
-	}
-
-	private void updateCommandHistory(final String text) {
-		final DateFormat df = new SimpleDateFormat("HH:mm:ss.SS");
-		final String date = df.format(Calendar.getInstance().getTime());
-		final String fullText = "[" + date + "]: " + text;
-		SwingUtilities.invokeLater(new CommandHistoryUpdater(fullText));
-	}
-
-	private void loadControlLayer() {
-		initProceeded("Loading Control Layer (Power)");
-		final SRCPPowerControlAdapter powerControl = new SRCPPowerControlAdapter();
-
-		powerControl.addOrUpdatePowerSupply(new PowerSupply(1));
-		appContext.setPowerController(powerControl);
-
-		initProceeded("Loading Control Layer (Locomotives)");
-		appContext.setLocomotiveControl(new SRCPLocomotiveControlAdapter());
-
-		initProceeded("Loading Control Layer (Turnouts)");
-		final SRCPTurnoutControlAdapter turnoutControl = new SRCPTurnoutControlAdapter();
-		appContext.setTurnoutControl(turnoutControl);
-
-		initProceeded("Loading Control Layer (Routes)");
-		final SRCPRouteControlAdapter routeControl = new SRCPRouteControlAdapter(
-				turnoutControl);
-		routeControl.setRoutingDelay(Preferences.getInstance().getIntValue(
-				PreferencesKeys.ROUTING_DELAY));
-		appContext.setRouteControl(routeControl);
-
-		initProceeded("Loading Control Layer (Locks)");
-		appContext.setLockControl(SRCPLockControl.getInstance());
 	}
 
 	private void initGUI() {
@@ -525,119 +396,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		mainPanel.requestFocus();
 	}
 
-	private void loadPersistenceLayer() {
-
-		final boolean useAdHocServer = preferences
-				.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER);
-
-		initProceeded("Loading Persistence Layer (Locomotives)");
-		LocomotiveManager locomotiveManager = appContext.getLocomotiveManager();
-		if (locomotiveManager == null) {
-			locomotiveManager = new LocomotiveManagerImpl();
-			appContext.setLocomotiveManager(locomotiveManager);
-		}
-
-		locomotiveManager.setLocomotiveControl(appContext
-				.getLocomotiveControl());
-		if (useAdHocServer) {
-			locomotiveManager.setLocomotiveService(new SIOLocomotiveService());
-		} else {
-			locomotiveManager.setLocomotiveService(new XMLLocomotiveService());
-		}
-
-		locomotiveManager.initialize();
-
-		initProceeded("Loading Persistence Layer (Turnouts)");
-
-		TurnoutManager turnoutManager = appContext.getTurnoutManager();
-		if (turnoutManager == null) {
-			turnoutManager = new TurnoutManagerImpl();
-		}
-		appContext.setTurnoutManager(turnoutManager);
-		turnoutManager.setTurnoutControl(appContext.getTurnoutControl());
-		if (useAdHocServer) {
-			turnoutManager.setTurnoutService(new SIOTurnoutService());
-		} else {
-			turnoutManager.setTurnoutService(new XMLTurnoutService());
-		}
-		turnoutManager.initialize();
-
-		initProceeded("Loading Persistence Layer (Routes)");
-		RouteManager routeManager = appContext.getRouteManager();
-
-		if (routeManager == null) {
-			routeManager = new RouteManagerImpl(turnoutManager);
-		}
-		appContext.setRouteManager(routeManager);
-		routeManager.setRouteControl(appContext.getRouteControl());
-		if (useAdHocServer) {
-			routeManager.setRouteService(new SIORouteService());
-		} else {
-			routeManager.setRouteService(new XMLRouteService());
-		}
-		routeManager.initialize();
-
-		if (useAdHocServer
-				&& !preferences
-						.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
-
-			final String url = getAdHocServerURL();
-
-			connectToAdHocServer(url);
-
-		}
-	}
-
-	private String getAdHocServerURL() {
-		final StringBuilder b = new StringBuilder();
-		b.append("http://");
-
-		b.append(preferences
-				.getStringValue(PreferencesKeys.ADHOC_SERVER_HOSTNAME));
-		b.append(":");
-		b.append(preferences.getStringValue(PreferencesKeys.ADHOC_SERVER_PORT));
-		final String url = b.toString();
-		return url;
-	}
-
-	private void connectToAdHocServer(final String url) {
-		SIOService.getInstance().connect(url, new ServiceListener() {
-
-			@Override
-			public void disconnected() {
-				updateCommandHistory("Successfully connected to AdHoc-Server");
-			}
-
-			@Override
-			public void connectionError(final Exception ex) {
-				updateCommandHistory("Connection error: " + ex.getMessage());
-				preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER,
-						false);
-				try {
-					preferences.save();
-				} catch (final IOException e) {
-					handleException(e);
-				}
-				handleException(ex);
-			}
-
-			@Override
-			public void connected() {
-				setTitle(AdHocRailway.TITLE + " [" + url + "]");
-
-				updateCommandHistory("Successfully connected to AdHoc-Server: "
-						+ url);
-
-			}
-		});
-	}
-
-	private void disconnectFromCurrentPersistence() {
-		appContext.getTurnoutManager().disconnect();
-		appContext.getRouteManager().disconnect();
-		appContext.getLocomotiveManager().disconnect();
-	}
-
 	private void disableNavigationKeys(final Component comp) {
 		comp.setFocusTraversalKeysEnabled(false);
 		if (comp instanceof Container) {
@@ -646,10 +404,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				disableNavigationKeys(children[i]);
 			}
 		}
-	}
-
-	private void initProceeded(final String message) {
-		splash.nextStep(message);
 	}
 
 	private void switchToFileMode() {
@@ -926,16 +680,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		return statusBarPanel;
 	}
 
-	private void setSessionOnControllers(final SRCPSession session) {
-		((SRCPPowerControlAdapter) appContext.getPowerControl())
-				.setSession(session);
-		((SRCPTurnoutControlAdapter) appContext.getTurnoutControl())
-				.setSession(session);
-		((SRCPLocomotiveControlAdapter) appContext.getLocomotiveControl())
-				.setSession(session);
-		((SRCPRouteControlAdapter) appContext.getRouteControl())
-				.setSession(session);
-		appContext.getLockControl().setSession(session);
+	private void enableDisableDueToSessionState(final boolean connected) {
+		daemonConnectItem.setEnabled(!connected);
+		daemonDisconnectItem.setEnabled(connected);
+		connectToolBarButton.setEnabled(!connected);
+		disconnectToolBarButton.setEnabled(connected);
+		powerControlPanel.setConnected(connected);
 	}
 
 	private class CommandHistoryUpdater implements Runnable {
@@ -982,11 +732,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 					saveActualFile();
 				}
 			}
-			disconnectFromCurrentPersistence();
+			persistenceManager.disconnectFromCurrentPersistence();
 
 			switchToFileMode();
 
-			loadPersistenceLayer();
+			persistenceManager.loadPersistenceLayer();
 
 			appContext.getLocomotiveManager().clear();
 			appContext.getTurnoutManager().clear();
@@ -1035,13 +785,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				public void run() {
 					try {
 
-						disconnectFromCurrentPersistence();
+						persistenceManager.disconnectFromCurrentPersistence();
 
 						progressBar.setIndeterminate(true);
 
 						switchToFileMode();
 
-						loadPersistenceLayer();
+						persistenceManager.loadPersistenceLayer();
 
 						appContext.getLocomotiveManager().clear();
 						appContext.getTurnoutManager().clear();
@@ -1088,9 +838,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 			progressBar.setIndeterminate(true);
 
-			disconnectFromCurrentPersistence();
+			persistenceManager.disconnectFromCurrentPersistence();
 			switchToServerMode();
-			loadPersistenceLayer();
+			persistenceManager.loadPersistenceLayer();
 			disableEnableMenuItems();
 
 			updateGUI();
@@ -1308,7 +1058,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			}
 
 			try {
-				SRCPLockControl.getInstance().releaseAllLocks();
+				appContext.getLockControl().releaseAllLocks();
 				appContext.getLocomotiveControl().emergencyStopActiveLocos();
 			} catch (final SRCPLockingException e1) {
 				handleException(e1);
@@ -1326,7 +1076,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				}
 			}
 			if (!fileMode) {
-				disconnectFromCurrentPersistence();
+				persistenceManager.disconnectFromCurrentPersistence();
 			}
 			System.exit(0);
 		}
@@ -1436,10 +1186,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			final String host = preferences.getStringValue(SRCP_HOSTNAME);
-			final int port = preferences.getIntValue(SRCP_PORT);
-
-			connectToSRCPServer(host, port);
+			railwayDeviceManager.connect();
 		}
 	}
 
@@ -1457,25 +1204,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			try {
-				final String host = preferences.getStringValue(SRCP_HOSTNAME);
-				final int port = preferences.getIntValue(SRCP_PORT);
-
-				appContext.getLocomotiveControl().emergencyStopActiveLocos();
-				SRCPSession session = appContext.getSession();
-				session.disconnect();
-				session = null;
-
-				setSessionOnControllers(session);
-
-				enableDisableDueToSessionState(false);
-				updateCommandHistory("Disconnected from server " + host
-						+ " on port " + port);
-			} catch (final SRCPException e1) {
-				handleException(e1);
-			} catch (final LocomotiveException e1) {
-				e1.printStackTrace();
-			}
+			railwayDeviceManager.disconnect();
 		}
 
 	}
@@ -1539,8 +1268,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			disconnectFromCurrentPersistence();
-			loadPersistenceLayer();
+			persistenceManager.disconnectFromCurrentPersistence();
+			persistenceManager.loadPersistenceLayer();
 		}
 	}
 
@@ -1599,40 +1328,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				l.editingModeChanged(editingMode);
 			}
 		}
-	}
-
-	private void enableDisableDueToSessionState(final boolean connected) {
-		daemonConnectItem.setEnabled(!connected);
-		daemonDisconnectItem.setEnabled(connected);
-		connectToolBarButton.setEnabled(!connected);
-		disconnectToolBarButton.setEnabled(connected);
-		powerControlPanel.setConnected(connected);
-	}
-
-	private void connectToSRCPServer(final String host, final int port) {
-		try {
-			final SRCPSession session = new SRCPSession(host, port, false);
-			appContext.setSession(session);
-			session.getCommandChannel().addCommandDataListener(
-					AdHocRailway.this);
-			session.getInfoChannel().addInfoDataListener(AdHocRailway.this);
-			setSessionOnControllers(session);
-			session.connect();
-			enableDisableDueToSessionState(true);
-
-			updateCommandHistory("Connected to server " + host + " on port "
-					+ port);
-		} catch (final SRCPException e) {
-			preferences
-					.setBooleanValue(PreferencesKeys.SRCP_AUTOCONNECT, false);
-			try {
-				preferences.save();
-			} catch (final IOException e2) {
-				handleException("Server not running", e2);
-			}
-			handleException("SRCP server not running", e);
-		}
-
 	}
 
 	public static void main(final String[] args) {
