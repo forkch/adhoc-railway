@@ -680,7 +680,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		return statusBarPanel;
 	}
 
-	private void enableDisableDueToSessionState(final boolean connected) {
+	@Override
+	public void connectedToRailwayDevice(final boolean connected) {
 		daemonConnectItem.setEnabled(!connected);
 		daemonDisconnectItem.setEnabled(connected);
 		connectToolBarButton.setEnabled(!connected);

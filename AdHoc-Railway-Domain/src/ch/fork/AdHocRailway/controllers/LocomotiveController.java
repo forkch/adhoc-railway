@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.controllers;
 
+import ch.fork.AdHocRailway.controllers.impl.brain.BrainLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
@@ -97,7 +98,7 @@ public abstract class LocomotiveController implements
 			final RailwayDevice railwayDevice) {
 		switch (railwayDevice) {
 		case ADHOC_BRAIN:
-			return null;
+			return new BrainLocomotiveControlAdapter();
 		case SRCP:
 			return new SRCPLocomotiveControlAdapter();
 		default:

@@ -22,8 +22,8 @@ public class BrainController {
 	private static Logger LOGGER = Logger.getLogger(BrainController.class);
 	private OutputStream out;
 	private final List<BrainListener> listeners = new ArrayList<BrainListener>();
-	private static BrainController INSTANCE = new BrainController(
-			"/dev/ttyUSB2");
+	private static final BrainController INSTANCE = new BrainController(
+			"/dev/ttyUSB0");
 
 	private BrainController(final String comport) {
 		super();
@@ -84,7 +84,7 @@ public class BrainController {
 			try {
 				int len = 0;
 				while ((data = in.read()) > -1) {
-					if (data == '\n') {
+					if (data == 0x0d) {
 						break;
 					}
 					buffer[len++] = (byte) data;
@@ -98,7 +98,6 @@ public class BrainController {
 				LOGGER.error("error receiving data from serialport", e);
 			}
 		}
-
 	}
 
 	public void write(final String str) throws IOException {
@@ -155,13 +154,10 @@ public class BrainController {
 		listeners.remove(listener);
 	}
 
-	public static void main(final String[] args) {
-		try {
+	public static void main(final String[] args) throws IOException {
+		final BrainController instance2 = BrainController.getInstance();
 
-			new BrainController("/dev/ttyUSB1");
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
+		instance2.write("XGO");
 	}
 
 }

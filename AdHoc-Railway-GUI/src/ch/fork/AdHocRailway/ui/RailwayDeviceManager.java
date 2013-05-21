@@ -83,9 +83,17 @@ public class RailwayDeviceManager implements CommandDataListener,
 
 	public void connect() {
 
-		final String host = preferences.getStringValue(SRCP_HOSTNAME);
-		final int port = preferences.getIntValue(SRCP_PORT);
-		connectToSRCPServer(host, port);
+		final String railwayDeviceString = preferences
+				.getStringValue(RAILWAY_DEVICE);
+		final RailwayDevice railwayDevive = RailwayDevice
+				.fromString(railwayDeviceString);
+		if (railwayDevive.equals(RailwayDevice.SRCP)) {
+			final String host = preferences.getStringValue(SRCP_HOSTNAME);
+			final int port = preferences.getIntValue(SRCP_PORT);
+			connectToSRCPServer(host, port);
+		} else {
+			mainApp.connectedToRailwayDevice(true);
+		}
 	}
 
 	private void connectToSRCPServer(final String host, final int port) {
@@ -96,8 +104,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 			session.getInfoChannel().addInfoDataListener(this);
 			setSessionOnControllers(session);
 			session.connect();
-			// FIXME
-			// enableDisableDueToSessionState(true);
+			mainApp.connectedToRailwayDevice(true);
 
 			mainApp.updateCommandHistory("Connected to server " + host
 					+ " on port " + port);
@@ -193,6 +200,20 @@ public class RailwayDeviceManager implements CommandDataListener,
 	}
 
 	public void disconnect() {
+
+		final String railwayDeviceString = preferences
+				.getStringValue(RAILWAY_DEVICE);
+		final RailwayDevice railwayDevive = RailwayDevice
+				.fromString(railwayDeviceString);
+		if (railwayDevive.equals(RailwayDevice.SRCP)) {
+			disconnectFromSRCPServer();
+		} else {
+			mainApp.connectedToRailwayDevice(false);
+		}
+
+	}
+
+	private void disconnectFromSRCPServer() {
 		try {
 			final String host = preferences.getStringValue(SRCP_HOSTNAME);
 			final int port = preferences.getIntValue(SRCP_PORT);
@@ -204,8 +225,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 
 			setSessionOnControllers(session);
 
-			// FIXME
-			// enableDisableDueToSessionState(false);
+			mainApp.connectedToRailwayDevice(false);
 			mainApp.updateCommandHistory("Disconnected from server " + host
 					+ " on port " + port);
 		} catch (final SRCPException e1) {

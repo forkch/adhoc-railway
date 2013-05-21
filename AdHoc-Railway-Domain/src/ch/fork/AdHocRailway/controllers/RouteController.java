@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.controllers;
 
+import ch.fork.AdHocRailway.controllers.impl.brain.BrainRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
@@ -52,7 +53,7 @@ public abstract class RouteController {
 			final TurnoutController turnoutController) {
 		switch (railwayDevice) {
 		case ADHOC_BRAIN:
-			return null;
+			return new BrainRouteControlAdapter();
 		case SRCP:
 			return new SRCPRouteControlAdapter(
 					(SRCPTurnoutControlAdapter) turnoutController);

@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.controllers;
 import java.util.HashSet;
 import java.util.Set;
 
+import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainPowerControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPPowerControlAdapter;
 import ch.fork.AdHocRailway.domain.power.Booster;
@@ -42,7 +43,7 @@ public abstract class PowerController {
 			final RailwayDevice railwayDevice) {
 		switch (railwayDevice) {
 		case ADHOC_BRAIN:
-			return new BrainPowerControlAdapter(null);
+			return new BrainPowerControlAdapter(BrainController.getInstance());
 		case SRCP:
 			return new SRCPPowerControlAdapter();
 		default:

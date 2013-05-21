@@ -26,4 +26,6 @@ public interface AdHocRailwayIface {
 	public void updateCommandHistory(String string);
 
 	public void setTitle(String string);
+
+	public void connectedToRailwayDevice(boolean enable);
 }

@@ -3,20 +3,29 @@ package ch.fork.AdHocRailway.controllers.impl.brain;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+
+import ch.fork.AdHocRailway.controllers.PowerChangeListener;
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.PowerException;
 import ch.fork.AdHocRailway.domain.power.Booster;
+import ch.fork.AdHocRailway.domain.power.BoosterState;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
 
 public class BrainPowerControlAdapter extends PowerController implements
 		BrainListener {
-
+	private static final Logger LOGGER = Logger
+			.getLogger(BrainPowerControlAdapter.class);
 	private final Map<Integer, PowerSupply> supplies = new HashMap<Integer, PowerSupply>();
 
 	private final BrainController brain;
 
 	public BrainPowerControlAdapter(final BrainController brain) {
 		this.brain = brain;
+		brain.addBrainListener(this);
 	}
 
 	@Override
@@ -28,7 +37,7 @@ public class BrainPowerControlAdapter extends PowerController implements
 	@Override
 	public void boosterOn(final Booster booster) {
 		try {
-			brain.write("X! " + booster.getBoosterNumber());
+			brain.write("XGO " + booster.getBoosterNumber());
 		} catch (final IOException e) {
 			throw new PowerException("error turning on booster "
 					+ booster.getBoosterNumber(), e);
@@ -38,7 +47,7 @@ public class BrainPowerControlAdapter extends PowerController implements
 	@Override
 	public void boosterOff(final Booster booster) {
 		try {
-			brain.write("X. " + booster.getBoosterNumber());
+			brain.write("XSTOP " + booster.getBoosterNumber());
 		} catch (final IOException e) {
 			throw new PowerException("error turning on booster "
 					+ booster.getBoosterNumber(), e);
@@ -54,7 +63,7 @@ public class BrainPowerControlAdapter extends PowerController implements
 		case INACTIVE:
 		case SHORTCUT:
 		default:
-			boosterOff(booster);
+			boosterOn(booster);
 			break;
 
 		}
@@ -85,7 +94,35 @@ public class BrainPowerControlAdapter extends PowerController implements
 
 	@Override
 	public void receivedMessage(final String receivedString) {
-		System.out.println(receivedString);
+		LOGGER.info("received power message from brain: " + receivedString);
+		if (!StringUtils.startsWithIgnoreCase(receivedString, "XBS")) {
+			return;
+		}
+		final Scanner scanner = new Scanner(receivedString);
+		scanner.useDelimiter(" ");
+		final String xbs = scanner.next();
+		if (!StringUtils.equalsIgnoreCase("XBS", xbs)) {
+			scanner.close();
+			return;
+		}
+
+		final PowerSupply supply = supplies.get(1);
+
+		for (int i = 0; i < 8; i++) {
+			final String boosterState = scanner.next();
+			if (StringUtils.equalsIgnoreCase("A", boosterState)) {
+				supply.getBooster(i).setState(BoosterState.ACTIVE);
+			} else if (StringUtils.equalsIgnoreCase("O", boosterState)) {
+				supply.getBooster(i).setState(BoosterState.INACTIVE);
+			} else if (StringUtils.equalsIgnoreCase("S", boosterState)) {
+				supply.getBooster(i).setState(BoosterState.SHORTCUT);
+			}
+		}
+
+		for (final PowerChangeListener l : listeners) {
+			l.powerChanged(supply);
+		}
+		scanner.close();
 	}
 
 }
