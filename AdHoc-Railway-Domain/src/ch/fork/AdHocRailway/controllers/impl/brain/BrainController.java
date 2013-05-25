@@ -2,10 +2,12 @@ package ch.fork.AdHocRailway.controllers.impl.brain;
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
+import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TooManyListenersException;
 
 import org.apache.log4j.Logger;
 
@@ -22,46 +25,67 @@ public class BrainController {
 	private static Logger LOGGER = Logger.getLogger(BrainController.class);
 	private OutputStream out;
 	private final List<BrainListener> listeners = new ArrayList<BrainListener>();
-	private static final BrainController INSTANCE = new BrainController(
-			"/dev/ttyUSB0");
+	private static final BrainController INSTANCE = new BrainController();
+	private CommPort commPort;
+	private InputStream in;
 
-	private BrainController(final String comport) {
+	private boolean connected = false;
+
+	private BrainController() {
 		super();
-		try {
-			connect(comport);
-		} catch (final Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	public static BrainController getInstance() {
 		return INSTANCE;
 	}
 
-	void connect(final String portName) throws Exception {
-		final CommPortIdentifier portIdentifier = CommPortIdentifier
-				.getPortIdentifier(portName);
-		if (portIdentifier.isCurrentlyOwned()) {
-			LOGGER.error("Port " + portName + " is currently in use");
-		} else {
-			final CommPort commPort = portIdentifier.open(this.getClass()
-					.getName(), 2000);
+	public void connect(final String portName) {
+		CommPortIdentifier portIdentifier;
+		try {
+			portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 
-			if (commPort instanceof SerialPort) {
-				final SerialPort serialPort = (SerialPort) commPort;
-				serialPort.setSerialPortParams(230400, SerialPort.DATABITS_8,
-						SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-
-				final InputStream in = serialPort.getInputStream();
-				out = serialPort.getOutputStream();
-
-				serialPort.addEventListener(new SerialReader(in));
-				serialPort.notifyOnDataAvailable(true);
-
+			if (portIdentifier.isCurrentlyOwned()) {
+				LOGGER.error("Port " + portName + " is currently in use");
 			} else {
-				LOGGER.error("Only serial ports are allowed");
+				commPort = portIdentifier.open(this.getClass().getName(), 2000);
+
+				if (commPort instanceof SerialPort) {
+					final SerialPort serialPort = (SerialPort) commPort;
+					serialPort.setSerialPortParams(230400,
+							SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+							SerialPort.PARITY_NONE);
+
+					in = serialPort.getInputStream();
+					out = serialPort.getOutputStream();
+
+					serialPort.addEventListener(new SerialReader(in));
+					serialPort.notifyOnDataAvailable(true);
+					connected = true;
+				} else {
+					LOGGER.error("Only serial ports are allowed");
+				}
 			}
+		} catch (final NoSuchPortException | UnsupportedCommOperationException
+				| IOException | TooManyListenersException | PortInUseException e) {
+			throw new BrainException("error connection to the brain on port "
+					+ portName, e);
+		}
+	}
+
+	public void disconnect() {
+
+		if (!connected) {
+			return;
+		}
+		try {
+			in.close();
+			out.close();
+			commPort.close();
+		} catch (final IOException e) {
+			throw new BrainException(
+					"error while closing the connection to the brain");
+		} finally {
+			connected = false;
 		}
 	}
 

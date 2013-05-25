@@ -1,7 +1,7 @@
 package ch.fork.AdHocRailway.controllers;
 
 public enum RailwayDevice {
-	SRCP("srcp"), ADHOC_BRAIN("adhoc-brain");
+	SRCP("srcp"), ADHOC_BRAIN("adhoc_brain");
 
 	private final String key;
 
