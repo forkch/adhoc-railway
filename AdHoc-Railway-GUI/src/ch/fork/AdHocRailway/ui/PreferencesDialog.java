@@ -38,6 +38,8 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import net.miginfocom.swing.MigLayout;
+import ch.fork.AdHocRailway.controllers.RailwayDevice;
+import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
@@ -81,6 +83,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	private SpinnerNumberModel adHocServerPortModel;
 	private JCheckBox autoDiscoverAndConnectServersCheckBox;
 	private final ApplicationContext ctx;
+	private JComboBox<RailwayDevice> adhocDeviceComboBox;
+	private JComboBox<String> adHocBrainPort;
 
 	public PreferencesDialog(final JFrame owner, final ApplicationContext ctx) {
 		super(owner, "Preferences", true);
@@ -154,6 +158,18 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 	}
 
 	private JPanel createGUISettingsTab() {
+
+		adhocDeviceComboBox = new JComboBox<RailwayDevice>();
+		for (final RailwayDevice device : RailwayDevice.values()) {
+			adhocDeviceComboBox.addItem(device);
+		}
+
+		adHocBrainPort = new JComboBox<String>();
+		for (final String availablePort : BrainController
+				.getAvailableSerialPortsAsString()) {
+			adHocBrainPort.addItem(availablePort);
+		}
+
 		locomotiveControlNumberModel = new SpinnerNumberModel(5, 1, 10, 1);
 		locomotiveControlNumber = new JSpinner(locomotiveControlNumberModel);
 
@@ -182,6 +198,10 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				});
 
 		final JPanel p = new JPanel(new MigLayout("wrap 2"));
+		p.add(new JLabel("Railway device"));
+		p.add(adhocDeviceComboBox);
+		p.add(new JLabel("AdHoc-Brain port"));
+		p.add(adHocBrainPort, "growx");
 		p.add(new JLabel("Locomotive Controls"));
 		p.add(locomotiveControlNumber);
 		p.add(new JLabel("Keyboard-Layout"));
@@ -282,6 +302,10 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 	private void loadPreferences() {
 		final Preferences p = Preferences.getInstance();
+		adhocDeviceComboBox.setSelectedItem(RailwayDevice.fromString(p
+				.getStringValue(RAILWAY_DEVICE)));
+
+		adHocBrainPort.setSelectedItem(p.getStringValue(ADHOC_BRAIN_PORT));
 		locomotiveControlNumberModel.setValue(p
 				.getIntValue(LOCOMOTIVE_CONTROLES));
 		keyBoardLayoutComboBox.setSelectedItem(p
@@ -319,6 +343,11 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 	public void savePreferences() {
 		final Preferences p = Preferences.getInstance();
+		p.setStringValue(RAILWAY_DEVICE, adhocDeviceComboBox.getSelectedItem()
+				.toString());
+
+		p.setStringValue(ADHOC_BRAIN_PORT,
+				(String) adHocBrainPort.getSelectedItem());
 		p.setIntValue(LOCOMOTIVE_CONTROLES, locomotiveControlNumberModel
 				.getNumber().intValue());
 		p.setStringValue(KEYBOARD_LAYOUT, keyBoardLayoutComboBox

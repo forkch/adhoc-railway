@@ -41,6 +41,8 @@ public interface PreferencesKeys {
 	public static final String NUMBER_OF_BOOSTERS = "NumberOfBoosters";
 	public static final String RAILWAY_DEVICE = "RailwayDevice";
 
+	public static final String ADHOC_BRAIN_PORT = "AdHocBrainPort";
+
 	// SERVERS
 	public static final String AUTO_DISCOVER_AND_CONNECT_SERVERS = "AutoDiscoverAndConnectServers";
 

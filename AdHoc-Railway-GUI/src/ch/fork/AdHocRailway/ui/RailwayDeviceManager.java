@@ -13,6 +13,7 @@ import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.RailwayDevice;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
+import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPPowerControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
@@ -81,58 +82,6 @@ public class RailwayDeviceManager implements CommandDataListener,
 		appContext.setLockControl(SRCPLockControl.getInstance());
 	}
 
-	public void connect() {
-
-		final String railwayDeviceString = preferences
-				.getStringValue(RAILWAY_DEVICE);
-		final RailwayDevice railwayDevive = RailwayDevice
-				.fromString(railwayDeviceString);
-		if (railwayDevive.equals(RailwayDevice.SRCP)) {
-			final String host = preferences.getStringValue(SRCP_HOSTNAME);
-			final int port = preferences.getIntValue(SRCP_PORT);
-			connectToSRCPServer(host, port);
-		} else {
-			mainApp.connectedToRailwayDevice(true);
-		}
-	}
-
-	private void connectToSRCPServer(final String host, final int port) {
-		try {
-			final SRCPSession session = new SRCPSession(host, port, false);
-			appContext.setSession(session);
-			session.getCommandChannel().addCommandDataListener(this);
-			session.getInfoChannel().addInfoDataListener(this);
-			setSessionOnControllers(session);
-			session.connect();
-			mainApp.connectedToRailwayDevice(true);
-
-			mainApp.updateCommandHistory("Connected to server " + host
-					+ " on port " + port);
-		} catch (final SRCPException e) {
-			preferences
-					.setBooleanValue(PreferencesKeys.SRCP_AUTOCONNECT, false);
-			try {
-				preferences.save();
-			} catch (final IOException e2) {
-				mainApp.handleException("Server not running", e2);
-			}
-			mainApp.handleException("SRCP server not running", e);
-		}
-
-	}
-
-	private void setSessionOnControllers(final SRCPSession session) {
-		((SRCPPowerControlAdapter) appContext.getPowerControl())
-				.setSession(session);
-		((SRCPTurnoutControlAdapter) appContext.getTurnoutControl())
-				.setSession(session);
-		((SRCPLocomotiveControlAdapter) appContext.getLocomotiveControl())
-				.setSession(session);
-		((SRCPRouteControlAdapter) appContext.getRouteControl())
-				.setSession(session);
-		appContext.getLockControl().setSession(session);
-	}
-
 	public void autoConnect() {
 
 		try {
@@ -167,6 +116,106 @@ public class RailwayDeviceManager implements CommandDataListener,
 		}
 	}
 
+	public void connect() {
+
+		final String railwayDeviceString = preferences
+				.getStringValue(RAILWAY_DEVICE);
+		final RailwayDevice railwayDevive = RailwayDevice
+				.fromString(railwayDeviceString);
+		if (railwayDevive.equals(RailwayDevice.SRCP)) {
+			final String host = preferences.getStringValue(SRCP_HOSTNAME);
+			final int port = preferences.getIntValue(SRCP_PORT);
+			connectToSRCPServer(host, port);
+		} else {
+			connectToBrain(preferences.getStringValue(ADHOC_BRAIN_PORT));
+		}
+		mainApp.connectedToRailwayDevice(true);
+	}
+
+	public void disconnect() {
+
+		final String railwayDeviceString = preferences
+				.getStringValue(RAILWAY_DEVICE);
+		final RailwayDevice railwayDevive = RailwayDevice
+				.fromString(railwayDeviceString);
+		if (railwayDevive.equals(RailwayDevice.SRCP)) {
+			disconnectFromSRCPServer();
+		} else {
+			disconnectFromBrain();
+		}
+		mainApp.connectedToRailwayDevice(false);
+
+	}
+
+	private void connectToBrain(final String stringValue) {
+		final BrainController brainController = BrainController.getInstance();
+		brainController.connect(stringValue);
+	}
+
+	private void disconnectFromBrain() {
+		BrainController.getInstance().disconnect();
+
+	}
+
+	private void connectToSRCPServer(final String host, final int port) {
+		try {
+			final SRCPSession session = new SRCPSession(host, port, false);
+			appContext.setSession(session);
+			session.getCommandChannel().addCommandDataListener(this);
+			session.getInfoChannel().addInfoDataListener(this);
+			setSessionOnControllers(session);
+			session.connect();
+			mainApp.connectedToRailwayDevice(true);
+
+			mainApp.updateCommandHistory("Connected to server " + host
+					+ " on port " + port);
+		} catch (final SRCPException e) {
+			preferences
+					.setBooleanValue(PreferencesKeys.SRCP_AUTOCONNECT, false);
+			try {
+				preferences.save();
+			} catch (final IOException e2) {
+				mainApp.handleException("Server not running", e2);
+			}
+			mainApp.handleException("SRCP server not running", e);
+		}
+
+	}
+
+	private void disconnectFromSRCPServer() {
+		try {
+			final String host = preferences.getStringValue(SRCP_HOSTNAME);
+			final int port = preferences.getIntValue(SRCP_PORT);
+
+			appContext.getLocomotiveControl().emergencyStopActiveLocos();
+			SRCPSession session = appContext.getSession();
+			session.disconnect();
+			session = null;
+
+			setSessionOnControllers(session);
+
+			mainApp.connectedToRailwayDevice(false);
+			mainApp.updateCommandHistory("Disconnected from server " + host
+					+ " on port " + port);
+		} catch (final SRCPException e1) {
+			mainApp.handleException(e1);
+		} catch (final LocomotiveException e1) {
+			mainApp.handleException(e1);
+		}
+	}
+
+	private void setSessionOnControllers(final SRCPSession session) {
+		((SRCPPowerControlAdapter) appContext.getPowerControl())
+				.setSession(session);
+		((SRCPTurnoutControlAdapter) appContext.getTurnoutControl())
+				.setSession(session);
+		((SRCPLocomotiveControlAdapter) appContext.getLocomotiveControl())
+				.setSession(session);
+		((SRCPRouteControlAdapter) appContext.getRouteControl())
+				.setSession(session);
+		appContext.getLockControl().setSession(session);
+	}
+
 	@Override
 	public void commandDataSent(final String commandData) {
 		if (preferences.getBooleanValue(LOGGING)) {
@@ -197,41 +246,5 @@ public class RailwayDeviceManager implements CommandDataListener,
 			mainApp.updateCommandHistory("Info received: " + infoData);
 		}
 		LOGGER.info("Info received" + infoData.trim());
-	}
-
-	public void disconnect() {
-
-		final String railwayDeviceString = preferences
-				.getStringValue(RAILWAY_DEVICE);
-		final RailwayDevice railwayDevive = RailwayDevice
-				.fromString(railwayDeviceString);
-		if (railwayDevive.equals(RailwayDevice.SRCP)) {
-			disconnectFromSRCPServer();
-		} else {
-			mainApp.connectedToRailwayDevice(false);
-		}
-
-	}
-
-	private void disconnectFromSRCPServer() {
-		try {
-			final String host = preferences.getStringValue(SRCP_HOSTNAME);
-			final int port = preferences.getIntValue(SRCP_PORT);
-
-			appContext.getLocomotiveControl().emergencyStopActiveLocos();
-			SRCPSession session = appContext.getSession();
-			session.disconnect();
-			session = null;
-
-			setSessionOnControllers(session);
-
-			mainApp.connectedToRailwayDevice(false);
-			mainApp.updateCommandHistory("Disconnected from server " + host
-					+ " on port " + port);
-		} catch (final SRCPException e1) {
-			mainApp.handleException(e1);
-		} catch (final LocomotiveException e1) {
-			mainApp.handleException(e1);
-		}
 	}
 }
