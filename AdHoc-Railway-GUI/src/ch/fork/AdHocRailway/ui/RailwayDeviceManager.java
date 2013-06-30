@@ -165,7 +165,6 @@ public class RailwayDeviceManager implements CommandDataListener,
 			session.getInfoChannel().addInfoDataListener(this);
 			setSessionOnControllers(session);
 			session.connect();
-			mainApp.connectedToRailwayDevice(true);
 
 			mainApp.updateCommandHistory("Connected to server " + host
 					+ " on port " + port);
@@ -194,7 +193,6 @@ public class RailwayDeviceManager implements CommandDataListener,
 
 			setSessionOnControllers(session);
 
-			mainApp.connectedToRailwayDevice(false);
 			mainApp.updateCommandHistory("Disconnected from server " + host
 					+ " on port " + port);
 		} catch (final SRCPException e1) {

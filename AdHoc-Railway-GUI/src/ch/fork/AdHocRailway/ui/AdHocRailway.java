@@ -74,6 +74,7 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
 
 import ch.fork.AdHocRailway.controllers.PowerController;
+import ch.fork.AdHocRailway.controllers.RailwayDevice;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
@@ -110,7 +111,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 	private JPanel statusBarPanel;
 
-	private JLabel hostnameLabel;
+	private JLabel railwayDeviceLabelLabel;
 
 	private JButton connectToolBarButton;
 
@@ -315,6 +316,15 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		}
 	}
 
+	@Override
+	public void connectedToRailwayDevice(final boolean connected) {
+		daemonConnectItem.setEnabled(!connected);
+		daemonDisconnectItem.setEnabled(connected);
+		connectToolBarButton.setEnabled(!connected);
+		disconnectToolBarButton.setEnabled(connected);
+		powerControlPanel.setConnected(connected);
+	}
+
 	private void autoConnect() {
 
 		if (preferences.getBooleanValue(SRCP_AUTOCONNECT)
@@ -383,8 +393,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				new ExitAction().actionPerformed(null);
 			}
 		});
-		hostnameLabel.setText(preferences
-				.getStringValue(PreferencesKeys.SRCP_HOSTNAME));
+		setRailwayDeviceLabelText();
 		addEditingModeListener(this);
 		for (final EditingModeListener l : editingModeListeners) {
 			l.editingModeChanged(appContext.isEditingMode());
@@ -624,16 +633,16 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		digitalToolBar.add(locomotivesToolBarButton);
 		digitalToolBar.add(preferencesToolBarButton);
 
-		/* DAEMON */
+		/* SRCP / AdHoc-Brain */
 		final JToolBar daemonToolBar = new JToolBar();
-		hostnameLabel = new JLabel();
-		hostnameLabel.setText(preferences
-				.getStringValue(PreferencesKeys.SRCP_HOSTNAME));
+		railwayDeviceLabelLabel = new JLabel();
+
+		setRailwayDeviceLabelText();
 		connectToolBarButton = new SmallToolbarButton(new ConnectAction());
 		disconnectToolBarButton = new SmallToolbarButton(new DisconnectAction());
 		disconnectToolBarButton.setEnabled(false);
 
-		daemonToolBar.add(hostnameLabel);
+		daemonToolBar.add(railwayDeviceLabelLabel);
 		daemonToolBar.addSeparator();
 		daemonToolBar.add(connectToolBarButton);
 		daemonToolBar.add(disconnectToolBarButton);
@@ -665,6 +674,22 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		add(toolbarErrorPanel, BorderLayout.PAGE_START);
 	}
 
+	private void setRailwayDeviceLabelText() {
+		final RailwayDevice railwayDevice = RailwayDevice
+				.fromString(preferences
+						.getStringValue(PreferencesKeys.RAILWAY_DEVICE));
+
+		if (railwayDevice.equals(RailwayDevice.SRCP)) {
+			final String hostname = preferences
+					.getStringValue(PreferencesKeys.SRCP_HOSTNAME);
+			railwayDeviceLabelLabel.setText("SRCP: " + hostname);
+		} else if (railwayDevice.equals(RailwayDevice.ADHOC_BRAIN)) {
+			final String adhocBrainPort = preferences
+					.getStringValue(PreferencesKeys.ADHOC_BRAIN_PORT);
+			railwayDeviceLabelLabel.setText("AdHoc-Brain: " + adhocBrainPort);
+		}
+	}
+
 	private JPanel initStatusBar() {
 		final JPanel statusBarPanel = new JPanel();
 		commandHistoryModel = new DefaultComboBoxModel<String>();
@@ -678,15 +703,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		statusBarPanel.add(progressBar, BorderLayout.WEST);
 		statusBarPanel.add(commandHistory, BorderLayout.CENTER);
 		return statusBarPanel;
-	}
-
-	@Override
-	public void connectedToRailwayDevice(final boolean connected) {
-		daemonConnectItem.setEnabled(!connected);
-		daemonDisconnectItem.setEnabled(connected);
-		connectToolBarButton.setEnabled(!connected);
-		disconnectToolBarButton.setEnabled(connected);
-		powerControlPanel.setConnected(connected);
 	}
 
 	private class CommandHistoryUpdater implements Runnable {
@@ -745,8 +761,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 			disableEnableMenuItems();
 
-			hostnameLabel.setText(Preferences.getInstance().getStringValue(
-					PreferencesKeys.SRCP_HOSTNAME));
+			setRailwayDeviceLabelText();
+
 			setTitle(AdHocRailway.TITLE + " []");
 			actualFile = null;
 			updateGUI();
@@ -1161,8 +1177,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 					AdHocRailway.this, appContext);
 			if (p.isOkPressed()) {
 				updateGUI();
-				hostnameLabel.setText(preferences
-						.getStringValue(PreferencesKeys.SRCP_HOSTNAME));
+				setRailwayDeviceLabelText();
 				updateCommandHistory("Preferences saved to: "
 						+ preferences.getConfigFile());
 			}
@@ -1187,7 +1202,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			railwayDeviceManager.connect();
+			try {
+				railwayDeviceManager.loadControlLayer();
+				railwayDeviceManager.connect();
+			} catch (final Exception x) {
+				handleException(x);
+			}
 		}
 	}
 
@@ -1205,6 +1225,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
+			railwayDeviceManager.loadControlLayer();
 			railwayDeviceManager.disconnect();
 		}
 
