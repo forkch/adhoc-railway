@@ -195,6 +195,7 @@ public class XMLServiceHelper {
 		xstream.omitField(LocomotiveGroup.class, "changeSupport");
 		xstream.omitField(Turnout.class, "changeSupport");
 		xstream.omitField(TurnoutGroup.class, "changeSupport");
+		xstream.omitField(TurnoutGroup.class, "turnoutNumberOffset");
 		xstream.omitField(TurnoutGroup.class, "turnoutNumberAmount");
 		xstream.omitField(Route.class, "changeSupport");
 		xstream.omitField(RouteGroup.class, "changeSupport");
