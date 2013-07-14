@@ -7,7 +7,7 @@
 #include "fifo.h"
 #include "ib_parser.h"
 
-unsigned char debugLevel = DEBUG_DEBUG;
+unsigned char debugLevel = DEBUG_ERROR;
 struct LocoData locoData[80];
 struct SolenoidData solenoidQueue[MAX_SOLENOID_QUEUE];
 int solenoidQueueIdxEnter;
