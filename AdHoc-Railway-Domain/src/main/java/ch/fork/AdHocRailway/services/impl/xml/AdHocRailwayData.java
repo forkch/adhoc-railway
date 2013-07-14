@@ -10,7 +10,6 @@ public class AdHocRailwayData {
 
 	private final SortedSet<LocomotiveGroup> locomotiveGroups;
 	private final SortedSet<TurnoutGroup> turnoutGroups;
-
 	private final SortedSet<RouteGroup> routeGroups;
 
 	public AdHocRailwayData(final SortedSet<LocomotiveGroup> locomotiveGroups,
