@@ -20,7 +20,7 @@ import de.dermoba.srcp.model.turnouts.SRCPTurnoutTypes;
 
 public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		SRCPTurnoutChangeListener {
-	private static Logger logger = Logger
+	private static final Logger LOGGER = Logger
 			.getLogger(SRCPTurnoutControlAdapter.class);
 
 	private final Map<Turnout, SRCPTurnout> turnoutsSRCPTurnoutsMap = new HashMap<Turnout, SRCPTurnout>();
@@ -66,18 +66,6 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
 		try {
 			turnoutControl.setDefaultState(sTurnout);
-		} catch (final SRCPModelException e) {
-			throw new TurnoutException("Turnout Error", e);
-		}
-
-	}
-
-	@Override
-	public void setNonDefaultState(final Turnout turnout)
-			throws TurnoutException {
-		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
-		try {
-			turnoutControl.setNonDefaultState(sTurnout);
 		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
@@ -239,7 +227,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		informListeners(turnout,
 				getTurnoutStateFromSRCPTurnoutState(changedTurnout
 						.getTurnoutState()));
-		logger.debug("turnoutChanged(" + changedTurnout + ")");
+		LOGGER.debug("turnoutChanged(" + changedTurnout + ")");
 
 	}
 

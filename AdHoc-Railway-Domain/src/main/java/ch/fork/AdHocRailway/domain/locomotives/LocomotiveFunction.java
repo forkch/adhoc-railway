@@ -1,5 +1,6 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -7,7 +8,8 @@ import java.util.TreeSet;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class LocomotiveFunction implements Comparable<LocomotiveFunction> {
+public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
+		Serializable {
 
 	private final int number;
 

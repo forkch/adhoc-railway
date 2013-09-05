@@ -43,7 +43,8 @@ import ch.fork.AdHocRailway.services.turnouts.RouteService;
 import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
 
 public class RouteManagerImpl implements RouteManager, RouteServiceListener {
-	private static Logger LOGGER = Logger.getLogger(RouteManagerImpl.class);
+	private static final Logger LOGGER = Logger
+			.getLogger(RouteManagerImpl.class);
 
 	private RouteService routeService;
 
@@ -377,7 +378,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	}
 
 	private void removeFromCache(final Route route) {
-		numberToRouteCache.values().remove(route.getNumber());
+		numberToRouteCache.remove(route.getNumber());
 	}
 
 	private void removeRouteGroupInCache(final RouteGroup group) {

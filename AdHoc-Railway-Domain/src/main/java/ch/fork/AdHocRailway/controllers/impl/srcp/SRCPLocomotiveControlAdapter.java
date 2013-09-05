@@ -204,7 +204,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 			sLocomotive = doubleMMDigitalLocomotive;
 			break;
 		default:
-			break;
+			return null;
 		}
 		sLocomotive.setBus(locomotive.getBus());
 		sLocomotive.setAddress(locomotive.getAddress1());

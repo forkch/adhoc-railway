@@ -30,7 +30,7 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
 
 public abstract class TurnoutController {
 
-	private final List<TurnoutChangeListener> listeners = new ArrayList<TurnoutChangeListener>();
+	protected final List<TurnoutChangeListener> listeners = new ArrayList<TurnoutChangeListener>();
 
 	public void addTurnoutChangeListener(final Turnout turnout,
 			final TurnoutChangeListener listener) {
@@ -58,9 +58,6 @@ public abstract class TurnoutController {
 	public abstract void toggleTest(Turnout turnout) throws TurnoutException;
 
 	public abstract void setDefaultState(Turnout turnout)
-			throws TurnoutException;
-
-	public abstract void setNonDefaultState(Turnout turnout)
 			throws TurnoutException;
 
 	public abstract void setStraight(Turnout turnout) throws TurnoutException;

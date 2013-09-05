@@ -17,7 +17,7 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 
 @SuppressWarnings("unchecked")
 public class LocomotiveImageHelper {
-	private static Logger LOGGER = Logger
+	private static final Logger LOGGER = Logger
 			.getLogger(LocomotiveImageHelper.class);
 	private static Map<String, String> imageToPathMap = new HashMap<String, String>();
 

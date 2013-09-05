@@ -38,7 +38,8 @@ import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
 
 public class LocomotiveManagerImpl implements LocomotiveManager,
 		LocomotiveServiceListener {
-	private static Logger LOGGER = Logger.getLogger(LocomotiveManager.class);
+	private static final Logger LOGGER = Logger
+			.getLogger(LocomotiveManager.class);
 
 	private LocomotiveController locomotiveControl;
 

@@ -32,13 +32,14 @@ import ch.fork.AdHocRailway.services.turnouts.RouteService;
 import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
 
 public class XMLRouteService implements RouteService {
-	private static Logger logger = Logger.getLogger(XMLRouteService.class);
+	private static final Logger LOGGER = Logger
+			.getLogger(XMLRouteService.class);
 	private final SortedSet<Route> routes = new TreeSet<Route>();
 	private final SortedSet<RouteGroup> routeGroups = new TreeSet<RouteGroup>();
 	private RouteServiceListener listener;
 
 	public XMLRouteService() {
-		logger.info("XMLRoutePersistence loaded");
+		LOGGER.info("XMLRoutePersistence loaded");
 	}
 
 	@Override

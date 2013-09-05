@@ -31,7 +31,6 @@ public class BrainPowerControlAdapter extends PowerController implements
 	@Override
 	public void addOrUpdatePowerSupply(final PowerSupply supply) {
 		supplies.put(supply.getBus(), supply);
-
 	}
 
 	@Override

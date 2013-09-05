@@ -44,7 +44,8 @@ import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
 
 public class TurnoutManagerImpl implements TurnoutManager,
 		TurnoutServiceListener {
-	static Logger LOGGER = Logger.getLogger(TurnoutManagerImpl.class);
+	private static final Logger LOGGER = Logger
+			.getLogger(TurnoutManagerImpl.class);
 
 	private final Map<Integer, Turnout> numberToTurnoutCache = new HashMap<Integer, Turnout>();
 

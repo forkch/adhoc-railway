@@ -16,10 +16,10 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 
 public class SIOService {
 
-	private static Logger LOGGER = Logger.getLogger(SIOService.class);
+	private static final Logger LOGGER = Logger.getLogger(SIOService.class);
 	private static final SIOService INSTANCE = new SIOService();
 
-	private static SocketIO socket;
+	private SocketIO socket;
 
 	private final Set<IOCallback> otherCallbacks = new HashSet<IOCallback>();
 

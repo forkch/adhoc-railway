@@ -22,7 +22,9 @@ import java.util.TooManyListenersException;
 import org.apache.log4j.Logger;
 
 public class BrainController {
-	private static Logger LOGGER = Logger.getLogger(BrainController.class);
+
+	private static final Logger LOGGER = Logger
+			.getLogger(BrainController.class);
 	private OutputStream out;
 	private final List<BrainListener> listeners = new ArrayList<BrainListener>();
 	private static final BrainController INSTANCE = new BrainController();

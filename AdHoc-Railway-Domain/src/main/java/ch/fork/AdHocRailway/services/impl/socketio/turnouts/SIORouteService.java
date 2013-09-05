@@ -22,7 +22,8 @@ import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
 
 public class SIORouteService implements RouteService, IOCallback {
 
-	private static Logger LOGGER = Logger.getLogger(SIORouteService.class);
+	private static final Logger LOGGER = Logger
+			.getLogger(SIORouteService.class);
 
 	private RouteServiceListener listener;
 	private SIOService sioService;

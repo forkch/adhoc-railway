@@ -20,7 +20,8 @@ import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
 
 public class SIOTurnoutService implements TurnoutService, IOCallback {
 
-	private static Logger LOGGER = Logger.getLogger(SIOTurnoutService.class);
+	private static final Logger LOGGER = Logger
+			.getLogger(SIOTurnoutService.class);
 
 	private TurnoutServiceListener listener;
 	private SIOService sioService;

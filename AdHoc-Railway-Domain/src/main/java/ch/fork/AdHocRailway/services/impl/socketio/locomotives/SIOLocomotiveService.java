@@ -20,7 +20,8 @@ import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
 
 public class SIOLocomotiveService implements LocomotiveService, IOCallback {
 
-	private static Logger LOGGER = Logger.getLogger(SIOLocomotiveService.class);
+	private static final Logger LOGGER = Logger
+			.getLogger(SIOLocomotiveService.class);
 
 	private LocomotiveServiceListener listener;
 	private SIOService sioService;

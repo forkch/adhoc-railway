@@ -33,7 +33,8 @@ import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
 
 public class XMLLocomotiveService implements LocomotiveService {
 
-	private static Logger logger = Logger.getLogger(LocomotiveManager.class);
+	private static final Logger logger = Logger
+			.getLogger(LocomotiveManager.class);
 
 	private final SortedSet<Locomotive> locomotives = new TreeSet<Locomotive>();
 
