@@ -292,14 +292,6 @@ public class KeyControl extends SimpleInternalFrame {
 				turnoutControl.setStraight(searchedTurnout);
 			} else if (this instanceof CurvedRightAction) {
 				turnoutControl.setCurvedRight(searchedTurnout);
-			} else if (this instanceof EnableRouteAction) {
-				if (!searchedTurnout.isThreeWay()) {
-					turnoutControl.setNonDefaultState(searchedTurnout);
-				}
-			} else if (this instanceof DisableRouteAction) {
-				if (!searchedTurnout.isThreeWay()) {
-					turnoutControl.setDefaultState(searchedTurnout);
-				}
 			}
 			updateHistory(searchedTurnout);
 		}

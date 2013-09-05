@@ -37,7 +37,7 @@ import javax.swing.KeyStroke;
 import org.apache.log4j.Logger;
 
 public class Preferences implements PreferencesKeys {
-	private static Logger logger = Logger.getLogger(Preferences.class);
+	private static final Logger LOGGER = Logger.getLogger(Preferences.class);
 	private Map<String, String> preferences;
 	private List<String> hostnames;
 	private static Preferences instance = null;
@@ -138,9 +138,9 @@ public class Preferences implements PreferencesKeys {
 
 		final boolean found = findConfigFile();
 		if (!found) {
-			logger.info("no config file found, using default values");
+			LOGGER.info("no config file found, using default values");
 		} else {
-			logger.info("Config file found");
+			LOGGER.info("Config file found");
 			props = new Properties();
 			try {
 				props.load(new FileInputStream(configFile));
@@ -172,14 +172,14 @@ public class Preferences implements PreferencesKeys {
 	private boolean findConfigFile() {
 		configFile = new File("./adhocrailway.conf");
 		if (configFile.exists()) {
-			logger.info("found adhocrailway.conf in current directory");
+			LOGGER.info("found adhocrailway.conf in current directory");
 			return true;
 		}
 
 		configFile = new File(System.getProperty("user.home") + File.separator
 				+ ".adhocrailway.conf");
 		if (configFile.exists()) {
-			logger.info("found .adhocrailway.conf in user home directory");
+			LOGGER.info("found .adhocrailway.conf in user home directory");
 			return true;
 		}
 		return false;
@@ -222,7 +222,7 @@ public class Preferences implements PreferencesKeys {
 			props.setProperty(key, preferences.get(key));
 		}
 		props.store(new FileOutputStream(configFile), "");
-		logger.info("Preferences saved to: " + configFile.getAbsolutePath());
+		LOGGER.info("Preferences saved to: " + configFile.getAbsolutePath());
 	}
 
 	public void setStringValue(final String key, final String value) {

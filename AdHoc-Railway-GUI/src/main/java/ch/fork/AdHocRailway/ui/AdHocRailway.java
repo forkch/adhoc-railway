@@ -99,9 +99,8 @@ import de.dermoba.srcp.model.locking.SRCPLockingException;
 public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		PreferencesKeys, EditingModeListener {
 
+	private static final Logger LOGGER = Logger.getLogger(AdHocRailway.class);
 	private static final long serialVersionUID = -6033036063027343513L;
-
-	private static Logger LOGGER = Logger.getLogger(AdHocRailway.class);
 
 	public static final String TITLE = "AdHoc-Railway";
 

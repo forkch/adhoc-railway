@@ -37,7 +37,7 @@ import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
 
 public class ImageTools {
 
-	private static Logger LOGGER = Logger.getLogger(ImageTools.class);
+	private static final Logger LOGGER = Logger.getLogger(ImageTools.class);
 
 	public final static String EMTPY_LOCO_ICON = "empty.png";
 

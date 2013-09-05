@@ -52,7 +52,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 	private Icon routeStopIcon;
 	private Icon routeStartIcon;
 	private JProgressBar routingProgress;
-	private MouseAction mouseAction;
 	private JLabel numberLabel;
 	private JLabel orientationLabel;
 	private final boolean testMode;
@@ -139,7 +138,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 					} else {
 						routeControl.toggleTest(route);
 					}
-					removeMouseListener(mouseAction);
 				} else if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON3) {
 

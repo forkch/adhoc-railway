@@ -27,29 +27,20 @@ package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.technical.configuration.Preferences;
-import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.value.ValueHolder;
 
 public class LocomotiveGroupConfigPanel extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1287114708577602193L;
 	private final PresentationModel<LocomotiveGroup> presentationModel;
 	private JTextField locomotiveGroupName;
-	private JSpinner turnoutNumberOffset;
-	private JSpinner turnoutNumberAmount;
 
 	public LocomotiveGroupConfigPanel() {
 		presentationModel = new PresentationModel<LocomotiveGroup>(
@@ -61,11 +52,6 @@ public class LocomotiveGroupConfigPanel extends JPanel {
 
 	public void setLocomotiveGroup(final LocomotiveGroup group) {
 		locomotiveGroupName.setEnabled(group != null);
-		if (Preferences.getInstance().getBooleanValue(
-				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-			turnoutNumberOffset.setEnabled(group != null);
-			turnoutNumberAmount.setEnabled(group != null);
-		}
 		presentationModel.setBean(group);
 	}
 
