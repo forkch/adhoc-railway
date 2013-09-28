@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.mockito.ArgumentCaptor;
@@ -156,6 +157,7 @@ public class BrainTurnoutControlAdapterTest {
 	}
 
 	@Test
+	@Ignore
 	public void toggle_turnout_from_undef_state() throws IOException,
 			TurnoutException {
 		final Turnout t = createTurnout(1, false);
@@ -174,6 +176,7 @@ public class BrainTurnoutControlAdapterTest {
 	}
 
 	@Test
+	@Ignore
 	public void toggle_threeway_turnout_from_undef_state() throws IOException,
 			TurnoutException {
 		final Turnout t = createThreewayTurnout(1, 2, false, false);
