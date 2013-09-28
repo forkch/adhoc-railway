@@ -3,6 +3,10 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 
+group='ch.fork.adhocrailway'
+artifactId='adhocrailway-domain'
+version = '2.0'
+
 repositories {
     mavenCentral()
     mavenLocal()
@@ -14,7 +18,7 @@ dependencies {
     	
 	compile fileTree (dir: 'lib', includes: ['*.jar'])
 	 
-    compile 'jsrcpc:jsrcpc:2.+'
+    compile 'de.dermoba:jsrcpc:2.+'
     compile 'com.thoughtworks.xstream:xstream:1.4.4'
     compile 'org.rxtx:rxtx:2.1.7'
     compile 'org.json:json:20090211'
@@ -23,7 +27,6 @@ dependencies {
     compile 'com.google.guava:guava:14.0.1'
 }
 
-version = '2.0'
 jar {
     manifest {
         attributes 'Implementation-Title': 'AdHoc-Railway-Domain', 'Implementation-Version': version
@@ -41,4 +44,3 @@ uploadArchives {
 task wrapper(type: Wrapper) {
 }
 
-group='adhoc-railway-domain'
