@@ -18,14 +18,130 @@
 
 package ch.fork.AdHocRailway.controllers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+
+import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
-import de.dermoba.srcp.model.locomotives.SRCPLocomotiveDirection;
 
 public abstract class LocomotiveController implements
 		LockController<Locomotive> {
+
+	private static final Logger LOGGER = Logger
+			.getLogger(LocomotiveController.class);
+
+	private final Map<Locomotive, List<LocomotiveChangeListener>> listeners = new HashMap<Locomotive, List<LocomotiveChangeListener>>();
+	private final Set<Locomotive> activeLocomotives = new HashSet<Locomotive>();
+
+	public void activateLoco(final Locomotive locomotive,
+			final boolean[] functions) throws LocomotiveException {
+		this.activeLocomotives.add(locomotive);
+		setSpeed(locomotive, 0, locomotive.getCurrentFunctions());
+	}
+
+	public void deactivateLoco(final Locomotive locomotive)
+			throws LocomotiveException {
+		emergencyStop(locomotive);
+		this.activeLocomotives.remove(locomotive);
+	}
+
+	public void emergencyStopActiveLocos() throws LocomotiveException {
+		for (final Locomotive locomotive : activeLocomotives) {
+			emergencyStop(locomotive);
+		}
+	}
+
+	public void removeLocomotiveChangeListener(final Locomotive locomotive,
+			final LocomotiveChangeListener listener) {
+		if (listeners.get(locomotive) == null) {
+			listeners
+					.put(locomotive, new ArrayList<LocomotiveChangeListener>());
+		}
+		listeners.get(locomotive).remove(listener);
+	}
+
+	public void addLocomotiveChangeListener(final Locomotive locomotive,
+			final LocomotiveChangeListener listener) {
+		if (listeners.get(locomotive) == null) {
+			listeners
+					.put(locomotive, new ArrayList<LocomotiveChangeListener>());
+		}
+		listeners.get(locomotive).add(listener);
+	}
+
+	public void removeAllLocomotiveChangeListener() {
+		listeners.clear();
+	}
+
+	protected List<LocomotiveChangeListener> getListenersForLocomotive(
+			final Locomotive changedLocomotive) {
+		final List<LocomotiveChangeListener> ll = listeners
+				.get(changedLocomotive);
+		if (ll == null) {
+			return new ArrayList<LocomotiveChangeListener>();
+		}
+		return ll;
+	}
+
+	protected void informListeners(final Locomotive changedLocomotive) {
+		LOGGER.debug("locomotiveChanged(" + changedLocomotive + ")");
+		final List<LocomotiveChangeListener> ll = getListenersForLocomotive(changedLocomotive);
+
+		for (final LocomotiveChangeListener scl : ll) {
+			scl.locomotiveChanged(changedLocomotive);
+		}
+	}
+
+	/**
+	 * For SimulatedMFX Locomotives the higher functions of the second address
+	 * need to be offsetted by 1 since there is no "F0" on the second address
+	 * 
+	 * @param locomotive
+	 * @param functionNumber
+	 * @return
+	 */
+	protected int computeHardwareFunctionNumber(final Locomotive locomotive,
+			int functionNumber) {
+		if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
+			if (functionNumber >= 5) {
+				functionNumber += 1;
+			}
+		}
+		return functionNumber;
+	}
+
+	protected void startFunctionDeactivationThread(final Locomotive locomotive,
+			final int functionNumber, final int deactivationDelay) {
+		final Thread t = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(deactivationDelay * 1000);
+					LOGGER.info("deactivating function (due to delay): "
+							+ functionNumber);
+					setFunction(locomotive, functionNumber, false, -1);
+
+				} catch (final InterruptedException e) {
+					e.printStackTrace();
+				} catch (final LocomotiveException e) {
+					e.printStackTrace();
+				}
+
+			}
+		});
+		t.start();
+	}
 
 	/**
 	 * Toggles the direction of the Locomotive
@@ -35,10 +151,6 @@ public abstract class LocomotiveController implements
 	 */
 	public abstract void toggleDirection(Locomotive locomotive)
 			throws LocomotiveException;
-
-	public abstract SRCPLocomotiveDirection getDirection(Locomotive locomotive);
-
-	public abstract int getCurrentSpeed(Locomotive locomotive);
 
 	/**
 	 * Sets the speed of the Locomotive
@@ -71,34 +183,17 @@ public abstract class LocomotiveController implements
 	public abstract void setFunction(Locomotive locomotive, int functionNumber,
 			boolean state, int deactivationDelay) throws LocomotiveException;
 
-	public abstract boolean[] getFunctions(Locomotive locomotive);
-
 	public abstract void emergencyStop(Locomotive myLocomotive)
 			throws LocomotiveException;
 
-	public abstract void activateLoco(final Locomotive locomotive,
-			final boolean[] functions) throws LocomotiveException;
-
-	public abstract void deactivateLoco(final Locomotive locomotive)
-			throws LocomotiveException;
-
-	public abstract void emergencyStopActiveLocos() throws LocomotiveException;
-
 	public abstract void addOrUpdateLocomotive(Locomotive locomotive);
-
-	public abstract void addLocomotiveChangeListener(Locomotive loco,
-			LocomotiveChangeListener l);
-
-	public abstract void removeLocomotiveChangeListener(
-			final Locomotive locomotive, final LocomotiveChangeListener listener);
-
-	public abstract void removeAllLocomotiveChangeListener();
 
 	public static LocomotiveController createLocomotiveController(
 			final RailwayDevice railwayDevice) {
 		switch (railwayDevice) {
 		case ADHOC_BRAIN:
-			return new BrainLocomotiveControlAdapter();
+			return new BrainLocomotiveControlAdapter(
+					BrainController.getInstance());
 		case SRCP:
 			return new SRCPLocomotiveControlAdapter();
 		default:

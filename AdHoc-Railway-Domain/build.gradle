@@ -1,11 +1,27 @@
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+	
+dependencies {
+    testCompile 'junit:junit:4.+'
+    testCompile 'org.mockito:mockito-all:1.9.5'
+    	
+	compile fileTree (dir: 'lib', includes: ['*.jar'])
+	 
+    compile 'jsrcpc:jsrcpc:2.+'
+    compile 'com.thoughtworks.xstream:xstream:1.4.4'
+    compile 'org.rxtx:rxtx:2.1.7'
+    compile 'org.json:json:20090211'
+    compile 'org.apache.commons:commons-lang3:3.1'
+    compile 'commons-io:commons-io:2.4'
+    compile 'com.google.guava:guava:14.0.1'
+}
 
 version = '2.0'
 jar {
@@ -14,27 +30,15 @@ jar {
     }
 }
 
-	
-dependencies {
-    testCompile 'junit:junit:4.+'
-    testCompile 'org.mockito:mockito-all:1.9.5'
-    	
-	compile fileTree (dir: 'lib', includes: ['*.jar'])
-    compile group: 'jsrcpc', name: 'jsrcpc', version: '2.+'
-    compile 'com.thoughtworks.xstream:xstream:1.4.4'
-    compile group: 'org.rxtx', name: 'rxtx', version: '2.1.7'
-    compile group: 'org.json', name: 'json', version: '20090211'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
-    compile 'commons-io:commons-io:2.4'
-    compile 'com.google.guava:guava:14.0.1'
-}
-
 uploadArchives {
     repositories {
        mavenDeployer {
             repository(url: "file://localhost/tmp/myRepo/")
         }
     }
+}
+
+task wrapper(type: Wrapper) {
 }
 
 group='adhoc-railway-domain'

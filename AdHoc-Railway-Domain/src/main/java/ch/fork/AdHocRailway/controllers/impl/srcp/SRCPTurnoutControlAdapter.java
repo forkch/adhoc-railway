@@ -224,9 +224,9 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 			turnout = turnoutTemp;
 		}
 
-		informListeners(turnout,
-				getTurnoutStateFromSRCPTurnoutState(changedTurnout
-						.getTurnoutState()));
+		turnout.setActualState(getTurnoutStateFromSRCPTurnoutState(changedTurnout
+				.getTurnoutState()));
+		informListeners(turnout);
 		LOGGER.debug("turnoutChanged(" + changedTurnout + ")");
 
 	}

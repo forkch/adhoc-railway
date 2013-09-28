@@ -1,132 +1,142 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
+import java.io.IOException;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
+
 import ch.fork.AdHocRailway.controllers.LockingException;
 import ch.fork.AdHocRailway.controllers.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
-import de.dermoba.srcp.model.locomotives.SRCPLocomotiveDirection;
 
 public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
-	@Override
-	public boolean isLocked(Locomotive object) throws LockingException {
-		// TODO Auto-generated method stub
-		return false;
+	private final BrainController brain;
+
+	private final Set<Locomotive> activeLocomotives = Sets.newHashSet();
+
+	public BrainLocomotiveControlAdapter(final BrainController brain) {
+		this.brain = brain;
 	}
 
 	@Override
-	public boolean isLockedByMe(Locomotive object) throws LockingException {
-		// TODO Auto-generated method stub
-		return false;
+	public void toggleDirection(final Locomotive locomotive)
+			throws LocomotiveException {
 	}
 
 	@Override
-	public boolean acquireLock(Locomotive object) throws LockingException {
-		// TODO Auto-generated method stub
-		return false;
+	public void setSpeed(final Locomotive locomotive, final int speed,
+			final boolean[] functions) throws LocomotiveException {
+
+		initLocomotive(locomotive);
+
+		try {
+			if (functions.length != 5) {
+				throw new LocomotiveException("invalid function count");
+			}
+			final StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append("XL ");
+			stringBuilder.append(locomotive.getAddress1());
+			stringBuilder.append(" ");
+			stringBuilder.append(speed);
+			stringBuilder.append(" ");
+			stringBuilder.append(functions[0] ? "1" : "0");
+			stringBuilder.append(" ");
+			stringBuilder
+					.append(locomotive.getCurrentDirection() == LocomotiveDirection.FORWARD ? "1"
+							: "0");
+			stringBuilder.append(" ");
+			for (int i = 1; i < functions.length; i++) {
+				stringBuilder.append(functions[i] ? "1" : "0");
+				stringBuilder.append(" ");
+			}
+
+			brain.write(stringBuilder.toString().trim());
+			locomotive.setCurrentSpeed(speed);
+			locomotive.setCurrentFunctions(functions);
+		} catch (final IOException e) {
+			throw new LocomotiveException("error setting speed", e);
+		}
+
+	}
+
+	private void initLocomotive(final Locomotive locomotive)
+			throws LocomotiveException {
+		try {
+			if (!activeLocomotives.contains(locomotive)) {
+				final StringBuilder stringBuilder = new StringBuilder();
+				stringBuilder.append("XLS ");
+				stringBuilder.append(locomotive.getAddress1());
+				stringBuilder.append(" ");
+				if (locomotive.getType().equals(LocomotiveType.DELTA)) {
+					stringBuilder.append("mm");
+				} else {
+					stringBuilder.append("mm2");
+				}
+
+				brain.write(stringBuilder.toString());
+				activeLocomotives.add(locomotive);
+			}
+		} catch (final IOException e) {
+			throw new LocomotiveException("error initializing locomotive", e);
+		}
 	}
 
 	@Override
-	public boolean releaseLock(Locomotive object) throws LockingException {
-		// TODO Auto-generated method stub
-		return false;
+	public void increaseSpeed(final Locomotive locomotive)
+			throws LocomotiveException {
+		if (locomotive.getCurrentSpeed() < locomotive.getType()
+				.getDrivingSteps()) {
+			setSpeed(locomotive, locomotive.getCurrentSpeed() + 1,
+					locomotive.getCurrentFunctions());
+		}
 	}
 
 	@Override
-	public void toggleDirection(Locomotive locomotive)
+	public void decreaseSpeed(final Locomotive locomotive)
+			throws LocomotiveException {
+		if (locomotive.getCurrentSpeed() > 0) {
+			setSpeed(locomotive, locomotive.getCurrentSpeed() - 1,
+					locomotive.getCurrentFunctions());
+		}
+
+	}
+
+	@Override
+	public void setFunction(final Locomotive locomotive,
+			final int functionNumber, final boolean state,
+			final int deactivationDelay) throws LocomotiveException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void emergencyStop(final Locomotive myLocomotive)
 			throws LocomotiveException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public SRCPLocomotiveDirection getDirection(Locomotive locomotive) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getCurrentSpeed(Locomotive locomotive) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setSpeed(Locomotive locomotive, int speed, boolean[] functions)
-			throws LocomotiveException {
+	public void addOrUpdateLocomotive(final Locomotive locomotive) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void increaseSpeed(Locomotive locomotive) throws LocomotiveException {
+	public void addLocomotiveChangeListener(final Locomotive loco,
+			final LocomotiveChangeListener l) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void decreaseSpeed(Locomotive locomotive) throws LocomotiveException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setFunction(Locomotive locomotive, int functionNumber,
-			boolean state, int deactivationDelay) throws LocomotiveException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean[] getFunctions(Locomotive locomotive) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void emergencyStop(Locomotive myLocomotive)
-			throws LocomotiveException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void activateLoco(Locomotive locomotive, boolean[] functions)
-			throws LocomotiveException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deactivateLoco(Locomotive locomotive)
-			throws LocomotiveException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void emergencyStopActiveLocos() throws LocomotiveException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void addOrUpdateLocomotive(Locomotive locomotive) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void addLocomotiveChangeListener(Locomotive loco,
-			LocomotiveChangeListener l) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeLocomotiveChangeListener(Locomotive locomotive,
-			LocomotiveChangeListener listener) {
+	public void removeLocomotiveChangeListener(final Locomotive locomotive,
+			final LocomotiveChangeListener listener) {
 		// TODO Auto-generated method stub
 
 	}
@@ -137,4 +147,24 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
 	}
 
+	@Override
+	public boolean isLocked(final Locomotive object) throws LockingException {
+		return false;
+	}
+
+	@Override
+	public boolean isLockedByMe(final Locomotive object)
+			throws LockingException {
+		return false;
+	}
+
+	@Override
+	public boolean acquireLock(final Locomotive object) throws LockingException {
+		return true;
+	}
+
+	@Override
+	public boolean releaseLock(final Locomotive object) throws LockingException {
+		return true;
+	}
 }

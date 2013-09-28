@@ -52,6 +52,9 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
 	private boolean address2Switched;
 	private Set<RouteItem> routeItems = new HashSet<RouteItem>();
 	private TurnoutGroup turnoutGroup;
+
+	private transient TurnoutState actualState = TurnoutState.UNDEF;
+
 	public static final String PROPERTYNAME_ID = "id";
 	public static final String PROPERTYNAME_NUMBER = "number";
 	public static final String PROPERTYNAME_DESCRIPTION = "description";
@@ -64,9 +67,7 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
 	public static final String PROPERTYNAME_BUS2 = "bus2";
 	public static final String PROPERTYNAME_ADDRESS2 = "address2";
 	public static final String PROPERTYNAME_ADDRESS2_SWITCHED = "address2Switched";
-
 	public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
-
 	public static final String PROPERTYNAME_TURNOUT_GROUP = "turnoutGroup";
 
 	public Turnout() {
@@ -296,5 +297,13 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
 
 	public void removePropertyChangeListener(final PropertyChangeListener x) {
 		changeSupport.removePropertyChangeListener(x);
+	}
+
+	public TurnoutState getActualState() {
+		return actualState;
+	}
+
+	public void setActualState(final TurnoutState actualState) {
+		this.actualState = actualState;
 	}
 }

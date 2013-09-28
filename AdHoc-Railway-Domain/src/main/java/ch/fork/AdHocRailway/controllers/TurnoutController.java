@@ -25,7 +25,6 @@ import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainTurnoutControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
 
 public abstract class TurnoutController {
@@ -45,11 +44,10 @@ public abstract class TurnoutController {
 		listeners.remove(listener);
 	}
 
-	protected void informListeners(final Turnout turnout,
-			final TurnoutState state) {
+	protected void informListeners(final Turnout turnout) {
 
 		for (final TurnoutChangeListener scl : listeners) {
-			scl.turnoutChanged(turnout, state);
+			scl.turnoutChanged(turnout);
 		}
 	}
 

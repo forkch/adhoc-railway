@@ -265,7 +265,7 @@ public class BrainTurnoutControlAdapterTest {
 
 	private void assertListenerInformed(final Turnout t,
 			final TurnoutState state) {
-		Mockito.verify(listener).turnoutChanged(t, state);
+		Mockito.verify(listener).turnoutChanged(t);
 
 	}
 }

@@ -1,9 +1,6 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
 import java.io.IOException;
-import java.util.Map;
-import com.google.common.collect.Maps;
-
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
@@ -12,7 +9,6 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
 public class BrainTurnoutControlAdapter extends TurnoutController {
 
 	private final BrainController brain;
-	private final Map<Turnout, TurnoutState> turnoutStates = Maps.newHashMap();
 
 	public BrainTurnoutControlAdapter(final BrainController brain) {
 		this.brain = brain;
@@ -20,10 +16,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
 	@Override
 	public void toggle(final Turnout turnout) throws TurnoutException {
-		if (!turnoutStates.containsKey(turnout)) {
-			return;
-		}
-		switch (turnoutStates.get(turnout)) {
+		switch (turnout.getActualState()) {
 		case LEFT:
 			if (turnout.isThreeWay()) {
 				setCurvedRight(turnout);
@@ -47,9 +40,6 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
 	@Override
 	public void setDefaultState(final Turnout turnout) throws TurnoutException {
-		if (!turnoutStates.containsKey(turnout)) {
-			return;
-		}
 		final TurnoutState defaultState = turnout.getDefaultState();
 		switch (defaultState) {
 		case LEFT:
@@ -69,9 +59,6 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
 	@Override
 	public void setStraight(final Turnout turnout) throws TurnoutException {
-		if (!turnoutStates.containsKey(turnout)) {
-			return;
-		}
 		try {
 			if (turnout.isThreeWay()) {
 				brain.write("XT " + turnout.getAddress1() + " "
@@ -82,8 +69,8 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 				brain.write("XT " + turnout.getAddress1() + " "
 						+ getGreenPort(turnout.isAddress1Switched()));
 			}
-			turnoutStates.put(turnout, TurnoutState.STRAIGHT);
-			informListeners(turnout, TurnoutState.STRAIGHT);
+			turnout.setActualState(TurnoutState.STRAIGHT);
+			informListeners(turnout);
 		} catch (final IOException e) {
 			throw new TurnoutException(e);
 		}
@@ -91,9 +78,6 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
 	@Override
 	public void setCurvedLeft(final Turnout turnout) throws TurnoutException {
-		if (!turnoutStates.containsKey(turnout)) {
-			return;
-		}
 		try {
 			if (turnout.isThreeWay()) {
 				brain.write("XT " + turnout.getAddress1() + " "
@@ -104,8 +88,8 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 				brain.write("XT " + turnout.getAddress1() + " "
 						+ getRedPort(turnout.isAddress1Switched()));
 			}
-			turnoutStates.put(turnout, TurnoutState.LEFT);
-			informListeners(turnout, TurnoutState.LEFT);
+			turnout.setActualState(TurnoutState.LEFT);
+			informListeners(turnout);
 		} catch (final IOException e) {
 			throw new TurnoutException(e);
 		}
@@ -113,9 +97,6 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
 	@Override
 	public void setCurvedRight(final Turnout turnout) throws TurnoutException {
-		if (!turnoutStates.containsKey(turnout)) {
-			return;
-		}
 		try {
 			if (turnout.isThreeWay()) {
 				brain.write("XT " + turnout.getAddress1() + " "
@@ -126,8 +107,8 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 				brain.write("XT " + turnout.getAddress1() + " "
 						+ getRedPort(turnout.isAddress1Switched()));
 			}
-			turnoutStates.put(turnout, TurnoutState.RIGHT);
-			informListeners(turnout, TurnoutState.RIGHT);
+			turnout.setActualState(TurnoutState.RIGHT);
+			informListeners(turnout);
 		} catch (final IOException e) {
 			throw new TurnoutException(e);
 		}
@@ -140,8 +121,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
 	@Override
 	public void addOrUpdateTurnout(final Turnout turnout) {
-		turnoutStates.remove(turnout);
-		turnoutStates.put(turnout, TurnoutState.UNDEF);
+		turnout.setActualState(TurnoutState.UNDEF);
 	}
 
 	@Override

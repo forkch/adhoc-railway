@@ -64,6 +64,13 @@ public class Locomotive extends AbstractItem implements Serializable,
 	public static final String PROPERTYNAME_FUNCTIONS = "functions";
 	public static final String PROPERTYNAME_LOCOMOTIVE_GROUP = "group";
 
+	private transient int currentSpeed = 0;
+
+	private transient LocomotiveDirection currentDirection = LocomotiveDirection.FORWARD;
+
+	private transient boolean[] currentFunctions = new boolean[] { false,
+			false, false, false, false };
+
 	public Locomotive() {
 	}
 
@@ -255,5 +262,31 @@ public class Locomotive extends AbstractItem implements Serializable,
 
 	public void removePropertyChangeListener(final PropertyChangeListener x) {
 		changeSupport.removePropertyChangeListener(x);
+	}
+
+	public int getCurrentSpeed() {
+		return currentSpeed;
+	}
+
+	public void setCurrentSpeed(final int currentSpeed) {
+		this.currentSpeed = currentSpeed;
+	}
+
+	public LocomotiveDirection getCurrentDirection() {
+		return currentDirection;
+	}
+
+	public void setCurrentDirection(final LocomotiveDirection currentDirection) {
+		this.currentDirection = currentDirection;
+
+	}
+
+	public boolean[] getCurrentFunctions() {
+		return currentFunctions;
+	}
+
+	public void setCurrentFunctions(final boolean[] currentFunctions) {
+		this.currentFunctions = currentFunctions;
+
 	}
 }
