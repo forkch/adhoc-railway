@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 
 group='ch.fork.adhocrailway'
-artifactId='adhocrailway-domain'
+archivesBaseName='adhocrailway-domain'
 version = '2.0'
 
 repositories {
