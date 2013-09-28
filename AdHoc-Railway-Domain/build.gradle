@@ -33,14 +33,6 @@ jar {
     }
 }
 
-uploadArchives {
-    repositories {
-       mavenDeployer {
-            repository(url: "file://localhost/tmp/myRepo/")
-        }
-    }
-}
-
 task wrapper(type: Wrapper) {
 }
 
