@@ -329,8 +329,8 @@ public class KeyControl extends SimpleInternalFrame {
 
 			final LocomotiveController locomotiveControl = ctx
 					.getLocomotiveControl();
-			final boolean[] functions = locomotiveControl
-					.getFunctions(searchedLocomotive);
+			final boolean[] functions = searchedLocomotive
+					.getCurrentFunctions();
 			if (functionNumber >= functions.length) {
 				return;
 			}

@@ -164,7 +164,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			turnoutControl
 					.addTurnoutChangeListener(turnout, TurnoutWidget.this);
 
-			turnoutChanged(turnout, actualTurnoutState);
+			turnoutChanged(turnout);
 		}
 	}
 
@@ -173,10 +173,9 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	}
 
 	@Override
-	public void turnoutChanged(final Turnout changedTurnout,
-			final TurnoutState newState) {
+	public void turnoutChanged(final Turnout changedTurnout) {
 		if (turnout.equals(changedTurnout)) {
-			actualTurnoutState = newState;
+			actualTurnoutState = changedTurnout.getActualState();
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {

@@ -296,10 +296,8 @@ public class LocomotiveWidget extends JPanel implements
 		if (myLocomotive == null) {
 			return;
 		}
-		final int currentSpeed = locomotiveControl
-				.getCurrentSpeed(myLocomotive);
-		final boolean functions[] = locomotiveControl
-				.getFunctions(myLocomotive);
+		final int currentSpeed = myLocomotive.getCurrentSpeed();
+		final boolean[] functions = myLocomotive.getCurrentFunctions();
 
 		final boolean locked = locomotiveControl.isLocked(myLocomotive);
 
@@ -316,7 +314,7 @@ public class LocomotiveWidget extends JPanel implements
 		for (int i = 0; i < functions.length; i++) {
 			functionToggleButtons.get(i).setSelected(functions[i]);
 		}
-		switch (locomotiveControl.getDirection(myLocomotive)) {
+		switch (myLocomotive.getCurrentDirection()) {
 		case FORWARD:
 			directionButton.setIcon(createImageIcon("locomotives/forward.png"));
 			break;
@@ -365,7 +363,7 @@ public class LocomotiveWidget extends JPanel implements
 		if (myLocomotive == null) {
 			return true;
 		}
-		if (locomotiveControl.getCurrentSpeed(myLocomotive) == 0) {
+		if (myLocomotive.getCurrentSpeed() == 0) {
 			if (locomotiveControl.isLocked(myLocomotive)) {
 				if (locomotiveControl.isLockedByMe(myLocomotive)) {
 					return false;
@@ -521,8 +519,8 @@ public class LocomotiveWidget extends JPanel implements
 					locomotiveControl.addLocomotiveChangeListener(myLocomotive,
 							LocomotiveWidget.this);
 
-					final boolean[] functions = locomotiveControl
-							.getFunctions(myLocomotive);
+					final boolean[] functions = myLocomotive
+							.getCurrentFunctions();
 					final int emergencyStopFunction = myLocomotive
 							.getEmergencyStopFunction();
 					if (emergencyStopFunction != -1
@@ -552,7 +550,6 @@ public class LocomotiveWidget extends JPanel implements
 				ctx.getMainApp().handleException(e1);
 			}
 		}
-
 	}
 
 	private abstract class LocomotiveControlAction extends AbstractAction {
@@ -667,9 +664,9 @@ public class LocomotiveWidget extends JPanel implements
 				final Locomotive myLocomotive) throws LocomotiveException {
 			if (Preferences.getInstance().getBooleanValue(
 					PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
-					&& locomotiveControl.getCurrentSpeed(myLocomotive) != 0) {
+					&& myLocomotive.getCurrentSpeed() != 0) {
 				locomotiveControl.setSpeed(myLocomotive, 0,
-						locomotiveControl.getFunctions(myLocomotive));
+						myLocomotive.getCurrentFunctions());
 			}
 			directionToggeled = true;
 			locomotiveControl.toggleDirection(myLocomotive);
@@ -713,9 +710,9 @@ public class LocomotiveWidget extends JPanel implements
 			try {
 				if (Preferences.getInstance().getBooleanValue(
 						PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
-						&& locomotiveControl.getCurrentSpeed(myLocomotive) != 0) {
+						&& myLocomotive.getCurrentSpeed() != 0) {
 					locomotiveControl.setSpeed(myLocomotive, 0,
-							locomotiveControl.getFunctions(myLocomotive));
+							myLocomotive.getCurrentFunctions());
 				}
 				directionToggeled = true;
 				locomotiveControl.toggleDirection(myLocomotive);
