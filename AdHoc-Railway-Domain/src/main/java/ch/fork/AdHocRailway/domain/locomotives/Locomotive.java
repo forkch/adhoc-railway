@@ -74,6 +74,14 @@ public class Locomotive extends AbstractItem implements Serializable,
 	public Locomotive() {
 	}
 
+	@Override
+	public void init() {
+		super.init();
+		currentSpeed = 0;
+		currentDirection = LocomotiveDirection.FORWARD;
+		currentFunctions = new boolean[] { false, false, false, false, false };
+	}
+
 	public int getId() {
 		return this.id;
 	}

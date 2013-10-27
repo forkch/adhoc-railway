@@ -220,7 +220,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			if (preferences.getBooleanValue(OPEN_LAST_FILE)) {
 				final String lastFile = preferences
 						.getStringValue(LAST_OPENED_FILE);
-				if (lastFile != null && !lastFile.equals("") && fileMode) {
+				if (lastFile != null
+						&& !lastFile.equals("")
+						&& !preferences
+								.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER)) {
 
 					new OpenFileAction().openFile(new File(preferences
 							.getStringValue(LAST_OPENED_FILE)));

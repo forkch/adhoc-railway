@@ -127,6 +127,10 @@ public class BrainController {
 	}
 
 	public void write(final String str) throws IOException {
+		if (out == null) {
+			throw new IOException("not connected to the Brain");
+		}
+		LOGGER.info(str);
 		final byte[] bytes = str.getBytes(Charset.forName("US-ASCII"));
 		for (final byte b : bytes) {
 			out.write(b);

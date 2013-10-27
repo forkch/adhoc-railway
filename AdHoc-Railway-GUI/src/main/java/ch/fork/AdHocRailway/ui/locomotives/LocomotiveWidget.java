@@ -290,6 +290,7 @@ public class LocomotiveWidget extends JPanel implements
 			functionButton.setFocusable(false);
 			functionsPanel.add(functionButton, "height 30, width 60");
 		}
+		revalidate();
 	}
 
 	public void updateWidget() {
@@ -686,7 +687,8 @@ public class LocomotiveWidget extends JPanel implements
 				return;
 			}
 			try {
-				locomotiveControl.setSpeed(myLocomotive, 0, null);
+				locomotiveControl.setSpeed(myLocomotive, 0,
+						myLocomotive.getCurrentFunctions());
 				updateWidget();
 				speedBar.requestFocus();
 			} catch (final LocomotiveException e3) {

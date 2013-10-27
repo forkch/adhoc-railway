@@ -21,7 +21,7 @@ public class LocomotiveImageHelper {
 			.getLogger(LocomotiveImageHelper.class);
 	private static Map<String, String> imageToPathMap = new HashMap<String, String>();
 
-	private static final String BASE_PATH = "locoimages";
+	private static final String BASE_PATH = "src/main/resources/locoimages";
 
 	static {
 

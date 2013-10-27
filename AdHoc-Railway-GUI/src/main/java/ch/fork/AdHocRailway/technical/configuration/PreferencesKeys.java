@@ -57,11 +57,4 @@ public interface PreferencesKeys {
 	public static final String ADHOC_SERVER_PORT = "AdHocServerPort";
 	public static final String ADHOC_SERVER_COLLECTION = "AdHocServerCollection";
 
-	// Database
-	public static final String USE_DATABASE = "UseDatabase";
-	public static final String DATABASE_HOST = "DatabaseHost";
-	public static final String DATABASE_NAME = "DatabaseName";
-	public static final String DATABASE_USER = "DatabaseUser";
-	public static final String DATABASE_PWD = "DatabasePWD";
-
 }

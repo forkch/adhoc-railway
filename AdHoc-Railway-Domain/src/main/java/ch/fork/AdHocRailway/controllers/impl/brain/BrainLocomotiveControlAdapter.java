@@ -6,7 +6,6 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import ch.fork.AdHocRailway.controllers.LockingException;
-import ch.fork.AdHocRailway.controllers.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
@@ -26,6 +25,14 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 	@Override
 	public void toggleDirection(final Locomotive locomotive)
 			throws LocomotiveException {
+
+		if (locomotive.getCurrentDirection() == LocomotiveDirection.FORWARD) {
+			locomotive.setCurrentDirection(LocomotiveDirection.REVERSE);
+		} else {
+			locomotive.setCurrentDirection(LocomotiveDirection.FORWARD);
+		}
+		setSpeed(locomotive, locomotive.getCurrentSpeed(),
+				locomotive.getCurrentFunctions());
 	}
 
 	@Override
@@ -110,8 +117,23 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 	public void setFunction(final Locomotive locomotive,
 			final int functionNumber, final boolean state,
 			final int deactivationDelay) throws LocomotiveException {
-		// TODO Auto-generated method stub
-
+		// final boolean[] functions = locomotive.getCurrentFunctions();
+		//
+		// if (functionNumber >= functions.length) {
+		// return;
+		// }
+		//
+		// final int srcpFunctionNumber = computeHardwareFunctionNumber(
+		// locomotive, functionNumber);
+		//
+		// functions[srcpFunctionNumber] = state;
+		//
+		// //setFunctions(locomotive, functions);
+		//
+		// if (deactivationDelay > 0) {
+		// startFunctionDeactivationThread(locomotive, functionNumber,
+		// deactivationDelay);
+		// }
 	}
 
 	@Override
@@ -127,42 +149,34 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
 	}
 
-	@Override
-	public void addLocomotiveChangeListener(final Locomotive loco,
-			final LocomotiveChangeListener l) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeLocomotiveChangeListener(final Locomotive locomotive,
-			final LocomotiveChangeListener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeAllLocomotiveChangeListener() {
-		// TODO Auto-generated method stub
-
-	}
-
+	/**
+	 * Locking is not supported for BrainLocomotives
+	 */
 	@Override
 	public boolean isLocked(final Locomotive object) throws LockingException {
 		return false;
 	}
 
+	/**
+	 * Locking is not supported for BrainLocomotives
+	 */
 	@Override
 	public boolean isLockedByMe(final Locomotive object)
 			throws LockingException {
-		return false;
+		return true;
 	}
 
+	/**
+	 * Locking is not supported for BrainLocomotives
+	 */
 	@Override
 	public boolean acquireLock(final Locomotive object) throws LockingException {
 		return true;
 	}
 
+	/**
+	 * Locking is not supported for BrainLocomotives
+	 */
 	@Override
 	public boolean releaseLock(final Locomotive object) throws LockingException {
 		return true;
