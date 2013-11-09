@@ -25,19 +25,17 @@
  */
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import javax.swing.*;
 
 /**
  * @author Benjamin Mueller <benjamin.b.mueller@siemens.com>

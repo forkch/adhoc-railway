@@ -8,8 +8,7 @@
  */
 package ch.fork.AdHocRailway.ui;
 
-import java.awt.Component;
-import java.awt.Container;
+import java.awt.*;
 
 /**
  * Diese Klasse ermoeglicht es ganze Swing-Componenten-Baeume zu

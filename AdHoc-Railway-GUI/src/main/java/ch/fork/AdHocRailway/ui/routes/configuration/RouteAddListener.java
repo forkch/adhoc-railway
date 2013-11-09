@@ -1,10 +1,10 @@
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
-import java.util.SortedSet;
-
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManagerListener;
+
+import java.util.SortedSet;
 
 public abstract class RouteAddListener implements RouteManagerListener {
 

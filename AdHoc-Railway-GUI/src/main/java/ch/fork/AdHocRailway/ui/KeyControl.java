@@ -18,17 +18,6 @@
 
 package ch.fork.AdHocRailway.ui;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.util.LinkedList;
-
-import javax.swing.AbstractAction;
-import javax.swing.InputMap;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-
-import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
@@ -45,6 +34,12 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.LinkedList;
 
 public class KeyControl extends SimpleInternalFrame {
 	private static final long serialVersionUID = -3052109699874529256L;

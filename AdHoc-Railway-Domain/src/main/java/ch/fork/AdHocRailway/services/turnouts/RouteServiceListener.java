@@ -1,10 +1,10 @@
 package ch.fork.AdHocRailway.services.turnouts;
 
-import java.util.SortedSet;
-
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
+
+import java.util.SortedSet;
 
 public interface RouteServiceListener {
 

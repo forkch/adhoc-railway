@@ -1,12 +1,5 @@
 package ch.fork.AdHocRailway.ui.routes;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedSet;
-
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
-
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
@@ -14,6 +7,11 @@ import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManagerListener;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
+
+import javax.swing.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedSet;
 
 public class RouteGroupsPanel extends JTabbedPane implements
 		RouteManagerListener {

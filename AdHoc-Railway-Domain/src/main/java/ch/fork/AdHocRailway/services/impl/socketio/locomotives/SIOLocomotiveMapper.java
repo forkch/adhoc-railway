@@ -1,17 +1,16 @@
 package ch.fork.AdHocRailway.services.impl.socketio.locomotives;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SIOLocomotiveMapper {
 

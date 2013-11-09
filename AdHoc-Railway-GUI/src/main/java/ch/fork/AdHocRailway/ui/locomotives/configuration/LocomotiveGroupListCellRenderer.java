@@ -1,11 +1,9 @@
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
-import java.awt.Component;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JList;
-
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Used to renders LocomotiveGroups in JLists and JComboBoxes. If the combo box

@@ -1,7 +1,10 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
-import java.io.IOException;
-
+import ch.fork.AdHocRailway.controllers.PowerChangeListener;
+import ch.fork.AdHocRailway.controllers.PowerException;
+import ch.fork.AdHocRailway.domain.power.Booster;
+import ch.fork.AdHocRailway.domain.power.BoosterState;
+import ch.fork.AdHocRailway.domain.power.PowerSupply;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,11 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import ch.fork.AdHocRailway.controllers.PowerChangeListener;
-import ch.fork.AdHocRailway.controllers.PowerException;
-import ch.fork.AdHocRailway.domain.power.Booster;
-import ch.fork.AdHocRailway.domain.power.BoosterState;
-import ch.fork.AdHocRailway.domain.power.PowerSupply;
+import java.io.IOException;
 
 public class BrainPowerControlAdapterTest {
 

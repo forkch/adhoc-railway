@@ -18,15 +18,12 @@
 
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
-import java.awt.Component;
-
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
-
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.ui.ImageTools;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 
 public class TurnoutTypeCellRenderer extends DefaultTableCellRenderer {
 

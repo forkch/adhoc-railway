@@ -1,8 +1,8 @@
 package ch.fork.AdHocRailway.ui.context;
 
-import javax.swing.JFrame;
-
 import de.dermoba.srcp.client.SRCPSession;
+
+import javax.swing.*;
 
 public interface ControllerContext {
 

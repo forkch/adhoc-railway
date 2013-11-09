@@ -1,29 +1,23 @@
 package ch.fork.AdHocRailway.services.impl.xml;
 
+import ch.fork.AdHocRailway.domain.AbstractItem;
+import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.domain.turnouts.*;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
+import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
+import com.thoughtworks.xstream.XStream;
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
-
-import ch.fork.AdHocRailway.domain.AbstractItem;
-import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.turnouts.Route;
-import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
-import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
-import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
-
-import com.thoughtworks.xstream.XStream;
 
 public class XMLServiceHelper {
 

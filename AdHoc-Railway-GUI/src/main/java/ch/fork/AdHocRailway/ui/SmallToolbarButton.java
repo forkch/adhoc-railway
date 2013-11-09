@@ -18,10 +18,8 @@
 
 package ch.fork.AdHocRailway.ui;
 
-import java.awt.Insets;
-
-import javax.swing.Action;
-import javax.swing.JButton;
+import javax.swing.*;
+import java.awt.*;
 
 public class SmallToolbarButton extends JButton {
 

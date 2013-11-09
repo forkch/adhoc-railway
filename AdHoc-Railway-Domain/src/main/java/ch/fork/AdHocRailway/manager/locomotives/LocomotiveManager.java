@@ -18,12 +18,12 @@
 
 package ch.fork.AdHocRailway.manager.locomotives;
 
-import java.util.SortedSet;
-
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
+
+import java.util.SortedSet;
 
 public interface LocomotiveManager {
 

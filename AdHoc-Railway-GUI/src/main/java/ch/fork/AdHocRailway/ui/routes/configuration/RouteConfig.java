@@ -18,52 +18,15 @@
 
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-
-import javax.swing.AbstractAction;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.table.TableColumn;
-
-import net.miginfocom.swing.MigLayout;
-import ch.fork.AdHocRailway.domain.turnouts.Route;
-import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
-import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
-import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.*;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
-import ch.fork.AdHocRailway.ui.ErrorPanel;
-import ch.fork.AdHocRailway.ui.ImageTools;
-import ch.fork.AdHocRailway.ui.SwingUtils;
-import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
-import ch.fork.AdHocRailway.ui.UIConstants;
+import ch.fork.AdHocRailway.ui.*;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
-
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
@@ -72,6 +35,16 @@ import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.BufferedValueModel;
 import com.jgoodies.binding.value.Trigger;
 import com.jgoodies.forms.factories.ButtonBarFactory;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
+import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.*;
+import java.util.List;
 
 public class RouteConfig extends JDialog {
 	private static final long serialVersionUID = -6408833917980514400L;

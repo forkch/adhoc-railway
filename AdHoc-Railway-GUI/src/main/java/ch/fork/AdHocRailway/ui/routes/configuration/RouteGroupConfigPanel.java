@@ -25,17 +25,15 @@
  */
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
-
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import javax.swing.*;
 
 /**
  * @author Benjamin Mueller <benjamin.b.mueller@siemens.com>

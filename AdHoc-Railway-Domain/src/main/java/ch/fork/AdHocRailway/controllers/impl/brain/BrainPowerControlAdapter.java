@@ -1,19 +1,18 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-
 import ch.fork.AdHocRailway.controllers.PowerChangeListener;
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.PowerException;
 import ch.fork.AdHocRailway.domain.power.Booster;
 import ch.fork.AdHocRailway.domain.power.BoosterState;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 public class BrainPowerControlAdapter extends PowerController implements
 		BrainListener {
@@ -37,7 +36,7 @@ public class BrainPowerControlAdapter extends PowerController implements
 	public void boosterOn(final Booster booster) {
 		try {
 			brain.write("XGO " + booster.getBoosterNumber());
-		} catch (final IOException e) {
+		} catch (final BrainException e) {
 			throw new PowerException("error turning on booster "
 					+ booster.getBoosterNumber(), e);
 		}
@@ -47,7 +46,7 @@ public class BrainPowerControlAdapter extends PowerController implements
 	public void boosterOff(final Booster booster) {
 		try {
 			brain.write("XSTOP " + booster.getBoosterNumber());
-		} catch (final IOException e) {
+		} catch (final BrainException e) {
 			throw new PowerException("error turning on booster "
 					+ booster.getBoosterNumber(), e);
 		}
@@ -72,7 +71,7 @@ public class BrainPowerControlAdapter extends PowerController implements
 	public void powerOn(final PowerSupply supply) {
 		try {
 			brain.write("X!");
-		} catch (final IOException e) {
+		} catch (final BrainException e) {
 			throw new PowerException("error turning on power ", e);
 		}
 	}
@@ -81,8 +80,8 @@ public class BrainPowerControlAdapter extends PowerController implements
 	public void powerOff(final PowerSupply supply) {
 		try {
 			brain.write("X.");
-		} catch (final IOException e) {
-			throw new PowerException("error turning on power ", e);
+		} catch (final BrainException e) {
+			throw new PowerException("error turning off power ", e);
 		}
 	}
 

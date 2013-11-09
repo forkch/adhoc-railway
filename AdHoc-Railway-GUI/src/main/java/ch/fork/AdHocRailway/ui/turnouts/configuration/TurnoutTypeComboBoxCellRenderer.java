@@ -18,15 +18,11 @@
 
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
-import java.awt.Component;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.SwingConstants;
-
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.ui.ImageTools;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class TurnoutTypeComboBoxCellRenderer extends DefaultListCellRenderer {
 	/**

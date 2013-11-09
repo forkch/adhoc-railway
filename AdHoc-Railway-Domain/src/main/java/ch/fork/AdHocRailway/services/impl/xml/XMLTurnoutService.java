@@ -18,16 +18,15 @@
 
 package ch.fork.AdHocRailway.services.impl.xml;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
+import org.apache.log4j.Logger;
+
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
 
 public class XMLTurnoutService implements TurnoutService {
 	private static final Logger LOGGER = Logger

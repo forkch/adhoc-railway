@@ -18,27 +18,16 @@
 
 package ch.fork.AdHocRailway.ui;
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.Icon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-
 public class ErrorPanel extends JPanel {
 
-	private static final long serialVersionUID = 519354077339077675L;
-	private JTextArea errorTextArea;
+    private static final long serialVersionUID = 519354077339077675L;
+    public static final Color COLOR = new Color(255, 186, 68);
+    private JTextArea errorTextArea;
 	private JLabel iconLabel;
 	private final int pause = 5000;
 	private float alpha = 1.0f;
@@ -70,7 +59,7 @@ public class ErrorPanel extends JPanel {
 
 	public void setErrorTextIcon(final String text, final Icon icon) {
 		iconLabel.setIcon(icon);
-		iconLabel.setBackground(new Color(255, 177, 177));
+		iconLabel.setBackground(COLOR);
 		setErrorText(text);
 
 	}
@@ -85,7 +74,7 @@ public class ErrorPanel extends JPanel {
 		active = true;
 		errorTextArea.setText(text);
 		errorTextArea.setOpaque(false);
-		panel.setBackground(new Color(255, 177, 177));
+		panel.setBackground(COLOR);
 		revalidate();
 		repaint();
 

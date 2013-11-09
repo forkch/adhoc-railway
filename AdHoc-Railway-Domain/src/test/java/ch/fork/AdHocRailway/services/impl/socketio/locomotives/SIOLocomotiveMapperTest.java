@@ -1,20 +1,17 @@
 package ch.fork.AdHocRailway.services.impl.socketio.locomotives;
 
-import static ch.fork.AdHocRailway.services.impl.socketio.locomotives.LocomotiveTestHelper.assertLocomotiveBase;
-import static ch.fork.AdHocRailway.services.impl.socketio.locomotives.LocomotiveTestHelper.createJSONLocomotive;
-import static ch.fork.AdHocRailway.services.impl.socketio.locomotives.LocomotiveTestHelper.createJSONLocomotiveGroup;
+import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+import static ch.fork.AdHocRailway.services.impl.socketio.locomotives.LocomotiveTestHelper.*;
+import static org.junit.Assert.assertEquals;
 
 public class SIOLocomotiveMapperTest {
 

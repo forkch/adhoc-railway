@@ -1,10 +1,5 @@
 package ch.fork.AdHocRailway.controllers.impl.srcp;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.StringTokenizer;
-
 import ch.fork.AdHocRailway.controllers.PowerChangeListener;
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.PowerException;
@@ -17,6 +12,11 @@ import de.dermoba.srcp.model.power.SRCPPowerControl;
 import de.dermoba.srcp.model.power.SRCPPowerState;
 import de.dermoba.srcp.model.power.SRCPPowerSupply;
 import de.dermoba.srcp.model.power.SRCPPowerSupplyChangeListener;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.StringTokenizer;
 
 public class SRCPPowerControlAdapter extends PowerController implements
 		SRCPPowerSupplyChangeListener {

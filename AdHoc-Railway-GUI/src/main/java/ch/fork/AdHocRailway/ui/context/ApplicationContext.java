@@ -1,7 +1,5 @@
 package ch.fork.AdHocRailway.ui.context;
 
-import javax.swing.JFrame;
-
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.RouteController;
@@ -10,8 +8,11 @@ import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.ui.RailwayDeviceManager;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
+
+import javax.swing.*;
 
 public class ApplicationContext implements TurnoutContext, RouteContext,
 		LocomotiveContext, TrackContext, PowerContext {
@@ -38,8 +39,9 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 	private SRCPSession session;
 
 	private boolean isEditingMode;
+    private RailwayDeviceManager railwayDeviceManager;
 
-	public Preferences getPreferences() {
+    public Preferences getPreferences() {
 		return preferences;
 	}
 
@@ -195,4 +197,11 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		this.mainApp = mainApp;
 	}
 
+    public void setRailwayDeviceManager(RailwayDeviceManager railwayDeviceManager) {
+        this.railwayDeviceManager = railwayDeviceManager;
+    }
+
+    public RailwayDeviceManager getRailwayDeviceManager() {
+        return railwayDeviceManager;
+    }
 }

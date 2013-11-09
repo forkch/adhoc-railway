@@ -25,16 +25,14 @@
  */
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.value.ValueHolder;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
 
 public class LocomotiveGroupConfigPanel extends JPanel {
 

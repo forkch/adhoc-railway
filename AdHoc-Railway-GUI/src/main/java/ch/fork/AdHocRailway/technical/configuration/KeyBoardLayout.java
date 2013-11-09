@@ -3,13 +3,11 @@
  */
 package ch.fork.AdHocRailway.technical.configuration;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.InputMap;
-import javax.swing.KeyStroke;
 
 /**
  * @author mnl

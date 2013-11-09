@@ -1,17 +1,11 @@
 package ch.fork.AdHocRailway.ui.locomotives;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
-
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveHelper;
 import ch.fork.AdHocRailway.ui.ImageTools;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class LocomotiveComboBoxRenderer extends JPanel implements
 		ListCellRenderer<Locomotive> {

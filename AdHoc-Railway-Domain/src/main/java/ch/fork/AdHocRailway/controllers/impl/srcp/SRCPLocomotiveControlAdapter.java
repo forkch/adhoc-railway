@@ -1,8 +1,5 @@
 package ch.fork.AdHocRailway.controllers.impl.srcp;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import ch.fork.AdHocRailway.controllers.LockingException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
@@ -14,12 +11,10 @@ import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
-import de.dermoba.srcp.model.locomotives.DoubleMMDigitalLocomotive;
-import de.dermoba.srcp.model.locomotives.MMDeltaLocomotive;
-import de.dermoba.srcp.model.locomotives.MMDigitalLocomotive;
-import de.dermoba.srcp.model.locomotives.SRCPLocomotive;
-import de.dermoba.srcp.model.locomotives.SRCPLocomotiveChangeListener;
-import de.dermoba.srcp.model.locomotives.SRCPLocomotiveControl;
+import de.dermoba.srcp.model.locomotives.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SRCPLocomotiveControlAdapter extends LocomotiveController
 		implements SRCPLocomotiveChangeListener, SRCPLockChangeListener {

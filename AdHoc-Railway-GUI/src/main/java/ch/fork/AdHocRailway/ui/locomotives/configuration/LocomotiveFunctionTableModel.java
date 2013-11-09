@@ -1,10 +1,9 @@
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
-import javax.swing.ListModel;
-
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
-
 import com.jgoodies.binding.adapter.AbstractTableAdapter;
+
+import javax.swing.*;
 
 public class LocomotiveFunctionTableModel extends
 		AbstractTableAdapter<LocomotiveFunction> {

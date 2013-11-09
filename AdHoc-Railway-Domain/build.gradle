@@ -1,16 +1,7 @@
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'maven'
 
-group='ch.fork.adhocrailway'
 archivesBaseName='adhocrailway-domain'
-version = '2.0'
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
 	
 dependencies {
     testCompile 'junit:junit:4.+'
@@ -36,3 +27,4 @@ jar {
 task wrapper(type: Wrapper) {
 }
 
+    

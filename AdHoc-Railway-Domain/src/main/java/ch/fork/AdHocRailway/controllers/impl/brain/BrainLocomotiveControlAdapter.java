@@ -1,16 +1,15 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
-import java.io.IOException;
-import java.util.Set;
-
-import com.google.common.collect.Sets;
-
 import ch.fork.AdHocRailway.controllers.LockingException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
+import com.google.common.collect.Sets;
+
+import java.io.IOException;
+import java.util.Set;
 
 public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
@@ -65,7 +64,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 			brain.write(stringBuilder.toString().trim());
 			locomotive.setCurrentSpeed(speed);
 			locomotive.setCurrentFunctions(functions);
-		} catch (final IOException e) {
+		} catch (final BrainException e) {
 			throw new LocomotiveException("error setting speed", e);
 		}
 
@@ -88,7 +87,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 				brain.write(stringBuilder.toString());
 				activeLocomotives.add(locomotive);
 			}
-		} catch (final IOException e) {
+		} catch (final BrainException e) {
 			throw new LocomotiveException("error initializing locomotive", e);
 		}
 	}

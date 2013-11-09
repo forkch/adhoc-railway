@@ -18,14 +18,14 @@
 
 package ch.fork.AdHocRailway.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainTurnoutControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class TurnoutController {
 

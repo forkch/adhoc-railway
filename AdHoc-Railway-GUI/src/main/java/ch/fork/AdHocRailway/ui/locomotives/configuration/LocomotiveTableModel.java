@@ -1,10 +1,9 @@
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
-import javax.swing.ListModel;
-
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-
 import com.jgoodies.binding.adapter.AbstractTableAdapter;
+
+import javax.swing.*;
 
 /**
  * Describes how to present an Album in a JTable.

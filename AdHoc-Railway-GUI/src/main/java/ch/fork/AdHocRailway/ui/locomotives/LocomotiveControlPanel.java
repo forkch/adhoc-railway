@@ -18,16 +18,6 @@
 
 package ch.fork.AdHocRailway.ui.locomotives;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-
-import javax.swing.AbstractAction;
-import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -38,6 +28,14 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
 
 public class LocomotiveControlPanel extends JPanel implements
 		LocomotiveManagerListener {

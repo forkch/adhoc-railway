@@ -1,18 +1,6 @@
 package ch.fork.AdHocRailway.ui;
 
-import java.io.IOException;
-
-import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceEvent;
-import javax.jmdns.ServiceInfo;
-
-import org.apache.log4j.Logger;
-
-import ch.fork.AdHocRailway.controllers.LocomotiveController;
-import ch.fork.AdHocRailway.controllers.PowerController;
-import ch.fork.AdHocRailway.controllers.RailwayDevice;
-import ch.fork.AdHocRailway.controllers.RouteController;
-import ch.fork.AdHocRailway.controllers.TurnoutController;
+import ch.fork.AdHocRailway.controllers.*;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPPowerControlAdapter;
@@ -29,6 +17,12 @@ import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
+import org.apache.log4j.Logger;
+
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceEvent;
+import javax.jmdns.ServiceInfo;
+import java.io.IOException;
 
 public class RailwayDeviceManager implements CommandDataListener,
 		InfoDataListener, PreferencesKeys {
@@ -40,14 +34,15 @@ public class RailwayDeviceManager implements CommandDataListener,
 	private JmDNS adhocServermDNS;
 	private final AdHocRailwayIface mainApp;
 	private final Preferences preferences;
+    private boolean connected = false;
 
-	public RailwayDeviceManager(final ApplicationContext appContext) {
+    public RailwayDeviceManager(final ApplicationContext appContext) {
 		this.appContext = appContext;
 		mainApp = appContext.getMainApp();
 		preferences = appContext.getPreferences();
 	}
 
-	public void loadControlLayer() {
+    public void loadControlLayer() {
 		mainApp.initProceeded("Loading Control Layer (Power)");
 
 		final String railwayDeviceString = preferences
@@ -130,6 +125,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 			connectToBrain(preferences.getStringValue(ADHOC_BRAIN_PORT));
 		}
 		mainApp.connectedToRailwayDevice(true);
+        connected = true;
 	}
 
 	public void disconnect() {
@@ -143,7 +139,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 		} else {
 			disconnectFromBrain();
 		}
-		mainApp.connectedToRailwayDevice(false);
+		mainApp.connectedToRailwayDevice(false);connected = false;
 
 	}
 
@@ -245,4 +241,18 @@ public class RailwayDeviceManager implements CommandDataListener,
 		}
 		LOGGER.info("Info received" + infoData.trim());
 	}
+
+    public boolean isBrainAvailable() {
+        BrainController brainController = BrainController.getInstance();
+        try {
+            brainController.getAvailableSerialPortsAsString();
+            return true;
+        } catch (Exception x) {
+            return false;
+        }
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
 }

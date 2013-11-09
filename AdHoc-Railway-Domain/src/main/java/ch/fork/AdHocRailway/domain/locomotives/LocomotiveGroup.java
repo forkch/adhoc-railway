@@ -18,11 +18,11 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import ch.fork.AdHocRailway.domain.AbstractItem;
+
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import ch.fork.AdHocRailway.domain.AbstractItem;
 
 public class LocomotiveGroup extends AbstractItem implements
 		java.io.Serializable, Comparable<LocomotiveGroup> {

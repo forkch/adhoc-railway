@@ -1,18 +1,16 @@
 package ch.fork.AdHocRailway.services.impl.socketio;
 
+import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
 import io.socket.SocketIOException;
+import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.log4j.Logger;
-import org.json.JSONObject;
-
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 
 public class SIOService {
 

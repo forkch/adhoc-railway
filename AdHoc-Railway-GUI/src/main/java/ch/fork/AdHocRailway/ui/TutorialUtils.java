@@ -48,8 +48,7 @@
 
 package ch.fork.AdHocRailway.ui;
 
-import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.*;
 
 /**
  * Consists only of static methods that return instances reused in multiple

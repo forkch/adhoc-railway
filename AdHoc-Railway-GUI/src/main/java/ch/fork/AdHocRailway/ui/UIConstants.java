@@ -18,10 +18,8 @@
 
 package ch.fork.AdHocRailway.ui;
 
-import java.awt.Color;
-
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
+import java.awt.*;
 
 public interface UIConstants {
 	public static final double ACTUAL_CONFIG_VERSION = 0.3;

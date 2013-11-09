@@ -1,13 +1,12 @@
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
-import javax.swing.ListModel;
-
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutOrientation;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
-
 import com.jgoodies.binding.adapter.AbstractTableAdapter;
+
+import javax.swing.*;
 
 public class TurnoutTableModel extends AbstractTableAdapter<Turnout> {
 

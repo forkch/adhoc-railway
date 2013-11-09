@@ -18,14 +18,13 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import java.beans.PropertyChangeListener;
-import java.util.HashSet;
-import java.util.Set;
-
+import ch.fork.AdHocRailway.domain.AbstractItem;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import ch.fork.AdHocRailway.domain.AbstractItem;
+import java.beans.PropertyChangeListener;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Turnout extends AbstractItem implements java.io.Serializable,
 		Comparable<Turnout> {

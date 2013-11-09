@@ -1,10 +1,11 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
-import java.io.IOException;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
+
+import java.io.IOException;
 
 public class BrainTurnoutControlAdapter extends TurnoutController {
 
@@ -71,7 +72,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 			}
 			turnout.setActualState(TurnoutState.STRAIGHT);
 			informListeners(turnout);
-		} catch (final IOException e) {
+		} catch (final BrainException e) {
 			throw new TurnoutException(e);
 		}
 	}
@@ -90,7 +91,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 			}
 			turnout.setActualState(TurnoutState.LEFT);
 			informListeners(turnout);
-		} catch (final IOException e) {
+		} catch (final BrainException e) {
 			throw new TurnoutException(e);
 		}
 	}
@@ -109,7 +110,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 			}
 			turnout.setActualState(TurnoutState.RIGHT);
 			informListeners(turnout);
-		} catch (final IOException e) {
+		} catch (final BrainException e) {
 			throw new TurnoutException(e);
 		}
 	}

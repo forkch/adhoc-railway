@@ -25,8 +25,7 @@
  */
 package ch.fork.AdHocRailway.ui;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.*;
 
 /**
  * @author Benjamin Mueller <benjamin.b.mueller@siemens.com>

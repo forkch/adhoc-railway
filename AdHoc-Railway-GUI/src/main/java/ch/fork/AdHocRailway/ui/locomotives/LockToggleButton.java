@@ -18,11 +18,9 @@
 
 package ch.fork.AdHocRailway.ui.locomotives;
 
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JToggleButton;
-
 import ch.fork.AdHocRailway.ui.ImageTools;
+
+import javax.swing.*;
 
 public class LockToggleButton extends JToggleButton {
 	/**

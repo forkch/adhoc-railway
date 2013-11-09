@@ -1,25 +1,5 @@
 package ch.fork.AdHocRailway.ui.power;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.StringTokenizer;
-
-import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-import javax.swing.SwingConstants;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.log4j.Logger;
-
 import ch.fork.AdHocRailway.controllers.PowerChangeListener;
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.domain.power.Booster;
@@ -32,6 +12,17 @@ import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
 import ch.fork.AdHocRailway.ui.context.PowerContext;
 import de.dermoba.srcp.model.power.SRCPPowerSupply;
+import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.StringTokenizer;
 
 public class PowerControlPanel extends JPanel implements PowerChangeListener {
 

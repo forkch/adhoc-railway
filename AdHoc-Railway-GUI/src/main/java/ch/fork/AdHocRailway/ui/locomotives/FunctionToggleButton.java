@@ -18,9 +18,9 @@
 
 package ch.fork.AdHocRailway.ui.locomotives;
 
-import javax.swing.JToggleButton;
-
 import ch.fork.AdHocRailway.ui.ImageTools;
+
+import javax.swing.*;
 
 public class FunctionToggleButton extends JToggleButton {
 

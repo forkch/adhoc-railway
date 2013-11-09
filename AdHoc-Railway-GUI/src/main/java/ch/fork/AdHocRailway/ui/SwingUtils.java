@@ -1,12 +1,9 @@
 package ch.fork.AdHocRailway.ui;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.KeyStroke;
 
 public class SwingUtils {
 	public static void addEscapeListener(final JDialog dialog) {

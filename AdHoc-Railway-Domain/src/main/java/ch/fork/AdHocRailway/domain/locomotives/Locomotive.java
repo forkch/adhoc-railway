@@ -18,15 +18,14 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import ch.fork.AdHocRailway.domain.AbstractItem;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
-import ch.fork.AdHocRailway.domain.AbstractItem;
 
 public class Locomotive extends AbstractItem implements Serializable,
 		Comparable<Locomotive> {

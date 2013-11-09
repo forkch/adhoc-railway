@@ -1,9 +1,8 @@
 package ch.fork.AdHocRailway.manager.locomotives;
 
-import org.apache.commons.lang3.StringUtils;
-
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
+import org.apache.commons.lang3.StringUtils;
 
 public class LocomotiveHelper {
 

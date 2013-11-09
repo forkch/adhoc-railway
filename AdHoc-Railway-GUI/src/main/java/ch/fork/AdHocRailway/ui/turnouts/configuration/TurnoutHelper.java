@@ -1,23 +1,17 @@
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
-import javax.swing.JPanel;
-
-import org.apache.commons.beanutils.BeanUtils;
-
-import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutOrientation;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
+import ch.fork.AdHocRailway.domain.turnouts.*;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import de.dermoba.srcp.model.turnouts.MMTurnout;
+import org.apache.commons.beanutils.BeanUtils;
+
+import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 public class TurnoutHelper {
 

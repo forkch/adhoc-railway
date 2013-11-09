@@ -18,9 +18,8 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class RouteItem extends AbstractItem implements java.io.Serializable,
 		Comparable<RouteItem> {

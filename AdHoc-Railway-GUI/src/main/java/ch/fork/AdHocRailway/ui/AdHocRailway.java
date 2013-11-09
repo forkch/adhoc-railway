@@ -18,61 +18,6 @@
 
 package ch.fork.AdHocRailway.ui;
 
-import static ch.fork.AdHocRailway.ui.ImageTools.createImageIconFromIconSet;
-
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JRootPane;
-import javax.swing.JSeparator;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.WindowConstants;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.PropertyConfigurator;
-
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.RailwayDevice;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
@@ -90,11 +35,29 @@ import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfiguration
 import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
-
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
-
 import de.dermoba.srcp.model.locking.SRCPLockingException;
+import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Set;
+
+import static ch.fork.AdHocRailway.ui.ImageTools.createImageIconFromIconSet;
 
 public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		PreferencesKeys, EditingModeListener {
@@ -170,6 +133,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	private PersistenceManager persistenceManager;
 
 	private RailwayDeviceManager railwayDeviceManager;
+    private JButton preferencesToolBarButton;
+    private JMenuItem preferencesItem;
+
+    public static void setupGlobalExceptionHandling() {
+
+    }
 
 	public AdHocRailway() {
 		this(null);
@@ -206,6 +175,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 			railwayDeviceManager = new RailwayDeviceManager(appContext);
 			railwayDeviceManager.loadControlLayer();
+            appContext.setRailwayDeviceManager(railwayDeviceManager);
 
 			persistenceManager = new PersistenceManager(appContext);
 			persistenceManager.loadPersistenceLayer();
@@ -237,6 +207,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 			initProceeded("AdHoc-Railway started");
 			updateCommandHistory("AdHoc-Railway started");
+            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                @Override
+                public void uncaughtException(Thread t, Throwable e) {
+                    handleException(e);
+                }
+            });
 			setVisible(true);
 		} catch (final UnsupportedLookAndFeelException e) {
 			handleException(e);
@@ -254,13 +230,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	}
 
 	@Override
-	public void handleException(final Exception ex) {
+	public void handleException(final Throwable ex) {
 		handleException(null, ex);
 
 	}
 
 	@Override
-	public void handleException(final String message, final Exception e) {
+	public void handleException(final String message, final Throwable e) {
 		final ExceptionProcessor instance2 = ExceptionProcessor.getInstance();
 		if (instance2 != null) {
 			instance2.processException(message, e);
@@ -323,8 +299,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		daemonConnectItem.setEnabled(!connected);
 		daemonDisconnectItem.setEnabled(connected);
 		connectToolBarButton.setEnabled(!connected);
-		disconnectToolBarButton.setEnabled(connected);
-		powerControlPanel.setConnected(connected);
+        preferencesItem.setEnabled(!connected);
+        preferencesToolBarButton.setEnabled(!connected);
+        disconnectToolBarButton.setEnabled(connected);
+        powerControlPanel.setConnected(connected);
 	}
 
 	private void autoConnect() {
@@ -528,11 +506,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		switchesItem = new JMenuItem(new TurnoutAction());
 		routesItem = new JMenuItem(new RoutesAction());
 		locomotivesItem = new JMenuItem(new LocomotivesAction());
-		final JMenuItem preferencesItem = new JMenuItem(new PreferencesAction());
+        preferencesItem = new JMenuItem(new PreferencesAction());
 		editMenu.setMnemonic(KeyEvent.VK_E);
 		switchesItem.setMnemonic(KeyEvent.VK_S);
 		switchesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-				ActionEvent.ALT_MASK));
+                ActionEvent.ALT_MASK));
 		routesItem.setMnemonic(KeyEvent.VK_R);
 		routesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
 				ActionEvent.ALT_MASK));
@@ -541,7 +519,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				ActionEvent.ALT_MASK));
 		preferencesItem.setMnemonic(KeyEvent.VK_P);
 		preferencesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
-				ActionEvent.ALT_MASK));
+                ActionEvent.ALT_MASK));
 		editMenu.add(enableEditing);
 		editMenu.add(new JSeparator());
 		editMenu.add(switchesItem);
@@ -626,8 +604,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		routesToolBarButton = new SmallToolbarButton(new RoutesAction());
 		locomotivesToolBarButton = new SmallToolbarButton(
 				new LocomotivesAction());
-		final JButton preferencesToolBarButton = new SmallToolbarButton(
-				new PreferencesAction());
+        preferencesToolBarButton = new SmallToolbarButton(
+                new PreferencesAction());
 
 		digitalToolBar.add(turnoutsToolBarButton);
 		digitalToolBar.add(routesToolBarButton);

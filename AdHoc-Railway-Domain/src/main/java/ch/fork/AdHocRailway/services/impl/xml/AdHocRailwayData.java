@@ -1,10 +1,10 @@
 package ch.fork.AdHocRailway.services.impl.xml;
 
-import java.util.SortedSet;
-
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+
+import java.util.SortedSet;
 
 public class AdHocRailwayData {
 

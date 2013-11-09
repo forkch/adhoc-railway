@@ -18,10 +18,9 @@
 
 package ch.fork.AdHocRailway.ui;
 
+import de.dermoba.srcp.common.exception.SRCPException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-
-import de.dermoba.srcp.common.exception.SRCPException;
 
 public class ExceptionProcessor {
 	private static final Logger LOGGER = Logger
@@ -51,7 +50,7 @@ public class ExceptionProcessor {
 
 	}
 
-	public void processException(String msg, final Exception e) {
+	public void processException(String msg, final Throwable e) {
 
 		LOGGER.error(e.getMessage(), e);
 

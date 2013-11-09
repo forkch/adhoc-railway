@@ -1,11 +1,9 @@
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
-import java.awt.Component;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JList;
-
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Used to renders TurnoutGroups in JLists and JComboBoxes. If the combo box

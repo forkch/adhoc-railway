@@ -1,23 +1,13 @@
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'maven'
 apply plugin: 'application'
 
-group='ch.fork.adhocrailway'
 archivesBaseName='adhocrailway-gui'
-version = '2.0'
 
 mainClassName = "ch.fork.AdHocRailway.ui.AdHocRailway"
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
 	
 dependencies {
 	compile fileTree (dir: 'lib', includes: ['*.jar'])
     compile 'de.dermoba:jsrcpc:2.+'
-    compile 'ch.fork.adhocrailway:adhocrailway-domain:2.+'
     compile 'jgoodies:forms:1.0.5'
     compile 'com.jgoodies:jgoodies-common:1.4.0'
     compile 'com.jgoodies:looks:2.2.2'
@@ -29,8 +19,6 @@ dependencies {
     compile 'com.google.guava:guava:14.0.1'
 }
 
-task wrapper(type: Wrapper) {
-}
 jar {
     manifest {
         attributes 'Implementation-Title': 'AdHoc-Railway-GUI', 'Implementation-Version': version

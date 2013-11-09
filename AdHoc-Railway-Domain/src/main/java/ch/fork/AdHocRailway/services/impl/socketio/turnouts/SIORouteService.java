@@ -1,16 +1,5 @@
 package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
-import io.socket.IOAcknowledge;
-import io.socket.IOCallback;
-import io.socket.SocketIOException;
-
-import java.util.Arrays;
-import java.util.SortedSet;
-
-import org.apache.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
@@ -19,6 +8,15 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.services.turnouts.RouteService;
 import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
+import io.socket.IOAcknowledge;
+import io.socket.IOCallback;
+import io.socket.SocketIOException;
+import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.SortedSet;
 
 public class SIORouteService implements RouteService, IOCallback {
 

@@ -1,13 +1,5 @@
 package ch.fork.AdHocRailway.ui;
 
-import java.io.IOException;
-
-import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceEvent;
-import javax.jmdns.ServiceInfo;
-
-import org.apache.log4j.Logger;
-
 import ch.fork.AdHocRailway.manager.impl.locomotives.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.turnouts.RouteManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.turnouts.TurnoutManagerImpl;
@@ -25,6 +17,12 @@ import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
+import org.apache.log4j.Logger;
+
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceEvent;
+import javax.jmdns.ServiceInfo;
+import java.io.IOException;
 
 public class PersistenceManager {
 

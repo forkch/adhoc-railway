@@ -1,19 +1,13 @@
 package ch.fork.AdHocRailway.ui.locomotives;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
+import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class LocomotiveImageHelper {

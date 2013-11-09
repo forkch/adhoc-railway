@@ -18,21 +18,6 @@
 
 package ch.fork.AdHocRailway.ui.routes;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.controllers.RouteChangeListener;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
@@ -42,6 +27,12 @@ import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteHelper;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 

@@ -18,13 +18,9 @@
 
 package ch.fork.AdHocRailway.ui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseListener;
-
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 public class WidgetTab extends JPanel {
 	private static final long serialVersionUID = -8940185953629421471L;

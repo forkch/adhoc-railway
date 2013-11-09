@@ -1,22 +1,20 @@
 package ch.fork.AdHocRailway.services.impl.socketio.locomotives;
 
-import io.socket.IOAcknowledge;
-import io.socket.IOCallback;
-import io.socket.SocketIOException;
-
-import java.util.Arrays;
-import java.util.SortedSet;
-
-import org.apache.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
+import io.socket.IOAcknowledge;
+import io.socket.IOCallback;
+import io.socket.SocketIOException;
+import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.SortedSet;
 
 public class SIOLocomotiveService implements LocomotiveService, IOCallback {
 

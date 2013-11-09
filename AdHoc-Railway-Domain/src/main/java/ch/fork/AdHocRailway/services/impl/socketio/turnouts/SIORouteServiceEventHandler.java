@@ -1,17 +1,16 @@
 package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
+import ch.fork.AdHocRailway.domain.turnouts.Route;
+import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
+import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ch.fork.AdHocRailway.domain.turnouts.Route;
-import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
-import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class SIORouteServiceEventHandler {
 

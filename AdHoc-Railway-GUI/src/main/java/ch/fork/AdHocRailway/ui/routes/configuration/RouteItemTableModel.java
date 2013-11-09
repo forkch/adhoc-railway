@@ -1,10 +1,9 @@
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
-import javax.swing.ListModel;
-
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
-
 import com.jgoodies.binding.adapter.AbstractTableAdapter;
+
+import javax.swing.*;
 
 public class RouteItemTableModel extends AbstractTableAdapter<RouteItem> {
 

@@ -18,15 +18,6 @@
 
 package ch.fork.AdHocRailway.manager.impl.locomotives;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
-
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -35,6 +26,9 @@ import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
+import org.apache.log4j.Logger;
+
+import java.util.*;
 
 public class LocomotiveManagerImpl implements LocomotiveManager,
 		LocomotiveServiceListener {

@@ -18,16 +18,9 @@
 
 package ch.fork.AdHocRailway.ui;
 
-import java.awt.AWTEvent;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.RenderingHints;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
-
-import javax.swing.JPanel;
 
 public class Segment7 extends JPanel {
 	/**

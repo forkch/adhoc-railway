@@ -1,17 +1,16 @@
 package ch.fork.AdHocRailway.controllers.impl.srcp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import de.dermoba.srcp.model.locomotives.DoubleMMDigitalLocomotive;
 import de.dermoba.srcp.model.locomotives.MMDeltaLocomotive;
 import de.dermoba.srcp.model.locomotives.MMDigitalLocomotive;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotive;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SRCPLocomotiveControlAdapterTest {
 

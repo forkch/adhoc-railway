@@ -18,13 +18,13 @@
 
 package ch.fork.AdHocRailway.manager.turnouts;
 
-import java.util.List;
-import java.util.SortedSet;
-
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
+
+import java.util.List;
+import java.util.SortedSet;
 
 public interface TurnoutManager {
 

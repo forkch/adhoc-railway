@@ -18,18 +18,15 @@
 
 package ch.fork.AdHocRailway.ui.turnouts;
 
-import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JPanel;
-
-import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
+import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
 
 public class TurnoutCanvas extends JPanel {
 	/**
