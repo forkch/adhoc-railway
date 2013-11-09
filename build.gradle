@@ -1,0 +1,41 @@
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'maven'
+    apply plugin: 'idea'
+    group = 'ch.fork.adhocrailway'
+    version = '2.0'
+
+    configurations {
+        compileOnly
+    }
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    //Include compileOnly for compilation
+    sourceSets.main.compileClasspath += configurations.compileOnly
+
+    // optional: if using 'eclipse' plugin
+    eclipse {
+        classpath {
+            plusConfigurations += configurations.compileOnly
+        }
+    }
+
+}
+
+project(':AdHoc-Railway-Domain') {
+}
+
+project(':AdHoc-Railway-GUI') {
+    dependencies {
+        compile project(':AdHoc-Railway-Domain')
+    }
+
+}
+task wrapper(type: Wrapper) {
+}
