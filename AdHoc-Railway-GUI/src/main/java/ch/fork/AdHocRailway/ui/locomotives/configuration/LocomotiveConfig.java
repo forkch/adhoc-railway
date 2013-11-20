@@ -503,9 +503,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 		editor.getTextField().setBackground(color);
 	}
 
-	/**
-	 * 
-	 */
 	public void chooseLocoImage() {
 		final JFileChooser chooser = new JFileChooser("locoimages");
 

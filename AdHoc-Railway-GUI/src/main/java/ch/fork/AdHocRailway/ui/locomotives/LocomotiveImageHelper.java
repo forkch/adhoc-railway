@@ -15,7 +15,7 @@ public class LocomotiveImageHelper {
 			.getLogger(LocomotiveImageHelper.class);
 	private static Map<String, String> imageToPathMap = new HashMap<String, String>();
 
-	private static final String BASE_PATH = "src/main/resources/locoimages";
+	private static final String BASE_PATH = "locoimages";
 
 	static {
 
@@ -51,12 +51,8 @@ public class LocomotiveImageHelper {
 				imageToPathMap = (Map<String, String>) ois.readObject();
 				ois.close();
 			}
-		} catch (final IOException e) {
-			e.printStackTrace();
-		} catch (final InterruptedException e) {
-			e.printStackTrace();
-		} catch (final ClassNotFoundException e) {
-			e.printStackTrace();
+		} catch (final Exception e) {
+			lockFile.delete();
 		}
 	}
 

@@ -46,7 +46,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 	private JLabel numberLabel;
 	private JLabel orientationLabel;
 	private final boolean testMode;
-	private final RouteController routeControl;
 	private final RouteContext ctx;
 
 	public RouteWidget(final RouteContext ctx, final Route route,
@@ -54,7 +53,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		this.ctx = ctx;
 		this.route = route;
 		this.testMode = testMode;
-		routeControl = ctx.getRouteControl();
+		final RouteController routeControl = ctx.getRouteControl();
 		initGUI();
 		routeControl.addRouteChangeListener(route, this);
 		updateRoute();
@@ -121,9 +120,10 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 			try {
 				if (e.getClickCount() == 1
 						&& e.getButton() == MouseEvent.BUTTON1) {
-					if (routeControl.isRouting(route)) {
+					if (route.isRouting()) {
 						return;
 					}
+					final RouteController routeControl = ctx.getRouteControl();
 					if (!testMode) {
 						routeControl.toggle(route);
 					} else {
@@ -142,6 +142,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		}
 
 		private void displayRouteConfig() {
+			final RouteController routeControl = ctx.getRouteControl();
 			routeControl.removeRouteChangeListener(route, RouteWidget.this);
 			new RouteConfig(ctx.getMainFrame(), ctx, route,
 					route.getRouteGroup());
@@ -158,7 +159,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 				@Override
 				public void run() {
-					if (routeControl.isRouteEnabled(route)) {
+					if (route.isRouting()) {
 						iconLabel.setIcon(routeStartIcon);
 						routingProgress.setValue(routingProgress.getMaximum());
 					} else {

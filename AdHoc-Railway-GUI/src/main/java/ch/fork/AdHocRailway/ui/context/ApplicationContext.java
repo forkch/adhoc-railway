@@ -39,9 +39,9 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 	private SRCPSession session;
 
 	private boolean isEditingMode;
-    private RailwayDeviceManager railwayDeviceManager;
+	private RailwayDeviceManager railwayDeviceManager;
 
-    public Preferences getPreferences() {
+	public Preferences getPreferences() {
 		return preferences;
 	}
 
@@ -197,11 +197,12 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		this.mainApp = mainApp;
 	}
 
-    public void setRailwayDeviceManager(RailwayDeviceManager railwayDeviceManager) {
-        this.railwayDeviceManager = railwayDeviceManager;
-    }
+	public void setRailwayDeviceManager(
+			final RailwayDeviceManager railwayDeviceManager) {
+		this.railwayDeviceManager = railwayDeviceManager;
+	}
 
-    public RailwayDeviceManager getRailwayDeviceManager() {
-        return railwayDeviceManager;
-    }
+	public RailwayDeviceManager getRailwayDeviceManager() {
+		return railwayDeviceManager;
+	}
 }

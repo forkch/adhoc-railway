@@ -58,8 +58,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
 	private final TurnoutManager turnoutManager;
 
-	private final TurnoutController turnoutControl;
-
 	private final TurnoutContext ctx;
 
 	public TurnoutWidget(final TurnoutContext ctx, final Turnout turnout,
@@ -74,7 +72,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		this.forHistory = forHistory;
 		this.testMode = testMode;
 
-		turnoutControl = ctx.getTurnoutControl();
+		final TurnoutController turnoutControl = ctx.getTurnoutControl();
 		turnoutManager = ctx.getTurnoutManager();
 		widgetEnabled = true;
 
@@ -108,6 +106,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	}
 
 	public void updateTurnout() {
+		final TurnoutController turnoutControl = ctx.getTurnoutControl();
 		turnoutControl.removeTurnoutChangeListener(this);
 
 		numberLabel.setText(Integer.toString(turnout.getNumber()));
@@ -116,7 +115,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 				.getTurnoutDescription(turnout);
 		setToolTipText(turnoutDescription);
 		turnoutCanvas.setToolTipText(turnoutDescription);
-		turnoutControl.addTurnoutChangeListener(turnout, this);
+		turnoutControl.addTurnoutChangeListener(this);
 	}
 
 	private class MouseAction extends MouseAdapter {
@@ -128,6 +127,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
 				try {
+					final TurnoutController turnoutControl = ctx.getTurnoutControl();
 					if (!testMode) {
 						turnoutControl.toggle(turnout);
 					} else {
@@ -150,14 +150,14 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 				return;
 			}
 
+			final TurnoutController turnoutControl = ctx.getTurnoutControl();
 			turnoutControl.removeTurnoutChangeListener(TurnoutWidget.this);
 			new TurnoutConfig(ctx.getMainFrame(), ctx, turnout,
 					turnout.getTurnoutGroup());
 			TurnoutHelper.validateTurnout(turnoutManager, turnout,
 					TurnoutWidget.this);
 			turnoutControl.addOrUpdateTurnout(turnout);
-			turnoutControl
-					.addTurnoutChangeListener(turnout, TurnoutWidget.this);
+			turnoutControl.addTurnoutChangeListener(TurnoutWidget.this);
 
 			turnoutChanged(turnout);
 		}
@@ -213,11 +213,12 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	public void setEnabled(final boolean enabled) {
 		super.setEnabled(enabled);
 
+		final TurnoutController turnoutControl = ctx.getTurnoutControl();
 		turnoutControl.removeTurnoutChangeListener(this);
 		if (!enabled) {
 			setBackground(new Color(255, 177, 177));
 		} else {
-			turnoutControl.addTurnoutChangeListener(turnout, this);
+			turnoutControl.addTurnoutChangeListener(this);
 		}
 		widgetEnabled = enabled;
 		turnoutCanvas.setTurnoutState(TurnoutState.UNDEF);

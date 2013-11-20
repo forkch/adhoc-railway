@@ -81,8 +81,6 @@ public class LocomotiveWidget extends JPanel implements
 
 	private final LocomotiveManager locomotiveManager;
 
-	private final LocomotiveController locomotiveControl;
-
 	private final LocomotiveGroup allLocomotivesGroup;
 
 	private JPanel functionsPanel;
@@ -99,7 +97,6 @@ public class LocomotiveWidget extends JPanel implements
 		this.frame = frame;
 
 		locomotiveManager = ctx.getLocomotiveManager();
-		locomotiveControl = ctx.getLocomotiveControl();
 
 		initGUI();
 		initKeyboardActions();
@@ -277,7 +274,8 @@ public class LocomotiveWidget extends JPanel implements
 		}
 		final int currentSpeed = myLocomotive.getCurrentSpeed();
 		final boolean[] functions = myLocomotive.getCurrentFunctions();
-
+		final LocomotiveController locomotiveControl = ctx
+				.getLocomotiveControl();
 		final boolean locked = locomotiveControl.isLocked(myLocomotive);
 
 		final float speedInPercent = ((float) currentSpeed)
@@ -342,6 +340,8 @@ public class LocomotiveWidget extends JPanel implements
 		if (myLocomotive == null) {
 			return true;
 		}
+		final LocomotiveController locomotiveControl = ctx
+				.getLocomotiveControl();
 		if (myLocomotive.getCurrentSpeed() == 0) {
 			if (locomotiveControl.isLocked(myLocomotive)) {
 				if (locomotiveControl.isLockedByMe(myLocomotive)) {
@@ -431,6 +431,8 @@ public class LocomotiveWidget extends JPanel implements
 		if (myLocomotive == null) {
 			return;
 		}
+		final LocomotiveController locomotiveControl = ctx
+				.getLocomotiveControl();
 		locomotiveControl.removeLocomotiveChangeListener(myLocomotive, this);
 		locomotiveControl.deactivateLoco(myLocomotive);
 		myLocomotive = null;
@@ -479,6 +481,8 @@ public class LocomotiveWidget extends JPanel implements
 			if (e.getStateChange() == ItemEvent.DESELECTED) {
 				return;
 			}
+			final LocomotiveController locomotiveControl = ctx
+					.getLocomotiveControl();
 			try {
 				if (locomotiveComboBox.getItemCount() == 0
 						|| locomotiveComboBox.getSelectedIndex() == -1) {
@@ -546,6 +550,8 @@ public class LocomotiveWidget extends JPanel implements
 				return;
 			}
 			try {
+				final LocomotiveController locomotiveControl = ctx
+						.getLocomotiveControl();
 				doPerformAction(locomotiveControl, myLocomotive);
 				if (time == 0) {
 					time = System.currentTimeMillis();
@@ -561,8 +567,8 @@ public class LocomotiveWidget extends JPanel implements
 		}
 
 		protected abstract void doPerformAction(
-				LocomotiveController locomotiveControl, Locomotive myLocomotive)
-				throws LocomotiveException;
+				final LocomotiveController locomotiveControl,
+				final Locomotive myLocomotive) throws LocomotiveException;
 	}
 
 	private class LocomotiveFunctionAction extends LocomotiveControlAction {
@@ -665,6 +671,8 @@ public class LocomotiveWidget extends JPanel implements
 				return;
 			}
 			try {
+				final LocomotiveController locomotiveControl = ctx
+						.getLocomotiveControl();
 				locomotiveControl.setSpeed(myLocomotive, 0,
 						myLocomotive.getCurrentFunctions());
 				updateWidget();
@@ -688,6 +696,8 @@ public class LocomotiveWidget extends JPanel implements
 				return;
 			}
 			try {
+				final LocomotiveController locomotiveControl = ctx
+						.getLocomotiveControl();
 				if (Preferences.getInstance().getBooleanValue(
 						PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
 						&& myLocomotive.getCurrentSpeed() != 0) {
@@ -717,6 +727,8 @@ public class LocomotiveWidget extends JPanel implements
 			}
 			final boolean lockButtonState = lockButton.isSelected();
 			try {
+				final LocomotiveController locomotiveControl = ctx
+						.getLocomotiveControl();
 				if (lockButtonState) {
 					final boolean succeeded = locomotiveControl
 							.acquireLock(myLocomotive);
@@ -752,6 +764,8 @@ public class LocomotiveWidget extends JPanel implements
 					if (!isFree()) {
 						return;
 					}
+					final LocomotiveController locomotiveControl = ctx
+							.getLocomotiveControl();
 
 					locomotiveControl.removeLocomotiveChangeListener(
 							myLocomotive, LocomotiveWidget.this);
