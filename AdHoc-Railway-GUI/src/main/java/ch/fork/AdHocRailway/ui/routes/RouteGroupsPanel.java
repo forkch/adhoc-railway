@@ -25,7 +25,6 @@ public class RouteGroupsPanel extends JTabbedPane implements
 	private final Map<RouteGroup, RouteGroupTab> routeGroupToRouteGroupTab = new HashMap<RouteGroup, RouteGroupTab>();
 
 	private final RouteManager routePersistence;
-	private final RouteController routeControl;
 
 	private final RouteContext ctx;
 
@@ -33,7 +32,6 @@ public class RouteGroupsPanel extends JTabbedPane implements
 		super(tabPlacement);
 		this.ctx = ctx;
 		routePersistence = ctx.getRouteManager();
-		routeControl = ctx.getRouteControl();
 		routePersistence.addRouteManagerListener(this);
 
 	}
@@ -45,6 +43,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 		int i = 1;
 
+		final RouteController routeControl = ctx.getRouteControl();
 		routeControl.removeAllRouteChangeListeners();
 
 		for (final RouteGroup routeGroup : routeGroups) {

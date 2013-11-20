@@ -71,8 +71,6 @@ public class KeyControl extends SimpleInternalFrame {
 	private JScrollPane historyPane;
 
 	private ThreeDigitDisplay digitDisplay;
-	private final RouteController routeControl;
-	private final TurnoutController turnoutControl;
 	private final TurnoutManager turnoutManager;
 	private final ApplicationContext ctx;
 
@@ -80,8 +78,6 @@ public class KeyControl extends SimpleInternalFrame {
 		super("Track Control / History");
 		this.ctx = ctx;
 
-		routeControl = ctx.getRouteControl();
-		turnoutControl = ctx.getTurnoutControl();
 		turnoutManager = ctx.getTurnoutManager();
 
 		enteredNumberKeys = new StringBuffer();
@@ -239,12 +235,17 @@ public class KeyControl extends SimpleInternalFrame {
 					if (historyStack.size() == 0) {
 						return;
 					}
+					final TurnoutController turnoutControl = ctx
+							.getTurnoutControl();
 					final Object obj = historyStack.removeFirst();
 					if (obj instanceof Turnout) {
 						final Turnout t = (Turnout) obj;
 						turnoutControl.setDefaultState(t);
 					} else if (obj instanceof Route) {
 						final Route r = (Route) obj;
+
+						final RouteController routeControl = ctx
+								.getRouteControl();
 						routeControl.disableRoute(r);
 					} else {
 						return;
@@ -281,6 +282,7 @@ public class KeyControl extends SimpleInternalFrame {
 				return;
 			}
 
+			final TurnoutController turnoutControl = ctx.getTurnoutControl();
 			if (this instanceof CurvedLeftAction) {
 				turnoutControl.setCurvedLeft(searchedTurnout);
 			} else if (this instanceof StraightAction) {
@@ -301,6 +303,7 @@ public class KeyControl extends SimpleInternalFrame {
 			if (searchedRoute == null) {
 				return;
 			}
+			final RouteController routeControl = ctx.getRouteControl();
 			if (this instanceof EnableRouteAction) {
 				routeControl.enableRoute(searchedRoute);
 			} else if (this instanceof DisableRouteAction) {

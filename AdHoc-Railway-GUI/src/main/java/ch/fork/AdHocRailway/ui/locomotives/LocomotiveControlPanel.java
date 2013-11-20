@@ -46,14 +46,12 @@ public class LocomotiveControlPanel extends JPanel implements
 	private static final long serialVersionUID = -149795300932888094L;
 	private final List<LocomotiveWidget> locomotiveWidgets;
 	private JPanel controlPanel;
-	private final LocomotiveController locomotiveControl;
 	private final LocomotiveContext ctx;
 
 	public LocomotiveControlPanel(final LocomotiveContext ctx) {
 		super();
 		this.ctx = ctx;
 
-		locomotiveControl = ctx.getLocomotiveControl();
 		locomotiveWidgets = new ArrayList<LocomotiveWidget>();
 		initGUI();
 	}
@@ -79,6 +77,7 @@ public class LocomotiveControlPanel extends JPanel implements
 	}
 
 	public void update() {
+		final LocomotiveController locomotiveControl = ctx.getLocomotiveControl();
 		locomotiveControl.removeAllLocomotiveChangeListener();
 
 		controlPanel.removeAll();
@@ -117,6 +116,8 @@ public class LocomotiveControlPanel extends JPanel implements
 					if (myLocomotive == null) {
 						continue;
 					}
+					final LocomotiveController locomotiveControl = ctx
+							.getLocomotiveControl();
 					if (locomotiveControl.isLocked(myLocomotive)
 							&& !locomotiveControl.isLockedByMe(myLocomotive)) {
 						continue;

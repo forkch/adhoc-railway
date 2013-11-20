@@ -72,7 +72,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		this.forHistory = forHistory;
 		this.testMode = testMode;
 
-		final TurnoutController turnoutControl = ctx.getTurnoutControl();
 		turnoutManager = ctx.getTurnoutManager();
 		widgetEnabled = true;
 
@@ -127,7 +126,8 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
 				try {
-					final TurnoutController turnoutControl = ctx.getTurnoutControl();
+					final TurnoutController turnoutControl = ctx
+							.getTurnoutControl();
 					if (!testMode) {
 						turnoutControl.toggle(turnout);
 					} else {

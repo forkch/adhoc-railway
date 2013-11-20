@@ -42,14 +42,11 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	private final TurnoutContext ctx;
 
-	private final TurnoutController turnoutControl;
-
 	public TurnoutGroupsPanel(final TurnoutContext turnoutCtx,
 			final int tabPlacement) {
 		super(tabPlacement);
 		this.ctx = turnoutCtx;
 		turnoutPersistence = turnoutCtx.getTurnoutManager();
-		turnoutControl = turnoutCtx.getTurnoutControl();
 		turnoutPersistence.addTurnoutManagerListener(this);
 
 		initToolBar();
@@ -69,6 +66,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 		turnoutGroupToTurnoutGroupTab.clear();
 		int i = 1;
 
+		final TurnoutController turnoutControl = ctx.getTurnoutControl();
 		turnoutControl.removeAllTurnoutChangeListener();
 
 		for (final TurnoutGroup turnoutGroup : turnoutGroups) {
@@ -111,6 +109,8 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 			@Override
 			public void run() {
 				try {
+					final TurnoutController turnoutControl = ctx
+							.getTurnoutControl();
 					final int delay = Preferences.getInstance().getIntValue(
 							PreferencesKeys.ROUTING_DELAY);
 					for (final Turnout t : turnoutPersistence.getAllTurnouts()) {

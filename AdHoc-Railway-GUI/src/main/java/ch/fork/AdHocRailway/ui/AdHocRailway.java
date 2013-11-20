@@ -133,12 +133,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	private PersistenceManager persistenceManager;
 
 	private RailwayDeviceManager railwayDeviceManager;
-    private JButton preferencesToolBarButton;
-    private JMenuItem preferencesItem;
+	private JButton preferencesToolBarButton;
+	private JMenuItem preferencesItem;
 
-    public static void setupGlobalExceptionHandling() {
+	public static void setupGlobalExceptionHandling() {
 
-    }
+	}
 
 	public AdHocRailway() {
 		this(null);
@@ -174,8 +174,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			appContext.setPreferences(preferences);
 
 			railwayDeviceManager = new RailwayDeviceManager(appContext);
-			railwayDeviceManager.loadControlLayer();
-            appContext.setRailwayDeviceManager(railwayDeviceManager);
+			appContext.setRailwayDeviceManager(railwayDeviceManager);
 
 			persistenceManager = new PersistenceManager(appContext);
 			persistenceManager.loadPersistenceLayer();
@@ -207,12 +206,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 			initProceeded("AdHoc-Railway started");
 			updateCommandHistory("AdHoc-Railway started");
-            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                @Override
-                public void uncaughtException(Thread t, Throwable e) {
-                    handleException(e);
-                }
-            });
+			Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+				@Override
+				public void uncaughtException(final Thread t, final Throwable e) {
+					handleException(e);
+				}
+			});
 			setVisible(true);
 		} catch (final UnsupportedLookAndFeelException e) {
 			handleException(e);
@@ -299,10 +298,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		daemonConnectItem.setEnabled(!connected);
 		daemonDisconnectItem.setEnabled(connected);
 		connectToolBarButton.setEnabled(!connected);
-        preferencesItem.setEnabled(!connected);
-        preferencesToolBarButton.setEnabled(!connected);
-        disconnectToolBarButton.setEnabled(connected);
-        powerControlPanel.setConnected(connected);
+		preferencesItem.setEnabled(!connected);
+		preferencesToolBarButton.setEnabled(!connected);
+		disconnectToolBarButton.setEnabled(connected);
+		powerControlPanel.setConnected(connected);
 	}
 
 	private void autoConnect() {
@@ -506,11 +505,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		switchesItem = new JMenuItem(new TurnoutAction());
 		routesItem = new JMenuItem(new RoutesAction());
 		locomotivesItem = new JMenuItem(new LocomotivesAction());
-        preferencesItem = new JMenuItem(new PreferencesAction());
+		preferencesItem = new JMenuItem(new PreferencesAction());
 		editMenu.setMnemonic(KeyEvent.VK_E);
 		switchesItem.setMnemonic(KeyEvent.VK_S);
 		switchesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-                ActionEvent.ALT_MASK));
+				ActionEvent.ALT_MASK));
 		routesItem.setMnemonic(KeyEvent.VK_R);
 		routesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
 				ActionEvent.ALT_MASK));
@@ -519,7 +518,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				ActionEvent.ALT_MASK));
 		preferencesItem.setMnemonic(KeyEvent.VK_P);
 		preferencesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
-                ActionEvent.ALT_MASK));
+				ActionEvent.ALT_MASK));
 		editMenu.add(enableEditing);
 		editMenu.add(new JSeparator());
 		editMenu.add(switchesItem);
@@ -604,8 +603,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		routesToolBarButton = new SmallToolbarButton(new RoutesAction());
 		locomotivesToolBarButton = new SmallToolbarButton(
 				new LocomotivesAction());
-        preferencesToolBarButton = new SmallToolbarButton(
-                new PreferencesAction());
+		preferencesToolBarButton = new SmallToolbarButton(
+				new PreferencesAction());
 
 		digitalToolBar.add(turnoutsToolBarButton);
 		digitalToolBar.add(routesToolBarButton);

@@ -49,11 +49,6 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		this.preferences = preferences;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.TurnoutContext#getTurnoutControl()
-	 */
 	@Override
 	public TurnoutController getTurnoutControl() {
 		return turnoutControl;
@@ -63,11 +58,6 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		this.turnoutControl = turnoutControl;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.TurnoutContext#getTurnoutManager()
-	 */
 	@Override
 	public TurnoutManager getTurnoutManager() {
 		return turnoutManager;
@@ -77,11 +67,6 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		this.turnoutManager = turnoutPersistence;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.RouteContext#getRouteControl()
-	 */
 	@Override
 	public RouteController getRouteControl() {
 		return routeControl;
@@ -91,11 +76,6 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		this.routeControl = routeControl;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.RouteContext#getRouteManager()
-	 */
 	@Override
 	public RouteManager getRouteManager() {
 		return routeManager;
@@ -105,11 +85,6 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		this.routeManager = routePersistence;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.LocomotiveContext#getLocomotiveControl()
-	 */
 	@Override
 	public LocomotiveController getLocomotiveControl() {
 		return locomotiveControl;
@@ -120,11 +95,6 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		this.locomotiveControl = locomotiveControl;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.fork.AdHocRailway.domain.LocomotiveContext#getLocomotiveManager()
-	 */
 	@Override
 	public LocomotiveManager getLocomotiveManager() {
 		return locomotiveManager;
