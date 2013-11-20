@@ -19,7 +19,7 @@
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.ui.ImageTools;
+import ch.fork.AdHocRailway.ui.tools.ImageTools;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

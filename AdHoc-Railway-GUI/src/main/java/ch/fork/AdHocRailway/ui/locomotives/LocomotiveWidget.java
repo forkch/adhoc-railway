@@ -29,10 +29,10 @@ import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.EditingModeListener;
-import ch.fork.AdHocRailway.ui.ImageTools;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
+import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 
-import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
+import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIcon;
 
 public class LocomotiveWidget extends JPanel implements
 		LocomotiveChangeListener, LocomotiveManagerListener,

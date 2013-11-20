@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.ui;
+package ch.fork.AdHocRailway.ui.widgets;
 
 
 import java.awt.*;

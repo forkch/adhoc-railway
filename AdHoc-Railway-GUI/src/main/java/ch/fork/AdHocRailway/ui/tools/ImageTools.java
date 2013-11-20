@@ -16,7 +16,7 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.ui;
+package ch.fork.AdHocRailway.ui.tools;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;

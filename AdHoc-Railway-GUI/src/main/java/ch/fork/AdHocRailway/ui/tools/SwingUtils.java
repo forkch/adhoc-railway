@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.ui;
+package ch.fork.AdHocRailway.ui.tools;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

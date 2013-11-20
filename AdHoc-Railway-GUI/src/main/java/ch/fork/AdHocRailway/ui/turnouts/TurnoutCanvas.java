@@ -26,7 +26,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-import static ch.fork.AdHocRailway.ui.ImageTools.createImageIcon;
+import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIcon;
 
 public class TurnoutCanvas extends JPanel {
 	/**

@@ -27,6 +27,9 @@ package ch.fork.AdHocRailway.ui;
 
 import java.awt.*;
 
+import ch.fork.AdHocRailway.ui.widgets.Segment7;
+
+
 /**
  * @author Benjamin Mueller <benjamin.b.mueller@siemens.com>
  * 

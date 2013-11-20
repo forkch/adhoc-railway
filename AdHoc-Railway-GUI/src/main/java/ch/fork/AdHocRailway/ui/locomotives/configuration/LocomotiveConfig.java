@@ -25,6 +25,11 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.ui.*;
+import ch.fork.AdHocRailway.ui.tools.ImageTools;
+import ch.fork.AdHocRailway.ui.tools.SwingUtils;
+import ch.fork.AdHocRailway.ui.widgets.ErrorPanel;
+import ch.fork.AdHocRailway.ui.widgets.ImagePreviewPanel;
+
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.SpinnerAdapterFactory;
@@ -39,6 +44,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import de.dermoba.srcp.model.turnouts.MMTurnout;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
+
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;

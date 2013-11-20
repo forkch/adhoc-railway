@@ -46,7 +46,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-package ch.fork.AdHocRailway.ui;
+package ch.fork.AdHocRailway.ui.widgets;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;

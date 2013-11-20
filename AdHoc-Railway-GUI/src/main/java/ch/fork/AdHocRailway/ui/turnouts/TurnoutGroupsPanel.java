@@ -10,17 +10,19 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.EditingModeListener;
-import ch.fork.AdHocRailway.ui.SmallToolbarButton;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
+import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 
 import javax.swing.*;
+
+
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 
-import static ch.fork.AdHocRailway.ui.ImageTools.createImageIconFromIconSet;
+import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
 
 public class TurnoutGroupsPanel extends JTabbedPane implements
 		TurnoutManagerListener, EditingModeListener {

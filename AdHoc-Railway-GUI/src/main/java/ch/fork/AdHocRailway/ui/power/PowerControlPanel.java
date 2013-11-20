@@ -8,12 +8,13 @@ import ch.fork.AdHocRailway.domain.power.PowerSupply;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.ImageTools;
-import ch.fork.AdHocRailway.ui.SimpleInternalFrame;
 import ch.fork.AdHocRailway.ui.context.PowerContext;
+import ch.fork.AdHocRailway.ui.tools.ImageTools;
+import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
 import de.dermoba.srcp.model.power.SRCPPowerSupply;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
+
 
 import javax.swing.*;
 import java.awt.*;

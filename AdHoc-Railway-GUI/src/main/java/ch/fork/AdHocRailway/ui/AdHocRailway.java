@@ -35,11 +35,17 @@ import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfiguration
 import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
+import ch.fork.AdHocRailway.ui.widgets.ErrorPanel;
+import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
+import ch.fork.AdHocRailway.ui.widgets.SplashWindow;
+import ch.fork.AdHocRailway.ui.widgets.TrackControlPanel;
+
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.*;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,7 +63,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-import static ch.fork.AdHocRailway.ui.ImageTools.createImageIconFromIconSet;
+import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
 
 public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		PreferencesKeys, EditingModeListener {
@@ -125,16 +131,15 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	private JButton routesToolBarButton;
 
 	private JButton locomotivesToolBarButton;
+	private JButton preferencesToolBarButton;
+	private JMenuItem preferencesItem;
 
 	private ApplicationContext appContext;
 
 	private Preferences preferences;
 
 	private PersistenceManager persistenceManager;
-
 	private RailwayDeviceManager railwayDeviceManager;
-	private JButton preferencesToolBarButton;
-	private JMenuItem preferencesItem;
 
 	public static void setupGlobalExceptionHandling() {
 
@@ -186,18 +191,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			LOGGER.info("Finished Creating GUI");
 			splash.setVisible(false);
 
-			if (preferences.getBooleanValue(OPEN_LAST_FILE)) {
-				final String lastFile = preferences
-						.getStringValue(LAST_OPENED_FILE);
-				if (lastFile != null
-						&& !lastFile.equals("")
-						&& !preferences
-								.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER)) {
+			loadLastFile();
 
-					new OpenFileAction().openFile(new File(preferences
-							.getStringValue(LAST_OPENED_FILE)));
-				}
-			}
 			updateGUI();
 			autoConnect();
 
@@ -231,7 +226,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	@Override
 	public void handleException(final Throwable ex) {
 		handleException(null, ex);
-
 	}
 
 	@Override
@@ -302,6 +296,21 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		preferencesToolBarButton.setEnabled(!connected);
 		disconnectToolBarButton.setEnabled(connected);
 		powerControlPanel.setConnected(connected);
+	}
+
+	private void loadLastFile() {
+		if (preferences.getBooleanValue(OPEN_LAST_FILE)) {
+			final String lastFile = preferences
+					.getStringValue(LAST_OPENED_FILE);
+			if (lastFile != null
+					&& !lastFile.equals("")
+					&& !preferences
+							.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER)) {
+	
+				new OpenFileAction().openFile(new File(preferences
+						.getStringValue(LAST_OPENED_FILE)));
+			}
+		}
 	}
 
 	private void autoConnect() {
