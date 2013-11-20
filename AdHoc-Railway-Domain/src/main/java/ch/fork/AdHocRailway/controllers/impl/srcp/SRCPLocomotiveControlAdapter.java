@@ -6,6 +6,7 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveHelper;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
@@ -28,29 +29,6 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
 		locomotiveControl.addLocomotiveChangeListener(this, this);
 		reloadConfiguration();
-	}
-
-	@Override
-	public void decreaseSpeed(final Locomotive locomotive)
-			throws LocomotiveException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
-		try {
-			locomotiveControl.decreaseSpeed(sLocomotive);
-		} catch (final SRCPModelException e) {
-			throw new LocomotiveException("Locomotive Error", e);
-		}
-
-	}
-
-	@Override
-	public void increaseSpeed(final Locomotive locomotive)
-			throws LocomotiveException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
-		try {
-			locomotiveControl.increaseSpeed(sLocomotive);
-		} catch (final SRCPModelException e) {
-			throw new LocomotiveException("Locomotive Error", e);
-		}
 	}
 
 	@Override
@@ -83,6 +61,8 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.setSpeed(sLocomotive, speed, functions);
+			locomotive.setCurrentSpeed(speed);
+			locomotive.setCurrentFunctions(functions);
 		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}
@@ -100,6 +80,8 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 					locomotive, emergencyStopFunction);
 			locomotiveControl.emergencyStop(sLocomotive,
 					srcpEmergencyStopFunction);
+			locomotive.setCurrentSpeed(0);
+			locomotive.setCurrentFunctions(locomotive.getCurrentFunctions());
 		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}
@@ -111,6 +93,8 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.toggleDirection(sLocomotive);
+			LocomotiveHelper.toggleDirection(locomotive);
+
 		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}
@@ -245,7 +229,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 		informListeners(SRCPLocomotiveLocomotiveMap.get(changedLocomotive));
 	}
 
-	public SRCPLocomotive getSrcpLocomotive(final Locomotive locomotive) {
+	SRCPLocomotive getSrcpLocomotive(final Locomotive locomotive) {
 		return locomotiveSRCPLocomotiveMap.get(locomotive);
 	}
 
@@ -277,6 +261,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.setFunctions(sLocomotive, functions);
+			locomotive.setCurrentFunctions(functions);
 		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}

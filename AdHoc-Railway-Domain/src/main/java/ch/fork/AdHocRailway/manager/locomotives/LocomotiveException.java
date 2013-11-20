@@ -18,7 +18,7 @@
 
 package ch.fork.AdHocRailway.manager.locomotives;
 
-public class LocomotiveException extends Exception {
+public class LocomotiveException extends RuntimeException {
 
 	/**
 	 * 
@@ -29,17 +29,17 @@ public class LocomotiveException extends Exception {
 		// TODO Auto-generated constructor stub
 	}
 
-	public LocomotiveException(String message) {
+	public LocomotiveException(final String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public LocomotiveException(Throwable cause) {
+	public LocomotiveException(final Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public LocomotiveException(String message, Throwable cause) {
+	public LocomotiveException(final String message, final Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}

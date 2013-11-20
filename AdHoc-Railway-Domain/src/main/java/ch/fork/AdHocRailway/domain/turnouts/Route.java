@@ -50,6 +50,9 @@ public class Route extends AbstractItem implements java.io.Serializable,
 	public static final String PROPERTYNAME_ROUTE_GROUP = "routeGroup";
 	public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
 
+	private transient boolean enabled = false;
+	private transient boolean routing = false;
+
 	public Route() {
 	}
 
@@ -175,5 +178,21 @@ public class Route extends AbstractItem implements java.io.Serializable,
 
 	public void removePropertyChangeListener(final PropertyChangeListener x) {
 		changeSupport.removePropertyChangeListener(x);
+	}
+
+	public boolean isRouting() {
+		return routing;
+	}
+
+	public void setRouting(final boolean routing) {
+		this.routing = routing;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(final boolean enabled) {
+		this.enabled = enabled;
 	}
 }

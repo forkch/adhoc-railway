@@ -96,6 +96,24 @@ public abstract class LocomotiveController implements
 		}
 	}
 
+	public void increaseSpeed(final Locomotive locomotive)
+			throws LocomotiveException {
+		if (locomotive.getCurrentSpeed() < locomotive.getType()
+				.getDrivingSteps()) {
+			setSpeed(locomotive, locomotive.getCurrentSpeed() + 1,
+					locomotive.getCurrentFunctions());
+		}
+	}
+
+	public void decreaseSpeed(final Locomotive locomotive)
+			throws LocomotiveException {
+		if (locomotive.getCurrentSpeed() > 0) {
+			setSpeed(locomotive, locomotive.getCurrentSpeed() - 1,
+					locomotive.getCurrentFunctions());
+		}
+
+	}
+
 	/**
 	 * For SimulatedMFX Locomotives the higher functions of the second address
 	 * need to be offsetted by 1 since there is no "F0" on the second address
@@ -143,7 +161,7 @@ public abstract class LocomotiveController implements
 	 * @param locomotive
 	 * @throws LocomotiveException
 	 */
-	public abstract void toggleDirection(Locomotive locomotive)
+	public abstract void toggleDirection(final Locomotive locomotive)
 			throws LocomotiveException;
 
 	/**
@@ -153,34 +171,16 @@ public abstract class LocomotiveController implements
 	 * @param speed
 	 * @throws LocomotiveException
 	 */
-	public abstract void setSpeed(Locomotive locomotive, int speed,
-			boolean[] functions) throws LocomotiveException;
+	public abstract void setSpeed(final Locomotive locomotive, final int speed,
+			final boolean[] functions) throws LocomotiveException;
 
-	/**
-	 * Increases the speed of the Locomotive.
-	 * 
-	 * @param locomotive
-	 * @throws LocomotiveException
-	 */
-	public abstract void increaseSpeed(Locomotive locomotive)
+	public abstract void setFunction(final Locomotive locomotive, final int functionNumber,
+			final boolean state, final int deactivationDelay) throws LocomotiveException;
+
+	public abstract void emergencyStop(final Locomotive myLocomotive)
 			throws LocomotiveException;
 
-	/**
-	 * Decreases the speed of the Locomotive.
-	 * 
-	 * @param locomotive
-	 * @throws LocomotiveException
-	 */
-	public abstract void decreaseSpeed(Locomotive locomotive)
-			throws LocomotiveException;
-
-	public abstract void setFunction(Locomotive locomotive, int functionNumber,
-			boolean state, int deactivationDelay) throws LocomotiveException;
-
-	public abstract void emergencyStop(Locomotive myLocomotive)
-			throws LocomotiveException;
-
-	public abstract void addOrUpdateLocomotive(Locomotive locomotive);
+	public abstract void addOrUpdateLocomotive(final Locomotive locomotive);
 
 	public static LocomotiveController createLocomotiveController(
 			final RailwayDevice railwayDevice) {

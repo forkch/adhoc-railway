@@ -208,11 +208,6 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 	}
 
 	private void informListeners(final SRCPTurnout changedTurnout) {
-		// List<TurnoutChangeListener> ll = listeners.get(changedTurnout);
-		// if (ll == null)
-		// its a sub-turnout of a threeway turnout
-		// return;
-
 		Turnout turnout = SRCPTurnoutsTurnoutsMap.get(changedTurnout);
 		if (turnout == null) {
 			turnout = turnoutTemp;

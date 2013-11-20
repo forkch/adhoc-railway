@@ -1,10 +1,19 @@
 package ch.fork.AdHocRailway.manager.locomotives;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import org.apache.commons.lang3.StringUtils;
 
 public class LocomotiveHelper {
+
+	public static void toggleDirection(final Locomotive locomotive) {
+		if (locomotive.getCurrentDirection() == LocomotiveDirection.FORWARD) {
+			locomotive.setCurrentDirection(LocomotiveDirection.REVERSE);
+		} else {
+			locomotive.setCurrentDirection(LocomotiveDirection.FORWARD);
+		}
+	}
 
 	public static String getLocomotiveDescription(final Locomotive locomotive) {
 		if (locomotive == null) {

@@ -121,7 +121,7 @@ public class BrainPowerControlAdapterTest {
 	}
 
 	@Test(expected = PowerException.class)
-	public void turn_booster_0_off_exception() throws IOException {
+	public void turn_booster_0_off_exception() {
 		final PowerSupply powerSupply = new PowerSupply(1);
 		givenTestee(powerSupply);
 
@@ -213,14 +213,14 @@ public class BrainPowerControlAdapterTest {
 	}
 
 	private void whenBoosterPowerThrowsException(final Booster booster,
-			final String onOff) throws IOException {
-		Mockito.doThrow(new IOException()).when(brainController)
+			final String onOff) throws PowerException {
+		Mockito.doThrow(new PowerException()).when(brainController)
 				.write(onOff + " " + booster.getBoosterNumber());
 	}
 
-	private void whenAllBoosterPowerThrowsException(final String onOff)
-			throws IOException {
-		Mockito.doThrow(new IOException()).when(brainController).write(onOff);
+	private void whenAllBoosterPowerThrowsException(final String onOff) {
+		Mockito.doThrow(new PowerException()).when(brainController)
+				.write(onOff);
 	}
 
 	private void whenTurningBoosterOn(final Booster booster) {
@@ -242,13 +242,6 @@ public class BrainPowerControlAdapterTest {
 	private void assertBoosterPowerOnBrainCall(final Booster booster)
 			throws IOException {
 		assertPowerBrainCall(booster, "XGO");
-	}
-
-	private void assertPowerBrainCallException(final Booster booster,
-			final String onOff) throws IOException {
-		Mockito.doThrow(new PowerException()).when(brainController)
-				.write(onOff + " " + booster.getBoosterNumber());
-
 	}
 
 	private void assertBoosterPowerOffBrainCall(final Booster booster)

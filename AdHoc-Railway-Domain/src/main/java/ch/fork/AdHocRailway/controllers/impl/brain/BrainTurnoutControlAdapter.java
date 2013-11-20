@@ -5,8 +5,6 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
 
-import java.io.IOException;
-
 public class BrainTurnoutControlAdapter extends TurnoutController {
 
 	private final BrainController brain;

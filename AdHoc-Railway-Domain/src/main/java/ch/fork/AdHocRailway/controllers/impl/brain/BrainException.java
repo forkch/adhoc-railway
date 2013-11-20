@@ -2,6 +2,8 @@ package ch.fork.AdHocRailway.controllers.impl.brain;
 
 public class BrainException extends RuntimeException {
 
+	private static final long serialVersionUID = -7774330643904156967L;
+
 	public BrainException() {
 		super();
 		// TODO Auto-generated constructor stub

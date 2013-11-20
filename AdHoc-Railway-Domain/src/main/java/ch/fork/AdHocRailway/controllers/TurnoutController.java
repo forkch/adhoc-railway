@@ -31,8 +31,7 @@ public abstract class TurnoutController {
 
 	protected final List<TurnoutChangeListener> listeners = new ArrayList<TurnoutChangeListener>();
 
-	public void addTurnoutChangeListener(final Turnout turnout,
-			final TurnoutChangeListener listener) {
+	public void addTurnoutChangeListener(final TurnoutChangeListener listener) {
 		listeners.add(listener);
 	}
 
@@ -51,21 +50,21 @@ public abstract class TurnoutController {
 		}
 	}
 
-	public abstract void toggle(Turnout turnout) throws TurnoutException;
+	public abstract void toggle(final Turnout turnout) throws TurnoutException;
 
-	public abstract void toggleTest(Turnout turnout) throws TurnoutException;
+	public abstract void toggleTest(final Turnout turnout) throws TurnoutException;
 
-	public abstract void setDefaultState(Turnout turnout)
+	public abstract void setDefaultState(final Turnout turnout)
 			throws TurnoutException;
 
-	public abstract void setStraight(Turnout turnout) throws TurnoutException;
+	public abstract void setStraight(final Turnout turnout) throws TurnoutException;
 
-	public abstract void setCurvedLeft(Turnout turnout) throws TurnoutException;
+	public abstract void setCurvedLeft(final Turnout turnout) throws TurnoutException;
 
-	public abstract void setCurvedRight(Turnout turnout)
+	public abstract void setCurvedRight(final Turnout turnout)
 			throws TurnoutException;
 
-	public abstract void addOrUpdateTurnout(Turnout turnout);
+	public abstract void addOrUpdateTurnout(final Turnout turnout);
 
 	public abstract void reloadConfiguration();
 

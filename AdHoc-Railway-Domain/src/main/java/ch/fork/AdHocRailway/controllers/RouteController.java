@@ -18,6 +18,10 @@
 
 package ch.fork.AdHocRailway.controllers;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
@@ -26,34 +30,57 @@ import ch.fork.AdHocRailway.manager.turnouts.RouteException;
 
 public abstract class RouteController {
 
-	public abstract void enableRoute(Route r) throws RouteException;
+	private final List<RouteChangeListener> listeners = Lists.newArrayList();
 
-	public abstract void disableRoute(Route r) throws RouteException;
+	public abstract void enableRoute(final Route r) throws RouteException;
 
-	public abstract boolean isRouteEnabled(Route route);
+	public abstract void disableRoute(final Route r) throws RouteException;
 
-	public abstract boolean isRouting(Route route);
+	public abstract void toggle(final Route route) throws RouteException;
 
-	public abstract void toggle(Route route) throws RouteException;
+	public abstract void toggleTest(final Route route) throws RouteException;
 
-	public abstract void toggleTest(Route route) throws RouteException;
+	public abstract void addOrUpdateRoute(final Route route);
 
-	public abstract void addOrUpdateRoute(Route route);
+	public void addRouteChangeListener(final Route route,
+			final RouteChangeListener listener) {
 
-	public abstract void addRouteChangeListener(Route r,
-			RouteChangeListener listener);
+		listeners.add(listener);
+	}
 
-	public abstract void removeAllRouteChangeListeners();
+	public void removeAllRouteChangeListeners() {
+		listeners.clear();
+	}
 
-	public abstract void removeRouteChangeListener(Route r,
-			RouteChangeListener listener);
+	public void removeRouteChangeListener(final Route route,
+			final RouteChangeListener listener) {
+		listeners.remove(listener);
+	}
+
+	public void informNextTurnoutDerouted(final Route route) {
+		for (final RouteChangeListener listener : listeners) {
+			listener.nextTurnoutDerouted(route);
+		}
+	}
+
+	public void informNextTurnoutRouted(final Route route) {
+		for (final RouteChangeListener listener : listeners) {
+			listener.nextTurnoutRouted(route);
+		}
+	}
+
+	public void informRouteChanged(final Route route) {
+		for (final RouteChangeListener listener : listeners) {
+			listener.routeChanged(route);
+		}
+	}
 
 	public static RouteController createLocomotiveController(
 			final RailwayDevice railwayDevice,
 			final TurnoutController turnoutController) {
 		switch (railwayDevice) {
 		case ADHOC_BRAIN:
-			return new BrainRouteControlAdapter();
+			return new BrainRouteControlAdapter(turnoutController);
 		case SRCP:
 			return new SRCPRouteControlAdapter(
 					(SRCPTurnoutControlAdapter) turnoutController);
