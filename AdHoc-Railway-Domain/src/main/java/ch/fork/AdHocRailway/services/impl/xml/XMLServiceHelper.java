@@ -154,6 +154,12 @@ public class XMLServiceHelper {
 	private XStream getXStream() {
 		final XStream xstream = new XStream();
 
+		// old configurations
+		xstream.omitField(TurnoutGroup.class, "turnoutNumberOffset");
+		xstream.omitField(TurnoutGroup.class, "turnoutNumberAmount");
+		xstream.omitField(RouteGroup.class, "routeNumberOffset");
+		xstream.omitField(RouteGroup.class, "routeNumberAmount");
+
 		xstream.alias("AdHocRailwayData", AdHocRailwayData.class);
 		xstream.alias("locomotive", Locomotive.class);
 		xstream.alias("locomotiveGroup", LocomotiveGroup.class);
