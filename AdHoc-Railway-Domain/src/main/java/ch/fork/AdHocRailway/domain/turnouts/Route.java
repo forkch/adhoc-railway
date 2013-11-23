@@ -22,6 +22,8 @@ import ch.fork.AdHocRailway.domain.AbstractItem;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -33,6 +35,7 @@ public class Route extends AbstractItem implements java.io.Serializable,
 
 	private int id = -1;
 
+	@XStreamOmitField
 	private RouteGroup routeGroup;
 
 	private int number;

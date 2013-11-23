@@ -5,6 +5,7 @@ import java.util.Set;
 
 import ch.fork.AdHocRailway.controllers.LockingException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
+import ch.fork.AdHocRailway.controllers.SimulatedMFXLocomotivesHelper;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
@@ -85,8 +86,9 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 			return;
 		}
 
-		final int hardwareFunctionNumber = computeHardwareFunctionNumber(
-				locomotive, functionNumber);
+		final int hardwareFunctionNumber = SimulatedMFXLocomotivesHelper
+				.computeMultipartFunctionNumber(locomotive.getType(),
+						functionNumber);
 
 		functions[hardwareFunctionNumber] = state;
 

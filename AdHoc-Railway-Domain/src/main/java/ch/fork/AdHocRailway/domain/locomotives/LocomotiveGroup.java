@@ -22,22 +22,29 @@ import ch.fork.AdHocRailway.domain.AbstractItem;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
-import java.util.TreeSet;
+import com.google.common.collect.Sets;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 public class LocomotiveGroup extends AbstractItem implements
 		java.io.Serializable, Comparable<LocomotiveGroup> {
 
 	private static final long serialVersionUID = 7262606789136545713L;
 
+	@XStreamAsAttribute
 	private int id;
 
+	@XStreamAsAttribute
 	private String name;
 
-	private SortedSet<Locomotive> locomotives = new TreeSet<Locomotive>();
+	private SortedSet<Locomotive> locomotives = Sets.newTreeSet();
 
 	public static final String PROPERTYNAME_ID = "id";
 	public static final String PROPERTYNAME_NAME = "name";
 	public static final String PROPERTYNAME_LOCOMOTIVES = "locomotives";
+
+	public LocomotiveGroup() {
+		super();
+	}
 
 	public LocomotiveGroup(final int id, final String name) {
 		this.id = id;

@@ -4,7 +4,11 @@ import de.dermoba.srcp.client.SRCPSession;
 
 import javax.swing.*;
 
+import ch.fork.AdHocRailway.ui.RailwayDeviceManager;
+
 public interface ControllerContext {
+
+	public RailwayDeviceManager getRailwayDeviceManager();
 
 	public JFrame getMainFrame();
 

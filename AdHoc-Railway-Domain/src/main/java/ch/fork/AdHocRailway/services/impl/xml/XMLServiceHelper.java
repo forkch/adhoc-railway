@@ -1,6 +1,5 @@
 package ch.fork.AdHocRailway.services.impl.xml;
 
-import ch.fork.AdHocRailway.domain.AbstractItem;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -154,10 +153,6 @@ public class XMLServiceHelper {
 
 	private XStream getXStream() {
 		final XStream xstream = new XStream();
-		xstream.omitField(Locomotive.class, "locomotiveGroup");
-		xstream.omitField(Turnout.class, "turnoutGroup");
-		xstream.omitField(Route.class, "routeGroup");
-		xstream.omitField(RouteItem.class, "route");
 
 		xstream.alias("AdHocRailwayData", AdHocRailwayData.class);
 		xstream.alias("locomotive", Locomotive.class);
@@ -168,42 +163,13 @@ public class XMLServiceHelper {
 		xstream.alias("routeGroup", RouteGroup.class);
 		xstream.alias("routeItem", RouteItem.class);
 
-		xstream.useAttributeFor(LocomotiveGroup.class,
-				LocomotiveGroup.PROPERTYNAME_ID);
-		xstream.useAttributeFor(LocomotiveGroup.class,
-				LocomotiveGroup.PROPERTYNAME_NAME);
-		xstream.useAttributeFor(Locomotive.class, Locomotive.PROPERTYNAME_ID);
-		xstream.useAttributeFor(Locomotive.class, Locomotive.PROPERTYNAME_NAME);
-		xstream.useAttributeFor(Locomotive.class,
-				Locomotive.PROPERTYNAME_DESCRIPTION);
-		xstream.useAttributeFor(Locomotive.class, Locomotive.PROPERTYNAME_IMAGE);
-		xstream.useAttributeFor(Locomotive.class, Locomotive.PROPERTYNAME_BUS);
-		xstream.useAttributeFor(Locomotive.class,
-				Locomotive.PROPERTYNAME_ADDRESS1);
-		xstream.useAttributeFor(Locomotive.class,
-				Locomotive.PROPERTYNAME_ADDRESS2);
-		xstream.useAttributeFor(Locomotive.class,
-				Locomotive.PROPERTYNAME_LOCOMOTIVE_TYPE);
-
-		xstream.omitField(Locomotive.class, "changeSupport");
-		xstream.omitField(LocomotiveGroup.class, "changeSupport");
-		xstream.omitField(Turnout.class, "changeSupport");
-		xstream.omitField(TurnoutGroup.class, "changeSupport");
-		xstream.omitField(TurnoutGroup.class, "turnoutNumberOffset");
-		xstream.omitField(TurnoutGroup.class, "turnoutNumberAmount");
-		xstream.omitField(Route.class, "changeSupport");
-		xstream.omitField(RouteGroup.class, "changeSupport");
-		xstream.omitField(RouteGroup.class, "routeNumberOffset");
-		xstream.omitField(RouteGroup.class, "routeNumberAmount");
-		xstream.omitField(RouteItem.class, "changeSupport");
-		xstream.omitField(AbstractItem.class, "changeSupport");
-
 		xstream.addImplicitCollection(LocomotiveGroup.class, "locomotives");
 		xstream.addImplicitCollection(TurnoutGroup.class, "turnouts");
 		xstream.addImplicitCollection(RouteGroup.class, "routes");
 		xstream.addImplicitCollection(Route.class, "routeItems");
 
 		xstream.registerConverter(new LocomotiveTypeConverter());
+		xstream.autodetectAnnotations(true);
 
 		return xstream;
 	}

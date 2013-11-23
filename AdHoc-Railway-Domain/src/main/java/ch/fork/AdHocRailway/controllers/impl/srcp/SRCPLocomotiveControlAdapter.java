@@ -1,7 +1,11 @@
 package ch.fork.AdHocRailway.controllers.impl.srcp;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ch.fork.AdHocRailway.controllers.LockingException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
+import ch.fork.AdHocRailway.controllers.SimulatedMFXLocomotivesHelper;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
@@ -12,11 +16,17 @@ import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
-import de.dermoba.srcp.model.locomotives.*;
+import de.dermoba.srcp.model.locomotives.DoubleMMDigitalLocomotive;
+import de.dermoba.srcp.model.locomotives.MMDeltaLocomotive;
+import de.dermoba.srcp.model.locomotives.MMDigitalLocomotive;
+import de.dermoba.srcp.model.locomotives.SRCPLocomotive;
+import de.dermoba.srcp.model.locomotives.SRCPLocomotiveChangeListener;
+import de.dermoba.srcp.model.locomotives.SRCPLocomotiveControl;
 
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * @author fork
+ * 
+ */
 public class SRCPLocomotiveControlAdapter extends LocomotiveController
 		implements SRCPLocomotiveChangeListener, SRCPLockChangeListener {
 	private final Map<Locomotive, SRCPLocomotive> locomotiveSRCPLocomotiveMap = new HashMap<Locomotive, SRCPLocomotive>();
@@ -27,7 +37,6 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	public SRCPLocomotiveControlAdapter() {
 		locomotiveControl = SRCPLocomotiveControl.getInstance();
 
-		locomotiveControl.addLocomotiveChangeListener(this, this);
 		reloadConfiguration();
 	}
 
@@ -36,18 +45,20 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 			final int functionNumber, final boolean state,
 			final int deactivationDelay) throws LocomotiveException {
 		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
-		final boolean[] functions = locomotiveControl.getFunctions(sLocomotive);
+		final boolean[] srcpFunctions = locomotiveControl
+				.getFunctions(sLocomotive);
 
-		if (functionNumber >= functions.length) {
+		if (functionNumber >= srcpFunctions.length) {
 			return;
 		}
 
-		final int srcpFunctionNumber = computeHardwareFunctionNumber(
-				locomotive, functionNumber);
+		final int srcpFunctionNumber = SimulatedMFXLocomotivesHelper
+				.computeMultipartFunctionNumber(locomotive.getType(),
+						functionNumber);
 
-		functions[srcpFunctionNumber] = state;
+		srcpFunctions[srcpFunctionNumber] = state;
 
-		setFunctions(locomotive, functions);
+		setFunctions(locomotive, srcpFunctions);
 
 		if (deactivationDelay > 0) {
 			startFunctionDeactivationThread(locomotive, functionNumber,
@@ -60,7 +71,9 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 			final boolean[] functions) throws LocomotiveException {
 		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
-			locomotiveControl.setSpeed(sLocomotive, speed, functions);
+			locomotiveControl.setSpeed(sLocomotive, speed,
+					SimulatedMFXLocomotivesHelper.convertToMultipartFunctions(
+							locomotive.getType(), functions));
 			locomotive.setCurrentSpeed(speed);
 			locomotive.setCurrentFunctions(functions);
 		} catch (final SRCPModelException e) {
@@ -76,8 +89,9 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 			final int emergencyStopFunction = locomotive
 					.getEmergencyStopFunction();
 
-			final int srcpEmergencyStopFunction = computeHardwareFunctionNumber(
-					locomotive, emergencyStopFunction);
+			final int srcpEmergencyStopFunction = SimulatedMFXLocomotivesHelper
+					.computeMultipartFunctionNumber(locomotive.getType(),
+							emergencyStopFunction);
 			locomotiveControl.emergencyStop(sLocomotive,
 					srcpEmergencyStopFunction);
 			locomotive.setCurrentSpeed(0);
@@ -121,6 +135,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	}
 
 	public void setSession(final SRCPSession session) {
+		locomotiveControl.addLocomotiveChangeListener(this, this);
 		locomotiveControl.setSession(session);
 	}
 
@@ -184,41 +199,26 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	}
 
 	@Override
-	public void locomotiveChanged(final SRCPLocomotive changedLocomotive) {
+	public void locomotiveChanged(final SRCPLocomotive changedSRCPLocomotive) {
 
 		final Locomotive locomotive = SRCPLocomotiveLocomotiveMap
-				.get(changedLocomotive);
+				.get(changedSRCPLocomotive);
 
-		locomotive.setCurrentSpeed(changedLocomotive.getCurrentSpeed());
-		switch (changedLocomotive.getDirection()) {
+		locomotive.setCurrentSpeed(changedSRCPLocomotive.getCurrentSpeed());
+		switch (changedSRCPLocomotive.getDirection()) {
 		case FORWARD:
-
 			locomotive.setCurrentDirection(LocomotiveDirection.FORWARD);
 		case REVERSE:
-
 			locomotive.setCurrentDirection(LocomotiveDirection.REVERSE);
 		case UNDEF:
-
 			locomotive.setCurrentDirection(LocomotiveDirection.UNDEF);
-
 		}
-		final boolean[] functions = changedLocomotive.getFunctions();
 
-		if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
+		final boolean[] newFunctions = changedSRCPLocomotive.getFunctions();
 
-			final boolean[] functionsForSimulatedMfx = new boolean[9];
-
-			for (int i = 0; i < 5; i++) {
-				functionsForSimulatedMfx[i] = functions[i];
-			}
-
-			for (int i = 5; i < 9; i++) {
-				functionsForSimulatedMfx[i] = functions[i + 1];
-			}
-			locomotive.setCurrentFunctions(functionsForSimulatedMfx);
-		} else {
-			locomotive.setCurrentFunctions(functions);
-		}
+		locomotive.setCurrentFunctions(SimulatedMFXLocomotivesHelper
+				.convertFromMultipartFunctions(locomotive.getType(),
+						newFunctions));
 
 		informListeners(locomotive);
 	}
@@ -257,11 +257,13 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	}
 
 	private void setFunctions(final Locomotive locomotive,
-			final boolean[] functions) throws LocomotiveException {
+			final boolean[] srcpFunctions) throws LocomotiveException {
 		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
 		try {
-			locomotiveControl.setFunctions(sLocomotive, functions);
-			locomotive.setCurrentFunctions(functions);
+			locomotiveControl.setFunctions(sLocomotive, srcpFunctions);
+			locomotive.setCurrentFunctions(SimulatedMFXLocomotivesHelper
+					.convertFromMultipartFunctions(locomotive.getType(),
+							srcpFunctions));
 		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
 		}

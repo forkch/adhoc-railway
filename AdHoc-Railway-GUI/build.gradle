@@ -7,7 +7,7 @@ mainClassName = "ch.fork.AdHocRailway.ui.AdHocRailway"
 	
 dependencies {
 	compile fileTree (dir: 'lib', includes: ['*.jar'])
-    compile 'de.dermoba:jsrcpc:2.+'
+    compile 'de.dermoba:jsrcpc:2.1'
     compile 'jgoodies:forms:1.0.5'
     compile 'com.jgoodies:jgoodies-common:1.4.0'
     compile 'com.jgoodies:looks:2.2.2'

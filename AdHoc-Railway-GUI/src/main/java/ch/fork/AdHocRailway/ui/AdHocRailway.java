@@ -46,7 +46,6 @@ import de.dermoba.srcp.model.locking.SRCPLockingException;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.*;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -178,11 +177,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			preferences = Preferences.getInstance();
 			appContext.setPreferences(preferences);
 
-			railwayDeviceManager = new RailwayDeviceManager(appContext);
-			appContext.setRailwayDeviceManager(railwayDeviceManager);
-
 			persistenceManager = new PersistenceManager(appContext);
 			persistenceManager.loadPersistenceLayer();
+
+			railwayDeviceManager = new RailwayDeviceManager(appContext);
+			appContext.setRailwayDeviceManager(railwayDeviceManager);
+			railwayDeviceManager.loadControlLayer();
 
 			initProceeded("Creating GUI ...");
 
@@ -306,7 +306,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 					&& !lastFile.equals("")
 					&& !preferences
 							.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER)) {
-	
+
 				new OpenFileAction().openFile(new File(preferences
 						.getStringValue(LAST_OPENED_FILE)));
 			}

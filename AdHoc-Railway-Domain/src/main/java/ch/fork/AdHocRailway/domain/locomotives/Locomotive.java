@@ -22,6 +22,9 @@ import ch.fork.AdHocRailway.domain.AbstractItem;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.SortedSet;
@@ -35,21 +38,33 @@ public class Locomotive extends AbstractItem implements Serializable,
 	 */
 	private static final long serialVersionUID = 7581060269617994905L;
 
+	@XStreamAsAttribute
 	private int id = -1;
 
+	@XStreamAsAttribute
 	private String name;
 
+	@XStreamAsAttribute
 	private String desc;
 
+	@XStreamAsAttribute
 	private String image;
-	private LocomotiveType type;
-	private int address1;
-	private int address2;
 
+	@XStreamAsAttribute
+	private LocomotiveType type;
+
+	@XStreamAsAttribute
 	private int bus;
+
+	@XStreamAsAttribute
+	private int address1;
+
+	@XStreamAsAttribute
+	private int address2;
 
 	private SortedSet<LocomotiveFunction> functions = new TreeSet<LocomotiveFunction>();
 
+	@XStreamOmitField
 	private LocomotiveGroup group;
 	public static final String PROPERTYNAME_ID = "id";
 	public static final String PROPERTYNAME_NAME = "name";
@@ -67,8 +82,7 @@ public class Locomotive extends AbstractItem implements Serializable,
 
 	private transient LocomotiveDirection currentDirection = LocomotiveDirection.FORWARD;
 
-	private transient boolean[] currentFunctions = new boolean[] { false,
-			false, false, false, false };
+	private transient boolean[] currentFunctions;
 
 	public Locomotive() {
 	}
@@ -78,7 +92,7 @@ public class Locomotive extends AbstractItem implements Serializable,
 		super.init();
 		currentSpeed = 0;
 		currentDirection = LocomotiveDirection.FORWARD;
-		currentFunctions = new boolean[] { false, false, false, false, false };
+		currentFunctions = new boolean[functions.size()];
 	}
 
 	public int getId() {
@@ -294,6 +308,5 @@ public class Locomotive extends AbstractItem implements Serializable,
 
 	public void setCurrentFunctions(final boolean[] currentFunctions) {
 		this.currentFunctions = currentFunctions;
-
 	}
 }

@@ -32,7 +32,6 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -79,7 +78,8 @@ public class LocomotiveControlPanel extends JPanel implements
 	}
 
 	public void update() {
-		final LocomotiveController locomotiveControl = ctx.getLocomotiveControl();
+		final LocomotiveController locomotiveControl = ctx
+				.getLocomotiveControl();
 		locomotiveControl.removeAllLocomotiveChangeListener();
 
 		controlPanel.removeAll();

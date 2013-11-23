@@ -28,7 +28,6 @@ public class SRCPPowerControlAdapter extends PowerController implements
 
 	public SRCPPowerControlAdapter() {
 		powerControl = SRCPPowerControl.getInstance();
-		powerControl.addPowerSupplyChangeListener(this);
 	}
 
 	@Override
@@ -106,6 +105,7 @@ public class SRCPPowerControlAdapter extends PowerController implements
 	}
 
 	public void setSession(final SRCPSession session) {
+		powerControl.addPowerSupplyChangeListener(this);
 		powerControl.setSession(session);
 	}
 

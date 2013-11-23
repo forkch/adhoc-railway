@@ -22,6 +22,8 @@ import ch.fork.AdHocRailway.domain.AbstractItem;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
@@ -50,8 +52,9 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
 
 	private boolean address2Switched;
 	private Set<RouteItem> routeItems = new HashSet<RouteItem>();
-	private TurnoutGroup turnoutGroup;
 
+	@XStreamOmitField
+	private TurnoutGroup turnoutGroup;
 	private transient TurnoutState actualState = TurnoutState.UNDEF;
 
 	public static final String PROPERTYNAME_ID = "id";

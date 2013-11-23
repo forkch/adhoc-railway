@@ -30,7 +30,6 @@ public class SRCPRouteControlAdapter extends RouteController implements
 			final SRCPTurnoutControlAdapter turnoutControl) {
 		this.turnoutControl = turnoutControl;
 		routeControl = SRCPRouteControl.getInstance();
-		routeControl.addRouteChangeListener(this);
 
 	}
 
@@ -154,6 +153,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
 	}
 
 	public void setSession(final SRCPSession session) {
+		routeControl.addRouteChangeListener(this);
 		routeControl.setSession(session);
 	}
 

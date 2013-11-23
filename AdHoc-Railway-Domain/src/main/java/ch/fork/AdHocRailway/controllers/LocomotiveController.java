@@ -22,7 +22,6 @@ import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
 import org.apache.log4j.Logger;
 
@@ -37,10 +36,28 @@ public abstract class LocomotiveController implements
 	private final Map<Locomotive, List<LocomotiveChangeListener>> listeners = new HashMap<Locomotive, List<LocomotiveChangeListener>>();
 	private final Set<Locomotive> activeLocomotives = new HashSet<Locomotive>();
 
-	public void activateLoco(final Locomotive locomotive,
-			final boolean[] functions) throws LocomotiveException {
-		this.activeLocomotives.add(locomotive);
-		setSpeed(locomotive, 0, locomotive.getCurrentFunctions());
+	public void activateLoco(final Locomotive locomotive)
+			throws LocomotiveException {
+		if (!isLocomotiveActive(locomotive)) {
+			this.activeLocomotives.add(locomotive);
+
+			if (locomotive.getCurrentFunctions() == null) {
+				locomotive.setCurrentFunctions(new boolean[locomotive
+						.getFunctions().size()]);
+			}
+			final boolean[] functions = locomotive.getCurrentFunctions();
+			final int emergencyStopFunction = locomotive
+					.getEmergencyStopFunction();
+			if (emergencyStopFunction != -1
+					&& functions.length > emergencyStopFunction) {
+				functions[emergencyStopFunction] = false;
+			}
+			setSpeed(locomotive, 0, functions);
+		}
+	}
+
+	public boolean isLocomotiveActive(final Locomotive locomotive) {
+		return activeLocomotives.contains(locomotive);
 	}
 
 	public void deactivateLoco(final Locomotive locomotive)
@@ -114,24 +131,6 @@ public abstract class LocomotiveController implements
 
 	}
 
-	/**
-	 * For SimulatedMFX Locomotives the higher functions of the second address
-	 * need to be offsetted by 1 since there is no "F0" on the second address
-	 * 
-	 * @param locomotive
-	 * @param functionNumber
-	 * @return
-	 */
-	protected int computeHardwareFunctionNumber(final Locomotive locomotive,
-			int functionNumber) {
-		if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
-			if (functionNumber >= 5) {
-				functionNumber += 1;
-			}
-		}
-		return functionNumber;
-	}
-
 	protected void startFunctionDeactivationThread(final Locomotive locomotive,
 			final int functionNumber, final int deactivationDelay) {
 		final Thread t = new Thread(new Runnable() {
@@ -174,8 +173,9 @@ public abstract class LocomotiveController implements
 	public abstract void setSpeed(final Locomotive locomotive, final int speed,
 			final boolean[] functions) throws LocomotiveException;
 
-	public abstract void setFunction(final Locomotive locomotive, final int functionNumber,
-			final boolean state, final int deactivationDelay) throws LocomotiveException;
+	public abstract void setFunction(final Locomotive locomotive,
+			final int functionNumber, final boolean state,
+			final int deactivationDelay) throws LocomotiveException;
 
 	public abstract void emergencyStop(final Locomotive myLocomotive)
 			throws LocomotiveException;

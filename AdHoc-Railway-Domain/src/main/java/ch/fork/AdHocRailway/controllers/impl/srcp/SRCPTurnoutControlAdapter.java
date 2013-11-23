@@ -30,7 +30,6 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 
 		turnoutControl = SRCPTurnoutControl.getInstance();
 
-		turnoutControl.addTurnoutChangeListener(this);
 		reloadConfiguration();
 	}
 
@@ -133,6 +132,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 	}
 
 	public void setSession(final SRCPSession session) {
+		turnoutControl.addTurnoutChangeListener(this);
 		turnoutControl.setSession(session);
 	}
 

@@ -172,6 +172,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		this.railwayDeviceManager = railwayDeviceManager;
 	}
 
+	@Override
 	public RailwayDeviceManager getRailwayDeviceManager() {
 		return railwayDeviceManager;
 	}

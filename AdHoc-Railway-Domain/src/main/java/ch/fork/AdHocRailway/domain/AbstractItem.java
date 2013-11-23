@@ -4,7 +4,7 @@ import java.beans.PropertyChangeSupport;
 
 public abstract class AbstractItem {
 
-	protected PropertyChangeSupport changeSupport;
+	protected transient PropertyChangeSupport changeSupport;
 
 	public AbstractItem() {
 		changeSupport = new PropertyChangeSupport(this);
@@ -15,5 +15,11 @@ public abstract class AbstractItem {
 			changeSupport = new PropertyChangeSupport(this);
 		}
 
+	}
+
+	private Object readResolve() {
+
+		changeSupport = new PropertyChangeSupport(this);
+		return this;
 	}
 }

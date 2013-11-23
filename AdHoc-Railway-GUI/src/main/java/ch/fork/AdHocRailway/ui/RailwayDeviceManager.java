@@ -6,6 +6,7 @@ import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPPowerControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
+import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
@@ -28,21 +29,21 @@ public class RailwayDeviceManager implements CommandDataListener,
 		InfoDataListener, PreferencesKeys {
 
 	private static final Logger LOGGER = Logger
-			.getLogger(PersistenceManager.class);
+			.getLogger(RailwayDeviceManager.class);
 	private static final String SRCP_SERVER_TCP_LOCAL = "_srcpd._tcp.local.";
 	private final ApplicationContext appContext;
 	private JmDNS adhocServermDNS;
 	private final AdHocRailwayIface mainApp;
 	private final Preferences preferences;
-    private boolean connected = false;
+	private boolean connected = false;
 
-    public RailwayDeviceManager(final ApplicationContext appContext) {
+	public RailwayDeviceManager(final ApplicationContext appContext) {
 		this.appContext = appContext;
 		mainApp = appContext.getMainApp();
 		preferences = appContext.getPreferences();
 	}
 
-    public void loadControlLayer() {
+	public void loadControlLayer() {
 		mainApp.initProceeded("Loading Control Layer (Power)");
 
 		final String railwayDeviceString = preferences
@@ -59,6 +60,10 @@ public class RailwayDeviceManager implements CommandDataListener,
 		mainApp.initProceeded("Loading Control Layer (Locomotives)");
 		final LocomotiveController locomotiveControl = LocomotiveController
 				.createLocomotiveController(railwayDevive);
+		for (final Locomotive locomotive : appContext.getLocomotiveManager()
+				.getAllLocomotives()) {
+			locomotiveControl.addOrUpdateLocomotive(locomotive);
+		}
 		appContext.setLocomotiveControl(locomotiveControl);
 
 		mainApp.initProceeded("Loading Control Layer (Turnouts)");
@@ -125,7 +130,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 			connectToBrain(preferences.getStringValue(ADHOC_BRAIN_PORT));
 		}
 		mainApp.connectedToRailwayDevice(true);
-        connected = true;
+		connected = true;
 	}
 
 	public void disconnect() {
@@ -139,7 +144,8 @@ public class RailwayDeviceManager implements CommandDataListener,
 		} else {
 			disconnectFromBrain();
 		}
-		mainApp.connectedToRailwayDevice(false);connected = false;
+		mainApp.connectedToRailwayDevice(false);
+		connected = false;
 
 	}
 
@@ -239,20 +245,20 @@ public class RailwayDeviceManager implements CommandDataListener,
 		if (preferences.getBooleanValue(LOGGING)) {
 			mainApp.updateCommandHistory("Info received: " + infoData);
 		}
-		LOGGER.info("Info received" + infoData.trim());
+		LOGGER.info("Info received " + infoData.trim());
 	}
 
-    public boolean isBrainAvailable() {
-        BrainController brainController = BrainController.getInstance();
-        try {
-            brainController.getAvailableSerialPortsAsString();
-            return true;
-        } catch (Exception x) {
-            return false;
-        }
-    }
+	public boolean isBrainAvailable() {
+		final BrainController brainController = BrainController.getInstance();
+		try {
+			brainController.getAvailableSerialPortsAsString();
+			return true;
+		} catch (final Exception x) {
+			return false;
+		}
+	}
 
-    public boolean isConnected() {
-        return connected;
-    }
+	public boolean isConnected() {
+		return connected;
+	}
 }
