@@ -1,6 +1,18 @@
 package ch.fork.AdHocRailway.ui;
 
-import ch.fork.AdHocRailway.controllers.*;
+import java.io.IOException;
+
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceEvent;
+import javax.jmdns.ServiceInfo;
+
+import org.apache.log4j.Logger;
+
+import ch.fork.AdHocRailway.controllers.LocomotiveController;
+import ch.fork.AdHocRailway.controllers.PowerController;
+import ch.fork.AdHocRailway.controllers.RailwayDevice;
+import ch.fork.AdHocRailway.controllers.RouteController;
+import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPPowerControlAdapter;
@@ -8,22 +20,25 @@ import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
+import ch.fork.AdHocRailway.domain.turnouts.Route;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.manager.impl.locomotives.events.LocomotivesUpdatedEvent;
+import ch.fork.AdHocRailway.manager.impl.turnouts.events.RoutesUpdatedEvent;
+import ch.fork.AdHocRailway.manager.impl.turnouts.events.TurnoutsUpdatedEvent;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.AdHocRailwayIface;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
+
+import com.google.common.eventbus.Subscribe;
+
 import de.dermoba.srcp.client.CommandDataListener;
 import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
-import org.apache.log4j.Logger;
-
-import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceEvent;
-import javax.jmdns.ServiceInfo;
-import java.io.IOException;
 
 public class RailwayDeviceManager implements CommandDataListener,
 		InfoDataListener, PreferencesKeys {
@@ -40,6 +55,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 	public RailwayDeviceManager(final ApplicationContext appContext) {
 		this.appContext = appContext;
 		mainApp = appContext.getMainApp();
+		appContext.getMainBus().register(this);
 		preferences = appContext.getPreferences();
 	}
 
@@ -60,10 +76,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 		mainApp.initProceeded("Loading Control Layer (Locomotives)");
 		final LocomotiveController locomotiveControl = LocomotiveController
 				.createLocomotiveController(railwayDevive);
-		for (final Locomotive locomotive : appContext.getLocomotiveManager()
-				.getAllLocomotives()) {
-			locomotiveControl.addOrUpdateLocomotive(locomotive);
-		}
+
 		appContext.setLocomotiveControl(locomotiveControl);
 
 		mainApp.initProceeded("Loading Control Layer (Turnouts)");
@@ -129,8 +142,9 @@ public class RailwayDeviceManager implements CommandDataListener,
 		} else {
 			connectToBrain(preferences.getStringValue(ADHOC_BRAIN_PORT));
 		}
-		mainApp.connectedToRailwayDevice(true);
+
 		connected = true;
+		appContext.getMainBus().post(new ConnectionToRailwayEvent(true));
 	}
 
 	public void disconnect() {
@@ -144,8 +158,8 @@ public class RailwayDeviceManager implements CommandDataListener,
 		} else {
 			disconnectFromBrain();
 		}
-		mainApp.connectedToRailwayDevice(false);
 		connected = false;
+		appContext.getMainBus().post(new ConnectionToRailwayEvent(false));
 
 	}
 
@@ -260,5 +274,26 @@ public class RailwayDeviceManager implements CommandDataListener,
 
 	public boolean isConnected() {
 		return connected;
+	}
+
+	@Subscribe
+	public void locomotivesUpdated(final LocomotivesUpdatedEvent event) {
+		for (final Locomotive locomotive : event.getAllLocomotives()) {
+			appContext.getLocomotiveControl().addOrUpdateLocomotive(locomotive);
+		}
+	}
+
+	@Subscribe
+	public void routesUpdated(final RoutesUpdatedEvent event) {
+		for (final Route route : event.getAllRoutes()) {
+			appContext.getRouteControl().addOrUpdateRoute(route);
+		}
+	}
+
+	@Subscribe
+	public void turnoutsUpdated(final TurnoutsUpdatedEvent event) {
+		for (final Turnout turnout : event.getAllTurnouts()) {
+			appContext.getTurnoutControl().addOrUpdateTurnout(turnout);
+		}
 	}
 }

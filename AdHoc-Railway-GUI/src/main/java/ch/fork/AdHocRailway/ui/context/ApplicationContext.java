@@ -14,8 +14,12 @@ import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 import javax.swing.*;
 
+import com.google.common.eventbus.EventBus;
+
 public class ApplicationContext implements TurnoutContext, RouteContext,
 		LocomotiveContext, TrackContext, PowerContext {
+
+	private final EventBus mainBus = new EventBus();
 
 	private JFrame mainFrame;
 
@@ -175,5 +179,9 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 	@Override
 	public RailwayDeviceManager getRailwayDeviceManager() {
 		return railwayDeviceManager;
+	}
+
+	public EventBus getMainBus() {
+		return mainBus;
 	}
 }

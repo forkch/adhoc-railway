@@ -23,6 +23,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.manager.impl.turnouts.events.RoutesUpdatedEvent;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManagerListener;
@@ -30,6 +31,8 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.services.turnouts.RouteService;
 import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
 import org.apache.log4j.Logger;
+
+import com.google.common.eventbus.EventBus;
 
 import java.util.*;
 
@@ -51,6 +54,8 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	private int lastProgrammedNumber = 0;
 
 	private final TurnoutManager turnoutManager;
+
+	private EventBus eventBus;
 
 	public RouteManagerImpl(final TurnoutManager turnoutManager) {
 		this.turnoutManager = turnoutManager;
@@ -244,7 +249,8 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	}
 
 	@Override
-	public void initialize() {
+	public void initialize(final EventBus eventBus) {
+		this.eventBus = eventBus;
 		clear();
 		cleanupListeners();
 
@@ -273,6 +279,8 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 		for (final RouteManagerListener l : listeners) {
 			l.routesUpdated(updatedRouteGroups);
 		}
+
+		eventBus.post(new RoutesUpdatedEvent(updatedRouteGroups));
 	}
 
 	@Override

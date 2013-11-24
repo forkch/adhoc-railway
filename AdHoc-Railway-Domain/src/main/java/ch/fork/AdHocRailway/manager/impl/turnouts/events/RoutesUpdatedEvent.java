@@ -1,0 +1,25 @@
+package ch.fork.AdHocRailway.manager.impl.turnouts.events;
+
+import java.util.SortedSet;
+
+import com.google.common.collect.Sets;
+
+import ch.fork.AdHocRailway.domain.turnouts.Route;
+import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
+
+public class RoutesUpdatedEvent {
+
+	private final SortedSet<RouteGroup> updatedRouteGroups;
+
+	public RoutesUpdatedEvent(final SortedSet<RouteGroup> updatedRouteGroups) {
+		this.updatedRouteGroups = updatedRouteGroups;
+	}
+
+	public SortedSet<Route> getAllRoutes() {
+		final SortedSet<Route> allRoutes = Sets.newTreeSet();
+		for (final RouteGroup routeGroup : updatedRouteGroups) {
+			allRoutes.addAll(routeGroup.getRoutes());
+		}
+		return allRoutes;
+	}
+}

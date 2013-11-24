@@ -28,6 +28,7 @@ import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.AdHocRailwayIface;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
@@ -40,6 +41,7 @@ import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 import ch.fork.AdHocRailway.ui.widgets.SplashWindow;
 import ch.fork.AdHocRailway.ui.widgets.TrackControlPanel;
 
+import com.google.common.eventbus.Subscribe;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
@@ -153,6 +155,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		try {
 
 			appContext = new ApplicationContext();
+			appContext.getMainBus().register(this);
 			appContext.setMainApp(this);
 			appContext.setMainFrame(this);
 			setUpLogging();
@@ -177,12 +180,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			preferences = Preferences.getInstance();
 			appContext.setPreferences(preferences);
 
-			persistenceManager = new PersistenceManager(appContext);
-			persistenceManager.loadPersistenceLayer();
-
 			railwayDeviceManager = new RailwayDeviceManager(appContext);
 			appContext.setRailwayDeviceManager(railwayDeviceManager);
 			railwayDeviceManager.loadControlLayer();
+
+			persistenceManager = new PersistenceManager(appContext);
+			persistenceManager.loadPersistenceLayer();
 
 			initProceeded("Creating GUI ...");
 
@@ -287,8 +290,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		}
 	}
 
-	@Override
-	public void connectedToRailwayDevice(final boolean connected) {
+	@Subscribe
+	public void connectedToRailwayDevice(final ConnectionToRailwayEvent event) {
+		final boolean connected = event.isConnected();
 		daemonConnectItem.setEnabled(!connected);
 		daemonDisconnectItem.setEnabled(connected);
 		connectToolBarButton.setEnabled(!connected);
@@ -729,9 +733,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				final int result = JOptionPane.showConfirmDialog(
 						AdHocRailway.this,
 						"Do you want to save the actual configuration?",
-						"Export to database", JOptionPane.YES_NO_OPTION,
+						"New file...", JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE,
-						createImageIconFromIconSet("dialog-information.png"));
+						createImageIconFromIconSet("dialog-warning.png"));
 				if (result == JOptionPane.YES_OPTION) {
 					saveActualFile();
 				}

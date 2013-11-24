@@ -17,13 +17,11 @@ public interface AdHocRailwayIface {
 
 	public void handleException(final String message, final Throwable ex);
 
-	public void registerSpaceKey(Action action);
+	public void registerSpaceKey(final Action action);
 
-	public void initProceeded(String string);
+	public void initProceeded(final String string);
 
-	public void updateCommandHistory(String string);
+	public void updateCommandHistory(final String string);
 
-	public void setTitle(String string);
-
-	public void connectedToRailwayDevice(boolean enable);
+	public void setTitle(final String string);
 }

@@ -15,7 +15,6 @@ import de.dermoba.srcp.model.power.SRCPPowerSupply;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -34,7 +33,6 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 	private final ImageIcon stopIcon;
 	private final ImageIcon goIcon;
 	private final ImageIcon shortcutIcon;
-	private final PowerController powerController;
 	private final Map<Integer, JToggleButton> numberToPowerToggleButtons = new HashMap<Integer, JToggleButton>();
 	private final Map<Integer, ActionListener> numberToActionListener = new HashMap<Integer, ActionListener>();
 	private final Map<JToggleButton, Integer> powerToggleButtonsToNumber = new HashMap<JToggleButton, Integer>();
@@ -46,7 +44,7 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 	public PowerControlPanel(final PowerContext ctx) {
 		super();
 		this.ctx = ctx;
-		powerController = ctx.getPowerControl();
+		final PowerController powerController = ctx.getPowerControl();
 
 		stopIcon = ImageTools.createImageIconFromIconSet("stop_22.png");
 		goIcon = ImageTools.createImageIconFromIconSet("go_22.png");
@@ -204,6 +202,7 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 
+			final PowerController powerController = ctx.getPowerControl();
 			final PowerSupply powerSupply = powerController.getPowerSupply(1);
 			powerController.powerOn(powerSupply);
 
@@ -223,6 +222,7 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 
+			final PowerController powerController = ctx.getPowerControl();
 			final PowerSupply powerSupply = powerController.getPowerSupply(1);
 			powerController.powerOff(powerSupply);
 		}
@@ -292,10 +292,12 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 		if (bus1Supply == null) {
 			return;
 		}
+		final PowerController powerController = ctx.getPowerControl();
 		powerController.toggleBooster(bus1Supply.getBooster(boosterNumber));
 	}
 
 	private PowerSupply getPowerSupply() {
+		final PowerController powerController = ctx.getPowerControl();
 		return powerController.getPowerSupply(1);
 	}
 

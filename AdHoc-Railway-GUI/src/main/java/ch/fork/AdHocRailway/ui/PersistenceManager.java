@@ -50,15 +50,13 @@ public class PersistenceManager {
 			appContext.setLocomotiveManager(locomotiveManager);
 		}
 
-		locomotiveManager.setLocomotiveControl(appContext
-				.getLocomotiveControl());
 		if (useAdHocServer) {
 			locomotiveManager.setLocomotiveService(new SIOLocomotiveService());
 		} else {
 			locomotiveManager.setLocomotiveService(new XMLLocomotiveService());
 		}
 
-		locomotiveManager.initialize();
+		locomotiveManager.initialize(appContext.getMainBus());
 
 		appContext.getMainApp().initProceeded(
 				"Loading Persistence Layer (Turnouts)");
@@ -74,7 +72,7 @@ public class PersistenceManager {
 		} else {
 			turnoutManager.setTurnoutService(new XMLTurnoutService());
 		}
-		turnoutManager.initialize();
+		turnoutManager.initialize(appContext.getMainBus());
 
 		appContext.getMainApp().initProceeded(
 				"Loading Persistence Layer (Routes)");
@@ -90,7 +88,7 @@ public class PersistenceManager {
 		} else {
 			routeManager.setRouteService(new XMLRouteService());
 		}
-		routeManager.initialize();
+		routeManager.initialize(appContext.getMainBus());
 
 		if (useAdHocServer
 				&& !appContext.getPreferences().getBooleanValue(

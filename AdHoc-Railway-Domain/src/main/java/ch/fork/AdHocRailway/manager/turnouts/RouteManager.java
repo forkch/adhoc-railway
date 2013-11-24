@@ -26,49 +26,51 @@ import ch.fork.AdHocRailway.services.turnouts.RouteService;
 
 import java.util.SortedSet;
 
+import com.google.common.eventbus.EventBus;
+
 public interface RouteManager {
 
-	public abstract Route getRouteByNumber(int number);
+	public abstract Route getRouteByNumber(final int number);
 
-	public abstract void addRouteToGroup(Route route,
-			RouteGroup selectedRouteGroup);
+	public abstract void addRouteToGroup(final Route route,
+			final RouteGroup selectedRouteGroup);
 
-	public abstract void removeRoute(Route route);
+	public abstract void removeRoute(final Route route);
 
-	public abstract void updateRoute(Route route);
+	public abstract void updateRoute(final Route route);
 
 	public abstract SortedSet<RouteGroup> getAllRouteGroups();
 
-	public abstract void addRouteGroup(RouteGroup routeGroup);
+	public abstract void addRouteGroup(final RouteGroup routeGroup);
 
-	public abstract void removeRouteGroup(RouteGroup routeGroup);
+	public abstract void removeRouteGroup(final RouteGroup routeGroup);
 
-	public abstract void updateRouteGroup(RouteGroup routeGroup);
+	public abstract void updateRouteGroup(final RouteGroup routeGroup);
 
-	public abstract void addRouteItem(RouteItem item);
+	public abstract void addRouteItem(final RouteItem item);
 
-	public abstract void removeRouteItem(RouteItem item);
+	public abstract void removeRouteItem(final RouteItem item);
 
-	public abstract void updateRouteItem(RouteItem item);
+	public abstract void updateRouteItem(final RouteItem item);
 
 	public abstract int getNextFreeRouteNumber();
 
-	public abstract boolean isRouteNumberFree(int number);
+	public abstract boolean isRouteNumberFree(final int number);
 
 	public abstract void clear();
 
 	public abstract void clearToService();
 
-	public abstract void initialize();
+	public abstract void initialize(final EventBus eventBus);
 
-	public abstract void setRouteControl(RouteController routeControl);
+	public abstract void setRouteControl(final RouteController routeControl);
 
-	void addRouteManagerListener(RouteManagerListener listener);
+	void addRouteManagerListener(final RouteManagerListener listener);
 
 	void removeRouteManagerListenerInNextEvent(
-			RouteManagerListener turnoutAddListener);
+			final RouteManagerListener turnoutAddListener);
 
-	public abstract void setRouteService(RouteService instance);
+	public abstract void setRouteService(final RouteService instance);
 
 	public abstract void disconnect();
 

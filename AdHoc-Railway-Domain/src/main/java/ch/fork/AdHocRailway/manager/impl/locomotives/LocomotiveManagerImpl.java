@@ -18,9 +18,9 @@
 
 package ch.fork.AdHocRailway.manager.impl.locomotives;
 
-import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.manager.impl.locomotives.events.LocomotivesUpdatedEvent;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
@@ -28,14 +28,14 @@ import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
 import org.apache.log4j.Logger;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.*;
 
 public class LocomotiveManagerImpl implements LocomotiveManager,
 		LocomotiveServiceListener {
 	private static final Logger LOGGER = Logger
 			.getLogger(LocomotiveManager.class);
-
-	private LocomotiveController locomotiveControl;
 
 	private final SortedSet<Locomotive> addressLocomotiveCache = new TreeSet<Locomotive>();
 	private final SortedSet<LocomotiveGroup> locomotiveGroups = new TreeSet<LocomotiveGroup>();
@@ -46,6 +46,8 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	private final Set<LocomotiveManagerListener> listenersToBeRemovedInNextEvent = new HashSet<LocomotiveManagerListener>();
 
 	private final Map<Integer, Locomotive> numberToLocomotiveMap = new HashMap<Integer, Locomotive>();
+
+	private EventBus eventBus;
 
 	public LocomotiveManagerImpl() {
 		LOGGER.info("LocomotiveManager loaded");
@@ -156,13 +158,8 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 	}
 
 	@Override
-	public void setLocomotiveControl(
-			final LocomotiveController locomotiveControl) {
-		this.locomotiveControl = locomotiveControl;
-	}
-
-	@Override
-	public void initialize() {
+	public void initialize(final EventBus eventBus) {
+		this.eventBus = eventBus;
 		clear();
 		cleanupListeners();
 		locomotiveService.init(this);
@@ -208,6 +205,8 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 		for (final LocomotiveManagerListener l : listeners) {
 			l.locomotivesUpdated(updatedLocomotiveGroups);
 		}
+
+		eventBus.post(new LocomotivesUpdatedEvent(updatedLocomotiveGroups));
 	}
 
 	@Override
@@ -303,7 +302,6 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
 	private void putInCache(final Locomotive locomotive) {
 		addressLocomotiveCache.add(locomotive);
-		locomotiveControl.addOrUpdateLocomotive(locomotive);
 	}
 
 	private void removeFromCache(final Locomotive locomotive) {

@@ -1,6 +1,5 @@
 package ch.fork.AdHocRailway.manager.impl.locomotives;
 
-import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
@@ -9,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import com.google.common.eventbus.EventBus;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -21,18 +22,17 @@ public class LocomotiveManagerImplTest {
 	@Mock
 	private SIOLocomotiveService serviceMock;
 	@Mock
-	private LocomotiveController controllerMock;
-	@Mock
 	private LocomotiveManagerListener listenerMock;
+	@Mock
+	private EventBus eventbusMock;
 
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		locomotiveManagerImpl = new LocomotiveManagerImpl();
-		locomotiveManagerImpl.setLocomotiveControl(controllerMock);
 		locomotiveManagerImpl.setLocomotiveService(serviceMock);
 		locomotiveManagerImpl.addLocomotiveManagerListener(listenerMock);
-		locomotiveManagerImpl.initialize();
+		locomotiveManagerImpl.initialize(eventbusMock);
 
 	}
 

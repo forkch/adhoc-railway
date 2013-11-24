@@ -26,45 +26,47 @@ import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 import java.util.List;
 import java.util.SortedSet;
 
+import com.google.common.eventbus.EventBus;
+
 public interface TurnoutManager {
 
-	public abstract void initialize();
+	public abstract void initialize(final EventBus eventBus);
 
 	public abstract void addTurnoutManagerListener(
-			TurnoutManagerListener listener);
+			final TurnoutManagerListener listener);
 
 	public abstract void removeTurnoutManagerListenerInNextEvent(
-			TurnoutManagerListener turnoutAddListener);
+			final TurnoutManagerListener turnoutAddListener);
 
 	public abstract List<Turnout> getAllTurnouts();
 
-	public abstract Turnout getTurnoutByNumber(int number);
+	public abstract Turnout getTurnoutByNumber(final int number);
 
-	public abstract void addTurnoutToGroup(Turnout turnout, TurnoutGroup group);
+	public abstract void addTurnoutToGroup(final Turnout turnout, final TurnoutGroup group);
 
-	public abstract void removeTurnout(Turnout turnout);
+	public abstract void removeTurnout(final Turnout turnout);
 
-	public abstract void updateTurnout(Turnout turnout);
+	public abstract void updateTurnout(final Turnout turnout);
 
 	public abstract SortedSet<TurnoutGroup> getAllTurnoutGroups();
 
-	public abstract TurnoutGroup getTurnoutGroupByName(String name);
+	public abstract TurnoutGroup getTurnoutGroupByName(final String name);
 
-	public abstract void addTurnoutGroup(TurnoutGroup group);
+	public abstract void addTurnoutGroup(final TurnoutGroup group);
 
-	public abstract void removeTurnoutGroup(TurnoutGroup group);
+	public abstract void removeTurnoutGroup(final TurnoutGroup group);
 
-	public abstract void updateTurnoutGroup(TurnoutGroup group);
+	public abstract void updateTurnoutGroup(final TurnoutGroup group);
 
 	public int getLastProgrammedAddress();
 
 	public int getNextFreeTurnoutNumber();
 
-	public boolean isTurnoutNumberFree(int number);
+	public boolean isTurnoutNumberFree(final int number);
 
-	public void setTurnoutControl(TurnoutController turnoutControl);
+	public void setTurnoutControl(final TurnoutController turnoutControl);
 
-	public abstract void setTurnoutService(TurnoutService instance);
+	public abstract void setTurnoutService(final TurnoutService instance);
 
 	public abstract void clear();
 
