@@ -121,13 +121,13 @@ public class XMLLocomotiveService implements LocomotiveService {
 		locomotiveGroups.clear();
 		locomotives.clear();
 		if (groups != null) {
-			for (final LocomotiveGroup group : groups) {
-				group.init();
-				group.setId(UUID.randomUUID().hashCode());
-				locomotiveGroups.add(group);
-				for (final Locomotive locomotive : group.getLocomotives()) {
+			for (final LocomotiveGroup locomotiveGroup : groups) {
+				locomotiveGroup.init();
+				locomotiveGroup.setId(UUID.randomUUID().hashCode());
+				locomotiveGroups.add(locomotiveGroup);
+				for (final Locomotive locomotive : locomotiveGroup.getLocomotives()) {
 					locomotive.init();
-					locomotive.setGroup(group);
+					locomotive.setGroup(locomotiveGroup);
 					locomotive.setId(UUID.randomUUID().hashCode());
 					locomotives.add(locomotive);
 				}
