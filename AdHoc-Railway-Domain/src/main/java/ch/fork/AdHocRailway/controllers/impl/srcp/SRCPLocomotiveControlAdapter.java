@@ -118,22 +118,6 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 		SRCPLockControl.getInstance().setLockDuration(0);
 	}
 
-	@Override
-	public void addOrUpdateLocomotive(final Locomotive locomotive) {
-		if (locomotive == null) {
-			throw new IllegalArgumentException("locomotive must not be null");
-		}
-		final SRCPLocomotive srcpLocomotive = getSrcpLocomotive(locomotive);
-		if (srcpLocomotive != null) {
-			SRCPLocomotiveLocomotiveMap.remove(srcpLocomotive);
-			locomotiveSRCPLocomotiveMap.remove(locomotive);
-		}
-		final SRCPLocomotive sLocomotive = createSRCPLocomotive(locomotive);
-
-		locomotiveSRCPLocomotiveMap.put(locomotive, sLocomotive);
-		SRCPLocomotiveLocomotiveMap.put(sLocomotive, locomotive);
-	}
-
 	public void setSession(final SRCPSession session) {
 		locomotiveControl.addLocomotiveChangeListener(this, this);
 		locomotiveControl.setSession(session);
@@ -230,7 +214,18 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	}
 
 	SRCPLocomotive getSrcpLocomotive(final Locomotive locomotive) {
-		return locomotiveSRCPLocomotiveMap.get(locomotive);
+		if (locomotive == null) {
+			throw new IllegalArgumentException("locomotive must not be null");
+		}
+		SRCPLocomotive srcpLocomotive = locomotiveSRCPLocomotiveMap
+				.get(locomotive);
+		if (srcpLocomotive == null) {
+			srcpLocomotive = createSRCPLocomotive(locomotive);
+
+			locomotiveSRCPLocomotiveMap.put(locomotive, srcpLocomotive);
+			SRCPLocomotiveLocomotiveMap.put(srcpLocomotive, locomotive);
+		}
+		return srcpLocomotive;
 	}
 
 	private SRCPLocomotive createSRCPLocomotive(final Locomotive locomotive) {

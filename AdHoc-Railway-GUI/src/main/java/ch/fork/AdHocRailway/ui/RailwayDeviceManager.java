@@ -18,21 +18,13 @@ import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPPowerControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
-import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
-import ch.fork.AdHocRailway.domain.turnouts.Route;
-import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.manager.impl.locomotives.events.LocomotivesUpdatedEvent;
-import ch.fork.AdHocRailway.manager.impl.turnouts.events.RoutesUpdatedEvent;
-import ch.fork.AdHocRailway.manager.impl.turnouts.events.TurnoutsUpdatedEvent;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.AdHocRailwayIface;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
-
-import com.google.common.eventbus.Subscribe;
 
 import de.dermoba.srcp.client.CommandDataListener;
 import de.dermoba.srcp.client.InfoDataListener;
@@ -276,24 +268,4 @@ public class RailwayDeviceManager implements CommandDataListener,
 		return connected;
 	}
 
-	@Subscribe
-	public void locomotivesUpdated(final LocomotivesUpdatedEvent event) {
-		for (final Locomotive locomotive : event.getAllLocomotives()) {
-			appContext.getLocomotiveControl().addOrUpdateLocomotive(locomotive);
-		}
-	}
-
-	@Subscribe
-	public void routesUpdated(final RoutesUpdatedEvent event) {
-		for (final Route route : event.getAllRoutes()) {
-			appContext.getRouteControl().addOrUpdateRoute(route);
-		}
-	}
-
-	@Subscribe
-	public void turnoutsUpdated(final TurnoutsUpdatedEvent event) {
-		for (final Turnout turnout : event.getAllTurnouts()) {
-			appContext.getTurnoutControl().addOrUpdateTurnout(turnout);
-		}
-	}
 }

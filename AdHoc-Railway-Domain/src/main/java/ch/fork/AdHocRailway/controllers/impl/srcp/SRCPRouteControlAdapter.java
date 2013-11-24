@@ -85,14 +85,6 @@ public class SRCPRouteControlAdapter extends RouteController implements
 		}
 	}
 
-	@Override
-	public void addOrUpdateRoute(final Route route) {
-
-		final SRCPRoute sRoute = createSRCPRoute(turnoutControl, route);
-		routesSRCPRoutesMap.put(route, sRoute);
-		SRCPRoutesRoutesMap.put(sRoute, route);
-	}
-
 	private SRCPRoute createSRCPRoute(
 			final SRCPTurnoutControlAdapter turnoutControl, final Route route) {
 		final SRCPRoute sRoute = new SRCPRoute();
@@ -185,7 +177,16 @@ public class SRCPRouteControlAdapter extends RouteController implements
 	}
 
 	private SRCPRoute getSRCPRoute(final Route route) {
-		final SRCPRoute sRoute = routesSRCPRoutesMap.get(route);
+		if (route == null) {
+			throw new IllegalArgumentException("route must not be null");
+		}
+		SRCPRoute sRoute = routesSRCPRoutesMap.get(route);
+		if (sRoute == null) {
+
+			sRoute = createSRCPRoute(turnoutControl, route);
+			routesSRCPRoutesMap.put(route, sRoute);
+			SRCPRoutesRoutesMap.put(sRoute, route);
+		}
 		return sRoute;
 	}
 }

@@ -49,11 +49,6 @@ public class BrainRouteControlAdapter extends RouteController {
 	}
 
 	@Override
-	public void addOrUpdateRoute(final Route route) {
-
-	}
-
-	@Override
 	public void setRoutingDelay(final int routingDelay) {
 		this.routingDelay = routingDelay;
 	}

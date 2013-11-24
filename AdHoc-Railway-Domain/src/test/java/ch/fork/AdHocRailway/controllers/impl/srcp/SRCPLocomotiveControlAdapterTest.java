@@ -23,13 +23,12 @@ public class SRCPLocomotiveControlAdapterTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createSRCPLocomotiveFromNull() {
-		adapter.addOrUpdateLocomotive(null);
+		adapter.getSrcpLocomotive(null);
 	}
 
 	@Test
 	public void addDeltaSRCPLocomotive() {
 		final Locomotive locomotive = createLocomotive(LocomotiveType.DELTA);
-		adapter.addOrUpdateLocomotive(locomotive);
 		final SRCPLocomotive srcpLocomotive = adapter
 				.getSrcpLocomotive(locomotive);
 
@@ -41,7 +40,6 @@ public class SRCPLocomotiveControlAdapterTest {
 	@Test
 	public void addDigitalSRCPLocomotive() {
 		final Locomotive locomotive = createLocomotive(LocomotiveType.DIGITAL);
-		adapter.addOrUpdateLocomotive(locomotive);
 		final SRCPLocomotive srcpLocomotive = adapter
 				.getSrcpLocomotive(locomotive);
 
@@ -53,7 +51,6 @@ public class SRCPLocomotiveControlAdapterTest {
 	@Test
 	public void addSimulatedMFXSRCPLocomotive() {
 		final Locomotive locomotive = createLocomotive(LocomotiveType.SIMULATED_MFX);
-		adapter.addOrUpdateLocomotive(locomotive);
 		final DoubleMMDigitalLocomotive srcpLocomotive = (DoubleMMDigitalLocomotive) adapter
 				.getSrcpLocomotive(locomotive);
 
@@ -66,7 +63,6 @@ public class SRCPLocomotiveControlAdapterTest {
 	@Test
 	public void updateExistingDeltaLocomotive() {
 		final Locomotive locomotive = createLocomotive(LocomotiveType.DELTA);
-		adapter.addOrUpdateLocomotive(locomotive);
 		SRCPLocomotive srcpLocomotive = adapter.getSrcpLocomotive(locomotive);
 
 		assertTrue(srcpLocomotive instanceof MMDeltaLocomotive);
@@ -75,7 +71,6 @@ public class SRCPLocomotiveControlAdapterTest {
 
 		locomotive.setBus(2);
 		locomotive.setAddress1(3);
-		adapter.addOrUpdateLocomotive(locomotive);
 		srcpLocomotive = adapter.getSrcpLocomotive(locomotive);
 
 		assertEquals(locomotive.getBus(), srcpLocomotive.getBus());
@@ -85,7 +80,6 @@ public class SRCPLocomotiveControlAdapterTest {
 	@Test
 	public void updateExistingSimulatedMFXLocomotive() {
 		final Locomotive locomotive = createLocomotive(LocomotiveType.SIMULATED_MFX);
-		adapter.addOrUpdateLocomotive(locomotive);
 		DoubleMMDigitalLocomotive srcpLocomotive = (DoubleMMDigitalLocomotive) adapter
 				.getSrcpLocomotive(locomotive);
 
@@ -96,7 +90,6 @@ public class SRCPLocomotiveControlAdapterTest {
 		locomotive.setBus(2);
 		locomotive.setAddress1(3);
 		locomotive.setAddress2(4);
-		adapter.addOrUpdateLocomotive(locomotive);
 		srcpLocomotive = (DoubleMMDigitalLocomotive) adapter
 				.getSrcpLocomotive(locomotive);
 

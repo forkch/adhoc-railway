@@ -180,8 +180,6 @@ public abstract class LocomotiveController implements
 	public abstract void emergencyStop(final Locomotive myLocomotive)
 			throws LocomotiveException;
 
-	public abstract void addOrUpdateLocomotive(final Locomotive locomotive);
-
 	public static LocomotiveController createLocomotiveController(
 			final RailwayDevice railwayDevice) {
 		switch (railwayDevice) {

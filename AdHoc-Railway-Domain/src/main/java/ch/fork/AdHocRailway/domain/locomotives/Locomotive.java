@@ -19,6 +19,9 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -247,28 +250,26 @@ public class Locomotive extends AbstractItem implements Serializable,
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
+		final EqualsBuilder equalsBuilder = new EqualsBuilder();
 		final Locomotive other = (Locomotive) obj;
-		if (id != other.id) {
+		if (other == null) {
 			return false;
 		}
-		return true;
+		equalsBuilder.append(this.getBus(), other.getBus())
+				.append(this.getAddress1(), other.getAddress1())
+				.append(this.getAddress2(), other.getAddress2())
+				.append(this.getType(), other.getType())
+				.append(this.getFunctions(), other.getFunctions());
+
+		return equalsBuilder.build();
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + id;
-		return result;
+		final HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
+		return hashCodeBuilder.append(bus).append(address1).append(address2)
+				.append(type).append(functions).build();
+
 	}
 
 	@Override

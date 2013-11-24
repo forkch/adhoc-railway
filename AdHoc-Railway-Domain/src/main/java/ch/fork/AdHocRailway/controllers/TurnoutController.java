@@ -40,6 +40,7 @@ public abstract class TurnoutController {
 	}
 
 	public void removeTurnoutChangeListener(final TurnoutChangeListener listener) {
+		System.out.println(listener);
 		listeners.remove(listener);
 	}
 
@@ -52,19 +53,20 @@ public abstract class TurnoutController {
 
 	public abstract void toggle(final Turnout turnout) throws TurnoutException;
 
-	public abstract void toggleTest(final Turnout turnout) throws TurnoutException;
+	public abstract void toggleTest(final Turnout turnout)
+			throws TurnoutException;
 
 	public abstract void setDefaultState(final Turnout turnout)
 			throws TurnoutException;
 
-	public abstract void setStraight(final Turnout turnout) throws TurnoutException;
+	public abstract void setStraight(final Turnout turnout)
+			throws TurnoutException;
 
-	public abstract void setCurvedLeft(final Turnout turnout) throws TurnoutException;
+	public abstract void setCurvedLeft(final Turnout turnout)
+			throws TurnoutException;
 
 	public abstract void setCurvedRight(final Turnout turnout)
 			throws TurnoutException;
-
-	public abstract void addOrUpdateTurnout(final Turnout turnout);
 
 	public abstract void reloadConfiguration();
 
@@ -83,6 +85,25 @@ public abstract class TurnoutController {
 
 		}
 
+	}
+
+	public void setNonDefaultState(final Turnout turnout)
+			throws TurnoutException {
+		if (turnout.isThreeWay()) {
+			return;
+		}
+		switch (turnout.getDefaultState()) {
+		case LEFT:
+		case RIGHT:
+			setStraight(turnout);
+			break;
+		case STRAIGHT:
+			setCurvedLeft(turnout);
+			break;
+		default:
+			break;
+
+		}
 	}
 
 }

@@ -18,7 +18,6 @@
 
 package ch.fork.AdHocRailway.manager.turnouts;
 
-import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
@@ -42,7 +41,8 @@ public interface TurnoutManager {
 
 	public abstract Turnout getTurnoutByNumber(final int number);
 
-	public abstract void addTurnoutToGroup(final Turnout turnout, final TurnoutGroup group);
+	public abstract void addTurnoutToGroup(final Turnout turnout,
+			final TurnoutGroup group);
 
 	public abstract void removeTurnout(final Turnout turnout);
 
@@ -63,8 +63,6 @@ public interface TurnoutManager {
 	public int getNextFreeTurnoutNumber();
 
 	public boolean isTurnoutNumberFree(final int number);
-
-	public void setTurnoutControl(final TurnoutController turnoutControl);
 
 	public abstract void setTurnoutService(final TurnoutService instance);
 

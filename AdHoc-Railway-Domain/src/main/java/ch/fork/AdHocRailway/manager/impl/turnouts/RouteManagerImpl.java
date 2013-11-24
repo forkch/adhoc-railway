@@ -18,7 +18,18 @@
 
 package ch.fork.AdHocRailway.manager.impl.turnouts;
 
-import ch.fork.AdHocRailway.controllers.RouteController;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.log4j.Logger;
+
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
@@ -30,11 +41,8 @@ import ch.fork.AdHocRailway.manager.turnouts.RouteManagerListener;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.services.turnouts.RouteService;
 import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
-import org.apache.log4j.Logger;
 
 import com.google.common.eventbus.EventBus;
-
-import java.util.*;
 
 public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	private static final Logger LOGGER = Logger
@@ -45,8 +53,6 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	private final SortedSet<RouteGroup> routeGroups = new TreeSet<RouteGroup>();
 
 	private final Map<Integer, Route> numberToRouteCache = new HashMap<Integer, Route>();
-
-	private RouteController routeControl;
 
 	private final Set<RouteManagerListener> listeners = new HashSet<RouteManagerListener>();
 	private final Set<RouteManagerListener> listenersToBeRemovedInNextEvent = new HashSet<RouteManagerListener>();
@@ -258,11 +264,6 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 	}
 
 	@Override
-	public void setRouteControl(final RouteController routeControl) {
-		this.routeControl = routeControl;
-	}
-
-	@Override
 	public void routesUpdated(final SortedSet<RouteGroup> updatedRouteGroups) {
 		LOGGER.info("routesUpdated: " + updatedRouteGroups);
 		cleanupListeners();
@@ -368,7 +369,6 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 
 	private void putInCache(final Route route) {
 		numberToRouteCache.put(route.getNumber(), route);
-		routeControl.addOrUpdateRoute(route);
 
 	}
 

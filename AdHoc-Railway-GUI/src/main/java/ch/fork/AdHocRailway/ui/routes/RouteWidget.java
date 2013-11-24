@@ -159,7 +159,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
 				@Override
 				public void run() {
-					if (route.isRouting()) {
+					if (route.isEnabled()) {
 						iconLabel.setIcon(routeStartIcon);
 						routingProgress.setValue(routingProgress.getMaximum());
 					} else {

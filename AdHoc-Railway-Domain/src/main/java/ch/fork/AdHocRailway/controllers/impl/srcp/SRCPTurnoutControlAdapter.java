@@ -7,6 +7,7 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.turnouts.*;
+
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 
 	@Override
 	public void setCurvedLeft(final Turnout turnout) throws TurnoutException {
-		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
 		try {
 			turnoutControl.setCurvedLeft(sTurnout);
 		} catch (final SRCPModelException e) {
@@ -45,7 +46,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 
 	@Override
 	public void setCurvedRight(final Turnout turnout) throws TurnoutException {
-		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
 		try {
 			turnoutControl.setCurvedRight(sTurnout);
 		} catch (final SRCPModelException e) {
@@ -56,7 +57,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 
 	@Override
 	public void setDefaultState(final Turnout turnout) throws TurnoutException {
-		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
 		try {
 			turnoutControl.setDefaultState(sTurnout);
 		} catch (final SRCPModelException e) {
@@ -67,13 +68,28 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 
 	@Override
 	public void setStraight(final Turnout turnout) throws TurnoutException {
-		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
 		try {
 			turnoutControl.setStraight(sTurnout);
 		} catch (final SRCPModelException e) {
 			throw new TurnoutException("Turnout Error", e);
 		}
 
+	}
+
+	SRCPTurnout getSRCPTurnout(final Turnout turnout) {
+		if (turnout == null) {
+			throw new IllegalArgumentException("turnout must not be null");
+		}
+		SRCPTurnout srcpTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+		if (srcpTurnout == null) {
+			srcpTurnout = createSRCPTurnout(turnout);
+
+			turnoutsSRCPTurnoutsMap.put(turnout, srcpTurnout);
+			SRCPTurnoutsTurnoutsMap.put(srcpTurnout, turnout);
+			turnoutControl.addTurnout(srcpTurnout);
+		}
+		return srcpTurnout;
 	}
 
 	@Override
@@ -101,7 +117,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 
 	@Override
 	public void toggle(final Turnout turnout) throws TurnoutException {
-		final SRCPTurnout sTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
+		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
 
 		try {
 			turnoutControl.toggle(sTurnout);
@@ -116,16 +132,6 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 	}
 
 	@Override
-	public void addOrUpdateTurnout(final Turnout turnout) {
-		turnoutControl.removeTurnout(getSRCPTurnout(turnout));
-		final SRCPTurnout sTurnout = createSRCPTurnout(turnout);
-
-		turnoutsSRCPTurnoutsMap.put(turnout, sTurnout);
-		SRCPTurnoutsTurnoutsMap.put(sTurnout, turnout);
-		turnoutControl.addTurnout(sTurnout);
-	}
-
-	@Override
 	public void turnoutChanged(final SRCPTurnout changedTurnout,
 			final SRCPTurnoutState newState) {
 		informListeners(changedTurnout);
@@ -134,10 +140,6 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 	public void setSession(final SRCPSession session) {
 		turnoutControl.addTurnoutChangeListener(this);
 		turnoutControl.setSession(session);
-	}
-
-	public SRCPTurnout getSRCPTurnout(final Turnout turnout) {
-		return turnoutsSRCPTurnoutsMap.get(turnout);
 	}
 
 	private void applyNewSettings(final Turnout turnout) {

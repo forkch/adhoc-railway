@@ -76,6 +76,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		widgetEnabled = true;
 
 		initGUI();
+		ctx.getTurnoutControl().addTurnoutChangeListener(this);
 		updateTurnout();
 		TurnoutHelper.validateTurnout(turnoutManager, turnout, this);
 		setEnabled(true);
@@ -105,16 +106,12 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	}
 
 	public void updateTurnout() {
-		final TurnoutController turnoutControl = ctx.getTurnoutControl();
-		turnoutControl.removeTurnoutChangeListener(this);
-
 		numberLabel.setText(Integer.toString(turnout.getNumber()));
 
 		final String turnoutDescription = TurnoutHelper
 				.getTurnoutDescription(turnout);
 		setToolTipText(turnoutDescription);
 		turnoutCanvas.setToolTipText(turnoutDescription);
-		turnoutControl.addTurnoutChangeListener(this);
 	}
 
 	private class MouseAction extends MouseAdapter {
@@ -156,7 +153,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 					turnout.getTurnoutGroup());
 			TurnoutHelper.validateTurnout(turnoutManager, turnout,
 					TurnoutWidget.this);
-			turnoutControl.addOrUpdateTurnout(turnout);
 			turnoutControl.addTurnoutChangeListener(TurnoutWidget.this);
 
 			turnoutChanged(turnout);
@@ -175,6 +171,9 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 				@Override
 				public void run() {
 					numberLabel.setText(Integer.toString(turnout.getNumber()));
+					if (actualTurnoutState == null) {
+						actualTurnoutState = TurnoutState.UNDEF;
+					}
 					turnoutCanvas.setTurnoutState(actualTurnoutState);
 					switch (actualTurnoutState) {
 					case LEFT:
@@ -213,12 +212,8 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	public void setEnabled(final boolean enabled) {
 		super.setEnabled(enabled);
 
-		final TurnoutController turnoutControl = ctx.getTurnoutControl();
-		turnoutControl.removeTurnoutChangeListener(this);
 		if (!enabled) {
 			setBackground(new Color(255, 177, 177));
-		} else {
-			turnoutControl.addTurnoutChangeListener(this);
 		}
 		widgetEnabled = enabled;
 		turnoutCanvas.setTurnoutState(TurnoutState.UNDEF);

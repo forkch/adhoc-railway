@@ -39,7 +39,6 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;
@@ -292,6 +291,10 @@ public class KeyControl extends SimpleInternalFrame {
 				turnoutControl.setStraight(searchedTurnout);
 			} else if (this instanceof CurvedRightAction) {
 				turnoutControl.setCurvedRight(searchedTurnout);
+			} else if (this instanceof EnableRouteAction) {
+				turnoutControl.setNonDefaultState(searchedTurnout);
+			} else {
+				turnoutControl.setDefaultState(searchedTurnout);
 			}
 			updateHistory(searchedTurnout);
 		}

@@ -132,11 +132,6 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
 	}
 
-	@Override
-	public void addOrUpdateLocomotive(final Locomotive locomotive) {
-
-	}
-
 	/**
 	 * Locking is not supported for BrainLocomotives
 	 */

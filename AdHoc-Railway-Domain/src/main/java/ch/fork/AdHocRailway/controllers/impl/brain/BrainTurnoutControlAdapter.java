@@ -119,11 +119,6 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 	}
 
 	@Override
-	public void addOrUpdateTurnout(final Turnout turnout) {
-		turnout.setActualState(TurnoutState.UNDEF);
-	}
-
-	@Override
 	public void reloadConfiguration() {
 
 	}

@@ -66,7 +66,6 @@ public class PersistenceManager {
 			turnoutManager = new TurnoutManagerImpl();
 		}
 		appContext.setTurnoutManager(turnoutManager);
-		turnoutManager.setTurnoutControl(appContext.getTurnoutControl());
 		if (useAdHocServer) {
 			turnoutManager.setTurnoutService(new SIOTurnoutService());
 		} else {
@@ -82,7 +81,6 @@ public class PersistenceManager {
 			routeManager = new RouteManagerImpl(turnoutManager);
 		}
 		appContext.setRouteManager(routeManager);
-		routeManager.setRouteControl(appContext.getRouteControl());
 		if (useAdHocServer) {
 			routeManager.setRouteService(new SIORouteService());
 		} else {

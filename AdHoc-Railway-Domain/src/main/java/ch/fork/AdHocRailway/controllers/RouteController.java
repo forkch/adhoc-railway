@@ -40,8 +40,6 @@ public abstract class RouteController {
 
 	public abstract void toggleTest(final Route route) throws RouteException;
 
-	public abstract void addOrUpdateRoute(final Route route);
-
 	public void addRouteChangeListener(final Route route,
 			final RouteChangeListener listener) {
 

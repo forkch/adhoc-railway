@@ -18,19 +18,31 @@
 
 package ch.fork.AdHocRailway.manager.impl.turnouts;
 
-import ch.fork.AdHocRailway.controllers.TurnoutController;
-import ch.fork.AdHocRailway.domain.turnouts.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.log4j.Logger;
+
+import ch.fork.AdHocRailway.domain.turnouts.Route;
+import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.manager.impl.turnouts.events.TurnoutsUpdatedEvent;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerListener;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
-import org.apache.log4j.Logger;
 
 import com.google.common.eventbus.EventBus;
-
-import java.util.*;
 
 public class TurnoutManagerImpl implements TurnoutManager,
 		TurnoutServiceListener {
@@ -42,8 +54,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	private TurnoutService turnoutService;
 
 	private final SortedSet<TurnoutGroup> turnoutGroups = new TreeSet<TurnoutGroup>();
-
-	private TurnoutController turnoutControl = null;
 
 	private final Set<TurnoutManagerListener> listeners = new HashSet<TurnoutManagerListener>();
 
@@ -225,11 +235,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
 	}
 
 	@Override
-	public void setTurnoutControl(final TurnoutController turnoutControl) {
-		this.turnoutControl = turnoutControl;
-	}
-
-	@Override
 	public void turnoutsUpdated(final SortedSet<TurnoutGroup> updatedTurnouts) {
 		LOGGER.info("turnoutsUpdated: " + updatedTurnouts);
 		cleanupListeners();
@@ -340,7 +345,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
 	private void putInCache(final Turnout turnout) {
 		numberToTurnoutCache.put(turnout.getNumber(), turnout);
-		turnoutControl.addOrUpdateTurnout(turnout);
 	}
 
 	private void removeFromCache(final Turnout turnout) {
