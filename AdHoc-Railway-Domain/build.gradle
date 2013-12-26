@@ -23,8 +23,3 @@ jar {
         attributes 'Implementation-Title': 'AdHoc-Railway-Domain', 'Implementation-Version': version
     }
 }
-
-task wrapper(type: Wrapper) {
-}
-
-    
