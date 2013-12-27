@@ -5,6 +5,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
 import de.dermoba.srcp.client.SRCPSession;
+import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.turnouts.*;
 
@@ -235,6 +236,35 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		case UNDEF:
 		default:
 			return TurnoutState.UNDEF;
+		}
+	}
+
+	@Override
+	public void setTurnoutWithAddress(final int address,
+			final TurnoutState state) {
+		try {
+			turnoutControl.setTurnoutWithAddress(address,
+					getSRCPTurnoutStateFromTurnoutState(state));
+		} catch (final SRCPException e) {
+			throw new TurnoutException("failed to set turnout with address "
+					+ address + " " + state);
+		}
+
+	}
+
+	private SRCPTurnoutState getSRCPTurnoutStateFromTurnoutState(
+			final TurnoutState state) {
+		switch (state) {
+		case LEFT:
+			return SRCPTurnoutState.LEFT;
+		case RIGHT:
+			return SRCPTurnoutState.RIGHT;
+		case STRAIGHT:
+
+			return SRCPTurnoutState.STRAIGHT;
+		case UNDEF:
+		default:
+			return SRCPTurnoutState.UNDEF;
 		}
 	}
 }

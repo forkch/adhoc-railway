@@ -119,6 +119,17 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 	}
 
 	@Override
+	public void setTurnoutWithAddress(final int address,
+			final TurnoutState straight) {
+		if (TurnoutState.STRAIGHT == straight) {
+			brain.write("XT " + address + " " + "g");
+		} else {
+			brain.write("XT " + address + " " + "r");
+	
+		}
+	}
+
+	@Override
 	public void reloadConfiguration() {
 
 	}

@@ -18,15 +18,12 @@
 
 package ch.fork.AdHocRailway.ui.turnouts;
 
+import ch.fork.AdHocRailway.controllers.TurnoutController;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.tools.SwingUtils;
 import ch.fork.AdHocRailway.ui.widgets.ConfigurationDialog;
-import de.dermoba.srcp.client.SRCPSession;
-import de.dermoba.srcp.common.exception.SRCPException;
-import de.dermoba.srcp.devices.GA;
-
 import javax.swing.*;
-
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -37,13 +34,11 @@ public class TurnoutProgrammer extends ConfigurationDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = 5978084216666903357L;
-	private final SRCPSession session;
 	private final TurnoutContext ctx;
 
 	public TurnoutProgrammer(final JFrame owner, final TurnoutContext ctx) {
 		super(owner, "Turnout Programmer");
 		this.ctx = ctx;
-		this.session = ctx.getSession();
 		initGUI();
 	}
 
@@ -56,14 +51,13 @@ public class TurnoutProgrammer extends ConfigurationDialog {
 			button.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
+
+					final TurnoutController turnoutControl = ctx
+							.getTurnoutControl();
 					final int address = Integer.parseInt(e.getActionCommand());
-					final GA ga = new GA(session, 1);
-					ga.setAddress(address);
-					try {
-						ga.set(0, 1, 1000);
-					} catch (final SRCPException e1) {
-						ctx.getMainApp().handleException(e1);
-					}
+					turnoutControl.setTurnoutWithAddress(address,
+							TurnoutState.STRAIGHT);
+
 				}
 			});
 		}
