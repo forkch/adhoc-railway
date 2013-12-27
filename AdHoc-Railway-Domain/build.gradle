@@ -9,7 +9,7 @@ dependencies {
     	
 	compile fileTree (dir: 'lib', includes: ['*.jar'])
 	 
-    compile 'de.dermoba:jsrcpc:2.+'
+    compile 'de.dermoba:jsrcpc:2.2.+'
     compile 'com.thoughtworks.xstream:xstream:1.4.4'
     compile 'org.rxtx:rxtx:2.1.7'
     compile 'org.json:json:20090211'
