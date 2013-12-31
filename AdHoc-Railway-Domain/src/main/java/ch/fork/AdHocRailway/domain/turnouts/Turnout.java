@@ -76,6 +76,12 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
 
 	}
 
+	@Override
+	public void init() {
+		super.init();
+		actualState = TurnoutState.UNDEF;
+	}
+
 	public int getId() {
 		return id;
 	}

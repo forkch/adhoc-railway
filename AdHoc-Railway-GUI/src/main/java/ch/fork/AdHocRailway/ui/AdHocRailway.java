@@ -299,7 +299,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		preferencesItem.setEnabled(!connected);
 		preferencesToolBarButton.setEnabled(!connected);
 		disconnectToolBarButton.setEnabled(connected);
-		powerControlPanel.setConnected(connected);
 	}
 
 	private void loadLastFile() {
@@ -368,7 +367,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		trackControlPanel = new TrackControlPanel(appContext);
 		locomotiveControlPanel = new LocomotiveControlPanel(appContext);
 		powerControlPanel = new PowerControlPanel(appContext);
-		powerControlPanel.setConnected(false);
 
 		mainPanel.add(segmentPanel, "grow");
 		mainPanel.add(trackControlPanel, "grow, wrap");

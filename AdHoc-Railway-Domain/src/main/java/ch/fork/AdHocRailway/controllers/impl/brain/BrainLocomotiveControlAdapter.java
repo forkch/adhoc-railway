@@ -128,7 +128,9 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 	@Override
 	public void emergencyStop(final Locomotive myLocomotive)
 			throws LocomotiveException {
-		// TODO Auto-generated method stub
+		setFunction(myLocomotive, myLocomotive.getEmergencyStopFunction(),
+				true, 0);
+		setSpeed(myLocomotive, 0, myLocomotive.getCurrentFunctions());
 
 	}
 

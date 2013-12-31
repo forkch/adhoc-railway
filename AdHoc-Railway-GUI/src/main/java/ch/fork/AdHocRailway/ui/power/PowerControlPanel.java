@@ -8,14 +8,20 @@ import ch.fork.AdHocRailway.domain.power.PowerSupply;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.PowerContext;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
 import de.dermoba.srcp.model.power.SRCPPowerSupply;
 import net.miginfocom.swing.MigLayout;
+
 import org.apache.log4j.Logger;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,15 +50,13 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 	public PowerControlPanel(final PowerContext ctx) {
 		super();
 		this.ctx = ctx;
-		final PowerController powerController = ctx.getPowerControl();
-
+		final EventBus mainBus = ctx.getMainBus();
+		mainBus.register(this);
 		stopIcon = ImageTools.createImageIconFromIconSet("stop_22.png");
 		goIcon = ImageTools.createImageIconFromIconSet("go_22.png");
 		shortcutIcon = ImageTools.createImageIconFromIconSet("shortcut_22.png");
-
-		powerController.addPowerChangeListener(this);
 		initGUI();
-		setConnected(false);
+		connectedToRailwayDevice(new ConnectionToRailwayEvent(false));
 	}
 
 	private void initGUI() {
@@ -69,18 +73,24 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 
 	}
 
-	public void setConnected(final boolean b) {
-		if (b) {
+	@Subscribe
+	public void connectedToRailwayDevice(final ConnectionToRailwayEvent event) {
+		final boolean connected = event.isConnected();
+		final PowerController powerController = ctx.getPowerControl();
+		if (connected) {
+			powerController.addPowerChangeListener(this);
 			allBoostersOn.setEnabled(true);
 			allBoostersOff.setEnabled(true);
 		} else {
+			powerController.removePowerChangeListener(this);
 			allBoostersOn.setEnabled(false);
 			allBoostersOff.setEnabled(false);
 		}
 		for (final JToggleButton toggleButton : numberToPowerToggleButtons
 				.values()) {
-			toggleButton.setEnabled(b);
+			toggleButton.setEnabled(connected);
 		}
+
 	}
 
 	public void powerSupplyChanged(final SRCPPowerSupply powerSupply,
