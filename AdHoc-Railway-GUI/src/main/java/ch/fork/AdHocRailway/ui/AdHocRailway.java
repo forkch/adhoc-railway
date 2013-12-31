@@ -668,14 +668,16 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				.fromString(preferences
 						.getStringValue(PreferencesKeys.RAILWAY_DEVICE));
 
-		if (railwayDevice.equals(RailwayDevice.SRCP)) {
+		if (RailwayDevice.SRCP.equals(railwayDevice)) {
 			final String hostname = preferences
 					.getStringValue(PreferencesKeys.SRCP_HOSTNAME);
 			railwayDeviceLabelLabel.setText("SRCP: " + hostname);
-		} else if (railwayDevice.equals(RailwayDevice.ADHOC_BRAIN)) {
+		} else if (RailwayDevice.ADHOC_BRAIN.equals(railwayDevice)) {
 			final String adhocBrainPort = preferences
 					.getStringValue(PreferencesKeys.ADHOC_BRAIN_PORT);
 			railwayDeviceLabelLabel.setText("AdHoc-Brain: " + adhocBrainPort);
+		} else {
+			railwayDeviceLabelLabel.setText("please configure railway device");
 		}
 	}
 

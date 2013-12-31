@@ -25,31 +25,79 @@ public abstract class PowerController {
 		listeners.clear();
 	}
 
-	public abstract void addOrUpdatePowerSupply(PowerSupply supply);
+	public abstract void addOrUpdatePowerSupply(final PowerSupply supply);
 
-	public abstract void boosterOn(Booster booster);
+	public abstract void boosterOn(final Booster booster);
 
-	public abstract void boosterOff(Booster booster);
+	public abstract void boosterOff(final Booster booster);
 
-	public abstract void toggleBooster(Booster booster);
+	public abstract void toggleBooster(final Booster booster);
 
-	public abstract void powerOn(PowerSupply supply);
+	public abstract void powerOn(final PowerSupply supply);
 
-	public abstract void powerOff(PowerSupply supply);
+	public abstract void powerOff(final PowerSupply supply);
 
-	public abstract PowerSupply getPowerSupply(int busNumber);
+	public abstract PowerSupply getPowerSupply(final int busNumber);
 
 	public static PowerController createPowerController(
 			final RailwayDevice railwayDevice) {
+		if (railwayDevice == null) {
+			return new NullPowerController();
+		}
 		switch (railwayDevice) {
 		case ADHOC_BRAIN:
 			return new BrainPowerControlAdapter(BrainController.getInstance());
 		case SRCP:
 			return new SRCPPowerControlAdapter();
 		default:
-			throw new IllegalArgumentException("unknown railway-device"
-					+ railwayDevice);
+			return new NullPowerController();
 
+		}
+
+	}
+
+	static class NullPowerController extends PowerController {
+
+		@Override
+		public void addOrUpdatePowerSupply(final PowerSupply supply) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void boosterOn(final Booster booster) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void boosterOff(final Booster booster) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void toggleBooster(final Booster booster) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void powerOn(final PowerSupply supply) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void powerOff(final PowerSupply supply) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public PowerSupply getPowerSupply(final int busNumber) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 	}

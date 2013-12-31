@@ -70,23 +70,23 @@ public abstract class TurnoutController {
 			throws TurnoutException;
 
 	public abstract void setTurnoutWithAddress(final int address,
-	final TurnoutState straight);
+			final TurnoutState straight);
 
 	public abstract void reloadConfiguration();
 
 	public static TurnoutController createTurnoutController(
 			final RailwayDevice railwayDevice) {
 
+		if (railwayDevice == null) {
+			return new NullTurnoutController();
+		}
 		switch (railwayDevice) {
 		case ADHOC_BRAIN:
 			return new BrainTurnoutControlAdapter(BrainController.getInstance());
 		case SRCP:
 			return new SRCPTurnoutControlAdapter();
 		default:
-
-			throw new IllegalArgumentException("unknown railway-device"
-					+ railwayDevice);
-
+			return new NullTurnoutController();
 		}
 
 	}
@@ -108,6 +108,62 @@ public abstract class TurnoutController {
 			break;
 
 		}
+	}
+
+	static class NullTurnoutController extends TurnoutController {
+
+		@Override
+		public void toggle(final Turnout turnout) throws TurnoutException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void toggleTest(final Turnout turnout) throws TurnoutException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setDefaultState(final Turnout turnout)
+				throws TurnoutException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setStraight(final Turnout turnout) throws TurnoutException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setCurvedLeft(final Turnout turnout)
+				throws TurnoutException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setCurvedRight(final Turnout turnout)
+				throws TurnoutException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setTurnoutWithAddress(final int address,
+				final TurnoutState straight) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void reloadConfiguration() {
+			// TODO Auto-generated method stub
+
+		}
+
 	}
 
 }

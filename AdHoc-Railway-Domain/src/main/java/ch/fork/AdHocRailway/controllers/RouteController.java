@@ -76,6 +76,9 @@ public abstract class RouteController {
 	public static RouteController createLocomotiveController(
 			final RailwayDevice railwayDevice,
 			final TurnoutController turnoutController) {
+		if (railwayDevice == null) {
+			return new NullRouteController();
+		}
 		switch (railwayDevice) {
 		case ADHOC_BRAIN:
 			return new BrainRouteControlAdapter(turnoutController);
@@ -83,11 +86,44 @@ public abstract class RouteController {
 			return new SRCPRouteControlAdapter(
 					(SRCPTurnoutControlAdapter) turnoutController);
 		default:
-			throw new IllegalArgumentException("unknown railway-device"
-					+ railwayDevice);
+			return new NullRouteController();
 
 		}
 	}
 
 	public abstract void setRoutingDelay(final int intValue);
+
+	static class NullRouteController extends RouteController {
+
+		@Override
+		public void enableRoute(final Route r) throws RouteException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void disableRoute(final Route r) throws RouteException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void toggle(final Route route) throws RouteException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void toggleTest(final Route route) throws RouteException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setRoutingDelay(final int intValue) {
+			// TODO Auto-generated method stub
+
+		}
+
+	}
 }

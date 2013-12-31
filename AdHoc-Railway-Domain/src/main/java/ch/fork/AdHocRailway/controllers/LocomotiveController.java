@@ -23,6 +23,7 @@ import ch.fork.AdHocRailway.controllers.impl.brain.BrainLocomotiveControlAdapter
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
+
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -182,6 +183,9 @@ public abstract class LocomotiveController implements
 
 	public static LocomotiveController createLocomotiveController(
 			final RailwayDevice railwayDevice) {
+		if (railwayDevice == null) {
+			return new NullLocomotiveController();
+		}
 		switch (railwayDevice) {
 		case ADHOC_BRAIN:
 			return new BrainLocomotiveControlAdapter(
@@ -189,9 +193,69 @@ public abstract class LocomotiveController implements
 		case SRCP:
 			return new SRCPLocomotiveControlAdapter();
 		default:
-			throw new IllegalArgumentException("unknown railway-device"
-					+ railwayDevice);
+			return new NullLocomotiveController();
 
 		}
+	}
+
+	static class NullLocomotiveController extends LocomotiveController {
+
+		@Override
+		public boolean isLocked(final Locomotive object)
+				throws LockingException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isLockedByMe(final Locomotive object)
+				throws LockingException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean acquireLock(final Locomotive object)
+				throws LockingException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean releaseLock(final Locomotive object)
+				throws LockingException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void toggleDirection(final Locomotive locomotive)
+				throws LocomotiveException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setSpeed(final Locomotive locomotive, final int speed,
+				final boolean[] functions) throws LocomotiveException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setFunction(final Locomotive locomotive,
+				final int functionNumber, final boolean state,
+				final int deactivationDelay) throws LocomotiveException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void emergencyStop(final Locomotive myLocomotive)
+				throws LocomotiveException {
+			// TODO Auto-generated method stub
+
+		}
+
 	}
 }
