@@ -163,9 +163,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		adhocDeviceComboBox = new JComboBox<RailwayDevice>();
 		for (final RailwayDevice device : RailwayDevice.values()) {
-			if (!RailwayDevice.UNKNOWN.equals(device)) {
 				adhocDeviceComboBox.addItem(device);
-			}
 		}
 
 		adHocBrainPort = new JComboBox<String>();

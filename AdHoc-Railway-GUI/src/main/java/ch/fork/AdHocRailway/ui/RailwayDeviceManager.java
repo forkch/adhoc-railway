@@ -127,19 +127,26 @@ public class RailwayDeviceManager implements CommandDataListener,
 				.getStringValue(RAILWAY_DEVICE);
 		final RailwayDevice railwayDevive = RailwayDevice
 				.fromString(railwayDeviceString);
-		if (railwayDevive.equals(RailwayDevice.SRCP)) {
+		if (RailwayDevice.SRCP.equals(railwayDevive)) {
 			final String host = preferences.getStringValue(SRCP_HOSTNAME);
 			final int port = preferences.getIntValue(SRCP_PORT);
 			connectToSRCPServer(host, port);
-		} else {
+		} else if(RailwayDevice.ADHOC_BRAIN.equals(railwayDevive)){
 			connectToBrain(preferences.getStringValue(ADHOC_BRAIN_PORT));
-		}
+		} else {
+            connectToNullDevice();
+        }
 
 		connected = true;
 		appContext.getMainBus().post(new ConnectionToRailwayEvent(true));
 	}
 
-	public void disconnect() {
+    private void connectToNullDevice() {
+
+
+    }
+
+    public void disconnect() {
 
 		final String railwayDeviceString = preferences
 				.getStringValue(RAILWAY_DEVICE);

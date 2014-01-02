@@ -156,6 +156,7 @@ public class KeyControl extends SimpleInternalFrame {
 			w = new TurnoutWidget(ctx, turnout, true);
 		} else if (obj instanceof Route) {
 			w = new RouteWidget(ctx, (Route) obj, false);
+
 		} else {
 			return;
 		}
@@ -284,6 +285,7 @@ public class KeyControl extends SimpleInternalFrame {
 				return;
 			}
 
+            updateHistory(searchedTurnout);
 			final TurnoutController turnoutControl = ctx.getTurnoutControl();
 			if (this instanceof CurvedLeftAction) {
 				turnoutControl.setCurvedLeft(searchedTurnout);
@@ -296,7 +298,6 @@ public class KeyControl extends SimpleInternalFrame {
 			} else {
 				turnoutControl.setDefaultState(searchedTurnout);
 			}
-			updateHistory(searchedTurnout);
 		}
 
 		private void handleRouteChange(final ActionEvent e,
@@ -309,13 +310,14 @@ public class KeyControl extends SimpleInternalFrame {
 			if (searchedRoute == null) {
 				return;
 			}
-			final RouteController routeControl = ctx.getRouteControl();
+            updateHistory(searchedRoute);
+
+            final RouteController routeControl = ctx.getRouteControl();
 			if (this instanceof EnableRouteAction) {
 				routeControl.enableRoute(searchedRoute);
 			} else if (this instanceof DisableRouteAction) {
 				routeControl.disableRoute(searchedRoute);
 			}
-			updateHistory(searchedRoute);
 		}
 
 		private void handleLocomotiveChange(final ActionEvent e,

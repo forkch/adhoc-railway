@@ -132,22 +132,19 @@ public class BrainController {
         }
         LOGGER.info(str);
         try {
-        final byte[] bytes = str.getBytes(Charset.forName("US-ASCII"));
-
-        for (final byte b : bytes) {
-
+            final byte[] bytes = str.getBytes(Charset.forName("US-ASCII"));
+            for (final byte b : bytes) {
                 out.write(b);
-
-        }
-        this.out.write(0x0d);
+            }
+            this.out.write(0x0d);
         } catch (IOException e) {
-         throw new BrainException("error writing " + str + " to the brain", e);
+            throw new BrainException("error writing " + str + " to the brain", e);
         }
     }
 
     /**
      * @return A HashSet containing the CommPortIdentifier for all serial ports
-     *         that are not currently being used.
+     * that are not currently being used.
      */
     @SuppressWarnings("rawtypes")
     private HashSet<CommPortIdentifier> getAvailableSerialPorts() throws PortInUseException {

@@ -26,9 +26,6 @@ jar {
         attributes 'Implementation-Title': 'AdHoc-Railway-GUI', 'Implementation-Version': version
     }
 }
-applicationDistribution.from('etc') {
-    into "etc"
-}
 
 startScripts {
     doLast {

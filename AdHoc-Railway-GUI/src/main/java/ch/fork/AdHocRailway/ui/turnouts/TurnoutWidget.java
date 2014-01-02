@@ -26,9 +26,11 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.ui.ExceptionProcessor;
 import ch.fork.AdHocRailway.ui.UIConstants;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
+import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -75,12 +77,23 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		turnoutManager = ctx.getTurnoutManager();
 		widgetEnabled = true;
 
+        ctx.getMainBus().register(this);
+
 		initGUI();
-		ctx.getTurnoutControl().addTurnoutChangeListener(this);
 		updateTurnout();
 		TurnoutHelper.validateTurnout(turnoutManager, turnout, this);
+        ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
 		setEnabled(true);
 	}
+
+    @Subscribe
+    public void connectedToRailwayDevice(ConnectionToRailwayEvent event) {
+        if(event.isConnected())  {
+            ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
+        }   else {
+            ctx.getTurnoutControl().removeTurnoutChangeListener(turnout, this);
+        }
+    }
 
 	private void initGUI() {
 		turnoutCanvas = new TurnoutCanvas(turnout);
@@ -122,7 +135,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			}
 
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
-				try {
 					final TurnoutController turnoutControl = ctx
 							.getTurnoutControl();
 					if (!testMode) {
@@ -130,9 +142,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 					} else {
 						turnoutControl.toggleTest(turnout);
 					}
-				} catch (final TurnoutException e1) {
-					ExceptionProcessor.getInstance().processException(e1);
-				}
 			} else if (e.getClickCount() == 1
 					&& e.getButton() == MouseEvent.BUTTON3) {
 
@@ -148,12 +157,12 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			}
 
 			final TurnoutController turnoutControl = ctx.getTurnoutControl();
-			turnoutControl.removeTurnoutChangeListener(TurnoutWidget.this);
+			turnoutControl.removeGeneralTurnoutChangeListener(TurnoutWidget.this);
 			new TurnoutConfig(ctx.getMainFrame(), ctx, turnout,
 					turnout.getTurnoutGroup());
 			TurnoutHelper.validateTurnout(turnoutManager, turnout,
 					TurnoutWidget.this);
-			turnoutControl.addTurnoutChangeListener(TurnoutWidget.this);
+			turnoutControl.addGeneralTurnoutChangeListener(TurnoutWidget.this);
 
 			turnoutChanged(turnout);
 		}

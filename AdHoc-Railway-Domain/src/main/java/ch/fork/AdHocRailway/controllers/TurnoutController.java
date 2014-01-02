@@ -18,152 +18,156 @@
 
 package ch.fork.AdHocRailway.controllers;
 
+import ch.fork.AdHocRailway.controllers.impl.RouteChangingThread;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainTurnoutControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class TurnoutController {
 
-	protected final List<TurnoutChangeListener> listeners = new ArrayList<TurnoutChangeListener>();
+    protected final Map<Turnout, List<TurnoutChangeListener>> listeners = Maps.newHashMap();
+    protected final List<TurnoutChangeListener> generalListeners = Lists.newLinkedList();
 
-	public void addTurnoutChangeListener(final TurnoutChangeListener listener) {
-		listeners.add(listener);
-	}
+    public void addGeneralTurnoutChangeListener(final TurnoutChangeListener listener) {
+        generalListeners.add(listener);
+    }
 
-	public void removeAllTurnoutChangeListener() {
-		listeners.clear();
-	}
+    public void addTurnoutChangeListener(final Turnout turnout, final TurnoutChangeListener listener) {
+        List<TurnoutChangeListener> turnoutChangeListeners = listeners.get(turnout);
+        if (turnoutChangeListeners == null) {
+            turnoutChangeListeners = Lists.newLinkedList();
+            listeners.put(turnout, turnoutChangeListeners);
+        }
+        turnoutChangeListeners.add(listener);
+    }
 
-	public void removeTurnoutChangeListener(final TurnoutChangeListener listener) {
-		System.out.println(listener);
-		listeners.remove(listener);
-	}
+    public void removeAllTurnoutChangeListener() {
+        listeners.clear();
+    }
 
-	protected void informListeners(final Turnout turnout) {
+    public void removeTurnoutChangeListener(final Turnout turnout, final TurnoutChangeListener listener) {
+        listeners.get(turnout).remove(listener);
+    }
 
-		for (final TurnoutChangeListener scl : listeners) {
-			scl.turnoutChanged(turnout);
-		}
-	}
+    protected void informListeners(final Turnout turnout) {
+        for (final TurnoutChangeListener scl : generalListeners) {
+            scl.turnoutChanged(turnout);
+        }
+        for (final TurnoutChangeListener scl : listeners.get(turnout)) {
+            scl.turnoutChanged(turnout);
+        }
+    }
 
-	public abstract void toggle(final Turnout turnout) throws TurnoutException;
+    public abstract void toggle(final Turnout turnout);
 
-	public abstract void toggleTest(final Turnout turnout)
-			throws TurnoutException;
+    public abstract void toggleTest(final Turnout turnout);
 
-	public abstract void setDefaultState(final Turnout turnout)
-			throws TurnoutException;
+    public abstract void setDefaultState(final Turnout turnout);
 
-	public abstract void setStraight(final Turnout turnout)
-			throws TurnoutException;
+    public abstract void setStraight(final Turnout turnout);
 
-	public abstract void setCurvedLeft(final Turnout turnout)
-			throws TurnoutException;
+    public abstract void setCurvedLeft(final Turnout turnout);
 
-	public abstract void setCurvedRight(final Turnout turnout)
-			throws TurnoutException;
+    public abstract void setCurvedRight(final Turnout turnout);
 
-	public abstract void setTurnoutWithAddress(final int address,
-			final TurnoutState straight);
+    public abstract void setTurnoutWithAddress(final int address,
+                                               final TurnoutState state);
 
-	public abstract void reloadConfiguration();
+    public abstract void reloadConfiguration();
 
-	public static TurnoutController createTurnoutController(
-			final RailwayDevice railwayDevice) {
+    public static TurnoutController createTurnoutController(
+            final RailwayDevice railwayDevice) {
 
-		if (railwayDevice == null) {
-			return new NullTurnoutController();
-		}
-		switch (railwayDevice) {
-		case ADHOC_BRAIN:
-			return new BrainTurnoutControlAdapter(BrainController.getInstance());
-		case SRCP:
-			return new SRCPTurnoutControlAdapter();
-		default:
-			return new NullTurnoutController();
-		}
+        if (railwayDevice == null) {
+            return new NullTurnoutController();
+        }
+        switch (railwayDevice) {
+            case ADHOC_BRAIN:
+                return new BrainTurnoutControlAdapter(BrainController.getInstance());
+            case SRCP:
+                return new SRCPTurnoutControlAdapter();
+            default:
+                return new NullTurnoutController();
+        }
 
-	}
+    }
 
-	public void setNonDefaultState(final Turnout turnout)
-			throws TurnoutException {
-		if (turnout.isThreeWay()) {
-			return;
-		}
-		switch (turnout.getDefaultState()) {
-		case LEFT:
-		case RIGHT:
-			setStraight(turnout);
-			break;
-		case STRAIGHT:
-			setCurvedLeft(turnout);
-			break;
-		default:
-			break;
+    public void setNonDefaultState(final Turnout turnout) {
+        if (turnout.isThreeWay()) {
+            return;
+        }
+        switch (turnout.getDefaultState()) {
+            case LEFT:
+            case RIGHT:
+                setStraight(turnout);
+                break;
+            case STRAIGHT:
+                setCurvedLeft(turnout);
+                break;
+            default:
+                break;
 
-		}
-	}
+        }
+    }
 
-	static class NullTurnoutController extends TurnoutController {
+    public void removeGeneralTurnoutChangeListener(TurnoutChangeListener listener) {
+        generalListeners.remove(listener);
+    }
 
-		@Override
-		public void toggle(final Turnout turnout) throws TurnoutException {
-			// TODO Auto-generated method stub
+    static class NullTurnoutController extends TurnoutController {
 
-		}
+        @Override
+        public void toggle(final Turnout turnout) {
+            turnout.setActualState(turnout.getToggledState());
+            informListeners(turnout);
+        }
 
-		@Override
-		public void toggleTest(final Turnout turnout) throws TurnoutException {
-			// TODO Auto-generated method stub
+        @Override
+        public void toggleTest(final Turnout turnout) {
+            turnout.setActualState(turnout.getToggledState());
+            informListeners(turnout);
+        }
 
-		}
+        @Override
+        public void setDefaultState(final Turnout turnout) {
+            turnout.setActualState(turnout.getDefaultState());
+            informListeners(turnout);
+        }
 
-		@Override
-		public void setDefaultState(final Turnout turnout)
-				throws TurnoutException {
-			// TODO Auto-generated method stub
+        @Override
+        public void setStraight(final Turnout turnout) {
+            turnout.setActualState(TurnoutState.STRAIGHT);
+            informListeners(turnout);
+        }
 
-		}
+        @Override
+        public void setCurvedLeft(final Turnout turnout) {
+            turnout.setActualState(TurnoutState.LEFT);
+            informListeners(turnout);
+        }
 
-		@Override
-		public void setStraight(final Turnout turnout) throws TurnoutException {
-			// TODO Auto-generated method stub
+        @Override
+        public void setCurvedRight(final Turnout turnout) {
+            turnout.setActualState(TurnoutState.RIGHT);
+            informListeners(turnout);
+        }
 
-		}
+        @Override
+        public void setTurnoutWithAddress(final int address,
+                                          final TurnoutState state) {
+        }
 
-		@Override
-		public void setCurvedLeft(final Turnout turnout)
-				throws TurnoutException {
-			// TODO Auto-generated method stub
+        @Override
+        public void reloadConfiguration() {
+        }
 
-		}
-
-		@Override
-		public void setCurvedRight(final Turnout turnout)
-				throws TurnoutException {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void setTurnoutWithAddress(final int address,
-				final TurnoutState straight) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void reloadConfiguration() {
-			// TODO Auto-generated method stub
-
-		}
-
-	}
+    }
 
 }

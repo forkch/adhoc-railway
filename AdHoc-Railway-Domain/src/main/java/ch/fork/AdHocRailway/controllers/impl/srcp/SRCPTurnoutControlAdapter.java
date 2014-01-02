@@ -41,7 +41,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		try {
 			turnoutControl.setCurvedLeft(sTurnout);
 		} catch (final SRCPModelException e) {
-			throw new TurnoutException("Turnout Error", e);
+			throw new TurnoutException("could not set turnout to curved left", e);
 		}
 	}
 
@@ -51,7 +51,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		try {
 			turnoutControl.setCurvedRight(sTurnout);
 		} catch (final SRCPModelException e) {
-			throw new TurnoutException("Turnout Error", e);
+			throw new TurnoutException("could not set turnout to curved right", e);
 		}
 
 	}
@@ -62,7 +62,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		try {
 			turnoutControl.setDefaultState(sTurnout);
 		} catch (final SRCPModelException e) {
-			throw new TurnoutException("Turnout Error", e);
+			throw new TurnoutException("could not set turnout to default state", e);
 		}
 
 	}
@@ -73,7 +73,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		try {
 			turnoutControl.setStraight(sTurnout);
 		} catch (final SRCPModelException e) {
-			throw new TurnoutException("Turnout Error", e);
+			throw new TurnoutException("could not set turnout to straight", e);
 		}
 
 	}
@@ -112,7 +112,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		try {
 			turnoutControl.toggle(sTurnoutTemp);
 		} catch (final SRCPModelException e) {
-			throw new TurnoutException("Turnout Error", e);
+			throw new TurnoutException("could not toogle turnout", e);
 		}
 	}
 
@@ -123,7 +123,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		try {
 			turnoutControl.toggle(sTurnout);
 		} catch (final SRCPModelException e) {
-			throw new TurnoutException("Turnout Error", e);
+			throw new TurnoutException("could not toogle turnout", e);
 		}
 
 	}

@@ -197,21 +197,20 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			loadLastFile();
 
 			updateGUI();
-			autoConnect();
+            autoConnect();
 
-			setSize(1200, 1024);
-			pack();
+            setSize(1600, 1000);
 
-			initProceeded("AdHoc-Railway started");
-			updateCommandHistory("AdHoc-Railway started");
-			Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-				@Override
-				public void uncaughtException(final Thread t, final Throwable e) {
-					handleException(e);
-				}
-			});
-			setVisible(true);
-		} catch (final UnsupportedLookAndFeelException e) {
+            initProceeded("AdHoc-Railway started");
+            updateCommandHistory("AdHoc-Railway started");
+            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                @Override
+                public void uncaughtException(final Thread t, final Throwable e) {
+                    handleException(e);
+                }
+            });
+            setVisible(true);
+        } catch (final UnsupportedLookAndFeelException e) {
 			handleException(e);
 		}
 	}
@@ -677,7 +676,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 					.getStringValue(PreferencesKeys.ADHOC_BRAIN_PORT);
 			railwayDeviceLabelLabel.setText("AdHoc-Brain: " + adhocBrainPort);
 		} else {
-			railwayDeviceLabelLabel.setText("please configure railway device");
+			railwayDeviceLabelLabel.setText("Null-Device (nothing happens)");
 		}
 	}
 

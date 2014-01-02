@@ -198,47 +198,49 @@ public abstract class LocomotiveController implements
 		}
 	}
 
-	static class NullLocomotiveController extends LocomotiveController {
+    public void removeLocomotiveChangeListener(LocomotiveChangeListener listener) {
+        listeners.entrySet().remove(listener);
+    }
+
+    static class NullLocomotiveController extends LocomotiveController {
 
 		@Override
 		public boolean isLocked(final Locomotive object)
 				throws LockingException {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
 		public boolean isLockedByMe(final Locomotive object)
 				throws LockingException {
-			// TODO Auto-generated method stub
-			return false;
+			return true;
 		}
 
 		@Override
 		public boolean acquireLock(final Locomotive object)
 				throws LockingException {
-			// TODO Auto-generated method stub
-			return false;
+			return true;
 		}
 
 		@Override
 		public boolean releaseLock(final Locomotive object)
 				throws LockingException {
-			// TODO Auto-generated method stub
-			return false;
+			return true;
 		}
 
 		@Override
 		public void toggleDirection(final Locomotive locomotive)
 				throws LocomotiveException {
-			// TODO Auto-generated method stub
-
+            locomotive.setCurrentDirection(locomotive.getToggledDirection());
+            informListeners(locomotive);
 		}
 
 		@Override
 		public void setSpeed(final Locomotive locomotive, final int speed,
 				final boolean[] functions) throws LocomotiveException {
-			// TODO Auto-generated method stub
+            locomotive.setCurrentSpeed(speed);
+            locomotive.setCurrentFunctions(functions);
+            informListeners(locomotive);
 
 		}
 
@@ -246,16 +248,18 @@ public abstract class LocomotiveController implements
 		public void setFunction(final Locomotive locomotive,
 				final int functionNumber, final boolean state,
 				final int deactivationDelay) throws LocomotiveException {
-			// TODO Auto-generated method stub
-
+            boolean[] currentFunctions = locomotive.getCurrentFunctions();
+            currentFunctions[functionNumber] = state;
+            locomotive.setCurrentFunctions(currentFunctions);
+            informListeners(locomotive);
 		}
 
 		@Override
-		public void emergencyStop(final Locomotive myLocomotive)
+		public void emergencyStop(final Locomotive locomotive)
 				throws LocomotiveException {
-			// TODO Auto-generated method stub
-
+            setFunction(locomotive, locomotive.getEmergencyStopFunction(), true, 0);
+            setSpeed(locomotive, 0, locomotive.getCurrentFunctions());
+            informListeners(locomotive);
 		}
-
 	}
 }

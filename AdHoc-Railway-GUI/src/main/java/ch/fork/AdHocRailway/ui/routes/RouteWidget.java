@@ -24,9 +24,11 @@ import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 import ch.fork.AdHocRailway.manager.turnouts.RouteException;
 import ch.fork.AdHocRailway.ui.UIConstants;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteHelper;
+import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -53,12 +55,20 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		this.ctx = ctx;
 		this.route = route;
 		this.testMode = testMode;
-		final RouteController routeControl = ctx.getRouteControl();
+        ctx.getRouteControl().addRouteChangeListener(route, this);
+        ctx.getMainBus().register(this);
 		initGUI();
-		routeControl.addRouteChangeListener(route, this);
 		updateRoute();
 	}
 
+    @Subscribe
+    public void connectedToRailwayDevice(ConnectionToRailwayEvent event) {
+        if(event.isConnected()) {
+            ctx.getRouteControl().addRouteChangeListener(route, this);
+        }else {
+            ctx.getRouteControl().removeRouteChangeListener(route, this);
+        }
+    }
 	private void initGUI() {
 		setLayout(new MigLayout());
 		setBorder(BorderFactory.createLineBorder(Color.GRAY));

@@ -33,6 +33,8 @@ import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.*;
+
 public class Locomotive extends AbstractItem implements Serializable,
 		Comparable<Locomotive> {
 
@@ -83,7 +85,7 @@ public class Locomotive extends AbstractItem implements Serializable,
 
 	private transient int currentSpeed = 0;
 
-	private transient LocomotiveDirection currentDirection = LocomotiveDirection.FORWARD;
+	private transient LocomotiveDirection currentDirection = FORWARD;
 
 	private transient boolean[] currentFunctions;
 
@@ -94,7 +96,7 @@ public class Locomotive extends AbstractItem implements Serializable,
 	public void init() {
 		super.init();
 		currentSpeed = 0;
-		currentDirection = LocomotiveDirection.FORWARD;
+		currentDirection = FORWARD;
 		currentFunctions = new boolean[functions.size()];
 	}
 
@@ -310,4 +312,13 @@ public class Locomotive extends AbstractItem implements Serializable,
 	public void setCurrentFunctions(final boolean[] currentFunctions) {
 		this.currentFunctions = currentFunctions;
 	}
+
+    public LocomotiveDirection getToggledDirection() {
+        if(FORWARD.equals(currentDirection)) {
+            return REVERSE;
+        }
+        else {
+            return FORWARD;
+        }
+    }
 }
