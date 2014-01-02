@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AdHoc-Railway-Domain/AdHoc-Railway-Domain.iml" filepath="$PROJECT_DIR$/AdHoc-Railway-Domain/AdHoc-Railway-Domain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AdHoc-Railway-GUI/AdHoc-Railway-GUI.iml" filepath="$PROJECT_DIR$/AdHoc-Railway-GUI/AdHoc-Railway-GUI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/adhocrailway.iml" filepath="$PROJECT_DIR$/adhocrailway.iml" />
+    </modules>
+  </component>
+</project>
+
