@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="AdHoc-Railway-GUI-lib-socketio.jar-socketio">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/AdHoc-Railway-GUI/lib/socketio.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
