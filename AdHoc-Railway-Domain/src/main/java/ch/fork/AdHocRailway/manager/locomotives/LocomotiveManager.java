@@ -21,10 +21,9 @@ package ch.fork.AdHocRailway.manager.locomotives;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
+import com.google.common.eventbus.EventBus;
 
 import java.util.SortedSet;
-
-import com.google.common.eventbus.EventBus;
 
 public interface LocomotiveManager {
 

@@ -1,12 +1,10 @@
 package ch.fork.AdHocRailway.ui.context;
 
+import ch.fork.AdHocRailway.ui.RailwayDeviceManager;
+import com.google.common.eventbus.EventBus;
 import de.dermoba.srcp.client.SRCPSession;
 
 import javax.swing.*;
-
-import com.google.common.eventbus.EventBus;
-
-import ch.fork.AdHocRailway.ui.RailwayDeviceManager;
 
 public interface ControllerContext {
 

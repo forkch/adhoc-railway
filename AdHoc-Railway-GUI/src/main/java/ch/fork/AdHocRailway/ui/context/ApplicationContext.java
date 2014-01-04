@@ -9,12 +9,11 @@ import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.RailwayDeviceManager;
+import com.google.common.eventbus.EventBus;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 import javax.swing.*;
-
-import com.google.common.eventbus.EventBus;
 
 public class ApplicationContext implements TurnoutContext, RouteContext,
 		LocomotiveContext, TrackContext, PowerContext {

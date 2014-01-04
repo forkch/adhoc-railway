@@ -19,10 +19,9 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;

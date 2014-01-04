@@ -25,9 +25,6 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
-import ch.fork.AdHocRailway.manager.turnouts.RouteException;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
@@ -38,7 +35,6 @@ import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;

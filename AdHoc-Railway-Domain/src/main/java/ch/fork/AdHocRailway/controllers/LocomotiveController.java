@@ -23,7 +23,6 @@ import ch.fork.AdHocRailway.controllers.impl.brain.BrainLocomotiveControlAdapter
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
-
 import org.apache.log4j.Logger;
 
 import java.util.*;

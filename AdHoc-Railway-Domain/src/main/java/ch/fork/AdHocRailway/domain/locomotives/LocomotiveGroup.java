@@ -19,11 +19,11 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import com.google.common.collect.Sets;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
-import com.google.common.collect.Sets;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 public class LocomotiveGroup extends AbstractItem implements
 		java.io.Serializable, Comparable<LocomotiveGroup> {

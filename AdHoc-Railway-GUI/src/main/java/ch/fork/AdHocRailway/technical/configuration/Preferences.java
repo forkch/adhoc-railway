@@ -21,7 +21,6 @@ package ch.fork.AdHocRailway.technical.configuration;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-
 import java.io.*;
 import java.util.*;
 

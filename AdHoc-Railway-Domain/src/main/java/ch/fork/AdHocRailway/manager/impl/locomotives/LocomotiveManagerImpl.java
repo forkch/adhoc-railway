@@ -26,9 +26,8 @@ import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
-import org.apache.log4j.Logger;
-
 import com.google.common.eventbus.EventBus;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 

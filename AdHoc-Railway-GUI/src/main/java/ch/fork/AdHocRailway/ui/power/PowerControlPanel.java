@@ -12,16 +12,13 @@ import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.PowerContext;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
-import de.dermoba.srcp.model.power.SRCPPowerSupply;
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.log4j.Logger;
-
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import de.dermoba.srcp.model.power.SRCPPowerSupply;
+import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

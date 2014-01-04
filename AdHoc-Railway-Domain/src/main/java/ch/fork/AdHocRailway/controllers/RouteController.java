@@ -18,19 +18,17 @@
 
 package ch.fork.AdHocRailway.controllers;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import ch.fork.AdHocRailway.controllers.impl.RouteChangingThread;
-import com.google.common.collect.Lists;
-
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.manager.turnouts.RouteException;
 import com.google.common.collect.Maps;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public abstract class RouteController {
 

@@ -3,7 +3,6 @@ package ch.fork.AdHocRailway.ui.turnouts;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerListener;
@@ -15,8 +14,6 @@ import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 
 import javax.swing.*;
-
-
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;

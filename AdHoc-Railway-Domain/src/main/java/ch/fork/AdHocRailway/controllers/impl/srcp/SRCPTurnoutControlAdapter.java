@@ -8,7 +8,6 @@ import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.turnouts.*;
-
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;

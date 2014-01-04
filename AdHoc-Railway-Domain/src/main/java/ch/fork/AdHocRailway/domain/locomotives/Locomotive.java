@@ -19,21 +19,20 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
-
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.*;
+import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.FORWARD;
+import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.REVERSE;
 
 public class Locomotive extends AbstractItem implements Serializable,
 		Comparable<Locomotive> {

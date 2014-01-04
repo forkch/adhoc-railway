@@ -31,7 +31,6 @@ import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;

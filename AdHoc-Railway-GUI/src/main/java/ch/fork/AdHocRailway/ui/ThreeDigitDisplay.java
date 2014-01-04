@@ -25,9 +25,9 @@
  */
 package ch.fork.AdHocRailway.ui;
 
-import java.awt.*;
-
 import ch.fork.AdHocRailway.ui.widgets.Segment7;
+
+import java.awt.*;
 
 
 /**

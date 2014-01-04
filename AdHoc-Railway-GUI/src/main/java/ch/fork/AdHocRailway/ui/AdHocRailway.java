@@ -20,12 +20,10 @@ package ch.fork.AdHocRailway.ui;
 
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.RailwayDevice;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLServiceHelper;
 import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
-import ch.fork.AdHocRailway.technical.configuration.ConfigurationException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
@@ -35,20 +33,17 @@ import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
 import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
-import ch.fork.AdHocRailway.ui.tools.SwingUtils;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
 import ch.fork.AdHocRailway.ui.widgets.ErrorPanel;
 import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 import ch.fork.AdHocRailway.ui.widgets.SplashWindow;
 import ch.fork.AdHocRailway.ui.widgets.TrackControlPanel;
-
 import com.google.common.eventbus.Subscribe;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.*;
-import sun.plugin.util.UIUtil;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,18 +1,17 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-
 import ch.fork.AdHocRailway.controllers.PowerChangeListener;
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.PowerException;
 import ch.fork.AdHocRailway.domain.power.Booster;
 import ch.fork.AdHocRailway.domain.power.BoosterState;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 public class BrainPowerControlAdapter extends PowerController implements
 		BrainListener {
