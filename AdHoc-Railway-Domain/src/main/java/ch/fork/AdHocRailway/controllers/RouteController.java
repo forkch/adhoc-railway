@@ -76,20 +76,29 @@ public abstract class RouteController {
     }
 
     public void informNextTurnoutDerouted(final Route route) {
-        for (final RouteChangeListener listener : listeners.get(route)) {
-            listener.nextTurnoutDerouted(route);
+        List<RouteChangeListener> routeChangeListeners = listeners.get(route);
+        if (routeChangeListeners != null) {
+            for (final RouteChangeListener listener : routeChangeListeners) {
+                listener.nextTurnoutDerouted(route);
+            }
         }
     }
 
     public void informNextTurnoutRouted(final Route route) {
-        for (final RouteChangeListener listener : listeners.get(route)) {
-            listener.nextTurnoutRouted(route);
+        List<RouteChangeListener> routeChangeListeners = listeners.get(route);
+        if (routeChangeListeners != null) {
+            for (final RouteChangeListener listener : listeners.get(route)) {
+                listener.nextTurnoutRouted(route);
+            }
         }
     }
 
     public void informRouteChanged(final Route route) {
-        for (final RouteChangeListener listener : listeners.get(route)) {
-            listener.routeChanged(route);
+        List<RouteChangeListener> routeChangeListeners = listeners.get(route);
+        if (routeChangeListeners != null) {
+            for (final RouteChangeListener listener : listeners.get(route)) {
+                listener.routeChanged(route);
+            }
         }
     }
 

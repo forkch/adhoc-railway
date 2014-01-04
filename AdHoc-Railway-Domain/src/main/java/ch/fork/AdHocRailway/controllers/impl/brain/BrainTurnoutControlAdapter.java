@@ -14,7 +14,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 	}
 
 	@Override
-	public void toggle(final Turnout turnout) throws TurnoutException {
+	public void toggle(final Turnout turnout){
 		switch (turnout.getActualState()) {
 		case LEFT:
 			if (turnout.isThreeWay()) {
@@ -38,7 +38,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 	}
 
 	@Override
-	public void setDefaultState(final Turnout turnout) throws TurnoutException {
+	public void setDefaultState(final Turnout turnout){
 		final TurnoutState defaultState = turnout.getDefaultState();
 		switch (defaultState) {
 		case LEFT:
@@ -57,7 +57,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 	}
 
 	@Override
-	public void setStraight(final Turnout turnout) throws TurnoutException {
+	public void setStraight(final Turnout turnout){
 		try {
 			if (turnout.isThreeWay()) {
 				brain.write("XT " + turnout.getAddress1() + " "
@@ -76,7 +76,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 	}
 
 	@Override
-	public void setCurvedLeft(final Turnout turnout) throws TurnoutException {
+	public void setCurvedLeft(final Turnout turnout){
 		try {
 			if (turnout.isThreeWay()) {
 				brain.write("XT " + turnout.getAddress1() + " "
@@ -95,7 +95,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 	}
 
 	@Override
-	public void setCurvedRight(final Turnout turnout) throws TurnoutException {
+	public void setCurvedRight(final Turnout turnout){
 		try {
 			if (turnout.isThreeWay()) {
 				brain.write("XT " + turnout.getAddress1() + " "
@@ -114,7 +114,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 	}
 
 	@Override
-	public void toggleTest(final Turnout turnout) throws TurnoutException {
+	public void toggleTest(final Turnout turnout){
 		// TODO Auto-generated method stub
 	}
 

@@ -212,8 +212,6 @@ public class RailwayDeviceManager implements CommandDataListener,
 					+ " on port " + port);
 		} catch (final SRCPException e1) {
 			mainApp.handleException(e1);
-		} catch (final LocomotiveException e1) {
-			mainApp.handleException(e1);
 		}
 	}
 

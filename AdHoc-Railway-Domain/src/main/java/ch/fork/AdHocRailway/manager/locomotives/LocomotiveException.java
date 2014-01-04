@@ -20,27 +20,18 @@ package ch.fork.AdHocRailway.manager.locomotives;
 
 public class LocomotiveException extends RuntimeException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6187908607232717869L;
-
 	public LocomotiveException() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public LocomotiveException(final String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
 	public LocomotiveException(final Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
 	}
 
 	public LocomotiveException(final String message, final Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
 	}
 }

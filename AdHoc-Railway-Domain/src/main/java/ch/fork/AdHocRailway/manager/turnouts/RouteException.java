@@ -19,30 +19,21 @@
 package ch.fork.AdHocRailway.manager.turnouts;
 
 
-public class RouteException extends Exception{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4797784647018551199L;
+public class RouteException extends RuntimeException{
 
 	public RouteException() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public RouteException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
 	public RouteException(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
 	}
 
 	public RouteException(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
 	}
 
 }

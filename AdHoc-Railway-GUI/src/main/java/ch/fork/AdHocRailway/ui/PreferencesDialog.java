@@ -397,9 +397,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 				adHocServerCollectionField.getText());
 		try {
 			p.save();
-		} catch (final FileNotFoundException e) {
-			ctx.getMainApp().handleException(e);
-		} catch (final IOException e) {
+		} catch (final Exception e) {
 			ctx.getMainApp().handleException(e);
 		}
 	}

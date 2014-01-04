@@ -36,7 +36,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 	}
 
 	@Override
-	public void setCurvedLeft(final Turnout turnout) throws TurnoutException {
+	public void setCurvedLeft(final Turnout turnout) {
 		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
 		try {
 			turnoutControl.setCurvedLeft(sTurnout);
@@ -46,7 +46,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 	}
 
 	@Override
-	public void setCurvedRight(final Turnout turnout) throws TurnoutException {
+	public void setCurvedRight(final Turnout turnout) {
 		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
 		try {
 			turnoutControl.setCurvedRight(sTurnout);
@@ -57,7 +57,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 	}
 
 	@Override
-	public void setDefaultState(final Turnout turnout) throws TurnoutException {
+	public void setDefaultState(final Turnout turnout) {
 		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
 		try {
 			turnoutControl.setDefaultState(sTurnout);
@@ -68,7 +68,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 	}
 
 	@Override
-	public void setStraight(final Turnout turnout) throws TurnoutException {
+	public void setStraight(final Turnout turnout) {
 		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
 		try {
 			turnoutControl.setStraight(sTurnout);
@@ -94,7 +94,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 	}
 
 	@Override
-	public void toggleTest(final Turnout turnout) throws TurnoutException {
+	public void toggleTest(final Turnout turnout) {
 
 		turnoutControl.removeTurnout(sTurnoutTemp);
 		if (turnoutTemp == null || !turnoutTemp.equals(turnout)) {
@@ -117,7 +117,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 	}
 
 	@Override
-	public void toggle(final Turnout turnout) throws TurnoutException {
+	public void toggle(final Turnout turnout) {
 		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
 
 		try {

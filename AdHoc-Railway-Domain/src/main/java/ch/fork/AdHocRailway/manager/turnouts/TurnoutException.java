@@ -20,13 +20,8 @@ package ch.fork.AdHocRailway.manager.turnouts;
 
 public class TurnoutException extends RuntimeException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -356171641042648431L;
 
 	public TurnoutException() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public TurnoutException(final String msg) {
@@ -35,11 +30,9 @@ public class TurnoutException extends RuntimeException {
 
 	public TurnoutException(final Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
 	}
 
 	public TurnoutException(final String message, final Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
 	}
 }

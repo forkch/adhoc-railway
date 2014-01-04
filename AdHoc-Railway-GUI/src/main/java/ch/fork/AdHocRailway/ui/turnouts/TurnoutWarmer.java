@@ -147,9 +147,6 @@ public class TurnoutWarmer extends ConfigurationDialog {
 					Thread.sleep(Preferences.getInstance().getIntValue(
 							PreferencesKeys.ROUTING_DELAY));
 				}
-			} catch (final TurnoutException e1) {
-				ctx.getMainApp().handleException(e1);
-				return;
 			} catch (final InterruptedException e2) {
 				e2.printStackTrace();
 			}

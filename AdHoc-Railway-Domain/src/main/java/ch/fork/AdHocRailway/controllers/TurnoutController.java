@@ -60,8 +60,12 @@ public abstract class TurnoutController {
         for (final TurnoutChangeListener scl : generalListeners) {
             scl.turnoutChanged(turnout);
         }
-        for (final TurnoutChangeListener scl : listeners.get(turnout)) {
-            scl.turnoutChanged(turnout);
+
+        List<TurnoutChangeListener> turnoutChangeListeners = listeners.get(turnout);
+        if(turnoutChangeListeners != null) {
+            for (final TurnoutChangeListener scl : turnoutChangeListeners) {
+                scl.turnoutChanged(turnout);
+            }
         }
     }
 

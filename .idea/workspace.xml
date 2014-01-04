@@ -1,67 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="94" />
-    <bookmark url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="127" mnemonic="9" />
+    <bookmark url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="98" />
+    <bookmark url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="131" mnemonic="9" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a3cea2ba-dbb1-4530-911c-3e44c32d3eb5" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/AdHoc_Railway_Domain_lib_socketio_jar_socketio.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/AdHoc_Railway_GUI_lib_socketio_jar_socketio.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/RouteChangingThread.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/aopalliance_1_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/asm_3_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/binding_2_0_6.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/cglib_2_2_1_v20090111.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/commons_beanutils_1_8_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/commons_io_2_4.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/commons_lang3_3_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/commons_logging_1_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/forms_1_0_5.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/guava_14_0_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/guice_3_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/hamcrest_core_1_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/imgscalr_lib_4_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/javax_inject_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/jgoodies_common_1_4_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/jmdns_3_4_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/json_20090211.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/jsrcpc_2_2_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/junit_4_11.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/log4j_1_2_17.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/looks_2_2_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/miglayout_3_7_4.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/mockito_all_1_9_5.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/rxtx_2_1_7.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/xmlpull_1_1_3_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/xpp3_min_1_1_4c.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/xstream_1_4_4.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/etc/META-INF/persistence.xml" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/etc/log4j.properties" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/log4j.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/AdHoc-Railway-Domain.iml" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/AdHoc-Railway-Domain.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/AdHoc-Railway-GUI.iml" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/AdHoc-Railway-GUI.iml" />
+    <list default="true" id="a3cea2ba-dbb1-4530-911c-3e44c32d3eb5" name="Default" comment="improved exception handling (made most exceptions RunTimeExceptione)">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainController.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainRouteControlAdapter.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainRouteControlAdapter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapter.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/test/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapterTest.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/test/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapterTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/technical/configuration/ConfigurationException.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/technical/configuration/ConfigurationException.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/KeyControl.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/KeyControl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/locomotives/Locomotive.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/locomotives/Locomotive.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/LocomotiveController.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/LocomotiveController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveWidget.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveWidget.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/locomotives/LocomotiveException.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/locomotives/LocomotiveException.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/PreferencesDialog.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/PreferencesDialog.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RailwayDevice.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RailwayDevice.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/RailwayDeviceManager.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/RailwayDeviceManager.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RouteController.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RouteController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteWidget.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteWidget.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/RouteException.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/RouteException.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/srcp/SRCPTurnoutControlAdapter.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/srcp/SRCPTurnoutControlAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/turnouts/Turnout.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/turnouts/Turnout.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/turnouts/TurnoutState.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/turnouts/TurnoutState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWidget.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWidget.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/TurnoutException.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/TurnoutException.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWarmer.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWarmer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/adhocrailway.conf" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/adhocrailway.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adhocrailway.iml" afterPath="$PROJECT_DIR$/adhocrailway.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/build.gradle" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="adhocrailway.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -117,7 +79,7 @@
     </breakpoint_any>
     <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <line_breakpoints>
-      <breakpoint url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="139" class="ch.fork.AdHocRailway.controllers.TurnoutController.NullTurnoutController" package="ch.fork.AdHocRailway.controllers">
+      <breakpoint url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="143" class="ch.fork.AdHocRailway.controllers.TurnoutController.NullTurnoutController" package="ch.fork.AdHocRailway.controllers">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -132,7 +94,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="145" class="ch.fork.AdHocRailway.controllers.TurnoutController.NullTurnoutController" package="ch.fork.AdHocRailway.controllers">
+      <breakpoint url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="149" class="ch.fork.AdHocRailway.controllers.TurnoutController.NullTurnoutController" package="ch.fork.AdHocRailway.controllers">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -147,7 +109,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="151" class="ch.fork.AdHocRailway.controllers.TurnoutController.NullTurnoutController" package="ch.fork.AdHocRailway.controllers">
+      <breakpoint url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="155" class="ch.fork.AdHocRailway.controllers.TurnoutController.NullTurnoutController" package="ch.fork.AdHocRailway.controllers">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -162,7 +124,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="157" class="ch.fork.AdHocRailway.controllers.TurnoutController.NullTurnoutController" package="ch.fork.AdHocRailway.controllers">
+      <breakpoint url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="161" class="ch.fork.AdHocRailway.controllers.TurnoutController.NullTurnoutController" package="ch.fork.AdHocRailway.controllers">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -192,6 +154,21 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java" line="210" class="ch.fork.AdHocRailway.ui.AdHocRailway$1" package="ch.fork.AdHocRailway.ui">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
     </line_breakpoints>
     <breakpoint_rules />
     <ui_properties />
@@ -201,121 +178,7 @@
     <favorites_list name="adhocrailway" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="TurnoutController.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="151" column="0" selection-start="5228" selection-end="5228" vertical-scroll-proportion="0.0" vertical-offset="2540" max-vertical-offset="3204">
-              <folding>
-                <element signature="e#0#5756#0" expanded="true" />
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Turnout.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/turnouts/Turnout.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="339" column="0" selection-start="10305" selection-end="10305" vertical-scroll-proportion="0.0" vertical-offset="5127" max-vertical-offset="5652">
-              <folding>
-                <element signature="e#0#10348#0" expanded="true" />
-                <element signature="imports" expanded="true" />
-                <element signature="e#1737#1748#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LocomotiveController.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/LocomotiveController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="230" column="17" selection-start="6974" selection-end="7101" vertical-scroll-proportion="0.0" vertical-offset="3454" max-vertical-offset="4356">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RouteController.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RouteController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="86" column="9" selection-start="3074" selection-end="3074" vertical-scroll-proportion="0.0" vertical-offset="1337" max-vertical-offset="3060">
-              <folding>
-                <element signature="e#0#5782#0" expanded="true" />
-                <element signature="imports" expanded="true" />
-                <element signature="e#5715#5716#0" expanded="true" />
-                <element signature="e#5772#5773#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="KeyControl.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/KeyControl.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="312" column="0" selection-start="9972" selection-end="9972" vertical-scroll-proportion="0.42809364" vertical-offset="5360" max-vertical-offset="7290">
-              <folding>
-                <element signature="e#0#12121#0" expanded="true" />
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RouteWidget.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteWidget.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="58" column="40" selection-start="2249" selection-end="2249" vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="3114">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LocomotiveWidget.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveWidget.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="130" column="0" selection-start="4688" selection-end="4688" vertical-scroll-proportion="0.0" vertical-offset="2268" max-vertical-offset="15732">
-              <folding>
-                <element signature="e#0#30587#0" expanded="true" />
-                <element signature="imports" expanded="true" />
-                <element signature="e#3723#3745#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TurnoutWidget.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWidget.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="84" column="0" selection-start="2778" selection-end="2778" vertical-scroll-proportion="0.0" vertical-offset="722" max-vertical-offset="3708">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RouteChangingThread.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/RouteChangingThread.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="33" column="26" selection-start="1214" selection-end="1214" vertical-scroll-proportion="0.0" vertical-offset="398" max-vertical-offset="1728">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BrainTurnoutControlAdapterTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/test/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapterTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="225" column="43" selection-start="5521" selection-end="5521" vertical-scroll-proportion="0.0" vertical-offset="3530" max-vertical-offset="4716">
-              <folding>
-                <element signature="imports" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -334,32 +197,41 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainController.java" />
-        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/TurnoutException.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RailwayDevice.java" />
-        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/PreferencesDialog.java" />
-        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java" />
-        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/RailwayDeviceManager.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/turnouts/TurnoutState.java" />
-        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/srcp/SRCPTurnoutControlAdapter.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/locomotives/Locomotive.java" />
-        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/LocomotiveController.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/RouteingThread.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainRouteControlAdapter.java" />
-        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RouteController.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteWidget.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveWidget.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/turnouts/Turnout.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/RouteChangingThread.java" />
-        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/test/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapterTest.java" />
-        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWidget.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/locomotives/LocomotiveException.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/TurnoutException.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/RouteException.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWarmer.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapter.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/test/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapterTest.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/srcp/SRCPTurnoutControlAdapter.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/KeyControl.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/technical/configuration/ConfigurationException.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/PreferencesDialog.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/RailwayDeviceManager.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/configuration/LocomotiveConfigurationDialog.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RouteController.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/LocomotiveController.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="width" value="1906" />
-    <option name="height" value="1058" />
+    <option name="x" value="73" />
+    <option name="y" value="33" />
+    <option name="width" value="1719" />
+    <option name="height" value="963" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -511,8 +383,38 @@
               <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+          </PATH>
+          <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
+              <option name="myItemId" value="adhocrailway" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="adhocrailway" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="AdHoc-Railway-GUI" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="AdHocRailway" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ui" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -537,6 +439,22 @@
               <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="AdHocRailway" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ui" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -548,27 +466,33 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="AdHoc-Railway-Domain" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="adhocrailway" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="adhocrailway" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="AdHoc-Railway-Domain" />
+              <option name="myItemId" value="AdHoc-Railway-GUI" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="AdHocRailway" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ui" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="events" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -580,7 +504,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="AdHoc-Railway-Domain" />
+              <option name="myItemId" value="AdHoc-Railway-GUI" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -611,106 +535,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="AdHoc-Railway-Domain" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="AdHocRailway" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="controllers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="adhocrailway" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="adhocrailway" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="AdHoc-Railway-Domain" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="AdHocRailway" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="controllers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="impl" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="adhocrailway" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="adhocrailway" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="AdHoc-Railway-Domain" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="AdHocRailway" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="controllers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="impl" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="brain" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -943,29 +767,29 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1906" height="1058" extended-state="0" />
-    <editor active="true" />
+    <frame x="73" y="33" width="1719" height="963" extended-state="0" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3298731" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952183" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3918919" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3280757" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32744282" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24894957" sideWeight="0.6707727" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32744282" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2341293" sideWeight="0.6707727" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19044846" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25144175" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -984,6 +808,8 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <MESSAGE value="improved exception handling (made most exceptions RunTimeExceptione)" />
+    <option name="LAST_COMMIT_MESSAGE" value="improved exception handling (made most exceptions RunTimeExceptione)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -997,7 +823,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="258" column="34" selection-start="7902" selection-end="7902" vertical-scroll-proportion="0.0" vertical-offset="4644" max-vertical-offset="23634">
           <folding>
-            <element signature="e#0#38939#0" expanded="true" />
+            <element signature="e#0#46525#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#4616#4637#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1006,7 +834,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="186" column="56" selection-start="6097" selection-end="6097" vertical-scroll-proportion="0.0" vertical-offset="3348" max-vertical-offset="23634">
           <folding>
-            <element signature="e#0#38939#0" expanded="true" />
+            <element signature="e#0#46525#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#4616#4637#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1042,13 +872,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/TurnoutException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="54" selection-start="861" selection-end="877" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="630">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RailwayDevice.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="26" selection-start="456" selection-end="456" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="486">
@@ -1056,46 +879,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/PreferencesDialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="165" column="42" selection-start="5675" selection-end="5675" vertical-scroll-proportion="0.0" vertical-offset="1814" max-vertical-offset="6498">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="678" column="74" selection-start="21739" selection-end="21739" vertical-scroll-proportion="0.0" vertical-offset="10976" max-vertical-offset="23382">
-          <folding>
-            <element signature="e#0#38939#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="13" selection-start="750" selection-end="750" vertical-scroll-proportion="0.0" vertical-offset="184" max-vertical-offset="2664">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/turnouts/TurnoutState.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="28" column="0" selection-start="668" selection-end="668" vertical-scroll-proportion="0.0" vertical-offset="112" max-vertical-offset="630">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/srcp/SRCPTurnoutControlAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="125" column="64" selection-start="3866" selection-end="3873" vertical-scroll-proportion="0.8416988" vertical-offset="1598" max-vertical-offset="4752">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/RailwayDeviceManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="153" column="49" selection-start="5442" selection-end="5442" vertical-scroll-proportion="0.0" vertical-offset="2019" max-vertical-offset="4536">
           <folding />
         </state>
       </provider>
@@ -1128,16 +914,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/LocomotiveController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="230" column="17" selection-start="6974" selection-end="7101" vertical-scroll-proportion="0.0" vertical-offset="3454" max-vertical-offset="4356">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveWidget.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="130" column="0" selection-start="4688" selection-end="4688" vertical-scroll-proportion="0.0" vertical-offset="2268" max-vertical-offset="15732">
+        <state line="130" column="0" selection-start="4688" selection-end="4688" vertical-scroll-proportion="0.11612903" vertical-offset="2268" max-vertical-offset="15732">
           <folding>
             <element signature="e#0#30587#0" expanded="true" />
             <element signature="imports" expanded="true" />
@@ -1146,21 +925,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RouteController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="86" column="9" selection-start="3074" selection-end="3074" vertical-scroll-proportion="0.0" vertical-offset="1337" max-vertical-offset="3060">
-          <folding>
-            <element signature="e#0#5782#0" expanded="true" />
-            <element signature="imports" expanded="true" />
-            <element signature="e#5715#5716#0" expanded="true" />
-            <element signature="e#5772#5773#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/turnouts/Turnout.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="339" column="0" selection-start="10305" selection-end="10305" vertical-scroll-proportion="0.0" vertical-offset="5127" max-vertical-offset="5652">
+        <state line="339" column="0" selection-start="10305" selection-end="10305" vertical-scroll-proportion="0.729097" vertical-offset="5054" max-vertical-offset="5652">
           <folding>
             <element signature="e#0#10348#0" expanded="true" />
             <element signature="imports" expanded="true" />
@@ -1169,54 +936,214 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteWidget.java">
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWidget.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="40" selection-start="2249" selection-end="2249" vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="3114">
+        <state line="84" column="0" selection-start="2778" selection-end="2778" vertical-scroll-proportion="0.28709677" vertical-offset="722" max-vertical-offset="3708">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/RouteChangingThread.java">
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/RouteException.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="26" selection-start="1214" selection-end="1214" vertical-scroll-proportion="0.0" vertical-offset="398" max-vertical-offset="1728">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="23" column="0" selection-start="877" selection-end="877" vertical-scroll-proportion="0.2038835" vertical-offset="0" max-vertical-offset="618">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/TurnoutException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="0" selection-start="1145" selection-end="1145" vertical-scroll-proportion="0.5825243" vertical-offset="0" max-vertical-offset="618">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWarmer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="149" column="0" selection-start="4004" selection-end="4004" vertical-scroll-proportion="0.65048546" vertical-offset="1452" max-vertical-offset="2070">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/test/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapterTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="225" column="43" selection-start="5521" selection-end="5521" vertical-scroll-proportion="0.0" vertical-offset="3530" max-vertical-offset="4716">
+        <state line="120" column="67" selection-start="3097" selection-end="3097" vertical-scroll-proportion="0.33333334" vertical-offset="1954" max-vertical-offset="4860">
           <folding>
             <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java">
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="151" column="0" selection-start="5228" selection-end="5228" vertical-scroll-proportion="0.0" vertical-offset="2540" max-vertical-offset="3204">
-          <folding>
-            <element signature="e#0#5756#0" expanded="true" />
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="92" column="22" selection-start="2443" selection-end="2443" vertical-scroll-proportion="0.33274022" vertical-offset="1415" max-vertical-offset="2664">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWidget.java">
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/RouteChangingThread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="84" column="0" selection-start="2778" selection-end="2778" vertical-scroll-proportion="0.0" vertical-offset="722" max-vertical-offset="3708">
-          <folding />
+        <state line="64" column="23" selection-start="2515" selection-end="2515" vertical-scroll-proportion="0.3322314" vertical-offset="951" max-vertical-offset="1728">
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/KeyControl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="312" column="0" selection-start="9972" selection-end="9972" vertical-scroll-proportion="0.42809364" vertical-offset="5360" max-vertical-offset="7290">
+        <state line="274" column="34" selection-start="10148" selection-end="10170" vertical-scroll-proportion="0.18770227" vertical-offset="4816" max-vertical-offset="7272">
           <folding>
-            <element signature="e#0#12121#0" expanded="true" />
+            <element signature="e#0#14301#0" expanded="true" />
             <element signature="imports" expanded="true" />
+            <element signature="e#2703#2711#0" expanded="true" />
+            <element signature="e#2790#2798#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/srcp/SRCPTurnoutControlAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="119" column="45" selection-start="3529" selection-end="3529" vertical-scroll-proportion="0.36548224" vertical-offset="1710" max-vertical-offset="4752">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/technical/configuration/Preferences.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="210" column="16" selection-start="7322" selection-end="7322" vertical-scroll-proportion="0.0" vertical-offset="3163" max-vertical-offset="5958">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/technical/configuration/ConfigurationException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="0" selection-start="1119" selection-end="1119" vertical-scroll-proportion="0.50209206" vertical-offset="0" max-vertical-offset="717">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.dermoba/jsrcpc/2.2.0/e1e84b1c9d18c9594e1fa3306470cfa112c6f6a1/jsrcpc-2.2.0-sources.jar!/de/dermoba/srcp/model/SRCPModelException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="13" selection-start="832" selection-end="832" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="540">
+          <folding>
+            <element signature="e#0#1215#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.dermoba/jsrcpc/2.2.0/e1e84b1c9d18c9594e1fa3306470cfa112c6f6a1/jsrcpc-2.2.0-sources.jar!/de/dermoba/srcp/model/locking/SRCPLockingException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="50" selection-start="929" selection-end="929" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="648">
+          <folding>
+            <element signature="e#0#1463#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.dermoba/jsrcpc/2.2.0/e1e84b1c9d18c9594e1fa3306470cfa112c6f6a1/jsrcpc-2.2.0-sources.jar!/de/dermoba/srcp/model/locking/SRCPLockControl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="137" column="16" selection-start="4655" selection-end="4655" vertical-scroll-proportion="0.0" vertical-offset="1705" max-vertical-offset="3708">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/RailwayDeviceManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="214" column="9" selection-start="7220" selection-end="7220" vertical-scroll-proportion="0.0" vertical-offset="2916" max-vertical-offset="4500">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/configuration/LocomotiveConfigurationDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="321" column="21" selection-start="9955" selection-end="9955" vertical-scroll-proportion="0.0" vertical-offset="4950" max-vertical-offset="8298">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteWidget.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="149" column="33" selection-start="4865" selection-end="4865" vertical-scroll-proportion="-0.40585774" vertical-offset="2397" max-vertical-offset="3114">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/configuration/RoutesConfigurationDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="383" column="21" selection-start="11477" selection-end="11477" vertical-scroll-proportion="0.15062761" vertical-offset="5832" max-vertical-offset="9378">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="122" column="37" selection-start="3846" selection-end="3846" vertical-scroll-proportion="0.50209206" vertical-offset="1440" max-vertical-offset="5634">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/locomotives/LocomotiveManagerException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="52" selection-start="942" selection-end="942" vertical-scroll-proportion="0.15062761" vertical-offset="0" max-vertical-offset="717">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/ManagerException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="13" selection-start="51" selection-end="51" vertical-scroll-proportion="0.050209206" vertical-offset="0" max-vertical-offset="717">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/locomotives/LocomotiveException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="57" selection-start="870" selection-end="886" vertical-scroll-proportion="0.10359712" vertical-offset="0" max-vertical-offset="695">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/PreferencesDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="401" column="0" selection-start="13704" selection-end="13704" vertical-scroll-proportion="0.529986" vertical-offset="5740" max-vertical-offset="6462">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/LocomotiveController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="102" column="36" selection-start="3625" selection-end="3625" vertical-scroll-proportion="0.4618705" vertical-offset="1083" max-vertical-offset="4356">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="41" selection-start="819" selection-end="819" vertical-scroll-proportion="0.46618706" vertical-offset="0" max-vertical-offset="3276">
+          <folding>
+            <element signature="e#0#5909#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RouteController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="78" column="78" selection-start="2821" selection-end="2821" vertical-scroll-proportion="0.20719424" vertical-offset="1260" max-vertical-offset="3168">
+          <folding>
+            <element signature="e#0#6217#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="206" column="42" selection-start="7041" selection-end="7041" vertical-scroll-proportion="0.7186495" vertical-offset="3261" max-vertical-offset="24174">
+          <folding>
+            <element signature="e#0#46525#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#4616#4637#0" expanded="true" />
           </folding>
         </state>
       </provider>

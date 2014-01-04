@@ -119,9 +119,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 						turnoutControl.setDefaultState(t);
 						Thread.sleep(delay);
 					}
-				} catch (final TurnoutException e1) {
-					ctx.getMainApp().handleException(e1);
-					return;
 				} catch (final InterruptedException e1) {
 					ctx.getMainApp().handleException(e1);
 				}

@@ -100,7 +100,7 @@ public abstract class LocomotiveController implements
 		final List<LocomotiveChangeListener> ll = listeners
 				.get(changedLocomotive);
 		if (ll == null) {
-			return new ArrayList<LocomotiveChangeListener>();
+			return new LinkedList<>();
 		}
 		return ll;
 	}
