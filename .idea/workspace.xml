@@ -5,26 +5,7 @@
     <bookmark url="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" line="131" mnemonic="9" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a3cea2ba-dbb1-4530-911c-3e44c32d3eb5" name="Default" comment="improved exception handling (made most exceptions RunTimeExceptione)">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapter.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/test/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapterTest.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/test/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainTurnoutControlAdapterTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/technical/configuration/ConfigurationException.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/technical/configuration/ConfigurationException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/KeyControl.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/KeyControl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/LocomotiveController.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/LocomotiveController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/locomotives/LocomotiveException.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/locomotives/LocomotiveException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/PreferencesDialog.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/PreferencesDialog.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/RailwayDeviceManager.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/RailwayDeviceManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RouteController.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RouteController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/RouteException.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/RouteException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/srcp/SRCPTurnoutControlAdapter.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/srcp/SRCPTurnoutControlAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/TurnoutException.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/turnouts/TurnoutException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWarmer.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWarmer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/adhocrailway.conf" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/adhocrailway.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="a3cea2ba-dbb1-4530-911c-3e44c32d3eb5" name="Default" comment="improved exception handling (made most exceptions RunTimeExceptione)" />
     <ignored path="adhocrailway.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -568,7 +549,7 @@
       <recent name="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.AdHocRailway-GUI">
+  <component name="RunManager" selected="JUnit.all JUnit tests">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin" singleton="true">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -727,8 +708,31 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <list size="1">
+    <configuration default="false" name="all JUnit tests" type="JUnit" factoryName="JUnit">
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="PACKAGE_NAME" value="ch.fork.AdHocRailway" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <list size="2">
       <item index="0" class="java.lang.String" itemvalue="Application.AdHocRailway-GUI" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.all JUnit tests" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -768,10 +772,10 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="73" y="33" width="1719" height="963" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3298731" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298731" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -789,7 +793,7 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2341293" sideWeight="0.6707727" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19044846" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25144175" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25144175" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
