@@ -31,32 +31,32 @@ uint8_t parse_ib_cmd(char* cmd) {
 	int j = 0;
 	tokens[j] = strtok(cmd, delimiter);
 
-//#ifdef DEBUG_EXTREME
-//	uart_puts("DEBUG: Token ");
-//	send_number_dec(j);
-//	uart_puts(": ");
-//	if (tokens[j] == NULL)
-//		uart_puts("EOL");
-//	else
-//		uart_puts(tokens[j]);
-//	uart_puts("\n");
-//#endif
+#ifdef DEBUG_EXTREME
+	uart_puts("DEBUG: Token ");
+	send_number_dec(j);
+	uart_puts(": ");
+	if (tokens[j] == NULL)
+		uart_puts("EOL");
+	else
+		uart_puts(tokens[j]);
+	uart_puts("\n");
+#endif
 
 	while (tokens[j] != NULL) {
 
 		j++;
 		tokens[j] = strtok(NULL, delimiter);
 
-		//#ifdef DEBUG_EXTREME
-//		uart_puts("Token ");
-//		send_number_dec(j);
-//		uart_puts(": ");
-//		if (tokens[j] == NULL)
-//		uart_puts("EOL");
-//		else
-//		uart_puts(tokens[j]);
-//		uart_puts("\n");
-//#endif
+#ifdef DEBUG_EXTREME
+		uart_puts("Token ");
+		send_number_dec(j);
+		uart_puts(": ");
+		if (tokens[j] == NULL)
+		uart_puts("EOL");
+		else
+		uart_puts(tokens[j]);
+		uart_puts("\n");
+#endif
 	}
 
 	uint8_t ret;
@@ -260,34 +260,26 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 
 	t = number - 1;
 
-	//newLocoSpeed = 0;
-	//newLocoFunction = 0;
 	newLocoQueue[newLocoQueueIdxEnter].newLocoSpeed = 0;
 	newLocoQueue[newLocoQueueIdxEnter].newLocoFunction = 0;
 	newLocoQueue[newLocoQueueIdxEnter].newLocoIdx = -1;
 
 	if ((locoData[t].numericSpeed != speed) || locoData[t].fl != fl
 			|| (locoData[t].direction != direction))
-		//newLocoSpeed = 1;
 		newLocoQueue[newLocoQueueIdxEnter].newLocoSpeed = 1;
 	else
-		//newLocoSpeed = 0;
 		newLocoQueue[newLocoQueueIdxEnter].newLocoSpeed = 0;
 
 	if (locoData[t].f1 != f1)
-		//newLocoFunction = 1;
 		newLocoQueue[newLocoQueueIdxEnter].newLocoFunction = 1;
 
 	if (locoData[t].f2 != f2)
-		//newLocoFunction = 2;
 		newLocoQueue[newLocoQueueIdxEnter].newLocoFunction = 2;
 
 	if (locoData[t].f3 != f3)
-		//newLocoFunction = 3;
 		newLocoQueue[newLocoQueueIdxEnter].newLocoFunction = 3;
 
 	if (locoData[t].f4 != f4)
-		//newLocoFunction = 4;
 		newLocoQueue[newLocoQueueIdxEnter].newLocoFunction = 4;
 
 	locoData[t].active = 1;

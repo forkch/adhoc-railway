@@ -95,14 +95,19 @@ int main() {
 	log_info("Have Fun :-)\n");
 
 	log_debug3("MM_PACKET_LENGTH: ", MM_PACKET_LENGTH);
-//	log_debug3("MM_INTER_PACKET_PAUSE: ", MM_INTER_PACKET_PAUSE);
-//	log_debug3("MM_DOUBLE_PACKET_LENGTH: ", MM_DOUBLE_PACKET_LENGTH);
-//	log_debug3("MM_INTER_DOUBLE_PACKET_PAUSE: ", MM_INTER_DOUBLE_PACKET_PAUSE);
-//	log_debug3("MM_COMMAND_LENGTH: ", MM_COMMAND_LENGTH);
-//	log_debug3("MM_COMMAND_LENGTH*LOCOCMD_REPETITIONS: ",
-//			MM_COMMAND_LENGTH * LOCOCMD_REPETITIONS);
-//	log_debug3("MM_COMMAND_LENGTH*SOLENOIDCMD_REPETITIONS: ",
-//			MM_COMMAND_LENGTH * SOLENOIDCMD_REPETITIONS);
+	log_debug3("MM_INTER_PACKET_PAUSE_LOCO: ", MM_INTER_PACKET_PAUSE_LOCO);
+	log_debug3("MM_DOUBLE_PACKET_LENGTH_LOCO: ", MM_DOUBLE_PACKET_LENGTH_LOCO);
+	log_debug3("MM_INTER_DOUBLE_PACKET_PAUSE_LOCO: ", MM_INTER_DOUBLE_PACKET_PAUSE_LOCO);
+	log_debug3("MM_COMMAND_LENGTH_LOCO: ", MM_COMMAND_LENGTH_LOCO);
+	log_debug3("MM_COMMAND_LENGTH_LOCO*LOCOCMD_REPETITIONS: ",
+			MM_COMMAND_LENGTH_LOCO * LOCOCMD_REPETITIONS);
+
+	log_debug3("MM_INTER_PACKET_PAUSE_SOLENOID: ", MM_INTER_PACKET_PAUSE_SOLENOID);
+	log_debug3("MM_DOUBLE_PACKET_LENGTH_SOLENOID: ", MM_DOUBLE_PACKET_LENGTH_SOLENOID);
+	log_debug3("MM_INTER_DOUBLE_PACKET_PAUSE_SOLENOID: ", MM_INTER_DOUBLE_PACKET_PAUSE_SOLENOID);
+	log_debug3("MM_COMMAND_LENGTH_SOLENOID: ", MM_COMMAND_LENGTH_SOLENOID);
+	log_debug3("MM_COMMAND_LENGTH_SOLENOID*SOLENOIDCMD_REPETITIONS: ",
+			MM_COMMAND_LENGTH_SOLENOID * SOLENOIDCMD_REPETITIONS);
 #endif
 
 	replys("XRS\r");
@@ -203,34 +208,23 @@ void prepareDataForPWM() {
 		if (StartSecondSolenoidTransmition == 0){
 
 			// handle NEW loco command with highest priority
-//			if (newLocoIdx != -1) {
 			if (!newLocoQueueEmpty()){
 
 				if (newLocoQueue[newLocoQueueIdxFront].newLocoSpeed == 1
 					|| newLocoQueue[newLocoQueueIdxFront].newLocoFunction != 0) {
-					//log_debug("here");
 					// is there something new
 					if (newLocoQueue[newLocoQueueIdxFront].newLocoSpeed == 1) {
-						//log_debug3("newLocoSpeed: ", newLocoSpeed);
 						sendLocoPacket(newLocoQueue[newLocoQueueIdxFront].newLocoIdx, queueIdxLoc, 0, 0);
 					} else if (newLocoQueue[newLocoQueueIdxFront].newLocoSpeed == 0
 							&& newLocoQueue[newLocoQueueIdxFront].newLocoFunction != 0) {
-						//log_debug3("newLocoFunction: ", newLocoFunction);
 						sendLocoPacket(newLocoQueue[newLocoQueueIdxFront].newLocoIdx, queueIdxLoc, 0, newLocoFunction);
 					}
-
-//					newLocoIdx = -1;
-//					newLocoSpeed = 0;
-//					newLocoFunction = 0;
 
 					pwm_mode[queueIdxLoc] = MODE_LOCO;
 					// notify PWM that we're finished preparing a new packet
 					prepareNextData = 0;
 					return;
 				} else {
-//					newLocoIdx = -1;
-//					newLocoSpeed = 0;
-//					newLocoFunction = 0;
 
 					newLocoQueuePop();
 				}
@@ -556,7 +550,6 @@ void sendSolenoidPacket(uint8_t solenoidIdx, unsigned char queueIdxLoc) {
 		}
 
 	}
-//	locoCmdsSent = 0;
 
 }
 
@@ -597,28 +590,6 @@ void finish_mm_command_Solenoid(unsigned char queueIdxLoc) {
 	}
 
 }
-
-
-//
-//void finish_mm_command(unsigned char queueIdxLoc) {
-//
-//// pause
-//	for (uint8_t i = 0; i < MM_INTER_PACKET_PAUSE_LOCO; i++) {
-//		commandQueue[queueIdxLoc][MM_PACKET_LENGTH + i] = 2;
-//	}
-//
-////copy packet
-//	for (uint8_t i = 0; i < MM_PACKET_LENGTH; i++)
-//		commandQueue[queueIdxLoc][MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE_LOCO + i] =
-//				commandQueue[queueIdxLoc][i];
-//
-//// add intra double packet pause
-//	for (uint8_t i = 0; i < MM_INTER_DOUBLE_PACKET_PAUSE_LOCO; i++) {
-//		commandQueue[queueIdxLoc][MM_DOUBLE_PACKET_LENGTH_LOCO + i] = 2;
-//	}
-//
-//}
-
 
 
 // *** Interrupt Service Routines *****************************************
@@ -1170,17 +1141,4 @@ void sendStopAllLoco() {
 
 	newLocoFunction = 0;
 }
-
-//----------------------------------------------------------------------------
-// wdt_init - Watchdog Init used to disable the CPU watchdog
-//         placed in Startcode, no call needed
-//#include <avr/wdt.h>
-//
-//void wdt_init(void) __attribute__((naked))
-//__attribute__((section(".init1")));
-//
-//void wdt_init(void) {
-//	MCUSR = 0;
-//	wdt_disable();
-//}
 
