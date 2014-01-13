@@ -13,35 +13,6 @@ unsigned char debugLevel = DEBUG_ERROR;
 int main() {
 
 	init();
-	debug_init();
-
-	// start UART
-	uart_init();
-
-	SPI_MasterInitOutput();
-	SPI_MasterTransmitDebug(0x00);
-
-	sei();
-	init_boosters();
-	cli();
-
-	init_maerklin_mm();
-
-	//init Timer0
-	TIMSK0 |= (1 << TOIE0); // interrupt enable - here overflow
-	TCCR0B |= TIMER0_PRESCALER; // use defined prescaler value
-
-#ifdef AUTO_SOLENOID
-	OCR2A = (uint8_t) AUTO_SOLENOID_TOP;
-	TCCR2A = (1 << WGM21);  // CTC Mode
-	TIMSK2 = (1 << OCIE2A);// interrupt enable - here CompareA
-	TCCR2B = (1 << CS20) | (1 << CS21) | (1 << CS22);// prescaling 1024
-	//TCCR2B = (1 << CS21) | (1 << CS22); // prescaling 256
-	//TCCR2B = (1 << CS20) | (1 << CS22); // prescaling 128
-	//TCCR2B = (1 << CS20)  | (1 << CS21); // prescaling 32
-	//TCCR2B = (1 << CS21); // prescaling 8
-#endif
-
 
 	sei();
 
@@ -119,6 +90,63 @@ int main() {
 	}
 	cli();
 	return 0;
+}
+
+void initDatastructures() {
+	solenoidQueueIdxEnter = 0; // new Solenoid inserted
+	solenoidQueueIdxFront = 0; // Solenoid to activate
+	solenoidQueueIdxFront2 = 0; // Solenoid to deactivate
+	newLocoQueueIdxEnter = 0;
+	newLocoQueueIdxFront = 0;
+	newLoco = 0;
+	for (int i = 0; i < MAX_SOLENOID_QUEUE; i++) {
+		solenoidQueue[i].timerDetected = 0;
+		solenoidQueue[i].active = 0;
+	}
+	for (int i = 0; i < MAX_NEW_LOCO_QUEUE; i++) {
+		newLocoQueue[i].newLocoIdx = -1;
+		newLocoQueue[i].newLocoSpeed = 0;
+		newLocoQueue[i].newLocoFunction = -1;
+	}
+}
+
+void init() {
+	debug_init();
+
+	// start UART
+	uart_init();
+
+	SPI_MasterInitOutput();
+	SPI_MasterTransmitDebug(0x00);
+
+	sei();
+	init_boosters();
+	cli();
+
+	init_maerklin_mm();
+
+	//init Timer0
+	TIMSK0 |= (1 << TOIE0); // interrupt enable - here overflow
+	TCCR0B |= TIMER0_PRESCALER; // use defined prescaler value
+
+#ifdef AUTO_SOLENOID
+	OCR2A = (uint8_t) AUTO_SOLENOID_TOP;
+	TCCR2A = (1 << WGM21);  // CTC Mode
+	TIMSK2 = (1 << OCIE2A);// interrupt enable - here CompareA
+	TCCR2B = (1 << CS20) | (1 << CS21) | (1 << CS22);// prescaling 1024
+	//TCCR2B = (1 << CS21) | (1 << CS22); // prescaling 256
+	//TCCR2B = (1 << CS20) | (1 << CS22); // prescaling 128
+	//TCCR2B = (1 << CS20)  | (1 << CS21); // prescaling 32
+	//TCCR2B = (1 << CS21); // prescaling 8
+#endif
+
+
+	timer0_interrupt = 0;
+
+	prepareNewDataWhileSending = 1;
+	SolenoidTESTport = AUTO_SOLENOID_PORT;
+
+	initDatastructures();
 }
 
 void processASCIIData() {

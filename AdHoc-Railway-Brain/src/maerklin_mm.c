@@ -20,12 +20,6 @@ void init_maerklin_mm() {
 	currentRefreshCycleLocoIdx = 79;
 	currentRefreshCycleFunction = 0;
 
-	solenoidQueueIdxEnter = 0; 		// new Solenoid inserted
-	solenoidQueueIdxFront = 0; 		// Solenoid to activate
-	solenoidQueueIdxFront2 = 0; 	// Solenoid to deactivate
-
-	newLocoQueueIdxEnter  = 0;
-	newLocoQueueIdxFront = 0;
 
 	deactivatingSolenoid = 0;
 	solenoidToDeactivate = 0;
@@ -34,19 +28,8 @@ void init_maerklin_mm() {
 	startSecondSolenoidTransmition = 0;
 	functionRefreshSent = 0;
 
-	newLoco = 0;
 	mmChangeDirection = 192;
 
-	for (int i = 0; i < MAX_SOLENOID_QUEUE; i++) {
-		solenoidQueue[i].timerDetected = 0;
-		solenoidQueue[i].active = 0;
-	}
-
-	for (int i = 0; i < MAX_NEW_LOCO_QUEUE; i++) {
-		newLocoQueue[i].newLocoIdx = -1;
-		newLocoQueue[i].newLocoSpeed = 0;
-		newLocoQueue[i].newLocoFunction = -1;
-	}
 
 	//Initialize PWM Channel 1
 	initPWM();

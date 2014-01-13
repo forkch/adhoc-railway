@@ -73,13 +73,7 @@ int solenoidQueueIdxFront;
 int solenoidQueueIdxFront2;
 /****** Funtion Declarations ******/
 
-inline void init() {
 
-	timer0_interrupt = 0;
-
-	prepareNewDataWhileSending = 1;
-	SolenoidTESTport = AUTO_SOLENOID_PORT;
-}
 
 void processASCIIData();
 void enqueue_solenoid();

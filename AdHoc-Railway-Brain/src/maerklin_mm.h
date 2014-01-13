@@ -34,8 +34,7 @@ void prepareNewLococomandWithHighestPrio(unsigned char queueIdxLoc);
 void sendLocoPacketNoFunctionUpdate(uint8_t actualLocoIdx, unsigned char queueIdxLoc,
 		uint8_t isRefreshCycle);
 void sendLocoPacketRefresh(uint8_t actualLocoIdx, unsigned char queueIdxLoc);
-void sendLocoPacket(uint8_t actualLocoIdx, unsigned char queueIdxLoc,
-		uint8_t isRefreshCycle, int8_t functionToUpdate);
+void sendLocoPacket(uint8_t actualLocoIdx, unsigned char queueIdxLoc, uint8_t isRefreshCycle, int8_t functionToUpdate);
 void sendSolenoidPacket(uint8_t actualLocoIdx, unsigned char queueIdxLoc);
 uint8_t encodeFunction(struct LocoData* actualLoco, unsigned char deltaSpeed,
 		unsigned char speed, uint8_t function);
