@@ -33,7 +33,7 @@ void report_boosterstate() {
 	uart_putc('\r');
 	uart_flush();
 }
-void check_shorts() {
+void check_for_shorts() {
 
 	uint8_t shortDetected = 0;
 	unsigned char shorts = SPI_MasterReceiveShort();

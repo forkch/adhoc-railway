@@ -10,16 +10,15 @@
 
 #include "global.h"
 
-typedef struct BoosterState {
+struct BoosterState {
 	char active :1;
 	char shortcut :1;
 };
 
 struct BoosterState booster_state[BOOSTER_COUNT];
 
-
 void init_boosters();
-void check_shorts();
+void check_for_shorts();
 void report_boosterstate();
 void stop_booster(int nr);
 void stop_booster_short(int nr);

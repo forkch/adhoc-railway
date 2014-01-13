@@ -59,6 +59,21 @@ uint16_t SOLENOID_0;
 uint16_t SOLENOID_1;
 uint16_t SOLENOID_TOP;
 
+#define MODE_SOLENOID 0
+#define MODE_LOCO 1
+#define SOLENOID_WAIT 10
+
+volatile unsigned char pwm_mode[2];
+volatile unsigned char pwmQueueIdx;
+volatile uint16_t actualBit;
+uint16_t commandLength;
+
+// ACHTUNG: Queue-Grösse!!
+volatile unsigned char commandQueue[2][MM_COMMAND_LENGTH_LOCO * NEW_LOCOCMD_REPETITIONS];
+//volatile unsigned char commandQueue[2][MM_COMMAND_LENGTH_SOLENOID * SOLENOIDCMD_REPETITIONS];
+//volatile unsigned char commandQueue[2][MM_COMMAND_LENGTH_LOCO * LOCOCMD_REPETITIONS];
+
+
 void initPWM();
 void setPWMOutput(uint16_t duty);
 void setSolenoid0();

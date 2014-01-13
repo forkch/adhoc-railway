@@ -23,7 +23,7 @@ fifo_t infifo;
 uint8_t outbuf[BUFSIZE_OUT];
 fifo_t outfifo;
 
-typedef enum IB_CMD {
+enum IB_CMD {
 	BINARY_MODE, ASCII_MODE, INVALID
 };
 

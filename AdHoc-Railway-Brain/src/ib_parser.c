@@ -17,6 +17,9 @@
 #include "uart_interrupt.h"
 #include "booster.h"
 
+// TODO sollte nicht mehr nötig sein sobald alles MM spezifische ins maerklin_mm verschoben ist
+#include "maerklin_mm.h"
+
 uint8_t parse_ib_cmd(char* cmd) {
 	char delimiter[] = " ,";
 	char **tokens;
@@ -193,7 +196,6 @@ uint8_t ib_solenoid_cmd(char** tokens, uint8_t nTokens) {
 
 	enqueue_solenoid();
 	return 1;
-
 }
 
 uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
@@ -214,6 +216,8 @@ uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
 		locoData[number - 1].isNewProtocol = 1;
 	} else if (strcasecmp(protocol, "MM") == 0) {
 		locoData[number - 1].isNewProtocol = 0;
+	} else if (strcasecmp(protocol, "MFX") == 0) {
+		locoData[number - 1].isNewProtocol = 1;
 	} else {
 		return 0;
 	}
@@ -285,6 +289,7 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 	locoData[t].active = 1;
 	locoData[t].refreshState = 0;
 
+	// TODO nach maerklin_mm.c verschieben da MM spezifisch
 	// Richtungs�nderung nur wenn letzter Speed == 0
 	if ((direction != locoData[t].direction) && (locoData[t].numericSpeed == 0)) {
 		locoData[t].encodedSpeed = mmChangeDirection;

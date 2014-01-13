@@ -8,8 +8,17 @@
 #include "global.h"
 #include "pwm.h"
 #include "debug.h"
+#include "main.h"
 
 void initPWM() {
+
+	pwmQueueIdx = 0;
+	actualBit = 0;
+	commandLength = 0;
+
+	//Loco FREQUENCY
+	pwm_mode[0] = MODE_LOCO;
+	pwm_mode[1] = MODE_LOCO;
 
 	LOCO_0 = LOCO_BASE + LOCO_INCREMENT;
 	LOCO_1 = 7 * LOCO_0;
@@ -46,16 +55,23 @@ void initPWM() {
 	ICR1L = (uint8_t) (LOCO_TOP);
 #endif
 
-//	setLocoWait();
-//
-//#ifdef PWM2
-//	TIMSK1 |= (1 << OCIE1B);
-//	TCCR1A |= (1 << COM1B1); // ACTIVATE PWM
-//#else
-//	//TIMSK1 |= (1 << OCIE1A);
-//	TCCR1A |= (1 << COM1A1);// ACTIVATE PWM
-//#endif
+#ifdef PWM2
+	OCR1AH = (uint8_t) (LOCO_TOP >> 8);
+	OCR1AL = (uint8_t) LOCO_TOP;
 
+	setLocoWait();
+
+	TIMSK1 |= (1 << OCIE1B);
+	TCCR1A |= (1 << COM1B1); // ACTIVATE PWM
+#else
+	ICR1H = (uint8_t) (LOCO_TOP >> 8);
+	ICR1L = (uint8_t) LOCO_TOP;
+
+	setLocoWait();
+
+	TIMSK1 |= (1 << OCIE1A);
+	TCCR1A |= (1 << COM1A1); // ACTIVATE PWM
+#endif
 }
 
 void setPWMOutput(uint16_t duty) {
@@ -134,4 +150,67 @@ void setLocoWait() {
 	OCR1AH = 0;
 	OCR1AL = 0;
 #endif
+}
+
+
+/********* PWM CODE **************/
+
+#ifdef PWM2
+ISR( TIMER1_COMPB_vect) {
+#else
+	ISR( TIMER1_COMPA_vect) {
+#endif
+
+	if (prepareNewDataWhileSending == 1 && actualBit == 0) {
+		setLocoWait();
+		return;
+	}
+
+	if (actualBit == 0) {
+		pwmQueueIdx = (pwmQueueIdx + 1) % 2;
+		prepareNewDataWhileSending = 1;
+		if (pwm_mode[pwmQueueIdx] == MODE_SOLENOID) {
+			//SOLENOID
+#ifdef PWM2
+			OCR1AH = (uint8_t) (SOLENOID_TOP >> 8);
+			OCR1AL = (uint8_t) (SOLENOID_TOP);
+#else
+			ICR1H = (uint8_t) (SOLENOID_TOP >> 8);
+			ICR1L = (uint8_t) (SOLENOID_TOP);
+			TCNT1H = 0;
+			TCNT1L = 0;
+#endif
+
+			commandLength = (MM_COMMAND_LENGTH_SOLENOID
+					* SOLENOIDCMD_REPETITIONS) + MM_END_PAUSE_SOLENOID;
+
+		} else {
+			//LOCO FREQUENCY
+#ifdef PWM2
+			OCR1AH = (uint8_t) (LOCO_TOP >> 8);
+			OCR1AL = (uint8_t) (LOCO_TOP);
+#else
+			ICR1H = (uint8_t) (LOCO_TOP >> 8);
+			ICR1L = (uint8_t) (LOCO_TOP);
+			TCNT1H = 0;
+			TCNT1L = 0;
+#endif
+			commandLength = MM_COMMAND_LENGTH_LOCO
+					* NEW_LOCOCMD_REPETITIONS;
+		}
+	}
+
+	unsigned char b = commandQueue[pwmQueueIdx][actualBit];
+
+	if (b == 0) {
+		pwm_mode[pwmQueueIdx] == MODE_SOLENOID ? setSolenoid0() : setLoco0();
+	} else if (b == 1) {
+		pwm_mode[pwmQueueIdx] == MODE_SOLENOID ? setSolenoid1() : setLoco1();
+	} else if (b == 2) {
+		pwm_mode[pwmQueueIdx] == MODE_SOLENOID ?
+				setSolenoidWait() : setLocoWait();
+	}
+
+	actualBit = (actualBit + 1) % commandLength;
+
 }
