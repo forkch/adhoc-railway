@@ -15,9 +15,7 @@ int main() {
 	init();
 
 	sei();
-	SPI_MasterTransmitDebug(0b11001100);
-_delay_ms(2000);
-SPI_MasterTransmitDebug(0x00);
+
 #ifdef SEND_STOP_ALL_LOCO_ON_INIT
 	sendStopAllLoco();
 #endif
