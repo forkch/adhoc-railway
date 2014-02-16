@@ -18,12 +18,63 @@
 
 package ch.fork.AdHocRailway.ui;
 
+import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JRootPane;
+import javax.swing.JSeparator;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.PropertyConfigurator;
+
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.RailwayDevice;
-import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
-import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLServiceHelper;
-import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
@@ -44,28 +95,6 @@ import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 
 import de.dermoba.srcp.model.locking.SRCPLockingException;
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.log4j.*;
-
-import javax.swing.*;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
-
-import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
 
 public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		PreferencesKeys, EditingModeListener {
@@ -111,7 +140,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	private JPanel toolbarPanel;
 	private File actualFile;
 	private JProgressBar progressBar;
-	private boolean fileMode;
 	private PowerControlPanel powerControlPanel;
 
 	private JMenuItem saveItem;
@@ -195,10 +223,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			LOGGER.info("Finished Creating GUI");
 			splash.setVisible(false);
 
-			persistenceManager.loadLastFile();
+			persistenceManager
+					.loadLastFileOrLoadDataFromAdHocServerIfRequested();
 
 			updateGUI();
-			autoConnect();
+			railwayDeviceManager.autoConnectToRailwayDeviceIfRequested();
 
 			setSize(1600, 1000);
 
@@ -211,7 +240,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				}
 			});
 			setVisible(true);
-		} catch (final UnsupportedLookAndFeelException e) {
+		} catch (final Exception e) {
 			handleException(e);
 		}
 	}
@@ -285,9 +314,14 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	}
 
 	public void saveActualFile() {
-		if (fileMode) {
+		if (isFileMode()) {
 			saveFile(AdHocRailway.this.actualFile);
 		}
+	}
+
+	private boolean isFileMode() {
+		final boolean fileMode = !preferences.getBooleanValue(USE_ADHOC_SERVER);
+		return fileMode;
 	}
 
 	@Subscribe
@@ -299,23 +333,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		preferencesItem.setEnabled(!connected);
 		preferencesToolBarButton.setEnabled(!connected);
 		disconnectToolBarButton.setEnabled(connected);
-	}
-
-	private void autoConnect() {
-
-		if (preferences.getBooleanValue(SRCP_AUTOCONNECT)
-				&& !preferences
-						.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
-			try {
-				new ConnectAction().actionPerformed(null);
-			} catch (final Exception x) {
-
-			}
-		} else if (preferences
-				.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
-
-		}
-
 	}
 
 	private void setUpLogging() {
@@ -394,29 +411,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		}
 	}
 
-	private void switchToFileMode() {
-		fileMode = true;
-		preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, false);
-		try {
-			preferences.save();
-		} catch (final IOException e) {
-			handleException(e);
-		}
-	}
-
-	private void switchToServerMode() {
-		fileMode = false;
-		preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, true);
-		try {
-			preferences.save();
-		} catch (final IOException e) {
-			handleException(e);
-		}
-	}
-
 	private void disableEnableMenuItems() {
-		saveAsItem.setEnabled(fileMode);
-		saveItem.setEnabled(fileMode);
+		saveAsItem.setEnabled(isFileMode());
+		saveItem.setEnabled(isFileMode());
 
 	}
 
@@ -716,39 +713,41 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		@Override
 		public void actionPerformed(final ActionEvent arg0) {
+			try {
+				if (isFileMode()) {
 
-			if (fileMode) {
-
-				final int result = JOptionPane.showConfirmDialog(
-						AdHocRailway.this,
-						"Do you want to save the actual configuration?",
-						"New file...", JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE,
-						createImageIconFromIconSet("dialog-warning.png"));
-				if (result == JOptionPane.YES_OPTION) {
-					saveActualFile();
+					final int result = JOptionPane.showConfirmDialog(
+							AdHocRailway.this,
+							"Do you want to save the actual configuration?",
+							"New file...", JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE,
+							createImageIconFromIconSet("dialog-warning.png"));
+					if (result == JOptionPane.YES_OPTION) {
+						saveActualFile();
+					}
 				}
+				persistenceManager.disconnectFromCurrentPersistence();
+
+				persistenceManager.switchToFileMode();
+
+				persistenceManager.loadPersistenceLayer();
+
+				appContext.getLocomotiveManager().clear();
+				appContext.getTurnoutManager().clear();
+				appContext.getRouteManager().clear();
+
+				disableEnableMenuItems();
+
+				setRailwayDeviceLabelText();
+
+				setTitle(AdHocRailway.TITLE + " []");
+				actualFile = null;
+				updateGUI();
+				updateCommandHistory("Empty AdHoc-Railway Configuration created");
+			} catch (final IOException e) {
+				handleException(e);
 			}
-			persistenceManager.disconnectFromCurrentPersistence();
-
-			switchToFileMode();
-
-			persistenceManager.loadPersistenceLayer();
-
-			appContext.getLocomotiveManager().clear();
-			appContext.getTurnoutManager().clear();
-			appContext.getRouteManager().clear();
-
-			disableEnableMenuItems();
-
-			setRailwayDeviceLabelText();
-
-			setTitle(AdHocRailway.TITLE + " []");
-			actualFile = null;
-			updateGUI();
-			updateCommandHistory("Empty AdHoc-Railway Configuration created");
 		}
-
 	}
 
 	private class OpenFileAction extends AbstractAction {
@@ -781,36 +780,25 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				@Override
 				public void run() {
 
-					persistenceManager.disconnectFromCurrentPersistence();
+					try {
+						progressBar.setIndeterminate(true);
+						disableEnableMenuItems();
 
-					progressBar.setIndeterminate(true);
+						persistenceManager.loadFile(file);
 
-					switchToFileMode();
-
-					persistenceManager.loadPersistenceLayer();
-
-					appContext.getLocomotiveManager().clear();
-					appContext.getTurnoutManager().clear();
-					appContext.getRouteManager().clear();
-
-					disableEnableMenuItems();
-
-					new XMLServiceHelper().loadFile(
-							(XMLLocomotiveService) appContext
-									.getLocomotiveManager().getService(),
-							(XMLTurnoutService) appContext.getTurnoutManager()
-									.getService(), (XMLRouteService) appContext
-									.getRouteManager().getService(), file);
-
-					setTitle(AdHocRailway.TITLE + " [" + file.getAbsolutePath()
-							+ "]");
-					AdHocRailway.this.actualFile = file;
-					updateGUI();
-					updateCommandHistory("AdHoc-Railway Configuration loaded ("
-							+ file + ")");
-					progressBar.setIndeterminate(false);
+						setTitle(AdHocRailway.TITLE + " ["
+								+ file.getAbsolutePath() + "]");
+						AdHocRailway.this.actualFile = file;
+						updateGUI();
+						updateCommandHistory("AdHoc-Railway Configuration loaded ("
+								+ file + ")");
+						progressBar.setIndeterminate(false);
+					} catch (final IOException e) {
+						handleException(e);
+					}
 
 				}
+
 			});
 			t.start();
 		}
@@ -827,16 +815,20 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
+			try {
 
-			progressBar.setIndeterminate(true);
+				progressBar.setIndeterminate(true);
+				disableEnableMenuItems();
 
-			persistenceManager.disconnectFromCurrentPersistence();
-			switchToServerMode();
-			persistenceManager.loadPersistenceLayer();
-			disableEnableMenuItems();
+				persistenceManager.disconnectFromCurrentPersistence();
+				persistenceManager.switchToServerMode();
+				persistenceManager.loadPersistenceLayer();
 
-			updateGUI();
-			progressBar.setIndeterminate(false);
+				updateGUI();
+				progressBar.setIndeterminate(false);
+			} catch (final IOException e1) {
+				handleException(e1);
+			}
 		}
 	}
 
@@ -1065,7 +1057,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 					handleException(e1);
 				}
 			}
-			if (!fileMode) {
+			if (!isFileMode()) {
 				persistenceManager.disconnectFromCurrentPersistence();
 			}
 			System.exit(0);

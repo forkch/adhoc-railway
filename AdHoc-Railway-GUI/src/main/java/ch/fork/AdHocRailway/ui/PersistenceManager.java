@@ -1,5 +1,7 @@
 package ch.fork.AdHocRailway.ui;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.jmdns.JmDNS;
@@ -21,6 +23,7 @@ import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
+import ch.fork.AdHocRailway.services.impl.xml.XMLServiceHelper;
 import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -92,7 +95,8 @@ public class PersistenceManager {
 
 	}
 
-	public void loadLastFile() {
+	public void loadLastFileOrLoadDataFromAdHocServerIfRequested()
+			throws IOException {
 		final Preferences preferences = appContext.getPreferences();
 
 		final boolean useAdHocServer = preferences
@@ -106,18 +110,48 @@ public class PersistenceManager {
 					&& !preferences
 							.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER)) {
 
-				// FIXME new OpenFileAction().openFile(new File(preferences
-				// .getStringValue(PreferencesKeys.LAST_OPENED_FILE)));
+				loadFile(new File(
+						preferences
+								.getStringValue(PreferencesKeys.LAST_OPENED_FILE)));
 			}
 		} else if (useAdHocServer
 				&& !appContext.getPreferences().getBooleanValue(
 						PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
 
 			final String url = getAdHocServerURL();
-
 			connectToAdHocServer(url);
-
 		}
+	}
+
+	public void switchToFileMode() throws FileNotFoundException, IOException {
+		final Preferences preferences = appContext.getPreferences();
+		preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, false);
+		preferences.save();
+	}
+
+	public void switchToServerMode() throws FileNotFoundException, IOException {
+		final Preferences preferences = appContext.getPreferences();
+		preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, true);
+		preferences.save();
+	}
+
+	void loadFile(final File file) throws IOException {
+		disconnectFromCurrentPersistence();
+
+		switchToFileMode();
+
+		loadPersistenceLayer();
+
+		appContext.getLocomotiveManager().clear();
+		appContext.getTurnoutManager().clear();
+		appContext.getRouteManager().clear();
+
+		new XMLServiceHelper()
+				.loadFile((XMLLocomotiveService) appContext
+						.getLocomotiveManager().getService(),
+						(XMLTurnoutService) appContext.getTurnoutManager()
+								.getService(), (XMLRouteService) appContext
+								.getRouteManager().getService(), file);
 	}
 
 	public String getAdHocServerURL() {

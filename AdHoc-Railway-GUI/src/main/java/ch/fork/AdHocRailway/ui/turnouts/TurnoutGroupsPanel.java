@@ -60,12 +60,8 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 	private void updateTurnouts(final SortedSet<TurnoutGroup> turnoutGroups) {
 		indexToTurnoutGroup.clear();
 		removeAll();
-		revalidate();
-		repaint();
 		turnoutGroupToTurnoutGroupTab.clear();
 		int i = 1;
-
-		final TurnoutController turnoutControl = ctx.getTurnoutControl();
 
 		for (final TurnoutGroup turnoutGroup : turnoutGroups) {
 			indexToTurnoutGroup.put(i - 1, turnoutGroup);
@@ -251,7 +247,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 			}
 
 		});
-
 	}
 
 	@Override

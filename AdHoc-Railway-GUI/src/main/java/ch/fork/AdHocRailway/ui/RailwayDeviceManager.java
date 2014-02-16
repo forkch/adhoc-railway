@@ -1,6 +1,18 @@
 package ch.fork.AdHocRailway.ui;
 
-import ch.fork.AdHocRailway.controllers.*;
+import java.io.IOException;
+
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceEvent;
+import javax.jmdns.ServiceInfo;
+
+import org.apache.log4j.Logger;
+
+import ch.fork.AdHocRailway.controllers.LocomotiveController;
+import ch.fork.AdHocRailway.controllers.PowerController;
+import ch.fork.AdHocRailway.controllers.RailwayDevice;
+import ch.fork.AdHocRailway.controllers.RouteController;
+import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPPowerControlAdapter;
@@ -17,12 +29,6 @@ import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
-import org.apache.log4j.Logger;
-
-import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceEvent;
-import javax.jmdns.ServiceInfo;
-import java.io.IOException;
 
 public class RailwayDeviceManager implements CommandDataListener,
 		InfoDataListener, PreferencesKeys {
@@ -79,7 +85,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 		appContext.setLockControl(SRCPLockControl.getInstance());
 	}
 
-	public void autoConnect() {
+	public void autoDiscoverAndConnect() {
 
 		try {
 			adhocServermDNS = JmDNS.create();
@@ -123,22 +129,37 @@ public class RailwayDeviceManager implements CommandDataListener,
 			final String host = preferences.getStringValue(SRCP_HOSTNAME);
 			final int port = preferences.getIntValue(SRCP_PORT);
 			connectToSRCPServer(host, port);
-		} else if(RailwayDevice.ADHOC_BRAIN.equals(railwayDevive)){
+		} else if (RailwayDevice.ADHOC_BRAIN.equals(railwayDevive)) {
 			connectToBrain(preferences.getStringValue(ADHOC_BRAIN_PORT));
 		} else {
-            connectToNullDevice();
-        }
+			connectToNullDevice();
+		}
 
 		connected = true;
 		appContext.getMainBus().post(new ConnectionToRailwayEvent(true));
 	}
 
-    private void connectToNullDevice() {
+	public void autoConnectToRailwayDeviceIfRequested() {
+		if (preferences.getBooleanValue(SRCP_AUTOCONNECT)
+				&& !preferences
+						.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
+			try {
+				loadControlLayer();
+				connect();
+			} catch (final Exception x) {
 
+			}
+		} else if (preferences
+				.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
 
-    }
+		}
+	}
 
-    public void disconnect() {
+	private void connectToNullDevice() {
+
+	}
+
+	public void disconnect() {
 
 		final String railwayDeviceString = preferences
 				.getStringValue(RAILWAY_DEVICE);
