@@ -17,7 +17,7 @@ import javax.swing.*;
 
 public class ApplicationContext implements TurnoutContext, RouteContext,
 		LocomotiveContext, TrackContext, PowerContext,
-		PersistenceManagerContext {
+		PersistenceManagerContext, RailwayDeviceManagerContext {
 
 	private final EventBus mainBus = new EventBus();
 

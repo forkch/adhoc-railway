@@ -22,9 +22,10 @@ import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.bus.events.CommandLogEvent;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
-import ch.fork.AdHocRailway.ui.context.AdHocRailwayIface;
-import ch.fork.AdHocRailway.ui.context.ApplicationContext;
+import ch.fork.AdHocRailway.ui.bus.events.InitProceededEvent;
+import ch.fork.AdHocRailway.ui.context.RailwayDeviceManagerContext;
 import de.dermoba.srcp.client.CommandDataListener;
 import de.dermoba.srcp.client.InfoDataListener;
 import de.dermoba.srcp.client.SRCPSession;
@@ -37,22 +38,20 @@ public class RailwayDeviceManager implements CommandDataListener,
 	private static final Logger LOGGER = Logger
 			.getLogger(RailwayDeviceManager.class);
 	private static final String SRCP_SERVER_TCP_LOCAL = "_srcpd._tcp.local.";
-	private final ApplicationContext appContext;
 	private JmDNS adhocServermDNS;
-	private final AdHocRailwayIface mainApp;
-	private final Preferences preferences;
+	private final RailwayDeviceManagerContext appContext;
 	private boolean connected = false;
 
-	public RailwayDeviceManager(final ApplicationContext appContext) {
+	public RailwayDeviceManager(final RailwayDeviceManagerContext appContext) {
 		this.appContext = appContext;
-		mainApp = appContext.getMainApp();
 		appContext.getMainBus().register(this);
-		preferences = appContext.getPreferences();
 	}
 
 	public void loadControlLayer() {
-		mainApp.initProceeded("Loading Control Layer (Power)");
+		appContext.getMainBus().post(
+				new InitProceededEvent("Loading Control Layer (Power)"));
 
+		final Preferences preferences = appContext.getPreferences();
 		final String railwayDeviceString = preferences
 				.getStringValue(RAILWAY_DEVICE);
 		final RailwayDevice railwayDevive = RailwayDevice
@@ -64,30 +63,35 @@ public class RailwayDeviceManager implements CommandDataListener,
 		powerControl.addOrUpdatePowerSupply(new PowerSupply(1));
 		appContext.setPowerController(powerControl);
 
-		mainApp.initProceeded("Loading Control Layer (Locomotives)");
+		appContext.getMainBus().post(
+				new InitProceededEvent("Loading Control Layer (Locomotives)"));
 		final LocomotiveController locomotiveControl = LocomotiveController
 				.createLocomotiveController(railwayDevive);
 
 		appContext.setLocomotiveControl(locomotiveControl);
 
-		mainApp.initProceeded("Loading Control Layer (Turnouts)");
+		appContext.getMainBus().post(
+				new InitProceededEvent("Loading Control Layer (Turnouts)"));
 		final TurnoutController turnoutControl = TurnoutController
 				.createTurnoutController(railwayDevive);
 		appContext.setTurnoutControl(turnoutControl);
 
-		mainApp.initProceeded("Loading Control Layer (Routes)");
+		appContext.getMainBus().post(
+				new InitProceededEvent("Loading Control Layer (Routes)"));
 		final RouteController routeControl = RouteController
 				.createLocomotiveController(railwayDevive, turnoutControl);
 		routeControl.setRoutingDelay(Preferences.getInstance().getIntValue(
 				PreferencesKeys.ROUTING_DELAY));
 		appContext.setRouteControl(routeControl);
 
-		mainApp.initProceeded("Loading Control Layer (Locks)");
+		appContext.getMainBus().post(
+				new InitProceededEvent("Loading Control Layer (Locks)"));
 		appContext.setLockControl(SRCPLockControl.getInstance());
 	}
 
 	public void connect() {
 
+		final Preferences preferences = appContext.getPreferences();
 		final String railwayDeviceString = preferences
 				.getStringValue(RAILWAY_DEVICE);
 		final RailwayDevice railwayDevive = RailwayDevice
@@ -108,6 +112,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 
 	public void disconnect() {
 
+		final Preferences preferences = appContext.getPreferences();
 		final String railwayDeviceString = preferences
 				.getStringValue(RAILWAY_DEVICE);
 		final RailwayDevice railwayDevive = RailwayDevice
@@ -123,6 +128,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 	}
 
 	public void autoConnectToRailwayDeviceIfRequested() {
+		final Preferences preferences = appContext.getPreferences();
 		if (preferences.getBooleanValue(SRCP_AUTOCONNECT)
 				&& !preferences
 						.getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
@@ -168,7 +174,9 @@ public class RailwayDeviceManager implements CommandDataListener,
 						}
 					});
 		} catch (final IOException e) {
-			mainApp.handleException(e);
+			throw new AdHocRailwayException(
+					"failure during autodiscovery/autoconnect to SRCP-Server",
+					e);
 		}
 	}
 
@@ -195,8 +203,9 @@ public class RailwayDeviceManager implements CommandDataListener,
 			setSessionOnControllers(session);
 			session.connect();
 
-			mainApp.updateCommandHistory("Connected to server " + host
-					+ " on port " + port);
+			appContext.getMainBus().post(
+					new CommandLogEvent("Connected to server " + host
+							+ " on port " + port));
 
 			final SRCPTurnoutControlAdapter srcpTurnoutControlAdapter = (SRCPTurnoutControlAdapter) appContext
 					.getTurnoutControl();
@@ -211,6 +220,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 
 	private void disconnectFromSRCPServer() {
 		try {
+			final Preferences preferences = appContext.getPreferences();
 			final String host = preferences.getStringValue(SRCP_HOSTNAME);
 			final int port = preferences.getIntValue(SRCP_PORT);
 
@@ -221,10 +231,12 @@ public class RailwayDeviceManager implements CommandDataListener,
 
 			setSessionOnControllers(session);
 
-			mainApp.updateCommandHistory("Disconnected from server " + host
-					+ " on port " + port);
-		} catch (final SRCPException e1) {
-			mainApp.handleException(e1);
+			appContext.getMainBus().post(
+					new CommandLogEvent("Disconnected from server " + host
+							+ " on port " + port));
+		} catch (final SRCPException e) {
+			throw new AdHocRailwayException(
+					"failed to disconnect from SRCP server", e);
 		}
 	}
 
@@ -242,32 +254,40 @@ public class RailwayDeviceManager implements CommandDataListener,
 
 	@Override
 	public void commandDataSent(final String commandData) {
+		final Preferences preferences = appContext.getPreferences();
 		if (preferences.getBooleanValue(LOGGING)) {
-			mainApp.updateCommandHistory("Command sent: " + commandData);
+			appContext.getMainBus().post(
+					new CommandLogEvent("Command sent: " + commandData));
 		}
 		LOGGER.info("Command sent: " + commandData.trim());
 	}
 
 	@Override
 	public void commandDataReceived(final String response) {
+		final Preferences preferences = appContext.getPreferences();
 		if (preferences.getBooleanValue(LOGGING)) {
-			mainApp.updateCommandHistory("Command received: " + response);
+			appContext.getMainBus().post(
+					new CommandLogEvent("Command received: " + response));
 		}
 		LOGGER.info("Command received: " + response.trim());
 	}
 
 	@Override
 	public void infoDataSent(final String infoData) {
+		final Preferences preferences = appContext.getPreferences();
 		if (preferences.getBooleanValue(LOGGING)) {
-			mainApp.updateCommandHistory("Info sent: " + infoData);
+			appContext.getMainBus().post(
+					new CommandLogEvent("Info sent: " + infoData));
 		}
 		LOGGER.info("Info sent: " + infoData.trim());
 	}
 
 	@Override
 	public void infoDataReceived(final String infoData) {
+		final Preferences preferences = appContext.getPreferences();
 		if (preferences.getBooleanValue(LOGGING)) {
-			mainApp.updateCommandHistory("Info received: " + infoData);
+			appContext.getMainBus().post(
+					new CommandLogEvent("Info received: " + infoData));
 		}
 		LOGGER.info("Info received " + infoData.trim());
 	}
