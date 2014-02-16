@@ -1145,6 +1145,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				setRailwayDeviceLabelText();
 				updateCommandHistory("Preferences saved to: "
 						+ preferences.getConfigFile());
+
+				railwayDeviceManager.loadControlLayer();
 			}
 		}
 	}
