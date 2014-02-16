@@ -1,6 +1,7 @@
 package ch.fork.AdHocRailway.services.impl.xml;
 
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+
 import com.thoughtworks.xstream.converters.SingleValueConverter;
 
 public class LocomotiveTypeConverter implements SingleValueConverter {

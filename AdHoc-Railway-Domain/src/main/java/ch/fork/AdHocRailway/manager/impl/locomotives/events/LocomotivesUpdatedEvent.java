@@ -1,10 +1,11 @@
 package ch.fork.AdHocRailway.manager.impl.locomotives.events;
 
+import java.util.SortedSet;
+
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import com.google.common.collect.Sets;
 
-import java.util.SortedSet;
+import com.google.common.collect.Sets;
 
 public class LocomotivesUpdatedEvent {
 

@@ -18,16 +18,17 @@
 
 package ch.fork.AdHocRailway.controllers;
 
+import java.util.List;
+import java.util.Map;
+
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainTurnoutControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import java.util.List;
-import java.util.Map;
 
 public abstract class TurnoutController {
 

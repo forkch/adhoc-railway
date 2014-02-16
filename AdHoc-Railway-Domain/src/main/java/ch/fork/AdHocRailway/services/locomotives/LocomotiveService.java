@@ -18,11 +18,11 @@
 
 package ch.fork.AdHocRailway.services.locomotives;
 
+import java.util.SortedSet;
+
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
-
-import java.util.SortedSet;
 
 public interface LocomotiveService {
 	public abstract void addLocomotive(Locomotive locomotive)

@@ -18,17 +18,18 @@
 
 package ch.fork.AdHocRailway.services.impl.xml;
 
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
 import ch.fork.AdHocRailway.services.turnouts.RouteService;
 import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
-import org.apache.log4j.Logger;
-
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
 
 public class XMLRouteService implements RouteService {
 	private static final Logger LOGGER = Logger

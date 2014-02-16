@@ -1,9 +1,10 @@
 package ch.fork.AdHocRailway.controllers;
 
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 
 public class SimulatedMFXLocomotivesHelperTest {
 

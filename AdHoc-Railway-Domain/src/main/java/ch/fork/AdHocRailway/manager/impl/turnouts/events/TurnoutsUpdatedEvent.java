@@ -1,10 +1,11 @@
 package ch.fork.AdHocRailway.manager.impl.turnouts.events;
 
+import java.util.SortedSet;
+
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import com.google.common.collect.Sets;
 
-import java.util.SortedSet;
+import com.google.common.collect.Sets;
 
 public class TurnoutsUpdatedEvent {
 

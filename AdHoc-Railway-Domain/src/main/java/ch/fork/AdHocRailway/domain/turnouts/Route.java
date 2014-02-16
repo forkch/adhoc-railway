@@ -18,14 +18,16 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import ch.fork.AdHocRailway.domain.AbstractItem;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import ch.fork.AdHocRailway.domain.AbstractItem;
+
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 public class Route extends AbstractItem implements java.io.Serializable,
 		Comparable<Route> {

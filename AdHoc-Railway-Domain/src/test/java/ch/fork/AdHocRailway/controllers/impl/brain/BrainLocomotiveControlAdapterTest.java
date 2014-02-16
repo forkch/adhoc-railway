@@ -1,9 +1,7 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
-import ch.fork.AdHocRailway.controllers.LocomotiveChangeListener;
-import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
+import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -11,7 +9,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
+import ch.fork.AdHocRailway.controllers.LocomotiveChangeListener;
+import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
 
 public class BrainLocomotiveControlAdapterTest {
 

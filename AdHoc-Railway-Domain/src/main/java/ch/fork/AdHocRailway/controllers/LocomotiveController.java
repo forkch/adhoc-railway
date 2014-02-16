@@ -18,14 +18,21 @@
 
 package ch.fork.AdHocRailway.controllers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
-import org.apache.log4j.Logger;
-
-import java.util.*;
 
 public abstract class LocomotiveController implements
 		LockController<Locomotive> {

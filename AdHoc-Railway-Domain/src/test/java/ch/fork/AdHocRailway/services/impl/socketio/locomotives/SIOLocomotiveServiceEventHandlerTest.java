@@ -1,10 +1,13 @@
 package ch.fork.AdHocRailway.services.impl.socketio.locomotives;
 
-import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
-import ch.fork.AdHocRailway.utils.Tuple;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.SortedSet;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -14,13 +17,11 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.SortedSet;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
+import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
+import ch.fork.AdHocRailway.utils.Tuple;
 
 public class SIOLocomotiveServiceEventHandlerTest {
 

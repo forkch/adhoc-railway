@@ -1,13 +1,13 @@
 package ch.fork.AdHocRailway.controllers;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainPowerControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPPowerControlAdapter;
 import ch.fork.AdHocRailway.domain.power.Booster;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public abstract class PowerController {
 

@@ -18,17 +18,31 @@
 
 package ch.fork.AdHocRailway.manager.impl.turnouts;
 
-import ch.fork.AdHocRailway.domain.turnouts.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.log4j.Logger;
+
+import ch.fork.AdHocRailway.domain.turnouts.Route;
+import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import ch.fork.AdHocRailway.manager.impl.turnouts.events.TurnoutsUpdatedEvent;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerListener;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
-import com.google.common.eventbus.EventBus;
-import org.apache.log4j.Logger;
 
-import java.util.*;
+import com.google.common.eventbus.EventBus;
 
 public class TurnoutManagerImpl implements TurnoutManager,
 		TurnoutServiceListener {

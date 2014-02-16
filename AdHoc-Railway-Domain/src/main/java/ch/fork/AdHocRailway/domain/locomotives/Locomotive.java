@@ -18,21 +18,23 @@
 
 package ch.fork.AdHocRailway.domain.locomotives;
 
-import ch.fork.AdHocRailway.domain.AbstractItem;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.FORWARD;
+import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.REVERSE;
 
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.FORWARD;
-import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.REVERSE;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import ch.fork.AdHocRailway.domain.AbstractItem;
+
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 public class Locomotive extends AbstractItem implements Serializable,
 		Comparable<Locomotive> {

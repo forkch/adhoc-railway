@@ -18,9 +18,11 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import ch.fork.AdHocRailway.domain.AbstractItem;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import ch.fork.AdHocRailway.domain.AbstractItem;
+
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 public class RouteItem extends AbstractItem implements java.io.Serializable,
 		Comparable<RouteItem> {
