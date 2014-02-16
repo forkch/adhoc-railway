@@ -1,5 +1,13 @@
 package ch.fork.AdHocRailway.ui;
 
+import java.io.IOException;
+
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceEvent;
+import javax.jmdns.ServiceInfo;
+
+import org.apache.log4j.Logger;
+
 import ch.fork.AdHocRailway.manager.impl.locomotives.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.turnouts.RouteManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.turnouts.TurnoutManagerImpl;
@@ -17,12 +25,6 @@ import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
-import org.apache.log4j.Logger;
-
-import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceEvent;
-import javax.jmdns.ServiceInfo;
-import java.io.IOException;
 
 public class PersistenceManager {
 
@@ -88,7 +90,26 @@ public class PersistenceManager {
 		}
 		routeManager.initialize(appContext.getMainBus());
 
-		if (useAdHocServer
+	}
+
+	public void loadLastFile() {
+		final Preferences preferences = appContext.getPreferences();
+
+		final boolean useAdHocServer = preferences
+				.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER);
+		if (!useAdHocServer
+				&& preferences.getBooleanValue(PreferencesKeys.OPEN_LAST_FILE)) {
+			final String lastFile = preferences
+					.getStringValue(PreferencesKeys.LAST_OPENED_FILE);
+			if (lastFile != null
+					&& !lastFile.equals("")
+					&& !preferences
+							.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER)) {
+
+				// FIXME new OpenFileAction().openFile(new File(preferences
+				// .getStringValue(PreferencesKeys.LAST_OPENED_FILE)));
+			}
+		} else if (useAdHocServer
 				&& !appContext.getPreferences().getBooleanValue(
 						PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
 

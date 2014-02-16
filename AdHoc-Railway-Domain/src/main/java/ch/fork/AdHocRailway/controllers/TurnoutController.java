@@ -31,146 +31,158 @@ import java.util.Map;
 
 public abstract class TurnoutController {
 
-    protected final Map<Turnout, List<TurnoutChangeListener>> listeners = Maps.newHashMap();
-    protected final List<TurnoutChangeListener> generalListeners = Lists.newLinkedList();
+	protected final Map<Turnout, List<TurnoutChangeListener>> listeners = Maps
+			.newHashMap();
+	protected final List<TurnoutChangeListener> generalListeners = Lists
+			.newLinkedList();
 
-    public void addGeneralTurnoutChangeListener(final TurnoutChangeListener listener) {
-        generalListeners.add(listener);
-    }
+	public void addGeneralTurnoutChangeListener(
+			final TurnoutChangeListener listener) {
+		generalListeners.add(listener);
+	}
 
-    public void addTurnoutChangeListener(final Turnout turnout, final TurnoutChangeListener listener) {
-        List<TurnoutChangeListener> turnoutChangeListeners = listeners.get(turnout);
-        if (turnoutChangeListeners == null) {
-            turnoutChangeListeners = Lists.newLinkedList();
-            listeners.put(turnout, turnoutChangeListeners);
-        }
-        turnoutChangeListeners.add(listener);
-    }
+	public void addTurnoutChangeListener(final Turnout turnout,
+			final TurnoutChangeListener listener) {
+		List<TurnoutChangeListener> turnoutChangeListeners = listeners
+				.get(turnout);
+		if (turnoutChangeListeners == null) {
+			turnoutChangeListeners = Lists.newLinkedList();
+			listeners.put(turnout, turnoutChangeListeners);
+		}
+		turnoutChangeListeners.add(listener);
+	}
 
-    public void removeAllTurnoutChangeListener() {
-        listeners.clear();
-    }
+	public void removeAllTurnoutChangeListener() {
+		listeners.clear();
+	}
 
-    public void removeTurnoutChangeListener(final Turnout turnout, final TurnoutChangeListener listener) {
-        listeners.get(turnout).remove(listener);
-    }
+	public void removeTurnoutChangeListener(final Turnout turnout,
+			final TurnoutChangeListener listener) {
+		final List<TurnoutChangeListener> listenersForTurnout = listeners
+				.get(turnout);
+		if (listenersForTurnout != null) {
+			listenersForTurnout.remove(listener);
+		}
+	}
 
-    protected void informListeners(final Turnout turnout) {
-        for (final TurnoutChangeListener scl : generalListeners) {
-            scl.turnoutChanged(turnout);
-        }
+	protected void informListeners(final Turnout turnout) {
+		for (final TurnoutChangeListener scl : generalListeners) {
+			scl.turnoutChanged(turnout);
+		}
 
-        List<TurnoutChangeListener> turnoutChangeListeners = listeners.get(turnout);
-        if(turnoutChangeListeners != null) {
-            for (final TurnoutChangeListener scl : turnoutChangeListeners) {
-                scl.turnoutChanged(turnout);
-            }
-        }
-    }
+		final List<TurnoutChangeListener> turnoutChangeListeners = listeners
+				.get(turnout);
+		if (turnoutChangeListeners != null) {
+			for (final TurnoutChangeListener scl : turnoutChangeListeners) {
+				scl.turnoutChanged(turnout);
+			}
+		}
+	}
 
-    public abstract void toggle(final Turnout turnout);
+	public abstract void toggle(final Turnout turnout);
 
-    public abstract void toggleTest(final Turnout turnout);
+	public abstract void toggleTest(final Turnout turnout);
 
-    public abstract void setDefaultState(final Turnout turnout);
+	public abstract void setDefaultState(final Turnout turnout);
 
-    public abstract void setStraight(final Turnout turnout);
+	public abstract void setStraight(final Turnout turnout);
 
-    public abstract void setCurvedLeft(final Turnout turnout);
+	public abstract void setCurvedLeft(final Turnout turnout);
 
-    public abstract void setCurvedRight(final Turnout turnout);
+	public abstract void setCurvedRight(final Turnout turnout);
 
-    public abstract void setTurnoutWithAddress(final int address,
-                                               final TurnoutState state);
+	public abstract void setTurnoutWithAddress(final int address,
+			final TurnoutState state);
 
-    public abstract void reloadConfiguration();
+	public abstract void reloadConfiguration();
 
-    public static TurnoutController createTurnoutController(
-            final RailwayDevice railwayDevice) {
+	public static TurnoutController createTurnoutController(
+			final RailwayDevice railwayDevice) {
 
-        if (railwayDevice == null) {
-            return new NullTurnoutController();
-        }
-        switch (railwayDevice) {
-            case ADHOC_BRAIN:
-                return new BrainTurnoutControlAdapter(BrainController.getInstance());
-            case SRCP:
-                return new SRCPTurnoutControlAdapter();
-            default:
-                return new NullTurnoutController();
-        }
+		if (railwayDevice == null) {
+			return new NullTurnoutController();
+		}
+		switch (railwayDevice) {
+		case ADHOC_BRAIN:
+			return new BrainTurnoutControlAdapter(BrainController.getInstance());
+		case SRCP:
+			return new SRCPTurnoutControlAdapter();
+		default:
+			return new NullTurnoutController();
+		}
 
-    }
+	}
 
-    public void setNonDefaultState(final Turnout turnout) {
-        if (turnout.isThreeWay()) {
-            return;
-        }
-        switch (turnout.getDefaultState()) {
-            case LEFT:
-            case RIGHT:
-                setStraight(turnout);
-                break;
-            case STRAIGHT:
-                setCurvedLeft(turnout);
-                break;
-            default:
-                break;
+	public void setNonDefaultState(final Turnout turnout) {
+		if (turnout.isThreeWay()) {
+			return;
+		}
+		switch (turnout.getDefaultState()) {
+		case LEFT:
+		case RIGHT:
+			setStraight(turnout);
+			break;
+		case STRAIGHT:
+			setCurvedLeft(turnout);
+			break;
+		default:
+			break;
 
-        }
-    }
+		}
+	}
 
-    public void removeGeneralTurnoutChangeListener(TurnoutChangeListener listener) {
-        generalListeners.remove(listener);
-    }
+	public void removeGeneralTurnoutChangeListener(
+			final TurnoutChangeListener listener) {
+		generalListeners.remove(listener);
+	}
 
-    static class NullTurnoutController extends TurnoutController {
+	static class NullTurnoutController extends TurnoutController {
 
-        @Override
-        public void toggle(final Turnout turnout) {
-            turnout.setActualState(turnout.getToggledState());
-            informListeners(turnout);
-        }
+		@Override
+		public void toggle(final Turnout turnout) {
+			turnout.setActualState(turnout.getToggledState());
+			informListeners(turnout);
+		}
 
-        @Override
-        public void toggleTest(final Turnout turnout) {
-            turnout.setActualState(turnout.getToggledState());
-            informListeners(turnout);
-        }
+		@Override
+		public void toggleTest(final Turnout turnout) {
+			turnout.setActualState(turnout.getToggledState());
+			informListeners(turnout);
+		}
 
-        @Override
-        public void setDefaultState(final Turnout turnout) {
-            turnout.setActualState(turnout.getDefaultState());
-            informListeners(turnout);
-        }
+		@Override
+		public void setDefaultState(final Turnout turnout) {
+			turnout.setActualState(turnout.getDefaultState());
+			informListeners(turnout);
+		}
 
-        @Override
-        public void setStraight(final Turnout turnout) {
-            turnout.setActualState(TurnoutState.STRAIGHT);
-            informListeners(turnout);
-        }
+		@Override
+		public void setStraight(final Turnout turnout) {
+			turnout.setActualState(TurnoutState.STRAIGHT);
+			informListeners(turnout);
+		}
 
-        @Override
-        public void setCurvedLeft(final Turnout turnout) {
-            turnout.setActualState(TurnoutState.LEFT);
-            informListeners(turnout);
-        }
+		@Override
+		public void setCurvedLeft(final Turnout turnout) {
+			turnout.setActualState(TurnoutState.LEFT);
+			informListeners(turnout);
+		}
 
-        @Override
-        public void setCurvedRight(final Turnout turnout) {
-            turnout.setActualState(TurnoutState.RIGHT);
-            informListeners(turnout);
-        }
+		@Override
+		public void setCurvedRight(final Turnout turnout) {
+			turnout.setActualState(TurnoutState.RIGHT);
+			informListeners(turnout);
+		}
 
-        @Override
-        public void setTurnoutWithAddress(final int address,
-                                          final TurnoutState state) {
-        }
+		@Override
+		public void setTurnoutWithAddress(final int address,
+				final TurnoutState state) {
+		}
 
-        @Override
-        public void reloadConfiguration() {
-        }
+		@Override
+		public void reloadConfiguration() {
+		}
 
-    }
+	}
 
 }

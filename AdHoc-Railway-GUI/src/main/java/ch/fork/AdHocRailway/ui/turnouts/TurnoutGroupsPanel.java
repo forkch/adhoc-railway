@@ -66,7 +66,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 		int i = 1;
 
 		final TurnoutController turnoutControl = ctx.getTurnoutControl();
-		turnoutControl.removeAllTurnoutChangeListener();
 
 		for (final TurnoutGroup turnoutGroup : turnoutGroups) {
 			indexToTurnoutGroup.put(i - 1, turnoutGroup);
