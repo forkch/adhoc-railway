@@ -16,7 +16,8 @@ import de.dermoba.srcp.model.locking.SRCPLockControl;
 import javax.swing.*;
 
 public class ApplicationContext implements TurnoutContext, RouteContext,
-		LocomotiveContext, TrackContext, PowerContext {
+		LocomotiveContext, TrackContext, PowerContext,
+		PersistenceManagerContext {
 
 	private final EventBus mainBus = new EventBus();
 
@@ -44,6 +45,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 	private boolean isEditingMode;
 	private RailwayDeviceManager railwayDeviceManager;
 
+	@Override
 	public Preferences getPreferences() {
 		return preferences;
 	}
@@ -66,6 +68,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		return turnoutManager;
 	}
 
+	@Override
 	public void setTurnoutManager(final TurnoutManager turnoutPersistence) {
 		this.turnoutManager = turnoutPersistence;
 	}
@@ -84,6 +87,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		return routeManager;
 	}
 
+	@Override
 	public void setRouteManager(final RouteManager routePersistence) {
 		this.routeManager = routePersistence;
 	}
@@ -103,6 +107,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		return locomotiveManager;
 	}
 
+	@Override
 	public void setLocomotiveManager(
 			final LocomotiveManager locomotivePersistence) {
 		this.locomotiveManager = locomotivePersistence;
@@ -180,6 +185,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		return railwayDeviceManager;
 	}
 
+	@Override
 	public EventBus getMainBus() {
 		return mainBus;
 	}

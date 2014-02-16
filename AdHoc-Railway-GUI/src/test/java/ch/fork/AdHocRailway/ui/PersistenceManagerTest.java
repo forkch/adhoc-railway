@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.ui;
 import org.junit.Test;
 
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
+import ch.fork.AdHocRailway.ui.context.PersistenceManagerContext;
 
 public class PersistenceManagerTest {
 
@@ -18,7 +19,7 @@ public class PersistenceManagerTest {
 		return new PersistenceManager(createApplicationContextForFileLoading());
 	}
 
-	private ApplicationContext createApplicationContextForFileLoading() {
+	private PersistenceManagerContext createApplicationContextForFileLoading() {
 		final ApplicationContext applicationContext = new ApplicationContext();
 		return applicationContext;
 

@@ -32,7 +32,7 @@ import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.bus.events.CommandLogEvent;
 import ch.fork.AdHocRailway.ui.bus.events.InitProceededEvent;
 import ch.fork.AdHocRailway.ui.bus.events.UpdateMainTitleEvent;
-import ch.fork.AdHocRailway.ui.context.ApplicationContext;
+import ch.fork.AdHocRailway.ui.context.PersistenceManagerContext;
 
 public class PersistenceManager {
 
@@ -40,9 +40,9 @@ public class PersistenceManager {
 			.getLogger(PersistenceManager.class);
 	private static final String _ADHOC_SERVER_TCP_LOCAL = "_adhoc-server._tcp.local.";
 
-	private final ApplicationContext appContext;
+	private final PersistenceManagerContext appContext;
 
-	public PersistenceManager(final ApplicationContext ctx) {
+	public PersistenceManager(final PersistenceManagerContext ctx) {
 		this.appContext = ctx;
 
 	}
