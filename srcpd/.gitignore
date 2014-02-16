@@ -1,9 +1,7 @@
 *.o
-Makefile.in
 srcpd
 .deps
 Makefile
-Makefile.in
 aclocal.m4
 autom4te.cache/output.0
 autom4te.cache/output.1
@@ -14,8 +12,5 @@ config.log
 config.status
 configure
 man/Makefile
-man/Makefile.in
 man/de/Makefile
-man/de/Makefile.in
 src/Makefile
-src/Makefile.in
