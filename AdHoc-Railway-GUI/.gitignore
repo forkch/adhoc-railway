@@ -1,6 +1,7 @@
 bin/
 build/
 .locomotiveImageToPathMap.obj
+adhocrailway.conf
 logs/
 /build
 /bin
