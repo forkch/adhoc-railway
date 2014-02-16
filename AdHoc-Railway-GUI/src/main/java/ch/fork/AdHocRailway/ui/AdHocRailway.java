@@ -726,15 +726,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 						saveActualFile();
 					}
 				}
-				persistenceManager.disconnectFromCurrentPersistence();
-
-				persistenceManager.switchToFileMode();
-
-				persistenceManager.loadPersistenceLayer();
-
-				appContext.getLocomotiveManager().clear();
-				appContext.getTurnoutManager().clear();
-				appContext.getRouteManager().clear();
+				persistenceManager.newFile();
 
 				disableEnableMenuItems();
 
@@ -820,9 +812,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				progressBar.setIndeterminate(true);
 				disableEnableMenuItems();
 
-				persistenceManager.disconnectFromCurrentPersistence();
-				persistenceManager.switchToServerMode();
-				persistenceManager.loadPersistenceLayer();
+				persistenceManager.openDatabase();
 
 				updateGUI();
 				progressBar.setIndeterminate(false);

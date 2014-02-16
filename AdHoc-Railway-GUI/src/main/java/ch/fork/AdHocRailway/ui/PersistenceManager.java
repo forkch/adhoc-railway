@@ -154,6 +154,14 @@ public class PersistenceManager {
 								.getRouteManager().getService(), file);
 	}
 
+	public void openDatabase() throws FileNotFoundException, IOException {
+
+		disconnectFromCurrentPersistence();
+		switchToServerMode();
+		loadPersistenceLayer();
+		loadLastFileOrLoadDataFromAdHocServerIfRequested();
+	}
+
 	public String getAdHocServerURL() {
 		final Preferences preferences = appContext.getPreferences();
 		final StringBuilder b = new StringBuilder();
@@ -243,9 +251,17 @@ public class PersistenceManager {
 						}
 					});
 		} catch (final IOException e) {
-
 			appContext.getMainApp().handleException(e);
 		}
+	}
+
+	public void newFile() throws FileNotFoundException, IOException {
+
+		disconnectFromCurrentPersistence();
+
+		switchToFileMode();
+
+		loadPersistenceLayer();
 	}
 
 }

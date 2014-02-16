@@ -46,24 +46,25 @@ public class SIOService {
 
 					@Override
 					public void onConnect() {
-						LOGGER.info("successfully connected to socket.io at "
+						LOGGER.info("successfully connected to AdHoc-Server at "
 								+ url);
 						mainCallback.connected();
 					}
 
 					@Override
 					public void onDisconnect() {
-						LOGGER.info("successfully disconnected from socket.io at "
+						LOGGER.info("successfully disconnected from AdHoc-Server at "
 								+ url);
 						mainCallback.disconnected();
 					}
 
 					@Override
 					public void onError(final SocketIOException arg0) {
-						LOGGER.error(
-								"failed to connect to socket.io at " + url,
-								arg0);
-						mainCallback.connectionError(arg0);
+						LOGGER.error("failed to connect to AdHoc-Server at "
+								+ url, arg0);
+						mainCallback.connectionError(new Exception(
+								"failed to connect to AdHoc-Server at " + url,
+								arg0));
 						for (final IOCallback cb : otherCallbacks) {
 							cb.onError(arg0);
 						}
