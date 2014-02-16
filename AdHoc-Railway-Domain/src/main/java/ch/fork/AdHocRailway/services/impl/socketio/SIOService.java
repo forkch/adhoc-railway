@@ -1,10 +1,12 @@
 package ch.fork.AdHocRailway.services.impl.socketio;
 
+import ch.fork.AdHocRailway.AdHocRailwayException;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
 import io.socket.SocketIOException;
+
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -62,7 +64,7 @@ public class SIOService {
 					public void onError(final SocketIOException arg0) {
 						LOGGER.error("failed to connect to AdHoc-Server at "
 								+ url, arg0);
-						mainCallback.connectionError(new Exception(
+						mainCallback.connectionError(new AdHocRailwayException(
 								"failed to connect to AdHoc-Server at " + url,
 								arg0));
 						for (final IOCallback cb : otherCallbacks) {

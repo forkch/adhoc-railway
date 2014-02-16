@@ -8,6 +8,7 @@ import javax.jmdns.ServiceInfo;
 
 import org.apache.log4j.Logger;
 
+import ch.fork.AdHocRailway.AdHocRailwayException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.RailwayDevice;
@@ -106,7 +107,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 	}
 
 	public void disconnect() {
-	
+
 		final String railwayDeviceString = preferences
 				.getStringValue(RAILWAY_DEVICE);
 		final RailwayDevice railwayDevive = RailwayDevice
@@ -118,7 +119,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 		}
 		connected = false;
 		appContext.getMainBus().post(new ConnectedToRailwayEvent(false));
-	
+
 	}
 
 	public void autoConnectToRailwayDeviceIfRequested() {
@@ -137,25 +138,25 @@ public class RailwayDeviceManager implements CommandDataListener,
 		}
 	}
 
-	public void autoDiscoverAndConnect() {
-	
+	public void autoDiscoverSrcpServerAndConnect() {
+
 		try {
 			adhocServermDNS = JmDNS.create();
 			final JmDNS srcpdmDNS = JmDNS.create();
 			srcpdmDNS.addServiceListener(SRCP_SERVER_TCP_LOCAL,
 					new javax.jmdns.ServiceListener() {
-	
+
 						@Override
 						public void serviceResolved(final ServiceEvent event) {
 							LOGGER.info("resolved SRCPD on " + event);
-	
+
 						}
-	
+
 						@Override
 						public void serviceRemoved(final ServiceEvent event) {
-	
+
 						}
-	
+
 						@Override
 						public void serviceAdded(final ServiceEvent event) {
 							final ServiceInfo info = adhocServermDNS
@@ -196,21 +197,15 @@ public class RailwayDeviceManager implements CommandDataListener,
 
 			mainApp.updateCommandHistory("Connected to server " + host
 					+ " on port " + port);
-		} catch (final SRCPException e) {
-			preferences
-					.setBooleanValue(PreferencesKeys.SRCP_AUTOCONNECT, false);
-			try {
-				preferences.save();
-			} catch (final IOException e2) {
-				mainApp.handleException("Server not running", e2);
-			}
-			mainApp.handleException("SRCP server not running", e);
-		}
 
-		final SRCPTurnoutControlAdapter srcpTurnoutControlAdapter = (SRCPTurnoutControlAdapter) appContext
-				.getTurnoutControl();
-		srcpTurnoutControlAdapter.registerTurnouts(appContext
-				.getTurnoutManager().getAllTurnouts());
+			final SRCPTurnoutControlAdapter srcpTurnoutControlAdapter = (SRCPTurnoutControlAdapter) appContext
+					.getTurnoutControl();
+			srcpTurnoutControlAdapter.registerTurnouts(appContext
+					.getTurnoutManager().getAllTurnouts());
+		} catch (final SRCPException e) {
+			throw new AdHocRailwayException("failed to connect to SRCP server",
+					e);
+		}
 
 	}
 

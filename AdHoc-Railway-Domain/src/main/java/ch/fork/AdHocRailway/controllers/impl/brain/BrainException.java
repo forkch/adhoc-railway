@@ -1,17 +1,13 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
-public class BrainException extends RuntimeException {
+import ch.fork.AdHocRailway.AdHocRailwayException;
+
+public class BrainException extends AdHocRailwayException {
 
 	private static final long serialVersionUID = -7774330643904156967L;
 
 	public BrainException() {
 		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public BrainException(final String message, final Throwable cause,
-			final boolean enableSuppression, final boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
 	public BrainException(final String message, final Throwable cause) {

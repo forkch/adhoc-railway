@@ -77,7 +77,10 @@ import ch.fork.AdHocRailway.controllers.RailwayDevice;
 import ch.fork.AdHocRailway.services.impl.xml.XMLServiceHelper;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.bus.events.CommandLogEvent;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
+import ch.fork.AdHocRailway.ui.bus.events.InitProceededEvent;
+import ch.fork.AdHocRailway.ui.bus.events.UpdateMainTitleEvent;
 import ch.fork.AdHocRailway.ui.context.AdHocRailwayIface;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
@@ -726,7 +729,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 						saveActualFile();
 					}
 				}
-				persistenceManager.newFile();
+				persistenceManager.createNewFile();
 
 				disableEnableMenuItems();
 
@@ -776,7 +779,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 						progressBar.setIndeterminate(true);
 						disableEnableMenuItems();
 
-						persistenceManager.loadFile(file);
+						persistenceManager.openFile(file);
 
 						setTitle(AdHocRailway.TITLE + " ["
 								+ file.getAbsolutePath() + "]");
@@ -1302,5 +1305,20 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		} else {
 			new AdHocRailway();
 		}
+	}
+
+	@Subscribe
+	public void initProceeded(final InitProceededEvent event) {
+		initProceeded(event.getMessage());
+	}
+
+	@Subscribe
+	public void updateCommandLog(final CommandLogEvent event) {
+		updateCommandHistory(event.getMessage());
+	}
+
+	@Subscribe
+	public void updateMainTitle(final UpdateMainTitleEvent event) {
+		setTitle(event.getTitle());
 	}
 }

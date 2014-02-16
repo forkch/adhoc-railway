@@ -8,8 +8,10 @@ import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
+import ch.fork.AdHocRailway.AdHocRailwayException;
 import ch.fork.AdHocRailway.manager.impl.locomotives.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.turnouts.RouteManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.turnouts.TurnoutManagerImpl;
@@ -27,6 +29,9 @@ import ch.fork.AdHocRailway.services.impl.xml.XMLServiceHelper;
 import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.bus.events.CommandLogEvent;
+import ch.fork.AdHocRailway.ui.bus.events.InitProceededEvent;
+import ch.fork.AdHocRailway.ui.bus.events.UpdateMainTitleEvent;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
 
 public class PersistenceManager {
@@ -47,8 +52,9 @@ public class PersistenceManager {
 		final boolean useAdHocServer = appContext.getPreferences()
 				.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER);
 
-		appContext.getMainApp().initProceeded(
-				"Loading Persistence Layer (Locomotives)");
+		appContext.getMainBus().post(
+				new InitProceededEvent(
+						"Loading Persistence Layer (Locomotives)"));
 		LocomotiveManager locomotiveManager = appContext.getLocomotiveManager();
 		if (locomotiveManager == null) {
 			locomotiveManager = new LocomotiveManagerImpl();
@@ -63,14 +69,15 @@ public class PersistenceManager {
 
 		locomotiveManager.initialize(appContext.getMainBus());
 
-		appContext.getMainApp().initProceeded(
-				"Loading Persistence Layer (Turnouts)");
+		appContext.getMainBus().post(
+				new InitProceededEvent("Loading Persistence Layer (Turnouts)"));
 
 		TurnoutManager turnoutManager = appContext.getTurnoutManager();
 		if (turnoutManager == null) {
 			turnoutManager = new TurnoutManagerImpl();
 		}
 		appContext.setTurnoutManager(turnoutManager);
+
 		if (useAdHocServer) {
 			turnoutManager.setTurnoutService(new SIOTurnoutService());
 		} else {
@@ -78,8 +85,8 @@ public class PersistenceManager {
 		}
 		turnoutManager.initialize(appContext.getMainBus());
 
-		appContext.getMainApp().initProceeded(
-				"Loading Persistence Layer (Routes)");
+		appContext.getMainBus().post(
+				new InitProceededEvent("Loading Persistence Layer (Routes)"));
 		RouteManager routeManager = appContext.getRouteManager();
 
 		if (routeManager == null) {
@@ -92,7 +99,6 @@ public class PersistenceManager {
 			routeManager.setRouteService(new XMLRouteService());
 		}
 		routeManager.initialize(appContext.getMainBus());
-
 	}
 
 	public void loadLastFileOrLoadDataFromAdHocServerIfRequested()
@@ -105,12 +111,8 @@ public class PersistenceManager {
 				&& preferences.getBooleanValue(PreferencesKeys.OPEN_LAST_FILE)) {
 			final String lastFile = preferences
 					.getStringValue(PreferencesKeys.LAST_OPENED_FILE);
-			if (lastFile != null
-					&& !lastFile.equals("")
-					&& !preferences
-							.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER)) {
-
-				loadFile(new File(
+			if (StringUtils.isNotBlank(lastFile)) {
+				openFile(new File(
 						preferences
 								.getStringValue(PreferencesKeys.LAST_OPENED_FILE)));
 			}
@@ -123,19 +125,7 @@ public class PersistenceManager {
 		}
 	}
 
-	public void switchToFileMode() throws FileNotFoundException, IOException {
-		final Preferences preferences = appContext.getPreferences();
-		preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, false);
-		preferences.save();
-	}
-
-	public void switchToServerMode() throws FileNotFoundException, IOException {
-		final Preferences preferences = appContext.getPreferences();
-		preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, true);
-		preferences.save();
-	}
-
-	void loadFile(final File file) throws IOException {
+	public void openFile(final File file) throws IOException {
 		disconnectFromCurrentPersistence();
 
 		switchToFileMode();
@@ -180,31 +170,37 @@ public class PersistenceManager {
 
 			@Override
 			public void disconnected() {
-				appContext.getMainApp().updateCommandHistory(
-						"Successfully connected to AdHoc-Server");
+				appContext.getMainBus().post(
+						new CommandLogEvent(
+								"Successfully connected to AdHoc-Server"));
 			}
 
 			@Override
-			public void connectionError(final Exception ex) {
-				appContext.getMainApp().updateCommandHistory(
-						"Connection error: " + ex.getMessage());
+			public void connectionError(final AdHocRailwayException ex) {
+				appContext.getMainBus().post(
+						new CommandLogEvent("Connection error: "
+								+ ex.getMessage()));
 				appContext.getPreferences().setBooleanValue(
 						PreferencesKeys.USE_ADHOC_SERVER, false);
 				try {
 					appContext.getPreferences().save();
 				} catch (final IOException e) {
-					appContext.getMainApp().handleException(e);
+					throw new AdHocRailwayException(
+							"could not save preferences");
 				}
-				appContext.getMainApp().handleException(ex);
+				throw ex;
 			}
 
 			@Override
 			public void connected() {
-				appContext.getMainApp().setTitle(
-						AdHocRailway.TITLE + " [" + url + "]");
+				appContext.getMainBus().post(
+						new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
+								+ url + "]"));
 
-				appContext.getMainApp().updateCommandHistory(
-						"Successfully connected to AdHoc-Server: " + url);
+				appContext.getMainBus().post(
+						new CommandLogEvent(
+								"Successfully connected to AdHoc-Server: "
+										+ url));
 
 			}
 		});
@@ -216,7 +212,7 @@ public class PersistenceManager {
 		appContext.getLocomotiveManager().disconnect();
 	}
 
-	public void autoConnect() {
+	public void autoDiscoverAdHocServerConnect() {
 		final JmDNS adhocServermDNS;
 		try {
 			adhocServermDNS = JmDNS.create();
@@ -227,12 +223,10 @@ public class PersistenceManager {
 						@Override
 						public void serviceResolved(final ServiceEvent event) {
 							LOGGER.info("resolved AdHoc-Server on " + event);
-
 						}
 
 						@Override
 						public void serviceRemoved(final ServiceEvent event) {
-
 						}
 
 						@Override
@@ -251,17 +245,28 @@ public class PersistenceManager {
 						}
 					});
 		} catch (final IOException e) {
-			appContext.getMainApp().handleException(e);
+			throw new AdHocRailwayException(
+					"failure during autodiscovery/autoconnect to AdHoc-Server",
+					e);
 		}
 	}
 
-	public void newFile() throws FileNotFoundException, IOException {
-
+	public void createNewFile() throws FileNotFoundException, IOException {
 		disconnectFromCurrentPersistence();
-
 		switchToFileMode();
-
 		loadPersistenceLayer();
+	}
+
+	private void switchToFileMode() throws FileNotFoundException, IOException {
+		final Preferences preferences = appContext.getPreferences();
+		preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, false);
+		preferences.save();
+	}
+
+	private void switchToServerMode() throws FileNotFoundException, IOException {
+		final Preferences preferences = appContext.getPreferences();
+		preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, true);
+		preferences.save();
 	}
 
 }
