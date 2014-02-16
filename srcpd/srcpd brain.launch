@@ -24,6 +24,7 @@
 <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="src/srcpd"/>
 <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="srcpd"/>
 <stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="cdt.managedbuild.toolchain.gnu.base.1495789349"/>
+<booleanAttribute key="org.eclipse.cdt.launch.use_terminal" value="true"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/srcpd"/>
 </listAttribute>
