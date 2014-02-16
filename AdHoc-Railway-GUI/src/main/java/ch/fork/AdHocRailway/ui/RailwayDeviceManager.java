@@ -207,6 +207,11 @@ public class RailwayDeviceManager implements CommandDataListener,
 			mainApp.handleException("SRCP server not running", e);
 		}
 
+		final SRCPTurnoutControlAdapter srcpTurnoutControlAdapter = (SRCPTurnoutControlAdapter) appContext
+				.getTurnoutControl();
+		srcpTurnoutControlAdapter.registerTurnouts(appContext
+				.getTurnoutManager().getAllTurnouts());
+
 	}
 
 	private void disconnectFromSRCPServer() {

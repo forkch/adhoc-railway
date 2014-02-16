@@ -92,7 +92,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
 
 			final SRCPRouteItem sRouteItem = new SRCPRouteItem();
 			final SRCPTurnout sTurnout = turnoutControl
-					.getSRCPTurnout(routeItem.getTurnout());
+					.getOrCreateSRCPTurnout(routeItem.getTurnout());
 			sRouteItem.setTurnout(sTurnout);
 			switch (routeItem.getRoutedState()) {
 			case LEFT:
@@ -155,7 +155,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
 
 			final SRCPRouteItem sRouteItem = new SRCPRouteItem();
 			final SRCPTurnout sTurnout = turnoutControl
-					.getSRCPTurnout(routeItem.getTurnout());
+					.getOrCreateSRCPTurnout(routeItem.getTurnout());
 			sRouteItem.setTurnout(sTurnout);
 			switch (routeItem.getRoutedState()) {
 			case LEFT:

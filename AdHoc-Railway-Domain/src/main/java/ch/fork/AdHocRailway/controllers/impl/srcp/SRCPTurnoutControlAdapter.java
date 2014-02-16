@@ -8,9 +8,11 @@ import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.turnouts.*;
+
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SRCPTurnoutControlAdapter extends TurnoutController implements
@@ -36,48 +38,50 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 
 	@Override
 	public void setCurvedLeft(final Turnout turnout) {
-		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
+		final SRCPTurnout sTurnout = getOrCreateSRCPTurnout(turnout);
 		try {
 			turnoutControl.setCurvedLeft(sTurnout);
 		} catch (final SRCPModelException e) {
-			throw new TurnoutException("could not set turnout to curved left", e);
+			throw new TurnoutException("could not set turnout to curved left",
+					e);
 		}
 	}
 
 	@Override
 	public void setCurvedRight(final Turnout turnout) {
-		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
+		final SRCPTurnout sTurnout = getOrCreateSRCPTurnout(turnout);
 		try {
 			turnoutControl.setCurvedRight(sTurnout);
 		} catch (final SRCPModelException e) {
-			throw new TurnoutException("could not set turnout to curved right", e);
+			throw new TurnoutException("could not set turnout to curved right",
+					e);
 		}
 
 	}
 
 	@Override
 	public void setDefaultState(final Turnout turnout) {
-		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
+		final SRCPTurnout sTurnout = getOrCreateSRCPTurnout(turnout);
 		try {
 			turnoutControl.setDefaultState(sTurnout);
 		} catch (final SRCPModelException e) {
-			throw new TurnoutException("could not set turnout to default state", e);
+			throw new TurnoutException(
+					"could not set turnout to default state", e);
 		}
 
 	}
 
 	@Override
 	public void setStraight(final Turnout turnout) {
-		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
+		final SRCPTurnout sTurnout = getOrCreateSRCPTurnout(turnout);
 		try {
 			turnoutControl.setStraight(sTurnout);
 		} catch (final SRCPModelException e) {
 			throw new TurnoutException("could not set turnout to straight", e);
 		}
-
 	}
 
-	SRCPTurnout getSRCPTurnout(final Turnout turnout) {
+	SRCPTurnout getOrCreateSRCPTurnout(final Turnout turnout) {
 		if (turnout == null) {
 			throw new IllegalArgumentException("turnout must not be null");
 		}
@@ -117,7 +121,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 
 	@Override
 	public void toggle(final Turnout turnout) {
-		final SRCPTurnout sTurnout = getSRCPTurnout(turnout);
+		final SRCPTurnout sTurnout = getOrCreateSRCPTurnout(turnout);
 
 		try {
 			turnoutControl.toggle(sTurnout);
@@ -214,6 +218,9 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		if (turnout == null) {
 			turnout = turnoutTemp;
 		}
+		if (turnout == null) {
+			return;
+		}
 
 		turnout.setActualState(getTurnoutStateFromSRCPTurnoutState(changedTurnout
 				.getTurnoutState()));
@@ -264,6 +271,12 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 		case UNDEF:
 		default:
 			return SRCPTurnoutState.UNDEF;
+		}
+	}
+
+	public void registerTurnouts(final List<Turnout> allTurnouts) {
+		for (final Turnout turnout : allTurnouts) {
+			getOrCreateSRCPTurnout(turnout);
 		}
 	}
 }
