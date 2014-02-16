@@ -1,10 +1,10 @@
 package ch.fork.AdHocRailway.ui.bus.events;
 
-public class ConnectionToRailwayEvent {
+public class ConnectedToRailwayEvent {
 
 	private final boolean connected;
 
-	public ConnectionToRailwayEvent(final boolean connected) {
+	public ConnectedToRailwayEvent(final boolean connected) {
 		this.connected = connected;
 	}
 

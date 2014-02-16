@@ -24,7 +24,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 import ch.fork.AdHocRailway.manager.turnouts.RouteException;
 import ch.fork.AdHocRailway.ui.UIConstants;
-import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteHelper;
@@ -62,7 +62,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 	}
 
     @Subscribe
-    public void connectedToRailwayDevice(ConnectionToRailwayEvent event) {
+    public void connectedToRailwayDevice(ConnectedToRailwayEvent event) {
         if(event.isConnected()) {
             ctx.getRouteControl().addRouteChangeListener(route, this);
         }else {

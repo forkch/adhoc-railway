@@ -30,7 +30,7 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.EditingModeListener;
 import ch.fork.AdHocRailway.ui.UIConstants;
-import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
@@ -115,7 +115,7 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     @Subscribe
-    public void connectedToRailwayDevice(ConnectionToRailwayEvent event) {
+    public void connectedToRailwayDevice(ConnectedToRailwayEvent event) {
         if (event.isConnected()) {
             if (myLocomotive != null) {
                 ctx.getLocomotiveControl().addLocomotiveChangeListener(myLocomotive, this);

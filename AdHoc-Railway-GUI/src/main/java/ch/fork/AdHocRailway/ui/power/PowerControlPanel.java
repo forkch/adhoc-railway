@@ -8,7 +8,7 @@ import ch.fork.AdHocRailway.domain.power.PowerSupply;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.PowerContext;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
@@ -53,7 +53,7 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 		goIcon = ImageTools.createImageIconFromIconSet("go_22.png");
 		shortcutIcon = ImageTools.createImageIconFromIconSet("shortcut_22.png");
 		initGUI();
-		connectedToRailwayDevice(new ConnectionToRailwayEvent(false));
+		connectedToRailwayDevice(new ConnectedToRailwayEvent(false));
 	}
 
 	private void initGUI() {
@@ -71,7 +71,7 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 	}
 
 	@Subscribe
-	public void connectedToRailwayDevice(final ConnectionToRailwayEvent event) {
+	public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
 		final boolean connected = event.isConnected();
 		final PowerController powerController = ctx.getPowerControl();
 		if (connected) {

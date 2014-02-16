@@ -24,7 +24,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.ui.UIConstants;
-import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
@@ -85,7 +85,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 	}
 
     @Subscribe
-    public void connectedToRailwayDevice(ConnectionToRailwayEvent event) {
+    public void connectedToRailwayDevice(ConnectedToRailwayEvent event) {
         if(event.isConnected())  {
             ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
         }   else {

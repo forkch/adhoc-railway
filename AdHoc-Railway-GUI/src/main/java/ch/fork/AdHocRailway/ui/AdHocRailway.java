@@ -77,7 +77,7 @@ import ch.fork.AdHocRailway.controllers.RailwayDevice;
 import ch.fork.AdHocRailway.services.impl.xml.XMLServiceHelper;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.AdHocRailwayIface;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
@@ -325,7 +325,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	}
 
 	@Subscribe
-	public void connectedToRailwayDevice(final ConnectionToRailwayEvent event) {
+	public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
 		final boolean connected = event.isConnected();
 		daemonConnectItem.setEnabled(!connected);
 		daemonDisconnectItem.setEnabled(connected);
@@ -837,7 +837,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			progressBar.setIndeterminate(true);
 			final int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
 					"Do you REALLY want to remove all locomotives?",
-					"Export to database", JOptionPane.YES_NO_OPTION,
+					"Remove all locmotives", JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE,
 					createImageIconFromIconSet("dialog-warning.png"));
 			if (result == JOptionPane.YES_OPTION) {
@@ -864,12 +864,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			progressBar.setIndeterminate(true);
 			final int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
 					"Do you REALLY want to remove all turnouts and routes?",
-					"Export to database", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE,
+					"Remove all turnouts and routes",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
 					createImageIconFromIconSet("dialog-warning.png"));
 			if (result == JOptionPane.YES_OPTION) {
-				appContext.getTurnoutManager().clearToService();
 				appContext.getRouteManager().clearToService();
+				appContext.getTurnoutManager().clearToService();
 			}
 
 			updateGUI();
@@ -1067,9 +1067,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			final TurnoutConfigurationDialog switchConfigDialog = new TurnoutConfigurationDialog(
+			final TurnoutConfigurationDialog turnoutConfigurationDialog = new TurnoutConfigurationDialog(
 					AdHocRailway.this, appContext);
-			if (switchConfigDialog.isOkPressed()) {
+			if (turnoutConfigurationDialog.isOkPressed()) {
 				updateCommandHistory("Turnout configuration changed");
 			}
 		}
@@ -1185,9 +1185,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	}
 
 	private class PowerOnAction extends AbstractAction {
-		/**
-         *
-         */
 		private static final long serialVersionUID = -4908838367753105920L;
 
 		public PowerOnAction() {
@@ -1208,9 +1205,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	}
 
 	private class PowerOffAction extends AbstractAction {
-		/**
-         *
-         */
 		private static final long serialVersionUID = 834003379948714322L;
 
 		public PowerOffAction() {
@@ -1250,9 +1244,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 	private class ToggleFullscreenAction extends AbstractAction {
 
-		/**
-         *
-         */
 		private static final long serialVersionUID = -1610381669528977741L;
 
 		public ToggleFullscreenAction() {

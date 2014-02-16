@@ -21,7 +21,7 @@ import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.bus.events.ConnectionToRailwayEvent;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.AdHocRailwayIface;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
 import de.dermoba.srcp.client.CommandDataListener;
@@ -85,40 +85,6 @@ public class RailwayDeviceManager implements CommandDataListener,
 		appContext.setLockControl(SRCPLockControl.getInstance());
 	}
 
-	public void autoDiscoverAndConnect() {
-
-		try {
-			adhocServermDNS = JmDNS.create();
-			final JmDNS srcpdmDNS = JmDNS.create();
-			srcpdmDNS.addServiceListener(SRCP_SERVER_TCP_LOCAL,
-					new javax.jmdns.ServiceListener() {
-
-						@Override
-						public void serviceResolved(final ServiceEvent event) {
-							LOGGER.info("resolved SRCPD on " + event);
-
-						}
-
-						@Override
-						public void serviceRemoved(final ServiceEvent event) {
-
-						}
-
-						@Override
-						public void serviceAdded(final ServiceEvent event) {
-							final ServiceInfo info = adhocServermDNS
-									.getServiceInfo(event.getType(),
-											event.getName(), true);
-							LOGGER.info("found SRCPD on " + info);
-							connectToSRCPServer(info.getInet4Addresses()[0]
-									.getHostAddress(), info.getPort());
-						}
-					});
-		} catch (final IOException e) {
-			mainApp.handleException(e);
-		}
-	}
-
 	public void connect() {
 
 		final String railwayDeviceString = preferences
@@ -136,7 +102,23 @@ public class RailwayDeviceManager implements CommandDataListener,
 		}
 
 		connected = true;
-		appContext.getMainBus().post(new ConnectionToRailwayEvent(true));
+		appContext.getMainBus().post(new ConnectedToRailwayEvent(true));
+	}
+
+	public void disconnect() {
+	
+		final String railwayDeviceString = preferences
+				.getStringValue(RAILWAY_DEVICE);
+		final RailwayDevice railwayDevive = RailwayDevice
+				.fromString(railwayDeviceString);
+		if (railwayDevive.equals(RailwayDevice.SRCP)) {
+			disconnectFromSRCPServer();
+		} else {
+			disconnectFromBrain();
+		}
+		connected = false;
+		appContext.getMainBus().post(new ConnectedToRailwayEvent(false));
+	
 	}
 
 	public void autoConnectToRailwayDeviceIfRequested() {
@@ -155,23 +137,41 @@ public class RailwayDeviceManager implements CommandDataListener,
 		}
 	}
 
-	private void connectToNullDevice() {
-
+	public void autoDiscoverAndConnect() {
+	
+		try {
+			adhocServermDNS = JmDNS.create();
+			final JmDNS srcpdmDNS = JmDNS.create();
+			srcpdmDNS.addServiceListener(SRCP_SERVER_TCP_LOCAL,
+					new javax.jmdns.ServiceListener() {
+	
+						@Override
+						public void serviceResolved(final ServiceEvent event) {
+							LOGGER.info("resolved SRCPD on " + event);
+	
+						}
+	
+						@Override
+						public void serviceRemoved(final ServiceEvent event) {
+	
+						}
+	
+						@Override
+						public void serviceAdded(final ServiceEvent event) {
+							final ServiceInfo info = adhocServermDNS
+									.getServiceInfo(event.getType(),
+											event.getName(), true);
+							LOGGER.info("found SRCPD on " + info);
+							connectToSRCPServer(info.getInet4Addresses()[0]
+									.getHostAddress(), info.getPort());
+						}
+					});
+		} catch (final IOException e) {
+			mainApp.handleException(e);
+		}
 	}
 
-	public void disconnect() {
-
-		final String railwayDeviceString = preferences
-				.getStringValue(RAILWAY_DEVICE);
-		final RailwayDevice railwayDevive = RailwayDevice
-				.fromString(railwayDeviceString);
-		if (railwayDevive.equals(RailwayDevice.SRCP)) {
-			disconnectFromSRCPServer();
-		} else {
-			disconnectFromBrain();
-		}
-		connected = false;
-		appContext.getMainBus().post(new ConnectionToRailwayEvent(false));
+	private void connectToNullDevice() {
 
 	}
 
