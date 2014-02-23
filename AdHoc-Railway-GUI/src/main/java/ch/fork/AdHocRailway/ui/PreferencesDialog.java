@@ -38,9 +38,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class PreferencesDialog extends JDialog implements PreferencesKeys {
-	/**
-     *
-     */
+
 	private static final long serialVersionUID = 6559383494970215298L;
 	private JSpinner defaultRoutingDelay;
 	private SpinnerNumberModel defaultActivationTimeModel;
@@ -149,11 +147,10 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		adhocDeviceComboBox = new JComboBox<RailwayDevice>();
 		for (final RailwayDevice device : RailwayDevice.values()) {
-				adhocDeviceComboBox.addItem(device);
+			adhocDeviceComboBox.addItem(device);
 		}
 
 		adHocBrainPort = new JComboBox<String>();
-
 		if (ctx.getRailwayDeviceManager().isBrainAvailable()) {
 			for (final String availablePort : BrainController.getInstance()
 					.getAvailableSerialPortsAsString()) {
@@ -293,10 +290,12 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 	private void loadPreferences() {
 		final Preferences p = Preferences.getInstance();
-		adhocDeviceComboBox.setSelectedItem(RailwayDevice.fromString(p
-				.getStringValue(RAILWAY_DEVICE)));
+
+		adhocDeviceComboBox.getModel().setSelectedItem(
+				RailwayDevice.fromString(p.getStringValue(RAILWAY_DEVICE)));
 
 		adHocBrainPort.setSelectedItem(p.getStringValue(ADHOC_BRAIN_PORT));
+
 		locomotiveControlNumberModel.setValue(p
 				.getIntValue(LOCOMOTIVE_CONTROLES));
 		keyBoardLayoutComboBox.setSelectedItem(p
@@ -330,13 +329,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
 		enableDisableNetworking(autoDiscoverAndConnectServersCheckBox
 				.isSelected());
-
-		if (ctx.getRailwayDeviceManager().isBrainAvailable()) {
-			adHocBrainPort.setEnabled(true);
-		} else {
-			adhocDeviceComboBox.setSelectedItem(RailwayDevice.SRCP);
-			adHocBrainPort.setEnabled(false);
-		}
 
 	}
 
