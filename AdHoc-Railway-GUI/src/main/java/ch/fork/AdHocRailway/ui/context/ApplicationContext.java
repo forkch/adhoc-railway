@@ -9,7 +9,10 @@ import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.RailwayDeviceManager;
+
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 
@@ -59,6 +62,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		return turnoutControl;
 	}
 
+	@Override
 	public void setTurnoutControl(final TurnoutController turnoutControl) {
 		this.turnoutControl = turnoutControl;
 	}
@@ -78,6 +82,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		return routeControl;
 	}
 
+	@Override
 	public void setRouteControl(final RouteController routeControl) {
 		this.routeControl = routeControl;
 	}
@@ -97,6 +102,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		return locomotiveControl;
 	}
 
+	@Override
 	public void setLocomotiveControl(
 			final LocomotiveController locomotiveControl) {
 		this.locomotiveControl = locomotiveControl;
@@ -118,6 +124,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		return powerControl;
 	}
 
+	@Override
 	public void setPowerController(final PowerController powerControl) {
 		this.powerControl = powerControl;
 	}
@@ -131,10 +138,12 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		return this.activeBoosterCount;
 	}
 
+	@Override
 	public SRCPLockControl getLockControl() {
 		return lockControl;
 	}
 
+	@Override
 	public void setLockControl(final SRCPLockControl lockControl) {
 		this.lockControl = lockControl;
 	}
@@ -144,6 +153,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		return session;
 	}
 
+	@Override
 	public void setSession(final SRCPSession session) {
 		this.session = session;
 	}
@@ -153,8 +163,9 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 		return isEditingMode;
 	}
 
-	public void setEditingMode(final boolean isEditingMode) {
-		this.isEditingMode = isEditingMode;
+	@Subscribe
+	public void editingModeChanged(final EditingModeEvent event) {
+		this.isEditingMode = event.isEditingMode();
 	}
 
 	@Override

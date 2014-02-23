@@ -75,23 +75,23 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 		turnoutManager = ctx.getTurnoutManager();
 		widgetEnabled = true;
 
-        ctx.getMainBus().register(this);
+		ctx.getMainBus().register(this);
 
 		initGUI();
 		updateTurnout();
 		TurnoutHelper.validateTurnout(turnoutManager, turnout, this);
-        ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
+		ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
 		setEnabled(true);
 	}
 
-    @Subscribe
-    public void connectedToRailwayDevice(ConnectedToRailwayEvent event) {
-        if(event.isConnected())  {
-            ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
-        }   else {
-            ctx.getTurnoutControl().removeTurnoutChangeListener(turnout, this);
-        }
-    }
+	@Subscribe
+	public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
+		if (event.isConnected()) {
+			ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
+		} else {
+			ctx.getTurnoutControl().removeTurnoutChangeListener(turnout, this);
+		}
+	}
 
 	private void initGUI() {
 		turnoutCanvas = new TurnoutCanvas(turnout);
@@ -133,13 +133,13 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			}
 
 			if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
-					final TurnoutController turnoutControl = ctx
-							.getTurnoutControl();
-					if (!testMode) {
-						turnoutControl.toggle(turnout);
-					} else {
-						turnoutControl.toggleTest(turnout);
-					}
+				final TurnoutController turnoutControl = ctx
+						.getTurnoutControl();
+				if (!testMode) {
+					turnoutControl.toggle(turnout);
+				} else {
+					turnoutControl.toggleTest(turnout);
+				}
 			} else if (e.getClickCount() == 1
 					&& e.getButton() == MouseEvent.BUTTON3) {
 
@@ -155,7 +155,8 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			}
 
 			final TurnoutController turnoutControl = ctx.getTurnoutControl();
-			turnoutControl.removeGeneralTurnoutChangeListener(TurnoutWidget.this);
+			turnoutControl
+					.removeGeneralTurnoutChangeListener(TurnoutWidget.this);
 			new TurnoutConfig(ctx.getMainFrame(), ctx, turnout,
 					turnout.getTurnoutGroup());
 			TurnoutHelper.validateTurnout(turnoutManager, turnout,

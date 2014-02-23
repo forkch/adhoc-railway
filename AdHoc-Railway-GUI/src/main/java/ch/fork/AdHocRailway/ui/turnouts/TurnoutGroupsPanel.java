@@ -8,12 +8,15 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.EditingModeListener;
+import ch.fork.AdHocRailway.ui.context.EditingModeEvent;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 
 import javax.swing.*;
+
+import com.google.common.eventbus.Subscribe;
+
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +25,7 @@ import java.util.SortedSet;
 import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
 
 public class TurnoutGroupsPanel extends JTabbedPane implements
-		TurnoutManagerListener, EditingModeListener {
+		TurnoutManagerListener {
 	private static final long serialVersionUID = 4422288695074160221L;
 
 	private final Map<Integer, TurnoutGroup> indexToTurnoutGroup = new HashMap<Integer, TurnoutGroup>();
@@ -51,7 +54,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 		initToolBar();
 		initMenuBar();
 		initActionListeners();
-		ctx.getMainApp().addEditingModeListener(this);
+		ctx.getMainBus().register(this);
 	}
 
 	private void initActionListeners() {
@@ -335,8 +338,9 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	}
 
-	@Override
-	public void editingModeChanged(final boolean editing) {
+	@Subscribe
+	public void editingModeChanged(final EditingModeEvent event) {
+		final boolean editing = event.isEditingMode();
 		addTurnoutsItem.setEnabled(editing);
 		addTurnoutsButton.setEnabled(editing);
 		turnoutsProgrammerItem.setEnabled(editing);

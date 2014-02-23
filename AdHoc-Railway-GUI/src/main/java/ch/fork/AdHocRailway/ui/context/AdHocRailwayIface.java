@@ -1,7 +1,5 @@
 package ch.fork.AdHocRailway.ui.context;
 
-import ch.fork.AdHocRailway.ui.EditingModeListener;
-
 import javax.swing.*;
 
 public interface AdHocRailwayIface {
@@ -10,8 +8,6 @@ public interface AdHocRailwayIface {
 	public void addMenu(final JMenu menu);
 
 	public void addToolBar(final JToolBar toolbar);
-
-	public void addEditingModeListener(final EditingModeListener l);
 
 	public void handleException(final Throwable ex);
 

@@ -34,9 +34,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -71,7 +69,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
-
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.RailwayDevice;
 import ch.fork.AdHocRailway.services.impl.xml.XMLServiceHelper;
@@ -83,6 +80,7 @@ import ch.fork.AdHocRailway.ui.bus.events.InitProceededEvent;
 import ch.fork.AdHocRailway.ui.bus.events.UpdateMainTitleEvent;
 import ch.fork.AdHocRailway.ui.context.AdHocRailwayIface;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
+import ch.fork.AdHocRailway.ui.context.EditingModeEvent;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveControlPanel;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfigurationDialog;
 import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
@@ -100,7 +98,7 @@ import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
 
 public class AdHocRailway extends JFrame implements AdHocRailwayIface,
-		PreferencesKeys, EditingModeListener {
+		PreferencesKeys {
 
 	private static final Logger LOGGER = Logger.getLogger(AdHocRailway.class);
 	private static final long serialVersionUID = -6033036063027343513L;
@@ -157,8 +155,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 	private JCheckBoxMenuItem enableEditing;
 
-	private final List<EditingModeListener> editingModeListeners = new ArrayList<EditingModeListener>();
-
 	private JButton turnoutsToolBarButton;
 
 	private JButton routesToolBarButton;
@@ -187,6 +183,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		try {
 
 			appContext = new ApplicationContext();
+			appContext.getMainBus().register(appContext);
 			appContext.getMainBus().register(this);
 			appContext.setMainApp(this);
 			appContext.setMainFrame(this);
@@ -287,13 +284,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 				JComponent.WHEN_IN_FOCUSED_WINDOW);
 	}
 
-	@Override
-	public void addEditingModeListener(final EditingModeListener l) {
-		editingModeListeners.add(l);
-	}
-
-	@Override
-	public void editingModeChanged(final boolean editing) {
+	@Subscribe
+	public void editingModeChanged(final EditingModeEvent event) {
+		final boolean editing = event.isEditingMode();
 		switchesItem.setEnabled(editing);
 		routesItem.setEnabled(editing);
 		locomotivesItem.setEnabled(editing);
@@ -393,10 +386,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 			}
 		});
 		setRailwayDeviceLabelText();
-		addEditingModeListener(this);
-		for (final EditingModeListener l : editingModeListeners) {
-			l.editingModeChanged(appContext.isEditingMode());
-		}
+
+		appContext.getMainBus().register(this);
+		appContext.getMainBus().post(
+				new EditingModeEvent(appContext.isEditingMode()));
 	}
 
 	private void updateGUI() {
@@ -1289,11 +1282,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 			final boolean editingMode = enableEditing.isSelected();
-			appContext.setEditingMode(editingMode);
+			appContext.getMainBus().post(new EditingModeEvent(editingMode));
 
-			for (final EditingModeListener l : editingModeListeners) {
-				l.editingModeChanged(editingMode);
-			}
 		}
 	}
 
