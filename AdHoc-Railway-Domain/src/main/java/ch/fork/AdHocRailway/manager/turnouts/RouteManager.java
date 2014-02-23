@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.manager.turnouts;
 
+import java.util.List;
 import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.domain.turnouts.Route;
@@ -72,5 +73,7 @@ public interface RouteManager {
 	public abstract void disconnect();
 
 	public abstract RouteService getService();
+
+	public abstract List<Route> getAllRoutes();
 
 }

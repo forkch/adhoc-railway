@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.controllers.impl.srcp;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedSet;
 
 import ch.fork.AdHocRailway.controllers.LockingException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
@@ -44,7 +45,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	public void setFunction(final Locomotive locomotive,
 			final int functionNumber, final boolean state,
 			final int deactivationDelay) throws LocomotiveException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
 		final boolean[] srcpFunctions = locomotiveControl
 				.getFunctions(sLocomotive);
 
@@ -69,7 +70,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	@Override
 	public void setSpeed(final Locomotive locomotive, final int speed,
 			final boolean[] functions) throws LocomotiveException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.setSpeed(sLocomotive, speed,
 					SimulatedMFXLocomotivesHelper.convertToMultipartFunctions(
@@ -84,7 +85,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	@Override
 	public void emergencyStop(final Locomotive locomotive)
 			throws LocomotiveException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
 		try {
 			final int emergencyStopFunction = locomotive
 					.getEmergencyStopFunction();
@@ -104,7 +105,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	@Override
 	public void toggleDirection(final Locomotive locomotive)
 			throws LocomotiveException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.toggleDirection(sLocomotive);
 			LocomotiveHelper.toggleDirection(locomotive);
@@ -126,7 +127,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	@Override
 	public boolean acquireLock(final Locomotive locomotive)
 			throws LockingException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
 		try {
 			return locomotiveControl.acquireLock(sLocomotive);
 		} catch (final SRCPLockingException e) {
@@ -139,7 +140,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	@Override
 	public boolean isLocked(final Locomotive locomotive)
 			throws LockingException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
 		if (locomotiveControl.getSession() == null) {
 			return false;
 		}
@@ -155,7 +156,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	@Override
 	public boolean isLockedByMe(final Locomotive locomotive)
 			throws LockingException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
 		if (locomotiveControl.getSession() == null) {
 			return false;
 		}
@@ -172,7 +173,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 	@Override
 	public boolean releaseLock(final Locomotive locomotive)
 			throws LockingException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
 		try {
 			return locomotiveControl.releaseLock(sLocomotive);
 		} catch (final SRCPLockingException e) {
@@ -213,7 +214,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 		informListeners(SRCPLocomotiveLocomotiveMap.get(changedLocomotive));
 	}
 
-	SRCPLocomotive getSrcpLocomotive(final Locomotive locomotive) {
+	SRCPLocomotive getOrCreateSrcpLocomotive(final Locomotive locomotive) {
 		if (locomotive == null) {
 			throw new IllegalArgumentException("locomotive must not be null");
 		}
@@ -253,7 +254,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
 	private void setFunctions(final Locomotive locomotive,
 			final boolean[] srcpFunctions) throws LocomotiveException {
-		final SRCPLocomotive sLocomotive = getSrcpLocomotive(locomotive);
+		final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
 		try {
 			locomotiveControl.setFunctions(sLocomotive, srcpFunctions);
 			locomotive.setCurrentFunctions(SimulatedMFXLocomotivesHelper
@@ -261,6 +262,12 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 							srcpFunctions));
 		} catch (final SRCPModelException e) {
 			throw new LocomotiveException("Locomotive Error", e);
+		}
+	}
+
+	public void registerLocomotives(final SortedSet<Locomotive> allLocomotives) {
+		for (final Locomotive locomotive : allLocomotives) {
+			getOrCreateSrcpLocomotive(locomotive);
 		}
 	}
 

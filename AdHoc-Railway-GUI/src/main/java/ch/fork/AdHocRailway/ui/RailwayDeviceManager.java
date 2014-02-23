@@ -238,6 +238,16 @@ public class RailwayDeviceManager implements CommandDataListener,
 			srcpTurnoutControlAdapter.registerTurnouts(appContext
 					.getTurnoutManager().getAllTurnouts());
 
+			final SRCPRouteControlAdapter srcpRouteControlAdapter = (SRCPRouteControlAdapter) appContext
+					.getRouteControl();
+			srcpRouteControlAdapter.registerRoutes(appContext.getRouteManager()
+					.getAllRoutes());
+
+			final SRCPLocomotiveControlAdapter srcpLocomotiveControlAdapter = (SRCPLocomotiveControlAdapter) appContext
+					.getLocomotiveControl();
+			srcpLocomotiveControlAdapter.registerLocomotives(appContext
+					.getLocomotiveManager().getAllLocomotives());
+
 		} catch (final SRCPException e) {
 			throw new AdHocRailwayException("failed to connect to SRCP server",
 					e);

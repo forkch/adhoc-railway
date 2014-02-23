@@ -1,6 +1,7 @@
 package ch.fork.AdHocRailway.controllers.impl.srcp;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ch.fork.AdHocRailway.controllers.RouteController;
@@ -39,7 +40,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
 
 	@Override
 	public void enableRoute(final Route route) throws RouteException {
-		final SRCPRoute sRoute = getSRCPRoute(route);
+		final SRCPRoute sRoute = getOrCreateSRCPRoute(route);
 		try {
 			route.setRouting(true);
 			routeControl.enableRoute(sRoute);
@@ -50,7 +51,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
 
 	@Override
 	public void disableRoute(final Route route) throws RouteException {
-		final SRCPRoute sRoute = getSRCPRoute(route);
+		final SRCPRoute sRoute = getOrCreateSRCPRoute(route);
 		try {
 			route.setRouting(true);
 			routeControl.disableRoute(sRoute);
@@ -61,7 +62,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
 
 	@Override
 	public void toggle(final Route route) throws RouteException {
-		final SRCPRoute sRoute = getSRCPRoute(route);
+		final SRCPRoute sRoute = getOrCreateSRCPRoute(route);
 		try {
 			routeControl.toggle(sRoute);
 		} catch (final SRCPModelException e) {
@@ -180,7 +181,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
 		}
 	}
 
-	private SRCPRoute getSRCPRoute(final Route route) {
+	private SRCPRoute getOrCreateSRCPRoute(final Route route) {
 		if (route == null) {
 			throw new IllegalArgumentException("route must not be null");
 		}
@@ -192,5 +193,11 @@ public class SRCPRouteControlAdapter extends RouteController implements
 			SRCPRoutesRoutesMap.put(sRoute, route);
 		}
 		return sRoute;
+	}
+
+	public void registerRoutes(final List<Route> allRoutes) {
+		for(Route route : allRoutes) {
+			getOrCreateSRCPRoute(route);
+		}
 	}
 }

@@ -24,14 +24,14 @@ public class SRCPLocomotiveControlAdapterTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createSRCPLocomotiveFromNull() {
-		adapter.getSrcpLocomotive(null);
+		adapter.getOrCreateSrcpLocomotive(null);
 	}
 
 	@Test
 	public void addDeltaSRCPLocomotive() {
 		final Locomotive locomotive = createLocomotive(LocomotiveType.DELTA);
 		final SRCPLocomotive srcpLocomotive = adapter
-				.getSrcpLocomotive(locomotive);
+				.getOrCreateSrcpLocomotive(locomotive);
 
 		assertTrue(srcpLocomotive instanceof MMDeltaLocomotive);
 		assertEquals(locomotive.getBus(), srcpLocomotive.getBus());
@@ -42,7 +42,7 @@ public class SRCPLocomotiveControlAdapterTest {
 	public void addDigitalSRCPLocomotive() {
 		final Locomotive locomotive = createLocomotive(LocomotiveType.DIGITAL);
 		final SRCPLocomotive srcpLocomotive = adapter
-				.getSrcpLocomotive(locomotive);
+				.getOrCreateSrcpLocomotive(locomotive);
 
 		assertTrue(srcpLocomotive instanceof MMDigitalLocomotive);
 		assertEquals(locomotive.getBus(), srcpLocomotive.getBus());
@@ -53,7 +53,7 @@ public class SRCPLocomotiveControlAdapterTest {
 	public void addSimulatedMFXSRCPLocomotive() {
 		final Locomotive locomotive = createLocomotive(LocomotiveType.SIMULATED_MFX);
 		final DoubleMMDigitalLocomotive srcpLocomotive = (DoubleMMDigitalLocomotive) adapter
-				.getSrcpLocomotive(locomotive);
+				.getOrCreateSrcpLocomotive(locomotive);
 
 		assertTrue(srcpLocomotive instanceof DoubleMMDigitalLocomotive);
 		assertEquals(locomotive.getBus(), srcpLocomotive.getBus());
@@ -64,7 +64,7 @@ public class SRCPLocomotiveControlAdapterTest {
 	@Test
 	public void updateExistingDeltaLocomotive() {
 		final Locomotive locomotive = createLocomotive(LocomotiveType.DELTA);
-		SRCPLocomotive srcpLocomotive = adapter.getSrcpLocomotive(locomotive);
+		SRCPLocomotive srcpLocomotive = adapter.getOrCreateSrcpLocomotive(locomotive);
 
 		assertTrue(srcpLocomotive instanceof MMDeltaLocomotive);
 		assertEquals(locomotive.getBus(), srcpLocomotive.getBus());
@@ -72,7 +72,7 @@ public class SRCPLocomotiveControlAdapterTest {
 
 		locomotive.setBus(2);
 		locomotive.setAddress1(3);
-		srcpLocomotive = adapter.getSrcpLocomotive(locomotive);
+		srcpLocomotive = adapter.getOrCreateSrcpLocomotive(locomotive);
 
 		assertEquals(locomotive.getBus(), srcpLocomotive.getBus());
 		assertEquals(locomotive.getAddress1(), srcpLocomotive.getAddress());
@@ -82,7 +82,7 @@ public class SRCPLocomotiveControlAdapterTest {
 	public void updateExistingSimulatedMFXLocomotive() {
 		final Locomotive locomotive = createLocomotive(LocomotiveType.SIMULATED_MFX);
 		DoubleMMDigitalLocomotive srcpLocomotive = (DoubleMMDigitalLocomotive) adapter
-				.getSrcpLocomotive(locomotive);
+				.getOrCreateSrcpLocomotive(locomotive);
 
 		assertEquals(locomotive.getBus(), srcpLocomotive.getBus());
 		assertEquals(locomotive.getAddress1(), srcpLocomotive.getAddress());
@@ -92,7 +92,7 @@ public class SRCPLocomotiveControlAdapterTest {
 		locomotive.setAddress1(3);
 		locomotive.setAddress2(4);
 		srcpLocomotive = (DoubleMMDigitalLocomotive) adapter
-				.getSrcpLocomotive(locomotive);
+				.getOrCreateSrcpLocomotive(locomotive);
 
 		assertEquals(locomotive.getBus(), srcpLocomotive.getBus());
 		assertEquals(locomotive.getAddress1(), srcpLocomotive.getAddress());

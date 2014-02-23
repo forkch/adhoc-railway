@@ -98,7 +98,8 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 		routeService.clear();
 	}
 
-	private List<Route> getAllRoutes() {
+	@Override
+	public List<Route> getAllRoutes() {
 		LOGGER.debug("getAllRoutes()");
 		return new ArrayList<Route>(numberToRouteCache.values());
 	}

@@ -4,6 +4,8 @@ import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
+import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
+import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 
@@ -43,5 +45,9 @@ public interface RailwayDeviceManagerContext {
 	SRCPLockControl getLockControl();
 
 	LocomotiveController getLocomotiveControl();
+
+	RouteManager getRouteManager();
+
+	LocomotiveManager getLocomotiveManager();
 
 }

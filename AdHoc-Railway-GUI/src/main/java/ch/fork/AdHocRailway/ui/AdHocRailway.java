@@ -1162,7 +1162,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			railwayDeviceManager.loadControlLayer();
 			railwayDeviceManager.connect();
 		}
 	}
@@ -1181,7 +1180,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
-			railwayDeviceManager.loadControlLayer();
 			railwayDeviceManager.disconnect();
 		}
 
