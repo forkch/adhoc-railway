@@ -63,10 +63,6 @@ public class PersistenceManagerTest {
 		testee.loadPersistenceLayer();
 	}
 
-	private void whenLoadingFile(final String string) {
-
-	}
-
 	private PersistenceManager createTestee(
 			final PersistenceManagerContext persistenceManagerContext) {
 		return new PersistenceManager(persistenceManagerContext);

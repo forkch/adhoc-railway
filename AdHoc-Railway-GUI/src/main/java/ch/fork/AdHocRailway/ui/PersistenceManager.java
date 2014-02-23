@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import ch.fork.AdHocRailway.AdHocRailwayException;
+import ch.fork.AdHocRailway.manager.ServiceFactory;
 import ch.fork.AdHocRailway.manager.impl.locomotives.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.turnouts.RouteManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.turnouts.TurnoutManagerImpl;
@@ -20,9 +21,6 @@ import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.services.impl.socketio.ServiceListener;
-import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
-import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
-import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLServiceHelper;
@@ -52,39 +50,15 @@ public class PersistenceManager {
 		final boolean useAdHocServer = appContext.getPreferences()
 				.getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER);
 
-		appContext.getMainBus().post(
-				new InitProceededEvent(
-						"Loading Persistence Layer (Locomotives)"));
-		LocomotiveManager locomotiveManager = appContext.getLocomotiveManager();
-		if (locomotiveManager == null) {
-			locomotiveManager = new LocomotiveManagerImpl();
-			appContext.setLocomotiveManager(locomotiveManager);
-		}
+		createLocomotiveManagerOnContext(useAdHocServer);
 
-		if (useAdHocServer) {
-			locomotiveManager.setLocomotiveService(new SIOLocomotiveService());
-		} else {
-			locomotiveManager.setLocomotiveService(new XMLLocomotiveService());
-		}
+		TurnoutManager turnoutManager = createTurnoutManagerOnContext(useAdHocServer);
 
-		locomotiveManager.initialize(appContext.getMainBus());
+		createRouteManagerOnContext(useAdHocServer, turnoutManager);
+	}
 
-		appContext.getMainBus().post(
-				new InitProceededEvent("Loading Persistence Layer (Turnouts)"));
-
-		TurnoutManager turnoutManager = appContext.getTurnoutManager();
-		if (turnoutManager == null) {
-			turnoutManager = new TurnoutManagerImpl();
-		}
-		appContext.setTurnoutManager(turnoutManager);
-
-		if (useAdHocServer) {
-			turnoutManager.setTurnoutService(new SIOTurnoutService());
-		} else {
-			turnoutManager.setTurnoutService(new XMLTurnoutService());
-		}
-		turnoutManager.initialize(appContext.getMainBus());
-
+	private void createRouteManagerOnContext(final boolean useAdHocServer,
+			TurnoutManager turnoutManager) {
 		appContext.getMainBus().post(
 				new InitProceededEvent("Loading Persistence Layer (Routes)"));
 		RouteManager routeManager = appContext.getRouteManager();
@@ -93,12 +67,40 @@ public class PersistenceManager {
 			routeManager = new RouteManagerImpl(turnoutManager);
 		}
 		appContext.setRouteManager(routeManager);
-		if (useAdHocServer) {
-			routeManager.setRouteService(new SIORouteService());
-		} else {
-			routeManager.setRouteService(new XMLRouteService());
-		}
+		routeManager.setRouteService(ServiceFactory
+				.createRouteService(useAdHocServer));
 		routeManager.initialize(appContext.getMainBus());
+	}
+
+	private TurnoutManager createTurnoutManagerOnContext(final boolean useAdHocServer) {
+		appContext.getMainBus().post(
+				new InitProceededEvent("Loading Persistence Layer (Turnouts)"));
+
+		TurnoutManager turnoutManager = appContext.getTurnoutManager();
+		if (turnoutManager == null) {
+			turnoutManager = new TurnoutManagerImpl();
+		}
+		appContext.setTurnoutManager(turnoutManager);
+		turnoutManager.setTurnoutService(ServiceFactory
+				.createTurnoutService(useAdHocServer));
+		turnoutManager.initialize(appContext.getMainBus());
+		return turnoutManager;
+	}
+
+	private void createLocomotiveManagerOnContext(final boolean useAdHocServer) {
+		appContext.getMainBus().post(
+				new InitProceededEvent(
+						"Loading Persistence Layer (Locomotives)"));
+		LocomotiveManager locomotiveManager = appContext.getLocomotiveManager();
+
+		if (locomotiveManager == null) {
+			locomotiveManager = new LocomotiveManagerImpl();
+			appContext.setLocomotiveManager(locomotiveManager);
+		}
+
+		locomotiveManager.setLocomotiveService(ServiceFactory
+				.createLocomotiveService(useAdHocServer));
+		locomotiveManager.initialize(appContext.getMainBus());
 	}
 
 	public void loadLastFileOrLoadDataFromAdHocServerIfRequested()
