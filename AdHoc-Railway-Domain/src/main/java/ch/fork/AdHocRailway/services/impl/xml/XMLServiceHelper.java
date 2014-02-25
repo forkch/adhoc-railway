@@ -185,4 +185,33 @@ public class XMLServiceHelper {
 
 		return xstream;
 	}
+    public void importAllFromFile(final File fileToImport,
+                                          final LocomotiveManager locomotivePersistence, final TurnoutManager turnoutManager, final RouteManager routeManager) {
+        AdHocRailwayData data;
+        try {
+            LOGGER.info("start importing locomotives, turnouts and routes from file: "
+                    + fileToImport);
+
+            final XStream xstream = getXStream();
+            data = (AdHocRailwayData) xstream.fromXML(new FileReader(
+                    fileToImport));
+
+            addFunctionsIfNeccesaray(data);
+            new LocomotiveImporter().importLocomotives(locomotivePersistence,
+                    data.getLocomotiveGroups());
+            LOGGER.info("finished importing locomotives from file: " + fileToImport);
+
+            new LocomotiveImporter().importTurnouts(turnoutManager,
+                    data.getTurnoutGroups());
+            LOGGER.info("finished importing locomotives from file: " + fileToImport);
+
+            new LocomotiveImporter().importRoutes(routeManager,
+                    data.getRouteGroups());
+            LOGGER.info("finished importing locomotives from file: "
+                    + fileToImport);
+        } catch (final FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

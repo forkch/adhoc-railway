@@ -25,6 +25,8 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
+import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
+import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
@@ -60,7 +62,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
 	private final TurnoutContext ctx;
 
-	public TurnoutWidget(final TurnoutContext ctx, final Turnout turnout,
+    public TurnoutWidget(final TurnoutContext ctx, final Turnout turnout,
 			final boolean forHistory) {
 		this(ctx, turnout, forHistory, false);
 	}
@@ -92,6 +94,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 			ctx.getTurnoutControl().removeTurnoutChangeListener(turnout, this);
 		}
 	}
+
 
 	private void initGUI() {
 		turnoutCanvas = new TurnoutCanvas(turnout);
@@ -173,6 +176,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
 	@Override
 	public void turnoutChanged(final Turnout changedTurnout) {
+
 		if (turnout.equals(changedTurnout)) {
 			actualTurnoutState = changedTurnout.getActualState();
 			SwingUtilities.invokeLater(new Runnable() {

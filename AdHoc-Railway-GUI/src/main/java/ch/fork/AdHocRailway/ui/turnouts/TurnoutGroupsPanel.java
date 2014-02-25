@@ -8,6 +8,8 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
+import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.EditingModeEvent;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
@@ -26,7 +28,6 @@ import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSe
 
 public class TurnoutGroupsPanel extends JTabbedPane implements
 		TurnoutManagerListener {
-	private static final long serialVersionUID = 4422288695074160221L;
 
 	private final Map<Integer, TurnoutGroup> indexToTurnoutGroup = new HashMap<Integer, TurnoutGroup>();
 
@@ -43,8 +44,9 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 	private JButton turnoutProgrammerButton;
 
 	private final TurnoutContext ctx;
+    private boolean disableListener;
 
-	public TurnoutGroupsPanel(final TurnoutContext turnoutCtx,
+    public TurnoutGroupsPanel(final TurnoutContext turnoutCtx,
 			final int tabPlacement) {
 		super(tabPlacement);
 		this.ctx = turnoutCtx;
@@ -56,6 +58,17 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 		initActionListeners();
 		ctx.getMainBus().register(this);
 	}
+
+    @Subscribe
+    public void startImport(final StartImportEvent event) {
+        disableListener = true;
+    }
+
+    @Subscribe
+    public void endImport(final EndImportEvent event) {
+        disableListener = false;
+        updateTurnouts(ctx.getTurnoutManager().getAllTurnoutGroups());
+    }
 
 	private void initActionListeners() {
 	}
@@ -222,6 +235,9 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void turnoutsUpdated(final SortedSet<TurnoutGroup> turnoutGroups) {
+        if(disableListener) {
+            return;
+        }
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
@@ -235,7 +251,10 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void turnoutUpdated(final Turnout turnout) {
-		SwingUtilities.invokeLater(new Runnable() {
+        if(disableListener) {
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
@@ -254,7 +273,10 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void turnoutRemoved(final Turnout turnout) {
-		SwingUtilities.invokeLater(new Runnable() {
+        if(disableListener) {
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
@@ -273,7 +295,10 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void turnoutAdded(final Turnout turnout) {
-		SwingUtilities.invokeLater(new Runnable() {
+        if(disableListener) {
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
@@ -292,7 +317,10 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void turnoutGroupAdded(final TurnoutGroup group) {
-		SwingUtilities.invokeLater(new Runnable() {
+        if(disableListener) {
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
@@ -304,7 +332,10 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void turnoutGroupRemoved(final TurnoutGroup group) {
-		SwingUtilities.invokeLater(new Runnable() {
+        if(disableListener) {
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
@@ -320,7 +351,10 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void turnoutGroupUpdated(final TurnoutGroup group) {
-		SwingUtilities.invokeLater(new Runnable() {
+        if(disableListener) {
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
@@ -335,7 +369,9 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void failure(final TurnoutManagerException arg0) {
-
+        if(disableListener) {
+            return;
+        }
 	}
 
 	@Subscribe

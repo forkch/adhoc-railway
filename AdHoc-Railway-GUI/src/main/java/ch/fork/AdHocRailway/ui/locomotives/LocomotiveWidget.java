@@ -47,6 +47,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 
+import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
+import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import net.miginfocom.swing.MigLayout;
 import ch.fork.AdHocRailway.controllers.LockingException;
 import ch.fork.AdHocRailway.controllers.LocomotiveChangeListener;
@@ -116,8 +118,9 @@ public class LocomotiveWidget extends JPanel implements
 	private DefaultComboBoxModel<Locomotive> locomotiveComboBoxModel;
 
 	private boolean ignoreEvents;
+    private boolean disableListener;
 
-	public LocomotiveWidget(final LocomotiveContext ctx, final int number,
+    public LocomotiveWidget(final LocomotiveContext ctx, final int number,
 			final JFrame frame) {
 		super();
 		this.ctx = ctx;
@@ -147,6 +150,17 @@ public class LocomotiveWidget extends JPanel implements
 			ctx.getLocomotiveControl().removeLocomotiveChangeListener(this);
 		}
 	}
+
+    @Subscribe
+    public void startImport(final StartImportEvent event) {
+        disableListener = true;
+    }
+
+    @Subscribe
+    public void endImport(final EndImportEvent event) {
+        disableListener = false;
+        updateLocomotiveGroups(ctx.getLocomotiveManager().getAllLocomotiveGroups());
+    }
 
 	public void updateLocomotiveGroups(final SortedSet<LocomotiveGroup> groups) {
 		if (myLocomotive != null) {
@@ -449,43 +463,62 @@ public class LocomotiveWidget extends JPanel implements
 	@Override
 	public void locomotivesUpdated(
 			final SortedSet<LocomotiveGroup> locomotiveGroups) {
-		updateLocomotiveGroups(locomotiveGroups);
+		if(disableListener) {
+            return;
+        }
+        updateLocomotiveGroups(locomotiveGroups);
 
 	}
 
 	@Override
 	public void locomotiveAdded(final Locomotive locomotive) {
-		updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
+        if(disableListener) {
+            return;
+        }updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
 
 	}
 
 	@Override
 	public void locomotiveUpdated(final Locomotive locomotive) {
-		updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
+        if(disableListener) {
+            return;
+        }updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
 
 	}
 
 	@Override
 	public void locomotiveGroupAdded(final LocomotiveGroup group) {
-		updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
+        if(disableListener) {
+            return;
+        }
+        updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
 
 	}
 
 	@Override
 	public void locomotiveRemoved(final Locomotive locomotive) {
-		updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
+        if(disableListener) {
+            return;
+        }
+        updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
 
 	}
 
 	@Override
 	public void locomotiveGroupRemoved(final LocomotiveGroup group) {
-		updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
+        if(disableListener) {
+            return;
+        }
+        updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
 
 	}
 
 	@Override
 	public void locomotiveGroupUpdated(final LocomotiveGroup group) {
-		updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
+        if(disableListener) {
+            return;
+        }
+        updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
 
 	}
 

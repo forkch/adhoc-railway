@@ -6,7 +6,10 @@ import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManagerListener;
+import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
+import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
+import com.google.common.eventbus.Subscribe;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -15,10 +18,6 @@ import java.util.SortedSet;
 
 public class RouteGroupsPanel extends JTabbedPane implements
 		RouteManagerListener {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8209638004262038025L;
 
 	private final Map<Integer, RouteGroup> indexToRouteGroup = new HashMap<Integer, RouteGroup>();
 
@@ -27,14 +26,27 @@ public class RouteGroupsPanel extends JTabbedPane implements
 	private final RouteManager routePersistence;
 
 	private final RouteContext ctx;
+    private boolean disableListener;
 
-	public RouteGroupsPanel(final RouteContext ctx, final int tabPlacement) {
+    public RouteGroupsPanel(final RouteContext ctx, final int tabPlacement) {
 		super(tabPlacement);
 		this.ctx = ctx;
+        ctx.getMainBus().register(this);
 		routePersistence = ctx.getRouteManager();
 		routePersistence.addRouteManagerListener(this);
 
 	}
+
+    @Subscribe
+    public void startImport(final StartImportEvent event) {
+        disableListener = true;
+    }
+
+    @Subscribe
+    public void endImport(final EndImportEvent event) {
+        disableListener = false;
+        updateRoutes(ctx.getRouteManager().getAllRouteGroups());
+    }
 
 	private void updateRoutes(final SortedSet<RouteGroup> routeGroups) {
 		indexToRouteGroup.clear();
@@ -63,7 +75,10 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void routesUpdated(final SortedSet<RouteGroup> routeGroups) {
-		SwingUtilities.invokeLater(new Runnable() {
+		if(disableListener) {
+            return;
+    }
+        SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
@@ -76,7 +91,9 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void routeUpdated(final Route route) {
-		SwingUtilities.invokeLater(new Runnable() {
+        if(disableListener) {
+            return;
+        }SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
@@ -94,7 +111,10 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void routeRemoved(final Route route) {
-		SwingUtilities.invokeLater(new Runnable() {
+        if(disableListener) {
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 
@@ -110,7 +130,10 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void routeAdded(final Route route) {
-		SwingUtilities.invokeLater(new Runnable() {
+        if(disableListener) {
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
@@ -127,7 +150,10 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void routeGroupAdded(final RouteGroup group) {
-		SwingUtilities.invokeLater(new Runnable() {
+        if(disableListener) {
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
@@ -140,7 +166,10 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void routeGroupRemoved(final RouteGroup group) {
-		SwingUtilities.invokeLater(new Runnable() {
+        if(disableListener) {
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
@@ -156,7 +185,10 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void routeGroupUpdated(final RouteGroup group) {
-		SwingUtilities.invokeLater(new Runnable() {
+        if(disableListener) {
+            return;
+        }
+        SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				final RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
@@ -170,6 +202,8 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
 	@Override
 	public void failure(final RouteManagerException arg0) {
-
+        if(disableListener) {
+            return;
+        }
 	}
 }

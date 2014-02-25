@@ -26,8 +26,11 @@ import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
+import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
+import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -47,14 +50,26 @@ public class LocomotiveControlPanel extends JPanel implements
 	private final List<LocomotiveWidget> locomotiveWidgets;
 	private JPanel controlPanel;
 	private final LocomotiveContext ctx;
+    private boolean disableListener;
 
-	public LocomotiveControlPanel(final LocomotiveContext ctx) {
+    public LocomotiveControlPanel(final LocomotiveContext ctx) {
 		super();
 		this.ctx = ctx;
+        ctx.getMainBus().register(this);
 
 		locomotiveWidgets = new ArrayList<LocomotiveWidget>();
 		initGUI();
 	}
+
+    @Subscribe
+    public void startImport(final StartImportEvent event) {
+        disableListener = true;
+    }
+
+    @Subscribe
+    public void endImport(final EndImportEvent event) {
+        disableListener = false;
+    }
 
 	private void initGUI() {
 		setLayout(new BorderLayout());

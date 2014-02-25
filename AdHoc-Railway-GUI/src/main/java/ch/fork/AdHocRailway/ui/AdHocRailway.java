@@ -62,6 +62,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import ch.fork.AdHocRailway.ui.bus.events.*;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.log4j.FileAppender;
@@ -74,10 +75,6 @@ import ch.fork.AdHocRailway.controllers.RailwayDevice;
 import ch.fork.AdHocRailway.services.impl.xml.XMLServiceHelper;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.bus.events.CommandLogEvent;
-import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
-import ch.fork.AdHocRailway.ui.bus.events.InitProceededEvent;
-import ch.fork.AdHocRailway.ui.bus.events.UpdateMainTitleEvent;
 import ch.fork.AdHocRailway.ui.context.AdHocRailwayIface;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
 import ch.fork.AdHocRailway.ui.context.EditingModeEvent;
@@ -453,14 +450,17 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		saveAsItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
 
-		final JMenuItem importLocomotivesItem = new JMenuItem(
-				new ImportLocomotivesAction());
+        final JMenuItem importAllItem = new JMenuItem(
+                new ImportAllAction());
+        final JMenuItem importLocomotivesItem = new JMenuItem(
+                new ImportLocomotivesAction());
 		final JMenuItem exportLocomotivesItem = new JMenuItem(
 				new ExportLocomotivesAction());
 		final JMenuItem exportAllItem = new JMenuItem(new ExportAllAction());
 
 		final JMenu importMenu = new JMenu("Import");
-		importMenu.add(importLocomotivesItem);
+        importMenu.add(importAllItem);
+        importMenu.add(importLocomotivesItem);
 		final JMenu exportMenu = new JMenu("Export");
 		exportMenu.add(exportLocomotivesItem);
 		exportMenu.add(exportAllItem);
@@ -874,11 +874,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	}
 
 	private class SaveAction extends AbstractAction {
-		/**
-         *
-         */
-		private static final long serialVersionUID = 3017204569992757846L;
-
 		public SaveAction() {
 			super("Save", createImageIconFromIconSet("document-save.png"));
 		}
@@ -893,11 +888,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 	}
 
 	private class SaveAsAction extends AbstractAction {
-		/**
-         *
-         */
-		private static final long serialVersionUID = -4841045364461725101L;
-
 		public SaveAsAction() {
 			super("Save as\u2026",
 					createImageIconFromIconSet("document-save-as.png"));
@@ -918,32 +908,51 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		}
 	}
 
-	private class ImportLocomotivesAction extends AbstractAction {
+    private class ImportLocomotivesAction extends AbstractAction {
 
-		/**
-         *
-         */
-		private static final long serialVersionUID = -6274805581979740341L;
+        public ImportLocomotivesAction() {
+            super("Import Locomotives");
+        }
 
-		public ImportLocomotivesAction() {
-			super("Import Locomotives");
-		}
+        @Override
+        public void actionPerformed(final ActionEvent e) {
 
-		@Override
-		public void actionPerformed(final ActionEvent e) {
+            progressBar.setIndeterminate(true);
+            final JFileChooser fileChooser = new JFileChooser(new File("."));
+            final int returnVal = fileChooser.showOpenDialog(AdHocRailway.this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                new XMLServiceHelper().importLocomotivesFromFile(
+                        fileChooser.getSelectedFile(),
+                        appContext.getLocomotiveManager());
+            }
 
-			progressBar.setIndeterminate(true);
-			final JFileChooser fileChooser = new JFileChooser(new File("."));
-			final int returnVal = fileChooser.showSaveDialog(AdHocRailway.this);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				new XMLServiceHelper().importLocomotivesFromFile(
-						fileChooser.getSelectedFile(),
-						appContext.getLocomotiveManager());
-			}
+            progressBar.setIndeterminate(false);
+        }
+    }
 
-			progressBar.setIndeterminate(false);
-		}
-	}
+    private class ImportAllAction extends AbstractAction {
+
+        public ImportAllAction() {
+            super("Import Locomotives, Tunouts and Routes");
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+
+            appContext.getMainBus().post(new StartImportEvent());
+            progressBar.setIndeterminate(true);
+            final JFileChooser fileChooser = new JFileChooser(new File("."));
+            final int returnVal = fileChooser.showOpenDialog(AdHocRailway.this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                new XMLServiceHelper().importAllFromFile(
+                        fileChooser.getSelectedFile(),
+                        appContext.getLocomotiveManager(), appContext.getTurnoutManager(), appContext.getRouteManager());
+            }
+
+            progressBar.setIndeterminate(false);
+            appContext.getMainBus().post(new EndImportEvent());
+        }
+    }
 
 	private class ExportLocomotivesAction extends AbstractAction {
 

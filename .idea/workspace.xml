@@ -8,6 +8,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveControlPanel.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveControlPanel.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/xml/LocomotiveImporter.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/xml/LocomotiveImporter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveWidget.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveWidget.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteGroupsPanel.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteGroupsPanel.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/socketio/locomotives/SIOLocomotiveMapper.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/socketio/locomotives/SIOLocomotiveMapper.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/socketio/turnouts/SIORouteMapper.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/socketio/turnouts/SIORouteMapper.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/socketio/turnouts/SIOTurnoutMapper.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/socketio/turnouts/SIOTurnoutMapper.java" />
@@ -70,7 +71,7 @@
     </breakpoint_any>
     <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true">
-      <breakpoint url="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java" line="70" class="ch.fork.AdHocRailway.ui.turnouts.TurnoutGroupsPanel" package="ch.fork.AdHocRailway.ui.turnouts">
+      <breakpoint url="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java" line="69" class="ch.fork.AdHocRailway.ui.turnouts.TurnoutGroupsPanel" package="ch.fork.AdHocRailway.ui.turnouts">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -94,7 +95,29 @@
     <favorites_list name="adhocrailway" />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file leaf-file-name="RouteGroupsPanel.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteGroupsPanel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="20" column="0" selection-start="801" selection-end="801" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3222">
+              <folding>
+                <element signature="e#2558#2651#0" expanded="true" />
+                <element signature="e#2646#2647#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TurnoutGroupsPanel.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="80" column="0" selection-start="2641" selection-end="2641" vertical-scroll-proportion="0.4945055" vertical-offset="648" max-vertical-offset="6156">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -736,12 +759,13 @@
         <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/socketio/turnouts/SIORouteMapper.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/socketio/turnouts/SIOTurnoutMapper.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/xml/XMLServiceHelper.java" />
-        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveControlPanel.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveWidget.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutWidget.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java" />
         <option value="$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/xml/LocomotiveImporter.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteGroupsPanel.java" />
+        <option value="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java" />
       </list>
     </option>
   </component>
@@ -1180,7 +1204,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="0" width="1922" height="1081" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298731" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1200,7 +1224,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21822916" sideWeight="0.6707727" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21822916" sideWeight="0.6707727" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23737374" sideWeight="0.4997088" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1232,11 +1256,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/srcp/SRCPRouteControlAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="29" selection-start="1372" selection-end="1383" vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="3366" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/impl/brain/BrainRouteControlAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="53" column="0" selection-start="2054" selection-end="2054" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1152" />
@@ -1339,7 +1358,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="41" selection-start="819" selection-end="819" vertical-scroll-proportion="0.46618706" vertical-offset="0" max-vertical-offset="3276" />
+        <state line="18" column="41" selection-start="819" selection-end="819" vertical-scroll-proportion="0.46618706" vertical-offset="0" max-vertical-offset="3276">
+          <folding>
+            <element signature="e#0#5213#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/RouteController.java">
@@ -1371,7 +1395,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/turnouts/Route.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="27" selection-start="880" selection-end="880" vertical-scroll-proportion="0.093457945" vertical-offset="0" max-vertical-offset="3132" />
+        <state line="21" column="27" selection-start="880" selection-end="880" vertical-scroll-proportion="0.093457945" vertical-offset="0" max-vertical-offset="3132">
+          <folding>
+            <element signature="e#2224#2225#0" expanded="false" />
+            <element signature="e#2249#2250#0" expanded="false" />
+          </folding>
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/build.gradle">
@@ -1408,7 +1437,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/domain/turnouts/Turnout.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="339" column="0" selection-start="10296" selection-end="10296" vertical-scroll-proportion="0.75274724" vertical-offset="4492" max-vertical-offset="5220" />
+        <state line="339" column="0" selection-start="10296" selection-end="10296" vertical-scroll-proportion="0.75274724" vertical-offset="4492" max-vertical-offset="5220">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/socketio/locomotives/SIOLocomotiveMapper.java">
@@ -1423,7 +1454,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/manager/impl/turnouts/TurnoutManagerImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="105" column="0" selection-start="3466" selection-end="3466" vertical-scroll-proportion="0.32967034" vertical-offset="930" max-vertical-offset="5706" />
+        <state line="105" column="0" selection-start="3466" selection-end="3466" vertical-scroll-proportion="0.32967034" vertical-offset="930" max-vertical-offset="5706">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/socketio/turnouts/SIORouteMapper.java">
@@ -1433,7 +1466,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/controllers/TurnoutChangeListener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="27" selection-start="942" selection-end="942" vertical-scroll-proportion="0.13084112" vertical-offset="0" max-vertical-offset="963" />
+        <state line="23" column="27" selection-start="942" selection-end="942" vertical-scroll-proportion="0.13084112" vertical-offset="0" max-vertical-offset="963">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteWidget.java">
@@ -1448,7 +1483,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/bus/events/EndImportEvent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="45" selection-end="45" vertical-scroll-proportion="0.04945055" vertical-offset="0" max-vertical-offset="728" />
+        <state line="2" column="0" selection-start="45" selection-end="45" vertical-scroll-proportion="0.04945055" vertical-offset="0" max-vertical-offset="728">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-Domain/src/main/java/ch/fork/AdHocRailway/services/impl/xml/LocomotiveImporter.java">
@@ -1480,16 +1517,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="75" column="0" selection-start="2532" selection-end="2532" vertical-scroll-proportion="0.30769232" vertical-offset="694" max-vertical-offset="6174">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/bus/events/StartImportEvent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="45" selection-end="45" vertical-scroll-proportion="0.04945055" vertical-offset="0" max-vertical-offset="728" />
+        <state line="2" column="0" selection-start="45" selection-end="45" vertical-scroll-proportion="0.04945055" vertical-offset="0" max-vertical-offset="728">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java">
@@ -1498,6 +1530,23 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteGroupsPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="0" selection-start="801" selection-end="801" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3222">
+          <folding>
+            <element signature="e#2558#2651#0" expanded="true" />
+            <element signature="e#2646#2647#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="80" column="0" selection-start="2641" selection-end="2641" vertical-scroll-proportion="0.4945055" vertical-offset="648" max-vertical-offset="6156">
+          <folding />
         </state>
       </provider>
     </entry>

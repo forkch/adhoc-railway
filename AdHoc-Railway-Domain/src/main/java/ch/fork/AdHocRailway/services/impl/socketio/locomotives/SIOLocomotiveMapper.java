@@ -52,6 +52,8 @@ public class SIOLocomotiveMapper {
 		locomotive.setId(id);
 		mergeLocomotiveBaseInfo(locomotiveJSON, locomotive);
 
+        locomotive.init();
+
 		return locomotive;
 	}
 

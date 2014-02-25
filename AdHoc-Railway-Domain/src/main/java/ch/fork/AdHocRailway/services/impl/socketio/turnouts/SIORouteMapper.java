@@ -54,6 +54,7 @@ public class SIORouteMapper {
 		routeIdMap.put(id, sioId);
 		route.setId(id);
 		mergeRouteBaseInfo(routeJSON, route);
+        route.init();
 		return route;
 	}
 
