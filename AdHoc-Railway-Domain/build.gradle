@@ -6,7 +6,8 @@ archivesBaseName='adhocrailway-domain'
 dependencies {
     	
 	compile fileTree (dir: 'lib', includes: ['*.jar'])
-	 
+
+    testCompile 'junit:junit:4.+'
     compile 'de.dermoba:jsrcpc:2.2.1'
     compile 'com.thoughtworks.xstream:xstream:1.4.4'
     compile 'org.rxtx:rxtx:2.1.7'
