@@ -21,5 +21,5 @@ package ch.fork.AdHocRailway.controllers;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 
 public interface LocomotiveChangeListener {
-	public void locomotiveChanged(Locomotive changedLocomotive);
+    public void locomotiveChanged(Locomotive changedLocomotive);
 }

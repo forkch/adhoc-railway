@@ -5,8 +5,8 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 
 public interface TurnoutContext extends ControllerContext {
 
-	public abstract TurnoutController getTurnoutControl();
+    public abstract TurnoutController getTurnoutControl();
 
-	public abstract TurnoutManager getTurnoutManager();
+    public abstract TurnoutManager getTurnoutManager();
 
 }

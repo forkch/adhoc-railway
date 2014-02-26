@@ -26,46 +26,46 @@ import org.apache.log4j.Logger;
 
 
 public class ExceptionProcessor {
-	private static final Logger LOGGER = Logger
-			.getLogger(ExceptionProcessor.class);
-	private final ErrorPanel errorPanel;
+    private static final Logger LOGGER = Logger
+            .getLogger(ExceptionProcessor.class);
+    private final ErrorPanel errorPanel;
 
-	private static ExceptionProcessor instance;
+    private static ExceptionProcessor instance;
 
-	private ExceptionProcessor(final ErrorPanel errorPanel) {
-		this.errorPanel = errorPanel;
-	}
+    private ExceptionProcessor(final ErrorPanel errorPanel) {
+        this.errorPanel = errorPanel;
+    }
 
-	public static ExceptionProcessor getInstance(final ErrorPanel errorPanel) {
-		if (instance == null) {
-			instance = new ExceptionProcessor(errorPanel);
-		}
-		return instance;
-	}
+    public static ExceptionProcessor getInstance(final ErrorPanel errorPanel) {
+        if (instance == null) {
+            instance = new ExceptionProcessor(errorPanel);
+        }
+        return instance;
+    }
 
-	public static ExceptionProcessor getInstance() {
-		return instance;
-	}
+    public static ExceptionProcessor getInstance() {
+        return instance;
+    }
 
-	public void processException(final Exception e) {
-		e.printStackTrace();
-		processException(e.getMessage(), e);
+    public void processException(final Exception e) {
+        e.printStackTrace();
+        processException(e.getMessage(), e);
 
-	}
+    }
 
-	public void processException(String msg, final Throwable e) {
+    public void processException(String msg, final Throwable e) {
 
-		LOGGER.error(e.getMessage(), e);
+        LOGGER.error(e.getMessage(), e);
 
-		if (e instanceof SRCPException) {
-			msg = "SRCP: " + msg;
-		}
-		if (StringUtils.isBlank(msg)) {
-			msg = e.getMessage();
-		}
-		errorPanel.setErrorTextIcon(msg, e.getMessage(),
-				ImageTools.createImageIconFromIconSet("dialog-error.png"));
+        if (e instanceof SRCPException) {
+            msg = "SRCP: " + msg;
+        }
+        if (StringUtils.isBlank(msg)) {
+            msg = e.getMessage();
+        }
+        errorPanel.setErrorTextIcon(msg, e.getMessage(),
+                ImageTools.createImageIconFromIconSet("dialog-error.png"));
 
-	}
+    }
 
 }

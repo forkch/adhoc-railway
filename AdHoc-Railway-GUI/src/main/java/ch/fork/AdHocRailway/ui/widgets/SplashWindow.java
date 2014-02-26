@@ -25,74 +25,74 @@ import java.awt.event.MouseEvent;
 
 public class SplashWindow extends JWindow {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2661517931084551019L;
-	private final int steps;
-	private final int waitTime;
-	private final Icon icon;
-	private JLabel msgLabel;
-	private JProgressBar progressBar;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 2661517931084551019L;
+    private final int steps;
+    private final int waitTime;
+    private final Icon icon;
+    private JLabel msgLabel;
+    private JProgressBar progressBar;
 
-	public SplashWindow(Icon icon, Frame f, int waitTime, int steps) {
-		super(f);
-		this.icon = icon;
-		this.steps = steps;
-		this.waitTime = waitTime;
-		initGUI();
+    public SplashWindow(Icon icon, Frame f, int waitTime, int steps) {
+        super(f);
+        this.icon = icon;
+        this.steps = steps;
+        this.waitTime = waitTime;
+        initGUI();
 
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				setVisible(false);
-				dispose();
-			}
-		});
-		setVisible(true);
-	}
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                setVisible(false);
+                dispose();
+            }
+        });
+        setVisible(true);
+    }
 
-	private void initGUI() {
-		JLabel l = new JLabel(icon);
+    private void initGUI() {
+        JLabel l = new JLabel(icon);
 
-		getContentPane().add(l, BorderLayout.CENTER);
-		progressBar = new JProgressBar(0, steps);
-		msgLabel = new JLabel("Start");
-		JPanel progressPanel = new JPanel(new BorderLayout());
-		progressPanel.add(progressBar, BorderLayout.NORTH);
-		progressPanel.add(msgLabel, BorderLayout.SOUTH);
-		getContentPane().add(progressPanel, BorderLayout.SOUTH);
+        getContentPane().add(l, BorderLayout.CENTER);
+        progressBar = new JProgressBar(0, steps);
+        msgLabel = new JLabel("Start");
+        JPanel progressPanel = new JPanel(new BorderLayout());
+        progressPanel.add(progressBar, BorderLayout.NORTH);
+        progressPanel.add(msgLabel, BorderLayout.SOUTH);
+        getContentPane().add(progressPanel, BorderLayout.SOUTH);
 
-		pack();
-	}
+        pack();
+    }
 
-	public void nextStep(String msg) {
-		msgLabel.setText(msg);
-		progressBar.setValue(progressBar.getValue() + 1);
-		if (progressBar.getValue() == steps) {
-			final int pause = waitTime;
-			final Runnable closerRunner = new Runnable() {
-				@Override
-				public void run() {
-					setVisible(false);
-					dispose();
-				}
-			};
-			Runnable waitRunner = new Runnable() {
-				@Override
-				public void run() {
-					try {
-						Thread.sleep(pause);
-						SwingUtilities.invokeAndWait(closerRunner);
-					} catch (Exception e) {
-						e.printStackTrace();
-						// can catch InvocationTargetException
-						// can catch InterruptedException
-					}
-				}
-			};
-			Thread splashThread = new Thread(waitRunner, "SplashThread");
-			splashThread.start();
-		}
-	}
+    public void nextStep(String msg) {
+        msgLabel.setText(msg);
+        progressBar.setValue(progressBar.getValue() + 1);
+        if (progressBar.getValue() == steps) {
+            final int pause = waitTime;
+            final Runnable closerRunner = new Runnable() {
+                @Override
+                public void run() {
+                    setVisible(false);
+                    dispose();
+                }
+            };
+            Runnable waitRunner = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(pause);
+                        SwingUtilities.invokeAndWait(closerRunner);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        // can catch InvocationTargetException
+                        // can catch InterruptedException
+                    }
+                }
+            };
+            Thread splashThread = new Thread(waitRunner, "SplashThread");
+            splashThread.start();
+        }
+    }
 }

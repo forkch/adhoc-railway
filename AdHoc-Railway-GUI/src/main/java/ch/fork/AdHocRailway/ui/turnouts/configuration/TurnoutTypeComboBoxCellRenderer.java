@@ -25,42 +25,42 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TurnoutTypeComboBoxCellRenderer extends DefaultListCellRenderer {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8179478248689107235L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -8179478248689107235L;
 
-	@Override
-	public Component getListCellRendererComponent(final JList<?> list,
-			final Object value, final int index, final boolean isSelected,
-			final boolean cellHasFocus) {
-		final JLabel iconLabel = (JLabel) super.getListCellRendererComponent(
-				list, value, index, isSelected, cellHasFocus);
-		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		final TurnoutType type = (TurnoutType) value;
-		iconLabel.setText("");
-		switch (type) {
-		case DEFAULT_LEFT:
-			iconLabel.setIcon(ImageTools
-					.createImageIconFromCustom("default_switch_small_left.png"));
-			break;
-		case DEFAULT_RIGHT:
-			iconLabel
-					.setIcon(ImageTools
-							.createImageIconFromCustom("default_switch_small_right.png"));
-			break;
-		case DOUBLECROSS:
-			iconLabel.setIcon(ImageTools
-					.createImageIconFromCustom("double_cross_switch_small.png"));
-			break;
-		case THREEWAY:
-			iconLabel.setIcon(ImageTools
-					.createImageIconFromCustom("three_way_switch_small.png"));
-			break;
-		case CUTTER:
-			iconLabel.setIcon(ImageTools
-					.createImageIconFromCustom("cutter_small.png"));
-		}
-		return iconLabel;
-	}
+    @Override
+    public Component getListCellRendererComponent(final JList<?> list,
+                                                  final Object value, final int index, final boolean isSelected,
+                                                  final boolean cellHasFocus) {
+        final JLabel iconLabel = (JLabel) super.getListCellRendererComponent(
+                list, value, index, isSelected, cellHasFocus);
+        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        final TurnoutType type = (TurnoutType) value;
+        iconLabel.setText("");
+        switch (type) {
+            case DEFAULT_LEFT:
+                iconLabel.setIcon(ImageTools
+                        .createImageIconFromCustom("default_switch_small_left.png"));
+                break;
+            case DEFAULT_RIGHT:
+                iconLabel
+                        .setIcon(ImageTools
+                                .createImageIconFromCustom("default_switch_small_right.png"));
+                break;
+            case DOUBLECROSS:
+                iconLabel.setIcon(ImageTools
+                        .createImageIconFromCustom("double_cross_switch_small.png"));
+                break;
+            case THREEWAY:
+                iconLabel.setIcon(ImageTools
+                        .createImageIconFromCustom("three_way_switch_small.png"));
+                break;
+            case CUTTER:
+                iconLabel.setIcon(ImageTools
+                        .createImageIconFromCustom("cutter_small.png"));
+        }
+        return iconLabel;
+    }
 }

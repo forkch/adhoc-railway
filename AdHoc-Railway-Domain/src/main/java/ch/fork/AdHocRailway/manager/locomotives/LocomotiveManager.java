@@ -18,60 +18,59 @@
 
 package ch.fork.AdHocRailway.manager.locomotives;
 
-import java.util.SortedSet;
-
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
-
 import com.google.common.eventbus.EventBus;
+
+import java.util.SortedSet;
 
 public interface LocomotiveManager {
 
-	public abstract void initialize(final EventBus bus);
+    public abstract void initialize(final EventBus bus);
 
-	void addLocomotiveManagerListener(final LocomotiveManagerListener listener);
+    void addLocomotiveManagerListener(final LocomotiveManagerListener listener);
 
-	void removeLocomotiveManagerListenerInNextEvent(
-			final LocomotiveManagerListener listener);
+    void removeLocomotiveManagerListenerInNextEvent(
+            final LocomotiveManagerListener listener);
 
-	public abstract SortedSet<Locomotive> getAllLocomotives()
-			throws LocomotiveManagerException;
+    public abstract SortedSet<Locomotive> getAllLocomotives()
+            throws LocomotiveManagerException;
 
-	public abstract SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
-			throws LocomotiveManagerException;
+    public abstract SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
+            throws LocomotiveManagerException;
 
-	public abstract void addLocomotiveToGroup(final Locomotive locomotive,
-			final LocomotiveGroup group);
+    public abstract void addLocomotiveToGroup(final Locomotive locomotive,
+                                              final LocomotiveGroup group);
 
-	public abstract void removeLocomotiveFromGroup(final Locomotive locomotive,
-			final LocomotiveGroup group);
+    public abstract void removeLocomotiveFromGroup(final Locomotive locomotive,
+                                                   final LocomotiveGroup group);
 
-	public abstract void updateLocomotive(final Locomotive locomotive)
-			throws LocomotiveManagerException;
+    public abstract void updateLocomotive(final Locomotive locomotive)
+            throws LocomotiveManagerException;
 
-	public abstract void addLocomotiveGroup(final LocomotiveGroup group)
-			throws LocomotiveManagerException;
+    public abstract void addLocomotiveGroup(final LocomotiveGroup group)
+            throws LocomotiveManagerException;
 
-	public abstract void removeLocomotiveGroup(final LocomotiveGroup group)
-			throws LocomotiveManagerException;
+    public abstract void removeLocomotiveGroup(final LocomotiveGroup group)
+            throws LocomotiveManagerException;
 
-	public abstract void updateLocomotiveGroup(final LocomotiveGroup group)
-			throws LocomotiveManagerException;
+    public abstract void updateLocomotiveGroup(final LocomotiveGroup group)
+            throws LocomotiveManagerException;
 
-	public abstract void setLocomotiveService(final LocomotiveService instance);
+    public abstract void setLocomotiveService(final LocomotiveService instance);
 
-	public abstract void clear();
+    public abstract void clear();
 
-	public abstract void clearToService();
+    public abstract void clearToService();
 
-	public abstract void disconnect();
+    public abstract void disconnect();
 
-	public abstract void setActiveLocomotive(final int locomotiveNumber,
-			final Locomotive locomotive);
+    public abstract void setActiveLocomotive(final int locomotiveNumber,
+                                             final Locomotive locomotive);
 
-	public abstract Locomotive getActiveLocomotive(final int locomotiveNumber);
+    public abstract Locomotive getActiveLocomotive(final int locomotiveNumber);
 
-	public abstract LocomotiveService getService();
+    public abstract LocomotiveService getService();
 
 }

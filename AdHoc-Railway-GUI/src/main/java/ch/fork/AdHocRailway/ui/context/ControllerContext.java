@@ -8,16 +8,16 @@ import javax.swing.*;
 
 public interface ControllerContext {
 
-	public RailwayDeviceManager getRailwayDeviceManager();
+    public RailwayDeviceManager getRailwayDeviceManager();
 
-	public JFrame getMainFrame();
+    public JFrame getMainFrame();
 
-	public AdHocRailwayIface getMainApp();
+    public AdHocRailwayIface getMainApp();
 
-	public boolean isEditingMode();
+    public boolean isEditingMode();
 
-	public abstract SRCPSession getSession();
+    public abstract SRCPSession getSession();
 
-	public EventBus getMainBus();
+    public EventBus getMainBus();
 
 }

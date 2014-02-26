@@ -1,12 +1,9 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.verify;
-
-import java.io.IOException;
-import java.util.List;
-
+import ch.fork.AdHocRailway.controllers.TurnoutChangeListener;
+import ch.fork.AdHocRailway.domain.turnouts.Turnout;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,10 +12,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import ch.fork.AdHocRailway.controllers.TurnoutChangeListener;
-import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.verify;
 
 public class BrainTurnoutControlAdapterTest {
 

@@ -25,30 +25,30 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TurnoutDefaultStateComboBoxCellRenderer extends
-		DefaultListCellRenderer {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2928955312058895462L;
+        DefaultListCellRenderer {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -2928955312058895462L;
 
-	@Override
-	public Component getListCellRendererComponent(final JList<?> list,
-			final Object value, final int index, final boolean isSelected,
-			final boolean cellHasFocus) {
-		final JLabel iconLabel = (JLabel) super.getListCellRendererComponent(
-				list, value, index, isSelected, cellHasFocus);
-		if (value == null) {
-			return iconLabel;
-		}
-		iconLabel.setText("");
-		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		if (value.equals(TurnoutState.STRAIGHT)) {
-			iconLabel.setIcon(ImageTools
-					.createImageIconFromCustom("default_straight.png"));
-		} else {
-			iconLabel.setIcon(ImageTools
-					.createImageIconFromCustom("default_curved.png"));
-		}
-		return iconLabel;
-	}
+    @Override
+    public Component getListCellRendererComponent(final JList<?> list,
+                                                  final Object value, final int index, final boolean isSelected,
+                                                  final boolean cellHasFocus) {
+        final JLabel iconLabel = (JLabel) super.getListCellRendererComponent(
+                list, value, index, isSelected, cellHasFocus);
+        if (value == null) {
+            return iconLabel;
+        }
+        iconLabel.setText("");
+        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        if (value.equals(TurnoutState.STRAIGHT)) {
+            iconLabel.setIcon(ImageTools
+                    .createImageIconFromCustom("default_straight.png"));
+        } else {
+            iconLabel.setIcon(ImageTools
+                    .createImageIconFromCustom("default_curved.png"));
+        }
+        return iconLabel;
+    }
 }

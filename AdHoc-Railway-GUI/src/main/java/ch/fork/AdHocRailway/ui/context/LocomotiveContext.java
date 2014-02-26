@@ -5,8 +5,8 @@ import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
 
 public interface LocomotiveContext extends ControllerContext {
 
-	public abstract LocomotiveController getLocomotiveControl();
+    public abstract LocomotiveController getLocomotiveControl();
 
-	public abstract LocomotiveManager getLocomotiveManager();
+    public abstract LocomotiveManager getLocomotiveManager();
 
 }

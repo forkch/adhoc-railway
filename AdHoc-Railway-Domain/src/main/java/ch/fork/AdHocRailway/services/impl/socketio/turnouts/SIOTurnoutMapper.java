@@ -1,16 +1,11 @@
 package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import ch.fork.AdHocRailway.domain.turnouts.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutOrientation;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutType;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SIOTurnoutMapper {
 

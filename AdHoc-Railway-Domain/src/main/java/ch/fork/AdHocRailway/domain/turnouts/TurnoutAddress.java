@@ -22,78 +22,82 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 public class TurnoutAddress {
 
-	// Fields
+    // Fields
 
-	private int		address;
+    private int address;
 
-	private int		bus;
+    private int bus;
 
-	private boolean	switched;
+    private boolean switched;
 
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
-		TurnoutAddress t = (TurnoutAddress) o;
+        TurnoutAddress t = (TurnoutAddress) o;
 
-		if (address != t.getAddress())
-			return false;
-		if (bus != t.getBus())
-			return false;
-		if (switched != t.isSwitched())
-			return false;
+        if (address != t.getAddress())
+            return false;
+        if (bus != t.getBus())
+            return false;
+        if (switched != t.isSwitched())
+            return false;
 
-		return true;
-	}
+        return true;
+    }
 
-	public int hashCode() {
-		return address + bus;
-	}
+    public int hashCode() {
+        return address + bus;
+    }
 
-	public String toString() {
+    public String toString() {
 
-		return "[" + bus + "|" + address + "|" + switched + "]";
-	}
+        return "[" + bus + "|" + address + "|" + switched + "]";
+    }
 
-	// Constructors
+    // Constructors
 
-	/** default constructor */
-	public TurnoutAddress() {
-	}
+    /**
+     * default constructor
+     */
+    public TurnoutAddress() {
+    }
 
-	/** full constructor */
-	public TurnoutAddress(int address, int bus, boolean switched) {
-		this.address = address;
-		this.bus = bus;
-		this.switched = switched;
-	}
+    /**
+     * full constructor
+     */
+    public TurnoutAddress(int address, int bus, boolean switched) {
+        this.address = address;
+        this.bus = bus;
+        this.switched = switched;
+    }
 
-	// Property accessors
+    // Property accessors
 
-	public int getAddress() {
-		return this.address;
-	}
+    public int getAddress() {
+        return this.address;
+    }
 
-	public void setAddress(int address) {
-		this.address = address;
-	}
+    public void setAddress(int address) {
+        this.address = address;
+    }
 
-	public int getBus() {
-		return this.bus;
-	}
+    public int getBus() {
+        return this.bus;
+    }
 
-	public void setBus(int bus) {
-		this.bus = bus;
-	}
+    public void setBus(int bus) {
+        this.bus = bus;
+    }
 
-	public boolean isSwitched() {
-		return this.switched;
-	}
+    public boolean isSwitched() {
+        return this.switched;
+    }
 
-	public void setSwitched(boolean switched) {
-		this.switched = switched;
-	}
+    public void setSwitched(boolean switched) {
+        this.switched = switched;
+    }
 
 }

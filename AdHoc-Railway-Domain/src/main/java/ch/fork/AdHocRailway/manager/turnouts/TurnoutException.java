@@ -21,18 +21,18 @@ package ch.fork.AdHocRailway.manager.turnouts;
 public class TurnoutException extends RuntimeException {
 
 
-	public TurnoutException() {
-	}
+    public TurnoutException() {
+    }
 
-	public TurnoutException(final String msg) {
-		super(msg);
-	}
+    public TurnoutException(final String msg) {
+        super(msg);
+    }
 
-	public TurnoutException(final Throwable cause) {
-		super(cause);
-	}
+    public TurnoutException(final Throwable cause) {
+        super(cause);
+    }
 
-	public TurnoutException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
+    public TurnoutException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 }

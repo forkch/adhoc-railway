@@ -25,49 +25,49 @@ import java.awt.event.ActionListener;
 
 public abstract class ConfigurationDialog extends JDialog {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3558143497279399956L;
-	protected boolean	okPressed;
-	protected boolean	cancelPressed;
-	public JButton		okButton;
-	public JButton		cancelButton;
-	public JPanel		mainButtonPanel;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -3558143497279399956L;
+    protected boolean okPressed;
+    protected boolean cancelPressed;
+    public JButton okButton;
+    public JButton cancelButton;
+    public JPanel mainButtonPanel;
 
-	public ConfigurationDialog(JFrame owner, String title) {
-		super(owner, title, true);
+    public ConfigurationDialog(JFrame owner, String title) {
+        super(owner, title, true);
 
-		initBasicGUI();
+        initBasicGUI();
 
-	}
+    }
 
-	public ConfigurationDialog(JDialog owner, String title) {
-		super(owner, title, true);
+    public ConfigurationDialog(JDialog owner, String title) {
+        super(owner, title, true);
 
-		initBasicGUI();
+        initBasicGUI();
 
-	}
+    }
 
-	private void initBasicGUI() {
-		okButton = new JButton("OK");
-		okButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				okPressed = true;
-				ConfigurationDialog.this.setVisible(false);
-			}
-		});
-		cancelButton = new JButton("Cancel");
-		cancelPressed = false;
-		cancelButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				cancelPressed = true;
-				ConfigurationDialog.this.setVisible(false);
-			}
-		});
-		mainButtonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+    private void initBasicGUI() {
+        okButton = new JButton("OK");
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                okPressed = true;
+                ConfigurationDialog.this.setVisible(false);
+            }
+        });
+        cancelButton = new JButton("Cancel");
+        cancelPressed = false;
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cancelPressed = true;
+                ConfigurationDialog.this.setVisible(false);
+            }
+        });
+        mainButtonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 //		mainButtonPanel.registerKeyboardAction(new ActionListener() {
 //			public void actionPerformed(ActionEvent e) {
 //				cancelPressed = true;
@@ -76,20 +76,20 @@ public abstract class ConfigurationDialog extends JDialog {
 //		}, "", KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
 //				JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-		mainButtonPanel.add(okButton);
-		// mainButtonPanel.add(cancelButton);
-		add(mainButtonPanel, BorderLayout.SOUTH);
-	}
+        mainButtonPanel.add(okButton);
+        // mainButtonPanel.add(cancelButton);
+        add(mainButtonPanel, BorderLayout.SOUTH);
+    }
 
-	protected void addMainComponent(JComponent mainComponent) {
-		add(mainComponent, BorderLayout.CENTER);
-	}
+    protected void addMainComponent(JComponent mainComponent) {
+        add(mainComponent, BorderLayout.CENTER);
+    }
 
-	public boolean isCancelPressed() {
-		return cancelPressed;
-	}
+    public boolean isCancelPressed() {
+        return cancelPressed;
+    }
 
-	public boolean isOkPressed() {
-		return okPressed;
-	}
+    public boolean isOkPressed() {
+        return okPressed;
+    }
 }

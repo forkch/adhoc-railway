@@ -22,25 +22,25 @@ import ch.fork.AdHocRailway.domain.ManagerException;
 
 public class LocomotiveManagerException extends ManagerException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6688667574674137647L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -6688667574674137647L;
 
-	public LocomotiveManagerException() {
-	}
+    public LocomotiveManagerException() {
+    }
 
-	public LocomotiveManagerException(final String message) {
-		super(message);
-	}
+    public LocomotiveManagerException(final String message) {
+        super(message);
+    }
 
-	public LocomotiveManagerException(final Throwable cause) {
-		super(cause);
-	}
+    public LocomotiveManagerException(final Throwable cause) {
+        super(cause);
+    }
 
-	public LocomotiveManagerException(final String message,
-			final Throwable cause) {
-		super(message, cause);
-	}
+    public LocomotiveManagerException(final String message,
+                                      final Throwable cause) {
+        super(message, cause);
+    }
 
 }

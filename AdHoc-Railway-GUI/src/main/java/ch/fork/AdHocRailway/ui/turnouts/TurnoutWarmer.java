@@ -34,119 +34,119 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class TurnoutWarmer extends ConfigurationDialog {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5791582705451816603L;
-	private JSpinner turnoutNumberField;
-	private JToggleButton warmButton;
-	private final TurnoutManager turnoutPersistence;
-	private final TurnoutController turnoutControl;
-	private TurnoutWarmupThread t;
-	private final TurnoutContext ctx;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5791582705451816603L;
+    private JSpinner turnoutNumberField;
+    private JToggleButton warmButton;
+    private final TurnoutManager turnoutPersistence;
+    private final TurnoutController turnoutControl;
+    private TurnoutWarmupThread t;
+    private final TurnoutContext ctx;
 
-	public TurnoutWarmer(final JFrame owner, final TurnoutContext ctx) {
-		super(owner, "Turnout Programmer");
-		this.ctx = ctx;
-		turnoutPersistence = ctx.getTurnoutManager();
-		turnoutControl = ctx.getTurnoutControl();
-		initGUI();
-	}
+    public TurnoutWarmer(final JFrame owner, final TurnoutContext ctx) {
+        super(owner, "Turnout Programmer");
+        this.ctx = ctx;
+        turnoutPersistence = ctx.getTurnoutManager();
+        turnoutControl = ctx.getTurnoutControl();
+        initGUI();
+    }
 
-	private void initGUI() {
-		final JPanel mainPanel = new JPanel(new FlowLayout());
+    private void initGUI() {
+        final JPanel mainPanel = new JPanel(new FlowLayout());
 
-		final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1,
-				1000, 1);
-		turnoutNumberField = new JSpinner(spinnerModel);
-		warmButton = new JToggleButton(new WarmupAction());
-		mainPanel.add(turnoutNumberField);
-		mainPanel.add(warmButton);
-		addMainComponent(mainPanel);
+        final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1,
+                1000, 1);
+        turnoutNumberField = new JSpinner(spinnerModel);
+        warmButton = new JToggleButton(new WarmupAction());
+        mainPanel.add(turnoutNumberField);
+        mainPanel.add(warmButton);
+        addMainComponent(mainPanel);
 
-		okButton.addActionListener(new ActionListener() {
+        okButton.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(final ActionEvent arg0) {
-				if (t != null) {
-					t.stopWarmup();
-				}
-			}
+            @Override
+            public void actionPerformed(final ActionEvent arg0) {
+                if (t != null) {
+                    t.stopWarmup();
+                }
+            }
 
-		});
-		cancelButton.addActionListener(new ActionListener() {
+        });
+        cancelButton.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(final ActionEvent arg0) {
-				if (t != null) {
-					t.stopWarmup();
-				}
-			}
+            @Override
+            public void actionPerformed(final ActionEvent arg0) {
+                if (t != null) {
+                    t.stopWarmup();
+                }
+            }
 
-		});
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(final WindowEvent arg0) {
-				if (t != null) {
-					t.stopWarmup();
-				}
-			}
+        });
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(final WindowEvent arg0) {
+                if (t != null) {
+                    t.stopWarmup();
+                }
+            }
 
-		});
+        });
 
-		pack();
-		setLocationRelativeTo(getParent());
-		setVisible(true);
-	}
+        pack();
+        setLocationRelativeTo(getParent());
+        setVisible(true);
+    }
 
-	class WarmupAction extends AbstractAction {
+    class WarmupAction extends AbstractAction {
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 4286408324389585654L;
+        /**
+         *
+         */
+        private static final long serialVersionUID = 4286408324389585654L;
 
-		public WarmupAction() {
-			super("Start");
-		}
+        public WarmupAction() {
+            super("Start");
+        }
 
-		@Override
-		public void actionPerformed(final ActionEvent e) {
-			if (warmButton.isSelected()) {
-				warmButton.setText("Stop");
-				t = new TurnoutWarmupThread();
-				t.start();
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            if (warmButton.isSelected()) {
+                warmButton.setText("Stop");
+                t = new TurnoutWarmupThread();
+                t.start();
 
-			} else {
-				t.stopWarmup();
-				warmButton.setText("Start");
-			}
-		}
-	}
+            } else {
+                t.stopWarmup();
+                warmButton.setText("Start");
+            }
+        }
+    }
 
-	private class TurnoutWarmupThread extends Thread {
+    private class TurnoutWarmupThread extends Thread {
 
-		boolean enabled = true;
+        boolean enabled = true;
 
-		public void stopWarmup() {
-			enabled = false;
-		}
+        public void stopWarmup() {
+            enabled = false;
+        }
 
-		@Override
-		public void run() {
-			try {
+        @Override
+        public void run() {
+            try {
 
-				while (enabled) {
-					final Turnout turnout = turnoutPersistence
-							.getTurnoutByNumber((Integer) turnoutNumberField
-									.getValue());
-					turnoutControl.toggle(turnout);
-					Thread.sleep(Preferences.getInstance().getIntValue(
-							PreferencesKeys.ROUTING_DELAY));
-				}
-			} catch (final InterruptedException e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+                while (enabled) {
+                    final Turnout turnout = turnoutPersistence
+                            .getTurnoutByNumber((Integer) turnoutNumberField
+                                    .getValue());
+                    turnoutControl.toggle(turnout);
+                    Thread.sleep(Preferences.getInstance().getIntValue(
+                            PreferencesKeys.ROUTING_DELAY));
+                }
+            } catch (final InterruptedException e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
 }

@@ -7,32 +7,32 @@ import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
 import java.util.SortedSet;
 
 public abstract class LocomotiveAddListener implements
-		LocomotiveManagerListener {
+        LocomotiveManagerListener {
 
-	@Override
-	public void locomotiveGroupAdded(final LocomotiveGroup group) {
+    @Override
+    public void locomotiveGroupAdded(final LocomotiveGroup group) {
 
-	}
+    }
 
-	@Override
-	public void locomotiveRemoved(final Locomotive locomotive) {
+    @Override
+    public void locomotiveRemoved(final Locomotive locomotive) {
 
-	}
+    }
 
-	@Override
-	public void locomotiveGroupRemoved(final LocomotiveGroup group) {
+    @Override
+    public void locomotiveGroupRemoved(final LocomotiveGroup group) {
 
-	}
+    }
 
-	@Override
-	public void locomotiveGroupUpdated(final LocomotiveGroup group) {
+    @Override
+    public void locomotiveGroupUpdated(final LocomotiveGroup group) {
 
-	}
+    }
 
-	@Override
-	public void locomotivesUpdated(
-			final SortedSet<LocomotiveGroup> locomotiveGroups) {
+    @Override
+    public void locomotivesUpdated(
+            final SortedSet<LocomotiveGroup> locomotiveGroups) {
 
-	}
+    }
 
 }

@@ -18,9 +18,9 @@
 
 /**
  * description
- * 
+ *
  * Version 0.1 12.02.2008
- * 
+ *
  * Copyright (C) Siemens Schweiz AG 2008, All Rights Reserved, Confidential
  */
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
@@ -36,35 +36,35 @@ import javax.swing.*;
 
 public class LocomotiveGroupConfigPanel extends JPanel {
 
-	private static final long serialVersionUID = -1287114708577602193L;
-	private final PresentationModel<LocomotiveGroup> presentationModel;
-	private JTextField locomotiveGroupName;
+    private static final long serialVersionUID = -1287114708577602193L;
+    private final PresentationModel<LocomotiveGroup> presentationModel;
+    private JTextField locomotiveGroupName;
 
-	public LocomotiveGroupConfigPanel() {
-		presentationModel = new PresentationModel<LocomotiveGroup>(
-				new ValueHolder(null, true));
-		initComponents();
-		buildPanel();
-		setLocomotiveGroup(null);
-	}
+    public LocomotiveGroupConfigPanel() {
+        presentationModel = new PresentationModel<LocomotiveGroup>(
+                new ValueHolder(null, true));
+        initComponents();
+        buildPanel();
+        setLocomotiveGroup(null);
+    }
 
-	public void setLocomotiveGroup(final LocomotiveGroup group) {
-		locomotiveGroupName.setEnabled(group != null);
-		presentationModel.setBean(group);
-	}
+    public void setLocomotiveGroup(final LocomotiveGroup group) {
+        locomotiveGroupName.setEnabled(group != null);
+        presentationModel.setBean(group);
+    }
 
-	private void buildPanel() {
-		setLayout(new MigLayout());
-		add(new JLabel("Name"), "");
-		add(locomotiveGroupName, "");
+    private void buildPanel() {
+        setLayout(new MigLayout());
+        add(new JLabel("Name"), "");
+        add(locomotiveGroupName, "");
 
-	}
+    }
 
-	private void initComponents() {
-		locomotiveGroupName = BasicComponentFactory
-				.createTextField(presentationModel
-						.getModel(TurnoutGroup.PROPERTYNAME_NAME));
-		locomotiveGroupName.setColumns(5);
+    private void initComponents() {
+        locomotiveGroupName = BasicComponentFactory
+                .createTextField(presentationModel
+                        .getModel(TurnoutGroup.PROPERTYNAME_NAME));
+        locomotiveGroupName.setColumns(5);
 
-	}
+    }
 }

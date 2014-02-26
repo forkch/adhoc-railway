@@ -30,44 +30,44 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TurnoutProgrammer extends ConfigurationDialog {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5978084216666903357L;
-	private final TurnoutContext ctx;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5978084216666903357L;
+    private final TurnoutContext ctx;
 
-	public TurnoutProgrammer(final JFrame owner, final TurnoutContext ctx) {
-		super(owner, "Turnout Programmer");
-		this.ctx = ctx;
-		initGUI();
-	}
+    public TurnoutProgrammer(final JFrame owner, final TurnoutContext ctx) {
+        super(owner, "Turnout Programmer");
+        this.ctx = ctx;
+        initGUI();
+    }
 
-	private void initGUI() {
-		final JPanel mainPanel = new JPanel(new BorderLayout());
-		final JPanel buttonPanel = new JPanel(new GridLayout(4, 4));
-		for (int i = 1; i <= 252; i = i + 4) {
-			final JButton button = new JButton("" + i);
-			buttonPanel.add(button);
-			button.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent e) {
+    private void initGUI() {
+        final JPanel mainPanel = new JPanel(new BorderLayout());
+        final JPanel buttonPanel = new JPanel(new GridLayout(4, 4));
+        for (int i = 1; i <= 252; i = i + 4) {
+            final JButton button = new JButton("" + i);
+            buttonPanel.add(button);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(final ActionEvent e) {
 
-					final TurnoutController turnoutControl = ctx
-							.getTurnoutControl();
-					final int address = Integer.parseInt(e.getActionCommand());
-					turnoutControl.setTurnoutWithAddress(address,
-							TurnoutState.STRAIGHT);
+                    final TurnoutController turnoutControl = ctx
+                            .getTurnoutControl();
+                    final int address = Integer.parseInt(e.getActionCommand());
+                    turnoutControl.setTurnoutWithAddress(address,
+                            TurnoutState.STRAIGHT);
 
-				}
-			});
-		}
-		final JLabel titleLabel = new JLabel("Enter first address of decoder");
-		mainPanel.add(titleLabel, BorderLayout.NORTH);
-		mainPanel.add(buttonPanel, BorderLayout.CENTER);
+                }
+            });
+        }
+        final JLabel titleLabel = new JLabel("Enter first address of decoder");
+        mainPanel.add(titleLabel, BorderLayout.NORTH);
+        mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
-		addMainComponent(mainPanel);
-		pack();
-		SwingUtils.addEscapeListener(this);
-		setVisible(true);
-	}
+        addMainComponent(mainPanel);
+        pack();
+        SwingUtils.addEscapeListener(this);
+        setVisible(true);
+    }
 }

@@ -5,98 +5,98 @@ import java.awt.*;
 
 public class BetterFlowLayout extends FlowLayout {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3488417762706903536L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -3488417762706903536L;
 
-	public BetterFlowLayout() {
+    public BetterFlowLayout() {
 
-		super();
+        super();
 
-	}
+    }
 
-	public BetterFlowLayout(int align) {
+    public BetterFlowLayout(int align) {
 
-		super(align);
+        super(align);
 
-	}
+    }
 
-	public BetterFlowLayout(int align, int hgap, int vgap) {
+    public BetterFlowLayout(int align, int hgap, int vgap) {
 
-		super(align, hgap, vgap);
+        super(align, hgap, vgap);
 
-	}
+    }
 
-	@Override
-	public Dimension preferredLayoutSize(Container target) {
+    @Override
+    public Dimension preferredLayoutSize(Container target) {
 
-		return betterPreferredSize(target);
+        return betterPreferredSize(target);
 
-	}
+    }
 
-	@Override
-	public Dimension minimumLayoutSize(Container target) {
+    @Override
+    public Dimension minimumLayoutSize(Container target) {
 
-		return betterPreferredSize(target);
+        return betterPreferredSize(target);
 
-	}
+    }
 
-	public Dimension betterPreferredSize(Container target) {
+    public Dimension betterPreferredSize(Container target) {
 
-		synchronized (target.getTreeLock()) {
+        synchronized (target.getTreeLock()) {
 
-			Insets insets = target.getInsets();
+            Insets insets = target.getInsets();
 
-			int maxwidth = target.getWidth()
-					- (insets.left + insets.right + getHgap() * 2);
+            int maxwidth = target.getWidth()
+                    - (insets.left + insets.right + getHgap() * 2);
 
-			int nmembers = target.getComponentCount();
+            int nmembers = target.getComponentCount();
 
-			int x = 0, y = insets.top + getVgap();
+            int x = 0, y = insets.top + getVgap();
 
-			int rowh = 0;
+            int rowh = 0;
 
-			for (int i = 0; i < nmembers; i++) {
+            for (int i = 0; i < nmembers; i++) {
 
-				Component m = target.getComponent(i);
+                Component m = target.getComponent(i);
 
-				if (m.isVisible()) {
+                if (m.isVisible()) {
 
-					Dimension d = m.getPreferredSize();
+                    Dimension d = m.getPreferredSize();
 
-					m.setSize(d.width, d.height);
+                    m.setSize(d.width, d.height);
 
-					if ((x == 0) || ((x + d.width) <= maxwidth)) {
+                    if ((x == 0) || ((x + d.width) <= maxwidth)) {
 
-						if (x > 0) {
+                        if (x > 0) {
 
-							x += getHgap();
+                            x += getHgap();
 
-						}
+                        }
 
-						x += d.width;
+                        x += d.width;
 
-						rowh = Math.max(rowh, d.height);
+                        rowh = Math.max(rowh, d.height);
 
-					} else {
+                    } else {
 
-						x = d.width;
+                        x = d.width;
 
-						y += getVgap() + rowh;
+                        y += getVgap() + rowh;
 
-						rowh = d.height;
+                        rowh = d.height;
 
-					}
+                    }
 
-				}
+                }
 
-			}
+            }
 
-			return new Dimension(maxwidth, y + rowh + getVgap());
+            return new Dimension(maxwidth, y + rowh + getVgap());
 
-		}
+        }
 
-	}
+    }
 
 }

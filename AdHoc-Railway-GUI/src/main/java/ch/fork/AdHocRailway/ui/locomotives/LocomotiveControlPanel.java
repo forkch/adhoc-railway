@@ -41,25 +41,25 @@ import java.util.List;
 import java.util.SortedSet;
 
 public class LocomotiveControlPanel extends JPanel implements
-		LocomotiveManagerListener {
+        LocomotiveManagerListener {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -149795300932888094L;
-	private final List<LocomotiveWidget> locomotiveWidgets;
-	private JPanel controlPanel;
-	private final LocomotiveContext ctx;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -149795300932888094L;
+    private final List<LocomotiveWidget> locomotiveWidgets;
+    private JPanel controlPanel;
+    private final LocomotiveContext ctx;
     private boolean disableListener;
 
     public LocomotiveControlPanel(final LocomotiveContext ctx) {
-		super();
-		this.ctx = ctx;
+        super();
+        this.ctx = ctx;
         ctx.getMainBus().register(this);
 
-		locomotiveWidgets = new ArrayList<LocomotiveWidget>();
-		initGUI();
-	}
+        locomotiveWidgets = new ArrayList<LocomotiveWidget>();
+        initGUI();
+    }
 
     @Subscribe
     public void startImport(final StartImportEvent event) {
@@ -71,120 +71,120 @@ public class LocomotiveControlPanel extends JPanel implements
         disableListener = false;
     }
 
-	private void initGUI() {
-		setLayout(new BorderLayout());
-		controlPanel = new JPanel(new MigLayout());
+    private void initGUI() {
+        setLayout(new BorderLayout());
+        controlPanel = new JPanel(new MigLayout());
 
-		final SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame(
-				"Trains");
-		locomotivesFrame.add(controlPanel, BorderLayout.CENTER);
-		setLayout(new BorderLayout());
-		add(locomotivesFrame, BorderLayout.NORTH);
+        final SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame(
+                "Trains");
+        locomotivesFrame.add(controlPanel, BorderLayout.CENTER);
+        setLayout(new BorderLayout());
+        add(locomotivesFrame, BorderLayout.NORTH);
 
-		ctx.getMainApp().registerSpaceKey(new LocomotiveStopAction());
-		// getActionMap().put("LocomotiveStop", new LocomotiveStopAction());
-		// Preferences
-		// .getInstance()
-		// .getKeyBoardLayout()
-		// .assignKeys(getInputMap(WHEN_IN_FOCUSED_WINDOW),
-		// "LocomotiveStop");
-		update();
-	}
+        ctx.getMainApp().registerSpaceKey(new LocomotiveStopAction());
+        // getActionMap().put("LocomotiveStop", new LocomotiveStopAction());
+        // Preferences
+        // .getInstance()
+        // .getKeyBoardLayout()
+        // .assignKeys(getInputMap(WHEN_IN_FOCUSED_WINDOW),
+        // "LocomotiveStop");
+        update();
+    }
 
-	public void update() {
-		final LocomotiveController locomotiveControl = ctx
-				.getLocomotiveControl();
-		locomotiveControl.removeAllLocomotiveChangeListener();
+    public void update() {
+        final LocomotiveController locomotiveControl = ctx
+                .getLocomotiveControl();
+        locomotiveControl.removeAllLocomotiveChangeListener();
 
-		controlPanel.removeAll();
-		locomotiveWidgets.clear();
+        controlPanel.removeAll();
+        locomotiveWidgets.clear();
 
-		for (int i = 0; i < Preferences.getInstance().getIntValue(
-				PreferencesKeys.LOCOMOTIVE_CONTROLES); i++) {
-			final LocomotiveWidget w = new LocomotiveWidget(ctx, i,
-					ctx.getMainFrame());
-			controlPanel.add(w);
-			locomotiveWidgets.add(w);
-		}
-		revalidate();
-		repaint();
-	}
+        for (int i = 0; i < Preferences.getInstance().getIntValue(
+                PreferencesKeys.LOCOMOTIVE_CONTROLES); i++) {
+            final LocomotiveWidget w = new LocomotiveWidget(ctx, i,
+                    ctx.getMainFrame());
+            controlPanel.add(w);
+            locomotiveWidgets.add(w);
+        }
+        revalidate();
+        repaint();
+    }
 
-	private class LocomotiveStopAction extends AbstractAction implements
-			Runnable {
+    private class LocomotiveStopAction extends AbstractAction implements
+            Runnable {
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -5935980511796588692L;
+        /**
+         *
+         */
+        private static final long serialVersionUID = -5935980511796588692L;
 
-		@Override
-		public void actionPerformed(final ActionEvent e) {
-			final Thread t = new Thread(this);
-			t.start();
-		}
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            final Thread t = new Thread(this);
+            t.start();
+        }
 
-		@Override
-		public void run() {
-			try {
-				for (final LocomotiveWidget widget : locomotiveWidgets) {
-					final Locomotive myLocomotive = widget.getMyLocomotive();
-					if (myLocomotive == null) {
-						continue;
-					}
-					final LocomotiveController locomotiveControl = ctx
-							.getLocomotiveControl();
-					if (locomotiveControl.isLocked(myLocomotive)
-							&& !locomotiveControl.isLockedByMe(myLocomotive)) {
-						continue;
-					}
-					locomotiveControl.emergencyStop(myLocomotive);
-				}
-			} catch (final LocomotiveException e3) {
-				ctx.getMainApp().handleException(e3);
-			}
-		}
-	}
+        @Override
+        public void run() {
+            try {
+                for (final LocomotiveWidget widget : locomotiveWidgets) {
+                    final Locomotive myLocomotive = widget.getMyLocomotive();
+                    if (myLocomotive == null) {
+                        continue;
+                    }
+                    final LocomotiveController locomotiveControl = ctx
+                            .getLocomotiveControl();
+                    if (locomotiveControl.isLocked(myLocomotive)
+                            && !locomotiveControl.isLockedByMe(myLocomotive)) {
+                        continue;
+                    }
+                    locomotiveControl.emergencyStop(myLocomotive);
+                }
+            } catch (final LocomotiveException e3) {
+                ctx.getMainApp().handleException(e3);
+            }
+        }
+    }
 
-	@Override
-	public void locomotiveAdded(final Locomotive locomotive) {
+    @Override
+    public void locomotiveAdded(final Locomotive locomotive) {
 
-	}
+    }
 
-	@Override
-	public void locomotiveUpdated(final Locomotive locomotive) {
+    @Override
+    public void locomotiveUpdated(final Locomotive locomotive) {
 
-	}
+    }
 
-	@Override
-	public void locomotiveGroupAdded(final LocomotiveGroup group) {
+    @Override
+    public void locomotiveGroupAdded(final LocomotiveGroup group) {
 
-	}
+    }
 
-	@Override
-	public void locomotiveRemoved(final Locomotive locomotive) {
+    @Override
+    public void locomotiveRemoved(final Locomotive locomotive) {
 
-	}
+    }
 
-	@Override
-	public void locomotiveGroupRemoved(final LocomotiveGroup group) {
+    @Override
+    public void locomotiveGroupRemoved(final LocomotiveGroup group) {
 
-	}
+    }
 
-	@Override
-	public void locomotiveGroupUpdated(final LocomotiveGroup group) {
+    @Override
+    public void locomotiveGroupUpdated(final LocomotiveGroup group) {
 
-	}
+    }
 
-	@Override
-	public void locomotivesUpdated(
-			final SortedSet<LocomotiveGroup> locomotiveGroups) {
+    @Override
+    public void locomotivesUpdated(
+            final SortedSet<LocomotiveGroup> locomotiveGroups) {
 
-	}
+    }
 
-	@Override
-	public void failure(
-			final LocomotiveManagerException locomotiveManagerException) {
+    @Override
+    public void failure(
+            final LocomotiveManagerException locomotiveManagerException) {
 
-	}
+    }
 }

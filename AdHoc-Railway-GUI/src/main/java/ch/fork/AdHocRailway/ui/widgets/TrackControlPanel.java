@@ -31,67 +31,67 @@ import java.awt.*;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3165655530717661123L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -3165655530717661123L;
 
-	private RouteGroupsPanel routeGroupsTabbedPane;
+    private RouteGroupsPanel routeGroupsTabbedPane;
 
-	private TurnoutGroupsPanel turnoutGroupsTabbedPane;
+    private TurnoutGroupsPanel turnoutGroupsTabbedPane;
 
-	private final Preferences preferences = Preferences.getInstance();
+    private final Preferences preferences = Preferences.getInstance();
 
-	private JTabbedPane trackControlPane;
+    private JTabbedPane trackControlPane;
 
-	private final TurnoutContext turnoutCtx;
+    private final TurnoutContext turnoutCtx;
 
-	private final RouteContext routeContext;
+    private final RouteContext routeContext;
 
-	public TrackControlPanel(final TrackContext ctx) {
-		this.turnoutCtx = ctx;
-		this.routeContext = ctx;
-		initGUI();
-	}
+    public TrackControlPanel(final TrackContext ctx) {
+        this.turnoutCtx = ctx;
+        this.routeContext = ctx;
+        initGUI();
+    }
 
-	private void initGUI() {
-		setLayout(new BorderLayout(5, 5));
-		initTurnoutPanel();
-		initRoutesPanel();
+    private void initGUI() {
+        setLayout(new BorderLayout(5, 5));
+        initTurnoutPanel();
+        initRoutesPanel();
 
-		final JPanel controlPanel = new JPanel(new GridLayout(1, 2));
-		if (preferences.getBooleanValue(TABBED_TRACK)) {
-			trackControlPane = new JTabbedPane();
+        final JPanel controlPanel = new JPanel(new GridLayout(1, 2));
+        if (preferences.getBooleanValue(TABBED_TRACK)) {
+            trackControlPane = new JTabbedPane();
 
-			trackControlPane.add("Turnouts", turnoutGroupsTabbedPane);
-			trackControlPane.add("Routes", routeGroupsTabbedPane);
-			final SimpleInternalFrame turnoutRouteFrame = new SimpleInternalFrame(
-					"Turnouts/Routes");
-			turnoutRouteFrame.add(trackControlPane, BorderLayout.CENTER);
-			controlPanel.add(turnoutRouteFrame);
-		} else {
-			final SimpleInternalFrame turnoutFrame = new SimpleInternalFrame(
-					"Turnouts");
-			final SimpleInternalFrame routesFrame = new SimpleInternalFrame(
-					"Routes");
+            trackControlPane.add("Turnouts", turnoutGroupsTabbedPane);
+            trackControlPane.add("Routes", routeGroupsTabbedPane);
+            final SimpleInternalFrame turnoutRouteFrame = new SimpleInternalFrame(
+                    "Turnouts/Routes");
+            turnoutRouteFrame.add(trackControlPane, BorderLayout.CENTER);
+            controlPanel.add(turnoutRouteFrame);
+        } else {
+            final SimpleInternalFrame turnoutFrame = new SimpleInternalFrame(
+                    "Turnouts");
+            final SimpleInternalFrame routesFrame = new SimpleInternalFrame(
+                    "Routes");
 
-			turnoutFrame.add(turnoutGroupsTabbedPane, BorderLayout.CENTER);
-			routesFrame.add(routeGroupsTabbedPane, BorderLayout.CENTER);
+            turnoutFrame.add(turnoutGroupsTabbedPane, BorderLayout.CENTER);
+            routesFrame.add(routeGroupsTabbedPane, BorderLayout.CENTER);
 
-			controlPanel.add(turnoutFrame);
-			controlPanel.add(routesFrame);
-		}
-		add(controlPanel, BorderLayout.CENTER);
-	}
+            controlPanel.add(turnoutFrame);
+            controlPanel.add(routesFrame);
+        }
+        add(controlPanel, BorderLayout.CENTER);
+    }
 
-	private void initTurnoutPanel() {
-		turnoutGroupsTabbedPane = new TurnoutGroupsPanel(turnoutCtx,
-				JTabbedPane.BOTTOM);
-	}
+    private void initTurnoutPanel() {
+        turnoutGroupsTabbedPane = new TurnoutGroupsPanel(turnoutCtx,
+                JTabbedPane.BOTTOM);
+    }
 
-	private void initRoutesPanel() {
-		routeGroupsTabbedPane = new RouteGroupsPanel(routeContext,
-				JTabbedPane.BOTTOM);
-	}
+    private void initRoutesPanel() {
+        routeGroupsTabbedPane = new RouteGroupsPanel(routeContext,
+                JTabbedPane.BOTTOM);
+    }
 
 }

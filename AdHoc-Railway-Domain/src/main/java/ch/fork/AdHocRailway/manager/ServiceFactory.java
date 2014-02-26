@@ -12,32 +12,32 @@ import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
 
 public class ServiceFactory {
 
-	public static LocomotiveService createLocomotiveService(
-			final boolean useAdHocServer) {
+    public static LocomotiveService createLocomotiveService(
+            final boolean useAdHocServer) {
 
-		if (useAdHocServer) {
-			return new SIOLocomotiveService();
-		} else {
-			return new XMLLocomotiveService();
-		}
-	}
+        if (useAdHocServer) {
+            return new SIOLocomotiveService();
+        } else {
+            return new XMLLocomotiveService();
+        }
+    }
 
-	public static TurnoutService createTurnoutService(
-			final boolean useAdHocServer) {
-		if (useAdHocServer) {
-			return new SIOTurnoutService();
-		} else {
-			return new XMLTurnoutService();
-		}
-	}
+    public static TurnoutService createTurnoutService(
+            final boolean useAdHocServer) {
+        if (useAdHocServer) {
+            return new SIOTurnoutService();
+        } else {
+            return new XMLTurnoutService();
+        }
+    }
 
-	public static RouteService createRouteService(final boolean useAdHocServer) {
+    public static RouteService createRouteService(final boolean useAdHocServer) {
 
-		if (useAdHocServer) {
-			return new SIORouteService();
-		} else {
-			return new XMLRouteService();
-		}
+        if (useAdHocServer) {
+            return new SIORouteService();
+        } else {
+            return new XMLRouteService();
+        }
 
-	}
+    }
 }

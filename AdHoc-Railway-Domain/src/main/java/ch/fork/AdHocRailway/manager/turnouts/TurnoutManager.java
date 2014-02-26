@@ -18,59 +18,58 @@
 
 package ch.fork.AdHocRailway.manager.turnouts;
 
-import java.util.List;
-import java.util.SortedSet;
-
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
-
 import com.google.common.eventbus.EventBus;
+
+import java.util.List;
+import java.util.SortedSet;
 
 public interface TurnoutManager {
 
-	public abstract void initialize(final EventBus eventBus);
+    public abstract void initialize(final EventBus eventBus);
 
-	public abstract void addTurnoutManagerListener(
-			final TurnoutManagerListener listener);
+    public abstract void addTurnoutManagerListener(
+            final TurnoutManagerListener listener);
 
-	public abstract void removeTurnoutManagerListenerInNextEvent(
-			final TurnoutManagerListener turnoutAddListener);
+    public abstract void removeTurnoutManagerListenerInNextEvent(
+            final TurnoutManagerListener turnoutAddListener);
 
-	public abstract List<Turnout> getAllTurnouts();
+    public abstract List<Turnout> getAllTurnouts();
 
-	public abstract Turnout getTurnoutByNumber(final int number);
+    public abstract Turnout getTurnoutByNumber(final int number);
 
-	public abstract void addTurnoutToGroup(final Turnout turnout,
-			final TurnoutGroup group);
+    public abstract void addTurnoutToGroup(final Turnout turnout,
+                                           final TurnoutGroup group);
 
-	public abstract void removeTurnout(final Turnout turnout);
+    public abstract void removeTurnout(final Turnout turnout);
 
-	public abstract void updateTurnout(final Turnout turnout);
+    public abstract void updateTurnout(final Turnout turnout);
 
-	public abstract SortedSet<TurnoutGroup> getAllTurnoutGroups();
+    public abstract SortedSet<TurnoutGroup> getAllTurnoutGroups();
 
-	public abstract TurnoutGroup getTurnoutGroupByName(final String name);
+    public abstract TurnoutGroup getTurnoutGroupByName(final String name);
 
-	public abstract void addTurnoutGroup(final TurnoutGroup group);
+    public abstract void addTurnoutGroup(final TurnoutGroup group);
 
-	public abstract void removeTurnoutGroup(final TurnoutGroup group);
+    public abstract void removeTurnoutGroup(final TurnoutGroup group);
 
-	public abstract void updateTurnoutGroup(final TurnoutGroup group);
+    public abstract void updateTurnoutGroup(final TurnoutGroup group);
 
-	public int getLastProgrammedAddress();
+    public int getLastProgrammedAddress();
 
-	public int getNextFreeTurnoutNumber();
+    public int getNextFreeTurnoutNumber();
 
-	public boolean isTurnoutNumberFree(final int number);
+    public boolean isTurnoutNumberFree(final int number);
 
-	public abstract void setTurnoutService(final TurnoutService instance);
+    public abstract void setTurnoutService(final TurnoutService instance);
 
-	public abstract void clear();
+    public abstract void clear();
 
-	public abstract void clearToService();
+    public abstract void clearToService();
 
-	public abstract void disconnect();
+    public abstract void disconnect();
 
-	public abstract TurnoutService getService();
+    public abstract TurnoutService getService();
 }

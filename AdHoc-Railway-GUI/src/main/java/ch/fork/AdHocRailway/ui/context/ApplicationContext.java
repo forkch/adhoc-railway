@@ -9,195 +9,193 @@ import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.RailwayDeviceManager;
-
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 import javax.swing.*;
 
 public class ApplicationContext implements TurnoutContext, RouteContext,
-		LocomotiveContext, TrackContext, PowerContext,
-		PersistenceManagerContext, RailwayDeviceManagerContext {
+        LocomotiveContext, TrackContext, PowerContext,
+        PersistenceManagerContext, RailwayDeviceManagerContext {
 
-	private final EventBus mainBus = new EventBus();
+    private final EventBus mainBus = new EventBus();
 
-	private JFrame mainFrame;
+    private JFrame mainFrame;
 
-	private AdHocRailwayIface mainApp;
+    private AdHocRailwayIface mainApp;
 
-	private Preferences preferences;
+    private Preferences preferences;
 
-	private TurnoutController turnoutControl;
-	private TurnoutManager turnoutManager;
+    private TurnoutController turnoutControl;
+    private TurnoutManager turnoutManager;
 
-	private RouteController routeControl;
-	private RouteManager routeManager;
+    private RouteController routeControl;
+    private RouteManager routeManager;
 
-	private LocomotiveController locomotiveControl;
-	private LocomotiveManager locomotiveManager;
+    private LocomotiveController locomotiveControl;
+    private LocomotiveManager locomotiveManager;
 
-	private PowerController powerControl;
-	private int activeBoosterCount;
-	private SRCPLockControl lockControl;
+    private PowerController powerControl;
+    private int activeBoosterCount;
+    private SRCPLockControl lockControl;
 
-	private SRCPSession session;
+    private SRCPSession session;
 
-	private boolean isEditingMode;
-	private RailwayDeviceManager railwayDeviceManager;
+    private boolean isEditingMode;
+    private RailwayDeviceManager railwayDeviceManager;
 
-	@Override
-	public Preferences getPreferences() {
-		return preferences;
-	}
+    @Override
+    public Preferences getPreferences() {
+        return preferences;
+    }
 
-	public void setPreferences(final Preferences preferences) {
-		this.preferences = preferences;
-	}
+    public void setPreferences(final Preferences preferences) {
+        this.preferences = preferences;
+    }
 
-	@Override
-	public TurnoutController getTurnoutControl() {
-		return turnoutControl;
-	}
+    @Override
+    public TurnoutController getTurnoutControl() {
+        return turnoutControl;
+    }
 
-	@Override
-	public void setTurnoutControl(final TurnoutController turnoutControl) {
-		this.turnoutControl = turnoutControl;
-	}
+    @Override
+    public void setTurnoutControl(final TurnoutController turnoutControl) {
+        this.turnoutControl = turnoutControl;
+    }
 
-	@Override
-	public TurnoutManager getTurnoutManager() {
-		return turnoutManager;
-	}
+    @Override
+    public TurnoutManager getTurnoutManager() {
+        return turnoutManager;
+    }
 
-	@Override
-	public void setTurnoutManager(final TurnoutManager turnoutPersistence) {
-		this.turnoutManager = turnoutPersistence;
-	}
+    @Override
+    public void setTurnoutManager(final TurnoutManager turnoutPersistence) {
+        this.turnoutManager = turnoutPersistence;
+    }
 
-	@Override
-	public RouteController getRouteControl() {
-		return routeControl;
-	}
+    @Override
+    public RouteController getRouteControl() {
+        return routeControl;
+    }
 
-	@Override
-	public void setRouteControl(final RouteController routeControl) {
-		this.routeControl = routeControl;
-	}
+    @Override
+    public void setRouteControl(final RouteController routeControl) {
+        this.routeControl = routeControl;
+    }
 
-	@Override
-	public RouteManager getRouteManager() {
-		return routeManager;
-	}
+    @Override
+    public RouteManager getRouteManager() {
+        return routeManager;
+    }
 
-	@Override
-	public void setRouteManager(final RouteManager routePersistence) {
-		this.routeManager = routePersistence;
-	}
+    @Override
+    public void setRouteManager(final RouteManager routePersistence) {
+        this.routeManager = routePersistence;
+    }
 
-	@Override
-	public LocomotiveController getLocomotiveControl() {
-		return locomotiveControl;
-	}
+    @Override
+    public LocomotiveController getLocomotiveControl() {
+        return locomotiveControl;
+    }
 
-	@Override
-	public void setLocomotiveControl(
-			final LocomotiveController locomotiveControl) {
-		this.locomotiveControl = locomotiveControl;
-	}
+    @Override
+    public void setLocomotiveControl(
+            final LocomotiveController locomotiveControl) {
+        this.locomotiveControl = locomotiveControl;
+    }
 
-	@Override
-	public LocomotiveManager getLocomotiveManager() {
-		return locomotiveManager;
-	}
+    @Override
+    public LocomotiveManager getLocomotiveManager() {
+        return locomotiveManager;
+    }
 
-	@Override
-	public void setLocomotiveManager(
-			final LocomotiveManager locomotivePersistence) {
-		this.locomotiveManager = locomotivePersistence;
-	}
+    @Override
+    public void setLocomotiveManager(
+            final LocomotiveManager locomotivePersistence) {
+        this.locomotiveManager = locomotivePersistence;
+    }
 
-	@Override
-	public PowerController getPowerControl() {
-		return powerControl;
-	}
+    @Override
+    public PowerController getPowerControl() {
+        return powerControl;
+    }
 
-	@Override
-	public void setPowerController(final PowerController powerControl) {
-		this.powerControl = powerControl;
-	}
+    @Override
+    public void setPowerController(final PowerController powerControl) {
+        this.powerControl = powerControl;
+    }
 
-	@Override
-	public void setActiveBoosterCount(final int activeBoosterCount) {
-		this.activeBoosterCount = activeBoosterCount;
-	}
+    @Override
+    public void setActiveBoosterCount(final int activeBoosterCount) {
+        this.activeBoosterCount = activeBoosterCount;
+    }
 
-	public int getActiveBoosterCount() {
-		return this.activeBoosterCount;
-	}
+    public int getActiveBoosterCount() {
+        return this.activeBoosterCount;
+    }
 
-	@Override
-	public SRCPLockControl getLockControl() {
-		return lockControl;
-	}
+    @Override
+    public SRCPLockControl getLockControl() {
+        return lockControl;
+    }
 
-	@Override
-	public void setLockControl(final SRCPLockControl lockControl) {
-		this.lockControl = lockControl;
-	}
+    @Override
+    public void setLockControl(final SRCPLockControl lockControl) {
+        this.lockControl = lockControl;
+    }
 
-	@Override
-	public SRCPSession getSession() {
-		return session;
-	}
+    @Override
+    public SRCPSession getSession() {
+        return session;
+    }
 
-	@Override
-	public void setSession(final SRCPSession session) {
-		this.session = session;
-	}
+    @Override
+    public void setSession(final SRCPSession session) {
+        this.session = session;
+    }
 
-	@Override
-	public boolean isEditingMode() {
-		return isEditingMode;
-	}
+    @Override
+    public boolean isEditingMode() {
+        return isEditingMode;
+    }
 
-	@Subscribe
-	public void editingModeChanged(final EditingModeEvent event) {
-		this.isEditingMode = event.isEditingMode();
-	}
+    @Subscribe
+    public void editingModeChanged(final EditingModeEvent event) {
+        this.isEditingMode = event.isEditingMode();
+    }
 
-	@Override
-	public JFrame getMainFrame() {
-		return mainFrame;
-	}
+    @Override
+    public JFrame getMainFrame() {
+        return mainFrame;
+    }
 
-	public void setMainFrame(final JFrame mainFrame) {
-		this.mainFrame = mainFrame;
-	}
+    public void setMainFrame(final JFrame mainFrame) {
+        this.mainFrame = mainFrame;
+    }
 
-	@Override
-	public AdHocRailwayIface getMainApp() {
-		return mainApp;
-	}
+    @Override
+    public AdHocRailwayIface getMainApp() {
+        return mainApp;
+    }
 
-	public void setMainApp(final AdHocRailwayIface mainApp) {
-		this.mainApp = mainApp;
-	}
+    public void setMainApp(final AdHocRailwayIface mainApp) {
+        this.mainApp = mainApp;
+    }
 
-	public void setRailwayDeviceManager(
-			final RailwayDeviceManager railwayDeviceManager) {
-		this.railwayDeviceManager = railwayDeviceManager;
-	}
+    public void setRailwayDeviceManager(
+            final RailwayDeviceManager railwayDeviceManager) {
+        this.railwayDeviceManager = railwayDeviceManager;
+    }
 
-	@Override
-	public RailwayDeviceManager getRailwayDeviceManager() {
-		return railwayDeviceManager;
-	}
+    @Override
+    public RailwayDeviceManager getRailwayDeviceManager() {
+        return railwayDeviceManager;
+    }
 
-	@Override
-	public EventBus getMainBus() {
-		return mainBus;
-	}
+    @Override
+    public EventBus getMainBus() {
+        return mainBus;
+    }
 }

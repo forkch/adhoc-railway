@@ -27,36 +27,36 @@ import java.awt.*;
 
 public class TurnoutDefaultStateCellRenderer extends DefaultTableCellRenderer {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 953008654786644470L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 953008654786644470L;
 
-	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value,
-			boolean isSelected, boolean hasFocus, int row, int column) {
-		JLabel iconLabel = (JLabel) super.getTableCellRendererComponent(table,
-				value, isSelected, hasFocus, row, column);
-		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		if (table.getValueAt(row, 1).equals("ThreeWay")) {
-			iconLabel.setText("N/A");
-			return iconLabel;
-		}
-		iconLabel.setText("");
-		if (value.equals(TurnoutState.STRAIGHT)) {
-			iconLabel.setIcon(ImageTools
-					.createImageIconFromCustom("default_straight.png"));
-		} else {
-			iconLabel.setIcon(ImageTools
-					.createImageIconFromCustom("default_curved.png"));
-		}
-		if (isSelected) {
-			iconLabel.setBackground(table.getSelectionBackground());
-			iconLabel.setForeground(table.getSelectionForeground());
-		} else {
-			iconLabel.setBackground(table.getBackground());
-			iconLabel.setForeground(table.getForeground());
-		}
-		return iconLabel;
-	}
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value,
+                                                   boolean isSelected, boolean hasFocus, int row, int column) {
+        JLabel iconLabel = (JLabel) super.getTableCellRendererComponent(table,
+                value, isSelected, hasFocus, row, column);
+        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        if (table.getValueAt(row, 1).equals("ThreeWay")) {
+            iconLabel.setText("N/A");
+            return iconLabel;
+        }
+        iconLabel.setText("");
+        if (value.equals(TurnoutState.STRAIGHT)) {
+            iconLabel.setIcon(ImageTools
+                    .createImageIconFromCustom("default_straight.png"));
+        } else {
+            iconLabel.setIcon(ImageTools
+                    .createImageIconFromCustom("default_curved.png"));
+        }
+        if (isSelected) {
+            iconLabel.setBackground(table.getSelectionBackground());
+            iconLabel.setForeground(table.getSelectionForeground());
+        } else {
+            iconLabel.setBackground(table.getBackground());
+            iconLabel.setForeground(table.getForeground());
+        }
+        return iconLabel;
+    }
 }

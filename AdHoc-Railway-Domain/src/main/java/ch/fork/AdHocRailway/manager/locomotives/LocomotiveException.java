@@ -20,18 +20,18 @@ package ch.fork.AdHocRailway.manager.locomotives;
 
 public class LocomotiveException extends RuntimeException {
 
-	public LocomotiveException() {
-	}
+    public LocomotiveException() {
+    }
 
-	public LocomotiveException(final String message) {
-		super(message);
-	}
+    public LocomotiveException(final String message) {
+        super(message);
+    }
 
-	public LocomotiveException(final Throwable cause) {
-		super(cause);
-	}
+    public LocomotiveException(final Throwable cause) {
+        super(cause);
+    }
 
-	public LocomotiveException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
+    public LocomotiveException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 }

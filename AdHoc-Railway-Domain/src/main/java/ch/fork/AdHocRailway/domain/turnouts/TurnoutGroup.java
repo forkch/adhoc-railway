@@ -18,101 +18,101 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
+import ch.fork.AdHocRailway.domain.AbstractItem;
+
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import ch.fork.AdHocRailway.domain.AbstractItem;
-
 public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
-		Comparable<TurnoutGroup> {
+        Comparable<TurnoutGroup> {
 
-	private static final long serialVersionUID = 8822984732725579518L;
+    private static final long serialVersionUID = 8822984732725579518L;
 
-	private int id;
+    private int id;
 
-	private String name;
+    private String name;
 
-	private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
+    private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
 
-	public static final String PROPERTYNAME_ID = "id";
-	public static final String PROPERTYNAME_NAME = "name";
+    public static final String PROPERTYNAME_ID = "id";
+    public static final String PROPERTYNAME_NAME = "name";
 
-	public TurnoutGroup() {
-	}
+    public TurnoutGroup() {
+    }
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setId(final int id) {
-		this.id = id;
-	}
+    public void setId(final int id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(final String name) {
-		final String old = this.name;
-		this.name = name;
-		changeSupport.firePropertyChange(PROPERTYNAME_NAME, old, name);
-	}
+    public void setName(final String name) {
+        final String old = this.name;
+        this.name = name;
+        changeSupport.firePropertyChange(PROPERTYNAME_NAME, old, name);
+    }
 
-	public SortedSet<Turnout> getTurnouts() {
-		return this.turnouts;
-	}
+    public SortedSet<Turnout> getTurnouts() {
+        return this.turnouts;
+    }
 
-	public void setTurnouts(final SortedSet<Turnout> turnouts) {
-		this.turnouts = turnouts;
-	}
+    public void setTurnouts(final SortedSet<Turnout> turnouts) {
+        this.turnouts = turnouts;
+    }
 
-	public void addTurnout(final Turnout turnout) {
-		this.turnouts.add(turnout);
-	}
+    public void addTurnout(final Turnout turnout) {
+        this.turnouts.add(turnout);
+    }
 
-	public void removeTurnout(final Turnout turnout) {
-		this.turnouts.remove(turnout);
-	}
+    public void removeTurnout(final Turnout turnout) {
+        this.turnouts.remove(turnout);
+    }
 
-	public void addPropertyChangeListener(final PropertyChangeListener x) {
-		changeSupport.addPropertyChangeListener(x);
-	}
+    public void addPropertyChangeListener(final PropertyChangeListener x) {
+        changeSupport.addPropertyChangeListener(x);
+    }
 
-	public void removePropertyChangeListener(final PropertyChangeListener x) {
-		changeSupport.removePropertyChangeListener(x);
-	}
+    public void removePropertyChangeListener(final PropertyChangeListener x) {
+        changeSupport.removePropertyChangeListener(x);
+    }
 
-	@Override
-	public int compareTo(final TurnoutGroup o) {
-		return name.compareTo(o.getName());
-	}
+    @Override
+    public int compareTo(final TurnoutGroup o) {
+        return name.compareTo(o.getName());
+    }
 
-	@Override
-	public int hashCode() {
-		return Integer.valueOf(id).hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return Integer.valueOf(id).hashCode();
+    }
 
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final TurnoutGroup other = (TurnoutGroup) obj;
-		if (id != other.id) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TurnoutGroup other = (TurnoutGroup) obj;
+        if (id != other.id) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public String toString() {
-		return name;
-	}
+    @Override
+    public String toString() {
+        return name;
+    }
 }

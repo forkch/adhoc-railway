@@ -23,16 +23,16 @@ import java.awt.*;
 
 public class SmallToolbarButton extends JButton {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2719163242311849288L;
-	private static final Insets	insets	= new Insets(1, 1, 1, 1);
+    /**
+     *
+     */
+    private static final long serialVersionUID = 2719163242311849288L;
+    private static final Insets insets = new Insets(1, 1, 1, 1);
 
-	public SmallToolbarButton(Action a) {
-		super(a);
-		setMargin(insets);
-		setFocusable(false);
-		setText("");
-	}
+    public SmallToolbarButton(Action a) {
+        super(a);
+        setMargin(insets);
+        setFocusable(false);
+        setText("");
+    }
 }

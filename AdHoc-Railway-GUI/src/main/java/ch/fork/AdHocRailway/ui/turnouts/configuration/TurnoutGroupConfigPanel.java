@@ -18,9 +18,9 @@
 
 /**
  * description
- * 
+ *
  * Version 0.1 12.02.2008
- * 
+ *
  * Copyright (C) Siemens Schweiz AG 2008, All Rights Reserved, Confidential
  */
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
@@ -39,52 +39,51 @@ import javax.swing.*;
 
 /**
  * @author Benjamin Mueller <benjamin.b.mueller@siemens.com>
- * 
  */
 public class TurnoutGroupConfigPanel extends JPanel {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1287114708577602193L;
-	private final PresentationModel<TurnoutGroup> presentationModel;
-	private JTextField turnoutGroupName;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -1287114708577602193L;
+    private final PresentationModel<TurnoutGroup> presentationModel;
+    private JTextField turnoutGroupName;
 
-	public TurnoutGroupConfigPanel() {
-		presentationModel = new PresentationModel<TurnoutGroup>(
-				new ValueHolder(null, true));
-		buildPanel();
-		setTurnoutGroup(null);
-	}
+    public TurnoutGroupConfigPanel() {
+        presentationModel = new PresentationModel<TurnoutGroup>(
+                new ValueHolder(null, true));
+        buildPanel();
+        setTurnoutGroup(null);
+    }
 
-	public void setTurnoutGroup(final TurnoutGroup group) {
-		turnoutGroupName.setEnabled(group != null);
-		if (Preferences.getInstance().getBooleanValue(
-				PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
-		}
-		presentationModel.setBean(group);
-	}
+    public void setTurnoutGroup(final TurnoutGroup group) {
+        turnoutGroupName.setEnabled(group != null);
+        if (Preferences.getInstance().getBooleanValue(
+                PreferencesKeys.USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES)) {
+        }
+        presentationModel.setBean(group);
+    }
 
-	private void buildPanel() {
-		initComponents();
+    private void buildPanel() {
+        initComponents();
 
-		final FormLayout layout = new FormLayout("right:pref, 3dlu, pref:grow",
-				"p:grow, 3dlu");
+        final FormLayout layout = new FormLayout("right:pref, 3dlu, pref:grow",
+                "p:grow, 3dlu");
 
-		final PanelBuilder builder = new PanelBuilder(layout);
-		builder.setDefaultDialogBorder();
-		final CellConstraints cc = new CellConstraints();
+        final PanelBuilder builder = new PanelBuilder(layout);
+        builder.setDefaultDialogBorder();
+        final CellConstraints cc = new CellConstraints();
 
-		builder.addLabel("Name", cc.xy(1, 1));
-		builder.add(turnoutGroupName, cc.xy(3, 1));
-		add(builder.getPanel());
-	}
+        builder.addLabel("Name", cc.xy(1, 1));
+        builder.add(turnoutGroupName, cc.xy(3, 1));
+        add(builder.getPanel());
+    }
 
-	private void initComponents() {
-		turnoutGroupName = BasicComponentFactory
-				.createTextField(presentationModel
-						.getModel(TurnoutGroup.PROPERTYNAME_NAME));
-		turnoutGroupName.setColumns(5);
+    private void initComponents() {
+        turnoutGroupName = BasicComponentFactory
+                .createTextField(presentationModel
+                        .getModel(TurnoutGroup.PROPERTYNAME_NAME));
+        turnoutGroupName.setColumns(5);
 
-	}
+    }
 }

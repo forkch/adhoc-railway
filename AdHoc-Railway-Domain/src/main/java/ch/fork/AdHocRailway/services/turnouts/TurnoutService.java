@@ -18,30 +18,30 @@
 
 package ch.fork.AdHocRailway.services.turnouts;
 
-import java.util.SortedSet;
-
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 
+import java.util.SortedSet;
+
 public interface TurnoutService {
 
-	public abstract void init(TurnoutServiceListener listener);
+    public abstract void init(TurnoutServiceListener listener);
 
-	public abstract void addTurnout(Turnout turnout);
+    public abstract void addTurnout(Turnout turnout);
 
-	public abstract void removeTurnout(Turnout turnout);
+    public abstract void removeTurnout(Turnout turnout);
 
-	public abstract void updateTurnout(Turnout turnout);
+    public abstract void updateTurnout(Turnout turnout);
 
-	public abstract SortedSet<TurnoutGroup> getAllTurnoutGroups();
+    public abstract SortedSet<TurnoutGroup> getAllTurnoutGroups();
 
-	public abstract void addTurnoutGroup(TurnoutGroup group);
+    public abstract void addTurnoutGroup(TurnoutGroup group);
 
-	public abstract void removeTurnoutGroup(TurnoutGroup group);
+    public abstract void removeTurnoutGroup(TurnoutGroup group);
 
-	public abstract void updateTurnoutGroup(TurnoutGroup group);
+    public abstract void updateTurnoutGroup(TurnoutGroup group);
 
-	public abstract void clear();
+    public abstract void clear();
 
-	public abstract void disconnect();
+    public abstract void disconnect();
 }

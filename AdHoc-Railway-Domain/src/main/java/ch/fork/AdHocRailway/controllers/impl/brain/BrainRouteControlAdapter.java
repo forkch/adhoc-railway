@@ -8,13 +8,13 @@ import ch.fork.AdHocRailway.manager.turnouts.RouteException;
 
 public class BrainRouteControlAdapter extends RouteController {
 
-	private final TurnoutController turnoutControl;
+    private final TurnoutController turnoutControl;
 
-	private long routingDelay;
+    private long routingDelay;
     private final RouteChangingThread.RouteChangingListener routeChangingListener;
 
     public BrainRouteControlAdapter(final TurnoutController turnoutController) {
-		this.turnoutControl = turnoutController;
+        this.turnoutControl = turnoutController;
         routeChangingListener = new RouteChangingThread.RouteChangingListener() {
             @Override
             public void informNextTurnoutRouted(Route route) {
@@ -34,24 +34,24 @@ public class BrainRouteControlAdapter extends RouteController {
         };
     }
 
-	@Override
-	public void enableRoute(final Route r) throws RouteException {
-		final Thread brainRouterThread = new Thread(new RouteChangingThread(turnoutControl,r,
-				true, routingDelay, routeChangingListener));
-		brainRouterThread.start();
-	}
+    @Override
+    public void enableRoute(final Route r) throws RouteException {
+        final Thread brainRouterThread = new Thread(new RouteChangingThread(turnoutControl, r,
+                true, routingDelay, routeChangingListener));
+        brainRouterThread.start();
+    }
 
-	@Override
-	public void disableRoute(final Route r) throws RouteException {
-		final Thread brainRouterThread = new Thread(new RouteChangingThread(turnoutControl, r,
-				false, routingDelay, routeChangingListener));
-		brainRouterThread.start();
-	}
-	@Override
-	public void setRoutingDelay(final int routingDelay) {
-		this.routingDelay = routingDelay;
-	}
+    @Override
+    public void disableRoute(final Route r) throws RouteException {
+        final Thread brainRouterThread = new Thread(new RouteChangingThread(turnoutControl, r,
+                false, routingDelay, routeChangingListener));
+        brainRouterThread.start();
+    }
 
+    @Override
+    public void setRoutingDelay(final int routingDelay) {
+        this.routingDelay = routingDelay;
+    }
 
 
 }

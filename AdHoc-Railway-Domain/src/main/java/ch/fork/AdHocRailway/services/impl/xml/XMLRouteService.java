@@ -18,137 +18,136 @@
 
 package ch.fork.AdHocRailway.services.impl.xml;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
 import ch.fork.AdHocRailway.services.turnouts.RouteService;
 import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
+import org.apache.log4j.Logger;
+
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
 
 public class XMLRouteService implements RouteService {
-	private static final Logger LOGGER = Logger
-			.getLogger(XMLRouteService.class);
-	private final SortedSet<Route> routes = new TreeSet<Route>();
-	private final SortedSet<RouteGroup> routeGroups = new TreeSet<RouteGroup>();
-	private RouteServiceListener listener;
+    private static final Logger LOGGER = Logger
+            .getLogger(XMLRouteService.class);
+    private final SortedSet<Route> routes = new TreeSet<Route>();
+    private final SortedSet<RouteGroup> routeGroups = new TreeSet<RouteGroup>();
+    private RouteServiceListener listener;
 
-	public XMLRouteService() {
-		LOGGER.info("XMLRoutePersistence loaded");
-	}
+    public XMLRouteService() {
+        LOGGER.info("XMLRoutePersistence loaded");
+    }
 
-	@Override
-	public void addRoute(final Route route) throws RouteManagerException {
-		routes.add(route);
-		listener.routeAdded(route);
-	}
+    @Override
+    public void addRoute(final Route route) throws RouteManagerException {
+        routes.add(route);
+        listener.routeAdded(route);
+    }
 
-	@Override
-	public void removeRoute(final Route route) throws RouteManagerException {
-		routes.remove(route);
-		listener.routeRemoved(route);
-	}
+    @Override
+    public void removeRoute(final Route route) throws RouteManagerException {
+        routes.remove(route);
+        listener.routeRemoved(route);
+    }
 
-	@Override
-	public void updateRoute(final Route route) throws RouteManagerException {
-		routes.remove(route);
-		routes.add(route);
-		listener.routeUpdated(route);
+    @Override
+    public void updateRoute(final Route route) throws RouteManagerException {
+        routes.remove(route);
+        routes.add(route);
+        listener.routeUpdated(route);
 
-	}
+    }
 
-	@Override
-	public SortedSet<RouteGroup> getAllRouteGroups()
-			throws RouteManagerException {
-		return routeGroups;
-	}
+    @Override
+    public SortedSet<RouteGroup> getAllRouteGroups()
+            throws RouteManagerException {
+        return routeGroups;
+    }
 
-	@Override
-	public void addRouteGroup(final RouteGroup routeGroup)
-			throws RouteManagerException {
-		routeGroups.add(routeGroup);
-		listener.routeGroupAdded(routeGroup);
-	}
+    @Override
+    public void addRouteGroup(final RouteGroup routeGroup)
+            throws RouteManagerException {
+        routeGroups.add(routeGroup);
+        listener.routeGroupAdded(routeGroup);
+    }
 
-	@Override
-	public void removeRouteGroup(final RouteGroup routeGroup)
-			throws RouteManagerException {
-		routeGroups.remove(routeGroup);
-		listener.routeGroupRemoved(routeGroup);
+    @Override
+    public void removeRouteGroup(final RouteGroup routeGroup)
+            throws RouteManagerException {
+        routeGroups.remove(routeGroup);
+        listener.routeGroupRemoved(routeGroup);
 
-	}
+    }
 
-	@Override
-	public void updateRouteGroup(final RouteGroup routeGroup)
-			throws RouteManagerException {
-		routeGroups.remove(routeGroup);
-		routeGroups.add(routeGroup);
-		listener.routeGroupUpdated(routeGroup);
+    @Override
+    public void updateRouteGroup(final RouteGroup routeGroup)
+            throws RouteManagerException {
+        routeGroups.remove(routeGroup);
+        routeGroups.add(routeGroup);
+        listener.routeGroupUpdated(routeGroup);
 
-	}
+    }
 
-	@Override
-	public void addRouteItem(final RouteItem item) throws RouteManagerException {
+    @Override
+    public void addRouteItem(final RouteItem item) throws RouteManagerException {
 
-	}
+    }
 
-	@Override
-	public void removeRouteItem(final RouteItem item)
-			throws RouteManagerException {
+    @Override
+    public void removeRouteItem(final RouteItem item)
+            throws RouteManagerException {
 
-	}
+    }
 
-	@Override
-	public void updateRouteItem(final RouteItem item)
-			throws RouteManagerException {
+    @Override
+    public void updateRouteItem(final RouteItem item)
+            throws RouteManagerException {
 
-	}
+    }
 
-	@Override
-	public void clear() throws RouteManagerException {
-		routes.clear();
-		routeGroups.clear();
-	}
+    @Override
+    public void clear() throws RouteManagerException {
+        routes.clear();
+        routeGroups.clear();
+    }
 
-	@Override
-	public void init(final RouteServiceListener listener) {
-		this.listener = listener;
-	}
+    @Override
+    public void init(final RouteServiceListener listener) {
+        this.listener = listener;
+    }
 
-	@Override
-	public void disconnect() {
+    @Override
+    public void disconnect() {
 
-	}
+    }
 
-	public void loadRouteGroupsFromXML(final SortedSet<RouteGroup> groups) {
-		routeGroups.clear();
-		routes.clear();
-		if (groups != null) {
-			for (final RouteGroup routeGroup : groups) {
-				routeGroup.init();
-				routeGroup.setId(UUID.randomUUID().hashCode());
-				routeGroups.add(routeGroup);
-				if (routeGroup.getRoutes() == null
-						|| routeGroup.getRoutes().isEmpty()) {
-					routeGroup.setRoutes(new TreeSet<Route>());
-				}
-				for (final Route route : routeGroup.getRoutes()) {
-					route.init();
-					route.setId(UUID.randomUUID().hashCode());
-					routes.add(route);
-					route.setRouteGroup(routeGroup);
-					for (final RouteItem item : route.getRouteItems()) {
-						item.init();
-					}
-				}
-			}
-		}
-		listener.routesUpdated(routeGroups);
-	}
+    public void loadRouteGroupsFromXML(final SortedSet<RouteGroup> groups) {
+        routeGroups.clear();
+        routes.clear();
+        if (groups != null) {
+            for (final RouteGroup routeGroup : groups) {
+                routeGroup.init();
+                routeGroup.setId(UUID.randomUUID().hashCode());
+                routeGroups.add(routeGroup);
+                if (routeGroup.getRoutes() == null
+                        || routeGroup.getRoutes().isEmpty()) {
+                    routeGroup.setRoutes(new TreeSet<Route>());
+                }
+                for (final Route route : routeGroup.getRoutes()) {
+                    route.init();
+                    route.setId(UUID.randomUUID().hashCode());
+                    routes.add(route);
+                    route.setRouteGroup(routeGroup);
+                    for (final RouteItem item : route.getRouteItems()) {
+                        item.init();
+                    }
+                }
+            }
+        }
+        listener.routesUpdated(routeGroups);
+    }
 
 }

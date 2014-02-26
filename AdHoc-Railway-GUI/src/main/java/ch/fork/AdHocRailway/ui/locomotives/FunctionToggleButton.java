@@ -24,16 +24,16 @@ import javax.swing.*;
 
 public class FunctionToggleButton extends JToggleButton {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5886703909665855244L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -5886703909665855244L;
 
-	public FunctionToggleButton(final String text) {
-		super(text);
-		setIcon(ImageTools.createImageIconFromIconSet("dialog-error.png"));
-		setSelectedIcon(ImageTools
-				.createImageIconFromIconSet("dialog-ok-apply.png"));
+    public FunctionToggleButton(final String text) {
+        super(text);
+        setIcon(ImageTools.createImageIconFromIconSet("dialog-error.png"));
+        setSelectedIcon(ImageTools
+                .createImageIconFromIconSet("dialog-ok-apply.png"));
 
-	}
+    }
 }

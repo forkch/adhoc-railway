@@ -1,11 +1,9 @@
+archivesBaseName = 'adhocrailway-domain'
 
 
-archivesBaseName='adhocrailway-domain'
-
-	
 dependencies {
-    	
-	compile fileTree (dir: 'lib', includes: ['*.jar'])
+
+    compile fileTree(dir: 'lib', includes: ['*.jar'])
 
     compile 'de.dermoba:jsrcpc:2.2.1'
     compile 'com.thoughtworks.xstream:xstream:1.4.4'

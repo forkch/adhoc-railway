@@ -8,46 +8,44 @@ import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
-
 import com.google.common.eventbus.EventBus;
-
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 public interface RailwayDeviceManagerContext {
 
-	EventBus getMainBus();
+    EventBus getMainBus();
 
-	Preferences getPreferences();
+    Preferences getPreferences();
 
-	void setPowerController(final PowerController powerControl);
+    void setPowerController(final PowerController powerControl);
 
-	void setLocomotiveControl(final LocomotiveController locomotiveControl);
+    void setLocomotiveControl(final LocomotiveController locomotiveControl);
 
-	void setTurnoutControl(final TurnoutController turnoutControl);
+    void setTurnoutControl(final TurnoutController turnoutControl);
 
-	void setLockControl(final SRCPLockControl instance);
+    void setLockControl(final SRCPLockControl instance);
 
-	void setRouteControl(final RouteController routeControl);
+    void setRouteControl(final RouteController routeControl);
 
-	void setSession(final SRCPSession session);
+    void setSession(final SRCPSession session);
 
-	TurnoutController getTurnoutControl();
+    TurnoutController getTurnoutControl();
 
-	TurnoutManager getTurnoutManager();
+    TurnoutManager getTurnoutManager();
 
-	SRCPSession getSession();
+    SRCPSession getSession();
 
-	PowerController getPowerControl();
+    PowerController getPowerControl();
 
-	RouteController getRouteControl();
+    RouteController getRouteControl();
 
-	SRCPLockControl getLockControl();
+    SRCPLockControl getLockControl();
 
-	LocomotiveController getLocomotiveControl();
+    LocomotiveController getLocomotiveControl();
 
-	RouteManager getRouteManager();
+    RouteManager getRouteManager();
 
-	LocomotiveManager getLocomotiveManager();
+    LocomotiveManager getLocomotiveManager();
 
 }

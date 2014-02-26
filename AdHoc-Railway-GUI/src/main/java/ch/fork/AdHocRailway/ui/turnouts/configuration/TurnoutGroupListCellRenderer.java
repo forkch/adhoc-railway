@@ -11,19 +11,19 @@ import java.awt.*;
  */
 public class TurnoutGroupListCellRenderer extends DefaultListCellRenderer {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6223008219457163847L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -6223008219457163847L;
 
-	@Override
-	public Component getListCellRendererComponent(JList<?> list, Object value,
-			int index, boolean isSelected, boolean cellHasFocus) {
-		Component component = super.getListCellRendererComponent(list, value,
-				index, isSelected, cellHasFocus);
+    @Override
+    public Component getListCellRendererComponent(JList<?> list, Object value,
+                                                  int index, boolean isSelected, boolean cellHasFocus) {
+        Component component = super.getListCellRendererComponent(list, value,
+                index, isSelected, cellHasFocus);
 
-		TurnoutGroup group = (TurnoutGroup) value;
-		setText(group == null ? "" : (" " + group.getName()));
-		return component;
-	}
+        TurnoutGroup group = (TurnoutGroup) value;
+        setText(group == null ? "" : (" " + group.getName()));
+        return component;
+    }
 }

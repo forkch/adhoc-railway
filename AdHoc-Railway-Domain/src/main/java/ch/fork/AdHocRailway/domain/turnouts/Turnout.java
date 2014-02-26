@@ -18,16 +18,14 @@
 
 package ch.fork.AdHocRailway.domain.turnouts;
 
-import java.beans.PropertyChangeListener;
-import java.util.HashSet;
-import java.util.Set;
-
+import ch.fork.AdHocRailway.domain.AbstractItem;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import ch.fork.AdHocRailway.domain.AbstractItem;
-
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import java.beans.PropertyChangeListener;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Turnout extends AbstractItem implements java.io.Serializable,
         Comparable<Turnout> {
@@ -335,7 +333,7 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
                 return TurnoutState.STRAIGHT;
             }
         }
-        if(TurnoutState.UNDEF.equals(actualState)) {
+        if (TurnoutState.UNDEF.equals(actualState)) {
             return TurnoutState.STRAIGHT;
         }
         return TurnoutState.UNDEF;

@@ -9,37 +9,37 @@ import java.util.SortedSet;
 
 public abstract class TurnoutAddListener implements TurnoutManagerListener {
 
-	@Override
-	public abstract void turnoutAdded(Turnout turnout);
+    @Override
+    public abstract void turnoutAdded(Turnout turnout);
 
-	@Override
-	public abstract void failure(TurnoutManagerException arg0);
+    @Override
+    public abstract void failure(TurnoutManagerException arg0);
 
-	@Override
-	public abstract void turnoutUpdated(Turnout turnout);
+    @Override
+    public abstract void turnoutUpdated(Turnout turnout);
 
-	@Override
-	public void turnoutsUpdated(final SortedSet<TurnoutGroup> turnoutGroups) {
+    @Override
+    public void turnoutsUpdated(final SortedSet<TurnoutGroup> turnoutGroups) {
 
-	}
+    }
 
-	@Override
-	public void turnoutRemoved(final Turnout turnout) {
+    @Override
+    public void turnoutRemoved(final Turnout turnout) {
 
-	}
+    }
 
-	@Override
-	public void turnoutGroupAdded(final TurnoutGroup group) {
+    @Override
+    public void turnoutGroupAdded(final TurnoutGroup group) {
 
-	}
+    }
 
-	@Override
-	public void turnoutGroupRemoved(final TurnoutGroup group) {
+    @Override
+    public void turnoutGroupRemoved(final TurnoutGroup group) {
 
-	}
+    }
 
-	@Override
-	public void turnoutGroupUpdated(final TurnoutGroup group) {
+    @Override
+    public void turnoutGroupUpdated(final TurnoutGroup group) {
 
-	}
+    }
 }

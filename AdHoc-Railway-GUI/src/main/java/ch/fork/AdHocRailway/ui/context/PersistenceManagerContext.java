@@ -1,28 +1,27 @@
 package ch.fork.AdHocRailway.ui.context;
 
-import com.google.common.eventbus.EventBus;
-
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
 import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import com.google.common.eventbus.EventBus;
 
 public interface PersistenceManagerContext {
 
-	Preferences getPreferences();
+    Preferences getPreferences();
 
-	LocomotiveManager getLocomotiveManager();
+    LocomotiveManager getLocomotiveManager();
 
-	EventBus getMainBus();
+    EventBus getMainBus();
 
-	void setLocomotiveManager(final LocomotiveManager locomotiveManager);
+    void setLocomotiveManager(final LocomotiveManager locomotiveManager);
 
-	TurnoutManager getTurnoutManager();
+    TurnoutManager getTurnoutManager();
 
-	void setTurnoutManager(final TurnoutManager turnoutManager);
+    void setTurnoutManager(final TurnoutManager turnoutManager);
 
-	RouteManager getRouteManager();
+    RouteManager getRouteManager();
 
-	void setRouteManager(final RouteManager routeManager);
+    void setRouteManager(final RouteManager routeManager);
 
 }

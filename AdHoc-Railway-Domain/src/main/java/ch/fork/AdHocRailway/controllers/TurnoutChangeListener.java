@@ -21,5 +21,5 @@ package ch.fork.AdHocRailway.controllers;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 
 public interface TurnoutChangeListener {
-	public void turnoutChanged(Turnout changedTurnout);
+    public void turnoutChanged(Turnout changedTurnout);
 }

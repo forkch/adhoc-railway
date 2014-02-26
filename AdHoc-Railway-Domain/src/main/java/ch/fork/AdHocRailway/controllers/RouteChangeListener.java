@@ -21,9 +21,9 @@ package ch.fork.AdHocRailway.controllers;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 
 public interface RouteChangeListener {
-	public void nextTurnoutRouted(Route changedRoute);
+    public void nextTurnoutRouted(Route changedRoute);
 
-	public void nextTurnoutDerouted(Route changedRoute);
+    public void nextTurnoutDerouted(Route changedRoute);
 
-	public void routeChanged(Route changedRoute);
+    public void routeChanged(Route changedRoute);
 }

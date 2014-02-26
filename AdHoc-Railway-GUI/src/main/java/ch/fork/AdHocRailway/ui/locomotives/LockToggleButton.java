@@ -23,44 +23,44 @@ import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import javax.swing.*;
 
 public class LockToggleButton extends JToggleButton {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6029273304442150097L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 6029273304442150097L;
 
-	public LockToggleButton() {
-		super();
-	}
+    public LockToggleButton() {
+        super();
+    }
 
-	public LockToggleButton(Icon icon) {
-		super(icon);
-	}
+    public LockToggleButton(Icon icon) {
+        super(icon);
+    }
 
-	public LockToggleButton(Icon icon, boolean selected) {
-		super(icon, selected);
-	}
+    public LockToggleButton(Icon icon, boolean selected) {
+        super(icon, selected);
+    }
 
-	public LockToggleButton(String text) {
-		super(text);
+    public LockToggleButton(String text) {
+        super(text);
 
-		setIcon(ImageTools.createImageIconFromIconSet("unlocked.png"));
-		setSelectedIcon(ImageTools.createImageIconFromIconSet("locked.png"));
+        setIcon(ImageTools.createImageIconFromIconSet("unlocked.png"));
+        setSelectedIcon(ImageTools.createImageIconFromIconSet("locked.png"));
 
-	}
+    }
 
-	public LockToggleButton(String text, boolean selected) {
-		super(text, selected);
-	}
+    public LockToggleButton(String text, boolean selected) {
+        super(text, selected);
+    }
 
-	public LockToggleButton(Action a) {
-		super(a);
-	}
+    public LockToggleButton(Action a) {
+        super(a);
+    }
 
-	public LockToggleButton(String text, Icon icon) {
-		super(text, icon);
-	}
+    public LockToggleButton(String text, Icon icon) {
+        super(text, icon);
+    }
 
-	public LockToggleButton(String text, Icon icon, boolean selected) {
-		super(text, icon, selected);
-	}
+    public LockToggleButton(String text, Icon icon, boolean selected) {
+        super(text, icon, selected);
+    }
 }

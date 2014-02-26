@@ -11,19 +11,19 @@ import java.awt.*;
  */
 public class LocomotiveGroupListCellRenderer extends DefaultListCellRenderer {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8121914367054500476L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 8121914367054500476L;
 
-	@Override
-	public Component getListCellRendererComponent(JList<?> list, Object value,
-			int index, boolean isSelected, boolean cellHasFocus) {
-		Component component = super.getListCellRendererComponent(list, value,
-				index, isSelected, cellHasFocus);
+    @Override
+    public Component getListCellRendererComponent(JList<?> list, Object value,
+                                                  int index, boolean isSelected, boolean cellHasFocus) {
+        Component component = super.getListCellRendererComponent(list, value,
+                index, isSelected, cellHasFocus);
 
-		LocomotiveGroup group = (LocomotiveGroup) value;
-		setText(group == null ? "" : group.getName());
-		return component;
-	}
+        LocomotiveGroup group = (LocomotiveGroup) value;
+        setText(group == null ? "" : group.getName());
+        return component;
+    }
 }

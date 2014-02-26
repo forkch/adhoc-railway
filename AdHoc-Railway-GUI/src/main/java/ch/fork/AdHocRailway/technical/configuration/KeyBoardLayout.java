@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.fork.AdHocRailway.technical.configuration;
 
@@ -11,17 +11,16 @@ import java.util.Set;
 
 /**
  * @author mnl
- *
  */
 public class KeyBoardLayout {
 
     private String name;
     private KeyBoardLayout base = null;
     private Map<String, Set<KeyStroke>> keysByAction;
-    
-    public KeyBoardLayout (String name) {
+
+    public KeyBoardLayout(String name) {
         this.name = name;
-        keysByAction = new HashMap<String, Set<KeyStroke>>(); 
+        keysByAction = new HashMap<String, Set<KeyStroke>>();
     }
 
     /**
@@ -30,7 +29,7 @@ public class KeyBoardLayout {
     protected String getName() {
         return name;
     }
-    
+
     /**
      * @return the base
      */
@@ -53,12 +52,12 @@ public class KeyBoardLayout {
         }
         keyStrokes.add(keyStroke);
     }
-    
-    public Set<KeyStroke> getKeys (String action) {
+
+    public Set<KeyStroke> getKeys(String action) {
         return keysByAction.get(action);
     }
-    
-    public void assignKeys (InputMap inputMap, String action) {
+
+    public void assignKeys(InputMap inputMap, String action) {
         Set<KeyStroke> keyStrokes = getKeys(action);
         if (keyStrokes == null) {
             return;
