@@ -30,12 +30,19 @@ import java.awt.image.BufferedImage;
 import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromCustom;
 
 public class TurnoutCanvas extends JPanel {
-    /**
-     *
-     */
-    private static final long serialVersionUID = -7177529935222900726L;
-    protected Turnout turnout;
-    protected TurnoutState turnoutState = TurnoutState.UNDEF;
+    public static final String DEFAULT_SWITCH_RIGHT = "canvas/default_switch_right.png";
+    public static final String LED_MIDDLE_WHITE = "canvas/LED_middle_white.png";
+    public static final String LED_MIDDLE_YELLOW = "canvas/LED_middle_yellow.png";
+    public static final String LED_DOWN_WHITE = "canvas/LED_down_white.png";
+    public static final String LED_DOWN_YELLOW = "canvas/LED_down_yellow.png";
+    public static final String DOUBLE_CROSS_SWITCH = "canvas/double_cross_switch.png";
+    public static final String LED_UP_YELLOW = "canvas/LED_up_yellow.png";
+    public static final String LED_UP_WHITE = "canvas/LED_up_white.png";
+    public static final String THREE_WAY_SWITCH = "canvas/three_way_switch.png";
+    public static final String DEFAULT_SWITCH_LEFT_PNG = "canvas/default_switch_left.png";
+
+    private Turnout turnout;
+    private TurnoutState turnoutState = TurnoutState.UNDEF;
 
     public TurnoutCanvas(final Turnout turnout) {
         this.turnout = turnout;
@@ -56,7 +63,7 @@ public class TurnoutCanvas extends JPanel {
         }
     }
 
-    protected void rotate(final Graphics g, final BufferedImage img) {
+    private void rotate(final Graphics g, final BufferedImage img) {
         final Graphics2D g2 = (Graphics2D) g;
         AffineTransform at = null;
         switch (turnout.getOrientation()) {
@@ -87,33 +94,33 @@ public class TurnoutCanvas extends JPanel {
         final BufferedImage img = new BufferedImage(56, 35,
                 BufferedImage.TYPE_4BYTE_ABGR);
         final Graphics2D g3 = img.createGraphics();
-        g3.drawImage(createImageIconFromCustom("canvas/default_switch_left.png")
+        g3.drawImage(createImageIconFromCustom(DEFAULT_SWITCH_LEFT_PNG)
                 .getImage(), 0, 0, this);
         switch (turnoutState) {
             case STRAIGHT:
                 g3.drawImage(
-                        createImageIconFromCustom("canvas/LED_middle_yellow.png")
+                        createImageIconFromCustom(LED_MIDDLE_YELLOW)
                                 .getImage(), 28, 0, this);
-                g3.drawImage(createImageIconFromCustom("canvas/LED_up_white.png")
+                g3.drawImage(createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 28, 0, this);
                 break;
             case LEFT:
             case RIGHT:
-                g3.drawImage(createImageIconFromCustom("canvas/LED_up_yellow.png")
+                g3.drawImage(createImageIconFromCustom(LED_UP_YELLOW)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
-                        createImageIconFromCustom("canvas/LED_middle_white.png")
+                        createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 28, 0, this);
                 break;
             case UNDEF:
-                g3.drawImage(createImageIconFromCustom("canvas/LED_up_white.png")
+                g3.drawImage(createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
-                        createImageIconFromCustom("canvas/LED_middle_white.png")
+                        createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 28, 0, this);
                 break;
         }
-        g3.drawImage(createImageIconFromCustom("canvas/LED_middle_white.png")
+        g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
                 .getImage(), 0, 0, this);
         rotate(g, img);
     }
@@ -123,33 +130,33 @@ public class TurnoutCanvas extends JPanel {
                 BufferedImage.TYPE_4BYTE_ABGR);
         final Graphics2D g3 = img.createGraphics();
         g3.drawImage(
-                createImageIconFromCustom("canvas/default_switch_right.png")
+                createImageIconFromCustom(DEFAULT_SWITCH_RIGHT)
                         .getImage(), 0, 0, this);
         switch (turnoutState) {
             case STRAIGHT:
                 g3.drawImage(
-                        createImageIconFromCustom("canvas/LED_middle_yellow.png")
+                        createImageIconFromCustom(LED_MIDDLE_YELLOW)
                                 .getImage(), 28, 0, this);
-                g3.drawImage(createImageIconFromCustom("canvas/LED_down_white.png")
+                g3.drawImage(createImageIconFromCustom(LED_DOWN_WHITE)
                         .getImage(), 28, 0, this);
                 break;
             case LEFT:
             case RIGHT:
                 g3.drawImage(
-                        createImageIconFromCustom("canvas/LED_middle_white.png")
+                        createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 28, 0, this);
-                g3.drawImage(createImageIconFromCustom("canvas/LED_down_yellow.png")
+                g3.drawImage(createImageIconFromCustom(LED_DOWN_YELLOW)
                         .getImage(), 28, 0, this);
                 break;
             case UNDEF:
-                g3.drawImage(createImageIconFromCustom("canvas/LED_down_white.png")
+                g3.drawImage(createImageIconFromCustom(LED_DOWN_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
-                        createImageIconFromCustom("canvas/LED_middle_white.png")
+                        createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 28, 0, this);
                 break;
         }
-        g3.drawImage(createImageIconFromCustom("canvas/LED_middle_white.png")
+        g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
                 .getImage(), 0, 0, this);
         rotate(g, img);
     }
@@ -170,56 +177,56 @@ public class TurnoutCanvas extends JPanel {
                 BufferedImage.TYPE_4BYTE_ABGR);
         final Graphics2D g3 = img.createGraphics();
         g3.drawImage(ImageTools
-                .createImageIconFromCustom("canvas/double_cross_switch.png")
+                .createImageIconFromCustom(DOUBLE_CROSS_SWITCH)
                 .getImage(), 0, 0, this);
         switch (turnoutState) {
             case STRAIGHT:
                 g3.drawImage(ImageTools
-                        .createImageIconFromCustom("canvas/LED_up_yellow.png")
+                        .createImageIconFromCustom(LED_UP_YELLOW)
                         .getImage(), 0, 17, this);
                 g3.drawImage(
                         ImageTools
-                                .createImageIconFromCustom("canvas/LED_middle_white.png")
+                                .createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 0, 0, this);
                 g3.drawImage(ImageTools
-                        .createImageIconFromCustom("canvas/LED_up_yellow.png")
+                        .createImageIconFromCustom(LED_UP_YELLOW)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools
-                                .createImageIconFromCustom("canvas/LED_middle_white.png")
+                                .createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 28, 0, this);
                 break;
             case RIGHT:
             case LEFT:
                 g3.drawImage(
                         ImageTools
-                                .createImageIconFromCustom("canvas/LED_middle_yellow.png")
+                                .createImageIconFromCustom(LED_MIDDLE_YELLOW)
                                 .getImage(), 0, 0, this);
                 g3.drawImage(ImageTools
-                        .createImageIconFromCustom("canvas/LED_up_white.png")
+                        .createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 0, 17, this);
                 g3.drawImage(ImageTools
-                        .createImageIconFromCustom("canvas/LED_up_yellow.png")
+                        .createImageIconFromCustom(LED_UP_YELLOW)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools
-                                .createImageIconFromCustom("canvas/LED_middle_white.png")
+                                .createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 28, 0, this);
                 break;
             case UNDEF:
                 g3.drawImage(ImageTools
-                        .createImageIconFromCustom("canvas/LED_up_white.png")
+                        .createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 0, 17, this);
                 g3.drawImage(
                         ImageTools
-                                .createImageIconFromCustom("canvas/LED_middle_white.png")
+                                .createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 0, 0, this);
                 g3.drawImage(ImageTools
-                        .createImageIconFromCustom("canvas/LED_up_white.png")
+                        .createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools
-                                .createImageIconFromCustom("canvas/LED_middle_white.png")
+                                .createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 28, 0, this);
                 break;
         }
@@ -230,55 +237,55 @@ public class TurnoutCanvas extends JPanel {
         final BufferedImage img = new BufferedImage(56, 35,
                 BufferedImage.TYPE_4BYTE_ABGR);
         final Graphics2D g3 = img.createGraphics();
-        g3.drawImage(ImageTools.createImageIconFromCustom("canvas/three_way_switch.png")
+        g3.drawImage(ImageTools.createImageIconFromCustom(THREE_WAY_SWITCH)
                 .getImage(), 0, 0, this);
         switch (turnoutState) {
             case LEFT:
-                g3.drawImage(ImageTools.createImageIconFromCustom("canvas/LED_up_yellow.png")
+                g3.drawImage(ImageTools.createImageIconFromCustom(LED_UP_YELLOW)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
-                        ImageTools.createImageIconFromCustom("canvas/LED_middle_white.png")
+                        ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 28, 0, this);
-                g3.drawImage(ImageTools.createImageIconFromCustom("canvas/LED_down_white.png")
+                g3.drawImage(ImageTools.createImageIconFromCustom(LED_DOWN_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
-                        ImageTools.createImageIconFromCustom("canvas/LED_middle_white.png")
+                        ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 0, 0, this);
                 break;
             case STRAIGHT:
-                g3.drawImage(ImageTools.createImageIconFromCustom("canvas/LED_up_white.png")
+                g3.drawImage(ImageTools.createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
-                        ImageTools.createImageIconFromCustom("canvas/LED_middle_yellow.png")
+                        ImageTools.createImageIconFromCustom(LED_MIDDLE_YELLOW)
                                 .getImage(), 28, 0, this);
-                g3.drawImage(ImageTools.createImageIconFromCustom("canvas/LED_down_white.png")
+                g3.drawImage(ImageTools.createImageIconFromCustom(LED_DOWN_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
-                        ImageTools.createImageIconFromCustom("canvas/LED_middle_white.png")
+                        ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 0, 0, this);
                 break;
             case RIGHT:
-                g3.drawImage(ImageTools.createImageIconFromCustom("canvas/LED_up_white.png")
+                g3.drawImage(ImageTools.createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
-                        ImageTools.createImageIconFromCustom("canvas/LED_middle_white.png")
+                        ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 28, 0, this);
-                g3.drawImage(ImageTools.createImageIconFromCustom("canvas/LED_down_yellow.png")
+                g3.drawImage(ImageTools.createImageIconFromCustom(LED_DOWN_YELLOW)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
-                        ImageTools.createImageIconFromCustom("canvas/LED_middle_white.png")
+                        ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 0, 0, this);
                 break;
             case UNDEF:
-                g3.drawImage(ImageTools.createImageIconFromCustom("canvas/LED_up_white.png")
+                g3.drawImage(ImageTools.createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
-                        ImageTools.createImageIconFromCustom("canvas/LED_middle_white.png")
+                        ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 28, 0, this);
-                g3.drawImage(ImageTools.createImageIconFromCustom("canvas/LED_down_white.png")
+                g3.drawImage(ImageTools.createImageIconFromCustom(LED_DOWN_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
-                        ImageTools.createImageIconFromCustom("canvas/LED_middle_white.png")
+                        ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
                                 .getImage(), 0, 0, this);
         }
         rotate(g, img);
