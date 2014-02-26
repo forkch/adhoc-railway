@@ -49,7 +49,7 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="47" />
+    <option name="x" value="49" />
     <option name="y" value="20" />
     <option name="width" value="1772" />
     <option name="height" value="1010" />
@@ -102,7 +102,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -123,17 +122,19 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="preferences.keymap" />
+    <property name="options.lastSelected" value="appearance" />
     <property name="recentsLimit" value="5" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/app.js" />
     <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="FullScreen" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -184,7 +185,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="47" y="20" width="1772" height="1010" extended-state="0" />
+    <frame x="49" y="20" width="1772" height="1010" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -199,11 +200,11 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297244" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297244" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -227,16 +228,12 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/routes/turnoutcontroller.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="5" selection-start="992" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5058">
-          <folding />
-        </state>
+        <state line="36" column="5" selection-start="992" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5058" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="6" selection-start="837" selection-end="837" vertical-scroll-proportion="0.0" vertical-offset="216" max-vertical-offset="594">
-          <folding />
-        </state>
+        <state line="12" column="6" selection-start="837" selection-end="837" vertical-scroll-proportion="0.0" vertical-offset="216" max-vertical-offset="594" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/lib/bootstrap/css/bootstrap.css">
@@ -306,16 +303,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/routes/turnoutcontroller.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="5" selection-start="992" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="648" max-vertical-offset="5058">
-          <folding />
-        </state>
+        <state line="36" column="5" selection-start="992" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="648" max-vertical-offset="5058" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="0" selection-start="2098" selection-end="2098" vertical-scroll-proportion="0.5448431" vertical-offset="0" max-vertical-offset="892">
-          <folding />
-        </state>
+        <state line="27" column="0" selection-start="2098" selection-end="2098" vertical-scroll-proportion="0.5448431" vertical-offset="0" max-vertical-offset="892" />
       </provider>
     </entry>
   </component>
