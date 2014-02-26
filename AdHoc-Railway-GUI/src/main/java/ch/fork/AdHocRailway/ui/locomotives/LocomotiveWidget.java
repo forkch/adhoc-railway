@@ -263,7 +263,9 @@ public class LocomotiveWidget extends JPanel implements
     private void processMouseMovement(MouseEvent e) {
         double i = (double)e.getY()/ speedBar.getHeight();
         int newSpeed = (int)((1-i)*myLocomotive.getType().getDrivingSteps());
+        if(newSpeed != myLocomotive.getCurrentSpeed()) {
         ctx.getLocomotiveControl().setSpeed(myLocomotive,newSpeed , myLocomotive.getCurrentFunctions());
+        }
     }
 
 	private JPanel initFunctionsControl() {
