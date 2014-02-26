@@ -82,8 +82,6 @@ public class LocomotiveWidget extends JPanel implements
 
     private final JFrame frame;
 
-    private final LocomotiveManager locomotiveManager;
-
     private final LocomotiveGroup allLocomotivesGroup;
 
     private JPanel functionsPanel;
@@ -104,7 +102,6 @@ public class LocomotiveWidget extends JPanel implements
         this.number = number;
         this.frame = frame;
 
-        locomotiveManager = ctx.getLocomotiveManager();
         ctx.getLocomotiveControl().addLocomotiveChangeListener(myLocomotive,
                 this);
 
@@ -113,7 +110,7 @@ public class LocomotiveWidget extends JPanel implements
         initKeyboardActions();
 
         allLocomotivesGroup = new LocomotiveGroup(Integer.MIN_VALUE, "All");
-        locomotiveManager.addLocomotiveManagerListener(this);
+        ctx.getLocomotiveManager().addLocomotiveManagerListener(this);
     }
 
     @Subscribe
@@ -476,7 +473,7 @@ public class LocomotiveWidget extends JPanel implements
         if (disableListener) {
             return;
         }
-        updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
+        updateLocomotiveGroups( ctx.getLocomotiveManager().getAllLocomotiveGroups());
 
     }
 
@@ -485,7 +482,7 @@ public class LocomotiveWidget extends JPanel implements
         if (disableListener) {
             return;
         }
-        updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
+        updateLocomotiveGroups( ctx.getLocomotiveManager().getAllLocomotiveGroups());
 
     }
 
@@ -494,17 +491,15 @@ public class LocomotiveWidget extends JPanel implements
         if (disableListener) {
             return;
         }
-        updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
+        updateLocomotiveGroups( ctx.getLocomotiveManager().getAllLocomotiveGroups());
 
     }
-
     @Override
     public void locomotiveRemoved(final Locomotive locomotive) {
         if (disableListener) {
             return;
         }
-        updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
-
+        updateLocomotiveGroups( ctx.getLocomotiveManager().getAllLocomotiveGroups());
     }
 
     @Override
@@ -512,7 +507,7 @@ public class LocomotiveWidget extends JPanel implements
         if (disableListener) {
             return;
         }
-        updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
+        updateLocomotiveGroups( ctx.getLocomotiveManager().getAllLocomotiveGroups());
 
     }
 
@@ -521,7 +516,7 @@ public class LocomotiveWidget extends JPanel implements
         if (disableListener) {
             return;
         }
-        updateLocomotiveGroups(locomotiveManager.getAllLocomotiveGroups());
+        updateLocomotiveGroups( ctx.getLocomotiveManager().getAllLocomotiveGroups());
 
     }
 
@@ -600,7 +595,7 @@ public class LocomotiveWidget extends JPanel implements
                     myLocomotive = (Locomotive) locomotiveComboBox
                             .getSelectedItem();
 
-                    locomotiveManager.setActiveLocomotive(number, myLocomotive);
+                    ctx.getLocomotiveManager().setActiveLocomotive(number, myLocomotive);
                     final LocomotiveController locomotiveControl = ctx
                             .getLocomotiveControl();
                     locomotiveControl.addLocomotiveChangeListener(myLocomotive,
@@ -630,10 +625,6 @@ public class LocomotiveWidget extends JPanel implements
 
     private abstract class LocomotiveControlAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 6793690334014866933L;
         private long time = 0;
 
         @Override
@@ -666,10 +657,6 @@ public class LocomotiveWidget extends JPanel implements
 
     private class LocomotiveFunctionAction extends LocomotiveControlAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -6134540146399675627L;
         private final int function;
 
         public LocomotiveFunctionAction(final int function) {
@@ -700,10 +687,6 @@ public class LocomotiveWidget extends JPanel implements
 
     private class LocomotiveAccelerateAction extends LocomotiveControlAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -4072984388290979483L;
 
         @Override
         protected void doPerformAction(
@@ -715,10 +698,6 @@ public class LocomotiveWidget extends JPanel implements
 
     private class LocomotiveDeccelerateAction extends LocomotiveControlAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 1895312396353656555L;
 
         @Override
         protected void doPerformAction(
@@ -730,11 +709,6 @@ public class LocomotiveWidget extends JPanel implements
 
     private class LocomotiveToggleDirectionAction extends
             LocomotiveControlAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 4415875142503406299L;
 
         @Override
         protected void doPerformAction(
@@ -752,11 +726,6 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private class StopAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 733623668790654995L;
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -777,11 +746,6 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private class ToggleDirectionAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 1343795996489453299L;
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -807,11 +771,6 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private class LockAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 3534595688958149586L;
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -842,7 +801,6 @@ public class LocomotiveWidget extends JPanel implements
             }
             updateWidget();
         }
-
     }
 
     private class MouseAction extends MouseAdapter {
@@ -862,7 +820,7 @@ public class LocomotiveWidget extends JPanel implements
 
                     locomotiveControl.removeLocomotiveChangeListener(
                             myLocomotive, LocomotiveWidget.this);
-                    new LocomotiveConfig(frame, locomotiveManager,
+                    new LocomotiveConfig(frame,  ctx.getLocomotiveManager(),
                             myLocomotive, myLocomotive.getGroup());
 
                     locomotiveControl.addLocomotiveChangeListener(myLocomotive,
