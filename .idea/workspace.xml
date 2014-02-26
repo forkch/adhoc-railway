@@ -2,133 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a3cea2ba-dbb1-4530-911c-3e44c32d3eb5" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/canvas/LED_down_white.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/canvas/LED_down_yellow.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/canvas/LED_middle_white.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/canvas/LED_middle_yellow.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/canvas/LED_up_white.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/canvas/LED_up_yellow.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/RailControl.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/back.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/button_cancel.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/button_ok.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/cutter.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/cutter_small.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/daemonconnect.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/daemondisconnect.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/daemoninfo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/daemonkill.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/daemonreset.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/default_curved.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/default_straight.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/canvas/default_switch.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/default_switch_curved.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/canvas/default_switch_left.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/default_switch_left_curved.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/default_switch_left_straight.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/canvas/default_switch_right.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/default_switch_right_curved.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/default_switch_right_straight.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/default_switch_small.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/default_switch_small_left.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/default_switch_small_right.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/default_switch_straight.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/canvas/double_cross_switch.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/double_cross_switch_curved.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/double_cross_switch_small.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/double_cross_switch_straight.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/editroute.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/forward.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/function_off.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/function_on.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/locked.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/locked_by_enemy.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/locked_by_me.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/locomotive.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/reload.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/route_edit.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/route_start.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/route_stop.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/splash.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/switch.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/switch_programmer.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/canvas/three_way_switch.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/three_way_switch_left.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/three_way_switch_right.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/three_way_switch_small.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/custom/three_way_switch_straight.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/unlocked.png" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/RailControl.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/daemonconnect.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/daemondisconnect.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/daemoninfo.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/daemonkill.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/daemonreset.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/editroute.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/locomotive.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/route_edit.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/splash.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/switch.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/crystal/switch_programmer.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/locomotives/back.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/locomotives/button_cancel.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/locomotives/button_ok.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/locomotives/forward.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/locomotives/function_off.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/locomotives/function_on.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/locomotives/locked.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/locomotives/locked_by_enemy.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/locomotives/locked_by_me.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/locomotives/reload.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/locomotives/unlocked.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/routes/route_start.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/routes/route_stop.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/canvas/LED_down_white.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/canvas/LED_down_yellow.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/canvas/LED_middle_white.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/canvas/LED_middle_yellow.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/canvas/LED_up_white.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/canvas/LED_up_yellow.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/canvas/default_switch.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/canvas/default_switch_left.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/canvas/default_switch_right.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/canvas/double_cross_switch.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/canvas/three_way_switch.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/cutter.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/cutter_small.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/default_curved.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/default_straight.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/default_switch_curved.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/default_switch_left_curved.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/default_switch_left_straight.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/default_switch_right_curved.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/default_switch_right_straight.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/default_switch_small.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/default_switch_small_left.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/default_switch_small_right.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/default_switch_straight.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/double_cross_switch_curved.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/double_cross_switch_small.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/double_cross_switch_straight.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/three_way_switch_left.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/three_way_switch_right.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/three_way_switch_small.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/resources/switches/three_way_switch_straight.png" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/AdHocRailway.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/tools/ImageTools.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/tools/ImageTools.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LockToggleButton.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LockToggleButton.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveWidget.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/locomotives/LocomotiveWidget.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteWidget.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/RouteWidget.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/configuration/RoutedTurnoutStateCellRenderer.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/routes/configuration/RoutedTurnoutStateCellRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutCanvas.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutCanvas.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/configuration/TurnoutDefaultStateCellRenderer.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/configuration/TurnoutDefaultStateCellRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/configuration/TurnoutDefaultStateComboBoxCellRenderer.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/configuration/TurnoutDefaultStateComboBoxCellRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/TurnoutGroupsPanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/configuration/TurnoutTypeCellRenderer.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/configuration/TurnoutTypeCellRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/configuration/TurnoutTypeComboBoxCellRenderer.java" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/src/main/java/ch/fork/AdHocRailway/ui/turnouts/configuration/TurnoutTypeComboBoxCellRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-Domain/build.gradle" afterPath="$PROJECT_DIR$/AdHoc-Railway-Domain/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AdHoc-Railway-GUI/build.gradle" afterPath="$PROJECT_DIR$/AdHoc-Railway-GUI/build.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="adhocrailway.iws" />
@@ -1602,7 +1475,11 @@
       <created>1393404445801</created>
       <updated>1393404445801</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="moved custom icons to separate folder">
+      <created>1393416595619</created>
+      <updated>1393416595619</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1650,7 +1527,8 @@
     </option>
     <MESSAGE value="improved exception handling (made most exceptions RunTimeExceptione)" />
     <MESSAGE value="removed socketio jar from  GUI project" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed socketio jar from  GUI project" />
+    <MESSAGE value="moved custom icons to separate folder" />
+    <option name="LAST_COMMIT_MESSAGE" value="moved custom icons to separate folder" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
