@@ -23,13 +23,7 @@ import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSe
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
@@ -240,15 +234,37 @@ public class LocomotiveWidget extends JPanel implements
 
 		speedBar = new JProgressBar(SwingConstants.VERTICAL);
 
+        speedBar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                processMouseMovement(e);
+            }
+        });
+
+        speedBar.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                super.mouseMoved(e);
+                processMouseMovement(e);
+            }
+        });
+
 		final JPanel functionsPanel = initFunctionsControl();
 		final JPanel speedControlPanel = initSpeedControl();
 
 		controlPanel.add(functionsPanel, "grow, west");
 		controlPanel.add(speedControlPanel, "grow");
-		controlPanel.add(speedBar, "east, width 30");
+		controlPanel.add(speedBar, "east, width 45");
 
 		return controlPanel;
 	}
+
+    private void processMouseMovement(MouseEvent e) {
+        double i = (double)e.getY()/ speedBar.getHeight();
+        int newSpeed = (int)((1-i)*myLocomotive.getType().getDrivingSteps());
+        ctx.getLocomotiveControl().setSpeed(myLocomotive,newSpeed , myLocomotive.getCurrentFunctions());
+    }
 
 	private JPanel initFunctionsControl() {
 		functionsPanel = new JPanel();
