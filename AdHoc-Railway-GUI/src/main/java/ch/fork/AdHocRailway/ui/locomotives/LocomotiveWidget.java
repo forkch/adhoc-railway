@@ -241,7 +241,7 @@ public class LocomotiveWidget extends JPanel implements
 
     private void processMouseMovement(MouseEvent e) {
         double i = (double) e.getY() / speedBar.getHeight();
-        int newSpeed = (int) ((1 - i) * myLocomotive.getType().getDrivingSteps());
+        int newSpeed = (int) ((1 - i) * (myLocomotive.getType().getDrivingSteps()+1));
         if (newSpeed != myLocomotive.getCurrentSpeed()) {
             ctx.getLocomotiveControl().setSpeed(myLocomotive, newSpeed, myLocomotive.getCurrentFunctions());
         }
@@ -633,7 +633,6 @@ public class LocomotiveWidget extends JPanel implements
             if (myLocomotive == null) {
                 return;
             }
-            try {
                 final LocomotiveController locomotiveControl = ctx
                         .getLocomotiveControl();
                 doPerformAction(locomotiveControl, myLocomotive);
@@ -642,12 +641,7 @@ public class LocomotiveWidget extends JPanel implements
                 } else {
                     time = 0;
                 }
-                // updateWidget();
                 speedBar.requestFocus();
-            } catch (final LocomotiveException e3) {
-                ctx.getMainApp().handleException(e3);
-            }
-
         }
 
         protected abstract void doPerformAction(
@@ -667,7 +661,6 @@ public class LocomotiveWidget extends JPanel implements
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) throws LocomotiveException {
-            try {
                 final boolean state = functionToggleButtons.get(function)
                         .isSelected();
 
@@ -678,9 +671,6 @@ public class LocomotiveWidget extends JPanel implements
                 locomotiveControl.setFunction(myLocomotive, function, state,
                         deactivationDelay);
 
-            } catch (final LocomotiveException e1) {
-                ctx.getMainApp().handleException(e1);
-            }
             speedBar.requestFocus();
         }
     }
@@ -732,16 +722,12 @@ public class LocomotiveWidget extends JPanel implements
             if (myLocomotive == null) {
                 return;
             }
-            try {
                 final LocomotiveController locomotiveControl = ctx
                         .getLocomotiveControl();
                 locomotiveControl.setSpeed(myLocomotive, 0,
                         myLocomotive.getCurrentFunctions());
                 updateWidget();
                 speedBar.requestFocus();
-            } catch (final LocomotiveException e3) {
-                ctx.getMainApp().handleException(e3);
-            }
         }
     }
 
@@ -752,7 +738,6 @@ public class LocomotiveWidget extends JPanel implements
             if (myLocomotive == null) {
                 return;
             }
-            try {
                 final LocomotiveController locomotiveControl = ctx
                         .getLocomotiveControl();
                 if (Preferences.getInstance().getBooleanValue(
@@ -764,9 +749,6 @@ public class LocomotiveWidget extends JPanel implements
                 directionToggeled = true;
                 locomotiveControl.toggleDirection(myLocomotive);
                 speedBar.requestFocus();
-            } catch (final LocomotiveException e1) {
-                ctx.getMainApp().handleException(e1);
-            }
         }
     }
 
