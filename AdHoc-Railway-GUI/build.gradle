@@ -6,7 +6,6 @@ mainClassName = "ch.fork.AdHocRailway.ui.AdHocRailway"
 
 
 dependencies {
-    testCompile 'junit:junit:4.+'
 	compile fileTree (dir: 'lib', includes: ['*.jar'])
     compile 'de.dermoba:jsrcpc:2.2.+'
     compile 'jgoodies:forms:1.0.5'

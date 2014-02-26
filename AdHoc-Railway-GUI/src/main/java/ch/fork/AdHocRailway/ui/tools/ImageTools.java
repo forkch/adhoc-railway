@@ -52,15 +52,12 @@ public class ImageTools {
 		return cache.get(icon);
 	}
 
+    public static ImageIcon createImageIconFromCustom(final String icon) {
+        return createImageIcon("custom/" + icon);
+    }
+
 	public static ImageIcon createImageIconFromIconSet(final String icon) {
-		if (!cache.containsKey(icon)) {
-			final ImageIcon imageIcon = new ImageIcon(
-					ClassLoader.getSystemResource("crystal/" + icon));
-			cache.put(icon, imageIcon);
-			LOGGER.info("cache-miss: put icon for " + icon + " in cache");
-			return imageIcon;
-		}
-		return cache.get(icon);
+        return createImageIcon("crystal/" + icon);
 	}
 
 	public static ImageIcon getLocomotiveIcon(final Locomotive locomotive) {

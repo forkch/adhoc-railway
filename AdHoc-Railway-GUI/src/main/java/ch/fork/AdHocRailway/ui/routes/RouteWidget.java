@@ -28,6 +28,7 @@ import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteHelper;
+import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 
@@ -73,10 +74,10 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 		setLayout(new MigLayout());
 		setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-		routeStopIcon = new ImageIcon(
-				ClassLoader.getSystemResource("routes/route_stop.png"));
-		routeStartIcon = new ImageIcon(
-				ClassLoader.getSystemResource("routes/route_start.png"));
+		routeStopIcon = ImageTools
+                .createImageIconFromCustom("route_stop.png");
+		routeStartIcon = ImageTools
+                .createImageIconFromCustom("route_start.png");
 
 		numberLabel = new JLabel();
 		orientationLabel = new JLabel();

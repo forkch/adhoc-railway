@@ -44,10 +44,10 @@ public class TurnoutDefaultStateComboBoxCellRenderer extends
 		iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		if (value.equals(TurnoutState.STRAIGHT)) {
 			iconLabel.setIcon(ImageTools
-					.createImageIcon("switches/default_straight.png"));
+					.createImageIconFromCustom("default_straight.png"));
 		} else {
 			iconLabel.setIcon(ImageTools
-					.createImageIcon("switches/default_curved.png"));
+					.createImageIconFromCustom("default_curved.png"));
 		}
 		return iconLabel;
 	}

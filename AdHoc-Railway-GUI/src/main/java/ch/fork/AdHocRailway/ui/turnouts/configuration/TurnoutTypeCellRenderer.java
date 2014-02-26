@@ -44,24 +44,24 @@ public class TurnoutTypeCellRenderer extends DefaultTableCellRenderer {
 		switch (type) {
 		case DEFAULT_LEFT:
 			iconLabel.setIcon(ImageTools
-					.createImageIcon("switches/default_switch_small_left.png"));
+					.createImageIconFromCustom("default_switch_small_left.png"));
 			break;
 		case DEFAULT_RIGHT:
 			iconLabel
 					.setIcon(ImageTools
-							.createImageIcon("switches/default_switch_small_right.png"));
+							.createImageIconFromCustom("default_switch_small_right.png"));
 			break;
 		case DOUBLECROSS:
 			iconLabel.setIcon(ImageTools
-					.createImageIcon("switches/double_cross_switch_small.png"));
+					.createImageIconFromCustom("double_cross_switch_small.png"));
 			break;
 		case THREEWAY:
 			iconLabel.setIcon(ImageTools
-					.createImageIcon("switches/three_way_switch_small.png"));
+					.createImageIconFromCustom("three_way_switch_small.png"));
 			break;
 		case CUTTER:
 			iconLabel.setIcon(ImageTools
-					.createImageIcon("switches/cutter_small.png"));
+					.createImageIconFromCustom("cutter_small.png"));
 			break;
 		default:
 			break;

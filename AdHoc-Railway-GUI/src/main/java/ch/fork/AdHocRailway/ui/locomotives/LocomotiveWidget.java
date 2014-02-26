@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.ui.locomotives;
 
 import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIcon;
+import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -264,7 +265,7 @@ public class LocomotiveWidget extends JPanel implements
 		decreaseSpeed = new JButton("-");
 		stopButton = new JButton("Stop");
 		directionButton = new JButton(
-				createImageIcon("locomotives/forward.png"));
+				createImageIcon("crystal/forward.png"));
 		lockButton = new LockToggleButton("");
 
 		increaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -367,11 +368,11 @@ public class LocomotiveWidget extends JPanel implements
 		if (locked) {
 			if (locomotiveControl.isLockedByMe(myLocomotive)) {
 				lockButton.setSelectedIcon(ImageTools
-						.createImageIcon("locomotives/locked_by_me.png"));
+						.createImageIconFromCustom("locked_by_me.png"));
 
 			} else {
 				lockButton.setSelectedIcon(ImageTools
-						.createImageIcon("locomotives/locked_by_enemy.png"));
+						.createImageIconFromCustom("locked_by_enemy.png"));
 			}
 		}
 	}
@@ -393,13 +394,13 @@ public class LocomotiveWidget extends JPanel implements
 	private void updateDirection() {
 		switch (myLocomotive.getCurrentDirection()) {
 		case FORWARD:
-			directionButton.setIcon(createImageIcon("locomotives/forward.png"));
+			directionButton.setIcon(createImageIconFromIconSet("forward.png"));
 			break;
 		case REVERSE:
-			directionButton.setIcon(createImageIcon("locomotives/back.png"));
+			directionButton.setIcon(createImageIconFromIconSet("back.png"));
 			break;
 		default:
-			directionButton.setIcon(createImageIcon("locomotives/forward.png"));
+			directionButton.setIcon(createImageIconFromIconSet("forward.png"));
 		}
 	}
 

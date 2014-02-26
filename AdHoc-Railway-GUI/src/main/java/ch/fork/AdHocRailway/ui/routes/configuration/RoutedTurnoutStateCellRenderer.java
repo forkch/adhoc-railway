@@ -71,31 +71,31 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
 		}
 		if (currentTurnout.isDefaultLeft()) {
 			iconLabel.setIcon(ImageTools
-					.createImageIcon("switches/default_switch_left_"
+					.createImageIconFromCustom("default_switch_left_"
 							+ stateString + ".png"));
 		} else if (currentTurnout.isDefaultRight()) {
 			iconLabel.setIcon(ImageTools
-					.createImageIcon("switches/default_switch_right_"
+					.createImageIconFromCustom("default_switch_right_"
 							+ stateString + ".png"));
 		} else if (currentTurnout.isDoubleCross()) {
 			iconLabel.setIcon(ImageTools
-					.createImageIcon("switches/double_cross_switch_"
+					.createImageIconFromCustom("double_cross_switch_"
 							+ stateString + ".png"));
 		} else if (currentTurnout.isThreeWay()) {
 			switch (routedState) {
 			case STRAIGHT:
 				iconLabel
 						.setIcon(ImageTools
-								.createImageIcon("switches/three_way_switch_straight.png"));
+								.createImageIconFromCustom("three_way_switch_straight.png"));
 				break;
 			case LEFT:
 				iconLabel.setIcon(ImageTools
-						.createImageIcon("switches/three_way_switch_left.png"));
+                        .createImageIconFromCustom("three_way_switch_left.png"));
 				break;
 			case RIGHT:
 				iconLabel
 						.setIcon(ImageTools
-								.createImageIcon("switches/three_way_switch_right.png"));
+                                .createImageIconFromCustom("three_way_switch_right.png"));
 				break;
 			default:
 				break;

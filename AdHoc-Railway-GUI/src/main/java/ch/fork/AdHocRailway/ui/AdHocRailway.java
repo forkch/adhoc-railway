@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.ui;
 
+import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromCustom;
 import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
 
 import java.awt.BorderLayout;
@@ -196,9 +197,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 			UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
 
-			splash = new SplashWindow(createImageIconFromIconSet("splash.png"),
+			splash = new SplashWindow(createImageIconFromCustom("splash.png"),
 					this, 500, 12);
-			setIconImage(createImageIconFromIconSet("RailControl.png")
+			setIconImage(createImageIconFromCustom("RailControl.png")
 					.getImage());
 
 			initProceeded("Loading Persistence Layer (Preferences)");
@@ -242,7 +243,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		}
 	}
 
-	@Override
+
+
+    @Override
 	public void addMenu(final JMenu menu) {
 		menuBar.add(menu);
 	}
@@ -1067,7 +1070,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		private static final long serialVersionUID = -6752957708659838960L;
 
 		public TurnoutAction() {
-			super("Turnouts\u2026", createImageIconFromIconSet("switch.png"));
+			super("Turnouts\u2026", createImageIconFromCustom("switch.png"));
 		}
 
 		@Override
@@ -1088,7 +1091,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		private static final long serialVersionUID = 376791842370116533L;
 
 		public RoutesAction() {
-			super("Routes\u2026", createImageIconFromIconSet("route_edit.png"));
+			super("Routes\u2026", createImageIconFromCustom("route_edit.png"));
 		}
 
 		@Override
@@ -1106,7 +1109,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		public LocomotivesAction() {
 			super("Locomotives\u2026",
-					createImageIconFromIconSet("locomotive.png"));
+                    createImageIconFromCustom("locomotive.png"));
 		}
 
 		@Override
@@ -1159,7 +1162,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 		private static final long serialVersionUID = 2924306088384462135L;
 
 		public ConnectAction() {
-			super("Connect", createImageIconFromIconSet("daemonconnect.png"));
+			super("Connect", createImageIconFromCustom("daemonconnect.png"));
 		}
 
 		@Override
@@ -1177,7 +1180,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		public DisconnectAction() {
 			super("Disconnect",
-					createImageIconFromIconSet("daemondisconnect.png"));
+                    createImageIconFromCustom("daemondisconnect.png"));
 		}
 
 		@Override

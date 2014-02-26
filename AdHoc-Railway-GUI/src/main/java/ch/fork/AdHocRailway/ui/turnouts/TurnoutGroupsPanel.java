@@ -12,6 +12,7 @@ import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.EditingModeEvent;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
+import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 
+import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromCustom;
 import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
 
 public class TurnoutGroupsPanel extends JTabbedPane implements
@@ -105,7 +107,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 		public TurnoutsStraightAction() {
 			super("Set all turnouts straight\u2026",
-					createImageIconFromIconSet("switch.png"));
+					createImageIconFromCustom("switch.png"));
 		}
 
 		@Override
@@ -172,8 +174,9 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
 		public TurnoutProgrammerAction() {
 			super("Turnout Decoder Programmer\u2026",
-					createImageIconFromIconSet("switch_programmer.png"));
-		}
+                    ImageTools
+                            .createImageIconFromCustom("switch_programmer.png"));
+        }
 
 		@Override
 		public void actionPerformed(final ActionEvent e) {
