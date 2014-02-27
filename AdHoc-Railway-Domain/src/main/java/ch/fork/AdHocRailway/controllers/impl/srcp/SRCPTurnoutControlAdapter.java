@@ -114,7 +114,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
         try {
             turnoutControl.toggle(sTurnoutTemp);
         } catch (final SRCPModelException e) {
-            throw new TurnoutException("could not toogle turnout", e);
+            throw new TurnoutException("could not toggle turnout", e);
         }
     }
 
@@ -125,7 +125,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
         try {
             turnoutControl.toggle(sTurnout);
         } catch (final SRCPModelException e) {
-            throw new TurnoutException("could not toogle turnout", e);
+            throw new TurnoutException("could not toggle turnout", e);
         }
 
     }

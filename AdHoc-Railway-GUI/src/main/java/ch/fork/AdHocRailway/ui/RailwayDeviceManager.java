@@ -268,6 +268,7 @@ public class RailwayDeviceManager implements CommandDataListener,
         } catch (final SRCPException e) {
             throw new AdHocRailwayException(
                     "failed to disconnect from SRCP server", e);
+
         }
     }
 

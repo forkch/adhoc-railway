@@ -241,7 +241,8 @@ public class LocomotiveWidget extends JPanel implements
 
     private void processMouseMovement(MouseEvent e) {
         double i = (double) e.getY() / speedBar.getHeight();
-        int newSpeed = (int) ((1 - i) * (myLocomotive.getType().getDrivingSteps()+1));
+        int drivingSteps = myLocomotive.getType().getDrivingSteps();
+        int newSpeed = Math.min(drivingSteps, (int) ((1 - i) * (drivingSteps + 1)));
         if (newSpeed != myLocomotive.getCurrentSpeed()) {
             ctx.getLocomotiveControl().setSpeed(myLocomotive, newSpeed, myLocomotive.getCurrentFunctions());
         }
@@ -378,6 +379,8 @@ public class LocomotiveWidget extends JPanel implements
         final int currentSpeed = myLocomotive.getCurrentSpeed();
         final float speedInPercent = ((float) currentSpeed)
                 / ((float) myLocomotive.getType().getDrivingSteps());
+        System.out.println(currentSpeed);
+        System.out.println(speedInPercent);
 
         final float hue = (1.0f - speedInPercent) * 0.3f;
         final Color speedColor = Color.getHSBColor(hue, 1.0f, 1.0f);
