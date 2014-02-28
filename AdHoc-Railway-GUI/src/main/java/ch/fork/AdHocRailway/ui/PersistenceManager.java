@@ -155,7 +155,7 @@ public class PersistenceManager {
                                 + file + ")"));
     }
 
-    public void openDatabase() throws FileNotFoundException, IOException {
+    public void openDatabase() throws IOException {
 
         disconnectFromCurrentPersistence();
         switchToServerMode();

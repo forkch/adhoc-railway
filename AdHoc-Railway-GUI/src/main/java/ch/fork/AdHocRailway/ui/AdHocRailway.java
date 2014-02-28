@@ -536,7 +536,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     private void initToolbar() {
-		/* FILE */
+        /* FILE */
         final JToolBar fileToolBar = new JToolBar();
 
         final JButton newFileToolBarButton = new SmallToolbarButton(
@@ -664,11 +664,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private class NewFileAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 2206015736690123233L;
-
         public NewFileAction() {
             super("New\u2026", createImageIconFromIconSet("document-new.png"));
         }
@@ -706,10 +701,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private class OpenFileAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -3333376253277589231L;
 
         public OpenFileAction() {
             super("Open\u2026", createImageIconFromIconSet("document-open.png"));
@@ -966,11 +957,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private class ExitAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -1614667243269636455L;
-
         public ExitAction() {
             super("Exit", createImageIconFromIconSet("application-exit.png"));
         }
@@ -1021,11 +1007,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private class TurnoutAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -6752957708659838960L;
-
         public TurnoutAction() {
             super("Turnouts\u2026", createImageIconFromCustom("switch.png"));
         }
@@ -1042,11 +1023,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private class RoutesAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 376791842370116533L;
-
         public RoutesAction() {
             super("Routes\u2026", createImageIconFromCustom("route_edit.png"));
         }
@@ -1059,10 +1035,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private class LocomotivesAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 534491281012259216L;
 
         public LocomotivesAction() {
             super("Locomotives\u2026",
@@ -1080,11 +1052,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     private class PreferencesAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 820579148477344864L;
 
         public PreferencesAction() {
             super("Preferences\u2026",
@@ -1106,17 +1073,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         }
     }
 
-    /**
-     * Handels the start of a connection with the srcpd-server.
-     *
-     * @author fork
-     */
     private class ConnectAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 2924306088384462135L;
 
         public ConnectAction() {
             super("Connect", createImageIconFromCustom("daemonconnect.png"));
@@ -1129,11 +1086,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     private class DisconnectAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 947951249636462131L;
 
         public DisconnectAction() {
             super("Disconnect",
@@ -1148,18 +1100,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     private class PowerOnAction extends AbstractAction {
-        private static final long serialVersionUID = -4908838367753105920L;
 
         public PowerOnAction() {
             super("Power On");
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.awt.event.ActionListener
-         * #actionPerformed(java.awt.event.ActionEvent)
-         */
         @Override
         public void actionPerformed(final ActionEvent arg0) {
             final PowerController powerControl = appContext.getPowerControl();
@@ -1168,18 +1113,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     private class PowerOffAction extends AbstractAction {
-        private static final long serialVersionUID = 834003379948714322L;
 
         public PowerOffAction() {
             super("Power Off");
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.awt.event.ActionListener
-         * #actionPerformed(java.awt.event.ActionEvent)
-         */
         @Override
         public void actionPerformed(final ActionEvent arg0) {
             final PowerController powerControl = appContext.getPowerControl();
@@ -1188,11 +1126,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     private class RefreshAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 6402433986415682675L;
 
         public RefreshAction() {
             super("Refresh", createImageIconFromIconSet("view-refresh.png"));
@@ -1206,8 +1139,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     private class ToggleFullscreenAction extends AbstractAction {
-
-        private static final long serialVersionUID = -1610381669528977741L;
 
         public ToggleFullscreenAction() {
             super("ToggleFullscreen",
