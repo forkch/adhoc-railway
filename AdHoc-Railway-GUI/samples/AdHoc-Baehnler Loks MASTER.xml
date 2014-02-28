@@ -910,7 +910,7 @@
         </locomotiveGroup>
         <locomotiveGroup id="1216529195" name="Re 4xx">
             <locomotive id="-998977699" name="Re 460 Ascom" desc="RE460 Ascom" image="34617.bmp" type="digital"
-                        address1="1" address2="0" bus="1">
+                        address1="24" address2="0" bus="1">
                 <functions>
                     <ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction>
                         <number>0</number>
