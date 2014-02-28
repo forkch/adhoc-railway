@@ -68,7 +68,12 @@ public abstract class LocomotiveController implements
 
     public void emergencyStopActiveLocos() throws LocomotiveException {
         for (final Locomotive locomotive : activeLocomotives) {
+            try {
             emergencyStop(locomotive);
+            }catch(Exception e) {
+                // moving on
+                LOGGER.warn("could not stop loco " + locomotive);
+            }
         }
     }
 
