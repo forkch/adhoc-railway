@@ -15,6 +15,7 @@ import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 import javax.swing.*;
+import java.io.File;
 
 public class ApplicationContext implements TurnoutContext, RouteContext,
         LocomotiveContext, TrackContext, PowerContext,
@@ -45,6 +46,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
 
     private boolean isEditingMode;
     private RailwayDeviceManager railwayDeviceManager;
+    private File actualFile;
 
     @Override
     public Preferences getPreferences() {
@@ -93,6 +95,15 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
     @Override
     public void setRouteManager(final RouteManager routePersistence) {
         this.routeManager = routePersistence;
+    }
+
+    @Override
+    public void setActualFile(File file) {
+        this.actualFile = file;
+    }
+
+    public File getActualFile() {
+        return actualFile;
     }
 
     @Override

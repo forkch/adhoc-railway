@@ -6,6 +6,8 @@ import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import com.google.common.eventbus.EventBus;
 
+import java.io.File;
+
 public interface PersistenceManagerContext {
 
     Preferences getPreferences();
@@ -24,4 +26,5 @@ public interface PersistenceManagerContext {
 
     void setRouteManager(final RouteManager routeManager);
 
+    void setActualFile(File file);
 }

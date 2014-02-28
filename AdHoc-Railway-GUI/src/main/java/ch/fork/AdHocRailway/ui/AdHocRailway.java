@@ -102,7 +102,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private JPanel mainPanel;
     private JPanel toolbarPanel;
-    private File actualFile;
     private JProgressBar progressBar;
     private PowerControlPanel powerControlPanel;
 
@@ -275,7 +274,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     public void saveActualFile() {
         if (isFileMode()) {
-            saveFile(AdHocRailway.this.actualFile);
+            saveFile(appContext.getActualFile());
         }
     }
 
@@ -696,7 +695,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                 setRailwayDeviceLabelText();
 
                 setTitle(AdHocRailway.TITLE + " []");
-                actualFile = null;
+                appContext.setActualFile(null);
                 updateGUI();
                 updateCommandHistory("Empty AdHoc-Railway Configuration created");
             } catch (final IOException e) {
@@ -722,7 +721,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             final int returnVal = fileChooser.showOpenDialog(AdHocRailway.this);
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                actualFile = fileChooser.getSelectedFile();
+                File actualFile = fileChooser.getSelectedFile();
                 openFile(actualFile);
             } else {
                 updateCommandHistory("Open command cancelled by user");
@@ -741,12 +740,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
                         persistenceManager.openFile(file);
 
-                        setTitle(AdHocRailway.TITLE + " ["
-                                + file.getAbsolutePath() + "]");
-                        AdHocRailway.this.actualFile = file;
-                        updateGUI();
-                        updateCommandHistory("AdHoc-Railway Configuration loaded ("
-                                + file + ")");
                         progressBar.setIndeterminate(false);
                     } catch (final IOException e) {
                         handleException(e);
@@ -847,7 +840,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            if (actualFile == null) {
+            if (appContext.getActualFile() == null) {
                 new SaveAsAction().actionPerformed(null);
             }
             saveActualFile();
@@ -1010,9 +1003,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                 handleException(e1);
             }
 
-            if (actualFile != null) {
+            if (appContext.getActualFile() != null) {
                 preferences.setStringValue(PreferencesKeys.LAST_OPENED_FILE,
-                        actualFile.getAbsolutePath());
+                        appContext.getActualFile().getAbsolutePath());
                 try {
                     preferences.save();
                 } catch (final IOException e1) {

@@ -142,6 +142,17 @@ public class PersistenceManager {
                         (XMLTurnoutService) appContext.getTurnoutManager()
                                 .getService(), (XMLRouteService) appContext
                         .getRouteManager().getService(), file);
+
+
+        appContext.setActualFile(file);
+        appContext.getMainBus().post(
+                new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
+                        + file.getAbsolutePath() + "]"));
+
+        appContext.getMainBus().post(
+                new CommandLogEvent(
+                        "AdHoc-Railway Configuration loaded ("
+                                + file + ")"));
     }
 
     public void openDatabase() throws FileNotFoundException, IOException {
