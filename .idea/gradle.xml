@@ -13,6 +13,15 @@
           </set>
         </option>
       </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/../javafx" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/../javafx" />
+          </set>
+        </option>
+      </GradleProjectSettings>
     </option>
   </component>
 </project>
