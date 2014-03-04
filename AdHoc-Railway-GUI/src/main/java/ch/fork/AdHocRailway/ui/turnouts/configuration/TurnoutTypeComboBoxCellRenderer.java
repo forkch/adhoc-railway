@@ -25,10 +25,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TurnoutTypeComboBoxCellRenderer extends DefaultListCellRenderer {
-    /**
-     *
-     */
-    private static final long serialVersionUID = -8179478248689107235L;
 
     @Override
     public Component getListCellRendererComponent(final JList<?> list,

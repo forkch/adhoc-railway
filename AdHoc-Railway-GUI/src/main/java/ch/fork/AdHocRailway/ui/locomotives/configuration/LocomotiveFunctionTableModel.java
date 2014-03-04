@@ -7,10 +7,6 @@ import javax.swing.*;
 
 public class LocomotiveFunctionTableModel extends
         AbstractTableAdapter<LocomotiveFunction> {
-    /**
-     *
-     */
-    private static final long serialVersionUID = -3279273929330645457L;
     private static final String[] COLUMNS = {"Function", "Description",
             "E. Stop", "Deactivation Delay"};
 

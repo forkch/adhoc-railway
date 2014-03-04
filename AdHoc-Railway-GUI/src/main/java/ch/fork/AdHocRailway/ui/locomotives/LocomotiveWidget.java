@@ -52,7 +52,6 @@ import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSe
 public class LocomotiveWidget extends JPanel implements
         LocomotiveChangeListener, LocomotiveManagerListener {
 
-    private static final long serialVersionUID = -9150574905752177937L;
 
     private JComboBox<Locomotive> locomotiveComboBox;
 

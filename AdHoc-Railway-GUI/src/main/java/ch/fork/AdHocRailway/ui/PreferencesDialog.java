@@ -39,7 +39,6 @@ import java.util.TreeSet;
 
 public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
-    private static final long serialVersionUID = 6559383494970215298L;
     private JSpinner defaultRoutingDelay;
     private SpinnerNumberModel defaultActivationTimeModel;
     private SpinnerNumberModel defaultRoutingDelayModel;

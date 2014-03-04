@@ -14,10 +14,6 @@ import java.util.Map;
 
 public class RouteGroupTab extends WidgetTab {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1559441698783240568L;
     private final RouteGroup routeGroup;
     private final Map<Route, RouteWidget> routeToRouteWidget = new HashMap<Route, RouteWidget>();
     private final RouteContext ctx;

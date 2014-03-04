@@ -43,10 +43,6 @@ import java.util.SortedSet;
 public class LocomotiveControlPanel extends JPanel implements
         LocomotiveManagerListener {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -149795300932888094L;
     private final List<LocomotiveWidget> locomotiveWidgets;
     private JPanel controlPanel;
     private final LocomotiveContext ctx;
@@ -112,11 +108,6 @@ public class LocomotiveControlPanel extends JPanel implements
 
     private class LocomotiveStopAction extends AbstractAction implements
             Runnable {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = -5935980511796588692L;
 
         @Override
         public void actionPerformed(final ActionEvent e) {

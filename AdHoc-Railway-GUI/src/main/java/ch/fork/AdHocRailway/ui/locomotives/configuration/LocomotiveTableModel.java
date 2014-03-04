@@ -10,10 +10,6 @@ import javax.swing.*;
  */
 public class LocomotiveTableModel extends AbstractTableAdapter<Locomotive> {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -3279273929330645457L;
     private static final String[] COLUMNS = {"Name", "Image", "Type",
             "Address", "Desc"};
 

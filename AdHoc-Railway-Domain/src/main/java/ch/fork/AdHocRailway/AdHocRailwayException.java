@@ -2,8 +2,6 @@ package ch.fork.AdHocRailway;
 
 public class AdHocRailwayException extends RuntimeException {
 
-    private static final long serialVersionUID = -4952163296797146540L;
-
     public AdHocRailwayException() {
         super();
     }

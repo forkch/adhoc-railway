@@ -25,8 +25,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class RouteItem extends AbstractItem implements java.io.Serializable,
         Comparable<RouteItem> {
 
-    private static final long serialVersionUID = 7776737980695074105L;
-
     private int id;
 
     private Turnout turnout;

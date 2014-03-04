@@ -25,10 +25,6 @@ import java.awt.event.MouseEvent;
 
 public class SplashWindow extends JWindow {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 2661517931084551019L;
     private final int steps;
     private final int waitTime;
     private final Icon icon;

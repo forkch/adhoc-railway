@@ -10,10 +10,6 @@ import java.awt.*;
 public class LocomotiveComboBoxRenderer extends JPanel implements
         ListCellRenderer<Locomotive> {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 4561005713259042914L;
     private final JLabel textLabel;
     private final JLabel iconLabel;
 

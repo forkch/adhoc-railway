@@ -51,7 +51,6 @@ import java.util.*;
 import java.util.List;
 
 public class RouteConfig extends JDialog {
-    private static final long serialVersionUID = -6408833917980514400L;
     private boolean okPressed;
     private boolean cancelPressed;
 
@@ -271,10 +270,6 @@ public class RouteConfig extends JDialog {
 
     private class RecordRouteAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 1287566434458519970L;
         private boolean recording;
 
         public RecordRouteAction() {
@@ -352,10 +347,6 @@ public class RouteConfig extends JDialog {
     }
 
     private abstract class SwitchingAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = -126103872681435146L;
         private final Route route;
 
         public SwitchingAction(final Route route) {
@@ -448,10 +439,6 @@ public class RouteConfig extends JDialog {
     }
 
     private class CurvedLeftAction extends SwitchingAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 2298539073910194594L;
 
         public CurvedLeftAction(final Route route) {
             super(route);
@@ -459,10 +446,6 @@ public class RouteConfig extends JDialog {
     }
 
     private class StraightAction extends SwitchingAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 2866441796856357663L;
 
         public StraightAction(final Route route) {
             super(route);
@@ -470,10 +453,6 @@ public class RouteConfig extends JDialog {
     }
 
     private class CurvedRightAction extends SwitchingAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = -6106999361346507826L;
 
         public CurvedRightAction(final Route route) {
             super(route);
@@ -481,10 +460,6 @@ public class RouteConfig extends JDialog {
     }
 
     private class EnableRouteAction extends SwitchingAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = -2554594488359463589L;
 
         public EnableRouteAction(final Route route) {
             super(route);
@@ -492,10 +467,6 @@ public class RouteConfig extends JDialog {
     }
 
     private class DisableRouteAction extends SwitchingAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = -150319621580243688L;
 
         public DisableRouteAction(final Route route) {
             super(route);
@@ -503,11 +474,6 @@ public class RouteConfig extends JDialog {
     }
 
     private class NumberEnteredAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = -4851780584974377445L;
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -527,10 +493,6 @@ public class RouteConfig extends JDialog {
 
     private class RemoveRouteItemAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 1122483690867740137L;
 
         public RemoveRouteItemAction() {
             super("Remove Turnout", ImageTools
@@ -556,11 +518,6 @@ public class RouteConfig extends JDialog {
     }
 
     class ApplyChangesAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = -7279880783090999221L;
 
         public ApplyChangesAction() {
             super("OK", ImageTools
@@ -613,11 +570,6 @@ public class RouteConfig extends JDialog {
     }
 
     class CancelAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = -8783083615316968787L;
 
         public CancelAction() {
             super("Cancel", ImageTools

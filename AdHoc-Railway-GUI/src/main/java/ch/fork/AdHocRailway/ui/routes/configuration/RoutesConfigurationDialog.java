@@ -255,11 +255,6 @@ public class RoutesConfigurationDialog extends JDialog implements
     private static final class RouteGroupListCellRenderer extends
             DefaultListCellRenderer {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 8334830106991840589L;
-
         @Override
         public Component getListCellRendererComponent(final JList<?> list,
                                                       final Object value, final int index, final boolean isSelected,
@@ -294,10 +289,6 @@ public class RoutesConfigurationDialog extends JDialog implements
     }
 
     private class EditRouteGroupAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 5693865195234842058L;
 
         public EditRouteGroupAction() {
             super("Edit Group", ImageTools
@@ -315,10 +306,6 @@ public class RoutesConfigurationDialog extends JDialog implements
 
     private class AddRouteGroupAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -3045858271545335261L;
 
         public AddRouteGroupAction() {
             super("Add Group", ImageTools
@@ -347,7 +334,6 @@ public class RoutesConfigurationDialog extends JDialog implements
 
     private class RemoveRouteGroupAction extends AbstractAction {
 
-        private static final long serialVersionUID = -2720292570898525106L;
 
         public RemoveRouteGroupAction() {
             super("Remove Group", ImageTools
@@ -383,7 +369,6 @@ public class RoutesConfigurationDialog extends JDialog implements
 
     private class AddRouteAction extends AbstractAction {
 
-        private static final long serialVersionUID = 712960776135284412L;
 
         public AddRouteAction() {
             super("Add", ImageTools.createImageIconFromIconSet("list-add.png"));
@@ -414,7 +399,6 @@ public class RoutesConfigurationDialog extends JDialog implements
 
     private class DuplicateRouteAction extends AbstractAction {
 
-        private static final long serialVersionUID = 712960776135284412L;
 
         public DuplicateRouteAction() {
             super("Duplicate", ImageTools
@@ -451,10 +435,6 @@ public class RoutesConfigurationDialog extends JDialog implements
     }
 
     private class EditRouteAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = -3140803329110781102L;
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -466,7 +446,6 @@ public class RoutesConfigurationDialog extends JDialog implements
     }
 
     private class RemoveRouteAction extends AbstractAction {
-        private static final long serialVersionUID = -1067155603250166588L;
 
         public RemoveRouteAction() {
             super("Remove", ImageTools

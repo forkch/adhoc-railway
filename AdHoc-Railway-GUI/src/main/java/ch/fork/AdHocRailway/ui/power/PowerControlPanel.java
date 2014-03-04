@@ -31,7 +31,6 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 
     private static final Logger LOGGER = Logger
             .getLogger(PowerControlPanel.class);
-    private static final long serialVersionUID = -4402814993315460803L;
     private int numberOfBoosters;
     private final ImageIcon stopIcon;
     private final ImageIcon goIcon;
@@ -197,10 +196,6 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
     }
 
     class AllBoostersOnAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = -8642776345384105494L;
 
         public AllBoostersOnAction() {
             super();
@@ -217,10 +212,6 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
     }
 
     class AllBoostersOffAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 5158494831586154924L;
 
         public AllBoostersOffAction() {
             super();
@@ -236,10 +227,6 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
     }
 
     class ToggleBoosterAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 1717254973356674480L;
 
         public ToggleBoosterAction() {
             super();
@@ -257,10 +244,6 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 
     class ToggleBoosterKeyAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -7583549489780694040L;
         private final int boosterNumber;
 
         public ToggleBoosterKeyAction(final int number) {

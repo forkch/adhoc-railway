@@ -98,10 +98,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
     private class TurnoutsStraightAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -7388480296763893134L;
 
         public TurnoutsStraightAction() {
             super("Set all turnouts straight\u2026",
@@ -135,10 +131,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
     }
 
     private class AddTurnoutsAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 8397984042487108076L;
 
         public AddTurnoutsAction() {
             super("Add Turnouts\u2026",
@@ -165,10 +157,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
     private class TurnoutProgrammerAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 4307628017748686166L;
 
         public TurnoutProgrammerAction() {
             super("Turnout Decoder Programmer\u2026",
@@ -184,10 +172,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
     private class TurnoutWarmerAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -4069163470504661773L;
 
         public TurnoutWarmerAction() {
             super("Turnout Warmer\u2026");

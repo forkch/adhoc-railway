@@ -10,10 +10,6 @@ import javax.swing.*;
 
 public class TurnoutTableModel extends AbstractTableAdapter<Turnout> {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -2394294609378556764L;
     private static final String[] COLUMNS = {"#", "Type", "Bus 1", "Addr. 1",
             "Addr. 1 inv.", "Bus 2", "Addr. 2", "Addr. 2 inv.",
             "Default State", "Orientation", "Desc"};

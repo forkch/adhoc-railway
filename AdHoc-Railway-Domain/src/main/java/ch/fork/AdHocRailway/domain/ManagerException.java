@@ -2,8 +2,6 @@ package ch.fork.AdHocRailway.domain;
 
 public class ManagerException extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
-
     public ManagerException() {
         super();
     }

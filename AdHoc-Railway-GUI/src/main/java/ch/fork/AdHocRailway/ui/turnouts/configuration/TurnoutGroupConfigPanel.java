@@ -42,10 +42,6 @@ import javax.swing.*;
  */
 public class TurnoutGroupConfigPanel extends JPanel {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -1287114708577602193L;
     private final PresentationModel<TurnoutGroup> presentationModel;
     private JTextField turnoutGroupName;
 

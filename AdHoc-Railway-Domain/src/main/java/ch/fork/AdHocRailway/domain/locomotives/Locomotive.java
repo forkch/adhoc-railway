@@ -37,11 +37,6 @@ import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.REVERS
 public class Locomotive extends AbstractItem implements Serializable,
         Comparable<Locomotive> {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 7581060269617994905L;
-
     @XStreamAsAttribute
     private int id = -1;
 

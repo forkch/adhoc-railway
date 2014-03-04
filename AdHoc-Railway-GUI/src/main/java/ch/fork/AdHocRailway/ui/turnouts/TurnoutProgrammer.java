@@ -30,10 +30,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TurnoutProgrammer extends ConfigurationDialog {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 5978084216666903357L;
     private final TurnoutContext ctx;
 
     public TurnoutProgrammer(final JFrame owner, final TurnoutContext ctx) {

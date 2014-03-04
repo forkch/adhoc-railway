@@ -23,7 +23,6 @@ import java.awt.*;
 import java.awt.event.MouseListener;
 
 public class WidgetTab extends JPanel {
-    private static final long serialVersionUID = -8940185953629421471L;
     private final JPanel widgets;
 
     public WidgetTab() {

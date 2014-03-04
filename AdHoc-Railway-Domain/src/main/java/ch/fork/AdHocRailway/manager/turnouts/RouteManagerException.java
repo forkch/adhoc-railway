@@ -22,11 +22,6 @@ import ch.fork.AdHocRailway.domain.ManagerException;
 
 public class RouteManagerException extends ManagerException {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 6775132028782515680L;
-
     public RouteManagerException() {
     }
 

@@ -14,10 +14,6 @@ import java.util.Map;
 
 public class TurnoutGroupTab extends WidgetTab {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1877319981355821341L;
     private final TurnoutGroup turnoutGroup;
     private final Map<Turnout, TurnoutWidget> turnoutToTurnoutWidget = new HashMap<Turnout, TurnoutWidget>();
     private final TurnoutContext ctx;

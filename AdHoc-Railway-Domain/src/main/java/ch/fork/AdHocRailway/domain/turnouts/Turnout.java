@@ -30,8 +30,6 @@ import java.util.Set;
 public class Turnout extends AbstractItem implements java.io.Serializable,
         Comparable<Turnout> {
 
-    private static final long serialVersionUID = 8221315886983696988L;
-
     private int id = -1;
 
     private int number;

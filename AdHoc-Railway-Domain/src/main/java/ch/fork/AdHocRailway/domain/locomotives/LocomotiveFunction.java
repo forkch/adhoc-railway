@@ -11,7 +11,6 @@ import java.util.TreeSet;
 public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
         Serializable {
 
-    private static final long serialVersionUID = -8726590478869980809L;
 
     private final int number;
 

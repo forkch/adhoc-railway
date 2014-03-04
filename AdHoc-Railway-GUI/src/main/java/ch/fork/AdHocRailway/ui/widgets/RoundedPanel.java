@@ -6,10 +6,6 @@ import java.awt.*;
 public class RoundedPanel extends JPanel {
 
     /**
-     *
-     */
-    private static final long serialVersionUID = -3537299027406652783L;
-    /**
      * Stroke size. it is recommended to set it to 1 for better view
      */
     protected int strokeSize = 1;

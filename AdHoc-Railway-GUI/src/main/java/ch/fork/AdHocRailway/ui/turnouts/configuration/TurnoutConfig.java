@@ -49,7 +49,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TurnoutConfig extends JDialog {
-    private static final long serialVersionUID = -2417439618995313840L;
     private JSpinner numberTextField;
     private JTextField descTextField;
     private JSpinner bus1TextField;
@@ -461,7 +460,6 @@ public class TurnoutConfig extends JDialog {
 
     class ApplyChangesAction extends AbstractAction {
 
-        private static final long serialVersionUID = 151119861825112011L;
 
         public ApplyChangesAction() {
             super("OK", ImageTools
@@ -512,10 +510,6 @@ public class TurnoutConfig extends JDialog {
 
     class CancelAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -6811328483735688237L;
 
         public CancelAction() {
             super("Cancel", ImageTools

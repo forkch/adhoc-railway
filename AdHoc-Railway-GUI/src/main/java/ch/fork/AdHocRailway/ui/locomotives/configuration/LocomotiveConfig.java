@@ -58,7 +58,6 @@ import java.util.List;
 
 public class LocomotiveConfig extends JDialog implements PropertyChangeListener {
 
-    private static final long serialVersionUID = 4760042063985342866L;
 
     private JTextField nameTextField;
 
@@ -224,10 +223,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
     }
 
     class CenterRenderer extends DefaultTableCellRenderer {
-        /**
-         *
-         */
-        private static final long serialVersionUID = -5492683325296918902L;
 
         protected CenterRenderer() {
             setHorizontalAlignment(JLabel.CENTER);
@@ -320,10 +315,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
     class ApplyChangesAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 5576417531414940756L;
         private final boolean createNextTurnout;
 
         public ApplyChangesAction(final boolean createNextTurnout) {
@@ -381,11 +372,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
     }
 
     class CancelAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 4584003062339520111L;
 
         public CancelAction() {
             super("Cancel", ImageTools

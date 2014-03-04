@@ -11,11 +11,6 @@ import java.awt.*;
  */
 public class LocomotiveGroupListCellRenderer extends DefaultListCellRenderer {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 8121914367054500476L;
-
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value,
                                                   int index, boolean isSelected, boolean cellHasFocus) {

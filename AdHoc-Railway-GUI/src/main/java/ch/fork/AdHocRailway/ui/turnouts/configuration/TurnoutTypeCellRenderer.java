@@ -27,10 +27,6 @@ import java.awt.*;
 
 public class TurnoutTypeCellRenderer extends DefaultTableCellRenderer {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 765440307759405716L;
 
     @Override
     public Component getTableCellRendererComponent(final JTable table,

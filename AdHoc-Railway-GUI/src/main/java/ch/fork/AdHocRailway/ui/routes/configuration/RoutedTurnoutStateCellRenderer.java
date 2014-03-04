@@ -35,10 +35,6 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
         this.turnoutManager = turnoutManager;
     }
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -8165753925040643894L;
 
     @Override
     public Component getTableCellRendererComponent(final JTable table,

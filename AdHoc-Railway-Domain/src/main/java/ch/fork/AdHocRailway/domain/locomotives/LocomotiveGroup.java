@@ -28,8 +28,6 @@ import java.util.SortedSet;
 public class LocomotiveGroup extends AbstractItem implements
         java.io.Serializable, Comparable<LocomotiveGroup> {
 
-    private static final long serialVersionUID = 7262606789136545713L;
-
     @XStreamAsAttribute
     private int id;
 

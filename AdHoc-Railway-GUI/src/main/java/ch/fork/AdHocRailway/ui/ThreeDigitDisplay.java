@@ -34,10 +34,6 @@ import java.awt.*;
  * @author Benjamin Mueller <benjamin.b.mueller@siemens.com>
  */
 public class ThreeDigitDisplay extends javax.swing.JPanel {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 7093577060926940704L;
 
     private Segment7 seg1;
 

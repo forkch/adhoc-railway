@@ -31,10 +31,6 @@ import java.awt.*;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -3165655530717661123L;
 
     private RouteGroupsPanel routeGroupsTabbedPane;
 

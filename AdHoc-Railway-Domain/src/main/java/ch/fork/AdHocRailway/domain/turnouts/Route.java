@@ -30,8 +30,6 @@ import java.util.TreeSet;
 public class Route extends AbstractItem implements java.io.Serializable,
         Comparable<Route> {
 
-    private static final long serialVersionUID = 2382655333966102806L;
-
     private int id = -1;
 
     @XStreamOmitField

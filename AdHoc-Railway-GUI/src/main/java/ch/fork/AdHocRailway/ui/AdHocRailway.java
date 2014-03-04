@@ -64,7 +64,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         PreferencesKeys {
 
     private static final Logger LOGGER = Logger.getLogger(AdHocRailway.class);
-    private static final long serialVersionUID = -6033036063027343513L;
 
     public static final String TITLE = "AdHoc-Railway";
 
@@ -745,7 +744,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private class OpenDatabaseAction extends AbstractAction {
 
-        private static final long serialVersionUID = -4287132162321389954L;
 
         public OpenDatabaseAction() {
             super("Open Database\u2026",
@@ -771,7 +769,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private class ClearLocomotivesAction extends AbstractAction {
 
-        private static final long serialVersionUID = -4287132162321389954L;
 
         public ClearLocomotivesAction() {
             super("Clear Locomotives\u2026",
@@ -798,7 +795,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private class ClearTurnoutsAndRoutesAction extends AbstractAction {
 
-        private static final long serialVersionUID = -4287132162321389954L;
 
         public ClearTurnoutsAndRoutesAction() {
             super("Clear Turnouts and Routes\u2026",
@@ -907,7 +903,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private class ExportLocomotivesAction extends AbstractAction {
 
-        private static final long serialVersionUID = -2387864940540796841L;
 
         public ExportLocomotivesAction() {
             super("Export Locomotives");
@@ -931,7 +926,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private class ExportAllAction extends AbstractAction {
 
-        private static final long serialVersionUID = -2387864940540796841L;
 
         public ExportAllAction() {
             super("Export Locomotives, Turnouts, Routes");
@@ -1173,7 +1167,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private class EnableEditingAction extends AbstractAction {
 
-        private static final long serialVersionUID = 2409376830847967919L;
 
         public EnableEditingAction() {
             super("Edit mode");

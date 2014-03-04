@@ -138,7 +138,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
                                                            int row, int column) {
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
                         row, column);
-                stableetBorder(padding);
+                setBorder(padding);
                 return this;
             }
 
@@ -288,10 +288,6 @@ public class LocomotiveConfigurationDialog extends JDialog implements
     }
 
     private class EditLocomotiveGroupAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 5332973509659278121L;
 
         public EditLocomotiveGroupAction() {
 
@@ -310,10 +306,6 @@ public class LocomotiveConfigurationDialog extends JDialog implements
     }
 
     private class RemoveLocomotiveGroupAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 6014881261911976113L;
 
         public RemoveLocomotiveGroupAction() {
             super("Remove", ImageTools
@@ -341,10 +333,6 @@ public class LocomotiveConfigurationDialog extends JDialog implements
     }
 
     private class AddLocomotiveAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 7522044592371429190L;
 
         public AddLocomotiveAction() {
             super("Add", ImageTools.createImageIconFromIconSet("list-add.png"));
@@ -379,10 +367,6 @@ public class LocomotiveConfigurationDialog extends JDialog implements
     }
 
     private class EditLocomotiveAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 7081224522762457353L;
 
         public EditLocomotiveAction() {
             super("Edit");
@@ -404,10 +388,6 @@ public class LocomotiveConfigurationDialog extends JDialog implements
     }
 
     private class RemoveLocomotiveAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 1606368554698945245L;
 
         public RemoveLocomotiveAction() {
             super("Remove", ImageTools

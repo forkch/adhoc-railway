@@ -22,11 +22,6 @@ import ch.fork.AdHocRailway.domain.ManagerException;
 
 public class LocomotiveManagerException extends ManagerException {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -6688667574674137647L;
-
     public LocomotiveManagerException() {
     }
 

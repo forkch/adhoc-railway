@@ -4,8 +4,6 @@ import ch.fork.AdHocRailway.AdHocRailwayException;
 
 public class BrainException extends AdHocRailwayException {
 
-    private static final long serialVersionUID = -7774330643904156967L;
-
     public BrainException() {
         super();
     }

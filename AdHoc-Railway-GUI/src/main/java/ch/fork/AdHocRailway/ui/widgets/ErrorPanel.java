@@ -25,7 +25,6 @@ import java.awt.event.MouseEvent;
 
 public class ErrorPanel extends JPanel {
 
-    private static final long serialVersionUID = 519354077339077675L;
     public static final Color COLOR = new Color(255, 186, 68);
     private JTextArea errorTextArea;
     private JLabel iconLabel;

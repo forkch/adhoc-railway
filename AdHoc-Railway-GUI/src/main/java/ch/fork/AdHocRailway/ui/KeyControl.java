@@ -40,7 +40,6 @@ import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 
 public class KeyControl extends SimpleInternalFrame {
-    private static final long serialVersionUID = -3052109699874529256L;
 
     private enum KeyControlMode {
         TURNOUT_MODE, ROUTE_MODE, LOCOMOTIVE_FUNCTION_MODE;
@@ -176,10 +175,6 @@ public class KeyControl extends SimpleInternalFrame {
 
     private class NumberEnteredAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -4818198896180938380L;
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -199,7 +194,6 @@ public class KeyControl extends SimpleInternalFrame {
 
     private class PeriodEnteredAction extends AbstractAction {
 
-        private static final long serialVersionUID = 6709249386564202875L;
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -223,10 +217,6 @@ public class KeyControl extends SimpleInternalFrame {
     }
 
     private abstract class SwitchingAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 8783785027663679688L;
 
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -353,42 +343,22 @@ public class KeyControl extends SimpleInternalFrame {
 
     private class CurvedLeftAction extends SwitchingAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 5676902063321467852L;
     }
 
     private class StraightAction extends SwitchingAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -2339006950893044415L;
     }
 
     private class CurvedRightAction extends SwitchingAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -7285117051054231241L;
     }
 
     private class EnableRouteAction extends SwitchingAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 5376121297997351343L;
     }
 
     private class DisableRouteAction extends SwitchingAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -4179628128437613997L;
     }
 
 }

@@ -34,10 +34,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class TurnoutWarmer extends ConfigurationDialog {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 5791582705451816603L;
     private JSpinner turnoutNumberField;
     private JToggleButton warmButton;
     private final TurnoutManager turnoutPersistence;
@@ -101,10 +97,6 @@ public class TurnoutWarmer extends ConfigurationDialog {
 
     class WarmupAction extends AbstractAction {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 4286408324389585654L;
 
         public WarmupAction() {
             super("Start");

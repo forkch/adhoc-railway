@@ -46,7 +46,6 @@ import java.util.SortedSet;
 public class TurnoutConfigurationDialog extends JDialog implements
         TurnoutManagerListener {
 
-    private static final long serialVersionUID = -8428097435012625412L;
 
     private boolean okPressed;
 
@@ -133,7 +132,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
         turnoutModel.setList(turnouts);
         turnoutsTable = new JTable() {
-            private static final long serialVersionUID = 1L;
 
             @Override
             public boolean getScrollableTracksViewportWidth() {
@@ -274,10 +272,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
     }
 
     private class EditTurnoutGroupAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 2098239263496275812L;
 
         public EditTurnoutGroupAction() {
             super("Edit Group", ImageTools
@@ -294,10 +288,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
     }
 
     private class AddTurnoutGroupAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 7442768865195498598L;
 
         public AddTurnoutGroupAction() {
             super("Add Group", ImageTools
@@ -323,10 +313,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
     }
 
     private class RemoveTurnoutGroupAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = -4438753209564805774L;
 
         public RemoveTurnoutGroupAction() {
             super("Remove Group", ImageTools
@@ -355,10 +341,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
     }
 
     private class AddTurnoutAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 2097710453761242564L;
 
         public AddTurnoutAction() {
             super("Add", ImageTools.createImageIconFromIconSet("list-add.png"));
@@ -387,11 +369,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
     }
 
     private class RemoveTurnoutAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 3406975342633828556L;
 
         public RemoveTurnoutAction() {
             super("Remove", ImageTools
@@ -429,10 +406,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
     }
 
     private class EditTurnoutAction extends AbstractAction {
-        /**
-         *
-         */
-        private static final long serialVersionUID = -4218588761631497486L;
 
         @Override
         public void actionPerformed(final ActionEvent e) {

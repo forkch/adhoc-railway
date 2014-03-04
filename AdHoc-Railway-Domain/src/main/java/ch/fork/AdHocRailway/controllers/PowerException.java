@@ -2,11 +2,6 @@ package ch.fork.AdHocRailway.controllers;
 
 public class PowerException extends RuntimeException {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -3071725012759374362L;
-
     public PowerException() {
         super();
     }

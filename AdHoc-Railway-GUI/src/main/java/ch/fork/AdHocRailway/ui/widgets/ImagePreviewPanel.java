@@ -10,10 +10,6 @@ import java.io.IOException;
 
 public class ImagePreviewPanel extends JPanel implements PropertyChangeListener {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -180369192790600148L;
     private int width, height;
     private ImageIcon icon;
     private Image image;

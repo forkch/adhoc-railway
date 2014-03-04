@@ -22,11 +22,6 @@ import ch.fork.AdHocRailway.domain.ManagerException;
 
 public class TurnoutManagerException extends ManagerException {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -1593444055818073341L;
-
     public TurnoutManagerException() {
     }
 

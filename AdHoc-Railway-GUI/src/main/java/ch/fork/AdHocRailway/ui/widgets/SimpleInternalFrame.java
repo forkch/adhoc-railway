@@ -80,10 +80,6 @@ import java.awt.*;
 
 public class SimpleInternalFrame extends JPanel {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 8550249513119559771L;
     private JLabel titleLabel;
     private GradientPanel gradientPanel;
     private JPanel headerPanel;
@@ -370,11 +366,6 @@ public class SimpleInternalFrame extends JPanel {
 
     // A custom border for the raised header pseudo 3D effect.
     private static class RaisedHeaderBorder extends AbstractBorder {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 1401544275182006743L;
         private static final Insets INSETS = new Insets(1, 1, 1, 0);
 
         @Override
@@ -399,10 +390,6 @@ public class SimpleInternalFrame extends JPanel {
     // A custom border that has a shadow on the right and lower sides.
     private static class ShadowBorder extends AbstractBorder {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = -2361536714019384073L;
         private static final Insets INSETS = new Insets(1, 1, 3, 3);
 
         @Override
@@ -451,10 +438,6 @@ public class SimpleInternalFrame extends JPanel {
      */
     private static final class GradientPanel extends JPanel {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 8712193061548128382L;
 
         private GradientPanel(LayoutManager lm, Color background) {
             super(lm);

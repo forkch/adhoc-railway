@@ -38,7 +38,6 @@ import java.awt.event.MouseEvent;
 
 public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
-    private static final long serialVersionUID = 6871966498091781447L;
 
     private Turnout turnout;
 

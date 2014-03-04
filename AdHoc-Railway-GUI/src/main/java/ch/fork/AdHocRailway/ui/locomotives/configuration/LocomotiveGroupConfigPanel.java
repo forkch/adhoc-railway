@@ -36,7 +36,6 @@ import javax.swing.*;
 
 public class LocomotiveGroupConfigPanel extends JPanel {
 
-    private static final long serialVersionUID = -1287114708577602193L;
     private final PresentationModel<LocomotiveGroup> presentationModel;
     private JTextField locomotiveGroupName;
 

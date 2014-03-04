@@ -11,10 +11,6 @@ import java.awt.*;
  */
 public class TurnoutGroupListCellRenderer extends DefaultListCellRenderer {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -6223008219457163847L;
 
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value,

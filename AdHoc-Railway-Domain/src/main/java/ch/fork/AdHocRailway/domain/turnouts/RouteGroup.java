@@ -27,8 +27,6 @@ import java.util.TreeSet;
 public class RouteGroup extends AbstractItem implements java.io.Serializable,
         Comparable<RouteGroup> {
 
-    private static final long serialVersionUID = 1072827983159437081L;
-
     private int id;
 
     private String name;

@@ -39,7 +39,6 @@ import java.awt.event.MouseEvent;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
-    private static final long serialVersionUID = 1639307474591899703L;
     private Route route;
     private JLabel nameLabel;
     private JLabel iconLabel;

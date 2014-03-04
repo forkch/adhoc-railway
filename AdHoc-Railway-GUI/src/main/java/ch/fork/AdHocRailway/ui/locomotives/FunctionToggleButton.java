@@ -24,10 +24,6 @@ import javax.swing.*;
 
 public class FunctionToggleButton extends JToggleButton {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -5886703909665855244L;
 
     public FunctionToggleButton(final String text) {
         super(text);
