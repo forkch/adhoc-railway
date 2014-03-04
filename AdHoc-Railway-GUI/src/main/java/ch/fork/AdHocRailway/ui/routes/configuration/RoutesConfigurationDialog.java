@@ -50,11 +50,6 @@ import java.util.SortedSet;
 public class RoutesConfigurationDialog extends JDialog implements
         RouteManagerListener {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 374903860703369736L;
-
     private JList<?> routeGroupList;
 
     private JButton addRouteGroupButton;
@@ -285,11 +280,6 @@ public class RoutesConfigurationDialog extends JDialog implements
     private static final class RouteListCellRenderer extends
             DefaultListCellRenderer {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 2449618372558779146L;
-
         @Override
         public Component getListCellRendererComponent(final JList<?> list,
                                                       final Object value, final int index, final boolean isSelected,
@@ -298,7 +288,7 @@ public class RoutesConfigurationDialog extends JDialog implements
                     list, value, index, isSelected, cellHasFocus);
 
             final Route route = (Route) value;
-            setText(route == null ? "" : (" " + route.getName()));
+            setText(route == null ? "" : ("#" + route.getNumber() + ": " + route.getName()));
             return component;
         }
     }
