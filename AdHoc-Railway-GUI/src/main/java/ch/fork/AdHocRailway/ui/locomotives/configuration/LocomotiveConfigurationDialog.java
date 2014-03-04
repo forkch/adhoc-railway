@@ -36,8 +36,11 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,11 +51,6 @@ import java.util.List;
 
 public class LocomotiveConfigurationDialog extends JDialog implements
         LocomotiveManagerListener {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = -4043586436141605523L;
 
     private boolean okPressed;
 
@@ -130,8 +128,26 @@ public class LocomotiveConfigurationDialog extends JDialog implements
         addGroupButton = new JButton(new AddLocomotiveGroupAction());
         editGroupButton = new JButton(new EditLocomotiveGroupAction());
         removeGroupButton = new JButton(new RemoveLocomotiveGroupAction());
+        DefaultTableCellRenderer r = new DefaultTableCellRenderer() {
+
+            Border padding = BorderFactory.createEmptyBorder(10,10,10,10);
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table,
+                                                           Object value, boolean isSelected, boolean hasFocus,
+                                                           int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
+                        row, column);
+                stableetBorder(padding);
+                return this;
+            }
+
+        };
+
 
         locomotivesTable = new JTable();
+        locomotivesTable.setDefaultRenderer(Object.class, r);
+
 
         locomotives = new ArrayListModel<Locomotive>();
 
@@ -149,6 +165,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
         locomotivesTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         tca = new TableColumnAdjuster(locomotivesTable, 10);
+
         addLocomotiveButton = new JButton(new AddLocomotiveAction());
         removeLocomotiveButton = new JButton(new RemoveLocomotiveAction());
 
@@ -252,11 +269,6 @@ public class LocomotiveConfigurationDialog extends JDialog implements
     }
 
     private class AddLocomotiveGroupAction extends AbstractAction {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = -6754626146363603303L;
 
         public AddLocomotiveGroupAction() {
             super("Add", ImageTools.createImageIconFromIconSet("list-add.png"));
