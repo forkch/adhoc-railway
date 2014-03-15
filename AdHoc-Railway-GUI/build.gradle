@@ -33,3 +33,20 @@ startScripts {
         windowsScript.text = windowsScript.text.replace('DEFAULT_JVM_OPTS=', 'DEFAULT_JVM_OPTS=')
     }
 }
+
+task createSamples {
+    def samples = file("$buildDir/samples")
+    outputs.dir samples
+    doLast {
+        samples.mkdirs()
+        copy {
+            from 'samples'
+            into samples
+            
+        }
+    }
+}
+
+applicationDistribution.from(createSamples) {
+    into "samples"
+}
