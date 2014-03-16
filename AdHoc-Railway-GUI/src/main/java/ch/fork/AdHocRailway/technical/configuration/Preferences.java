@@ -328,8 +328,9 @@ public class Preferences {
 
     public void loadPreferences(boolean cleanConfig) {
 
-        if (!cleanConfig) {
             final boolean found = findConfigFile();
+
+        if (!cleanConfig) {
             if (!found) {
                 LOGGER.info("no config file found, using default values");
             } else {

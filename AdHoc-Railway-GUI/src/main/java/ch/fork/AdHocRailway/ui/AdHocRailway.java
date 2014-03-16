@@ -296,7 +296,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     private void setUpLogging() {
-        PropertyConfigurator.configure("log4j.properties");
+        PropertyConfigurator.configure(ClassLoader.getSystemResource("log4j.properties"));
 
         final FileAppender appender = new FileAppender();
         appender.setName("MyFileAppender");
