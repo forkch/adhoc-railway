@@ -41,7 +41,12 @@ import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.log4j.*;
+import sun.tools.jar.CommandLine;
 
 import javax.swing.*;
 import java.awt.*;
@@ -135,11 +140,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     }
 
-    public AdHocRailway() {
-        this(null);
-    }
-
-    public AdHocRailway(final String file) {
+    public AdHocRailway(org.apache.commons.cli.CommandLine parsedCommandLine) {
         super(TITLE);
         try {
 
@@ -168,6 +169,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             initProceeded("Loading Persistence Layer (Preferences)");
 
             preferences = Preferences.getInstance();
+            preferences.loadPreferences(parsedCommandLine.hasOption("c"));
             appContext.setPreferences(preferences);
 
             railwayDeviceManager = new RailwayDeviceManager(appContext);
@@ -294,7 +296,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     private void setUpLogging() {
-        PropertyConfigurator.configure("./etc/log4j.properties");
+        PropertyConfigurator.configure("log4j.properties");
 
         final FileAppender appender = new FileAppender();
         appender.setName("MyFileAppender");
@@ -1180,12 +1182,15 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         }
     }
 
-    public static void main(final String[] args) {
-        if (args.length == 1) {
-            new AdHocRailway(args[0]);
-        } else {
-            new AdHocRailway();
-        }
+    public static void main(final String[] args) throws ParseException {
+
+        Options options = new Options();
+        options.addOption("c", "clean", false, "start with a clean config");
+        CommandLineParser parser = new BasicParser();
+
+        org.apache.commons.cli.CommandLine parsedCommandLine = parser.parse(options, args);
+
+        AdHocRailway adHocRailway = new AdHocRailway(parsedCommandLine);
     }
 
     @Subscribe

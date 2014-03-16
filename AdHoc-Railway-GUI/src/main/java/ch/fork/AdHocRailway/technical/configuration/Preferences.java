@@ -24,14 +24,16 @@ import javax.swing.*;
 import java.io.*;
 import java.util.*;
 
-public class Preferences implements PreferencesKeys {
+import static ch.fork.AdHocRailway.technical.configuration.PreferencesKeys.*;
+
+public class Preferences {
     private static final Logger LOGGER = Logger.getLogger(Preferences.class);
     private Map<String, String> preferences;
     private List<String> hostnames;
     private static Preferences instance = null;
     private Properties props;
     private File configFile;
-    private final Map<String, KeyBoardLayout> keyBoardLayouts;
+    private Map<String, KeyBoardLayout> keyBoardLayouts;
 
     private Preferences() {
 
@@ -41,37 +43,6 @@ public class Preferences implements PreferencesKeys {
         hostnames.add("localhost");
         initDefaultValues();
 
-        final boolean found = findConfigFile();
-        if (!found) {
-            LOGGER.info("no config file found, using default values");
-        } else {
-            LOGGER.info("Config file found");
-            props = new Properties();
-            try {
-                props.load(new FileInputStream(configFile));
-                for (final Object key : props.keySet()) {
-                    setStringValue(key.toString(),
-                            props.getProperty(key.toString()).toString());
-                }
-            } catch (final FileNotFoundException e) {
-            } catch (final IOException e) {
-            }
-        }
-
-        keyBoardLayouts = new HashMap<String, KeyBoardLayout>();
-        final Map<KeyBoardLayout, String> pendingBaseLinks = new HashMap<KeyBoardLayout, String>();
-        for (final Object key : preferences.keySet()) {
-            if (key.toString().startsWith(KEYBOARD_LAYOUT + ".")) {
-                final KeyBoardLayout layout = parseLayout(pendingBaseLinks,
-                        getStringValue(key.toString()));
-                keyBoardLayouts.put(layout.getName(), layout);
-            }
-        }
-        // Resolve references to base layouts
-        for (final Map.Entry<KeyBoardLayout, String> entry : pendingBaseLinks
-                .entrySet()) {
-            entry.getKey().setBase(keyBoardLayouts.get(entry.getValue()));
-        }
     }
 
     private void initDefaultValues() {
@@ -160,6 +131,8 @@ public class Preferences implements PreferencesKeys {
         setBooleanValue(STOP_ON_DIRECTION_CHANGE, false);
         setStringValue(RAILWAY_DEVICE, "");
         setIntValue(NUMBER_OF_BOOSTERS, 1);
+        setBooleanValue(USE_ADHOC_SERVER, false);
+        setStringValue(RAILWAY_DEVICE, "");
     }
 
     private boolean findConfigFile() {
@@ -351,5 +324,42 @@ public class Preferences implements PreferencesKeys {
             return false;
         }
         return true;
+    }
+
+    public void loadPreferences(boolean cleanConfig) {
+
+        if (!cleanConfig) {
+            final boolean found = findConfigFile();
+            if (!found) {
+                LOGGER.info("no config file found, using default values");
+            } else {
+                LOGGER.info("Config file found");
+                props = new Properties();
+                try {
+                    props.load(new FileInputStream(configFile));
+                    for (final Object key : props.keySet()) {
+                        setStringValue(key.toString(),
+                                props.getProperty(key.toString()).toString());
+                    }
+                } catch (final FileNotFoundException e) {
+                } catch (final IOException e) {
+                }
+            }
+        }
+
+        keyBoardLayouts = new HashMap<String, KeyBoardLayout>();
+        final Map<KeyBoardLayout, String> pendingBaseLinks = new HashMap<KeyBoardLayout, String>();
+        for (final Object key : preferences.keySet()) {
+            if (key.toString().startsWith(KEYBOARD_LAYOUT + ".")) {
+                final KeyBoardLayout layout = parseLayout(pendingBaseLinks,
+                        getStringValue(key.toString()));
+                keyBoardLayouts.put(layout.getName(), layout);
+            }
+        }
+        // Resolve references to base layouts
+        for (final Map.Entry<KeyBoardLayout, String> entry : pendingBaseLinks
+                .entrySet()) {
+            entry.getKey().setBase(keyBoardLayouts.get(entry.getValue()));
+        }
     }
 }
