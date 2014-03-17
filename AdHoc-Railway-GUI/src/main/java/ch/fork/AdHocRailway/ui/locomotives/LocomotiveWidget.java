@@ -474,7 +474,7 @@ public class LocomotiveWidget extends JPanel implements
         if (disableListener) {
             return;
         }
-        updateLocomotiveGroups( ctx.getLocomotiveManager().getAllLocomotiveGroups());
+        updateLocomotiveGroups(ctx.getLocomotiveManager().getAllLocomotiveGroups());
 
     }
 
@@ -483,7 +483,7 @@ public class LocomotiveWidget extends JPanel implements
         if (disableListener) {
             return;
         }
-        updateLocomotiveGroups( ctx.getLocomotiveManager().getAllLocomotiveGroups());
+        updateLocomotiveGroups(ctx.getLocomotiveManager().getAllLocomotiveGroups());
 
     }
 
@@ -492,15 +492,16 @@ public class LocomotiveWidget extends JPanel implements
         if (disableListener) {
             return;
         }
-        updateLocomotiveGroups( ctx.getLocomotiveManager().getAllLocomotiveGroups());
+        updateLocomotiveGroups(ctx.getLocomotiveManager().getAllLocomotiveGroups());
 
     }
+
     @Override
     public void locomotiveRemoved(final Locomotive locomotive) {
         if (disableListener) {
             return;
         }
-        updateLocomotiveGroups( ctx.getLocomotiveManager().getAllLocomotiveGroups());
+        updateLocomotiveGroups(ctx.getLocomotiveManager().getAllLocomotiveGroups());
     }
 
     @Override
@@ -508,7 +509,7 @@ public class LocomotiveWidget extends JPanel implements
         if (disableListener) {
             return;
         }
-        updateLocomotiveGroups( ctx.getLocomotiveManager().getAllLocomotiveGroups());
+        updateLocomotiveGroups(ctx.getLocomotiveManager().getAllLocomotiveGroups());
 
     }
 
@@ -517,7 +518,7 @@ public class LocomotiveWidget extends JPanel implements
         if (disableListener) {
             return;
         }
-        updateLocomotiveGroups( ctx.getLocomotiveManager().getAllLocomotiveGroups());
+        updateLocomotiveGroups(ctx.getLocomotiveManager().getAllLocomotiveGroups());
 
     }
 
@@ -528,7 +529,11 @@ public class LocomotiveWidget extends JPanel implements
         final LocomotiveController locomotiveControl = ctx
                 .getLocomotiveControl();
         locomotiveControl.removeLocomotiveChangeListener(myLocomotive, this);
-        locomotiveControl.deactivateLoco(myLocomotive);
+        try {
+            locomotiveControl.deactivateLoco(myLocomotive);
+        } catch (Exception x) {
+
+        }
         myLocomotive = null;
 
     }
@@ -635,15 +640,15 @@ public class LocomotiveWidget extends JPanel implements
             if (myLocomotive == null) {
                 return;
             }
-                final LocomotiveController locomotiveControl = ctx
-                        .getLocomotiveControl();
-                doPerformAction(locomotiveControl, myLocomotive);
-                if (time == 0) {
-                    time = System.currentTimeMillis();
-                } else {
-                    time = 0;
-                }
-                speedBar.requestFocus();
+            final LocomotiveController locomotiveControl = ctx
+                    .getLocomotiveControl();
+            doPerformAction(locomotiveControl, myLocomotive);
+            if (time == 0) {
+                time = System.currentTimeMillis();
+            } else {
+                time = 0;
+            }
+            speedBar.requestFocus();
         }
 
         protected abstract void doPerformAction(
@@ -663,15 +668,15 @@ public class LocomotiveWidget extends JPanel implements
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) throws LocomotiveException {
-                final boolean state = functionToggleButtons.get(function)
-                        .isSelected();
+            final boolean state = functionToggleButtons.get(function)
+                    .isSelected();
 
-                final LocomotiveFunction locomotiveFunction = myLocomotive
-                        .getFunction(function);
-                final int deactivationDelay = locomotiveFunction != null ? locomotiveFunction
-                        .getDeactivationDelay() : -1;
-                locomotiveControl.setFunction(myLocomotive, function, state,
-                        deactivationDelay);
+            final LocomotiveFunction locomotiveFunction = myLocomotive
+                    .getFunction(function);
+            final int deactivationDelay = locomotiveFunction != null ? locomotiveFunction
+                    .getDeactivationDelay() : -1;
+            locomotiveControl.setFunction(myLocomotive, function, state,
+                    deactivationDelay);
 
             speedBar.requestFocus();
         }
@@ -724,12 +729,12 @@ public class LocomotiveWidget extends JPanel implements
             if (myLocomotive == null) {
                 return;
             }
-                final LocomotiveController locomotiveControl = ctx
-                        .getLocomotiveControl();
-                locomotiveControl.setSpeed(myLocomotive, 0,
-                        myLocomotive.getCurrentFunctions());
-                updateWidget();
-                speedBar.requestFocus();
+            final LocomotiveController locomotiveControl = ctx
+                    .getLocomotiveControl();
+            locomotiveControl.setSpeed(myLocomotive, 0,
+                    myLocomotive.getCurrentFunctions());
+            updateWidget();
+            speedBar.requestFocus();
         }
     }
 
@@ -740,17 +745,17 @@ public class LocomotiveWidget extends JPanel implements
             if (myLocomotive == null) {
                 return;
             }
-                final LocomotiveController locomotiveControl = ctx
-                        .getLocomotiveControl();
-                if (Preferences.getInstance().getBooleanValue(
-                        PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
-                        && myLocomotive.getCurrentSpeed() != 0) {
-                    locomotiveControl.setSpeed(myLocomotive, 0,
-                            myLocomotive.getCurrentFunctions());
-                }
-                directionToggeled = true;
-                locomotiveControl.toggleDirection(myLocomotive);
-                speedBar.requestFocus();
+            final LocomotiveController locomotiveControl = ctx
+                    .getLocomotiveControl();
+            if (Preferences.getInstance().getBooleanValue(
+                    PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
+                    && myLocomotive.getCurrentSpeed() != 0) {
+                locomotiveControl.setSpeed(myLocomotive, 0,
+                        myLocomotive.getCurrentFunctions());
+            }
+            directionToggeled = true;
+            locomotiveControl.toggleDirection(myLocomotive);
+            speedBar.requestFocus();
         }
     }
 
@@ -804,7 +809,7 @@ public class LocomotiveWidget extends JPanel implements
 
                     locomotiveControl.removeLocomotiveChangeListener(
                             myLocomotive, LocomotiveWidget.this);
-                    new LocomotiveConfig(frame,  ctx.getLocomotiveManager(),
+                    new LocomotiveConfig(frame, ctx.getLocomotiveManager(),
                             myLocomotive, myLocomotive.getGroup());
 
                     locomotiveControl.addLocomotiveChangeListener(myLocomotive,

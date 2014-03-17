@@ -168,8 +168,8 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
     private String getSpeedCommand(final Locomotive locomotive,
                                    final int address, final int speed, final boolean[] functions) {
-        if (functions.length != 5) {
-            throw new LocomotiveException("invalid function count");
+        if (LocomotiveType.DIGITAL == locomotive.getType() && functions.length != 5) {
+            throw new LocomotiveException("invalid function count of locomotive " + locomotive.getName());
         }
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("XL ");
