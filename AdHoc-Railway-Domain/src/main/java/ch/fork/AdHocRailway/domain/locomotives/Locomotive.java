@@ -49,6 +49,8 @@ public class Locomotive extends AbstractItem implements Serializable,
     @XStreamAsAttribute
     private String image;
 
+    private String imageBase64;
+
     @XStreamAsAttribute
     private LocomotiveType type;
 
@@ -313,5 +315,13 @@ public class Locomotive extends AbstractItem implements Serializable,
         } else {
             return FORWARD;
         }
+    }
+
+    public String getImageBase64() {
+        return imageBase64;
+    }
+
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
     }
 }

@@ -1,6 +1,7 @@
 package ch.fork.AdHocRailway.ui;
 
 import ch.fork.AdHocRailway.AdHocRailwayException;
+import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.manager.ServiceFactory;
 import ch.fork.AdHocRailway.manager.impl.locomotives.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.turnouts.RouteManagerImpl;
@@ -20,15 +21,18 @@ import ch.fork.AdHocRailway.ui.bus.events.CommandLogEvent;
 import ch.fork.AdHocRailway.ui.bus.events.InitProceededEvent;
 import ch.fork.AdHocRailway.ui.bus.events.UpdateMainTitleEvent;
 import ch.fork.AdHocRailway.ui.context.PersistenceManagerContext;
+import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.SortedSet;
 
 public class PersistenceManager {
 
@@ -145,6 +149,10 @@ public class PersistenceManager {
 
 
         appContext.setActualFile(file);
+
+
+        loadAndFillImageBase64();
+
         appContext.getMainBus().post(
                 new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
                         + file.getAbsolutePath() + "]"));
@@ -153,6 +161,14 @@ public class PersistenceManager {
                 new CommandLogEvent(
                         "AdHoc-Railway Configuration loaded ("
                                 + file + ")"));
+    }
+
+    private void loadAndFillImageBase64() {
+        for (Locomotive locomotive : appContext.getLocomotiveManager().getAllLocomotives()) {
+            if (StringUtils.isBlank(locomotive.getImageBase64())) {
+                locomotive.setImageBase64(ImageTools.getImageBase64(locomotive));
+            }
+        }
     }
 
     public void openDatabase() throws IOException {
@@ -204,6 +220,7 @@ public class PersistenceManager {
 
             @Override
             public void connected() {
+
                 appContext.getMainBus().post(
                         new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
                                 + url + "]"));

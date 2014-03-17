@@ -526,7 +526,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
             presentationModel.getBean().setImage(
                     chooser.getSelectedFile().getName());
             final String image = presentationModel.getBean().getImage();
-
+            presentationModel.getBean().setImageBase64(ImageTools.getImageBase64(presentationModel.getBean()));
             if (image != null && !image.isEmpty()) {
                 imageLabel.setIcon(ImageTools
                         .getLocomotiveIcon(presentationModel.getBean()));

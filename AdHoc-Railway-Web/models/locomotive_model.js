@@ -8,6 +8,7 @@ exports.LocomotiveSchema = new Schema({
   address2: Number,
   type: String,
   image: String,
+  imageBase64: String,
   description: String,
   group:  ObjectId,
   functions : [

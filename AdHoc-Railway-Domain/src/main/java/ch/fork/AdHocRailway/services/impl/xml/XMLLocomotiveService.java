@@ -129,10 +129,12 @@ public class XMLLocomotiveService implements LocomotiveService {
                     locomotive.init();
                     locomotive.setGroup(locomotiveGroup);
                     locomotive.setId(UUID.randomUUID().hashCode());
+
                     locomotives.add(locomotive);
                 }
             }
         }
         listener.locomotivesUpdated(locomotiveGroups);
     }
+
 }

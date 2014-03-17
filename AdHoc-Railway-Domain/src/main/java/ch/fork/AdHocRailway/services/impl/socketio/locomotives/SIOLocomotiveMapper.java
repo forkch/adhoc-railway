@@ -68,6 +68,14 @@ public class SIOLocomotiveMapper {
         } else {
             locomotive.setImage("");
         }
+
+        final String imageBase64String = locomotiveJSON.optString("imageBase64", "");
+        if (StringUtils.isNotBlank(imageBase64String)
+                && !StringUtils.equalsIgnoreCase(imageBase64String, "null")) {
+            locomotive.setImageBase64(imageBase64String);
+        } else {
+            locomotive.setImageBase64("");
+        }
         locomotive.setBus(locomotiveJSON.getInt("bus"));
         locomotive.setAddress1(locomotiveJSON.getInt("address1"));
         locomotive.setAddress2(locomotiveJSON.optInt("address2", 0));
@@ -120,6 +128,7 @@ public class SIOLocomotiveMapper {
         locomotiveJSON.put("address1", locomotive.getAddress1());
         locomotiveJSON.put("address2", locomotive.getAddress2());
         locomotiveJSON.put("image", locomotive.getImage());
+        locomotiveJSON.put("imageBase64", locomotive.getImageBase64());
         locomotiveJSON.put("type", locomotive.getType().getId().toLowerCase());
 
         final org.json.JSONArray functionsJSON = new org.json.JSONArray();
