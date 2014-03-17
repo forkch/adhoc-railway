@@ -2,7 +2,7 @@ bin/
 build/
 .locomotiveImageToPathMap.obj
 adhocrailway.conf
-logs/*
+logs/*.log
 /build
 /bin
 .idea

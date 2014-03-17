@@ -74,7 +74,7 @@ public class LocomotiveImageHelper {
 
     public static String getImagePath(final Locomotive locomotive) {
         if (StringUtils.isNotEmpty(locomotive.getImage())) {
-            LOGGER.debug("getting " + locomotive.getImage()
+            LOGGER.info("getting " + locomotive.getImage()
                     + " from image map for " + locomotive.getName());
             return imageToPathMap.get(locomotive.getImage());
         }
