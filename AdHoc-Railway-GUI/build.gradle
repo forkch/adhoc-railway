@@ -41,11 +41,26 @@ task createSamples {
         copy {
             from 'samples'
             into samples
-            
+
+        }
+    }
+}
+task createLocoimages{
+    def locoimages = file("$buildDir/locoimages")
+    outputs.dir locoimages
+    doLast {
+        locoimages.mkdirs()
+        copy {
+            from 'locoimages'
+            into locoimages
+
         }
     }
 }
 
 applicationDistribution.from(createSamples) {
     into "samples"
+}
+applicationDistribution.from(createLocoimages) {
+    into "locoimages"
 }
