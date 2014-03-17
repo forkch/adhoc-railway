@@ -46,7 +46,6 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.*;
-import sun.tools.jar.CommandLine;
 
 import javax.swing.*;
 import java.awt.*;
