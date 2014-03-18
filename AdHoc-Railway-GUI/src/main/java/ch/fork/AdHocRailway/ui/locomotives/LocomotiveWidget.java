@@ -91,8 +91,9 @@ public class LocomotiveWidget extends JPanel implements
     private DefaultComboBoxModel<LocomotiveGroup> locomotiveGroupComboBoxModel;
     private DefaultComboBoxModel<Locomotive> locomotiveComboBoxModel;
 
-    private boolean ignoreEvents;
+    private boolean ignoreGroupAndLocomotiveSelectionEvents;
     private boolean disableListener;
+    private boolean connectedToRailway;
 
     public LocomotiveWidget(final LocomotiveContext ctx, final int number,
                             final JFrame frame) {
@@ -110,8 +111,8 @@ public class LocomotiveWidget extends JPanel implements
 
         allLocomotivesGroup = new LocomotiveGroup(Integer.MIN_VALUE, "All");
         ctx.getLocomotiveManager().addLocomotiveManagerListener(this);
+        connectedToRailway = false;
     }
-
     @Subscribe
     public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
         if (event.isConnected()) {
@@ -119,7 +120,9 @@ public class LocomotiveWidget extends JPanel implements
                 ctx.getLocomotiveControl().addLocomotiveChangeListener(
                         myLocomotive, this);
             }
+            connectedToRailway = true;
         } else {
+            connectedToRailway = false;
             ctx.getLocomotiveControl().removeLocomotiveChangeListener(this);
         }
     }
@@ -140,7 +143,7 @@ public class LocomotiveWidget extends JPanel implements
             return;
         }
 
-        ignoreEvents = true;
+        ignoreGroupAndLocomotiveSelectionEvents = true;
         locomotiveGroupComboBoxModel.removeAllElements();
         locomotiveComboBoxModel.removeAllElements();
         allLocomotivesGroup.getLocomotives().clear();
@@ -156,7 +159,8 @@ public class LocomotiveWidget extends JPanel implements
         }
 
         locomotiveComboBox.setSelectedIndex(-1);
-        ignoreEvents = false;
+        ignoreGroupAndLocomotiveSelectionEvents = false;
+        connectedToRailway = false;
     }
 
     public Locomotive getMyLocomotive() {
@@ -545,7 +549,7 @@ public class LocomotiveWidget extends JPanel implements
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 return;
             }
-            if (ignoreEvents) {
+            if (ignoreGroupAndLocomotiveSelectionEvents) {
                 return;
             }
             if (!isFree()) {
@@ -583,7 +587,7 @@ public class LocomotiveWidget extends JPanel implements
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 return;
             }
-            if (ignoreEvents) {
+            if (ignoreGroupAndLocomotiveSelectionEvents) {
                 return;
             }
             try {
@@ -637,7 +641,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         public void actionPerformed(final ActionEvent e) {
 
-            if (myLocomotive == null) {
+            if (myLocomotive == null || !connectedToRailway) {
                 return;
             }
             final LocomotiveController locomotiveControl = ctx

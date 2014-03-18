@@ -47,7 +47,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
     private TurnoutState actualTurnoutState = TurnoutState.UNDEF;
 
-    private boolean widgetEnabled;
+    private boolean connectedToRailway;
 
     private final boolean testMode;
 
@@ -79,16 +79,16 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
         updateTurnout();
         TurnoutHelper.validateTurnout(turnoutManager, turnout, this);
         ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
-        widgetEnabled = false;
+        connectedToRailway = false;
     }
 
     @Subscribe
     public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
         if (event.isConnected()) {
-           widgetEnabled = true;
+           connectedToRailway = true;
             ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
         } else {
-            widgetEnabled = false;
+            connectedToRailway = false;
             ctx.getTurnoutControl().removeTurnoutChangeListener(turnout, this);
         }
     }
@@ -129,7 +129,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
     private class MouseAction extends MouseAdapter {
         @Override
         public void mouseClicked(final MouseEvent e) {
-            if (!widgetEnabled) {
+            if (!connectedToRailway) {
                 return;
             }
 
@@ -225,7 +225,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
         if (!enabled) {
             setBackground(new Color(255, 177, 177));
         }
-        widgetEnabled = enabled;
+        connectedToRailway = enabled;
         turnoutCanvas.setTurnoutState(TurnoutState.UNDEF);
     }
 
