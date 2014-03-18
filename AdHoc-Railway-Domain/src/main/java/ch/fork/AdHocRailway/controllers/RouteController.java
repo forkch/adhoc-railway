@@ -58,7 +58,7 @@ public abstract class RouteController {
 
         List<RouteChangeListener> routeChangeListeners = listeners.get(route);
         if (routeChangeListeners == null) {
-            routeChangeListeners = new LinkedList<>();
+            routeChangeListeners = new LinkedList<RouteChangeListener>();
             listeners.put(route, routeChangeListeners);
         }
         routeChangeListeners.add(listener);

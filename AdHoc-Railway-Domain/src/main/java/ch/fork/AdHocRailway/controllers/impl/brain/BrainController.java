@@ -55,8 +55,7 @@ public class BrainController {
                     LOGGER.error("Only serial ports are allowed");
                 }
             }
-        } catch (final NoSuchPortException | UnsupportedCommOperationException
-                | IOException | TooManyListenersException | PortInUseException e) {
+        } catch (final Exception e) {
             throw new BrainException("error connection to the brain on port "
                     + portName, e);
         }
