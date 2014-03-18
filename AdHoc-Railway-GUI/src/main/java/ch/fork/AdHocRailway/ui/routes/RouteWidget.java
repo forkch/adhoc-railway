@@ -39,6 +39,7 @@ import java.awt.event.MouseEvent;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
+    private boolean widgetEnabled;
     private Route route;
     private JLabel nameLabel;
     private JLabel iconLabel;
@@ -59,13 +60,16 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         ctx.getMainBus().register(this);
         initGUI();
         updateRoute();
+        widgetEnabled = false;
     }
 
     @Subscribe
     public void connectedToRailwayDevice(ConnectedToRailwayEvent event) {
         if (event.isConnected()) {
+            widgetEnabled = true;
             ctx.getRouteControl().addRouteChangeListener(route, this);
         } else {
+            widgetEnabled = false;
             ctx.getRouteControl().removeRouteChangeListener(route, this);
         }
     }
@@ -128,6 +132,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
         @Override
         public void mouseClicked(final MouseEvent e) {
+            if(!widgetEnabled)
+                return;
             try {
                 if (e.getClickCount() == 1
                         && e.getButton() == MouseEvent.BUTTON1) {

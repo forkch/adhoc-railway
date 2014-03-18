@@ -72,7 +72,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
         this.testMode = testMode;
 
         turnoutManager = ctx.getTurnoutManager();
-        widgetEnabled = true;
 
         ctx.getMainBus().register(this);
 
@@ -80,14 +79,16 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
         updateTurnout();
         TurnoutHelper.validateTurnout(turnoutManager, turnout, this);
         ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
-        setEnabled(true);
+        widgetEnabled = false;
     }
 
     @Subscribe
     public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
         if (event.isConnected()) {
+           widgetEnabled = true;
             ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
         } else {
+            widgetEnabled = false;
             ctx.getTurnoutControl().removeTurnoutChangeListener(turnout, this);
         }
     }
