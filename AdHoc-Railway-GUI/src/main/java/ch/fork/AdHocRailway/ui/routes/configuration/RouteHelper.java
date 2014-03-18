@@ -58,8 +58,7 @@ public class RouteHelper {
         final Route r = new Route();
         try {
             BeanUtils.copyProperties(r, old);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            // TODO Auto-generated catch block
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return r;
@@ -69,7 +68,7 @@ public class RouteHelper {
                               final Object newValue) {
         try {
             BeanUtils.setProperty(testRoute, property, newValue);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

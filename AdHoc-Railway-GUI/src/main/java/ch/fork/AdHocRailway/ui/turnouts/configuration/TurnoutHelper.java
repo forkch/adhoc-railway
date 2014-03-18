@@ -134,7 +134,7 @@ public class TurnoutHelper {
         final Turnout t = new Turnout();
         try {
             BeanUtils.copyProperties(t, old);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return t;
@@ -144,7 +144,7 @@ public class TurnoutHelper {
                               final Object newValue) {
         try {
             BeanUtils.setProperty(testTurnout, property, newValue);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

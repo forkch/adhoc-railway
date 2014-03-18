@@ -181,7 +181,7 @@ public class LocomotiveWidget extends JPanel implements
 
     private void initSelectionPanel() {
         locomotiveGroupComboBox = new JComboBox<LocomotiveGroup>();
-        locomotiveGroupComboBoxModel = new DefaultComboBoxModel<>();
+        locomotiveGroupComboBoxModel = new DefaultComboBoxModel<LocomotiveGroup>();
         locomotiveGroupComboBox.setModel(locomotiveGroupComboBoxModel);
         locomotiveGroupComboBox.setFocusable(false);
         locomotiveGroupComboBox.setFont(locomotiveGroupComboBox.getFont()
@@ -191,7 +191,7 @@ public class LocomotiveWidget extends JPanel implements
         locomotiveGroupComboBox.addItemListener(groupSelectAction);
 
         locomotiveComboBox = new JComboBox<Locomotive>();
-        locomotiveComboBoxModel = new DefaultComboBoxModel<>();
+        locomotiveComboBoxModel = new DefaultComboBoxModel<Locomotive>();
         locomotiveComboBox.setModel(locomotiveComboBoxModel);
         locomotiveComboBox.setFocusable(false);
         locomotiveSelectAction = new LocomotiveSelectAction();
