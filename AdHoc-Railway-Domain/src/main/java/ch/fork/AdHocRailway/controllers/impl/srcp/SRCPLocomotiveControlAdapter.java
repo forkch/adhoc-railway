@@ -8,31 +8,46 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveHelper;
+import com.google.common.util.concurrent.RateLimiter;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
 import de.dermoba.srcp.model.locomotives.*;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author fork
  */
 public class SRCPLocomotiveControlAdapter extends LocomotiveController
         implements SRCPLocomotiveChangeListener, SRCPLockChangeListener {
+    private static final Logger LOGGER = Logger.getLogger(SRCPLocomotiveControlAdapter.class);
     private final Map<Locomotive, SRCPLocomotive> locomotiveSRCPLocomotiveMap = new HashMap<Locomotive, SRCPLocomotive>();
     private final Map<SRCPLocomotive, Locomotive> SRCPLocomotiveLocomotiveMap = new HashMap<SRCPLocomotive, Locomotive>();
 
     private final SRCPLocomotiveControl locomotiveControl;
+    ExecutorService executorService;
+    private boolean emergencyStopPending;
+    private final RateLimiter rateLimiter;
 
     public SRCPLocomotiveControlAdapter() {
         locomotiveControl = SRCPLocomotiveControl.getInstance();
-
+        executorService = createExecutorService();
+        rateLimiter = RateLimiter.create(4);
         reloadConfiguration();
+    }
+
+    private ThreadPoolExecutor createExecutorService() {
+        return new ThreadPoolExecutor(1, 1, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     @Override
@@ -65,35 +80,60 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     public void setSpeed(final Locomotive locomotive, final int speed,
                          final boolean[] functions) throws LocomotiveException {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
-        try {
-            locomotiveControl.setSpeed(sLocomotive, speed,
-                    SimulatedMFXLocomotivesHelper.convertToMultipartFunctions(
-                            locomotive.getType(), functions));
-            locomotive.setCurrentSpeed(speed);
-            locomotive.setCurrentFunctions(functions);
-        } catch (final SRCPModelException e) {
-            throw new LocomotiveException("Locomotive Error", e);
-        }
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (!emergencyStopPending) {
+                    try {
+                        LOGGER.info("waiting to execute speed command");
+                        rateLimiter.acquire();
+                        LOGGER.info("executing speed command: " + speed);
+                        if (!emergencyStopPending) {
+                            locomotiveControl.setSpeed(sLocomotive, speed,
+                                    SimulatedMFXLocomotivesHelper.convertToMultipartFunctions(
+                                            locomotive.getType(), functions));
+                        }else{
+                            LOGGER.info("cancelling speed command: " + speed);
+                        }
+                    } catch (SRCPModelException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    LOGGER.info("cancelling speed command: " + speed);
+                }
+            }
+        });
+        locomotive.setCurrentSpeed(speed);
+        locomotive.setCurrentFunctions(functions);
     }
 
     @Override
     public void emergencyStop(final Locomotive locomotive)
             throws LocomotiveException {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
-        try {
-            final int emergencyStopFunction = locomotive
-                    .getEmergencyStopFunction();
+            emergencyStopPending = true;
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
 
-            final int srcpEmergencyStopFunction = SimulatedMFXLocomotivesHelper
-                    .computeMultipartFunctionNumber(locomotive.getType(),
-                            emergencyStopFunction);
-            locomotiveControl.emergencyStop(sLocomotive,
-                    srcpEmergencyStopFunction);
-            locomotive.setCurrentSpeed(0);
-            locomotive.setCurrentFunctions(locomotive.getCurrentFunctions());
-        } catch (final SRCPModelException e) {
-            throw new LocomotiveException("Locomotive Error", e);
-        }
+                        LOGGER.info(">>>>>EMERGENCY STOP<<<<<");
+                        final int emergencyStopFunction = locomotive
+                                .getEmergencyStopFunction();
+
+                        final int srcpEmergencyStopFunction = SimulatedMFXLocomotivesHelper
+                                .computeMultipartFunctionNumber(locomotive.getType(),
+                                        emergencyStopFunction);
+                        locomotiveControl.emergencyStop(sLocomotive,
+                                srcpEmergencyStopFunction);
+                        locomotive.setCurrentSpeed(0);
+                        locomotive.setCurrentFunctions(locomotive.getCurrentFunctions());
+                        emergencyStopPending = false;
+                    } catch (SRCPModelException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
     }
 
     @Override
