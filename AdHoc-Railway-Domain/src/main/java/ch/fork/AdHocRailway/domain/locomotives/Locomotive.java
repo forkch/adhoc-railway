@@ -185,10 +185,11 @@ public class Locomotive extends AbstractItem implements Serializable,
     public void setFunctions(final SortedSet<LocomotiveFunction> functions) {
         final SortedSet<LocomotiveFunction> old = this.functions;
         this.functions = functions;
+        currentFunctions = new boolean[functions.size()];
         changeSupport
-                .firePropertyChange(PROPERTYNAME_NAME, old, this.functions);
+                .firePropertyChange(PROPERTYNAME_FUNCTIONS, old, this.functions);
     }
-
+   
     public void addLocomotiveFunction(final LocomotiveFunction function) {
         this.functions.add(function);
     }
