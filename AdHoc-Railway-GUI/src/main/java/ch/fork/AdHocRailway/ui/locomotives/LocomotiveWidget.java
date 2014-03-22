@@ -607,7 +607,7 @@ public class LocomotiveWidget extends JPanel implements
                     final String locomotiveDescriptionToolTip = LocomotiveHelper
                             .getLocomotiveDescription(myLocomotive);
 
-                    LocomotiveWidget.this.setToolTipText(locomotiveDescriptionToolTip);
+                    locomotiveComboBox.setToolTipText(locomotiveDescriptionToolTip);
 
                     updateFunctionButtons();
                     updateWidget();
@@ -754,6 +754,8 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private void processMouseMovement(MouseEvent e) {
+        if(myLocomotive == null)
+            return;
         double i = (double) e.getY() / speedBar.getHeight();
         int drivingSteps = myLocomotive.getType().getDrivingSteps();
         int newSpeed = (int) ((1 - i) * (drivingSteps + 1));
