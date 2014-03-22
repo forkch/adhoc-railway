@@ -2,7 +2,6 @@ package ch.fork.AdHocRailway.controllers.impl.brain;
 
 import ch.fork.AdHocRailway.controllers.LockingException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
-import ch.fork.AdHocRailway.controllers.SimulatedMFXLocomotivesHelper;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
@@ -79,14 +78,15 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
     public void setFunction(final Locomotive locomotive,
                             final int functionNumber, final boolean state,
                             final int deactivationDelay) throws LocomotiveException {
-        final boolean[] functions = locomotive.getCurrentFunctions();
+        final boolean[] currentFunctions = locomotive.getCurrentFunctions();
 
-        if (functionNumber >= functions.length) {
+        if (functionNumber >= currentFunctions.length) {
             return;
         }
 
         setFunctions(locomotive, functionNumber, state);
-        locomotive.setCurrentFunctions(functions);
+        currentFunctions[functionNumber] = state;
+        locomotive.setCurrentFunctions(currentFunctions);
 
         informListeners(locomotive);
 
@@ -97,22 +97,12 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
     }
 
     private void setFunctions(Locomotive locomotive, int functionNumber, boolean state) {
-        List<String> functionsCommands = brainLocomotiveCommandBuilder.getFunctionsCommand(locomotive, functionNumber, state);
+        List<String> functionsCommands = brainLocomotiveCommandBuilder.getFunctionsCommands(locomotive, functionNumber, state);
 
         for (String functionsCommand : functionsCommands) {
             brain.write(functionsCommand);
         }
     }
-
-  /*  private void setFunctions(final Locomotive locomotive,
-                              final boolean[] newFunctions) {
-        List<String> functionsCommands = brainLocomotiveCommandBuilder.getFunctionsCommand(locomotive, newFunctions);
-
-        for (String functionsCommand : functionsCommands) {
-            brain.write(functionsCommand);
-        }
-        locomotive.setCurrentFunctions(newFunctions);
-    }*/
 
     @Override
     public void emergencyStop(final Locomotive myLocomotive)

@@ -43,13 +43,13 @@ public class BrainLocomotiveCommandBuilder {
         return stringBuilder.toString().trim();
     }
 
-    public List<String> getFunctionsCommand(final Locomotive locomotive
+    public List<String> getFunctionsCommands(final Locomotive locomotive
             , int functionNumber, boolean state) {
         if (locomotive == null) {
             throw new IllegalArgumentException("locomotive must not be null");
         }
 
-        boolean[] multipartFunctions = getMultiPartFunctionArrayForBrain(locomotive, functionNumber, state);
+        boolean[] multipartFunctions = getExpandedFunctionArray(locomotive, functionNumber, state);
 
         if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
 
@@ -69,7 +69,7 @@ public class BrainLocomotiveCommandBuilder {
         }
     }
 
-    private boolean[] getMultiPartFunctionArrayForBrain(Locomotive locomotive, int functionNumber, boolean state) {
+    private boolean[] getExpandedFunctionArray(Locomotive locomotive, int functionNumber, boolean state) {
         boolean[] copyOfCurrentFunctions = Arrays.copyOf(locomotive.getCurrentFunctions(), locomotive.getCurrentFunctions().length);
 
         final int hardwareFunctionNumber = SimulatedMFXLocomotivesHelper
