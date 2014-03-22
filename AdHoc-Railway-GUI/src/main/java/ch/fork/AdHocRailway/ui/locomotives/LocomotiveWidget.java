@@ -242,16 +242,6 @@ public class LocomotiveWidget extends JPanel implements
         return controlPanel;
     }
 
-    private void processMouseMovement(MouseEvent e) {
-        double i = (double) e.getY() / speedBar.getHeight();
-        int drivingSteps = myLocomotive.getType().getDrivingSteps();
-        int newSpeed = (int) ((1 - i) * (drivingSteps + 1));
-        newSpeed = Math.max(0, Math.min(drivingSteps, newSpeed));
-        if (newSpeed != myLocomotive.getCurrentSpeed()) {
-            ctx.getLocomotiveControl().setSpeed(myLocomotive, newSpeed, myLocomotive.getCurrentFunctions());
-        }
-    }
-
     private JPanel initFunctionsControl() {
         functionsPanel = new JPanel();
 
@@ -760,6 +750,16 @@ public class LocomotiveWidget extends JPanel implements
             directionToggeled = true;
             locomotiveControl.toggleDirection(myLocomotive);
             speedBar.requestFocus();
+        }
+    }
+
+    private void processMouseMovement(MouseEvent e) {
+        double i = (double) e.getY() / speedBar.getHeight();
+        int drivingSteps = myLocomotive.getType().getDrivingSteps();
+        int newSpeed = (int) ((1 - i) * (drivingSteps + 1));
+        newSpeed = Math.max(0, Math.min(drivingSteps, newSpeed));
+        if (newSpeed != myLocomotive.getCurrentSpeed()) {
+            ctx.getLocomotiveControl().setSpeed(myLocomotive, newSpeed, myLocomotive.getCurrentFunctions());
         }
     }
 
