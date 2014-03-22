@@ -4,13 +4,12 @@ import ch.fork.AdHocRailway.controllers.LockingException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.controllers.SimulatedMFXLocomotivesHelper;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveHelper;
 import com.google.common.collect.Sets;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class BrainLocomotiveControlAdapter extends LocomotiveController {
@@ -18,9 +17,11 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
     private final BrainController brain;
 
     private final Set<Locomotive> activeLocomotives = Sets.newHashSet();
+    private final BrainLocomotiveCommandBuilder brainLocomotiveCommandBuilder;
 
     public BrainLocomotiveControlAdapter(final BrainController brain) {
         this.brain = brain;
+        brainLocomotiveCommandBuilder = new BrainLocomotiveCommandBuilder();
     }
 
     @Override
@@ -39,8 +40,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
         initLocomotive(locomotive);
 
         try {
-            final String command = getSpeedCommand(locomotive,
-                    locomotive.getAddress1(), speed, functions);
+            final String command = brainLocomotiveCommandBuilder.getLocomotiveCommand(locomotive, speed, functions);
 
             brain.write(command);
             locomotive.setCurrentSpeed(speed);
@@ -85,13 +85,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
             return;
         }
 
-        final int hardwareFunctionNumber = SimulatedMFXLocomotivesHelper
-                .computeMultipartFunctionNumber(locomotive.getType(),
-                        functionNumber);
-
-        functions[hardwareFunctionNumber] = state;
-
-        setFunctions(locomotive, functions);
+        setFunctions(locomotive, functionNumber, state);
         locomotive.setCurrentFunctions(functions);
 
         informListeners(locomotive);
@@ -102,27 +96,23 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
         }
     }
 
-    private void setFunctions(final Locomotive locomotive,
-                              final boolean[] functions) {
-        if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
+    private void setFunctions(Locomotive locomotive, int functionNumber, boolean state) {
+        List<String> functionsCommands = brainLocomotiveCommandBuilder.getFunctionsCommand(locomotive, functionNumber, state);
 
-            final boolean[] functions1 = Arrays.copyOfRange(functions, 0, 5);
-            final boolean[] functions2 = Arrays.copyOfRange(functions, 5, 10);
-            final String speedCommand1 = getSpeedCommand(locomotive,
-                    locomotive.getAddress1(), locomotive.getCurrentSpeed(),
-                    functions1);
-            final String speedCommand2 = getSpeedCommand(locomotive,
-                    locomotive.getAddress1(), locomotive.getCurrentSpeed(),
-                    functions2);
-
-            brain.write(speedCommand1);
-            brain.write(speedCommand2);
-        } else {
-            brain.write(getSpeedCommand(locomotive, locomotive.getAddress1(),
-                    locomotive.getCurrentSpeed(), functions));
+        for (String functionsCommand : functionsCommands) {
+            brain.write(functionsCommand);
         }
-        locomotive.setCurrentFunctions(functions);
     }
+
+  /*  private void setFunctions(final Locomotive locomotive,
+                              final boolean[] newFunctions) {
+        List<String> functionsCommands = brainLocomotiveCommandBuilder.getFunctionsCommand(locomotive, newFunctions);
+
+        for (String functionsCommand : functionsCommands) {
+            brain.write(functionsCommand);
+        }
+        locomotive.setCurrentFunctions(newFunctions);
+    }*/
 
     @Override
     public void emergencyStop(final Locomotive myLocomotive)
@@ -166,29 +156,6 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
         return true;
     }
 
-    private String getSpeedCommand(final Locomotive locomotive,
-                                   final int address, final int speed, final boolean[] functions) {
-        if (LocomotiveType.DIGITAL == locomotive.getType() && functions.length != 5) {
-            throw new LocomotiveException("invalid function count of locomotive " + locomotive.getName());
-        }
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("XL ");
-        stringBuilder.append(address);
-        stringBuilder.append(" ");
-        stringBuilder.append(speed);
-        stringBuilder.append(" ");
-        stringBuilder.append(functions[0] ? "1" : "0");
-        stringBuilder.append(" ");
-        stringBuilder
-                .append(locomotive.getCurrentDirection() == LocomotiveDirection.FORWARD ? "1"
-                        : "0");
-        stringBuilder.append(" ");
-        for (int i = 1; i < functions.length; i++) {
-            stringBuilder.append(functions[i] ? "1" : "0");
-            stringBuilder.append(" ");
-        }
-        return stringBuilder.toString().trim();
-    }
 
     private String getInitCommand(final Locomotive locomotive, final int address) {
         final StringBuilder stringBuilder = new StringBuilder();

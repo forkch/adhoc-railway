@@ -13,7 +13,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 
-public class BrainLocomotiveControlAdapterTest {
+public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
 
     @Mock
     private BrainController brainController;
@@ -43,7 +43,6 @@ public class BrainLocomotiveControlAdapterTest {
     }
 
     @Test
-    @Ignore
     public void increase_speed_digital_locomotive() throws LocomotiveException,
             IOException {
         final Locomotive locomotive = createDigitalLocomotive();
@@ -71,7 +70,6 @@ public class BrainLocomotiveControlAdapterTest {
     }
 
     @Test
-    @Ignore
     public void decrease_speed_digital_locomotive() throws LocomotiveException,
             IOException {
         final Locomotive locomotive = createDigitalLocomotive();
@@ -93,9 +91,37 @@ public class BrainLocomotiveControlAdapterTest {
         locomotive.setCurrentSpeed(0);
 
         givenTestee();
-
         whenDecreasingSpeed(locomotive);
+
         assertNoBrainCall();
+    }
+
+    @Test
+    public void set_functions_digital_locomotive()
+            throws LocomotiveException, IOException {
+        final Locomotive locomotive = createDigitalLocomotive();
+        locomotive.setCurrentSpeed(0);
+
+        givenTestee();
+        whenSettingFunction(locomotive, 0, true);
+
+        assertBrainSetSpeedCalled(locomotive, 0, "1", "1", "0 0 0 0");
+    }
+
+    @Test
+    public void set_function_1_digital_locomotive()
+            throws LocomotiveException, IOException {
+        final Locomotive locomotive = createDigitalLocomotive();
+        locomotive.setCurrentSpeed(0);
+
+        givenTestee();
+        whenSettingFunction(locomotive, 4, true);
+
+        assertBrainSetSpeedCalled(locomotive, 0, "1", "0", "0 0 0 1");
+    }
+
+    private void whenSettingFunction(Locomotive locomotive, int i, boolean state) {
+        testee.setFunction(locomotive, i, state, -1);
     }
 
     private void assertNoBrainCall() {
@@ -115,15 +141,8 @@ public class BrainLocomotiveControlAdapterTest {
     private void assertBrainSetSpeedCalled(final Locomotive locomotive,
                                            final int speed, final String direction, final String light,
                                            final String functions) throws IOException {
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("XL ");
-        stringBuilder.append(locomotive.getAddress1());
-        stringBuilder.append(" ");
-        stringBuilder.append(speed);
-        stringBuilder.append(" " + light);
-        stringBuilder.append(" " + direction);
-        stringBuilder.append(" " + functions);
-        Mockito.verify(brainController).write(stringBuilder.toString());
+        String brainLocomotiveCommand = createBrainLocomotiveCommand(locomotive, speed, direction, light, functions);
+        Mockito.verify(brainController).write(brainLocomotiveCommand);
     }
 
     private void assertBrainInitLocoCall(final Locomotive locomotive)
@@ -142,13 +161,6 @@ public class BrainLocomotiveControlAdapterTest {
 
     private void givenTestee() {
         testee = new BrainLocomotiveControlAdapter(brainController);
-    }
-
-    private Locomotive createDigitalLocomotive() {
-        final Locomotive locomotive = new Locomotive();
-        locomotive.setType(LocomotiveType.DIGITAL);
-        locomotive.setAddress1(1);
-        return locomotive;
     }
 
 }
