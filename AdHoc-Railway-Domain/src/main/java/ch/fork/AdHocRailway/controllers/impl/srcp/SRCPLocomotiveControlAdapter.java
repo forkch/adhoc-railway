@@ -21,9 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author fork
@@ -41,13 +38,9 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
     public SRCPLocomotiveControlAdapter() {
         locomotiveControl = SRCPLocomotiveControl.getInstance();
-        executorService = createExecutorService();
-        rateLimiter = RateLimiter.create(4);
+        executorService = SRCPThreadUtils.createExecutorService();
+        rateLimiter = SRCPThreadUtils.createRateLimiter();
         reloadConfiguration();
-    }
-
-    private ThreadPoolExecutor createExecutorService() {
-        return new ThreadPoolExecutor(1, 1, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     @Override
