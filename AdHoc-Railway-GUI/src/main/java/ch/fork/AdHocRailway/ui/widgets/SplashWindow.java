@@ -18,6 +18,8 @@
 
 package ch.fork.AdHocRailway.ui.widgets;
 
+import ch.fork.AdHocRailway.ui.tools.SwingUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -45,6 +47,7 @@ public class SplashWindow extends JWindow {
                 dispose();
             }
         });
+        setLocationByPlatform(true);
         setVisible(true);
     }
 

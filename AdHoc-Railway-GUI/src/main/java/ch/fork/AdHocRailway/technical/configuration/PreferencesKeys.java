@@ -42,14 +42,14 @@ public interface PreferencesKeys {
     public static final String RAILWAY_DEVICE = "RailwayDevice";
 
     public static final String ADHOC_BRAIN_PORT = "AdHocBrainPort";
+    public static final String AUTOCONNECT_TO_RAILWAY = "RailwayAutoconnect";
 
     // SERVERS
-    public static final String AUTO_DISCOVER_AND_CONNECT_SERVERS = "AutoDiscoverAndConnectServers";
+    public static final String AUTO_DISCOVER = "AutoDiscoverServers";
 
     // SRCP Server
     public static final String SRCP_HOSTNAME = "SRCPHostname";
     public static final String SRCP_PORT = "SRCPPort";
-    public static final String SRCP_AUTOCONNECT = "SRCPAutoconnect";
 
     // AdHoc-Server Server
     public static final String USE_ADHOC_SERVER = "UseAdHocServer";

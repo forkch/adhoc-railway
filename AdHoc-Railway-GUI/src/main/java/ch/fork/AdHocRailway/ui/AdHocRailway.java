@@ -162,7 +162,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
             splash = new SplashWindow(createImageIconFromCustom("splash.png"),
                     this, 500, 12);
-            setIconImage(createImageIconFromCustom("RailControl.png")
+            setIconImage(createImageIconFromCustom("2-Hot-Train-icon 128.png")
                     .getImage());
 
             initProceeded("Loading Persistence Layer (Preferences)");
@@ -201,6 +201,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                     handleException(e);
                 }
             });
+            setLocationByPlatform(true);
             setVisible(true);
         } catch (final Exception e) {
             handleException(e);

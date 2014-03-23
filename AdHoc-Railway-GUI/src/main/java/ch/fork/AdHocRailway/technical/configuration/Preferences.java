@@ -48,7 +48,7 @@ public class Preferences {
     private void initDefaultValues() {
         setStringValue(SRCP_HOSTNAME, "localhost");
         setIntValue(SRCP_PORT, 4303);
-        setBooleanValue(SRCP_AUTOCONNECT, false);
+        setBooleanValue(AUTOCONNECT_TO_RAILWAY, false);
         setStringValue(ADHOC_SERVER_HOSTNAME, "localhost");
         setIntValue(ADHOC_SERVER_PORT, 3000);
         setIntValue(ACTIVATION_TIME, 50);

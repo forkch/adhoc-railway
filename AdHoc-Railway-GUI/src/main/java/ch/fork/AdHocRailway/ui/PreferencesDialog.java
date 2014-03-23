@@ -55,7 +55,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
     private boolean okPressed;
     private boolean cancelPressed;
-    private JCheckBox srcpAutoconnectCheckBox;
+    private JCheckBox autoconnectCheckBox;
     private JTextField adHocServerHostField;
     private JTextField adHocServerCollectionField;
     private JCheckBox useAdHocServerCheckBox;
@@ -66,7 +66,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
     private JSpinner numberOfBoosters;
     private JSpinner adHocServerPortField;
     private SpinnerNumberModel adHocServerPortModel;
-    private JCheckBox autoDiscoverAndConnectServersCheckBox;
+    private JCheckBox autoDiscoverServers;
     private final ApplicationContext ctx;
     private JComboBox<RailwayDevice> adhocDeviceComboBox;
     private JComboBox<String> adHocBrainPort;
@@ -172,17 +172,18 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         tabbedTrackCheckBox = new JCheckBox();
         openLastFileCheckBox = new JCheckBox();
 
-        autoDiscoverAndConnectServersCheckBox = new JCheckBox();
-        autoDiscoverAndConnectServersCheckBox
+        autoDiscoverServers = new JCheckBox();
+        autoDiscoverServers
                 .addActionListener(new ActionListener() {
 
                     @Override
                     public void actionPerformed(final ActionEvent e) {
-                        final boolean en = autoDiscoverAndConnectServersCheckBox
+                        final boolean en = autoDiscoverServers
                                 .isSelected();
                         enableDisableNetworking(en);
                     }
                 });
+        autoconnectCheckBox = new JCheckBox();
 
         final JPanel p = new JPanel(new MigLayout("wrap 2"));
         p.add(new JLabel("Railway device"));
@@ -199,8 +200,10 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         p.add(tabbedTrackCheckBox);
         p.add(new JLabel("Open last file"));
         p.add(openLastFileCheckBox);
-        p.add(new JLabel("Auto Discover and Connect"));
-        p.add(autoDiscoverAndConnectServersCheckBox);
+        p.add(new JLabel("Auto Discover servers"));
+        p.add(autoDiscoverServers);
+        p.add(new JLabel("Autoconnect"));
+        p.add(autoconnectCheckBox);
         return p;
     }
 
@@ -241,14 +244,11 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
         srcpPortnumberTextField = new JTextField("12345", 15);
 
-        srcpAutoconnectCheckBox = new JCheckBox();
 
         final JPanel p = new JPanel(new MigLayout("wrap 2"));
-        p.add(new JLabel("Autoconnect"));
-        p.add(srcpAutoconnectCheckBox);
         p.add(new JLabel("Hostname (Name or IP)"));
         p.add(srcpHostnameTextField);
-        p.add(new JLabel("Portnumber (e.g. 4303)"));
+        p.add(new JLabel("Port (e.g. 4303)"));
         p.add(srcpPortnumberTextField);
 
         return p;
@@ -269,9 +269,9 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
         p.add(new JLabel("Use AdHoc-Server"));
         p.add(useAdHocServerCheckBox);
-        p.add(new JLabel("Host"));
+        p.add(new JLabel("Hostname (Name or IP)"));
         p.add(adHocServerHostField);
-        p.add(new JLabel("Port"));
+        p.add(new JLabel("Port (e.g. 3000)"));
         p.add(adHocServerPortField);
         p.add(new JLabel("Collection"));
         p.add(adHocServerCollectionField);
@@ -304,8 +304,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         tabbedTrackCheckBox.setSelected(p.getBooleanValue(TABBED_TRACK));
         openLastFileCheckBox.setSelected(p.getBooleanValue(OPEN_LAST_FILE));
 
-        autoDiscoverAndConnectServersCheckBox.setSelected(p
-                .getBooleanValue(AUTO_DISCOVER_AND_CONNECT_SERVERS));
+        autoDiscoverServers.setSelected(p
+                .getBooleanValue(AUTO_DISCOVER));
 
         numberOfBoostersModel.setValue(p.getIntValue(NUMBER_OF_BOOSTERS));
         defaultTurnoutBusModel.setValue(p.getIntValue(DEFAULT_TURNOUT_BUS));
@@ -317,8 +317,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         srcpHostnameTextField.setText(p.getStringValue(SRCP_HOSTNAME));
         srcpPortnumberTextField.setText(Integer.toString(p
                 .getIntValue(SRCP_PORT)));
-        srcpAutoconnectCheckBox
-                .setSelected(p.getBooleanValue(SRCP_AUTOCONNECT));
+        autoconnectCheckBox
+                .setSelected(p.getBooleanValue(AUTOCONNECT_TO_RAILWAY));
 
         useAdHocServerCheckBox.setSelected(p.getBooleanValue(USE_ADHOC_SERVER));
         adHocServerHostField.setText(p.getStringValue(ADHOC_SERVER_HOSTNAME));
@@ -326,7 +326,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         adHocServerCollectionField.setText(p
                 .getStringValue(ADHOC_SERVER_COLLECTION));
 
-        enableDisableNetworking(autoDiscoverAndConnectServersCheckBox
+        enableDisableNetworking(autoDiscoverServers
                 .isSelected());
 
     }
@@ -346,8 +346,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         p.setBooleanValue(FULLSCREEN, fullscreen.isSelected());
         p.setBooleanValue(TABBED_TRACK, tabbedTrackCheckBox.isSelected());
         p.setBooleanValue(OPEN_LAST_FILE, openLastFileCheckBox.isSelected());
-        p.setBooleanValue(AUTO_DISCOVER_AND_CONNECT_SERVERS,
-                autoDiscoverAndConnectServersCheckBox.isSelected());
+        p.setBooleanValue(AUTO_DISCOVER,
+                autoDiscoverServers.isSelected());
 
         p.setIntValue(NUMBER_OF_BOOSTERS, numberOfBoostersModel.getNumber()
                 .intValue());
@@ -363,8 +363,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         p.setStringValue(SRCP_HOSTNAME, srcpHostnameTextField.getText());
         p.setIntValue(SRCP_PORT,
                 Integer.parseInt(srcpPortnumberTextField.getText()));
-        p.setBooleanValue(SRCP_AUTOCONNECT,
-                srcpAutoconnectCheckBox.isSelected());
+        p.setBooleanValue(AUTOCONNECT_TO_RAILWAY,
+                autoconnectCheckBox.isSelected());
 
         p.setBooleanValue(USE_ADHOC_SERVER, useAdHocServerCheckBox.isSelected());
         p.setStringValue(ADHOC_SERVER_HOSTNAME, adHocServerHostField.getText());
@@ -380,7 +380,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
     }
 
     private void enableDisableNetworking(final boolean en) {
-        srcpAutoconnectCheckBox.setEnabled(!en);
+        autoconnectCheckBox.setEnabled(!en);
         srcpHostnameTextField.setEnabled(!en);
         srcpPortnumberTextField.setEnabled(!en);
 

@@ -149,9 +149,9 @@ public class RailwayDeviceManager implements CommandDataListener,
 
     public void autoConnectToRailwayDeviceIfRequested() {
         final Preferences preferences = appContext.getPreferences();
-        if (preferences.getBooleanValue(SRCP_AUTOCONNECT)
+        if (preferences.getBooleanValue(AUTOCONNECT_TO_RAILWAY)
                 && !preferences
-                .getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
+                .getBooleanValue(PreferencesKeys.AUTO_DISCOVER)) {
             try {
                 loadControlLayer();
                 connect();
@@ -159,7 +159,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 
             }
         } else if (preferences
-                .getBooleanValue(PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
+                .getBooleanValue(PreferencesKeys.AUTO_DISCOVER)) {
 
         }
     }

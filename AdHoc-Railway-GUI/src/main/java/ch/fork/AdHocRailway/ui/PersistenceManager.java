@@ -22,18 +22,15 @@ import ch.fork.AdHocRailway.ui.bus.events.InitProceededEvent;
 import ch.fork.AdHocRailway.ui.bus.events.UpdateMainTitleEvent;
 import ch.fork.AdHocRailway.ui.context.PersistenceManagerContext;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
-import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.SortedSet;
 
 public class PersistenceManager {
 
@@ -123,7 +120,7 @@ public class PersistenceManager {
             }
         } else if (useAdHocServer
                 && !appContext.getPreferences().getBooleanValue(
-                PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
+                PreferencesKeys.AUTO_DISCOVER)) {
 
             final String url = getAdHocServerURL();
             connectToAdHocServer(url);
