@@ -3,7 +3,7 @@
  * copyright : (C) 2008 by Benjamin Mueller 
  * email     : news@fork.ch
  * website   : http://sourceforge.net/projects/adhocrailway
- * version   : $Id: LocomotiveException.java 262 2013-03-17 20:47:56Z fork_ch $
+ * version   : $Id: TurnoutException.java 262 2013-03-17 20:47:56Z fork_ch $
  * 
  *----------------------------------------------------------------------*/
 
@@ -16,22 +16,23 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.manager.locomotives;
+package ch.fork.AdHocRailway.controllers;
 
-public class LocomotiveException extends RuntimeException {
+public class TurnoutException extends RuntimeException {
 
-    public LocomotiveException() {
+
+    public TurnoutException() {
     }
 
-    public LocomotiveException(final String message) {
-        super(message);
+    public TurnoutException(final String msg) {
+        super(msg);
     }
 
-    public LocomotiveException(final Throwable cause) {
+    public TurnoutException(final Throwable cause) {
         super(cause);
     }
 
-    public LocomotiveException(final String message, final Throwable cause) {
+    public TurnoutException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

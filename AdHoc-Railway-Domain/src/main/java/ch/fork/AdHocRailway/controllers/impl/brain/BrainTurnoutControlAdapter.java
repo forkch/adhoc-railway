@@ -3,7 +3,7 @@ package ch.fork.AdHocRailway.controllers.impl.brain;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
+import ch.fork.AdHocRailway.controllers.TurnoutException;
 
 public class BrainTurnoutControlAdapter extends TurnoutController {
 

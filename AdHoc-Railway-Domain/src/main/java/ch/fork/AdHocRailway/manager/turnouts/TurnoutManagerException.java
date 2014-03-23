@@ -18,7 +18,7 @@
 
 package ch.fork.AdHocRailway.manager.turnouts;
 
-import ch.fork.AdHocRailway.domain.ManagerException;
+import ch.fork.AdHocRailway.manager.ManagerException;
 
 public class TurnoutManagerException extends ManagerException {
 

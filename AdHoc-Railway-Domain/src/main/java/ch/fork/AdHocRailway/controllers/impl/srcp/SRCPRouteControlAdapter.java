@@ -3,7 +3,7 @@ package ch.fork.AdHocRailway.controllers.impl.srcp;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
-import ch.fork.AdHocRailway.manager.turnouts.RouteException;
+import ch.fork.AdHocRailway.controllers.RouteException;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.routes.*;

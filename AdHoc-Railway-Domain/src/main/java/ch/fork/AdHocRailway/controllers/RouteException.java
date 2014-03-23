@@ -16,7 +16,7 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.manager.turnouts;
+package ch.fork.AdHocRailway.controllers;
 
 
 public class RouteException extends RuntimeException {

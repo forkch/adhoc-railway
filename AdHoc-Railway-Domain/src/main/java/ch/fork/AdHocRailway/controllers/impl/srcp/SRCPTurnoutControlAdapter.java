@@ -3,7 +3,7 @@ package ch.fork.AdHocRailway.controllers.impl.srcp;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
+import ch.fork.AdHocRailway.controllers.TurnoutException;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.model.SRCPModelException;

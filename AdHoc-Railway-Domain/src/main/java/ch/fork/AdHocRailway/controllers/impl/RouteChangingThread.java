@@ -5,7 +5,7 @@ import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutException;
+import ch.fork.AdHocRailway.controllers.TurnoutException;
 
 /**
  * Created by fork on 1/2/14.

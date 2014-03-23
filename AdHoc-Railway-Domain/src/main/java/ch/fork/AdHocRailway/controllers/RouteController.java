@@ -23,7 +23,6 @@ import ch.fork.AdHocRailway.controllers.impl.brain.BrainRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
-import ch.fork.AdHocRailway.manager.turnouts.RouteException;
 import com.google.common.collect.Maps;
 
 import java.util.LinkedList;

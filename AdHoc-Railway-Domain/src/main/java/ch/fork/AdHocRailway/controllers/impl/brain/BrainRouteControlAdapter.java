@@ -4,7 +4,7 @@ import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.controllers.impl.RouteChangingThread;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
-import ch.fork.AdHocRailway.manager.turnouts.RouteException;
+import ch.fork.AdHocRailway.controllers.RouteException;
 
 public class BrainRouteControlAdapter extends RouteController {
 

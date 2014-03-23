@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.domain;
+package ch.fork.AdHocRailway.manager;
 
 public class ManagerException extends RuntimeException {
 

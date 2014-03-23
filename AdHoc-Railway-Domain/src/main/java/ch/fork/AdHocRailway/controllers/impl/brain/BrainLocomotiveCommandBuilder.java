@@ -4,7 +4,7 @@ import ch.fork.AdHocRailway.controllers.SimulatedMFXLocomotivesHelper;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
+import ch.fork.AdHocRailway.controllers.LocomotiveException;
 
 import java.util.Arrays;
 import java.util.List;

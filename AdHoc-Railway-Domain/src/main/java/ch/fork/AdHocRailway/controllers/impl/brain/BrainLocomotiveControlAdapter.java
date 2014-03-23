@@ -4,7 +4,7 @@ import ch.fork.AdHocRailway.controllers.LockingException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
+import ch.fork.AdHocRailway.controllers.LocomotiveException;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveHelper;
 import com.google.common.collect.Sets;
 
