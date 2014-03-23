@@ -93,6 +93,7 @@ public class RoutesConfigurationDialog extends JDialog implements
         buildPanel();
         routeManager.addRouteManagerListener(this);
         pack();
+        SwingUtils.addEscapeListener(this);
         setLocationRelativeTo(getParent());
         setVisible(true);
     }

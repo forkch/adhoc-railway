@@ -118,8 +118,8 @@ public class TurnoutConfig extends JDialog {
         initEventHandling();
         address1TextField.requestFocusInWindow();
         pack();
-        setLocationRelativeTo(getParent());
         SwingUtils.addEscapeListener(this);
+        setLocationRelativeTo(getParent());
         setVisible(true);
     }
 

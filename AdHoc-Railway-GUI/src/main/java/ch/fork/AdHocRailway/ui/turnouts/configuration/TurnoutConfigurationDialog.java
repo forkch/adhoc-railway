@@ -97,6 +97,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
         initEventHandling();
         turnoutManager.addTurnoutManagerListener(this);
         pack();
+        SwingUtils.addEscapeListener(this);
+        setLocationRelativeTo(getParent());
         setVisible(true);
     }
 

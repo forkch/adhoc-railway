@@ -163,7 +163,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
         LOGGER.debug("removeTurnoutGroup()");
         if (!group.getTurnouts().isEmpty()) {
             throw new ManagerException(
-                    "Cannot delete Turnout-Group with associated Routes");
+                    "Cannot delete turnout-group with associated turnouts");
         }
         turnoutService.removeTurnoutGroup(group);
     }

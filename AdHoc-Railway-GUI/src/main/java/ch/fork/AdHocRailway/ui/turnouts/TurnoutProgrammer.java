@@ -64,6 +64,7 @@ public class TurnoutProgrammer extends ConfigurationDialog {
         addMainComponent(mainPanel);
         pack();
         SwingUtils.addEscapeListener(this);
+        setLocationRelativeTo(getParent());
         setVisible(true);
     }
 }

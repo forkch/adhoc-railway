@@ -64,16 +64,7 @@ public abstract class ConfigurationDialog extends JDialog {
             }
         });
         mainButtonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-//		mainButtonPanel.registerKeyboardAction(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				cancelPressed = true;
-//				ConfigurationDialog.this.setVisible(false);
-//			}
-//		}, "", KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-//				JComponent.WHEN_IN_FOCUSED_WINDOW);
-
         mainButtonPanel.add(okButton);
-        // mainButtonPanel.add(cancelButton);
         add(mainButtonPanel, BorderLayout.SOUTH);
     }
 

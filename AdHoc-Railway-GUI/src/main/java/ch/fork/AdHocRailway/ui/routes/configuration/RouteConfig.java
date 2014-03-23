@@ -112,8 +112,8 @@ public class RouteConfig extends JDialog {
         initEventHandling();
 
         pack();
-        setLocationRelativeTo(getParent());
         SwingUtils.addEscapeListener(this);
+        setLocationRelativeTo(getParent());
         setVisible(true);
     }
 

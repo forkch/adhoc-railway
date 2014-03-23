@@ -137,8 +137,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
         loadPreferences();
         pack();
-        setLocationRelativeTo(getParent());
         SwingUtils.addEscapeListener(this);
+        setLocationRelativeTo(getParent());
         setVisible(true);
     }
 
