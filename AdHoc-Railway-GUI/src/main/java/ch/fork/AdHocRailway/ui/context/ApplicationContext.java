@@ -47,6 +47,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
     private boolean isEditingMode;
     private RailwayDeviceManager railwayDeviceManager;
     private File actualFile;
+    private File previousLocodir;
 
     @Override
     public Preferences getPreferences() {
@@ -120,6 +121,17 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
     @Override
     public LocomotiveManager getLocomotiveManager() {
         return locomotiveManager;
+    }
+
+    @Override
+    public void setPreviousLocoDir(File previousLocodir) {
+
+        this.previousLocodir = previousLocodir;
+    }
+
+    @Override
+    public File getPreviousLocoDir() {
+        return previousLocodir;
     }
 
     @Override

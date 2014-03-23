@@ -27,8 +27,10 @@ import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.ui.TableColumnAdjuster;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
+import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import ch.fork.AdHocRailway.ui.tools.SwingUtils;
+import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutTypeCellRenderer;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.SelectionInList;
@@ -40,6 +42,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -130,7 +133,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
         removeGroupButton = new JButton(new RemoveLocomotiveGroupAction());
         DefaultTableCellRenderer r = new DefaultTableCellRenderer() {
 
-            Border padding = BorderFactory.createEmptyBorder(10,10,10,10);
+            Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 
             @Override
             public Component getTableCellRendererComponent(JTable table,
@@ -157,6 +160,11 @@ public class LocomotiveConfigurationDialog extends JDialog implements
         locomotivesTable.setModel(new LocomotiveTableModel(locomotiveModel));
         locomotivesTable
                 .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        locomotivesTable.setRowHeight(50);
+
+        final TableColumn imageColumn = locomotivesTable.getColumnModel()
+                .getColumn(1);
+        imageColumn.setCellRenderer(new LocomotiveImageTableCellRenderer());
 
         locomotiveTableScrollPane = new JScrollPane(locomotivesTable,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -351,8 +359,8 @@ public class LocomotiveConfigurationDialog extends JDialog implements
             }
             final Locomotive newLocomotive = createDefaultLocomotive();
 
-            new LocomotiveConfig(LocomotiveConfigurationDialog.this,
-                    locomotiveManager, newLocomotive, selectedLocomotiveGroup);
+            new LocomotiveConfig(ctx, LocomotiveConfigurationDialog.this,
+                     newLocomotive, selectedLocomotiveGroup);
         }
 
         private Locomotive createDefaultLocomotive() {
@@ -377,8 +385,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
             final LocomotiveGroup selectedLocomotiveGroup = locomotiveGroupModel
                     .getSelection();
             final int selectedRow = locomotivesTable.getSelectedRow();
-            new LocomotiveConfig(LocomotiveConfigurationDialog.this,
-                    locomotiveManager,
+            new LocomotiveConfig(ctx, LocomotiveConfigurationDialog.this,
                     locomotiveModel.getElementAt(selectedRow),
                     selectedLocomotiveGroup);
             final List<Locomotive> locomotives = new ArrayList<Locomotive>(
@@ -496,4 +503,24 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
     }
 
+    private class LocomotiveImageTableCellRenderer extends JLabel implements TableCellRenderer {
+
+        public LocomotiveImageTableCellRenderer() {
+
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setIcon(null);
+            if (value == null) {
+                return this;
+            }
+            Locomotive locomotive = locomotiveModel.getElementAt(row);
+            String image = (String) value;
+            setIcon(LocomotiveImageHelper.getLocomotiveIcon(locomotive, 120));
+
+            return this;
+
+        }
+    }
 }

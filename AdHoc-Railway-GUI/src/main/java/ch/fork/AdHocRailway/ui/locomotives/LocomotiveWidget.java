@@ -190,7 +190,9 @@ public class LocomotiveWidget extends JPanel implements
         locomotiveGroupComboBox.setFocusable(false);
         locomotiveGroupComboBox.setFont(locomotiveGroupComboBox.getFont()
                 .deriveFont(14));
+        locomotiveGroupComboBox.setMaximumRowCount(10);
         locomotiveGroupComboBox.setSelectedIndex(-1);
+
         groupSelectAction = new LocomotiveGroupSelectAction();
         locomotiveGroupComboBox.addItemListener(groupSelectAction);
 
@@ -815,8 +817,7 @@ public class LocomotiveWidget extends JPanel implements
 
                     locomotiveControl.removeLocomotiveChangeListener(
                             myLocomotive, LocomotiveWidget.this);
-                    new LocomotiveConfig(frame, ctx.getLocomotiveManager(),
-                            myLocomotive, myLocomotive.getGroup());
+                    new LocomotiveConfig(ctx, frame,  myLocomotive, myLocomotive.getGroup());
 
                     locomotiveControl.addLocomotiveChangeListener(myLocomotive,
                             LocomotiveWidget.this);

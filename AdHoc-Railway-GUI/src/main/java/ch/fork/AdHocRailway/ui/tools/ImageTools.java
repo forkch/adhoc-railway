@@ -28,7 +28,8 @@ import org.imgscalr.Scalr.Mode;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.image.BufferedImage;
+import java.awt.*;
+import java.awt.image.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -39,8 +40,6 @@ import java.util.Map;
 public class ImageTools {
 
     private static final Logger LOGGER = Logger.getLogger(ImageTools.class);
-
-    public final static String EMTPY_LOCO_ICON = "empty.png";
 
     public final static Map<String, ImageIcon> cache = new HashMap<String, ImageIcon>();
 
@@ -62,23 +61,6 @@ public class ImageTools {
     public static ImageIcon createImageIconFromIconSet(final String icon) {
         return createImageIcon("crystal/" + icon);
     }
-
-
-    public static String getImageBase64(Locomotive locomotive) {
-        final String image = LocomotiveImageHelper.getImagePath(locomotive);
-        if (image == null) {
-            return null;
-        }
-
-        try {
-            BufferedImage read = ImageIO.read(new File(image));
-            return encodeToString(read, "bmp");
-        } catch (IOException e) {
-            System.out.println(image);
-        }
-        return null;
-    }
-
 
     /**
      * Decode string to image
@@ -125,67 +107,52 @@ public class ImageTools {
         return imageString;
     }
 
-    public static ImageIcon getLocomotiveIcon(final Locomotive locomotive) {
-        return getLocomotiveIcon(locomotive, -1);
-    }
-
-    public static ImageIcon getLocomotiveIcon(final Locomotive locomotive,
-                                              final int height) {
-        if (locomotive == null) {
-            return null;
-        }
-
-        final String key = getKey(locomotive, height);
-        if (!cache.containsKey(key)) {
-
-            if(StringUtils.isNotBlank(locomotive.getImageBase64())) {
-                BufferedImage bufferedImage = decodeToImage(locomotive.getImageBase64());
-                return getScaledImage(locomotive, bufferedImage, height);
-            } else {
-                return getScaledImage(locomotive, EMTPY_LOCO_ICON, height);
+    public static Image TransformGrayToTransparency(BufferedImage image) {
+        ImageFilter filter = new RGBImageFilter() {
+            public final int filterRGB(int x, int y, int rgb) {
+                return (rgb << 8) & 0xFF000000;
             }
-        } else {
-            return cache.get(key);
-        }
+        };
+
+        ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
+        return Toolkit.getDefaultToolkit().createImage(ip);
     }
 
-    private static ImageIcon getScaledImage(Locomotive locomotive, BufferedImage img, final int height) {
-        if (height > 0) {
-            img = Scalr.resize(img, Mode.FIT_TO_WIDTH, height);
-        }
-        final String key = getKey(locomotive, height);
-        final ImageIcon icon = new ImageIcon(img);
-        cache.put(key, icon);
-        LOGGER.info("cache-miss: put icon for " + key + " in cache");
-        return icon;
-
-    }
-
-    private static ImageIcon getScaledImage(final Locomotive locomotive, final String image, final int height) {
-        BufferedImage img;
-        try {
-            img = ImageIO.read(new File(image));
-            if (height > 0) {
-                img = Scalr.resize(img, Mode.FIT_TO_WIDTH, height);
+    public static Image TransformColorToTransparency(BufferedImage image, Color c1, Color c2) {
+        // Primitive test, just an example
+        final int r1 = c1.getRed();
+        final int g1 = c1.getGreen();
+        final int b1 = c1.getBlue();
+        final int r2 = c2.getRed();
+        final int g2 = c2.getGreen();
+        final int b2 = c2.getBlue();
+        ImageFilter filter = new RGBImageFilter() {
+            public final int filterRGB(int x, int y, int rgb) {
+                int r = (rgb & 0xFF0000) >> 16;
+                int g = (rgb & 0xFF00) >> 8;
+                int b = rgb & 0xFF;
+                if (r >= r1 && r <= r2 &&
+                        g >= g1 && g <= g2 &&
+                        b >= b1 && b <= b2) {
+                    // Set fully transparent but keep color
+                    return rgb & 0xFFFFFF;
+                }
+                return rgb;
             }
-            final String key = getKey(locomotive, height);
-            final ImageIcon icon = new ImageIcon(img);
-            cache.put(key, icon);
-            LOGGER.info("cache-miss: put icon for " + key + " in cache");
-            return icon;
+        };
 
-        } catch (final IOException e) {
-            return null;
-        }
+        ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
+        return Toolkit.getDefaultToolkit().createImage(ip);
     }
 
-    private static String getKey(final Locomotive locomotive, final int height) {
-        String key;
-        if (height > 0) {
-            key = locomotive.getImage() + "_" + height;
-        } else {
-            key = locomotive.getImage()+ "_orig";
-        }
-        return key;
+    private BufferedImage ImageToBufferedImage(Image image, int width, int height) {
+        BufferedImage dest = new BufferedImage(
+                width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = dest.createGraphics();
+        g2.drawImage(image, 0, 0, null);
+        g2.dispose();
+        return dest;
     }
+
+
 }

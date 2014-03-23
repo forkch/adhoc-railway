@@ -25,6 +25,9 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
 import ch.fork.AdHocRailway.ui.UIConstants;
+import ch.fork.AdHocRailway.ui.context.ApplicationContext;
+import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
+import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import ch.fork.AdHocRailway.ui.tools.SwingUtils;
 import ch.fork.AdHocRailway.ui.widgets.ErrorPanel;
@@ -59,6 +62,7 @@ import java.util.List;
 public class LocomotiveConfig extends JDialog implements PropertyChangeListener {
 
 
+    private final LocomotiveContext ctx;
     private JTextField nameTextField;
 
     private JSpinner busSpinner;
@@ -94,30 +98,26 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
     private ErrorPanel errorPanel;
 
-    private final LocomotiveManager locomotiveManager;
 
     private SelectionInList<LocomotiveFunction> functionsModel;
 
     private final Trigger trigger = new Trigger();
 
-    public LocomotiveConfig(final Frame owner,
-                            final LocomotiveManager locomotiveManager,
+    public LocomotiveConfig(final LocomotiveContext ctx, final Frame owner,
                             final Locomotive myLocomotive,
                             final LocomotiveGroup selectedLocomotiveGroup) {
         super(owner, "Locomotive Config", true);
-        this.locomotiveManager = locomotiveManager;
-
+        this.ctx = ctx;
         this.presentationModel = new PresentationModel<Locomotive>(
                 myLocomotive, trigger);
         initGUI();
     }
 
-    public LocomotiveConfig(final JDialog owner,
-                            final LocomotiveManager locomotiveManager,
+    public LocomotiveConfig(final LocomotiveContext ctx, final JDialog owner,
                             final Locomotive myLocomotive,
                             final LocomotiveGroup selectedLocomotiveGroup) {
         super(owner, "Locomotive Config", true);
-        this.locomotiveManager = locomotiveManager;
+        this.ctx = ctx;
         this.selectedLocomotiveGroup = selectedLocomotiveGroup;
         this.presentationModel = new PresentationModel<Locomotive>(
                 myLocomotive, trigger);
@@ -165,7 +165,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
         imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        imageLabel.setIcon(ImageTools.getLocomotiveIcon(presentationModel
+        imageLabel.setIcon(LocomotiveImageHelper.getLocomotiveIcon(presentationModel
                 .getBean()));
 
         busSpinner = new JSpinner();
@@ -327,18 +327,18 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
         public void actionPerformed(final ActionEvent e) {
             trigger.triggerCommit();
             final Locomotive locomotive = presentationModel.getBean();
-            locomotiveManager
+            ctx.getLocomotiveManager()
                     .addLocomotiveManagerListener(new LocomotiveAddListener() {
 
                         @Override
                         public void locomotiveAdded(final Locomotive locomotive) {
-                            success(locomotiveManager, locomotive);
+                            success(ctx.getLocomotiveManager(), locomotive);
                         }
 
                         @Override
                         public void locomotiveUpdated(
                                 final Locomotive locomotive) {
-                            success(locomotiveManager, locomotive);
+                            success(ctx.getLocomotiveManager(), locomotive);
                         }
 
                         private void success(
@@ -362,9 +362,9 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
                     });
             if (locomotive.getId() != -1) {
-                locomotiveManager.updateLocomotive(locomotive);
+                ctx.getLocomotiveManager().updateLocomotive(locomotive);
             } else {
-                locomotiveManager.addLocomotiveToGroup(locomotive,
+                ctx.getLocomotiveManager().addLocomotiveToGroup(locomotive,
                         selectedLocomotiveGroup);
             }
 
@@ -466,7 +466,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
                 final int address = ((Integer) address1Spinner.getValue())
                         .intValue();
                 boolean unique = true;
-                for (final Locomotive l : locomotiveManager.getAllLocomotives()) {
+                for (final Locomotive l : ctx.getLocomotiveManager().getAllLocomotives()) {
                     if (l.getBus() == bus && l.getAddress1() == address
                             && !l.equals(locomotive)) {
                         unique = false;
@@ -494,7 +494,11 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
     }
 
     public void chooseLocoImage() {
-        final JFileChooser chooser = new JFileChooser("locoimages");
+        File previousLocoDir = ctx.getPreviousLocoDir();
+        if(previousLocoDir == null) {
+            previousLocoDir = new File("locoimages");
+        }
+        final JFileChooser chooser = new JFileChooser(previousLocoDir);
 
         final ImagePreviewPanel preview = new ImagePreviewPanel();
         chooser.setAccessory(preview);
@@ -523,13 +527,14 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
         final int ret = chooser.showOpenDialog(LocomotiveConfig.this);
         if (ret == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = chooser.getSelectedFile();
+            ctx.setPreviousLocoDir(selectedFile.getParentFile());
             presentationModel.getBean().setImage(
-                    chooser.getSelectedFile().getName());
+                    selectedFile.getName());
             final String image = presentationModel.getBean().getImage();
-            presentationModel.getBean().setImageBase64(ImageTools.getImageBase64(presentationModel.getBean()));
+            presentationModel.getBean().setImageBase64(LocomotiveImageHelper.getImageBase64(presentationModel.getBean()));
             if (image != null && !image.isEmpty()) {
-                imageLabel.setIcon(ImageTools
-                        .getLocomotiveIcon(presentationModel.getBean()));
+                imageLabel.setIcon(LocomotiveImageHelper.getLocomotiveIcon(presentationModel.getBean()));
                 pack();
             } else {
                 imageLabel.setIcon(null);

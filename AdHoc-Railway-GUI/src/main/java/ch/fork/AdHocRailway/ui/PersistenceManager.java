@@ -21,6 +21,7 @@ import ch.fork.AdHocRailway.ui.bus.events.CommandLogEvent;
 import ch.fork.AdHocRailway.ui.bus.events.InitProceededEvent;
 import ch.fork.AdHocRailway.ui.bus.events.UpdateMainTitleEvent;
 import ch.fork.AdHocRailway.ui.context.PersistenceManagerContext;
+import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -166,7 +167,7 @@ public class PersistenceManager {
     private void loadAndFillImageBase64() {
         for (Locomotive locomotive : appContext.getLocomotiveManager().getAllLocomotives()) {
             if (StringUtils.isBlank(locomotive.getImageBase64())) {
-                locomotive.setImageBase64(ImageTools.getImageBase64(locomotive));
+                locomotive.setImageBase64(LocomotiveImageHelper.getImageBase64(locomotive));
             }
         }
     }
