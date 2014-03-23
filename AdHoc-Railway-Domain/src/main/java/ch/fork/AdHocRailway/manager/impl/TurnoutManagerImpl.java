@@ -20,9 +20,9 @@ package ch.fork.AdHocRailway.manager.impl;
 
 import ch.fork.AdHocRailway.domain.turnouts.*;
 import ch.fork.AdHocRailway.manager.ManagerException;
-import ch.fork.AdHocRailway.manager.impl.events.TurnoutsUpdatedEvent;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.manager.TurnoutManagerListener;
+import ch.fork.AdHocRailway.manager.impl.events.TurnoutsUpdatedEvent;
 import ch.fork.AdHocRailway.services.TurnoutService;
 import ch.fork.AdHocRailway.services.TurnoutServiceListener;
 import com.google.common.eventbus.EventBus;

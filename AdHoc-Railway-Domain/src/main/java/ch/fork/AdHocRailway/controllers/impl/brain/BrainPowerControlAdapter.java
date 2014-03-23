@@ -1,8 +1,8 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.PowerChangeListener;
 import ch.fork.AdHocRailway.controllers.PowerController;
-import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.domain.power.Booster;
 import ch.fork.AdHocRailway.domain.power.BoosterState;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;

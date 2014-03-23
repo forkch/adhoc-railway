@@ -1,8 +1,8 @@
 package ch.fork.AdHocRailway.controllers.impl;
 
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.TurnoutChangeListener;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
-import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;

@@ -1,7 +1,7 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
-import ch.fork.AdHocRailway.controllers.SimulatedMFXLocomotivesHelper;
 import ch.fork.AdHocRailway.controllers.ControllerException;
+import ch.fork.AdHocRailway.controllers.SimulatedMFXLocomotivesHelper;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;

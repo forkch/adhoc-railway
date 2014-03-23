@@ -18,13 +18,8 @@
 
 package ch.fork.AdHocRailway.ui.tools;
 
-import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.imgscalr.Scalr;
-import org.imgscalr.Scalr.Mode;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -32,7 +27,6 @@ import java.awt.*;
 import java.awt.image.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
