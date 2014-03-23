@@ -5,7 +5,7 @@ import ch.fork.AdHocRailway.AdHocRailwayException;
 /**
  * Created by fork on 3/23/14.
  */
-public class ControllerException extends AdHocRailwayException{
+public class ControllerException extends AdHocRailwayException {
 
     public ControllerException() {
     }

@@ -91,8 +91,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
     }
 
     @Override
-    public Turnout getTurnoutByNumber(final int number)
-            {
+    public Turnout getTurnoutByNumber(final int number) {
         LOGGER.debug("getTurnoutByNumber()");
         return numberToTurnoutCache.get(number);
     }
@@ -131,8 +130,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
     }
 
     @Override
-    public void updateTurnout(final Turnout turnout)
-            {
+    public void updateTurnout(final Turnout turnout) {
         LOGGER.debug("updateTurnout()");
         turnoutService.updateTurnout(turnout);
     }
@@ -161,8 +159,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
     }
 
     @Override
-    public void removeTurnoutGroup(final TurnoutGroup group)
-            {
+    public void removeTurnoutGroup(final TurnoutGroup group) {
         LOGGER.debug("removeTurnoutGroup()");
         if (!group.getTurnouts().isEmpty()) {
             throw new ManagerException(

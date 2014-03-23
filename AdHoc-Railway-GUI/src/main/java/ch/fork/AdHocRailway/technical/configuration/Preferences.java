@@ -328,7 +328,7 @@ public class Preferences {
 
     public void loadPreferences(boolean cleanConfig) {
 
-            final boolean found = findConfigFile();
+        final boolean found = findConfigFile();
 
         if (!cleanConfig) {
             if (!found) {

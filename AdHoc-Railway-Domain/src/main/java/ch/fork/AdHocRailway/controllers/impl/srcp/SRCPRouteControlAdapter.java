@@ -35,7 +35,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
     }
 
     @Override
-    public void enableRoute(final Route route)  {
+    public void enableRoute(final Route route) {
         final SRCPRoute sRoute = getOrCreateSRCPRoute(route);
         try {
             route.setRouting(true);
@@ -46,7 +46,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
     }
 
     @Override
-    public void disableRoute(final Route route)  {
+    public void disableRoute(final Route route) {
         final SRCPRoute sRoute = getOrCreateSRCPRoute(route);
         try {
             route.setRouting(true);
@@ -57,7 +57,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
     }
 
     @Override
-    public void toggle(final Route route)  {
+    public void toggle(final Route route) {
         final SRCPRoute sRoute = getOrCreateSRCPRoute(route);
         try {
             routeControl.toggle(sRoute);
@@ -67,7 +67,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
     }
 
     @Override
-    public void toggleTest(final Route route)  {
+    public void toggleTest(final Route route) {
         routesSRCPRoutesMap.remove(route);
         SRCPRoutesRoutesMap.remove(sRouteTemp);
         if (routeTemp == null || !routeTemp.equals(route)) {

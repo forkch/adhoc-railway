@@ -61,29 +61,25 @@ public class XMLRouteService implements RouteService {
     }
 
     @Override
-    public SortedSet<RouteGroup> getAllRouteGroups()
-            {
+    public SortedSet<RouteGroup> getAllRouteGroups() {
         return routeGroups;
     }
 
     @Override
-    public void addRouteGroup(final RouteGroup routeGroup)
-            {
+    public void addRouteGroup(final RouteGroup routeGroup) {
         routeGroups.add(routeGroup);
         listener.routeGroupAdded(routeGroup);
     }
 
     @Override
-    public void removeRouteGroup(final RouteGroup routeGroup)
-            {
+    public void removeRouteGroup(final RouteGroup routeGroup) {
         routeGroups.remove(routeGroup);
         listener.routeGroupRemoved(routeGroup);
 
     }
 
     @Override
-    public void updateRouteGroup(final RouteGroup routeGroup)
-            {
+    public void updateRouteGroup(final RouteGroup routeGroup) {
         routeGroups.remove(routeGroup);
         routeGroups.add(routeGroup);
         listener.routeGroupUpdated(routeGroup);
@@ -96,14 +92,12 @@ public class XMLRouteService implements RouteService {
     }
 
     @Override
-    public void removeRouteItem(final RouteItem item)
-            {
+    public void removeRouteItem(final RouteItem item) {
 
     }
 
     @Override
-    public void updateRouteItem(final RouteItem item)
-            {
+    public void updateRouteItem(final RouteItem item) {
 
     }
 

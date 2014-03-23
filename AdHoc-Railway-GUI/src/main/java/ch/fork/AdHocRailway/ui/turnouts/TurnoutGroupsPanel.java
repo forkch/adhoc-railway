@@ -200,7 +200,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
     }
 
     private void initMenuBar() {
-		/* TOOLS */
+        /* TOOLS */
         final JMenu toolsMenu = new JMenu("Tools");
         addTurnoutsItem = new JMenuItem(new AddTurnoutsAction());
         final JMenuItem turnoutsStraightItem = new JMenuItem(

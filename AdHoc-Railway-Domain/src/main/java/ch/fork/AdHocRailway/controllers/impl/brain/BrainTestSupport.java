@@ -12,8 +12,8 @@ public class BrainTestSupport {
 
 
     protected String createBrainLocomotiveCommand(final Locomotive locomotive,
-                                               final int speed, final String direction, final String light,
-                                               final String functions) throws IOException {
+                                                  final int speed, final String direction, final String light,
+                                                  final String functions) throws IOException {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("XL ");
         stringBuilder.append(locomotive.getAddress1());

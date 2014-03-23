@@ -298,19 +298,17 @@ public class SIORouteService implements RouteService, IOCallback {
     }
 
     @Override
-    public void addRouteItem(final RouteItem item)  {
+    public void addRouteItem(final RouteItem item) {
 
     }
 
     @Override
-    public void removeRouteItem(final RouteItem item)
-              {
+    public void removeRouteItem(final RouteItem item) {
 
     }
 
     @Override
-    public void updateRouteItem(final RouteItem item)
-              {
+    public void updateRouteItem(final RouteItem item) {
 
     }
 

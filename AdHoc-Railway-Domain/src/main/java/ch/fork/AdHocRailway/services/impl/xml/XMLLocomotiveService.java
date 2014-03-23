@@ -51,24 +51,21 @@ public class XMLLocomotiveService implements LocomotiveService {
     }
 
     @Override
-    public void addLocomotive(final Locomotive locomotive)
-             {
+    public void addLocomotive(final Locomotive locomotive) {
         locomotives.add(locomotive);
         locomotive.setId(UUID.randomUUID().hashCode());
         listener.locomotiveAdded(locomotive);
     }
 
     @Override
-    public void removeLocomotive(final Locomotive locomotive)
-             {
+    public void removeLocomotive(final Locomotive locomotive) {
         locomotives.remove(locomotive);
         listener.locomotiveRemoved(locomotive);
 
     }
 
     @Override
-    public void updateLocomotive(final Locomotive locomotive)
-             {
+    public void updateLocomotive(final Locomotive locomotive) {
         locomotives.remove(locomotive);
         locomotives.add(locomotive);
 
@@ -76,29 +73,25 @@ public class XMLLocomotiveService implements LocomotiveService {
     }
 
     @Override
-    public SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
-             {
+    public SortedSet<LocomotiveGroup> getAllLocomotiveGroups() {
         return locomotiveGroups;
     }
 
     @Override
-    public void addLocomotiveGroup(final LocomotiveGroup group)
-             {
+    public void addLocomotiveGroup(final LocomotiveGroup group) {
         locomotiveGroups.add(group);
         group.setId(UUID.randomUUID().hashCode());
         listener.locomotiveGroupAdded(group);
     }
 
     @Override
-    public void removeLocomotiveGroup(final LocomotiveGroup group)
-             {
+    public void removeLocomotiveGroup(final LocomotiveGroup group) {
         locomotiveGroups.remove(group);
         listener.locomotiveGroupRemoved(group);
     }
 
     @Override
-    public void updateLocomotiveGroup(final LocomotiveGroup group)
-             {
+    public void updateLocomotiveGroup(final LocomotiveGroup group) {
         locomotiveGroups.remove(group);
         locomotiveGroups.add(group);
         listener.locomotiveGroupUpdated(group);

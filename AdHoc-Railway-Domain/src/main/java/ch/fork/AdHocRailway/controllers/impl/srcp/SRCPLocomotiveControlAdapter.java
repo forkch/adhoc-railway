@@ -45,7 +45,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     @Override
     public void setFunction(final Locomotive locomotive,
                             final int functionNumber, final boolean state,
-                            final int deactivationDelay)   {
+                            final int deactivationDelay) {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         final boolean[] srcpFunctions = locomotiveControl
                 .getFunctions(sLocomotive);
@@ -70,7 +70,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
     @Override
     public void setSpeed(final Locomotive locomotive, final int speed,
-                         final boolean[] functions)   {
+                         final boolean[] functions) {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         executorService.execute(new Runnable() {
             @Override
@@ -84,7 +84,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
                             locomotiveControl.setSpeed(sLocomotive, speed,
                                     SimulatedMFXLocomotivesHelper.convertToMultipartFunctions(
                                             locomotive.getType(), functions));
-                        }else{
+                        } else {
                             LOGGER.info("cancelling speed command: " + speed);
                         }
                     } catch (SRCPModelException e) {
@@ -100,37 +100,35 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     }
 
     @Override
-    public void emergencyStop(final Locomotive locomotive)
-              {
+    public void emergencyStop(final Locomotive locomotive) {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
-            emergencyStopPending = true;
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
+        emergencyStopPending = true;
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
 
-                        LOGGER.info(">>>>>EMERGENCY STOP<<<<<");
-                        final int emergencyStopFunction = locomotive
-                                .getEmergencyStopFunction();
+                    LOGGER.info(">>>>>EMERGENCY STOP<<<<<");
+                    final int emergencyStopFunction = locomotive
+                            .getEmergencyStopFunction();
 
-                        final int srcpEmergencyStopFunction = SimulatedMFXLocomotivesHelper
-                                .computeMultipartFunctionNumber(locomotive.getType(),
-                                        emergencyStopFunction);
-                        locomotiveControl.emergencyStop(sLocomotive,
-                                srcpEmergencyStopFunction);
-                        locomotive.setCurrentSpeed(0);
-                        locomotive.setCurrentFunctions(locomotive.getCurrentFunctions());
-                        emergencyStopPending = false;
-                    } catch (SRCPModelException e) {
-                        e.printStackTrace();
-                    }
+                    final int srcpEmergencyStopFunction = SimulatedMFXLocomotivesHelper
+                            .computeMultipartFunctionNumber(locomotive.getType(),
+                                    emergencyStopFunction);
+                    locomotiveControl.emergencyStop(sLocomotive,
+                            srcpEmergencyStopFunction);
+                    locomotive.setCurrentSpeed(0);
+                    locomotive.setCurrentFunctions(locomotive.getCurrentFunctions());
+                    emergencyStopPending = false;
+                } catch (SRCPModelException e) {
+                    e.printStackTrace();
                 }
-            });
+            }
+        });
     }
 
     @Override
-    public void toggleDirection(final Locomotive locomotive)
-              {
+    public void toggleDirection(final Locomotive locomotive) {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         try {
             locomotiveControl.toggleDirection(sLocomotive);
@@ -151,8 +149,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     }
 
     @Override
-    public boolean acquireLock(final Locomotive locomotive)
-             {
+    public boolean acquireLock(final Locomotive locomotive) {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         try {
             return locomotiveControl.acquireLock(sLocomotive);
@@ -164,8 +161,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     }
 
     @Override
-    public boolean isLocked(final Locomotive locomotive)
-            {
+    public boolean isLocked(final Locomotive locomotive) {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         if (locomotiveControl.getSession() == null) {
             return false;
@@ -180,8 +176,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     }
 
     @Override
-    public boolean isLockedByMe(final Locomotive locomotive)
-            {
+    public boolean isLockedByMe(final Locomotive locomotive) {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         if (locomotiveControl.getSession() == null) {
             return false;
@@ -197,8 +192,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     }
 
     @Override
-    public boolean releaseLock(final Locomotive locomotive)
-            {
+    public boolean releaseLock(final Locomotive locomotive) {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         try {
             return locomotiveControl.releaseLock(sLocomotive);
@@ -279,7 +273,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     }
 
     private void setFunctions(final Locomotive locomotive,
-                              final boolean[] srcpFunctions)  {
+                              final boolean[] srcpFunctions) {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         try {
             locomotiveControl.setFunctions(sLocomotive, srcpFunctions);

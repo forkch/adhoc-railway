@@ -23,8 +23,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
     }
 
     @Override
-    public void toggleDirection(final Locomotive locomotive)
-              {
+    public void toggleDirection(final Locomotive locomotive) {
         LocomotiveHelper.toggleDirection(locomotive);
         setSpeed(locomotive, locomotive.getCurrentSpeed(),
                 locomotive.getCurrentFunctions());
@@ -50,8 +49,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
     }
 
-    private void initLocomotive(final Locomotive locomotive)
-              {
+    private void initLocomotive(final Locomotive locomotive) {
         try {
             if (!activeLocomotives.contains(locomotive)) {
                 if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
@@ -76,7 +74,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
     @Override
     public void setFunction(final Locomotive locomotive,
                             final int functionNumber, final boolean state,
-                            final int deactivationDelay)   {
+                            final int deactivationDelay) {
         final boolean[] currentFunctions = locomotive.getCurrentFunctions();
 
         if (functionNumber >= currentFunctions.length) {
@@ -104,8 +102,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
     }
 
     @Override
-    public void emergencyStop(final Locomotive myLocomotive)
-              {
+    public void emergencyStop(final Locomotive myLocomotive) {
         setFunction(myLocomotive, myLocomotive.getEmergencyStopFunction(),
                 true, 0);
         setSpeed(myLocomotive, 0, myLocomotive.getCurrentFunctions());
@@ -124,8 +121,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
      * Locking is not supported for BrainLocomotives
      */
     @Override
-    public boolean isLockedByMe(final Locomotive object)
-             {
+    public boolean isLockedByMe(final Locomotive object) {
         return true;
     }
 

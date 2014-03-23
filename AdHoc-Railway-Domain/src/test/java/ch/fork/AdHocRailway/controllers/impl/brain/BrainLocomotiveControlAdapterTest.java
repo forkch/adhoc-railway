@@ -25,7 +25,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
     }
 
     @Test
-    public void set_speed_digital_locomotive() throws 
+    public void set_speed_digital_locomotive() throws
             IOException {
         final Locomotive locomotive = createDigitalLocomotive();
 
@@ -40,7 +40,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
     }
 
     @Test
-    public void increase_speed_digital_locomotive() throws 
+    public void increase_speed_digital_locomotive() throws
             IOException {
         final Locomotive locomotive = createDigitalLocomotive();
         locomotive.setCurrentSpeed(10);
@@ -56,7 +56,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
 
     @Test
     public void increase_speed_digital_locomotive_speed_14()
-            throws  IOException {
+            throws IOException {
         final Locomotive locomotive = createDigitalLocomotive();
         locomotive.setCurrentSpeed(14);
 
@@ -67,7 +67,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
     }
 
     @Test
-    public void decrease_speed_digital_locomotive() throws 
+    public void decrease_speed_digital_locomotive() throws
             IOException {
         final Locomotive locomotive = createDigitalLocomotive();
         locomotive.setCurrentSpeed(10);
@@ -83,7 +83,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
 
     @Test
     public void decrease_speed_digital_locomotive_speed_0()
-            throws  IOException {
+            throws IOException {
         final Locomotive locomotive = createDigitalLocomotive();
         locomotive.setCurrentSpeed(0);
 
@@ -95,7 +95,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
 
     @Test
     public void set_functions_digital_locomotive()
-            throws  IOException {
+            throws IOException {
         final Locomotive locomotive = createDigitalLocomotive();
         locomotive.setCurrentSpeed(0);
 
@@ -107,7 +107,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
 
     @Test
     public void set_function_1_digital_locomotive()
-            throws  IOException {
+            throws IOException {
         final Locomotive locomotive = createDigitalLocomotive();
         locomotive.setCurrentSpeed(0);
 
@@ -125,13 +125,11 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
         Mockito.verifyZeroInteractions(brainController);
     }
 
-    private void whenIncreasingSpeed(final Locomotive locomotive)
-              {
+    private void whenIncreasingSpeed(final Locomotive locomotive) {
         testee.increaseSpeed(locomotive);
     }
 
-    private void whenDecreasingSpeed(final Locomotive locomotive)
-             {
+    private void whenDecreasingSpeed(final Locomotive locomotive) {
         testee.decreaseSpeed(locomotive);
     }
 
@@ -152,7 +150,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
     }
 
     private void whenSettingSpeed(final Locomotive locomotive, final int speed,
-                                  final boolean[] functions)  {
+                                  final boolean[] functions) {
         testee.setSpeed(locomotive, speed, functions);
     }
 

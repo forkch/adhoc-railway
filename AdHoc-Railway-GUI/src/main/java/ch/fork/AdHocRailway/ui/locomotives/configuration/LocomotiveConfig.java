@@ -494,7 +494,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
     public void chooseLocoImage() {
         File previousLocoDir = ctx.getPreviousLocoDir();
-        if(previousLocoDir == null) {
+        if (previousLocoDir == null) {
             previousLocoDir = new File("locoimages");
         }
         final JFileChooser chooser = new JFileChooser(previousLocoDir);

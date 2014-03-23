@@ -106,8 +106,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     }
 
     @Override
-    public void addRouteToGroup(final Route route, final RouteGroup group)
-              {
+    public void addRouteToGroup(final Route route, final RouteGroup group) {
         LOGGER.debug("addRouteToGroup()");
 
         group.addRoute(route);
@@ -117,7 +116,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     }
 
     @Override
-    public void removeRoute(final Route route)   {
+    public void removeRoute(final Route route) {
         LOGGER.debug("removeRoute()");
         if (!route.getRouteItems().isEmpty()) {
             final SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>(
@@ -159,8 +158,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     }
 
     @Override
-    public void removeRouteGroup(final RouteGroup routeGroup)
-              {
+    public void removeRouteGroup(final RouteGroup routeGroup) {
         LOGGER.debug("deleteRouteGroup()");
         if (!routeGroup.getRoutes().isEmpty()) {
             throw new ManagerException(
@@ -177,7 +175,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     }
 
     @Override
-    public void addRouteItem(final RouteItem item)  {
+    public void addRouteItem(final RouteItem item) {
         LOGGER.debug("addRouteItem()");
 
         if (item.getTurnout() == null) {

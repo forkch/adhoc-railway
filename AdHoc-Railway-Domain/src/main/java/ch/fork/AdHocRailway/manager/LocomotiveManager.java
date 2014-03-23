@@ -35,10 +35,10 @@ public interface LocomotiveManager {
             final LocomotiveManagerListener listener);
 
     public abstract SortedSet<Locomotive> getAllLocomotives()
-           ;
+            ;
 
     public abstract SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
-           ;
+            ;
 
     public abstract void addLocomotiveToGroup(final Locomotive locomotive,
                                               final LocomotiveGroup group);
@@ -47,16 +47,16 @@ public interface LocomotiveManager {
                                                    final LocomotiveGroup group);
 
     public abstract void updateLocomotive(final Locomotive locomotive)
-           ;
+            ;
 
     public abstract void addLocomotiveGroup(final LocomotiveGroup group)
-           ;
+            ;
 
     public abstract void removeLocomotiveGroup(final LocomotiveGroup group)
-           ;
+            ;
 
     public abstract void updateLocomotiveGroup(final LocomotiveGroup group)
-           ;
+            ;
 
     public abstract void setLocomotiveService(final LocomotiveService instance);
 

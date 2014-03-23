@@ -34,14 +34,14 @@ public class BrainRouteControlAdapter extends RouteController {
     }
 
     @Override
-    public void enableRoute(final Route r)  {
+    public void enableRoute(final Route r) {
         final Thread brainRouterThread = new Thread(new RouteChangingThread(turnoutControl, r,
                 true, routingDelay, routeChangingListener));
         brainRouterThread.start();
     }
 
     @Override
-    public void disableRoute(final Route r)  {
+    public void disableRoute(final Route r) {
         final Thread brainRouterThread = new Thread(new RouteChangingThread(turnoutControl, r,
                 false, routingDelay, routeChangingListener));
         brainRouterThread.start();

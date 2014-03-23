@@ -189,7 +189,7 @@ public class Locomotive extends AbstractItem implements Serializable,
         changeSupport
                 .firePropertyChange(PROPERTYNAME_FUNCTIONS, old, this.functions);
     }
-   
+
     public void addLocomotiveFunction(final LocomotiveFunction function) {
         this.functions.add(function);
     }

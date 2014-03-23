@@ -132,7 +132,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
         @Override
         public void mouseClicked(final MouseEvent e) {
-            if(!connectedToRailway)
+            if (!connectedToRailway)
                 return;
             try {
                 if (e.getClickCount() == 1

@@ -359,7 +359,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
             final Locomotive newLocomotive = createDefaultLocomotive();
 
             new LocomotiveConfig(ctx, LocomotiveConfigurationDialog.this,
-                     newLocomotive, selectedLocomotiveGroup);
+                    newLocomotive, selectedLocomotiveGroup);
         }
 
         private Locomotive createDefaultLocomotive() {

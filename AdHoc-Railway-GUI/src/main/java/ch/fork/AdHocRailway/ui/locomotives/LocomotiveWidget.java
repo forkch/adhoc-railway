@@ -115,6 +115,7 @@ public class LocomotiveWidget extends JPanel implements
         ctx.getLocomotiveManager().addLocomotiveManagerListener(this);
         connectedToRailway = false;
     }
+
     @Subscribe
     public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
         if (event.isConnected()) {
@@ -647,7 +648,7 @@ public class LocomotiveWidget extends JPanel implements
 
         protected abstract void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive)  ;
+                final Locomotive myLocomotive);
     }
 
     private class LocomotiveFunctionAction extends LocomotiveControlAction {
@@ -661,7 +662,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive)   {
+                final Locomotive myLocomotive) {
             final boolean state = functionToggleButtons.get(function)
                     .isSelected();
 
@@ -682,7 +683,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive)   {
+                final Locomotive myLocomotive) {
             locomotiveControl.increaseSpeed(myLocomotive);
         }
     }
@@ -693,7 +694,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive)   {
+                final Locomotive myLocomotive) {
             locomotiveControl.decreaseSpeed(myLocomotive);
         }
     }
@@ -704,7 +705,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive)   {
+                final Locomotive myLocomotive) {
             if (Preferences.getInstance().getBooleanValue(
                     PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
                     && myLocomotive.getCurrentSpeed() != 0) {
@@ -754,7 +755,7 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private void processMouseMovement(MouseEvent e) {
-        if(myLocomotive == null)
+        if (myLocomotive == null)
             return;
         double i = (double) e.getY() / speedBar.getHeight();
         int drivingSteps = myLocomotive.getType().getDrivingSteps();
@@ -815,7 +816,7 @@ public class LocomotiveWidget extends JPanel implements
 
                     locomotiveControl.removeLocomotiveChangeListener(
                             myLocomotive, LocomotiveWidget.this);
-                    new LocomotiveConfig(ctx, frame,  myLocomotive, myLocomotive.getGroup());
+                    new LocomotiveConfig(ctx, frame, myLocomotive, myLocomotive.getGroup());
 
                     locomotiveControl.addLocomotiveChangeListener(myLocomotive,
                             LocomotiveWidget.this);

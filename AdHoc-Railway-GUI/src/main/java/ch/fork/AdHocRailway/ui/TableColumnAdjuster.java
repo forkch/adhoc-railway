@@ -249,7 +249,7 @@ public class TableColumnAdjuster implements PropertyChangeListener,
         // When the TableModel changes we need to update the listeners
         // and column widths
 
-        if ("model" .equals(e.getPropertyName())) {
+        if ("model".equals(e.getPropertyName())) {
             TableModel model = (TableModel) e.getOldValue();
             model.removeTableModelListener(this);
 

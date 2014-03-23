@@ -61,8 +61,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     }
 
     @Override
-    public void removeLocomotiveGroup(final LocomotiveGroup group)
-             {
+    public void removeLocomotiveGroup(final LocomotiveGroup group) {
         if (group == null) {
             throw new IllegalArgumentException("group must not be null");
         }

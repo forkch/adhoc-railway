@@ -46,7 +46,7 @@ task createSamples {
         }
     }
 }
-task createLocoimages{
+task createLocoimages {
     def locoimages = file("$buildDir/locoimages")
     outputs.dir locoimages
     doLast {
