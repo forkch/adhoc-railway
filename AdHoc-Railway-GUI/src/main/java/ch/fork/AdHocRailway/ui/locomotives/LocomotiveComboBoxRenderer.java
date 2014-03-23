@@ -20,9 +20,10 @@ public class LocomotiveComboBoxRenderer extends JPanel implements
         textLabel = new JLabel();
         iconLabel = new JLabel();
         iconLabel.setHorizontalAlignment(JLabel.CENTER);
+        iconLabel.setVerticalAlignment(JLabel.CENTER);
 
         add(textLabel, BorderLayout.NORTH);
-        add(iconLabel, BorderLayout.SOUTH);
+        add(iconLabel, BorderLayout.CENTER);
 
     }
 
