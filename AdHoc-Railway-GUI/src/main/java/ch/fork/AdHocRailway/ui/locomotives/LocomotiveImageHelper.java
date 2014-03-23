@@ -18,42 +18,10 @@ public class LocomotiveImageHelper {
     private static final String BASE_PATH = "locoimages";
 
     static {
-
-        final File lockFile = new File(".locomotiveReading.lock");
-        final File imageToPathMapDumpFile = new File(
-                ".locomotiveImageToPathMap.obj");
-        try {
-            if (!lockFile.exists() && !imageToPathMapDumpFile.exists()) {
-                lockFile.createNewFile();
-                imageToPathMapDumpFile.delete();
-
-                LOGGER.info("start reading locomotive image files");
-                readFiles(new File(BASE_PATH));
-                LOGGER.info("read " + imageToPathMap.size()
-                        + " locomotive image files");
-                final ObjectOutputStream oos = new ObjectOutputStream(
-                        new FileOutputStream(imageToPathMapDumpFile));
-                oos.writeObject(imageToPathMap);
-                oos.flush();
-                oos.close();
-                LOGGER.info("wrote locomotive image to path map to file "
-                        + imageToPathMapDumpFile.getName());
-                lockFile.delete();
-
-            } else {
-                while (lockFile.exists()) {
-                    Thread.sleep(500);
-                }
-                LOGGER.info("reading locomotive image to path map from file "
-                        + imageToPathMapDumpFile.getName());
-                final ObjectInputStream ois = new ObjectInputStream(
-                        new FileInputStream(imageToPathMapDumpFile));
-                imageToPathMap = (Map<String, String>) ois.readObject();
-                ois.close();
-            }
-        } catch (final Exception e) {
-            lockFile.delete();
-        }
+        LOGGER.info("start reading locomotive image files");
+        readFiles(new File(BASE_PATH));
+        LOGGER.info("read " + imageToPathMap.size()
+                + " locomotive image files");
     }
 
     private static void readFiles(final File dir) {
