@@ -16,15 +16,15 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.manager.impl.turnouts;
+package ch.fork.AdHocRailway.manager.impl;
 
 import ch.fork.AdHocRailway.domain.turnouts.*;
-import ch.fork.AdHocRailway.manager.impl.turnouts.events.TurnoutsUpdatedEvent;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerListener;
-import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
-import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.manager.impl.events.TurnoutsUpdatedEvent;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.manager.TurnoutManagerListener;
+import ch.fork.AdHocRailway.services.TurnoutService;
+import ch.fork.AdHocRailway.services.TurnoutServiceListener;
 import com.google.common.eventbus.EventBus;
 import org.apache.log4j.Logger;
 
@@ -92,17 +92,17 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
     @Override
     public Turnout getTurnoutByNumber(final int number)
-            throws TurnoutManagerException {
+            {
         LOGGER.debug("getTurnoutByNumber()");
         return numberToTurnoutCache.get(number);
     }
 
     @Override
     public void addTurnoutToGroup(final Turnout turnout,
-                                  final TurnoutGroup group) throws TurnoutManagerException {
+                                  final TurnoutGroup group) {
         LOGGER.debug("addTurnout()");
         if (group == null) {
-            throw new TurnoutManagerException("Turnout has no associated Group");
+            throw new ManagerException("Turnout has no associated Group");
         }
         group.getTurnouts().add(turnout);
         turnout.setTurnoutGroup(group);
@@ -132,7 +132,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
     @Override
     public void updateTurnout(final Turnout turnout)
-            throws TurnoutManagerException {
+            {
         LOGGER.debug("updateTurnout()");
         turnoutService.updateTurnout(turnout);
     }
@@ -162,10 +162,10 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
     @Override
     public void removeTurnoutGroup(final TurnoutGroup group)
-            throws TurnoutManagerException {
+            {
         LOGGER.debug("removeTurnoutGroup()");
         if (!group.getTurnouts().isEmpty()) {
-            throw new TurnoutManagerException(
+            throw new ManagerException(
                     "Cannot delete Turnout-Group with associated Routes");
         }
         turnoutService.removeTurnoutGroup(group);
@@ -301,7 +301,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
     }
 
     @Override
-    public void failure(final TurnoutManagerException arg0) {
+    public void failure(final ManagerException arg0) {
         LOGGER.warn("failure", arg0);
         cleanupListeners();
         for (final TurnoutManagerListener l : listeners) {

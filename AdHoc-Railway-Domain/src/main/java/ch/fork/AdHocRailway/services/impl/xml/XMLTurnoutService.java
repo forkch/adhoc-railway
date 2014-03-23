@@ -20,8 +20,8 @@ package ch.fork.AdHocRailway.services.impl.xml;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
-import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
+import ch.fork.AdHocRailway.services.TurnoutService;
+import ch.fork.AdHocRailway.services.TurnoutServiceListener;
 import org.apache.log4j.Logger;
 
 import java.util.SortedSet;

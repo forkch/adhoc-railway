@@ -20,8 +20,8 @@ package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.turnouts.*;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
@@ -493,7 +493,7 @@ public class TurnoutConfig extends JDialog {
                 }
 
                 @Override
-                public void failure(final TurnoutManagerException arg0) {
+                public void failure(final ManagerException arg0) {
                     errorPanel.setErrorText(arg0.getMessage());
                 }
 

@@ -19,11 +19,11 @@
 package ch.fork.AdHocRailway.ui.locomotives;
 
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.controllers.LocomotiveException;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
+import ch.fork.AdHocRailway.manager.LocomotiveManagerListener;
+import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
@@ -131,7 +131,7 @@ public class LocomotiveControlPanel extends JPanel implements
                     }
                     locomotiveControl.emergencyStop(myLocomotive);
                 }
-            } catch (final LocomotiveException e3) {
+            } catch (final ControllerException e3) {
                 ctx.getMainApp().handleException(e3);
             }
         }
@@ -175,7 +175,7 @@ public class LocomotiveControlPanel extends JPanel implements
 
     @Override
     public void failure(
-            final LocomotiveManagerException locomotiveManagerException) {
+            final ManagerException locomotiveManagerException) {
 
     }
 }

@@ -1,8 +1,8 @@
-package ch.fork.AdHocRailway.services.turnouts;
+package ch.fork.AdHocRailway.services;
 
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
+import ch.fork.AdHocRailway.manager.ManagerException;
 
 import java.util.SortedSet;
 
@@ -22,6 +22,6 @@ public interface RouteServiceListener {
 
     void routeGroupUpdated(RouteGroup routeGroup);
 
-    void failure(RouteManagerException routeManagerException);
+    void failure(ManagerException routeManagerException);
 
 }

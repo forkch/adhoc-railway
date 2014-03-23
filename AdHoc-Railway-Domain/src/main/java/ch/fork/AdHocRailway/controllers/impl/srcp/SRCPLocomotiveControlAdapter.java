@@ -1,13 +1,12 @@
 package ch.fork.AdHocRailway.controllers.impl.srcp;
 
-import ch.fork.AdHocRailway.controllers.LockingException;
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.controllers.SimulatedMFXLocomotivesHelper;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.controllers.LocomotiveException;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveHelper;
+import ch.fork.AdHocRailway.utils.LocomotiveHelper;
 import com.google.common.util.concurrent.RateLimiter;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
@@ -46,7 +45,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     @Override
     public void setFunction(final Locomotive locomotive,
                             final int functionNumber, final boolean state,
-                            final int deactivationDelay) throws LocomotiveException {
+                            final int deactivationDelay)   {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         final boolean[] srcpFunctions = locomotiveControl
                 .getFunctions(sLocomotive);
@@ -71,7 +70,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
     @Override
     public void setSpeed(final Locomotive locomotive, final int speed,
-                         final boolean[] functions) throws LocomotiveException {
+                         final boolean[] functions)   {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         executorService.execute(new Runnable() {
             @Override
@@ -102,7 +101,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
     @Override
     public void emergencyStop(final Locomotive locomotive)
-            throws LocomotiveException {
+              {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
             emergencyStopPending = true;
             executorService.execute(new Runnable() {
@@ -131,14 +130,14 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
     @Override
     public void toggleDirection(final Locomotive locomotive)
-            throws LocomotiveException {
+              {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         try {
             locomotiveControl.toggleDirection(sLocomotive);
             LocomotiveHelper.toggleDirection(locomotive);
 
         } catch (final SRCPModelException e) {
-            throw new LocomotiveException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error", e);
         }
     }
 
@@ -153,20 +152,20 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
     @Override
     public boolean acquireLock(final Locomotive locomotive)
-            throws LockingException {
+             {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         try {
             return locomotiveControl.acquireLock(sLocomotive);
         } catch (final SRCPLockingException e) {
-            throw new LockingException("Locomotive Locked", e);
+            throw new ControllerException("Locomotive Locked", e);
         } catch (final SRCPModelException e) {
-            throw new LockingException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error", e);
         }
     }
 
     @Override
     public boolean isLocked(final Locomotive locomotive)
-            throws LockingException {
+            {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         if (locomotiveControl.getSession() == null) {
             return false;
@@ -174,15 +173,15 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         try {
             return locomotiveControl.isLocked(sLocomotive);
         } catch (final SRCPLockingException e) {
-            throw new LockingException("Locomotive Locked", e);
+            throw new ControllerException("Locomotive Locked", e);
         } catch (final SRCPModelException e) {
-            throw new LockingException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error", e);
         }
     }
 
     @Override
     public boolean isLockedByMe(final Locomotive locomotive)
-            throws LockingException {
+            {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         if (locomotiveControl.getSession() == null) {
             return false;
@@ -191,22 +190,22 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
             return locomotiveControl.isLockedByMe(sLocomotive);
 
         } catch (final SRCPLockingException e) {
-            throw new LockingException("Locomotive Locked", e);
+            throw new ControllerException("Locomotive Locked", e);
         } catch (final SRCPModelException e) {
-            throw new LockingException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error", e);
         }
     }
 
     @Override
     public boolean releaseLock(final Locomotive locomotive)
-            throws LockingException {
+            {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         try {
             return locomotiveControl.releaseLock(sLocomotive);
         } catch (final SRCPLockingException e) {
-            throw new LockingException("Locomotive Locked", e);
+            throw new ControllerException("Locomotive Locked", e);
         } catch (final SRCPModelException e) {
-            throw new LockingException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error", e);
         }
     }
 
@@ -280,7 +279,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     }
 
     private void setFunctions(final Locomotive locomotive,
-                              final boolean[] srcpFunctions) throws LocomotiveException {
+                              final boolean[] srcpFunctions)  {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         try {
             locomotiveControl.setFunctions(sLocomotive, srcpFunctions);
@@ -288,7 +287,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
                     .convertFromMultipartFunctions(locomotive.getType(),
                             srcpFunctions));
         } catch (final SRCPModelException e) {
-            throw new LocomotiveException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error", e);
         }
     }
 

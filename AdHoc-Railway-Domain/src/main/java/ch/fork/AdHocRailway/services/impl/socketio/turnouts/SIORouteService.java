@@ -3,11 +3,10 @@ package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
+import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
-import ch.fork.AdHocRailway.services.turnouts.RouteService;
-import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
+import ch.fork.AdHocRailway.services.RouteService;
+import ch.fork.AdHocRailway.services.RouteServiceListener;
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIOException;
@@ -48,14 +47,14 @@ public class SIORouteService implements RouteService, IOCallback {
                 final Boolean err = (Boolean) arg0[0];
                 final String msg = (String) arg0[1];
                 if (err) {
-                    listener.failure(new RouteManagerException(msg));
+                    listener.failure(new ManagerException(msg));
                 } else {
                     final JSONObject data = (JSONObject) arg0[2];
                     try {
                         SIORouteServiceEventHandler.handleRouteInit(data,
                                 listener);
                     } catch (final JSONException e) {
-                        listener.failure(new RouteManagerException(
+                        listener.failure(new ManagerException(
                                 "error clearing rutnouts", e));
                     }
                 }
@@ -81,7 +80,7 @@ public class SIORouteService implements RouteService, IOCallback {
                     final Boolean err = (Boolean) arg0[0];
                     final String msg = (String) arg0[1];
                     if (err) {
-                        listener.failure(new RouteManagerException(msg));
+                        listener.failure(new ManagerException(msg));
                     } else {
                         final String sioId = (String) arg0[2];
                         SIORouteServiceEventHandler.addIdToRoute(route, sioId);
@@ -97,7 +96,7 @@ public class SIORouteService implements RouteService, IOCallback {
                     SIORouteServiceEvent.ROUTE_ADD_REQUEST.getEvent(),
                     ioAcknowledge, addRouteJson);
         } catch (final JSONException e) {
-            throw new TurnoutManagerException("error adding route", e);
+            throw new ManagerException("error adding route", e);
         }
 
     }
@@ -116,7 +115,7 @@ public class SIORouteService implements RouteService, IOCallback {
                     final Boolean err = (Boolean) arg0[0];
                     final String msg = (String) arg0[1];
                     if (err) {
-                        listener.failure(new RouteManagerException(msg));
+                        listener.failure(new ManagerException(msg));
                     } else {
                         listener.routeRemoved(route);
                     }
@@ -131,7 +130,7 @@ public class SIORouteService implements RouteService, IOCallback {
                     SIORouteServiceEvent.ROUTE_REMOVE_REQUEST.getEvent(),
                     ioAcknowledge, removeRouteJson);
         } catch (final JSONException e) {
-            throw new TurnoutManagerException("error removing route", e);
+            throw new ManagerException("error removing route", e);
         }
     }
 
@@ -149,7 +148,7 @@ public class SIORouteService implements RouteService, IOCallback {
                     final Boolean err = (Boolean) arg0[0];
                     final String msg = (String) arg0[1];
                     if (err) {
-                        listener.failure(new RouteManagerException(msg));
+                        listener.failure(new ManagerException(msg));
                     } else {
                         listener.routeUpdated(route);
                     }
@@ -164,7 +163,7 @@ public class SIORouteService implements RouteService, IOCallback {
                     SIORouteServiceEvent.ROUTE_UPDATE_REQUEST.getEvent(),
                     ioAcknowledge, updateTurnoutJson);
         } catch (final JSONException e) {
-            throw new TurnoutManagerException("error updating route", e);
+            throw new ManagerException("error updating route", e);
         }
 
     }
@@ -185,7 +184,7 @@ public class SIORouteService implements RouteService, IOCallback {
                             (JSONObject) arg0[0], listener);
 
                 } catch (final JSONException e) {
-                    throw new TurnoutManagerException(
+                    throw new ManagerException(
                             "error getting all turnout groups", e);
                 }
             }
@@ -211,7 +210,7 @@ public class SIORouteService implements RouteService, IOCallback {
                     final String msg = (String) arg0[1];
                     final String sioId = (String) arg0[2];
                     if (err) {
-                        listener.failure(new RouteManagerException(msg));
+                        listener.failure(new ManagerException(msg));
                     } else {
                         SIORouteServiceEventHandler.addIdToRouteGroup(group,
                                 sioId);
@@ -228,7 +227,7 @@ public class SIORouteService implements RouteService, IOCallback {
                     SIORouteServiceEvent.ROUTE_GROUP_ADD_REQUEST.getEvent(),
                     ioAcknowledge, addRouteGroupJSON);
         } catch (final JSONException e) {
-            throw new TurnoutManagerException("error adding route group", e);
+            throw new ManagerException("error adding route group", e);
         }
 
     }
@@ -246,7 +245,7 @@ public class SIORouteService implements RouteService, IOCallback {
                     final Boolean err = (Boolean) arg0[0];
                     final String msg = (String) arg0[1];
                     if (err) {
-                        listener.failure(new RouteManagerException(msg));
+                        listener.failure(new ManagerException(msg));
                     } else {
                         listener.routeGroupRemoved(group);
                     }
@@ -261,7 +260,7 @@ public class SIORouteService implements RouteService, IOCallback {
                     SIORouteServiceEvent.ROUTE_GROUP_REMOVE_REQUEST.getEvent(),
                     ioAcknowledge, removeTurnoutGroupJSON);
         } catch (final JSONException e) {
-            throw new TurnoutManagerException("error removing turnout group", e);
+            throw new ManagerException("error removing turnout group", e);
         }
     }
 
@@ -279,7 +278,7 @@ public class SIORouteService implements RouteService, IOCallback {
                     final Boolean err = (Boolean) arg0[0];
                     final String msg = (String) arg0[1];
                     if (err) {
-                        listener.failure(new RouteManagerException(msg));
+                        listener.failure(new ManagerException(msg));
                     } else {
                         listener.routeGroupUpdated(group);
                     }
@@ -294,24 +293,24 @@ public class SIORouteService implements RouteService, IOCallback {
                     SIORouteServiceEvent.ROUTE_GROUP_UPDATE_REQUEST.getEvent(),
                     ioAcknowledge, updateRouteGroupJSON);
         } catch (final JSONException e) {
-            throw new TurnoutManagerException("error updating route group", e);
+            throw new ManagerException("error updating route group", e);
         }
     }
 
     @Override
-    public void addRouteItem(final RouteItem item) throws RouteManagerException {
+    public void addRouteItem(final RouteItem item)  {
 
     }
 
     @Override
     public void removeRouteItem(final RouteItem item)
-            throws RouteManagerException {
+              {
 
     }
 
     @Override
     public void updateRouteItem(final RouteItem item)
-            throws RouteManagerException {
+              {
 
     }
 
@@ -363,7 +362,7 @@ public class SIORouteService implements RouteService, IOCallback {
             }
         } catch (final JSONException e) {
             e.printStackTrace();
-            listener.failure(new RouteManagerException("error parsing event '"
+            listener.failure(new ManagerException("error parsing event '"
                     + event + "'"));
         }
     }
@@ -379,7 +378,7 @@ public class SIORouteService implements RouteService, IOCallback {
 
     @Override
     public void onError(final SocketIOException arg0) {
-        listener.failure(new RouteManagerException(
+        listener.failure(new ManagerException(
                 "failure in communication with adhoc-server", arg0));
     }
 

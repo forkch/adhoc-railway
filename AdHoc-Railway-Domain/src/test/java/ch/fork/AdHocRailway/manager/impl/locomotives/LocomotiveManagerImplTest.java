@@ -2,7 +2,8 @@ package ch.fork.AdHocRailway.manager.impl.locomotives;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
+import ch.fork.AdHocRailway.manager.LocomotiveManagerListener;
+import ch.fork.AdHocRailway.manager.impl.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
 import com.google.common.eventbus.EventBus;
 import org.junit.Before;

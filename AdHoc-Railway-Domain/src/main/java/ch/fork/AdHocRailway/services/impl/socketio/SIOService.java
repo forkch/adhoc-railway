@@ -1,7 +1,7 @@
 package ch.fork.AdHocRailway.services.impl.socketio;
 
 import ch.fork.AdHocRailway.AdHocRailwayException;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
+import ch.fork.AdHocRailway.manager.ManagerException;
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
@@ -90,14 +90,14 @@ public class SIOService {
                 });
             }
         } catch (final MalformedURLException e) {
-            throw new TurnoutManagerException(
+            throw new ManagerException(
                     "failed to initialize socket.io on " + url, e);
         }
     }
 
     public void checkSocket() {
         if (!socket.isConnected()) {
-            throw new TurnoutManagerException(
+            throw new ManagerException(
                     "not connected to socket.io server");
         }
     }

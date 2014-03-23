@@ -1,8 +1,8 @@
-package ch.fork.AdHocRailway.services.turnouts;
+package ch.fork.AdHocRailway.services;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
+import ch.fork.AdHocRailway.manager.ManagerException;
 
 import java.util.SortedSet;
 
@@ -22,5 +22,5 @@ public interface TurnoutServiceListener {
 
     public void turnoutGroupRemoved(TurnoutGroup group);
 
-    public void failure(TurnoutManagerException arg0);
+    public void failure(ManagerException arg0);
 }

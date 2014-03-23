@@ -16,12 +16,12 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.manager.turnouts;
+package ch.fork.AdHocRailway.manager;
 
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
-import ch.fork.AdHocRailway.services.turnouts.RouteService;
+import ch.fork.AdHocRailway.services.RouteService;
 import com.google.common.eventbus.EventBus;
 
 import java.util.List;

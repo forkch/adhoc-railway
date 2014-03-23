@@ -6,9 +6,9 @@ import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
-import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
-import ch.fork.AdHocRailway.services.turnouts.RouteService;
-import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
+import ch.fork.AdHocRailway.services.LocomotiveService;
+import ch.fork.AdHocRailway.services.RouteService;
+import ch.fork.AdHocRailway.services.TurnoutService;
 
 public class ServiceFactory {
 

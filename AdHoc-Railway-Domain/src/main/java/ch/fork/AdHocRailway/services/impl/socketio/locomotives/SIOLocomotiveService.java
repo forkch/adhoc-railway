@@ -2,10 +2,10 @@ package ch.fork.AdHocRailway.services.impl.socketio.locomotives;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
+import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
-import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
-import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
+import ch.fork.AdHocRailway.services.LocomotiveService;
+import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIOException;
@@ -47,14 +47,14 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                 final Boolean err = (Boolean) arg0[0];
                 final String msg = (String) arg0[1];
                 if (err) {
-                    listener.failure(new LocomotiveManagerException(msg));
+                    listener.failure(new ManagerException(msg));
                 } else {
                     final JSONObject data = (JSONObject) arg0[2];
                     try {
                         SIOLocomotiveServiceEventHandler.handleLocomotiveInit(
                                 data, listener);
                     } catch (final JSONException e) {
-                        listener.failure(new LocomotiveManagerException(
+                        listener.failure(new ManagerException(
                                 "error clearing locomotives", e));
                     }
                 }
@@ -79,7 +79,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                     final Boolean err = (Boolean) arg0[0];
                     final String msg = (String) arg0[1];
                     if (err) {
-                        listener.failure(new LocomotiveManagerException(msg));
+                        listener.failure(new ManagerException(msg));
                     } else {
                         final String sioId = (String) arg0[2];
                         SIOLocomotiveServiceEventHandler.addIdToLocomotive(
@@ -98,7 +98,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                             .getEvent(),
                             ioAcknowledge, addLocomotiveJson);
         } catch (final JSONException e) {
-            throw new LocomotiveManagerException("error adding turnout", e);
+            throw new ManagerException("error adding turnout", e);
         }
 
     }
@@ -116,7 +116,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                     final Boolean err = (Boolean) arg0[0];
                     final String msg = (String) arg0[1];
                     if (err) {
-                        listener.failure(new LocomotiveManagerException(msg));
+                        listener.failure(new ManagerException(msg));
                     } else {
                         listener.locomotiveRemoved(turnout);
                     }
@@ -133,7 +133,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                             .getEvent(),
                             ioAcknowledge, removeLocomotiveJson);
         } catch (final JSONException e) {
-            throw new LocomotiveManagerException("error removing turnout", e);
+            throw new ManagerException("error removing turnout", e);
         }
     }
 
@@ -150,7 +150,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                     final Boolean err = (Boolean) arg0[0];
                     final String msg = (String) arg0[1];
                     if (err) {
-                        listener.failure(new LocomotiveManagerException(msg));
+                        listener.failure(new ManagerException(msg));
                     } else {
                         listener.locomotiveUpdated(turnout);
                     }
@@ -167,7 +167,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                             .getEvent(),
                             ioAcknowledge, updateLocomotiveJson);
         } catch (final JSONException e) {
-            throw new LocomotiveManagerException("error updating turnout", e);
+            throw new ManagerException("error updating turnout", e);
         }
 
     }
@@ -187,7 +187,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                             (JSONObject) arg0[0], listener);
 
                 } catch (final JSONException e) {
-                    throw new LocomotiveManagerException(
+                    throw new ManagerException(
                             "error getting all turnout groups", e);
                 }
             }
@@ -213,7 +213,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                     final String msg = (String) arg0[1];
                     final String sioId = (String) arg0[2];
                     if (err) {
-                        listener.failure(new LocomotiveManagerException(msg));
+                        listener.failure(new ManagerException(msg));
                     } else {
                         SIOLocomotiveServiceEventHandler
                                 .addIdToLocomotiveGroup(group, sioId);
@@ -231,7 +231,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                     .emit(SIOLocomotiveServiceEvent.LOCOMOTIVE_GROUP_ADD_REQUEST
                             .getEvent(), ioAcknowledge, addLocomotiveGroupJSON);
         } catch (final JSONException e) {
-            throw new LocomotiveManagerException("error adding turnout group",
+            throw new ManagerException("error adding turnout group",
                     e);
         }
 
@@ -250,7 +250,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                     final Boolean err = (Boolean) arg0[0];
                     final String msg = (String) arg0[1];
                     if (err) {
-                        listener.failure(new LocomotiveManagerException(msg));
+                        listener.failure(new ManagerException(msg));
                     } else {
                         listener.locomotiveGroupRemoved(group);
                     }
@@ -267,7 +267,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                             .getEvent(), ioAcknowledge,
                             removeLocomotiveGroupJSON);
         } catch (final JSONException e) {
-            throw new LocomotiveManagerException(
+            throw new ManagerException(
                     "error removing turnout group", e);
         }
     }
@@ -285,7 +285,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                     final Boolean err = (Boolean) arg0[0];
                     final String msg = (String) arg0[1];
                     if (err) {
-                        listener.failure(new LocomotiveManagerException(msg));
+                        listener.failure(new ManagerException(msg));
                     } else {
                         listener.locomotiveGroupUpdated(group);
                     }
@@ -302,7 +302,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                             .getEvent(), ioAcknowledge,
                             updateLocomotiveGroupJSON);
         } catch (final JSONException e) {
-            throw new LocomotiveManagerException(
+            throw new ManagerException(
                     "error updating turnout group", e);
         }
     }
@@ -354,13 +354,13 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                             listener);
                     break;
                 default:
-                    listener.failure(new LocomotiveManagerException(
+                    listener.failure(new ManagerException(
                             "unregonized event '" + event + "' received"));
                     break;
 
             }
         } catch (final JSONException e) {
-            listener.failure(new LocomotiveManagerException(
+            listener.failure(new ManagerException(
                     "error parsing event '" + event + "'"));
         }
     }
@@ -376,7 +376,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
 
     @Override
     public void onError(final SocketIOException arg0) {
-        listener.failure(new LocomotiveManagerException(
+        listener.failure(new ManagerException(
                 "failure in communication with adhoc-server", arg0));
     }
 

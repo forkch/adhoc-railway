@@ -2,7 +2,7 @@ package ch.fork.AdHocRailway.controllers.impl.brain;
 
 import ch.fork.AdHocRailway.controllers.PowerChangeListener;
 import ch.fork.AdHocRailway.controllers.PowerController;
-import ch.fork.AdHocRailway.controllers.PowerException;
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.domain.power.Booster;
 import ch.fork.AdHocRailway.domain.power.BoosterState;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
@@ -36,7 +36,7 @@ public class BrainPowerControlAdapter extends PowerController implements
         try {
             brain.write("XGO " + booster.getBoosterNumber());
         } catch (final BrainException e) {
-            throw new PowerException("error turning on booster "
+            throw new ControllerException("error turning on booster "
                     + booster.getBoosterNumber(), e);
         }
     }
@@ -46,7 +46,7 @@ public class BrainPowerControlAdapter extends PowerController implements
         try {
             brain.write("XSTOP " + booster.getBoosterNumber());
         } catch (final BrainException e) {
-            throw new PowerException("error turning on booster "
+            throw new ControllerException("error turning on booster "
                     + booster.getBoosterNumber(), e);
         }
     }
@@ -71,7 +71,7 @@ public class BrainPowerControlAdapter extends PowerController implements
         try {
             brain.write("X!");
         } catch (final BrainException e) {
-            throw new PowerException("error turning on power ", e);
+            throw new ControllerException("error turning on power ", e);
         }
     }
 
@@ -80,7 +80,7 @@ public class BrainPowerControlAdapter extends PowerController implements
         try {
             brain.write("X.");
         } catch (final BrainException e) {
-            throw new PowerException("error turning off power ", e);
+            throw new ControllerException("error turning off power ", e);
         }
     }
 

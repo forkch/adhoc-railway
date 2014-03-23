@@ -1,8 +1,6 @@
 package ch.fork.AdHocRailway.ui.locomotives;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveHelper;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
 
 import javax.swing.*;
 import java.awt.*;

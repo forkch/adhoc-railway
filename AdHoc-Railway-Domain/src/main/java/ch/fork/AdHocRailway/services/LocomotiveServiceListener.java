@@ -1,8 +1,8 @@
-package ch.fork.AdHocRailway.services.locomotives;
+package ch.fork.AdHocRailway.services;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
+import ch.fork.AdHocRailway.manager.ManagerException;
 
 import java.util.SortedSet;
 
@@ -24,5 +24,5 @@ public interface LocomotiveServiceListener {
             final SortedSet<LocomotiveGroup> locomotiveGroups);
 
     public void failure(
-            final LocomotiveManagerException locomotiveManagerException);
+            final ManagerException locomotiveManagerException);
 }

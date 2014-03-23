@@ -36,7 +36,7 @@ public abstract class LocomotiveController implements
     private final Set<Locomotive> activeLocomotives = new HashSet<Locomotive>();
 
     public void activateLoco(final Locomotive locomotive)
-            throws LocomotiveException {
+             {
         if (!isLocomotiveActive(locomotive)) {
             this.activeLocomotives.add(locomotive);
 
@@ -60,12 +60,12 @@ public abstract class LocomotiveController implements
     }
 
     public void deactivateLoco(final Locomotive locomotive)
-            throws LocomotiveException {
+             {
         emergencyStop(locomotive);
         this.activeLocomotives.remove(locomotive);
     }
 
-    public void emergencyStopActiveLocos() throws LocomotiveException {
+    public void emergencyStopActiveLocos()  {
         for (final Locomotive locomotive : activeLocomotives) {
             try {
                 emergencyStop(locomotive);
@@ -118,7 +118,7 @@ public abstract class LocomotiveController implements
     }
 
     public void increaseSpeed(final Locomotive locomotive)
-            throws LocomotiveException {
+             {
         if (locomotive.getCurrentSpeed() < locomotive.getType()
                 .getDrivingSteps()) {
             setSpeed(locomotive, locomotive.getCurrentSpeed() + 1,
@@ -127,7 +127,7 @@ public abstract class LocomotiveController implements
     }
 
     public void decreaseSpeed(final Locomotive locomotive)
-            throws LocomotiveException {
+             {
         if (locomotive.getCurrentSpeed() > 0) {
             setSpeed(locomotive, locomotive.getCurrentSpeed() - 1,
                     locomotive.getCurrentFunctions());
@@ -149,7 +149,7 @@ public abstract class LocomotiveController implements
 
                 } catch (final InterruptedException e) {
                     e.printStackTrace();
-                } catch (final LocomotiveException e) {
+                } catch (final ControllerException e) {
                     e.printStackTrace();
                 }
 
@@ -162,27 +162,27 @@ public abstract class LocomotiveController implements
      * Toggles the direction of the Locomotive
      *
      * @param locomotive
-     * @throws LocomotiveException
+     * @
      */
     public abstract void toggleDirection(final Locomotive locomotive)
-            throws LocomotiveException;
+            ;
 
     /**
      * Sets the speed of the Locomotive
      *
      * @param locomotive
      * @param speed
-     * @throws LocomotiveException
+     * @
      */
     public abstract void setSpeed(final Locomotive locomotive, final int speed,
-                                  final boolean[] functions) throws LocomotiveException;
+                                  final boolean[] functions) ;
 
     public abstract void setFunction(final Locomotive locomotive,
                                      final int functionNumber, final boolean state,
-                                     final int deactivationDelay) throws LocomotiveException;
+                                     final int deactivationDelay) ;
 
     public abstract void emergencyStop(final Locomotive myLocomotive)
-            throws LocomotiveException;
+            ;
 
     public static LocomotiveController createLocomotiveController(
             final RailwayDevice railwayDevice) {
@@ -209,38 +209,38 @@ public abstract class LocomotiveController implements
 
         @Override
         public boolean isLocked(final Locomotive object)
-                throws LockingException {
+                 {
             return false;
         }
 
         @Override
         public boolean isLockedByMe(final Locomotive object)
-                throws LockingException {
+                 {
             return true;
         }
 
         @Override
         public boolean acquireLock(final Locomotive object)
-                throws LockingException {
+                 {
             return true;
         }
 
         @Override
         public boolean releaseLock(final Locomotive object)
-                throws LockingException {
+                 {
             return true;
         }
 
         @Override
         public void toggleDirection(final Locomotive locomotive)
-                throws LocomotiveException {
+                 {
             locomotive.setCurrentDirection(locomotive.getToggledDirection());
             informListeners(locomotive);
         }
 
         @Override
         public void setSpeed(final Locomotive locomotive, final int speed,
-                             final boolean[] functions) throws LocomotiveException {
+                             final boolean[] functions)  {
             locomotive.setCurrentSpeed(speed);
             locomotive.setCurrentFunctions(functions);
             informListeners(locomotive);
@@ -250,7 +250,7 @@ public abstract class LocomotiveController implements
         @Override
         public void setFunction(final Locomotive locomotive,
                                 final int functionNumber, final boolean state,
-                                final int deactivationDelay) throws LocomotiveException {
+                                final int deactivationDelay)  {
             boolean[] currentFunctions = locomotive.getCurrentFunctions();
             currentFunctions[functionNumber] = state;
             locomotive.setCurrentFunctions(currentFunctions);
@@ -259,7 +259,7 @@ public abstract class LocomotiveController implements
 
         @Override
         public void emergencyStop(final Locomotive locomotive)
-                throws LocomotiveException {
+                 {
             setFunction(locomotive, locomotive.getEmergencyStopFunction(), true, 0);
             setSpeed(locomotive, 0, locomotive.getCurrentFunctions());
             informListeners(locomotive);

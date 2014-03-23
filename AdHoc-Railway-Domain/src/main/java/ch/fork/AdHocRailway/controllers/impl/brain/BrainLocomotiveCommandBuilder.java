@@ -1,10 +1,10 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
 import ch.fork.AdHocRailway.controllers.SimulatedMFXLocomotivesHelper;
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.controllers.LocomotiveException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +22,7 @@ public class BrainLocomotiveCommandBuilder {
     private String getLocomotiveCommand(final Locomotive locomotive,
                                         final int address, final int speed, final boolean[] functions) {
         if (LocomotiveType.DIGITAL == locomotive.getType() && functions == null && functions.length != 5) {
-            throw new LocomotiveException("invalid function count of locomotive " + locomotive.getName());
+            throw new ControllerException("invalid function count of locomotive " + locomotive.getName());
         }
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("XL ");

@@ -20,10 +20,9 @@ package ch.fork.AdHocRailway.services.impl.xml;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
-import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
-import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
+import ch.fork.AdHocRailway.manager.LocomotiveManager;
+import ch.fork.AdHocRailway.services.LocomotiveService;
+import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
 import org.apache.log4j.Logger;
 
 import java.util.SortedSet;
@@ -53,7 +52,7 @@ public class XMLLocomotiveService implements LocomotiveService {
 
     @Override
     public void addLocomotive(final Locomotive locomotive)
-            throws LocomotiveManagerException {
+             {
         locomotives.add(locomotive);
         locomotive.setId(UUID.randomUUID().hashCode());
         listener.locomotiveAdded(locomotive);
@@ -61,7 +60,7 @@ public class XMLLocomotiveService implements LocomotiveService {
 
     @Override
     public void removeLocomotive(final Locomotive locomotive)
-            throws LocomotiveManagerException {
+             {
         locomotives.remove(locomotive);
         listener.locomotiveRemoved(locomotive);
 
@@ -69,7 +68,7 @@ public class XMLLocomotiveService implements LocomotiveService {
 
     @Override
     public void updateLocomotive(final Locomotive locomotive)
-            throws LocomotiveManagerException {
+             {
         locomotives.remove(locomotive);
         locomotives.add(locomotive);
 
@@ -78,13 +77,13 @@ public class XMLLocomotiveService implements LocomotiveService {
 
     @Override
     public SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
-            throws LocomotiveManagerException {
+             {
         return locomotiveGroups;
     }
 
     @Override
     public void addLocomotiveGroup(final LocomotiveGroup group)
-            throws LocomotiveManagerException {
+             {
         locomotiveGroups.add(group);
         group.setId(UUID.randomUUID().hashCode());
         listener.locomotiveGroupAdded(group);
@@ -92,14 +91,14 @@ public class XMLLocomotiveService implements LocomotiveService {
 
     @Override
     public void removeLocomotiveGroup(final LocomotiveGroup group)
-            throws LocomotiveManagerException {
+             {
         locomotiveGroups.remove(group);
         listener.locomotiveGroupRemoved(group);
     }
 
     @Override
     public void updateLocomotiveGroup(final LocomotiveGroup group)
-            throws LocomotiveManagerException {
+             {
         locomotiveGroups.remove(group);
         locomotiveGroups.add(group);
         listener.locomotiveGroupUpdated(group);

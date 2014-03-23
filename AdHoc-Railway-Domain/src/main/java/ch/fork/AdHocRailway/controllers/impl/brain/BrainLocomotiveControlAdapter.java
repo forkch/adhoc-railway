@@ -1,11 +1,10 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
-import ch.fork.AdHocRailway.controllers.LockingException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.controllers.LocomotiveException;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveHelper;
+import ch.fork.AdHocRailway.utils.LocomotiveHelper;
 import com.google.common.collect.Sets;
 
 import java.util.List;
@@ -25,7 +24,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
     @Override
     public void toggleDirection(final Locomotive locomotive)
-            throws LocomotiveException {
+              {
         LocomotiveHelper.toggleDirection(locomotive);
         setSpeed(locomotive, locomotive.getCurrentSpeed(),
                 locomotive.getCurrentFunctions());
@@ -34,7 +33,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
     @Override
     public void setSpeed(final Locomotive locomotive, final int speed,
-                         final boolean[] functions) throws LocomotiveException {
+                         final boolean[] functions) {
 
         initLocomotive(locomotive);
 
@@ -46,13 +45,13 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
             locomotive.setCurrentFunctions(functions);
             informListeners(locomotive);
         } catch (final BrainException e) {
-            throw new LocomotiveException("error setting speed", e);
+            throw new ControllerException("error setting speed", e);
         }
 
     }
 
     private void initLocomotive(final Locomotive locomotive)
-            throws LocomotiveException {
+              {
         try {
             if (!activeLocomotives.contains(locomotive)) {
                 if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
@@ -70,14 +69,14 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
                 activeLocomotives.add(locomotive);
             }
         } catch (final BrainException e) {
-            throw new LocomotiveException("error initializing locomotive", e);
+            throw new ControllerException("error initializing locomotive", e);
         }
     }
 
     @Override
     public void setFunction(final Locomotive locomotive,
                             final int functionNumber, final boolean state,
-                            final int deactivationDelay) throws LocomotiveException {
+                            final int deactivationDelay)   {
         final boolean[] currentFunctions = locomotive.getCurrentFunctions();
 
         if (functionNumber >= currentFunctions.length) {
@@ -106,7 +105,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
     @Override
     public void emergencyStop(final Locomotive myLocomotive)
-            throws LocomotiveException {
+              {
         setFunction(myLocomotive, myLocomotive.getEmergencyStopFunction(),
                 true, 0);
         setSpeed(myLocomotive, 0, myLocomotive.getCurrentFunctions());
@@ -117,7 +116,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
      * Locking is not supported for BrainLocomotives
      */
     @Override
-    public boolean isLocked(final Locomotive object) throws LockingException {
+    public boolean isLocked(final Locomotive object) {
         return false;
     }
 
@@ -126,7 +125,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
      */
     @Override
     public boolean isLockedByMe(final Locomotive object)
-            throws LockingException {
+             {
         return true;
     }
 
@@ -134,7 +133,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
      * Locking is not supported for BrainLocomotives
      */
     @Override
-    public boolean acquireLock(final Locomotive object) throws LockingException {
+    public boolean acquireLock(final Locomotive object) {
         return true;
     }
 
@@ -142,7 +141,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
      * Locking is not supported for BrainLocomotives
      */
     @Override
-    public boolean releaseLock(final Locomotive object) throws LockingException {
+    public boolean releaseLock(final Locomotive object) {
         return true;
     }
 

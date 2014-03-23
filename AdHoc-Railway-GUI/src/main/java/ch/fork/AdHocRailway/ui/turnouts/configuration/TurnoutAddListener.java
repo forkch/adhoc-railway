@@ -2,8 +2,8 @@ package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerListener;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.manager.TurnoutManagerListener;
 
 import java.util.SortedSet;
 
@@ -13,7 +13,7 @@ public abstract class TurnoutAddListener implements TurnoutManagerListener {
     public abstract void turnoutAdded(Turnout turnout);
 
     @Override
-    public abstract void failure(TurnoutManagerException arg0);
+    public abstract void failure(ManagerException arg0);
 
     @Override
     public abstract void turnoutUpdated(Turnout turnout);

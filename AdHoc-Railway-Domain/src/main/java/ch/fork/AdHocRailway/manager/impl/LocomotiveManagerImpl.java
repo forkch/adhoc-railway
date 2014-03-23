@@ -16,16 +16,16 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.manager.impl.locomotives;
+package ch.fork.AdHocRailway.manager.impl;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.manager.impl.locomotives.events.LocomotivesUpdatedEvent;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
-import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
-import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.manager.impl.events.LocomotivesUpdatedEvent;
+import ch.fork.AdHocRailway.manager.LocomotiveManager;
+import ch.fork.AdHocRailway.manager.LocomotiveManagerListener;
+import ch.fork.AdHocRailway.services.LocomotiveService;
+import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
 import com.google.common.eventbus.EventBus;
 import org.apache.log4j.Logger;
 
@@ -62,16 +62,16 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
     @Override
     public void removeLocomotiveGroup(final LocomotiveGroup group)
-            throws LocomotiveManagerException {
+             {
         if (group == null) {
             throw new IllegalArgumentException("group must not be null");
         }
         if (group.getId() == Integer.MIN_VALUE) {
-            throw new LocomotiveManagerException(
+            throw new ManagerException(
                     "Cannot delete ALL_LOCOMOTIVES_GROUP");
         }
         if (!group.getLocomotives().isEmpty()) {
-            throw new LocomotiveManagerException(
+            throw new ManagerException(
                     "Cannot delete locomotive group with associated locomotives");
         }
         locomotiveService.removeLocomotiveGroup(group);
@@ -271,7 +271,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
     @Override
     public void failure(
-            final LocomotiveManagerException locomotiveManagerException) {
+            final ManagerException locomotiveManagerException) {
         LOGGER.warn("failure", locomotiveManagerException);
         cleanupListeners();
         for (final LocomotiveManagerListener l : listeners) {

@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.manager.impl.turnouts.events;
+package ch.fork.AdHocRailway.manager.impl.events;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;

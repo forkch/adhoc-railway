@@ -20,9 +20,9 @@ package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManagerListener;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.manager.RouteManager;
+import ch.fork.AdHocRailway.manager.RouteManagerListener;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
@@ -360,7 +360,7 @@ public class RoutesConfigurationDialog extends JDialog implements
                     routeManager.removeRouteGroup(routeGroupToDelete);
                     routeGroupConfig.setRouteGroup(null);
                     routeGroups.remove(routeGroupToDelete);
-                } catch (final RouteManagerException e1) {
+                } catch (final ManagerException e1) {
                     ctx.getMainApp().handleException(e1);
                 }
             }
@@ -525,7 +525,7 @@ public class RoutesConfigurationDialog extends JDialog implements
     }
 
     @Override
-    public void failure(final RouteManagerException routeManagerException) {
+    public void failure(final ManagerException routeManagerException) {
 
     }
 

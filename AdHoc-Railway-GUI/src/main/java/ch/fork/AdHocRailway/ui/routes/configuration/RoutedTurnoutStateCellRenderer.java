@@ -20,7 +20,7 @@ package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
 
 import javax.swing.*;

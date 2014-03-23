@@ -2,10 +2,10 @@ package ch.fork.AdHocRailway.controllers.impl;
 
 import ch.fork.AdHocRailway.controllers.TurnoutChangeListener;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.controllers.TurnoutException;
 
 /**
  * Created by fork on 1/2/14.
@@ -61,7 +61,7 @@ public class RouteChangingThread implements Runnable, TurnoutChangeListener {
             route.setEnabled(enable);
             route.setRouting(false);
             listener.informRouteChanged(route);
-        } catch (final TurnoutException e) {
+        } catch (final ControllerException e) {
             e.printStackTrace();
         } catch (final InterruptedException e) {
             e.printStackTrace();

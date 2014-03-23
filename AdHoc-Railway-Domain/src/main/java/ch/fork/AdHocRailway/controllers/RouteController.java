@@ -34,11 +34,11 @@ public abstract class RouteController {
     private final Map<Route, List<RouteChangeListener>> listeners = Maps
             .newHashMap();
 
-    public abstract void enableRoute(final Route r) throws RouteException;
+    public abstract void enableRoute(final Route r) ;
 
-    public abstract void disableRoute(final Route r) throws RouteException;
+    public abstract void disableRoute(final Route r) ;
 
-    public void toggle(final Route route) throws RouteException {
+    public void toggle(final Route route)  {
         if (route.isEnabled()) {
             disableRoute(route);
         } else {
@@ -46,7 +46,7 @@ public abstract class RouteController {
         }
     }
 
-    public void toggleTest(final Route route) throws RouteException {
+    public void toggleTest(final Route route)  {
         toggle(route);
     }
 
@@ -154,7 +154,7 @@ public abstract class RouteController {
         }
 
         @Override
-        public void enableRoute(final Route r) throws RouteException {
+        public void enableRoute(final Route r)  {
             final Thread brainRouterThread = new Thread(
                     new RouteChangingThread(turnoutControl, r, true,
                             routingDelay, routeChangingListener));
@@ -162,7 +162,7 @@ public abstract class RouteController {
         }
 
         @Override
-        public void disableRoute(final Route r) throws RouteException {
+        public void disableRoute(final Route r)  {
 
             final Thread brainRouterThread = new Thread(
                     new RouteChangingThread(turnoutControl, r, false,

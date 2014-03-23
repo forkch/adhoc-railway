@@ -16,19 +16,19 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.manager.impl.turnouts;
+package ch.fork.AdHocRailway.manager.impl;
 
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.manager.impl.turnouts.events.RoutesUpdatedEvent;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManagerListener;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
-import ch.fork.AdHocRailway.services.turnouts.RouteService;
-import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.manager.impl.events.RoutesUpdatedEvent;
+import ch.fork.AdHocRailway.manager.RouteManager;
+import ch.fork.AdHocRailway.manager.RouteManagerListener;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.services.RouteService;
+import ch.fork.AdHocRailway.services.RouteServiceListener;
 import com.google.common.eventbus.EventBus;
 import org.apache.log4j.Logger;
 
@@ -107,7 +107,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 
     @Override
     public void addRouteToGroup(final Route route, final RouteGroup group)
-            throws RouteManagerException {
+              {
         LOGGER.debug("addRouteToGroup()");
 
         group.addRoute(route);
@@ -117,7 +117,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     }
 
     @Override
-    public void removeRoute(final Route route) throws RouteManagerException {
+    public void removeRoute(final Route route)   {
         LOGGER.debug("removeRoute()");
         if (!route.getRouteItems().isEmpty()) {
             final SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>(
@@ -160,10 +160,10 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 
     @Override
     public void removeRouteGroup(final RouteGroup routeGroup)
-            throws RouteManagerException {
+              {
         LOGGER.debug("deleteRouteGroup()");
         if (!routeGroup.getRoutes().isEmpty()) {
-            throw new RouteManagerException(
+            throw new ManagerException(
                     "Cannot delete Route-Group with associated Routes");
         }
         this.routeService.removeRouteGroup(routeGroup);
@@ -177,17 +177,17 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     }
 
     @Override
-    public void addRouteItem(final RouteItem item) throws RouteManagerException {
+    public void addRouteItem(final RouteItem item)  {
         LOGGER.debug("addRouteItem()");
 
         if (item.getTurnout() == null) {
-            throw new RouteManagerException(
+            throw new ManagerException(
                     "RouteItem has no associated Turnout");
         }
         item.getTurnout().getRouteItems().add(item);
 
         if (item.getRoute() == null) {
-            throw new RouteManagerException("RouteItem has no associated Route");
+            throw new ManagerException("RouteItem has no associated Route");
         }
         this.routeService.addRouteItem(item);
         item.getRoute().getRouteItems().add(item);
@@ -337,7 +337,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     }
 
     @Override
-    public void failure(final RouteManagerException routeManagerException) {
+    public void failure(final ManagerException routeManagerException) {
         LOGGER.info("failure: " + routeManagerException);
         cleanupListeners();
         for (final RouteManagerListener l : listeners) {

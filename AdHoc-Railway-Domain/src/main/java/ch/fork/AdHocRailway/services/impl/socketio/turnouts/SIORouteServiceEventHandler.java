@@ -2,7 +2,7 @@ package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
-import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
+import ch.fork.AdHocRailway.services.RouteServiceListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

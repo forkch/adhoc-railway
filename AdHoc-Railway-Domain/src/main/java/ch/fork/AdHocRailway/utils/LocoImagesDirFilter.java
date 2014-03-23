@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.manager.locomotives;
+package ch.fork.AdHocRailway.utils;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang3.StringUtils;

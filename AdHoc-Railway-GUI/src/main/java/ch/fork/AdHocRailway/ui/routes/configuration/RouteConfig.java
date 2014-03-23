@@ -19,9 +19,9 @@
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import ch.fork.AdHocRailway.domain.turnouts.*;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.manager.RouteManager;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
@@ -425,7 +425,7 @@ public class RouteConfig extends JDialog {
                         final List<RouteItem> routeItems = new ArrayList<RouteItem>(
                                 route.getRouteItems());
                         routeItemModel.setList(routeItems);
-                    } catch (final RouteManagerException e1) {
+                    } catch (final ManagerException e1) {
                         e1.printStackTrace();
                     }
                 }
@@ -554,7 +554,7 @@ public class RouteConfig extends JDialog {
 
                 @Override
                 public void failure(
-                        final RouteManagerException routeManagerException) {
+                        final ManagerException routeManagerException) {
 
                     errorPanel.setErrorText(routeManagerException.getMessage());
                 }

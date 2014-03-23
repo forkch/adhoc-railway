@@ -16,11 +16,11 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.manager.locomotives;
+package ch.fork.AdHocRailway.manager;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.services.locomotives.LocomotiveService;
+import ch.fork.AdHocRailway.services.LocomotiveService;
 import com.google.common.eventbus.EventBus;
 
 import java.util.SortedSet;
@@ -35,10 +35,10 @@ public interface LocomotiveManager {
             final LocomotiveManagerListener listener);
 
     public abstract SortedSet<Locomotive> getAllLocomotives()
-            throws LocomotiveManagerException;
+           ;
 
     public abstract SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
-            throws LocomotiveManagerException;
+           ;
 
     public abstract void addLocomotiveToGroup(final Locomotive locomotive,
                                               final LocomotiveGroup group);
@@ -47,16 +47,16 @@ public interface LocomotiveManager {
                                                    final LocomotiveGroup group);
 
     public abstract void updateLocomotive(final Locomotive locomotive)
-            throws LocomotiveManagerException;
+           ;
 
     public abstract void addLocomotiveGroup(final LocomotiveGroup group)
-            throws LocomotiveManagerException;
+           ;
 
     public abstract void removeLocomotiveGroup(final LocomotiveGroup group)
-            throws LocomotiveManagerException;
+           ;
 
     public abstract void updateLocomotiveGroup(final LocomotiveGroup group)
-            throws LocomotiveManagerException;
+           ;
 
     public abstract void setLocomotiveService(final LocomotiveService instance);
 

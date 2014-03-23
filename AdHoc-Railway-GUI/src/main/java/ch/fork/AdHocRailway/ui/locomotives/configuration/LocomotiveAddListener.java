@@ -2,7 +2,7 @@ package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
+import ch.fork.AdHocRailway.manager.LocomotiveManagerListener;
 
 import java.util.SortedSet;
 

@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.manager.impl.locomotives.events;
+package ch.fork.AdHocRailway.manager.impl.events;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;

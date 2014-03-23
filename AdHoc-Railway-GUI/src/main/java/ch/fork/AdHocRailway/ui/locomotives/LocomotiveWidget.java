@@ -18,14 +18,14 @@
 
 package ch.fork.AdHocRailway.ui.locomotives;
 
-import ch.fork.AdHocRailway.controllers.LockingException;
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
-import ch.fork.AdHocRailway.controllers.LocomotiveException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.manager.locomotives.*;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.manager.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -36,6 +36,7 @@ import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
+import ch.fork.AdHocRailway.utils.LocomotiveHelper;
 import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 
@@ -515,7 +516,7 @@ public class LocomotiveWidget extends JPanel implements
 
     }
 
-    private void resetLoco() throws LocomotiveException {
+    private void resetLoco() {
         if (myLocomotive == null) {
             return;
         }
@@ -562,7 +563,7 @@ public class LocomotiveWidget extends JPanel implements
             try {
                 resetLoco();
                 locomotiveGroupComboBox.setSelectedIndex(idx);
-            } catch (final LocomotiveException e1) {
+            } catch (final ControllerException e1) {
                 ctx.getMainApp().handleException(e1);
             }
 
@@ -617,7 +618,7 @@ public class LocomotiveWidget extends JPanel implements
                     locomotiveComboBox.setBackground(UIConstants.ERROR_COLOR);
                     locomotiveComboBox.setSelectedItem(myLocomotive);
                 }
-            } catch (final LocomotiveException e1) {
+            } catch (final ControllerException e1) {
                 ctx.getMainApp().handleException(e1);
             }
         }
@@ -646,7 +647,7 @@ public class LocomotiveWidget extends JPanel implements
 
         protected abstract void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive) throws LocomotiveException;
+                final Locomotive myLocomotive)  ;
     }
 
     private class LocomotiveFunctionAction extends LocomotiveControlAction {
@@ -660,7 +661,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive) throws LocomotiveException {
+                final Locomotive myLocomotive)   {
             final boolean state = functionToggleButtons.get(function)
                     .isSelected();
 
@@ -681,7 +682,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive) throws LocomotiveException {
+                final Locomotive myLocomotive)   {
             locomotiveControl.increaseSpeed(myLocomotive);
         }
     }
@@ -692,7 +693,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive) throws LocomotiveException {
+                final Locomotive myLocomotive)   {
             locomotiveControl.decreaseSpeed(myLocomotive);
         }
     }
@@ -703,7 +704,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive) throws LocomotiveException {
+                final Locomotive myLocomotive)   {
             if (Preferences.getInstance().getBooleanValue(
                     PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
                     && myLocomotive.getCurrentSpeed() != 0) {
@@ -789,7 +790,7 @@ public class LocomotiveWidget extends JPanel implements
                     }
                 }
                 speedBar.requestFocus();
-            } catch (final LockingException ex) {
+            } catch (final ControllerException ex) {
                 ctx.getMainApp().handleException(ex);
                 lockButton.setSelected(lockButtonState);
             }
@@ -853,7 +854,7 @@ public class LocomotiveWidget extends JPanel implements
 
     @Override
     public void failure(
-            final LocomotiveManagerException locomotiveManagerException) {
+            final ManagerException locomotiveManagerException) {
     }
 
 }

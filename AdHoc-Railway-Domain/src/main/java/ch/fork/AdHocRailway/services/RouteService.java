@@ -16,45 +16,44 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.services.turnouts;
+package ch.fork.AdHocRailway.services;
 
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
 
 import java.util.SortedSet;
 
 public interface RouteService {
 
-    public abstract void addRoute(Route route) throws RouteManagerException;
+    public abstract void addRoute(Route route) ;
 
-    public abstract void removeRoute(Route route) throws RouteManagerException;
+    public abstract void removeRoute(Route route) ;
 
-    public abstract void updateRoute(Route route) throws RouteManagerException;
+    public abstract void updateRoute(Route route) ;
 
     public abstract SortedSet<RouteGroup> getAllRouteGroups()
-            throws RouteManagerException;
+            ;
 
     public abstract void addRouteGroup(RouteGroup routeGroup)
-            throws RouteManagerException;
+            ;
 
     public abstract void removeRouteGroup(RouteGroup routeGroup)
-            throws RouteManagerException;
+            ;
 
     public abstract void updateRouteGroup(RouteGroup routeGroup)
-            throws RouteManagerException;
+            ;
 
     public abstract void addRouteItem(RouteItem item)
-            throws RouteManagerException;
+            ;
 
     public abstract void removeRouteItem(RouteItem item)
-            throws RouteManagerException;
+            ;
 
     public abstract void updateRouteItem(RouteItem item)
-            throws RouteManagerException;
+            ;
 
-    public abstract void clear() throws RouteManagerException;
+    public abstract void clear() ;
 
     void init(RouteServiceListener listener);
 

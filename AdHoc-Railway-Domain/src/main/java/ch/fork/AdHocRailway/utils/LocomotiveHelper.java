@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.manager.locomotives;
+package ch.fork.AdHocRailway.utils;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection;

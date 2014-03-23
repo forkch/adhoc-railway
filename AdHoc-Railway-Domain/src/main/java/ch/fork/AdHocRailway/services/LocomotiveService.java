@@ -16,37 +16,36 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.services.locomotives;
+package ch.fork.AdHocRailway.services;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
 
 import java.util.SortedSet;
 
 public interface LocomotiveService {
     public abstract void addLocomotive(Locomotive locomotive)
-            throws LocomotiveManagerException;
+            ;
 
     public abstract void removeLocomotive(Locomotive locomotive)
-            throws LocomotiveManagerException;
+            ;
 
     public abstract void updateLocomotive(Locomotive locomotive)
-            throws LocomotiveManagerException;
+            ;
 
     public abstract SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
-            throws LocomotiveManagerException;
+            ;
 
     public abstract void addLocomotiveGroup(LocomotiveGroup group)
-            throws LocomotiveManagerException;
+            ;
 
     public abstract void removeLocomotiveGroup(LocomotiveGroup group)
-            throws LocomotiveManagerException;
+            ;
 
     public abstract void updateLocomotiveGroup(LocomotiveGroup group)
-            throws LocomotiveManagerException;
+            ;
 
-    public abstract void clear() throws LocomotiveManagerException;
+    public abstract void clear();
 
     void init(LocomotiveServiceListener listener);
 

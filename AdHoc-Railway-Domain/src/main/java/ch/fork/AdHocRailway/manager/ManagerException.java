@@ -1,14 +1,11 @@
 package ch.fork.AdHocRailway.manager;
 
-public class ManagerException extends RuntimeException {
+import ch.fork.AdHocRailway.AdHocRailwayException;
+
+public class ManagerException extends AdHocRailwayException {
 
     public ManagerException() {
         super();
-    }
-
-    public ManagerException(final String message, final Throwable cause,
-                            final boolean enableSuppression, final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
     }
 
     public ManagerException(final String message, final Throwable cause) {

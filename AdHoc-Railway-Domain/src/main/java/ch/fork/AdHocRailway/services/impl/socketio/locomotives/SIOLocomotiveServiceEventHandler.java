@@ -2,7 +2,7 @@ package ch.fork.AdHocRailway.services.impl.socketio.locomotives;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.services.locomotives.LocomotiveServiceListener;
+import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
