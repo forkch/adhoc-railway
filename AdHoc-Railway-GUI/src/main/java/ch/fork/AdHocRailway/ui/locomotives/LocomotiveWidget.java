@@ -204,10 +204,6 @@ public class LocomotiveWidget extends JPanel implements
         locomotiveComboBox.addItemListener(locomotiveSelectAction);
         locomotiveComboBox.setRenderer(new LocomotiveComboBoxRenderer());
 
-        final String locomotiveDescriptionToolTip = LocomotiveHelper
-                .getLocomotiveDescription(myLocomotive);
-        setToolTipText(locomotiveDescriptionToolTip);
-
         add(locomotiveGroupComboBox, "span 3, grow, width 200");
         add(locomotiveComboBox, "span 3, grow, width 200");
 
