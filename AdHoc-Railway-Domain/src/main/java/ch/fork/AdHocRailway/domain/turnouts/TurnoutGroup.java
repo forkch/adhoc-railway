@@ -33,7 +33,6 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
 
     private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
 
-    public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_NAME = "name";
 
     public TurnoutGroup() {
@@ -103,10 +102,7 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
             return false;
         }
         final TurnoutGroup other = (TurnoutGroup) obj;
-        if (id != other.id) {
-            return false;
-        }
-        return true;
+        return id == other.id;
     }
 
     @Override

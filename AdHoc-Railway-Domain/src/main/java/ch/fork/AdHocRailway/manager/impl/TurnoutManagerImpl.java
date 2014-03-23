@@ -185,7 +185,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
                         @Override
                         public int compare(final Turnout o1, final Turnout o2) {
                             return Integer.valueOf(o1.getNumber()).compareTo(
-                                    Integer.valueOf(o2.getNumber()));
+                                    o2.getNumber());
                         }
                     });
             turnoutsNumbers.addAll(getAllTurnouts());

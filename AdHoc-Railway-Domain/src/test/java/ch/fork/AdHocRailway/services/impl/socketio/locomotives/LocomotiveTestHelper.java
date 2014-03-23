@@ -57,7 +57,7 @@ public class LocomotiveTestHelper {
             final JSONObject function = new JSONObject();
             function.put("number", i);
             function.put("description", "desc" + i);
-            function.put("emergencyBrakeFunction", i % 2 == 0 ? true : false);
+            function.put("emergencyBrakeFunction", i % 2 == 0);
             function.put("deactivationDelay", i);
             functions.add(function);
         }

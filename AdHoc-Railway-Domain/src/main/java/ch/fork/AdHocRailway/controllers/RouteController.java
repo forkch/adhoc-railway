@@ -50,8 +50,6 @@ public abstract class RouteController {
         toggle(route);
     }
 
-    ;
-
     public void addRouteChangeListener(final Route route,
                                        final RouteChangeListener listener) {
 

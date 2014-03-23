@@ -85,7 +85,7 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
     @Override
     public int compareTo(final LocomotiveFunction o) {
         return Integer.valueOf(number)
-                .compareTo(Integer.valueOf(o.getNumber()));
+                .compareTo(o.getNumber());
     }
 
     @Override

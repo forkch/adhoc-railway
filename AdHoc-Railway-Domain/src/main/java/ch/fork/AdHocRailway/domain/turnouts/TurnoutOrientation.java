@@ -26,4 +26,4 @@ public enum TurnoutOrientation {
     public String toString() {
         return humanName;
     }
-};
+}

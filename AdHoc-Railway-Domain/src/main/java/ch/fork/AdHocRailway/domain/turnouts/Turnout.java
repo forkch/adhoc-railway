@@ -54,7 +54,6 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     private TurnoutGroup turnoutGroup;
     private transient TurnoutState actualState = TurnoutState.UNDEF;
 
-    public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_NUMBER = "number";
     public static final String PROPERTYNAME_DESCRIPTION = "description";
     public static final String PROPERTYNAME_TURNOUT_TYPE = "turnoutType";
@@ -267,10 +266,7 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
             return false;
         }
         final Turnout other = (Turnout) obj;
-        if (id != other.id) {
-            return false;
-        }
-        return true;
+        return id == other.id;
     }
 
     @Override

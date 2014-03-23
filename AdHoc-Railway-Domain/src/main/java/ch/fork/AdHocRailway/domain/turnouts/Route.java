@@ -160,10 +160,7 @@ public class Route extends AbstractItem implements java.io.Serializable,
             return false;
         }
         final Route other = (Route) obj;
-        if (id != other.id) {
-            return false;
-        }
-        return true;
+        return id == other.id;
     }
 
     @Override

@@ -220,7 +220,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
                         @Override
                         public int compare(final Route o1, final Route o2) {
                             return Integer.valueOf(o1.getNumber()).compareTo(
-                                    Integer.valueOf(o2.getNumber()));
+                                    o2.getNumber());
                         }
                     });
             routesNumbers.addAll(getAllRoutes());

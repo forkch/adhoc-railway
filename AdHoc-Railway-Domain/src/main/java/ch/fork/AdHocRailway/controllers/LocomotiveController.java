@@ -36,7 +36,7 @@ public abstract class LocomotiveController implements
     private final Set<Locomotive> activeLocomotives = new HashSet<Locomotive>();
 
     public void activateLoco(final Locomotive locomotive) {
-        if (!isLocomotiveActive(locomotive)) {
+        if (isLocomotiveInactive(locomotive)) {
             this.activeLocomotives.add(locomotive);
 
             if (locomotive.getCurrentFunctions() == null) {
@@ -54,8 +54,8 @@ public abstract class LocomotiveController implements
         }
     }
 
-    public boolean isLocomotiveActive(final Locomotive locomotive) {
-        return activeLocomotives.contains(locomotive);
+    public boolean isLocomotiveInactive(final Locomotive locomotive) {
+        return !activeLocomotives.contains(locomotive);
     }
 
     public void deactivateLoco(final Locomotive locomotive) {
@@ -166,9 +166,6 @@ public abstract class LocomotiveController implements
     /**
      * Sets the speed of the Locomotive
      *
-     * @param locomotive
-     * @param speed
-     * @
      */
     public abstract void setSpeed(final Locomotive locomotive, final int speed,
                                   final boolean[] functions);

@@ -72,10 +72,7 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
         if (!turnout.equals(l.getTurnout())) {
             return false;
         }
-        if (!routedState.equals(l.getRoutedState())) {
-            return false;
-        }
-        return true;
+        return routedState.equals(l.getRoutedState());
     }
 
     @Override

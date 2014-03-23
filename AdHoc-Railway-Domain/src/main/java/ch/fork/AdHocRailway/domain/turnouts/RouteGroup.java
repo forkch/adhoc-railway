@@ -33,11 +33,7 @@ public class RouteGroup extends AbstractItem implements java.io.Serializable,
 
     private SortedSet<Route> routes = new TreeSet<Route>();
 
-    public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_NAME = "name";
-    public static final String PROPERTYNAME_ROUTE_NUMBER_OFFSET = "routeNumberOffset";
-    public static final String PROPERTYNAME_ROUTE_NUMBER_AMOUNT = "routeNumberAmount";
-    public static final String PROPERTYNAME_ROUTES = "routes";
 
     public RouteGroup() {
     }
@@ -93,10 +89,7 @@ public class RouteGroup extends AbstractItem implements java.io.Serializable,
         }
 
         final RouteGroup l = (RouteGroup) o;
-        if (id != l.getId()) {
-            return false;
-        }
-        return true;
+        return id == l.getId();
     }
 
     @Override
