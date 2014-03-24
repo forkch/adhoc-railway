@@ -18,8 +18,8 @@
 
 package ch.fork.AdHocRailway.controllers;
 
-import ch.fork.AdHocRailway.controllers.impl.RouteChangingThread;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainRouteControlAdapter;
+import ch.fork.AdHocRailway.controllers.impl.dummy.DummyRouteController;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
@@ -37,6 +37,8 @@ public abstract class RouteController {
     public abstract void enableRoute(final Route r);
 
     public abstract void disableRoute(final Route r);
+
+    public abstract void setRoutingDelay(final int intValue);
 
     public void toggle(final Route route) {
         if (route.isEnabled()) {
@@ -108,7 +110,7 @@ public abstract class RouteController {
             final RailwayDevice railwayDevice,
             final TurnoutController turnoutController) {
         if (railwayDevice == null) {
-            return new NullRouteController(turnoutController);
+            return new DummyRouteController(turnoutController);
         }
         switch (railwayDevice) {
             case ADHOC_BRAIN:
@@ -117,62 +119,8 @@ public abstract class RouteController {
                 return new SRCPRouteControlAdapter(
                         (SRCPTurnoutControlAdapter) turnoutController);
             default:
-                return new NullRouteController(turnoutController);
+                return new DummyRouteController(turnoutController);
 
         }
-    }
-
-    public abstract void setRoutingDelay(final int intValue);
-
-    static class NullRouteController extends RouteController {
-
-        private final RouteChangingThread.RouteChangingListener routeChangingListener;
-        private final TurnoutController turnoutControl;
-        private int routingDelay;
-
-        public NullRouteController(final TurnoutController turnoutControl) {
-            this.turnoutControl = turnoutControl;
-            routeChangingListener = new RouteChangingThread.RouteChangingListener() {
-                @Override
-                public void informNextTurnoutRouted(final Route route) {
-                    NullRouteController.this.informNextTurnoutRouted(route);
-                }
-
-                @Override
-                public void informNextTurnoutDerouted(final Route route) {
-                    NullRouteController.this.informNextTurnoutDerouted(route);
-
-                }
-
-                @Override
-                public void informRouteChanged(final Route route) {
-                    NullRouteController.this.informRouteChanged(route);
-                }
-            };
-        }
-
-        @Override
-        public void enableRoute(final Route r) {
-            final Thread brainRouterThread = new Thread(
-                    new RouteChangingThread(turnoutControl, r, true,
-                            routingDelay, routeChangingListener));
-            brainRouterThread.start();
-        }
-
-        @Override
-        public void disableRoute(final Route r) {
-
-            final Thread brainRouterThread = new Thread(
-                    new RouteChangingThread(turnoutControl, r, false,
-                            routingDelay, routeChangingListener));
-            brainRouterThread.start();
-        }
-
-        @Override
-        public void setRoutingDelay(final int routingDelay) {
-
-            this.routingDelay = routingDelay;
-        }
-
     }
 }

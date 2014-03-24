@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.controllers;
 
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainPowerControlAdapter;
+import ch.fork.AdHocRailway.controllers.impl.dummy.DummyPowerController;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPPowerControlAdapter;
 import ch.fork.AdHocRailway.domain.power.Booster;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
@@ -42,7 +43,7 @@ public abstract class PowerController {
     public static PowerController createPowerController(
             final RailwayDevice railwayDevice) {
         if (railwayDevice == null) {
-            return new NullPowerController();
+            return new DummyPowerController();
         }
         switch (railwayDevice) {
             case ADHOC_BRAIN:
@@ -50,56 +51,9 @@ public abstract class PowerController {
             case SRCP:
                 return new SRCPPowerControlAdapter();
             default:
-                return new NullPowerController();
+                return new DummyPowerController();
 
         }
 
     }
-
-    static class NullPowerController extends PowerController {
-
-        @Override
-        public void addOrUpdatePowerSupply(final PowerSupply supply) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void boosterOn(final Booster booster) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void boosterOff(final Booster booster) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void toggleBooster(final Booster booster) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void powerOn(final PowerSupply supply) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void powerOff(final PowerSupply supply) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public PowerSupply getPowerSupply(final int busNumber) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-    }
-
 }

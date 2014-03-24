@@ -20,6 +20,7 @@ package ch.fork.AdHocRailway.controllers;
 
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainLocomotiveControlAdapter;
+import ch.fork.AdHocRailway.controllers.impl.dummy.DummyLocomotiveController;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import org.apache.log4j.Logger;
@@ -34,6 +35,18 @@ public abstract class LocomotiveController implements
 
     private final Map<Locomotive, List<LocomotiveChangeListener>> listeners = new HashMap<Locomotive, List<LocomotiveChangeListener>>();
     private final Set<Locomotive> activeLocomotives = new HashSet<Locomotive>();
+
+
+    public abstract void toggleDirection(final Locomotive locomotive);
+
+    public abstract void setSpeed(final Locomotive locomotive, final int speed,
+                                  final boolean[] functions);
+
+    public abstract void setFunction(final Locomotive locomotive,
+                                     final int functionNumber, final boolean state,
+                                     final int deactivationDelay);
+
+    public abstract void emergencyStop(final Locomotive myLocomotive);
 
     public void activateLoco(final Locomotive locomotive) {
         if (isLocomotiveInactive(locomotive)) {
@@ -154,33 +167,10 @@ public abstract class LocomotiveController implements
         t.start();
     }
 
-    /**
-     * Toggles the direction of the Locomotive
-     *
-     * @param locomotive
-     * @
-     */
-    public abstract void toggleDirection(final Locomotive locomotive)
-    ;
-
-    /**
-     * Sets the speed of the Locomotive
-     *
-     */
-    public abstract void setSpeed(final Locomotive locomotive, final int speed,
-                                  final boolean[] functions);
-
-    public abstract void setFunction(final Locomotive locomotive,
-                                     final int functionNumber, final boolean state,
-                                     final int deactivationDelay);
-
-    public abstract void emergencyStop(final Locomotive myLocomotive)
-            ;
-
     public static LocomotiveController createLocomotiveController(
             final RailwayDevice railwayDevice) {
         if (railwayDevice == null) {
-            return new NullLocomotiveController();
+            return new DummyLocomotiveController();
         }
         switch (railwayDevice) {
             case ADHOC_BRAIN:
@@ -189,67 +179,12 @@ public abstract class LocomotiveController implements
             case SRCP:
                 return new SRCPLocomotiveControlAdapter();
             default:
-                return new NullLocomotiveController();
+                return new DummyLocomotiveController();
 
         }
     }
 
     public void removeLocomotiveChangeListener(LocomotiveChangeListener listener) {
         listeners.entrySet().remove(listener);
-    }
-
-    static class NullLocomotiveController extends LocomotiveController {
-
-        @Override
-        public boolean isLocked(final Locomotive object) {
-            return false;
-        }
-
-        @Override
-        public boolean isLockedByMe(final Locomotive object) {
-            return true;
-        }
-
-        @Override
-        public boolean acquireLock(final Locomotive object) {
-            return true;
-        }
-
-        @Override
-        public boolean releaseLock(final Locomotive object) {
-            return true;
-        }
-
-        @Override
-        public void toggleDirection(final Locomotive locomotive) {
-            locomotive.setCurrentDirection(locomotive.getToggledDirection());
-            informListeners(locomotive);
-        }
-
-        @Override
-        public void setSpeed(final Locomotive locomotive, final int speed,
-                             final boolean[] functions) {
-            locomotive.setCurrentSpeed(speed);
-            locomotive.setCurrentFunctions(functions);
-            informListeners(locomotive);
-
-        }
-
-        @Override
-        public void setFunction(final Locomotive locomotive,
-                                final int functionNumber, final boolean state,
-                                final int deactivationDelay) {
-            boolean[] currentFunctions = locomotive.getCurrentFunctions();
-            currentFunctions[functionNumber] = state;
-            locomotive.setCurrentFunctions(currentFunctions);
-            informListeners(locomotive);
-        }
-
-        @Override
-        public void emergencyStop(final Locomotive locomotive) {
-            setFunction(locomotive, locomotive.getEmergencyStopFunction(), true, 0);
-            setSpeed(locomotive, 0, locomotive.getCurrentFunctions());
-            informListeners(locomotive);
-        }
     }
 }
