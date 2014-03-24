@@ -1,5 +1,6 @@
 package ch.fork.AdHocRailway.services.impl.xml;
 
+import ch.fork.AdHocRailway.AdHocRailwayException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
@@ -53,8 +54,7 @@ public class XMLServiceHelper {
             LOGGER.info("finished loading locomotives, turnout and routes  from file: "
                     + xmlFile);
         } catch (final FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new AdHocRailwayException("could not find file " + xmlFile);
         }
 
     }
@@ -84,7 +84,6 @@ public class XMLServiceHelper {
 
         LOGGER.info("finished saving locomotives, turnout and routes  to file: "
                 + xmlFile);
-
     }
 
     public void exportLocomotivesToFile(final File fileToExport,
@@ -116,8 +115,7 @@ public class XMLServiceHelper {
             LOGGER.info("finished importing locomotives from file: "
                     + fileToImport);
         } catch (final FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new AdHocRailwayException("could not find file " + fileToImport);
         }
     }
 
