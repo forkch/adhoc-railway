@@ -27,50 +27,44 @@ import java.util.SortedSet;
 
 public interface LocomotiveManager {
 
-    public abstract void initialize(final EventBus bus);
+    void initialize(final EventBus bus);
 
     void addLocomotiveManagerListener(final LocomotiveManagerListener listener);
 
     void removeLocomotiveManagerListenerInNextEvent(
             final LocomotiveManagerListener listener);
 
-    public abstract SortedSet<Locomotive> getAllLocomotives()
-            ;
+    SortedSet<Locomotive> getAllLocomotives();
 
-    public abstract SortedSet<LocomotiveGroup> getAllLocomotiveGroups()
-            ;
+    SortedSet<LocomotiveGroup> getAllLocomotiveGroups();
 
-    public abstract void addLocomotiveToGroup(final Locomotive locomotive,
-                                              final LocomotiveGroup group);
+    void addLocomotiveToGroup(final Locomotive locomotive,
+                              final LocomotiveGroup group);
 
-    public abstract void removeLocomotiveFromGroup(final Locomotive locomotive,
-                                                   final LocomotiveGroup group);
+    void removeLocomotiveFromGroup(final Locomotive locomotive,
+                                   final LocomotiveGroup group);
 
-    public abstract void updateLocomotive(final Locomotive locomotive)
-            ;
+    void updateLocomotive(final Locomotive locomotive);
 
-    public abstract void addLocomotiveGroup(final LocomotiveGroup group)
-            ;
+    void addLocomotiveGroup(final LocomotiveGroup group);
 
-    public abstract void removeLocomotiveGroup(final LocomotiveGroup group)
-            ;
+    void removeLocomotiveGroup(final LocomotiveGroup group);
 
-    public abstract void updateLocomotiveGroup(final LocomotiveGroup group)
-            ;
+    void updateLocomotiveGroup(final LocomotiveGroup group);
 
-    public abstract void setLocomotiveService(final LocomotiveService instance);
+    void setLocomotiveService(final LocomotiveService instance);
 
-    public abstract void clear();
+    void clear();
 
-    public abstract void clearToService();
+    void clearToService();
 
-    public abstract void disconnect();
+    void disconnect();
 
-    public abstract void setActiveLocomotive(final int locomotiveNumber,
-                                             final Locomotive locomotive);
+    void setActiveLocomotive(final int locomotiveNumber,
+                             final Locomotive locomotive);
 
-    public abstract Locomotive getActiveLocomotive(final int locomotiveNumber);
+    Locomotive getActiveLocomotive(final int locomotiveNumber);
 
-    public abstract LocomotiveService getService();
+    LocomotiveService getService();
 
 }

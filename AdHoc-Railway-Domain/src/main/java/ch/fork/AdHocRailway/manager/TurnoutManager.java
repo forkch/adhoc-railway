@@ -28,48 +28,45 @@ import java.util.SortedSet;
 
 public interface TurnoutManager {
 
-    public abstract void initialize(final EventBus eventBus);
+    void initialize(final EventBus eventBus);
 
-    public abstract void addTurnoutManagerListener(
-            final TurnoutManagerListener listener);
+    void addTurnoutManagerListener(final TurnoutManagerListener listener);
 
-    public abstract void removeTurnoutManagerListenerInNextEvent(
-            final TurnoutManagerListener turnoutAddListener);
+    void removeTurnoutManagerListenerInNextEvent(final TurnoutManagerListener turnoutAddListener);
 
-    public abstract List<Turnout> getAllTurnouts();
+    List<Turnout> getAllTurnouts();
 
-    public abstract Turnout getTurnoutByNumber(final int number);
+    Turnout getTurnoutByNumber(final int number);
 
-    public abstract void addTurnoutToGroup(final Turnout turnout,
-                                           final TurnoutGroup group);
+    void addTurnoutToGroup(final Turnout turnout, final TurnoutGroup group);
 
-    public abstract void removeTurnout(final Turnout turnout);
+    void removeTurnout(final Turnout turnout);
 
-    public abstract void updateTurnout(final Turnout turnout);
+    void updateTurnout(final Turnout turnout);
 
-    public abstract SortedSet<TurnoutGroup> getAllTurnoutGroups();
+    SortedSet<TurnoutGroup> getAllTurnoutGroups();
 
-    public abstract TurnoutGroup getTurnoutGroupByName(final String name);
+    TurnoutGroup getTurnoutGroupByName(final String name);
 
-    public abstract void addTurnoutGroup(final TurnoutGroup group);
+    void addTurnoutGroup(final TurnoutGroup group);
 
-    public abstract void removeTurnoutGroup(final TurnoutGroup group);
+    void removeTurnoutGroup(final TurnoutGroup group);
 
-    public abstract void updateTurnoutGroup(final TurnoutGroup group);
+    void updateTurnoutGroup(final TurnoutGroup group);
 
-    public int getLastProgrammedAddress();
+    int getLastProgrammedAddress();
 
-    public int getNextFreeTurnoutNumber();
+    int getNextFreeTurnoutNumber();
 
-    public boolean isTurnoutNumberFree(final int number);
+    boolean isTurnoutNumberFree(final int number);
 
-    public abstract void setTurnoutService(final TurnoutService instance);
+    void setTurnoutService(final TurnoutService instance);
 
-    public abstract void clear();
+    void clear();
 
-    public abstract void clearToService();
+    void clearToService();
 
-    public abstract void disconnect();
+    void disconnect();
 
-    public abstract TurnoutService getService();
+    TurnoutService getService();
 }

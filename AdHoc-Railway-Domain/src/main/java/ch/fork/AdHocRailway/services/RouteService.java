@@ -26,34 +26,27 @@ import java.util.SortedSet;
 
 public interface RouteService {
 
-    public abstract void addRoute(Route route);
+    void addRoute(Route route);
 
-    public abstract void removeRoute(Route route);
+    void removeRoute(Route route);
 
-    public abstract void updateRoute(Route route);
+    void updateRoute(Route route);
 
-    public abstract SortedSet<RouteGroup> getAllRouteGroups()
-            ;
+    SortedSet<RouteGroup> getAllRouteGroups();
 
-    public abstract void addRouteGroup(RouteGroup routeGroup)
-            ;
+    void addRouteGroup(RouteGroup routeGroup);
 
-    public abstract void removeRouteGroup(RouteGroup routeGroup)
-            ;
+    void removeRouteGroup(RouteGroup routeGroup);
 
-    public abstract void updateRouteGroup(RouteGroup routeGroup)
-            ;
+    void updateRouteGroup(RouteGroup routeGroup);
 
-    public abstract void addRouteItem(RouteItem item)
-            ;
+    void addRouteItem(RouteItem item);
 
-    public abstract void removeRouteItem(RouteItem item)
-            ;
+    void removeRouteItem(RouteItem item);
 
-    public abstract void updateRouteItem(RouteItem item)
-            ;
+    void updateRouteItem(RouteItem item);
 
-    public abstract void clear();
+    void clear();
 
     void init(RouteServiceListener listener);
 

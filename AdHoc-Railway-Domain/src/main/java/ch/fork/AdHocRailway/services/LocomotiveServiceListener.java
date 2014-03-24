@@ -8,21 +8,21 @@ import java.util.SortedSet;
 
 public interface LocomotiveServiceListener {
 
-    public void locomotiveAdded(final Locomotive locomotive);
+    void locomotiveAdded(final Locomotive locomotive);
 
-    public void locomotiveUpdated(final Locomotive locomotive);
+    void locomotiveUpdated(final Locomotive locomotive);
 
-    public void locomotiveRemoved(final Locomotive locomotive);
+    void locomotiveRemoved(final Locomotive locomotive);
 
-    public void locomotiveGroupAdded(final LocomotiveGroup group);
+    void locomotiveGroupAdded(final LocomotiveGroup group);
 
-    public void locomotiveGroupUpdated(final LocomotiveGroup group);
+    void locomotiveGroupUpdated(final LocomotiveGroup group);
 
-    public void locomotiveGroupRemoved(final LocomotiveGroup group);
+    void locomotiveGroupRemoved(final LocomotiveGroup group);
 
-    public void locomotivesUpdated(
+    void locomotivesUpdated(
             final SortedSet<LocomotiveGroup> locomotiveGroups);
 
-    public void failure(
+    void failure(
             final ManagerException locomotiveManagerException);
 }

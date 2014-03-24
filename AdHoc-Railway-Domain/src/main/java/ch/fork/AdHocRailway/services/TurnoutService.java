@@ -25,23 +25,23 @@ import java.util.SortedSet;
 
 public interface TurnoutService {
 
-    public abstract void init(TurnoutServiceListener listener);
+    void init(TurnoutServiceListener listener);
 
-    public abstract void addTurnout(Turnout turnout);
+    void addTurnout(Turnout turnout);
 
-    public abstract void removeTurnout(Turnout turnout);
+    void removeTurnout(Turnout turnout);
 
-    public abstract void updateTurnout(Turnout turnout);
+    void updateTurnout(Turnout turnout);
 
-    public abstract SortedSet<TurnoutGroup> getAllTurnoutGroups();
+    SortedSet<TurnoutGroup> getAllTurnoutGroups();
 
-    public abstract void addTurnoutGroup(TurnoutGroup group);
+    void addTurnoutGroup(TurnoutGroup group);
 
-    public abstract void removeTurnoutGroup(TurnoutGroup group);
+    void removeTurnoutGroup(TurnoutGroup group);
 
-    public abstract void updateTurnoutGroup(TurnoutGroup group);
+    void updateTurnoutGroup(TurnoutGroup group);
 
-    public abstract void clear();
+    void clear();
 
-    public abstract void disconnect();
+    void disconnect();
 }
