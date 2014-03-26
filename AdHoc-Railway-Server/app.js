@@ -5,10 +5,37 @@ var mongoose = require('mongoose');
 
 var mdns = require('mdns');
 
-var server = restify.createServer();
+var Logger = require('bunyan');
+var log = new Logger({
+    name: 'helloapi',
+    streams: [
+        {
+            stream: process.stdout,
+            level: 'debug'
+        },
+        {
+            path: 'hello.log',
+            level: 'trace'
+        }
+    ],
+    serializers: restify.bunyan.serializers
+});
+
+
+var server = restify.createServer({
+    name: 'AdHoc-Railway-Server',
+    log: log   // Pass our logger to restify.
+});
 server.use(restify.bodyParser());
 server.use(restify.CORS());
 server.use(restify.fullResponse());
+server.pre(function (request, response, next) {
+    request.log.info({req: request}, 'start');        // (1)
+    return next();
+});
+server.on('after', function (req, res, route) {
+    req.log.info({res: res}, "finished");             // (3)
+});
 
 function reqSerializer(req) {
     return {
@@ -46,7 +73,7 @@ locomotiveApi.init(server, sendDataToWebsocketClients);
 var Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
 mongoose.connect('mongodb://localhost/baehnle');
 
-server.listen(3001, function () {
+server.listen(3000, function () {
     console.log('%s listening at %s', server.name, server.url);
 });
 
