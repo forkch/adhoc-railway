@@ -15,7 +15,7 @@ exports.init = function (socket) {
     });
 }
 
-exports.getAllTurnoutGroups = function (socket, fn) {
+exports.getAllTurnoutGroups = function (fn) {
 
     getAllTurnoutData(function (err, result) {
         if (!err) {
@@ -26,7 +26,7 @@ exports.getAllTurnoutGroups = function (socket, fn) {
     });
 }
 
-exports.getTurnoutGroupById = function (socket, turnoutGroupId, fn) {
+exports.getTurnoutGroupById = function (turnoutGroupId, fn) {
     console.log('turnoutGroup:getById: ' + turnoutGroupId);
     TurnoutGroupModel.findById(turnoutGroupId, function (err, turnoutGroup) {
         if (!err) {
@@ -37,7 +37,7 @@ exports.getTurnoutGroupById = function (socket, turnoutGroupId, fn) {
     });
 }
 
-exports.addTurnoutGroup = function (socket, turnoutGroup, fn) {
+exports.addTurnoutGroup = function (turnoutGroup, fn) {
     if (turnoutGroup.name == null || turnoutGroup.name.length == 0) {
         fn(true, 'name must be defined');
         return;
@@ -55,7 +55,7 @@ exports.addTurnoutGroup = function (socket, turnoutGroup, fn) {
     });
 }
 
-exports.updateTurnoutGroup = function (socket, turnoutGroup, fn) {
+exports.updateTurnoutGroup = function (turnoutGroup, fn) {
     if (turnoutGroup.name == null || turnoutGroup.name.length == 0) {
         fn(true, 'name must be defined');
         return;
@@ -76,7 +76,7 @@ exports.updateTurnoutGroup = function (socket, turnoutGroup, fn) {
     });
 }
 
-exports.removeTurnoutGroup = function (socket, turnoutGroup, fn) {
+exports.removeTurnoutGroup = function (turnoutGroup, fn) {
     var id = turnoutGroup._id;
     console.log('remove turnout group ' + id);
     TurnoutModel.remove({"group": id}, function (err) {
@@ -95,7 +95,7 @@ exports.removeTurnoutGroup = function (socket, turnoutGroup, fn) {
     });
 }
 
-exports.getAllTurnouts = function (socket, fn) {
+exports.getAllTurnouts = function (fn) {
 
     TurnoutModel.find(function (err, turnouts) {
         if (!err) {
@@ -106,7 +106,7 @@ exports.getAllTurnouts = function (socket, fn) {
     });
 }
 
-exports.getById = function (socket, turnoutId, fn) {
+exports.getTurnoutById = function (turnoutId, fn) {
     console.log('turnout:getById: ' + turnoutId);
     TurnoutModel.findById(turnoutId, function (err, turnout) {
         if (!err) {
@@ -117,7 +117,7 @@ exports.getById = function (socket, turnoutId, fn) {
     });
 }
 
-exports.addTurnout = function (socket, turnout, fn) {
+exports.addTurnout = function (turnout, fn) {
 
     if (!validateTurnout(turnout, fn)) {
         return;
@@ -145,7 +145,7 @@ exports.addTurnout = function (socket, turnout, fn) {
 
 }
 
-exports.updateTurnout = function (socket, turnout, fn) {
+exports.updateTurnout = function (turnout, fn) {
     if (!validateTurnout(turnout, fn)) {
         return;
     }
@@ -166,7 +166,7 @@ exports.updateTurnout = function (socket, turnout, fn) {
     });
 }
 
-exports.removeTurnout = function (socket, turnout, fn) {
+exports.removeTurnout = function (turnout, fn) {
     console.log('remvove turnout ' + turnout._id);
     var turnoutId = turnout._id;
     TurnoutModel.remove({_id: turnoutId}, function (err) {
@@ -186,7 +186,7 @@ exports.removeTurnout = function (socket, turnout, fn) {
     });
 }
 
-exports.clear = function (socket, fn) {
+exports.clear = function (fn) {
     TurnoutModel.remove(function (err) {
         if (!err) {
             TurnoutGroupModel.remove(function (err) {

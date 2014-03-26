@@ -3,8 +3,38 @@ var locomotiveController = require('../controllers/locomotivecontroller');
 exports.init = function (server, sendDataToWebsocketClients) {
     server.get('/locomotiveGroup', function (req, res, next) {
         locomotiveController.getAllLocomotiveGroups(function (err, data) {
-            console.log(data);
             res.send(data.locomotiveGroups);
+            next();
+        });
+    });
+
+    server.get('/locomotiveGroup/:id', function (req, res, next) {
+        locomotiveController.getLocomotiveGroupById(req.params.id, function (err, locomotiveGroup) {
+            res.send(locomotiveGroup);
+            next();
+        });
+    });
+
+    server.post('/locomotiveGroup', function (req, res, next) {
+        locomotiveController.addLocomotiveGroup(req.params, function (err, locomotiveGroup) {
+            res.send(locomotiveGroup);
+            sendDataToWebsocketClients('locomotiveGroup:added', locomotiveGroup);
+            next();
+        });
+    });
+
+    server.put('/locomotiveGroup', function (req, res, next) {
+        locomotiveController.updateLocomotiveGroup(req.params, function (err, locomotiveGroup) {
+            res.send(locomotiveGroup);
+            sendDataToWebsocketClients('locomotiveGroup:updated', locomotiveGroup);
+            next();
+        });
+    });
+
+    server.del('/locomotiveGroup/:id', function (req, res, next) {
+        locomotiveController.removeLocomotiveGroup(req.params.id, function (err, locomotiveGroupId) {
+            res.send(locomotiveGroupId);
+            sendDataToWebsocketClients('locomotiveGroup:removed', locomotiveGroup);
             next();
         });
     });
@@ -26,7 +56,7 @@ exports.init = function (server, sendDataToWebsocketClients) {
 
     server.put('/locomotive', function (req, res, next) {
         locomotiveController.updateLocomotive(req.params, function (err, locomotive) {
-            res.send(locomotive._id);
+            res.send(locomotive);
             sendDataToWebsocketClients('locomotive:updated', locomotive);
             next();
         });

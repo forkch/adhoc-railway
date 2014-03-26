@@ -7,9 +7,25 @@ var mdns = require('mdns');
 
 var server = restify.createServer();
 server.use(restify.bodyParser());
+server.use(restify.CORS());
+server.use(restify.fullResponse());
+
+function reqSerializer(req) {
+    return {
+        method: req.method,
+        url: req.url,
+        headers: req.headers
+    }
+}
+
+server.use(restify.requestLogger({
+    properties: {},
+    serializers: {req: reqSerializer}
+}));
+
 var clients = [];
 
-var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(server, {origins: '*:*'});
 
 io.sockets.on('connection', function (client) {
     clients.push(client);

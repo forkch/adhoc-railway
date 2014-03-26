@@ -8,6 +8,13 @@ var locomotiveController = require('./../controllers/locomotivecontroller');
 
 module.exports = function (socket) {
 
+    function sendBroadcastToClients(err, event, data, fn) {
+        if (!err) {
+            socket.broadcast.emit(event, data);
+        }
+        fn(err, data);
+    }
+
     locomotiveController.init(socket);
     turnoutController.init(socket);
     routeController.init(socket);
@@ -43,7 +50,7 @@ module.exports = function (socket) {
 
     socket.on('turnout:getById', function (turnoutId, fn) {
         console.log('turnout:getById');
-        turnoutController.getById(socket, turnoutId, fn);
+        turnoutController.getTurnoutById(socket, turnoutId, fn);
     });
 
     socket.on('turnout:add', function (turnout, fn) {
@@ -132,17 +139,23 @@ module.exports = function (socket) {
 
     socket.on('locomotiveGroup:add', function (locomotiveGroupName, fn) {
         console.log('locomotiveGroup:add');
-        locomotiveController.addLocomotiveGroup(socket, locomotiveGroupName, fn);
+        locomotiveController.addLocomotiveGroup(locomotiveGroupName, function (err, locomotiveGroup) {
+            sendBroadcastToClients(err, 'locomotiveGroup:added', locomotiveGroup, fn);
+        });
     });
 
     socket.on('locomotiveGroup:update', function (locomotiveGroup, fn) {
         console.log('locomotiveGroup:update');
-        locomotiveController.updateLocomotiveGroup(socket, locomotiveGroup, fn);
+        locomotiveController.updateLocomotiveGroup(locomotiveGroup, function (err, locomotiveGroup) {
+            sendBroadcastToClients(err, 'locomotiveGroup:updated', locomotiveGroup, fn);
+        });
     });
 
-    socket.on('locomotiveGroup:remove', function (locomotiveGroup, fn) {
+    socket.on('locomotiveGroup:remove', function (locomotiveGroupId, fn) {
         console.log('locomotiveGroup:remove');
-        locomotiveController.removeLocomotiveGroup(socket, locomotiveGroup, fn);
+        locomotiveController.removeLocomotiveGroup(locomotiveGroupId, function (err, locomotiveGroupId) {
+            sendBroadcastToClients(err, 'locomotiveGroup:removed', locomotiveGroupId, fn);
+        });
     });
 
     socket.on('locomotive:getById', function (locomotiveId, fn) {
@@ -153,30 +166,21 @@ module.exports = function (socket) {
     socket.on('locomotive:add', function (locomotive, fn) {
         console.log('locomotive:add');
         locomotiveController.addLocomotive(locomotive, function (err, locomotive) {
-            if (!err) {
-                socket.broadcast.emit('locomotive:added', locomotive);
-            }
-            fn(err, locomotive);
+            sendBroadcastToClients(err, 'locomotive:added', locomotive, fn);
         });
     });
 
     socket.on('locomotive:update', function (locomotive, fn) {
         console.log('locomotive:update');
         locomotiveController.updateLocomotive(locomotive, function (err, locomotive) {
-            if (!err) {
-                socket.broadcast.emit('locomotive:updated', locomotive);
-            }
-            fn(err, locomotive);
+            sendBroadcastToClients(err, 'locomotive:updated', locomotive, fn);
         });
     });
 
-    socket.on('locomotive:remove', function (locomotive, fn) {
+    socket.on('locomotive:remove', function (locomotiveId, fn) {
         console.log('locomotive:remove');
-        locomotiveController.removeLocomotive(locomotive, function (err, locomotiveId) {
-            if (!err) {
-                socket.broadcast.emit('locomotive:removed', locomotiveId);
-            }
-            fn(err, locomotiveId);
+        locomotiveController.removeLocomotive(locomotiveId, function (err, locomotiveId) {
+            sendBroadcastToClients(err, 'locomotive:removed', locomotiveId, fn);
         });
     });
 

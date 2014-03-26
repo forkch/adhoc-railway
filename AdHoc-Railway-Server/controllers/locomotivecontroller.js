@@ -37,7 +37,7 @@ exports.getLocomotiveGroupById = function (locomotiveGroupId, fn) {
     });
 }
 
-exports.addLocomotiveGroup = function (socket, locomotiveGroup, fn) {
+exports.addLocomotiveGroup = function (locomotiveGroup, fn) {
     if (locomotiveGroup.name == null || locomotiveGroup.name.length == 0) {
         fn(true, 'name must be defined');
         return;
@@ -49,15 +49,14 @@ exports.addLocomotiveGroup = function (socket, locomotiveGroup, fn) {
         if (!err) {
             var locomotiveGroup = addedlocomotiveGroup.toJSON();
             locomotiveGroup.locomotives = {};
-            socket.broadcast.emit('locomotiveGroup:added', locomotiveGroup);
-            fn(false, locomotiveGroup._id);
+            fn(false, locomotiveGroup);
         } else {
             fn(true, 'failed to save locomotive group');
         }
     });
 }
 
-exports.updateLocomotiveGroup = function (socket, locomotiveGroup, fn) {
+exports.updateLocomotiveGroup = function (locomotiveGroup, fn) {
     if (locomotiveGroup.name == null || locomotiveGroup.name.length == 0) {
         fn(true, 'name must be defined');
         return;
@@ -70,23 +69,20 @@ exports.updateLocomotiveGroup = function (socket, locomotiveGroup, fn) {
     LocomotiveGroupModel.update({_id: id}, locomotiveGroup, function (err, numberAffected, rawResponse) {
         if (!err) {
             locomotiveGroup._id = id;
-            socket.broadcast.emit('locomotiveGroup:updated', locomotiveGroup);
-            fn(false, 'success');
+            fn(false, locomotiveGroup);
         } else {
             fn(true, 'failed to update locomotive group');
         }
     });
 }
 
-exports.removeLocomotiveGroup = function (socket, locomotiveGroup, fn) {
-    var id = locomotiveGroup._id;
-    console.log('remove locomotive group ' + id);
-    LocomotiveModel.remove({"group": id}, function (err) {
+exports.removeLocomotiveGroup = function (locomotiveGroupId, fn) {
+    console.log('remove locomotive group ' + locomotiveGroupId);
+    LocomotiveModel.remove({"group": locomotiveGroupId}, function (err) {
         if (!err) {
-            LocomotiveGroupModel.remove({_id: id}, function (err) {
+            LocomotiveGroupModel.remove({_id: locomotiveGroupId}, function (err) {
                 if (!err) {
-                    socket.broadcast.emit('locomotiveGroup:removed', locomotiveGroup);
-                    fn(false, 'success');
+                    fn(false, locomotiveGroupId);
                 } else {
                     fn(true, 'failed to remove locomotive group');
                 }
@@ -159,7 +155,7 @@ exports.updateLocomotive = function (locomotive, fn) {
 }
 
 exports.removeLocomotive = function (locomotiveId, fn) {
-    console.log('remvove locomotive ' + locomotiveId);
+    console.log('remove locomotive ' + locomotiveId);
     LocomotiveModel.remove({_id: locomotiveId}, function (err) {
         if (!err) {
             LocomotiveGroupModel.update(
