@@ -1,0 +1,54 @@
+div.row-fluid
+  div.span5
+    h3 Add Route
+  div.span5
+    div.alert(ng-show='error')
+      button.close(type='button', data-dismiss='alert')
+      {{error}} 
+div.row-fluid
+  div.span6
+    h4 Route
+    form.form-horizontal(ng-submit='addRoute()')
+      fieldset
+        div.control-group
+          label.control-label Number
+          div.controls
+            input(autofocus='true', type='number', size='4', placeholder='Number', ng-model='route.number')
+        div.control-group
+          label.control-label Name
+          div.controls
+            input(type='text', size='4', placeholder='Target Track', ng-model='route.name')
+        div.control-group
+          label.control-label Orientation
+          div.controls
+            input(type='text', size='4', placeholder='Orientation', ng-model='route.orientation')
+        div.control-group
+          div.controls
+            button.btn(type='submit') Add
+  div.span6
+    h4 Routed Turnouts
+    div.well(ng-repeat='routedTurnout in route.routedTurnouts')
+      p
+        | Number: {{routedTurnout.number}}
+      p
+        select(ng-model='routedTurnout.state')
+          option left
+          option right
+          option straight
+          option curved
+      p
+        button.btn(ng-click='removeRoutedTurnout(routedTurnout)')
+          i.icon-remove
+    div
+      p
+        select(type='number', placeholder='Turnout Number', ng-model='newRoutedTurnout.number')
+          option(ng-repeat='turnout in turnouts') {{turnout.number}}
+      p
+        select(ng-model='newRoutedTurnout.state')
+          option left
+          option right
+          option straight
+          option curved
+        br
+        button.btn(ng-click='addRoutedTurnout()') Add
+

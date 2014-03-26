@@ -1,0 +1,43 @@
+div.row
+  div.span12
+    h3 Locomotives
+div.row
+  div.span12
+    a.btn(href='addLocomotiveGroup') Add Locomotive Group 
+      i.icon-plus
+div.row
+  div.span10
+
+div.row(ng-repeat='locomotiveGroup in locomotiveGroups')
+  div.span10
+    
+    div(style='font-size: 17.5px;line-height:40px;font-weight:bold;')
+      {{locomotiveGroup.name}} 
+      div.btn-group.locomotiveGroup.editRemove
+        a.btn(href='editLocomotiveGroup/{{locomotiveGroup._id}}')
+          i.icon-edit
+        button.btn(ng-click='removeLocomotiveGroup(locomotiveGroup._id)')
+          i.icon-remove
+
+    div(ng-repeat='locomotive in locomotiveGroup.locomotives')
+      div.well.locomotive
+        div.locomotive.number
+          {{locomotive.name}} | 
+          {{locomotive.type}}
+        div.locomotive.address
+          {{locomotive.bus}}/{{locomotive.address}} 
+        div.btn-group.locomotive.editRemove
+          a.btn(ng-href='editLocomotive/{{locomotive._id}}')
+            i.icon-edit
+          button.btn(ng-click='removeLocomotive(locomotive._id)')
+            i.icon-remove
+    div
+      a.btn(href='addLocomotive/{{locomotiveGroup._id}}')
+        i.icon-plus
+
+div.row
+  div.span3
+    button.btn(ng-click='clearLocomotives()', style='margin-top:30px;')
+      i.icon-remove(style='padding-right:10px;')
+      | Remove all Locomotives
+

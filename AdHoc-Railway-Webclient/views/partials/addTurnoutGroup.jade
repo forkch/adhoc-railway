@@ -1,0 +1,23 @@
+div.row
+div.row
+  div.span10
+    h3 Add Turnout Group
+div.row
+  div.span5
+    form(ng-submit='addTurnoutGroup()')
+      fieldset
+        p
+          input(autofocus='true', type='text', size='12', placeholder='Name', ng-model='turnoutGroup.name')
+        p
+          input(type='text', size='12', placeholder='Turnout Number-Offset',
+          ng-model='routeGroup.turnoutNumberOffset')
+        p
+          input(type='text', size='12', placeholder='Number of Turnouts',
+          ng-model='routeGroup.turnoutNumberAmount')
+        p
+          button.btn(type='submit') Add
+          
+  div.span5
+    div.alert(ng-show='error')
+      button.close(type='button', data-dismiss='alert')
+      {{error}}
