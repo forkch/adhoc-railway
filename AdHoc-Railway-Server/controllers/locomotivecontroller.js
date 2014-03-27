@@ -97,6 +97,8 @@ exports.removeLocomotiveGroup = function (locomotiveGroupId, fn) {
 exports.getLocomotiveById = function (locomotiveId, fn) {
     console.log('locomotive:getById: ' + locomotiveId);
     LocomotiveModel.findById(locomotiveId, function (err, locomotive) {
+
+        console.log(locomotive.toJSON());
         if (!err) {
             fn(false, locomotive);
         } else {
@@ -195,36 +197,37 @@ exports.clear = function (socket, fn) {
 
 /* PRIVATE HELPERS */
 getAllLocomotiveData = function (fn) {
-    LocomotiveGroupModel.find().lean().exec(function (err, locomotiveGroups) {
-
+    LocomotiveGroupModel.find().exec(function (err, locomotiveGroups) {
         if (err) {
             fn(true, null);
         }
-        LocomotiveModel.find().lean().exec(function (err, locomotives) {
+        LocomotiveModel.find().exec(function (err, locomotives) {
             if (err) {
                 fn(true, null);
             }
-            var locomotiveByGroupId = [];
+            var locomotivesByGroupId = {};
             for (t in locomotives) {
-                console.log(locomotives[t].group + " --> " + JSON.stringify(locomotives[t]));
-                if (!locomotiveByGroupId[locomotives[t].group]) {
-                    locomotiveByGroupId[locomotives[t].group] = {};
+
+                var groupId = locomotives[t].group;
+                if (!locomotivesByGroupId[groupId]) {
+                    locomotivesByGroupId[groupId] = [];
                 }
-                var locomotiveId = locomotives[t]._id;
-                var obj = {};
-                obj[locomotiveId] = locomotives[t];
-
-                locomotiveByGroupId[locomotives[t].group][locomotiveId] = locomotives[t];
+                var locomotive = locomotives[t].toJSON();
+                locomotivesByGroupId[groupId].push(locomotive);
             }
-
-            var result = {'locomotiveGroups': []};
+            var test = '5331f404ba92bf691e88712a';
+            console.log(locomotiveGroups);
+            console.log("sdfjasd\n")
+            var result = [];
             for (g in locomotiveGroups) {
-                var groupId = locomotiveGroups[g]._id;
-                locomotiveGroups[g].locomotives = [];
-                locomotiveGroups[g].locomotives = locomotiveByGroupId[groupId];
-                result.locomotiveGroups.push(locomotiveGroups[g]);
-            }
+                var group = locomotiveGroups[g].toJSON();
 
+                group['locomotives'] = 0;
+                console.log("group: " + group.id);
+
+                console.log(locomotivesByGroupId[group['id']]);
+                console.log(group);
+            }
             fn(false, result);
         });
     });
