@@ -14,9 +14,9 @@ div.row(ng-repeat='locomotiveGroup in locomotiveGroups')
         div(style='font-size: 17.5px;line-height:40px;font-weight:bold;')
             {{locomotiveGroup.name}}
             div.btn-group.locomotiveGroup.editRemove
-                a.btn(href='editLocomotiveGroup/{{locomotiveGroup._id}}')
+                a.btn(href='editLocomotiveGroup/{{locomotiveGroup.id}}')
                     i.icon-edit
-                button.btn(ng-click='removeLocomotiveGroup(locomotiveGroup._id)')
+                button.btn(ng-click='removeLocomotiveGroup(locomotiveGroup.id)')
                     i.icon-remove
 
         div(ng-repeat='locomotive in locomotiveGroup.locomotives')
@@ -24,15 +24,14 @@ div.row(ng-repeat='locomotiveGroup in locomotiveGroups')
                 div.locomotive.number
                     {{locomotive.name}} |
                     {{locomotive.type}}
-                div.locomotive.address
-                    {{locomotive.bus}}/{{locomotive.address}}
+                div.locomotive.address Bus {{locomotive.bus}} / Address {{locomotive.address1}}, {{locomotive.address2}}
                 div.btn-group.locomotive.editRemove
-                    a.btn(ng-href='editLocomotive/{{locomotive._id}}')
+                    a.btn(ng-href='editLocomotive/{{locomotive.id}}')
                         i.icon-edit
-                    button.btn(ng-click='removeLocomotive(locomotive._id)')
+                    button.btn(ng-click='removeLocomotive(locomotive.id)')
                         i.icon-remove
         div
-            a.btn(href='addLocomotive/{{locomotiveGroup._id}}')
+            a.btn(href='addLocomotive/{{locomotiveGroup.id}}')
                 i.icon-plus
 
         div.row
@@ -41,3 +40,6 @@ div.row(ng-repeat='locomotiveGroup in locomotiveGroups')
             i.icon-remove(style='padding-right:10px;')
             | Remove all Locomotives
 
+
+        div(ng-repeat='locomotive in locomotives')
+            span {{locomotive.id}}

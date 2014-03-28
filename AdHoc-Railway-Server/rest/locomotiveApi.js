@@ -3,7 +3,7 @@ var locomotiveController = require('../controllers/locomotivecontroller');
 exports.init = function (server, sendDataToWebsocketClients) {
     server.get('/locomotiveGroup', function (req, res, next) {
         locomotiveController.getAllLocomotiveGroups(function (err, data) {
-            res.send(data.locomotiveGroups);
+            res.send(data);
             next();
         });
     });

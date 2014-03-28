@@ -5,7 +5,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
 
 var colorize = require('colorize');
-var cconsole = colorize.console;
 
 exports.init = function (socket) {
     getAllLocomotiveData(function (err, result) {
@@ -43,12 +42,13 @@ exports.addLocomotiveGroup = function (locomotiveGroup, fn) {
         return;
     }
 
-    console.log('adding new locomotive group: ' + locomotiveGroup);
+    console.log('adding new locomotive group: ' + locomotiveGroup.name);
     var group = new LocomotiveGroupModel(locomotiveGroup);
     group.save(function (err, addedlocomotiveGroup) {
+        console.log(err);
         if (!err) {
             var locomotiveGroup = addedlocomotiveGroup.toJSON();
-            locomotiveGroup.locomotives = {};
+            locomotiveGroup.locomotives = [];
             fn(false, locomotiveGroup);
         } else {
             fn(true, 'failed to save locomotive group');
@@ -63,12 +63,12 @@ exports.updateLocomotiveGroup = function (locomotiveGroup, fn) {
     }
     console.log('updating locomotive group' + JSON.stringify(locomotiveGroup));
 
-    var id = locomotiveGroup._id;
-    delete locomotiveGroup._id;
+    var id = locomotiveGroup.id;
+    delete locomotiveGroup.id;
 
     LocomotiveGroupModel.update({_id: id}, locomotiveGroup, function (err, numberAffected, rawResponse) {
         if (!err) {
-            locomotiveGroup._id = id;
+            locomotiveGroup.id = id;
             fn(false, locomotiveGroup);
         } else {
             fn(true, 'failed to update locomotive group');
@@ -97,8 +97,6 @@ exports.removeLocomotiveGroup = function (locomotiveGroupId, fn) {
 exports.getLocomotiveById = function (locomotiveId, fn) {
     console.log('locomotive:getById: ' + locomotiveId);
     LocomotiveModel.findById(locomotiveId, function (err, locomotive) {
-
-        console.log(locomotive.toJSON());
         if (!err) {
             fn(false, locomotive);
         } else {
@@ -112,15 +110,14 @@ exports.addLocomotive = function (locomotive, fn) {
     if (!validateLocomotive(locomotive, fn)) {
         return;
     }
-
     console.log('adding new locomotive ' + JSON.stringify(locomotive));
     new LocomotiveModel(locomotive).save(function (err, addedLocomotive) {
         if (!err) {
-            console.log(addedLocomotive.group);
-            LocomotiveGroupModel.findById({_id: addedLocomotive.group}, function (err, locomotiveGroup) {
+            console.log(addedLocomotive.groupId);
+            LocomotiveGroupModel.findById({_id: addedLocomotive.groupId}, function (err, locomotiveGroup) {
                 if (!err) {
                     console.log(locomotiveGroup);
-                    locomotiveGroup.locomotives.push(addedLocomotive._id);
+                    locomotiveGroup.locomotives.push(addedLocomotive.id);
                     locomotiveGroup.save();
                     fn(false, addedLocomotive);
                 } else {
@@ -142,12 +139,12 @@ exports.updateLocomotive = function (locomotive, fn) {
         return;
     }
 
-    var id = locomotive._id;
-    delete locomotive._id;
+    var id = locomotive.id;
+    delete locomotive.id;
 
     LocomotiveModel.update({_id: id}, locomotive, function (err, numberAffected, rawResponse) {
         if (!err) {
-            locomotive._id = id;
+            locomotive.id = id;
 
             fn(false, locomotive);
         } else {
@@ -207,26 +204,20 @@ getAllLocomotiveData = function (fn) {
             }
             var locomotivesByGroupId = {};
             for (t in locomotives) {
-
-                var groupId = locomotives[t].group;
-                if (!locomotivesByGroupId[groupId]) {
-                    locomotivesByGroupId[groupId] = [];
+                var locomotive = locomotives[t];
+                if (!locomotivesByGroupId[locomotives[t].groupId]) {
+                    locomotivesByGroupId[locomotives[t].groupId] = [];
                 }
-                var locomotive = locomotives[t].toJSON();
-                locomotivesByGroupId[groupId].push(locomotive);
+                var groupdId = locomotives[t].groupId;
+                locomotivesByGroupId[groupdId].push(locomotive.toJSON());
             }
-            var test = '5331f404ba92bf691e88712a';
-            console.log(locomotiveGroups);
-            console.log("sdfjasd\n")
             var result = [];
             for (g in locomotiveGroups) {
                 var group = locomotiveGroups[g].toJSON();
-
-                group['locomotives'] = 0;
-                console.log("group: " + group.id);
-
-                console.log(locomotivesByGroupId[group['id']]);
-                console.log(group);
+                var groupId = locomotiveGroups[g]._id;
+                var locomotives = locomotivesByGroupId[groupdId];
+                group['locomotives'] = locomotives
+                result.push(group);
             }
             fn(false, result);
         });
