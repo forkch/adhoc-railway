@@ -39,7 +39,7 @@ public class LocomotiveManagerImplTest {
     @Test
     public void addLocomotiveGroup() {
 
-        final LocomotiveGroup newGroup = new LocomotiveGroup(1, "test");
+        final LocomotiveGroup newGroup = new LocomotiveGroup("1", "test");
 
         locomotiveManagerImpl.addLocomotiveGroup(newGroup);
 
@@ -55,7 +55,7 @@ public class LocomotiveManagerImplTest {
     @Test
     public void updateLocomotiveGroup() {
 
-        final LocomotiveGroup newGroup = new LocomotiveGroup(1, "test");
+        final LocomotiveGroup newGroup = new LocomotiveGroup("1", "test");
 
         locomotiveManagerImpl.updateLocomotiveGroup(newGroup);
 
@@ -71,7 +71,7 @@ public class LocomotiveManagerImplTest {
     @Test
     public void removeLocomotiveGroup() {
 
-        final LocomotiveGroup newGroup = new LocomotiveGroup(1, "test");
+        final LocomotiveGroup newGroup = new LocomotiveGroup("1", "test");
 
         locomotiveManagerImpl.removeLocomotiveGroup(newGroup);
         verify(serviceMock).removeLocomotiveGroup(newGroup);
@@ -86,7 +86,7 @@ public class LocomotiveManagerImplTest {
     public void addLocomotiveToGroup() {
 
         // given
-        final LocomotiveGroup newGroup = new LocomotiveGroup(1, "test");
+        final LocomotiveGroup newGroup = new LocomotiveGroup("1", "test");
         final Locomotive locomotive = new Locomotive();
 
         // when
@@ -126,7 +126,7 @@ public class LocomotiveManagerImplTest {
 
         // given
         final Locomotive locomotive = new Locomotive();
-        final LocomotiveGroup newGroup = new LocomotiveGroup(1, "test");
+        final LocomotiveGroup newGroup = new LocomotiveGroup("1", "test");
         newGroup.addLocomotive(locomotive);
         locomotive.setGroup(newGroup);
 
@@ -150,18 +150,18 @@ public class LocomotiveManagerImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void removeLocomotiveFromNotItsGroup() {
-        final LocomotiveGroup newGroup = new LocomotiveGroup(1, "test");
+        final LocomotiveGroup newGroup = new LocomotiveGroup("1", "test");
         locomotiveManagerImpl.removeLocomotiveFromGroup(new Locomotive(),
                 newGroup);
     }
 
     @Test
     public void locomotiveGroupAdded() {
-        final LocomotiveGroup newGroup1 = new LocomotiveGroup(1, "test1");
+        final LocomotiveGroup newGroup1 = new LocomotiveGroup("1", "test1");
         locomotiveManagerImpl.locomotiveGroupAdded(newGroup1);
         verify(listenerMock).locomotiveGroupAdded(newGroup1);
 
-        final LocomotiveGroup newGroup2 = new LocomotiveGroup(2, "test2");
+        final LocomotiveGroup newGroup2 = new LocomotiveGroup("1", "test2");
         locomotiveManagerImpl.locomotiveGroupAdded(newGroup2);
         verify(listenerMock).locomotiveGroupAdded(newGroup2);
 
@@ -172,7 +172,7 @@ public class LocomotiveManagerImplTest {
 
     @Test
     public void locomotiveGroupRemoved() {
-        final LocomotiveGroup newGroup1 = new LocomotiveGroup(1, "test");
+        final LocomotiveGroup newGroup1 = new LocomotiveGroup("1", "test");
         locomotiveManagerImpl.locomotiveGroupAdded(newGroup1);
         locomotiveManagerImpl.locomotiveGroupRemoved(newGroup1);
 
@@ -182,7 +182,7 @@ public class LocomotiveManagerImplTest {
 
     @Test
     public void locomotiveGroupUpdated() {
-        final LocomotiveGroup newGroup1 = new LocomotiveGroup(1, "test");
+        final LocomotiveGroup newGroup1 = new LocomotiveGroup("1", "test");
         locomotiveManagerImpl.locomotiveGroupAdded(newGroup1);
         newGroup1.setName("new name");
         locomotiveManagerImpl.locomotiveGroupUpdated(newGroup1);

@@ -38,7 +38,7 @@ public class Locomotive extends AbstractItem implements Serializable,
         Comparable<Locomotive> {
 
     @XStreamAsAttribute
-    private int id = -1;
+    private String id;
 
     @XStreamAsAttribute
     private String name;
@@ -64,6 +64,9 @@ public class Locomotive extends AbstractItem implements Serializable,
     private int address2;
 
     private SortedSet<LocomotiveFunction> functions = new TreeSet<LocomotiveFunction>();
+
+    @XStreamAsAttribute
+    private String groupId;
 
     @XStreamOmitField
     private LocomotiveGroup group;
@@ -96,12 +99,12 @@ public class Locomotive extends AbstractItem implements Serializable,
         currentFunctions = new boolean[functions.size()];
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(final int id) {
-        final int old = this.id;
+    public void setId(final String id) {
+        final String old = this.id;
         this.id = id;
         changeSupport.firePropertyChange(PROPERTYNAME_ID, old, this.id);
     }
@@ -233,17 +236,7 @@ public class Locomotive extends AbstractItem implements Serializable,
         if (o == null) {
             return -1;
         }
-        if (name == null) {
-            if (id > o.getId()) {
-                return 1;
-            } else if (id == o.getId()) {
-                return 0;
-            } else {
-                return -1;
-            }
-        } else {
-            return name.compareTo(o.getName());
-        }
+        return name.compareTo(o.getName());
 
     }
 
@@ -324,5 +317,13 @@ public class Locomotive extends AbstractItem implements Serializable,
 
     public void setImageBase64(String imageBase64) {
         this.imageBase64 = imageBase64;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 }

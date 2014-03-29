@@ -123,7 +123,7 @@ public class SIOLocomotiveServiceEventHandler {
 
     public static void addIdToLocomotive(final Locomotive locomotive,
                                          final String sioId) {
-        final int id = sioId.hashCode();
+        final String id = sioId;
         locomotive.setId(id);
         sioIdToLocomotiveMap.put(sioId, locomotive);
         SIOLocomotiveMapper.locomotiveIdMap.put(id, sioId);
@@ -131,7 +131,7 @@ public class SIOLocomotiveServiceEventHandler {
 
     public static void addIdToLocomotiveGroup(final LocomotiveGroup group,
                                               final String sioId) {
-        final int id = sioId.hashCode();
+        final String id = sioId;
         group.setId(id);
         sioIdToLocomotiveGroupMap.put(sioId, group);
         SIOLocomotiveMapper.locomotiveGroupIdMap.put(id, sioId);

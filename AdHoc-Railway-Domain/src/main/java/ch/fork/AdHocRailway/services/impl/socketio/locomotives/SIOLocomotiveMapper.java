@@ -4,6 +4,7 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,13 +15,13 @@ import java.util.Map;
 
 public class SIOLocomotiveMapper {
 
-    public static Map<Integer, String> locomotiveIdMap = new HashMap<Integer, String>();
-    public static Map<Integer, String> locomotiveGroupIdMap = new HashMap<Integer, String>();
+    public static Map<String, String> locomotiveIdMap = Maps.newHashMap();
+    public static Map<String, String> locomotiveGroupIdMap = Maps.newHashMap();
 
     public static LocomotiveGroup mapLocomotiveGroupFromJSON(
             final JSONObject locomotiveGroupJSON) throws JSONException {
         final String sioId = locomotiveGroupJSON.getString("_id");
-        final int id = sioId.hashCode();
+        final String id = sioId;
         locomotiveGroupIdMap.put(id, sioId);
         final LocomotiveGroup locomotiveGroup = new LocomotiveGroup(id, "temp");
 
@@ -46,7 +47,7 @@ public class SIOLocomotiveMapper {
             final JSONObject locomotiveJSON) throws JSONException {
         final Locomotive locomotive = new Locomotive();
         final String sioId = locomotiveJSON.getString("_id");
-        final int id = sioId.hashCode();
+        final String id = sioId;
         locomotiveIdMap.put(id, sioId);
         locomotive.setId(id);
         mergeLocomotiveBaseInfo(locomotiveJSON, locomotive);

@@ -360,7 +360,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
                         }
 
                     });
-            if (locomotive.getId() != -1) {
+            if (StringUtils.isNotBlank(locomotive.getId())) {
                 ctx.getLocomotiveManager().updateLocomotive(locomotive);
             } else {
                 ctx.getLocomotiveManager().addLocomotiveToGroup(locomotive,

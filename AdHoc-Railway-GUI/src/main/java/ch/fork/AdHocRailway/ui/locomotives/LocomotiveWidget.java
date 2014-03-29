@@ -111,7 +111,7 @@ public class LocomotiveWidget extends JPanel implements
         initGUI();
         initKeyboardActions();
 
-        allLocomotivesGroup = new LocomotiveGroup(Integer.MIN_VALUE, "All");
+        allLocomotivesGroup = new LocomotiveGroup("", "All");
         ctx.getLocomotiveManager().addLocomotiveManagerListener(this);
         connectedToRailway = false;
     }

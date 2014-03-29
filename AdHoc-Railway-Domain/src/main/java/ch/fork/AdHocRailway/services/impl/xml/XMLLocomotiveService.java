@@ -53,7 +53,7 @@ public class XMLLocomotiveService implements LocomotiveService {
     @Override
     public void addLocomotive(final Locomotive locomotive) {
         locomotives.add(locomotive);
-        locomotive.setId(UUID.randomUUID().hashCode());
+        locomotive.setId(UUID.randomUUID().toString());
         listener.locomotiveAdded(locomotive);
     }
 
@@ -80,7 +80,7 @@ public class XMLLocomotiveService implements LocomotiveService {
     @Override
     public void addLocomotiveGroup(final LocomotiveGroup group) {
         locomotiveGroups.add(group);
-        group.setId(UUID.randomUUID().hashCode());
+        group.setId(UUID.randomUUID().toString());
         listener.locomotiveGroupAdded(group);
     }
 
@@ -115,12 +115,12 @@ public class XMLLocomotiveService implements LocomotiveService {
         if (groups != null) {
             for (final LocomotiveGroup locomotiveGroup : groups) {
                 locomotiveGroup.init();
-                locomotiveGroup.setId(UUID.randomUUID().hashCode());
+                locomotiveGroup.setId(UUID.randomUUID().toString());
                 locomotiveGroups.add(locomotiveGroup);
                 for (final Locomotive locomotive : locomotiveGroup.getLocomotives()) {
                     locomotive.init();
                     locomotive.setGroup(locomotiveGroup);
-                    locomotive.setId(UUID.randomUUID().hashCode());
+                    locomotive.setId(UUID.randomUUID().toString());
 
                     locomotives.add(locomotive);
                 }

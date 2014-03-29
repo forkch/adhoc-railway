@@ -29,7 +29,7 @@ public class LocomotiveGroup extends AbstractItem implements
         java.io.Serializable, Comparable<LocomotiveGroup> {
 
     @XStreamAsAttribute
-    private int id;
+    private String id;
 
     @XStreamAsAttribute
     private String name;
@@ -44,17 +44,18 @@ public class LocomotiveGroup extends AbstractItem implements
         super();
     }
 
-    public LocomotiveGroup(final int id, final String name) {
+    public LocomotiveGroup(String id, String name) {
         this.id = id;
         this.name = name;
+
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(final int id) {
-        final int old = this.id;
+    public void setId(final String id) {
+        final String old = this.id;
         this.id = id;
         changeSupport.firePropertyChange(PROPERTYNAME_ID, old, this.id);
     }
@@ -116,7 +117,7 @@ public class LocomotiveGroup extends AbstractItem implements
 
     @Override
     public int hashCode() {
-        return Integer.valueOf(id).hashCode();
+        return id.hashCode();
     }
 
     @Override

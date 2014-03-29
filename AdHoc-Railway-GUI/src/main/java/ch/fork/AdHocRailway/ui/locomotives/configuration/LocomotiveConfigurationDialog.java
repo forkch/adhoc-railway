@@ -289,7 +289,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
                     LocomotiveConfigurationDialog.this,
                     "Enter the name of the new Locomotive-Group",
                     "Add Locomotive-Group", JOptionPane.QUESTION_MESSAGE);
-            final LocomotiveGroup newGroup = new LocomotiveGroup(-1,
+            final LocomotiveGroup newGroup = new LocomotiveGroup("",
                     newGroupName);
             locomotiveManager.addLocomotiveGroup(newGroup);
             locomotiveGroupConfig.setLocomotiveGroup(null);

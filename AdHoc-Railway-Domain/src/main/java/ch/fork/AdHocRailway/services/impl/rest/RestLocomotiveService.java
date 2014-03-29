@@ -36,7 +36,6 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void updateLocomotive(Locomotive locomotive) {
-
     }
 
     @Override
@@ -79,6 +78,9 @@ public class RestLocomotiveService implements LocomotiveService {
         SortedSet<LocomotiveGroup> allLocomotiveGroups = s.getAllLocomotiveGroups();
         for (LocomotiveGroup allLocomotiveGroup : allLocomotiveGroups) {
             System.out.println(allLocomotiveGroup);
+            for(Locomotive locomotive : allLocomotiveGroup.getLocomotives()) {
+                System.out.println(locomotive);
+            }
         }
 
     }

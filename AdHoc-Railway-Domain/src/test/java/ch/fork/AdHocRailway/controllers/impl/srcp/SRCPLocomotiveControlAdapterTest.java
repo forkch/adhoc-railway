@@ -99,7 +99,7 @@ public class SRCPLocomotiveControlAdapterTest {
 
     private Locomotive createLocomotive(final LocomotiveType type) {
         final Locomotive locomotive = new Locomotive();
-        locomotive.setId(1);
+        locomotive.setId("1");
         locomotive.setName("testname");
         locomotive.setDesc("description");
         locomotive.setBus(1);

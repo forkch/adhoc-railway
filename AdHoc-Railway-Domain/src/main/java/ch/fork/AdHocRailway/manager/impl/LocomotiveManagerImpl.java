@@ -27,6 +27,7 @@ import ch.fork.AdHocRailway.manager.impl.events.LocomotivesUpdatedEvent;
 import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
 import com.google.common.eventbus.EventBus;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -65,7 +66,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
         if (group == null) {
             throw new IllegalArgumentException("group must not be null");
         }
-        if (group.getId() == Integer.MIN_VALUE) {
+        if (StringUtils.isBlank(group.getId() )) {
             throw new ManagerException(
                     "Cannot delete ALL_LOCOMOTIVES_GROUP");
         }
