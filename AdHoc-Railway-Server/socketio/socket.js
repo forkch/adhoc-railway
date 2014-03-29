@@ -186,6 +186,12 @@ module.exports = function (socket) {
 
     socket.on('locomotive:clear', function (dummy, fn) {
         console.log('locomotive:clear');
-        locomotiveController.clear(socket, fn);
+        locomotiveController.clear(function (err, locomotiveGroups) {
+            sendBroadcastToClients(err, 'locomotive:init', locomotiveGroups, fn);
+
+        });
+
+
+        socket.broadcast.emit('locomotive:init', result);
     });
 };

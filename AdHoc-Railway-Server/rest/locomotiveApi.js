@@ -7,6 +7,12 @@ exports.init = function (server, sendDataToWebsocketClients) {
             next();
         });
     });
+    server.del('/locomotiveGroup', function (req, res, next) {
+        locomotiveController.clear(function (err, data) {
+            res.send(data);
+            next();
+        });
+    });
 
     server.get('/locomotiveGroup/:id', function (req, res, next) {
         locomotiveController.getLocomotiveGroupById(req.params.id, function (err, locomotiveGroup) {
@@ -33,6 +39,14 @@ exports.init = function (server, sendDataToWebsocketClients) {
 
     server.del('/locomotiveGroup/:id', function (req, res, next) {
         locomotiveController.removeLocomotiveGroup(req.params.id, function (err, locomotiveGroupId) {
+            res.send(locomotiveGroupId);
+            sendDataToWebsocketClients('locomotiveGroup:removed', locomotiveGroup);
+            next();
+        });
+    });
+
+    server.del('/locomotiveGroup', function (req, res, next) {
+        locomotiveController.clear(req.params.id, function (err, locomotiveGroupId) {
             res.send(locomotiveGroupId);
             sendDataToWebsocketClients('locomotiveGroup:removed', locomotiveGroup);
             next();
