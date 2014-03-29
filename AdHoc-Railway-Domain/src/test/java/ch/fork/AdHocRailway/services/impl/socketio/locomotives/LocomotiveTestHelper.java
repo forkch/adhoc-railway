@@ -67,7 +67,7 @@ public class LocomotiveTestHelper {
 
     public static void assertLocomotiveBase(final Locomotive locomotive,
                                             final String id, final LocomotiveType type) {
-        assertEquals(id.hashCode(), locomotive.getId());
+        assertEquals(id, locomotive.getId());
         assertEquals(NAME + id, locomotive.getName());
         assertEquals(DESCRIPTION, locomotive.getDesc());
         assertEquals(IMAGE_PNG, locomotive.getImage());
@@ -81,7 +81,7 @@ public class LocomotiveTestHelper {
             final LocomotiveGroup locomotiveGroup, final String id,
             final int locomotiveCount) {
 
-        assertEquals(id.hashCode(), locomotiveGroup.getId());
+        assertEquals(id, locomotiveGroup.getId());
         assertEquals(GROUP_NAME + id, locomotiveGroup.getName());
         assertEquals(locomotiveCount, locomotiveGroup.getLocomotives().size());
     }
