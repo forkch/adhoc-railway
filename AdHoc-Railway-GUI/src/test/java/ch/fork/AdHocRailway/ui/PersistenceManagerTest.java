@@ -1,5 +1,6 @@
 package ch.fork.AdHocRailway.ui;
 
+import ch.fork.AdHocRailway.services.impl.rest.RestLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
@@ -44,7 +45,7 @@ public class PersistenceManagerTest {
 
         // then
         Assert.assertTrue(applicationContext.getLocomotiveManager()
-                .getService() instanceof SIOLocomotiveService);
+                .getService() instanceof RestLocomotiveService);
         Assert.assertTrue(applicationContext.getTurnoutManager().getService() instanceof SIOTurnoutService);
         Assert.assertTrue(applicationContext.getRouteManager().getService() instanceof SIORouteService);
     }
