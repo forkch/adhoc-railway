@@ -25,7 +25,7 @@ public class LocomotiveTestHelper {
                                                        final List<JSONObject> locomotivesJSON) throws JSONException {
 
         final JSONObject locomotiveGroupJSON = new JSONObject();
-        locomotiveGroupJSON.put("_id", id);
+        locomotiveGroupJSON.put("id", id);
         locomotiveGroupJSON.put("name", GROUP_NAME + id);
 
         if (locomotivesJSON.size() == 0) {
@@ -34,7 +34,7 @@ public class LocomotiveTestHelper {
         final JSONObject locomotives = new JSONObject();
         for (final JSONObject locomotiveJSON : locomotivesJSON) {
             locomotiveJSON.put("group", id);
-            locomotives.put(locomotiveJSON.getString("_id"), locomotiveJSON);
+            locomotives.put(locomotiveJSON.getString("id"), locomotiveJSON);
         }
         locomotiveGroupJSON.put("locomotives", locomotives);
         return locomotiveGroupJSON;
@@ -43,7 +43,7 @@ public class LocomotiveTestHelper {
     public static JSONObject createJSONLocomotive(final String id,
                                                   final String type, final int functionCount) throws JSONException {
         final JSONObject locomotiveJSON = new JSONObject();
-        locomotiveJSON.put("_id", id);
+        locomotiveJSON.put("id", id);
         locomotiveJSON.put("name", NAME + id);
         locomotiveJSON.put("description", DESCRIPTION);
         locomotiveJSON.put("image", IMAGE_PNG);
