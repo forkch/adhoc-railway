@@ -79,18 +79,28 @@ exports.updateLocomotiveGroup = function (locomotiveGroup, fn) {
 exports.removeLocomotiveGroup = function (locomotiveGroupId, fn) {
     console.log('remove locomotive group ' + locomotiveGroupId);
     LocomotiveModel.remove({"group": locomotiveGroupId}, function (err) {
-        if (!err) {
-            LocomotiveGroupModel.remove({_id: locomotiveGroupId}, function (err) {
-                if (!err) {
-                    fn(false, locomotiveGroupId);
-                } else {
-                    fn(true, 'failed to remove locomotive group');
-                }
-            });
-        } else {
-            fn(true, 'failed to remove the locomotives associated to locomotive group');
+            if (!err) {
+                LocomotiveGroupModel.findById(locomotiveGroupId, function (err, locomotiveGroup) {
+                    if (!err) {
+                        locomotiveGroup.remove(function (err) {
+                            if (!err) {
+                                fn(err, locomotiveGroup);
+                            } else {
+                                fn(err, 'failed to remove locomotive group');
+                            }
+                        });
+
+                    } else {
+                        fn(err, 'failed to remove locomotive group');
+                    }
+                });
+            }
+            else {
+                fn(err, 'failed to remove the locomotives associated to locomotive group');
+            }
         }
-    });
+    )
+    ;
 }
 
 
@@ -145,7 +155,6 @@ exports.updateLocomotive = function (locomotive, fn) {
     LocomotiveModel.update({_id: id}, locomotive, function (err, numberAffected, rawResponse) {
         if (!err) {
             locomotive.id = id;
-
             fn(false, locomotive);
         } else {
             fn(true, 'failed to update locomotive');
@@ -155,31 +164,32 @@ exports.updateLocomotive = function (locomotive, fn) {
 
 exports.removeLocomotive = function (locomotiveId, fn) {
     console.log('remove locomotive ' + locomotiveId);
-    LocomotiveModel.remove({_id: locomotiveId}, function (err) {
+    LocomotiveModel.findById(locomotiveId, function (err, locomotive) {
         if (!err) {
-            LocomotiveGroupModel.update(
-                {}, {$pull: {locomotives: locomotiveId}}, function (err, locomotiveGroup) {
+            locomotive.remove(function (err) {
+                LocomotiveGroupModel.update({}, {$pull: {locomotives: locomotiveId}}, function (err, locomotiveGroup) {
                     if (!err) {
-                        fn(false, locomotiveId);
+                        fn(false, locomotive);
                     } else {
-                        fn(true, 'failed to update locomotive group');
+                        fn(true, 'failed to remove locomotive group');
                     }
                 });
+            });
+
         } else {
             fn(true, 'failed to remove locomotive ');
         }
     });
 }
 
-exports.clear = function (socket, fn) {
+exports.clear = function (fn) {
     LocomotiveModel.remove(function (err) {
         if (!err) {
             LocomotiveGroupModel.remove(function (err) {
                 if (!err) {
                     getAllLocomotiveData(function (err, result) {
                         if (!err) {
-                            socket.broadcast.emit('locomotive:init', result);
-                            fn(false, '', result);
+                            fn(false, result);
                         }
                     });
                 } else {
@@ -208,14 +218,14 @@ getAllLocomotiveData = function (fn) {
                 if (!locomotivesByGroupId[locomotives[t].groupId]) {
                     locomotivesByGroupId[locomotives[t].groupId] = [];
                 }
-                var groupdId = locomotives[t].groupId;
-                locomotivesByGroupId[groupdId].push(locomotive.toJSON());
+                var groupId = locomotives[t].groupId;
+                locomotivesByGroupId[groupId].push(locomotive.toJSON());
             }
             var result = [];
             for (g in locomotiveGroups) {
                 var group = locomotiveGroups[g].toJSON();
-                var groupId = locomotiveGroups[g]._id;
-                var locomotives = locomotivesByGroupId[groupdId];
+                var groupId = group.id;
+                var locomotives = locomotivesByGroupId[groupId];
                 group['locomotives'] = locomotives
                 result.push(group);
             }

@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.manager;
 import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.RouteService;
 import ch.fork.AdHocRailway.services.TurnoutService;
+import ch.fork.AdHocRailway.services.impl.rest.RestLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
@@ -16,7 +17,7 @@ public class ServiceFactory {
             final boolean useAdHocServer) {
 
         if (useAdHocServer) {
-            return new SIOLocomotiveService();
+            return new RestLocomotiveService();
         } else {
             return new XMLLocomotiveService();
         }

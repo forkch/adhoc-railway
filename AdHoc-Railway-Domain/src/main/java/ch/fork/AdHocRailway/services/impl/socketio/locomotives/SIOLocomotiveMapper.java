@@ -20,7 +20,7 @@ public class SIOLocomotiveMapper {
 
     public static LocomotiveGroup mapLocomotiveGroupFromJSON(
             final JSONObject locomotiveGroupJSON) throws JSONException {
-        final String sioId = locomotiveGroupJSON.getString("_id");
+        final String sioId = locomotiveGroupJSON.getString("id");
         final String id = sioId;
         locomotiveGroupIdMap.put(id, sioId);
         final LocomotiveGroup locomotiveGroup = new LocomotiveGroup(id, "temp");
@@ -46,7 +46,7 @@ public class SIOLocomotiveMapper {
     public static Locomotive mapLocomotiveFromJSON(
             final JSONObject locomotiveJSON) throws JSONException {
         final Locomotive locomotive = new Locomotive();
-        final String sioId = locomotiveJSON.getString("_id");
+        final String sioId = locomotiveJSON.getString("id");
         final String id = sioId;
         locomotiveIdMap.put(id, sioId);
         locomotive.setId(id);
@@ -114,7 +114,7 @@ public class SIOLocomotiveMapper {
     public static JSONObject mapLocomotiveGroupToJSON(
             final LocomotiveGroup group) throws JSONException {
         final JSONObject locomotiveGroupJSON = new JSONObject();
-        locomotiveGroupJSON.put("_id", locomotiveGroupIdMap.get(group.getId()));
+        locomotiveGroupJSON.put("id", locomotiveGroupIdMap.get(group.getId()));
         locomotiveGroupJSON.put("name", group.getName());
         return locomotiveGroupJSON;
     }
@@ -122,7 +122,7 @@ public class SIOLocomotiveMapper {
     public static JSONObject mapLocomotiveToJSON(final Locomotive locomotive)
             throws JSONException {
         final JSONObject locomotiveJSON = new JSONObject();
-        locomotiveJSON.put("_id", locomotiveIdMap.get(locomotive.getId()));
+        locomotiveJSON.put("id", locomotiveIdMap.get(locomotive.getId()));
         locomotiveJSON.put("name", locomotive.getName());
         locomotiveJSON.put("description", locomotive.getDesc());
         locomotiveJSON.put("bus", locomotive.getBus());

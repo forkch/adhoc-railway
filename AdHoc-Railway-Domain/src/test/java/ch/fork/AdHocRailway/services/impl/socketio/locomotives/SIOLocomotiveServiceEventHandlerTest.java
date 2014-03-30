@@ -5,6 +5,7 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
 import ch.fork.AdHocRailway.utils.Tuple;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -51,8 +52,9 @@ public class SIOLocomotiveServiceEventHandlerTest {
                 .createJSONLocomotiveGroup(GROUP_ID2,
                         Arrays.asList(createJSONLocomotive1));
 
-        final JSONObject initJSON = new JSONObject();
-        initJSON.put("locomotiveGroups", Arrays.asList(group1, group2));
+        final JSONArray initJSON = new JSONArray();
+        initJSON.put(0, group1);
+        initJSON.put(1, group2);
 
         SIOLocomotiveServiceEventHandler.handleLocomotiveInit(initJSON,
                 listenerMock);
@@ -81,7 +83,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
         verify(listenerMock).locomotiveGroupAdded(captor.capture());
 
         final LocomotiveGroup locomotiveGroup = captor.getValue();
-        assertEquals(GROUP_ID.hashCode(), locomotiveGroup.getId());
+        assertEquals(GROUP_ID, locomotiveGroup.getId());
         assertEquals(1, locomotiveGroup.getLocomotives().size());
     }
 
@@ -205,6 +207,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
         return new Tuple<JSONObject, LocomotiveGroup>(
                 createJSONLocomotiveGroup,
                 SIOLocomotiveServiceEventHandler.handleLocomotiveGroupAdded(
-                        createJSONLocomotiveGroup, listenerMock));
+                        createJSONLocomotiveGroup, listenerMock)
+        );
     }
 }

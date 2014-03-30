@@ -10,6 +10,7 @@ import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIOException;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,7 +50,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                 if (err) {
                     listener.failure(new ManagerException(msg));
                 } else {
-                    final JSONObject data = (JSONObject) arg0[2];
+                    final JSONArray data = (JSONArray) arg0[2];
                     try {
                         SIOLocomotiveServiceEventHandler.handleLocomotiveInit(
                                 data, listener);
@@ -95,8 +96,9 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
             sioService
                     .getSocket()
                     .emit(SIOLocomotiveServiceEvent.LOCOMOTIVE_ADD_REQUEST
-                            .getEvent(),
-                            ioAcknowledge, addLocomotiveJson);
+                                    .getEvent(),
+                            ioAcknowledge, addLocomotiveJson
+                    );
         } catch (final JSONException e) {
             throw new ManagerException("error adding turnout", e);
         }
@@ -130,8 +132,9 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
             sioService
                     .getSocket()
                     .emit(SIOLocomotiveServiceEvent.LOCOMOTIVE_REMOVE_REQUEST
-                            .getEvent(),
-                            ioAcknowledge, removeLocomotiveJson);
+                                    .getEvent(),
+                            ioAcknowledge, removeLocomotiveJson
+                    );
         } catch (final JSONException e) {
             throw new ManagerException("error removing turnout", e);
         }
@@ -164,8 +167,9 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
             sioService
                     .getSocket()
                     .emit(SIOLocomotiveServiceEvent.LOCOMOTIVE_UPDATE_REQUEST
-                            .getEvent(),
-                            ioAcknowledge, updateLocomotiveJson);
+                                    .getEvent(),
+                            ioAcknowledge, updateLocomotiveJson
+                    );
         } catch (final JSONException e) {
             throw new ManagerException("error updating turnout", e);
         }
@@ -184,7 +188,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
 
                 try {
                     SIOLocomotiveServiceEventHandler.handleLocomotiveInit(
-                            (JSONObject) arg0[0], listener);
+                            (JSONArray) arg0[0], listener);
 
                 } catch (final JSONException e) {
                     throw new ManagerException(
@@ -264,8 +268,9 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
             sioService
                     .getSocket()
                     .emit(SIOLocomotiveServiceEvent.LOCOMOTIVE_GROUP_REMOVE_REQUEST
-                            .getEvent(), ioAcknowledge,
-                            removeLocomotiveGroupJSON);
+                                    .getEvent(), ioAcknowledge,
+                            removeLocomotiveGroupJSON
+                    );
         } catch (final JSONException e) {
             throw new ManagerException(
                     "error removing turnout group", e);
@@ -299,8 +304,9 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
             sioService
                     .getSocket()
                     .emit(SIOLocomotiveServiceEvent.LOCOMOTIVE_GROUP_UPDATE_REQUEST
-                            .getEvent(), ioAcknowledge,
-                            updateLocomotiveGroupJSON);
+                                    .getEvent(), ioAcknowledge,
+                            updateLocomotiveGroupJSON
+                    );
         } catch (final JSONException e) {
             throw new ManagerException(
                     "error updating turnout group", e);
@@ -326,7 +332,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
         try {
             switch (serviceEvent) {
                 case LOCOMOTIVE_INIT:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveInit(data,
+                    SIOLocomotiveServiceEventHandler.handleLocomotiveInit((JSONArray) jsonData[0],
                             listener);
                     break;
                 case LOCOMOTIVE_ADDED:

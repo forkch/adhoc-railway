@@ -25,7 +25,7 @@ public class LocomotiveTestHelper {
                                                        final List<JSONObject> locomotivesJSON) throws JSONException {
 
         final JSONObject locomotiveGroupJSON = new JSONObject();
-        locomotiveGroupJSON.put("_id", id);
+        locomotiveGroupJSON.put("id", id);
         locomotiveGroupJSON.put("name", GROUP_NAME + id);
 
         if (locomotivesJSON.size() == 0) {
@@ -34,7 +34,7 @@ public class LocomotiveTestHelper {
         final JSONObject locomotives = new JSONObject();
         for (final JSONObject locomotiveJSON : locomotivesJSON) {
             locomotiveJSON.put("group", id);
-            locomotives.put(locomotiveJSON.getString("_id"), locomotiveJSON);
+            locomotives.put(locomotiveJSON.getString("id"), locomotiveJSON);
         }
         locomotiveGroupJSON.put("locomotives", locomotives);
         return locomotiveGroupJSON;
@@ -43,7 +43,7 @@ public class LocomotiveTestHelper {
     public static JSONObject createJSONLocomotive(final String id,
                                                   final String type, final int functionCount) throws JSONException {
         final JSONObject locomotiveJSON = new JSONObject();
-        locomotiveJSON.put("_id", id);
+        locomotiveJSON.put("id", id);
         locomotiveJSON.put("name", NAME + id);
         locomotiveJSON.put("description", DESCRIPTION);
         locomotiveJSON.put("image", IMAGE_PNG);
@@ -67,7 +67,7 @@ public class LocomotiveTestHelper {
 
     public static void assertLocomotiveBase(final Locomotive locomotive,
                                             final String id, final LocomotiveType type) {
-        assertEquals(id.hashCode(), locomotive.getId());
+        assertEquals(id, locomotive.getId());
         assertEquals(NAME + id, locomotive.getName());
         assertEquals(DESCRIPTION, locomotive.getDesc());
         assertEquals(IMAGE_PNG, locomotive.getImage());
@@ -81,7 +81,7 @@ public class LocomotiveTestHelper {
             final LocomotiveGroup locomotiveGroup, final String id,
             final int locomotiveCount) {
 
-        assertEquals(id.hashCode(), locomotiveGroup.getId());
+        assertEquals(id, locomotiveGroup.getId());
         assertEquals(GROUP_NAME + id, locomotiveGroup.getName());
         assertEquals(locomotiveCount, locomotiveGroup.getLocomotives().size());
     }
