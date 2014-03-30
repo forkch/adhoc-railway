@@ -9,6 +9,10 @@ angular.module('myApp.services', []).
     value('version', '0.1').
     factory('socket', function ($rootScope) {
         var socket = io.connect('http://localhost:3000');
+        socket.on('connect', function () { // TIP: you can avoid listening on `connect` and listen on events directly too!
+            socket.emit('register', '123');
+        });
+
         return {
             on: function (eventName, callback) {
                 socket.on(eventName, function () {

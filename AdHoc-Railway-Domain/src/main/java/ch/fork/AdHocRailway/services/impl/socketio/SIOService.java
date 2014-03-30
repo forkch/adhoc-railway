@@ -17,6 +17,7 @@ public class SIOService {
 
     private static final Logger LOGGER = Logger.getLogger(SIOService.class);
     private static final SIOService INSTANCE = new SIOService();
+    private static String uuid;
 
     private SocketIO socket;
 
@@ -29,6 +30,10 @@ public class SIOService {
     public static SIOService getInstance() {
 
         return INSTANCE;
+    }
+
+    public static void setUUID(String uuid) {
+        SIOService.uuid = uuid;
     }
 
     public void connect(final String url, final ServiceListener mainCallback) {
@@ -49,6 +54,7 @@ public class SIOService {
                     public void onConnect() {
                         LOGGER.info("successfully connected to AdHoc-Server at "
                                 + url);
+                        socket.emit("register", uuid);
                         mainCallback.connected();
                     }
 

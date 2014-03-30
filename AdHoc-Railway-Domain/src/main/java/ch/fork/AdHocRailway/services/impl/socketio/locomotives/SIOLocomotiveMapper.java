@@ -28,16 +28,13 @@ public class SIOLocomotiveMapper {
         mergeLocomotiveGroupBaseInfo(locomotiveGroup, locomotiveGroupJSON);
 
         if (locomotiveGroupJSON.has("locomotives")) {
-            final JSONObject locomotivesJSON = locomotiveGroupJSON
-                    .getJSONObject("locomotives");
-            final String[] locomotiveIds = JSONObject.getNames(locomotivesJSON);
-            if (locomotiveIds != null) {
-                for (final String locomotiveId : locomotiveIds) {
-                    final Locomotive locomotive = mapLocomotiveFromJSON(locomotivesJSON
-                            .getJSONObject(locomotiveId));
-                    locomotive.setGroup(locomotiveGroup);
-                    locomotiveGroup.addLocomotive(locomotive);
-                }
+            final JSONArray locomotivesJSON = locomotiveGroupJSON
+                    .getJSONArray("locomotives");
+            for (int i = 0; i < locomotivesJSON.length(); i++) {
+                final JSONObject locomotiveJSON = locomotivesJSON.getJSONObject(i);
+                final Locomotive locomotive = mapLocomotiveFromJSON(locomotiveJSON);
+                locomotive.setGroup(locomotiveGroup);
+                locomotiveGroup.addLocomotive(locomotive);
             }
         }
         return locomotiveGroup;

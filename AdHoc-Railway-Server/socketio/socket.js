@@ -5,7 +5,6 @@ var turnoutController = require('./../controllers/turnoutcontroller');
 var routeController = require('./../controllers/routecontroller');
 var locomotiveController = require('./../controllers/locomotivecontroller');
 
-
 module.exports = function (socket) {
 
     function sendBroadcastToClients(err, event, data, fn) {

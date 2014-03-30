@@ -50,22 +50,34 @@ server.use(restify.requestLogger({
     serializers: {req: reqSerializer}
 }));
 
-var clients = [];
+var clients = {};
 
 var io = require('socket.io').listen(server, {origins: '*:*'});
 
 io.sockets.on('connection', function (client) {
-    clients.push(client);
+
+    client.on('register', function (appId) {
+        console.log("client registered with appId: " + appId);
+        clients[appId] = client;
+        console.log("Clients: ");
+        Object.keys(clients).forEach(function (socketIOAppId) {
+            console.log("   " + socketIOAppId);
+        });
+    });
 
     client.on('disconnect', function () {
-        clients.splice(clients.indexOf(client), 1);
     });
     return socketHandler(client);
 });
 
-function sendDataToWebsocketClients(event, data) {
-    io.sockets.clients().forEach(function (socket) {
-        socket.emit(event, data);
+function sendDataToWebsocketClients(req, event, data) {
+    var restCallAppId = req.headers['adhoc-railway-appid'];
+    Object.keys(clients).forEach(function (socketIOAppId) {
+        console.log("restAppId: " + restCallAppId + " --> socketIOAppId: " + socketIOAppId);
+        if (restCallAppId !== socketIOAppId) {
+            var socket = clients[socketIOAppId];
+            socket.emit(event, data);
+        }
     });
 }
 locomotiveApi.init(server, sendDataToWebsocketClients);
