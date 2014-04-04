@@ -6,10 +6,10 @@ var Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
 
 var colorize = require('colorize');
 
-exports.init = function (socket) {
+exports.init = function (fn) {
     getAllLocomotiveData(function (err, result) {
         if (!err) {
-            socket.emit('locomotive:init', result);
+            fn(err, result);
         }
     });
 }
@@ -61,12 +61,12 @@ exports.updateLocomotiveGroup = function (locomotiveGroup, fn) {
         fn(true, 'name must be defined');
         return;
     }
-    console.log('updating locomotive group' + JSON.stringify(locomotiveGroup));
+    console.log('updating locomotive group ' + JSON.stringify(locomotiveGroup));
 
     var id = locomotiveGroup.id;
     delete locomotiveGroup.id;
 
-    LocomotiveGroupModel.update({_id: id}, locomotiveGroup, function (err, numberAffected, rawResponse) {
+    LocomotiveGroupModel.update({_id: id}, locomotiveGroup, function (err) {
         if (!err) {
             locomotiveGroup.id = id;
             fn(false, locomotiveGroup);
@@ -155,9 +155,9 @@ exports.updateLocomotive = function (locomotive, fn) {
     LocomotiveModel.update({_id: id}, locomotive, function (err, numberAffected, rawResponse) {
         if (!err) {
             locomotive.id = id;
-            fn(false, locomotive);
+            fn(err, locomotive);
         } else {
-            fn(true, 'failed to update locomotive');
+            fn(err, 'failed to update locomotive');
         }
     });
 }
@@ -166,18 +166,21 @@ exports.removeLocomotive = function (locomotiveId, fn) {
     console.log('remove locomotive ' + locomotiveId);
     LocomotiveModel.findById(locomotiveId, function (err, locomotive) {
         if (!err) {
-            locomotive.remove(function (err) {
-                LocomotiveGroupModel.update({}, {$pull: {locomotives: locomotiveId}}, function (err, locomotiveGroup) {
-                    if (!err) {
-                        fn(false, locomotive);
-                    } else {
-                        fn(true, 'failed to remove locomotive group');
-                    }
+            if(locomotive) {
+                locomotive.remove(function (err) {
+                    LocomotiveGroupModel.update({}, {$pull: {locomotives: locomotiveId}}, function (err, locomotiveGroup) {
+                        if (!err) {
+                            fn(err, locomotive);
+                        } else {
+                            fn(err, 'failed to remove locomotive');
+                        }
+                    });
                 });
-            });
-
+            } else {
+                fn(err, 'locomotive not found');
+            }
         } else {
-            fn(true, 'failed to remove locomotive ');
+            fn(err, 'failed to remove locomotive ');
         }
     });
 }
@@ -189,15 +192,15 @@ exports.clear = function (fn) {
                 if (!err) {
                     getAllLocomotiveData(function (err, result) {
                         if (!err) {
-                            fn(false, result);
+                            fn(err, result);
                         }
                     });
                 } else {
-                    fn(true, 'failed to clear locomotive groups', '');
+                    fn(err, 'failed to clear locomotive groups', '');
                 }
             });
         } else {
-            fn(true, 'failed to clear locomotives', '');
+            fn(err, 'failed to clear locomotives', '');
         }
     });
 }
@@ -206,11 +209,11 @@ exports.clear = function (fn) {
 getAllLocomotiveData = function (fn) {
     LocomotiveGroupModel.find().exec(function (err, locomotiveGroups) {
         if (err) {
-            fn(true, null);
+            fn(err, null);
         }
         LocomotiveModel.find().exec(function (err, locomotives) {
             if (err) {
-                fn(true, null);
+                fn(err, null);
             }
             var locomotivesByGroupId = {};
             for (t in locomotives) {
@@ -229,7 +232,7 @@ getAllLocomotiveData = function (fn) {
                 group['locomotives'] = locomotives
                 result.push(group);
             }
-            fn(false, result);
+            fn(err, result);
         });
     });
 }

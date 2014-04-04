@@ -13,7 +13,7 @@ exports.TurnoutSchema = new Schema({
     defaultState: String,
     orientation: String,
     description: String,
-    group: ObjectId
+    groupId: ObjectId
 });
 
 exports.TurnoutGroupSchema = new Schema({
@@ -34,11 +34,44 @@ exports.RouteSchema = new Schema({
             state: String
         }
     ]
-})
+});
 exports.RouteGroupSchema = new Schema({
     name: String,
     routes: [ObjectId]
-})
+});
+
+exports.TurnoutSchema.options.toJSON = {
+    transform: function (doc, ret, options) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+        return ret;
+    }
+};
+exports.TurnoutGroupSchema.options.toJSON = {
+    transform: function (doc, ret, options) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+        return ret;
+    }
+};
+exports.RouteSchema.options.toJSON = {
+    transform: function (doc, ret, options) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+        return ret;
+    }
+};
+exports.RouteGroupSchema.options.toJSON = {
+    transform: function (doc, ret, options) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+        return ret;
+    }
+};
 
 exports.TurnoutModel = mongoose.model('Turnout', exports.TurnoutSchema);
 exports.TurnoutGroupModel = mongoose.model('TurnoutGroup', exports.TurnoutGroupSchema);

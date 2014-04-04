@@ -12,9 +12,9 @@ div.row(ng-repeat='turnoutGroup in turnoutGroups')
   div.span12
     div(style='font-size: 17.5px;line-height:40px;font-weight:bold;') {{turnoutGroup.name}} 
       div.btn-group.turnoutGroup.editRemove
-        a.btn(href='editTurnoutGroup/{{turnoutGroup._id}}')
+        a.btn(href='editTurnoutGroup/{{turnoutGroup.id}}')
           i.icon-edit
-        button.btn(ng-click='removeTurnoutGroup(turnoutGroup._id)')
+        button.btn(ng-click='removeTurnoutGroup(turnoutGroup.id)')
           i.icon-remove
 
     div(ng-repeat='turnout in turnoutGroup.turnouts')
@@ -25,12 +25,12 @@ div.row(ng-repeat='turnoutGroup in turnoutGroups')
         div.turnout.address
           {{turnout.bus1}}/{{turnout.address1}} | {{turnout.bus2}}/{{turnout.address2}}
         div.btn-group.turnout.editRemove
-          a.btn(ng-href='editTurnout/{{turnout._id}}')
+          a.btn(ng-href='editTurnout/{{turnout.id}}')
             i.icon-edit
-          button.btn(ng-click='removeTurnout(turnout._id)')
+          button.btn(ng-click='removeTurnout(turnout.id)')
             i.icon-remove
     div
-      a.btn(href='addTurnout/{{turnoutGroup._id}}')
+      a.btn(href='addTurnout/{{turnoutGroup.id}}')
         i.icon-plus
 
 div.row

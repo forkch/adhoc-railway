@@ -21,8 +21,8 @@ function LocomotivesCtrl($scope, socket) {
         updateLocomotiveGroup(locomotiveGroup, $scope);
     });
 
-    socket.on('locomotiveGroup:removed', function (locomotiveGroupId) {
-        removeLocomotiveGroup(locomotiveGroupId, $scope);
+    socket.on('locomotiveGroup:removed', function (locomotieGroup) {
+        removeLocomotiveGroup(locomotieGroup, $scope);
     });
 
     socket.on('locomotive:added', function (locomotive) {
@@ -33,8 +33,8 @@ function LocomotivesCtrl($scope, socket) {
         updateLocomotive(locomotive, $scope);
     });
 
-    socket.on('locomotive:removed', function (locomotiveId) {
-        removeLocomotive(locomotiveId, $scope);
+    socket.on('locomotive:removed', function (locomotive) {
+        removeLocomotive(locomotive, $scope);
     });
 
     $scope.removeLocomotive = function (locomotiveId) {
@@ -60,7 +60,7 @@ function LocomotivesCtrl($scope, socket) {
     }
 
     $scope.addLocomotiveGroup = function () {
-        socket.emit('locomotiveGroup:add', $scope.locomotiveGroupName, function (err, msg, locomotiveGroup) {
+        socket.emit('locomotiveGroup:add', $scope.locomotiveGroupName, function (err, locomotiveGroup) {
             if (!err) {
                 $scope.locomotiveGroups[locomotiveGroup.id] = locomotiveGroup;
             } else {
@@ -71,9 +71,9 @@ function LocomotivesCtrl($scope, socket) {
 
     $scope.clearLocomotives = function () {
         $scope.error = null;
-        socket.emit('locomotive:clear', '', function (err, msg, data) {
+        socket.emit('locomotive:clear', '', function (err, msg) {
             if (!err) {
-                receivedNewLocomotiveGroups(data.locomotiveGroups, $scope);
+                receivedNewLocomotiveGroups(msg, $scope);
             } else {
                 $scope.error = 'Error clearing locomotives: ' + msg;
             }
@@ -89,7 +89,7 @@ function AddLocomotiveGroupCtrl($scope, socket, $location, $routeParams) {
     }
     $scope.addLocomotiveGroup = function () {
         $scope.error = null;
-        socket.emit('locomotiveGroup:add', $scope.locomotiveGroup, function (err, msg, locomotiveGroup) {
+        socket.emit('locomotiveGroup:add', $scope.locomotiveGroup, function (err, msg) {
 
             if (!err) {
                 $location.path('/locomotives')
@@ -166,7 +166,7 @@ EditLocomotiveCtrl.$inject = ['$scope', 'socket', '$location', '$routeParams'];
 function receivedNewLocomotiveGroups(locomotiveGroups, $scope) {
     $scope.locomotives = {};
     $scope.locomotiveGroups = {};
-    angular.forEach(locomotiveGroups, function (locomotiveGroup, key) {
+    angular.forEach(locomotiveGroups, function (locomotiveGroup) {
         var groupId = locomotiveGroup.id;
         $scope.locomotiveGroups[groupId] = locomotiveGroup;
         angular.forEach(locomotiveGroup.locomotives, function (locomotive) {
@@ -205,8 +205,8 @@ function removeLocomotive(locomotiveId, $scope) {
     delete $scope.locomotives[locomotiveId];
     delete $scope.locomotiveGroups[groupId].locomotives[locomotiveId];
 }
-function removeLocomotiveGroup(locomotiveGroupId, $scope) {
-    delete $scope.locomotiveGroups[locomotiveGroupId]
+function removeLocomotiveGroup(locomotieGroup, $scope) {
+    delete $scope.locomotiveGroups[locomotieGroup.id]
 }
 
 function updateLocomotiveGroup(locomotiveGroup, $scope) {

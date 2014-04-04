@@ -7,10 +7,10 @@ var Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
 var colorize = require('colorize');
 var cconsole = colorize.console;
 
-exports.init = function (socket) {
+exports.init = function (fn) {
     getAllTurnoutData(function (err, result) {
         if (!err) {
-            socket.emit('turnout:init', result);
+            fn(err, result);
         }
     });
 }
@@ -19,9 +19,9 @@ exports.getAllTurnoutGroups = function (fn) {
 
     getAllTurnoutData(function (err, result) {
         if (!err) {
-            fn(false, result);
+            fn(err, result);
         } else {
-            fn('failed to find all turnout groups');
+            fn(err, 'failed to find all turnout groups');
         }
     });
 }
@@ -30,9 +30,9 @@ exports.getTurnoutGroupById = function (turnoutGroupId, fn) {
     console.log('turnoutGroup:getById: ' + turnoutGroupId);
     TurnoutGroupModel.findById(turnoutGroupId, function (err, turnoutGroup) {
         if (!err) {
-            fn(turnoutGroup);
+            fn(err, turnoutGroup);
         } else {
-            fn('failed to find turnout group with id ' + turnoutGroupId);
+            fn(err, 'failed to find turnout group with id ' + turnoutGroupId);
         }
     });
 }
@@ -47,10 +47,9 @@ exports.addTurnoutGroup = function (turnoutGroup, fn) {
         if (!err) {
             var turnoutGroup = addedTurnoutGroup.toJSON();
             turnoutGroup.turnouts = {};
-            socket.broadcast.emit('turnoutGroup:added', turnoutGroup);
-            fn(false, 'success', turnoutGroup._id);
+            fn(err, turnoutGroup);
         } else {
-            fn(true, 'failed to save turnout group');
+            fn(err, 'failed to save turnout group');
         }
     });
 }
@@ -60,37 +59,40 @@ exports.updateTurnoutGroup = function (turnoutGroup, fn) {
         fn(true, 'name must be defined');
         return;
     }
-    console.log('updating turnout group' + JSON.stringify(turnoutGroup));
+    console.log('updating turnout group ' + JSON.stringify(turnoutGroup));
 
-    var id = turnoutGroup._id;
-    delete turnoutGroup._id;
+    var id = turnoutGroup.id;
+    delete turnoutGroup.id;
 
-    TurnoutGroupModel.update({_id: id}, turnoutGroup, function (err, numberAffected, rawResponse) {
+    TurnoutGroupModel.update({_id: id}, turnoutGroup, function (err) {
         if (!err) {
-            turnoutGroup._id = id;
-            socket.broadcast.emit('turnoutGroup:updated', turnoutGroup);
-            fn(false, '');
+            turnoutGroup.id = id;
+            fn(err, turnoutGroup);
         } else {
-            fn(true, 'failed to update turnout group');
+            fn(err, 'failed to update turnout group');
         }
     });
 }
 
-exports.removeTurnoutGroup = function (turnoutGroup, fn) {
-    var id = turnoutGroup._id;
-    console.log('remove turnout group ' + id);
-    TurnoutModel.remove({"group": id}, function (err) {
+exports.removeTurnoutGroup = function (turnoutGroupId, fn) {
+    console.log('remove turnout group ' + turnoutGroupId);
+    TurnoutModel.remove({"groupId": turnoutGroupId}, function (err) {
         if (!err) {
-            TurnoutGroupModel.remove({_id: id}, function (err) {
+            TurnoutGroupModel.findById(turnoutGroupId, function (err, turnoutGroup) {
                 if (!err) {
-                    socket.broadcast.emit('turnoutGroup:removed', turnoutGroup);
-                    fn(false, '');
+                    turnoutGroup.remove(function (err) {
+                        if (!err) {
+                            fn(err, turnoutGroup);
+                        } else {
+                            fn(err, 'failed to remove turnout group');
+                        }
+                    });
                 } else {
-                    fn(true, 'failed to remove turnout group');
+                    fn(err, 'failed to remove turnout group');
                 }
             });
         } else {
-            fn(true, 'failed to remove the turnouts associated to turnout group');
+            fn(err, 'failed to remove the turnouts associated to turnout group');
         }
     });
 }
@@ -99,7 +101,7 @@ exports.getAllTurnouts = function (fn) {
 
     TurnoutModel.find(function (err, turnouts) {
         if (!err) {
-            fn(false, '', turnouts);
+            fn(false, turnouts);
         } else {
             fn(true, 'failed to find all turnouts');
         }
@@ -110,9 +112,9 @@ exports.getTurnoutById = function (turnoutId, fn) {
     console.log('turnout:getById: ' + turnoutId);
     TurnoutModel.findById(turnoutId, function (err, turnout) {
         if (!err) {
-            fn(turnout);
+            fn(err, turnout);
         } else {
-            fn('failed to find turnout with id ' + turnoutId);
+            fn(err, 'failed to find turnout with id ' + turnoutId);
         }
     });
 }
@@ -126,20 +128,19 @@ exports.addTurnout = function (turnout, fn) {
     console.log('adding new turnout ' + JSON.stringify(turnout));
     new TurnoutModel(turnout).save(function (err, addedTurnout) {
         if (!err) {
-            console.log(addedTurnout.group);
-            TurnoutGroupModel.findById({_id: addedTurnout.group}, function (err, turnoutGroup) {
+            console.log(addedTurnout);
+            TurnoutGroupModel.findById({_id: addedTurnout.groupId}, function (err, turnoutGroup) {
                 if (!err) {
                     console.log(turnoutGroup);
-                    turnoutGroup.turnouts.push(addedTurnout._id);
+                    turnoutGroup.turnouts.push(addedTurnout.id);
                     turnoutGroup.save();
-                    socket.broadcast.emit('turnout:added', addedTurnout);
-                    fn(false, 'success', addedTurnout._id);
+                    fn(err, addedTurnout);
                 } else {
-                    fn(true, 'failed to add turnout');
+                    fn(err, 'failed to add turnout');
                 }
             });
         } else {
-            fn(true, 'failed to add turnout');
+            fn(err, 'failed to add turnout');
         }
     });
 
@@ -152,36 +153,38 @@ exports.updateTurnout = function (turnout, fn) {
 
     console.log('updating turnout ' + JSON.stringify(turnout));
 
-    var id = turnout._id;
-    delete turnout._id;
+    var id = turnout.id;
+    delete turnout.id;
 
     TurnoutModel.update({_id: id}, turnout, function (err, numberAffected, rawResponse) {
         if (!err) {
-            turnout._id = id;
-            socket.broadcast.emit('turnout:updated', turnout);
-            fn(false, '');
+            turnout.id = id;
+            fn(err, turnout);
         } else {
-            fn(true, 'failed to update turnout');
+            fn(err, 'failed to update turnout');
         }
     });
 }
 
-exports.removeTurnout = function (turnout, fn) {
-    console.log('remvove turnout ' + turnout._id);
-    var turnoutId = turnout._id;
-    TurnoutModel.remove({_id: turnoutId}, function (err) {
+exports.removeTurnout = function (turnoutId, fn) {
+    console.log('remvove turnout ' + turnoutId);
+    TurnoutModel.findById(turnoutId, function (err, turnout) {
         if (!err) {
-            TurnoutGroupModel.update(
-                {}, {$pull: {turnouts: turnoutId}}, function (err, turnoutGroup) {
-                    if (!err) {
-                        socket.broadcast.emit('turnout:removed', turnout);
-                        fn(false, '');
-                    } else {
-                        fn(true, 'failed to update turnout group');
-                    }
+            if (turnout) {
+                turnout.remove(function (err) {
+                    TurnoutGroupModel.update({}, {$pull: {turnouts: turnoutId}}, function (err, turnoutGroup) {
+                        if (!err) {
+                            fn(err, turnout);
+                        } else {
+                            fn(err, 'failed to remove turnout');
+                        }
+                    });
                 });
+            } else {
+                fn(err, 'turnout not found');
+            }
         } else {
-            fn(true, 'failed to remove turnout ');
+            fn(err, 'failed to remove turnout ');
         }
     });
 }
@@ -193,16 +196,15 @@ exports.clear = function (fn) {
                 if (!err) {
                     getAllTurnoutData(function (err, result) {
                         if (!err) {
-                            socket.broadcast.emit('turnout:init', result);
-                            fn(false, '', result);
+                            fn(err, result);
                         }
                     });
                 } else {
-                    fn(true, 'failed to clear turnout groups', '');
+                    fn(err, 'failed to clear turnout groups', '');
                 }
             });
         } else {
-            fn(true, 'failed to clear turnouts', '');
+            fn(err, 'failed to clear turnouts', '');
         }
     });
 }
@@ -210,36 +212,32 @@ exports.clear = function (fn) {
 /* PRIVATE HELPERS */
 getAllTurnoutData = function (fn) {
 
-    TurnoutGroupModel.find().lean().exec(function (err, turnoutGroups) {
-
+    TurnoutGroupModel.find().exec(function (err, turnoutGroups) {
         if (err) {
-            fn(true, null);
+            fn(err, null);
         }
-        TurnoutModel.find().lean().exec(function (err, turnouts) {
+        TurnoutModel.find().exec(function (err, turnouts) {
             if (err) {
-                fn(true, null);
+                fn(err, null);
             }
-            var turnoutByGroupId = [];
+            var turnoutsByGroupId = {};
             for (t in turnouts) {
-                if (!turnoutByGroupId[turnouts[t].group]) {
-                    turnoutByGroupId[turnouts[t].group] = {};
+                var turnout = turnouts[t];
+                if (!turnoutsByGroupId[turnouts[t].groupId]) {
+                    turnoutsByGroupId[turnouts[t].groupId] = [];
                 }
-                var turnoutId = turnouts[t]._id;
-                var obj = {};
-                obj[turnoutId] = turnouts[t];
-
-                turnoutByGroupId[turnouts[t].group][turnoutId] = turnouts[t];
+                var groupId = turnouts[t].groupId;
+                turnoutsByGroupId[groupId].push(turnout.toJSON());
             }
-
-            var result = {'turnoutGroups': []};
+            var result = [];
             for (g in turnoutGroups) {
-                var groupId = turnoutGroups[g]._id;
-                turnoutGroups[g].turnouts = [];
-                turnoutGroups[g].turnouts = turnoutByGroupId[groupId];
-                result.turnoutGroups.push(turnoutGroups[g]);
+                var group = turnoutGroups[g].toJSON();
+                var groupId = group.id;
+                var turnoutsOfAGroup = turnoutsByGroupId[groupId];
+                group['turnouts'] = turnoutsOfAGroup;
+                result.push(group);
             }
-
-            fn(false, result);
+            fn(err, result);
         });
     });
 }

@@ -2,8 +2,8 @@ var locomotiveController = require('../controllers/locomotivecontroller');
 
 exports.init = function (server, sendDataToWebsocketClients) {
     server.get('/locomotiveGroup', function (req, res, next) {
-        locomotiveController.getAllLocomotiveGroups(function (err, data) {
-            res.send(data);
+        locomotiveController.getAllLocomotiveGroups(function (err, locomotiveGroups) {
+            res.send(locomotiveGroups);
             next();
         });
     });
@@ -38,16 +38,16 @@ exports.init = function (server, sendDataToWebsocketClients) {
     });
 
     server.del('/locomotiveGroup/:id', function (req, res, next) {
-        locomotiveController.removeLocomotiveGroup(req.params.id, function (err, locomotiveGroupId) {
+        locomotiveController.removeLocomotiveGroup(req.params.id, function (err, locomotiveGroup) {
             res.send(locomotiveGroupId);
             sendDataToWebsocketClients('locomotiveGroup:removed', locomotiveGroup);
             next();
         });
     });
 
-    server.del('/locomotiveGroup', function (req, res, next) {
-        locomotiveController.clear(req.params.id, function (err, locomotiveGroupId) {
-            res.send(locomotiveGroupId);
+    server.del('/locomotiveGroup/:id', function (req, res, next) {
+        locomotiveController.clear(req.params.id, function (err, locomotiveGroup) {
+            res.send(locomotiveGroup);
             sendDataToWebsocketClients('locomotiveGroup:removed', locomotiveGroup);
             next();
         });

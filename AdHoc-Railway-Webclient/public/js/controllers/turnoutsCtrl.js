@@ -3,14 +3,14 @@
 function TurnoutsCtrl($scope, socket) {
     $scope.turnouts = {};
     $scope.turnoutGroups = {};
-    socket.emit('turnoutGroup:getAll', '', function (err, data) {
+    socket.emit('turnoutGroup:getAll', '', function (err, turnoutGroups) {
         if (!err) {
-            receivedNewTurnoutGroups(data.turnoutGroups, $scope);
+            receivedNewTurnoutGroups(turnoutGroups, $scope);
         }
     });
 
-    socket.on('turnout:init', function (data) {
-        receivedNewTurnoutGroups(data.turnoutGroups, $scope);
+    socket.on('turnout:init', function (turnoutGroups) {
+        receivedNewTurnoutGroups(turnoutGroups, $scope);
     });
 
     socket.on('turnoutGroup:added', function (turnoutGroup) {
@@ -22,7 +22,7 @@ function TurnoutsCtrl($scope, socket) {
     });
 
     socket.on('turnoutGroup:removed', function (turnoutGroup) {
-        removeTurnoutGroup(turnoutGroup._id, $scope);
+        removeTurnoutGroup(turnoutGroup, $scope);
     });
 
     socket.on('turnout:added', function (turnout) {
@@ -34,13 +34,13 @@ function TurnoutsCtrl($scope, socket) {
     });
 
     socket.on('turnout:removed', function (turnout) {
-        removeTurnout(turnout._id, $scope);
+        removeTurnout(turnout, $scope);
     });
 
     $scope.removeTurnout = function (turnoutId) {
         $scope.error = null;
 
-        socket.emit('turnout:remove', $scope.turnouts[turnoutId], function (err, msg) {
+        socket.emit('turnout:remove', turnoutId, function (err, msg) {
             if (!err) {
                 removeTurnout(turnoutId, $scope);
             } else {
@@ -50,7 +50,7 @@ function TurnoutsCtrl($scope, socket) {
     }
     $scope.removeTurnoutGroup = function (turnoutGroupId) {
         $scope.error = null;
-        socket.emit('turnoutGroup:remove', $scope.turnoutGroups[turnoutGroupId], function (err, msg) {
+        socket.emit('turnoutGroup:remove', turnoutGroupId, function (err, msg) {
             if (!err) {
                 removeTurnoutGroup(turnoutGroupId, $scope);
             } else {
@@ -61,9 +61,9 @@ function TurnoutsCtrl($scope, socket) {
 
     $scope.clearTurnouts = function () {
         $scope.error = null;
-        socket.emit('turnout:clear', '', function (err, msg, data) {
+        socket.emit('turnout:clear', '', function (err, msg) {
             if (!err) {
-                receivedNewTurnoutGroups(data.turnoutGroups, $scope);
+                receivedNewTurnoutGroups(msg, $scope);
             } else {
                 $scope.error = 'Error clearing turnouts: ' + msg;
             }
@@ -78,7 +78,7 @@ function AddTurnoutGroupCtrl($scope, socket, $location) {
     }
     $scope.addTurnoutGroup = function () {
         $scope.error = null;
-        socket.emit('turnoutGroup:add', $scope.turnoutGroup, function (err, msg, groupId) {
+        socket.emit('turnoutGroup:add', $scope.turnoutGroup, function (err, msg) {
             if (!err) {
                 $location.path('/turnouts')
             } else {
@@ -118,11 +118,11 @@ function AddTurnoutCtrl($scope, socket, $location, $routeParams) {
         type: "default",
         defaultState: "straight",
         orientation: "north",
-        group: $routeParams.groupId
+        groupId: $routeParams.groupId
     }
     $scope.addTurnout = function () {
         $scope.error = null;
-        socket.emit('turnout:add', $scope.turnout, function (err, msg, turnoutId) {
+        socket.emit('turnout:add', $scope.turnout, function (err, msg) {
             if (!err) {
                 $location.path('/turnouts')
             } else {
@@ -156,51 +156,53 @@ EditTurnoutCtrl.$inject = ['$scope', 'socket', '$location', '$routeParams'];
 /**************
  // Private helpers
  **************/
-
-
 function receivedNewTurnoutGroups(turnoutGroups, $scope) {
     $scope.turnouts = {};
     $scope.turnoutGroups = {};
-    angular.forEach(turnoutGroups, function (turnoutGroup, key) {
-        $scope.turnoutGroups[turnoutGroup._id] = turnoutGroup;
-        angular.forEach(turnoutGroup.turnouts, function (turnout, id) {
+    angular.forEach(turnoutGroups, function (turnoutGroup) {
+        var groupId = turnoutGroup.id;
+        $scope.turnoutGroups[groupId] = turnoutGroup;
+        angular.forEach(turnoutGroup.turnouts, function (turnout) {
+            var turnoutId = turnout.id;
             if ($scope.turnouts === undefined) {
                 $scope.turnouts = {};
             }
-            $scope.turnouts[id] = turnout;
+            $scope.turnouts[turnoutId] = turnout;
+            $scope.turnoutGroups[groupId].turnouts[turnoutId] = turnout;
         });
     });
 }
 
 function addTurnoutGroup(turnoutGroup, $scope) {
-    $scope.turnoutGroups[turnoutGroup._id] = turnoutGroup;
+    $scope.turnoutGroups[turnoutGroup.id] = turnoutGroup;
 }
 
 function addTurnout(turnout, $scope) {
-    $scope.turnouts[turnout._id] = turnout;
-    var turnouts = $scope.turnoutGroups[turnout.group].turnouts;
+    $scope.turnouts[turnout.id] = turnout;
+    var turnouts = $scope.turnoutGroups[turnout.groupId].turnouts;
     if (!turnouts) {
         turnouts = {};
     }
-    turnouts[turnout._id] = turnout;
+    turnouts[turnout.id] = turnout;
 }
 
 function updateTurnout(turnout, $scope) {
-    var turnoutId = turnout._id;
-    var groupId = $scope.turnouts[turnoutId].group;
-    $scope.turnouts[turnout._id] = turnout;
-    $scope.turnoutGroups[groupId].turnouts[turnout._id] = turnout;
+    var turnoutId = turnout.id;
+    var groupId = $scope.turnouts[turnoutId].groupId;
+    $scope.turnouts[turnout.id] = turnout;
+    $scope.turnoutGroups[groupId].turnouts[turnout.id] = turnout;
 }
 
 function removeTurnout(turnoutId, $scope) {
-    var groupId = $scope.turnouts[turnoutId].group;
+    var groupId = $scope.turnouts[turnoutId].groupId;
     delete $scope.turnouts[turnoutId];
     delete $scope.turnoutGroups[groupId].turnouts[turnoutId];
 }
-function removeTurnoutGroup(turnoutGroupId, $scope) {
-    delete $scope.turnoutGroups[turnoutGroupId]
+
+function removeTurnoutGroup(turnoutGroup, $scope) {
+    delete $scope.turnoutGroups[turnoutGroup.id];
 }
 
 function updateTurnoutGroup(turnoutGroup, $scope) {
-    $scope.turnoutGroups[turnoutGroup._id] = turnoutGroup;
+    $scope.turnoutGroups[turnoutGroup.id] = turnoutGroup;
 }

@@ -15,62 +15,86 @@ module.exports = function (socket) {
         fn(err, data);
     }
 
-    locomotiveController.init(socket);
-    turnoutController.init(socket);
+    turnoutController.init(function (err, allTurnoutGroups) {
+        if (!err) {
+            socket.emit('turnout:init', allTurnoutGroups);
+        }
+    });
+
     routeController.init(socket);
+
+    locomotiveController.init(function (err, allLocomotiveGroups) {
+        if (!err) {
+            socket.emit('locomotive:init', allLocomotiveGroups);
+        }
+    });
 
     socket.on('turnoutGroup:getAll', function (dummy, fn) {
         console.log('turnoutGroup:getAll');
-        turnoutController.getAllTurnoutGroups(socket, fn);
+        turnoutController.getAllTurnoutGroups(fn);
     });
 
     socket.on('turnoutGroup:getById', function (turnoutId, fn) {
         console.log('turnoutGroup:getById');
-        turnoutController.getTurnoutGroupById(socket, turnoutId, fn);
+        turnoutController.getTurnoutGroupById(turnoutId, fn);
     });
 
     socket.on('turnoutGroup:add', function (turnoutGroupName, fn) {
         console.log('turnoutGroup:add');
-        turnoutController.addTurnoutGroup(socket, turnoutGroupName, fn);
+        turnoutController.addTurnoutGroup(turnoutGroupName, function (err, turnoutGroup) {
+            sendBroadcastToClients(err, 'turnoutGroup:added', turnoutGroup, fn);
+        });
     });
 
     socket.on('turnoutGroup:update', function (turnoutGroup, fn) {
         console.log('turnoutGroup:update');
-        turnoutController.updateTurnoutGroup(socket, turnoutGroup, fn);
+        turnoutController.updateTurnoutGroup(turnoutGroup, function (err, turnoutGroup) {
+            sendBroadcastToClients(err, 'turnoutGroup:updated', turnoutGroup, fn);
+        });
     });
     socket.on('turnoutGroup:remove', function (turnoutGroup, fn) {
         console.log('turnoutGroup:remove');
-        turnoutController.removeTurnoutGroup(socket, turnoutGroup, fn);
+        turnoutController.removeTurnoutGroup(turnoutGroup, function (err, turnoutGroup) {
+            sendBroadcastToClients(err, 'turnoutGroup:removed', turnoutGroup, fn);
+        });
     });
 
     socket.on('turnout:getAll', function (dummy, fn) {
         console.log('turnout:getAll');
-        turnoutController.getAllTurnouts(socket, fn);
+        turnoutController.getAllTurnouts(fn);
     });
 
     socket.on('turnout:getById', function (turnoutId, fn) {
         console.log('turnout:getById');
-        turnoutController.getTurnoutById(socket, turnoutId, fn);
+        turnoutController.getTurnoutById(turnoutId, fn);
     });
 
     socket.on('turnout:add', function (turnout, fn) {
         console.log('turnout:add');
-        turnoutController.addTurnout(socket, turnout, fn);
+        turnoutController.addTurnout(turnout, function (err, turnoutGroup) {
+            sendBroadcastToClients(err, 'turnout:added', turnoutGroup, fn);
+        });
     });
 
     socket.on('turnout:update', function (turnout, fn) {
         console.log('turnout:update');
-        turnoutController.updateTurnout(socket, turnout, fn);
+        turnoutController.updateTurnout(turnout, function (err, turnoutGroup) {
+            sendBroadcastToClients(err, 'turnout:updated', turnoutGroup, fn);
+        });
     });
 
     socket.on('turnout:remove', function (turnout, fn) {
         console.log('turnout:remove');
-        turnoutController.removeTurnout(socket, turnout, fn);
+        turnoutController.removeTurnout(turnout, function (err, turnoutGroup) {
+            sendBroadcastToClients(err, 'turnout:removed', turnoutGroup, fn);
+        });
     });
 
     socket.on('turnout:clear', function (dummy, fn) {
         console.log('turnout:clear');
-        turnoutController.clear(socket, fn);
+        turnoutController.clear(function (err, turnoutGroups) {
+            sendBroadcastToClients(err, 'turnoutGroups:init', turnoutGroups, fn);
+        });
     });
 
     /* ROUTES */
