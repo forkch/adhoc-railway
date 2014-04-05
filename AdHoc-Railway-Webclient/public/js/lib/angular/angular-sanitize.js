@@ -166,7 +166,7 @@
 //Attributes that have href and hence need to be sanitized
     var uriAttrs = makeMap("background,cite,href,longdesc,src,usemap");
     var validAttrs = angular.extend({}, uriAttrs, makeMap(
-        'abbr,align,alt,axis,bgcolor,border,cellpadding,cellspacing,class,clear,' +
+            'abbr,align,alt,axis,bgcolor,border,cellpadding,cellspacing,class,clear,' +
             'color,cols,colspan,compact,coords,dir,face,headers,height,hreflang,hspace,' +
             'ismap,lang,language,nohref,nowrap,rel,rev,rows,rowspan,rules,' +
             'scope,scrolling,shape,span,start,summary,target,title,type,' +
@@ -338,7 +338,7 @@
     function encodeEntities(value) {
         return value.
             replace(/&/g, '&amp;').
-            replace(NON_ALPHANUMERIC_REGEXP,function (value) {
+            replace(NON_ALPHANUMERIC_REGEXP, function (value) {
                 return '&#' + value.charCodeAt(0) + ';';
             }).
             replace(/</g, '&lt;').

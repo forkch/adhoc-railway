@@ -1,49 +1,49 @@
 div.row
-  div.span10
-    h3 Edit Turnout
+    div.span10
+        h3 Edit Turnout
 div.row
-  div.span5
-    form(ng-submit='editTurnout()')
-      fieldset
-        p
-          input(type='number', size='4', placeholder='Number', ng-model='turnout.number')
-        p
-          select(ng-model='turnout.type')
-            option default_left
-            option default_right
-            option doublecross
-            option threeway
-            option cutter
-        p
-          input(type='number',size='4', placeholder='Bus 1', ng-model='turnout.bus1')
-        p
-          input(type='number',size='4', placeholder='Address 1', ng-model='turnout.address1')
-        p
-          label.checkbox Address 1 switched
-            input(type='checkbox', ng-model='turnout.address1switched')
-        p
-          input(type='number',size='4', placeholder='Bus 2', ng-model='turnout.bus2')
-        p
-          input(type='number',size='4', placeholder='Address 2', ng-model='turnout.address2')
-        p
-          label.checkbox Address 2 switched
-            input(type='checkbox', ng-model='turnout.address2switched')
-        p
-          select(ng-model='turnout.defaultState')
-            option left
-            option right
-            option straight
-            option curved
-        p
-          select(ng-model='turnout.orientation')
-            option north
-            option east
-            option south
-            option west
-        p
-          button.btn(type='submit') Edit
-  div.span5
-    div.alert(ng-show='error')
-      button.close(type='button', data-dismiss='alert')
-      {{error}}
+    div.span5
+        form(ng-submit='editTurnout()')
+            fieldset
+                p
+                    input(type='number', size='4', placeholder='Number', ng-model='turnout.number')
+                p
+                    select(ng-model='turnout.type')
+                        option default_left
+                        option default_right
+                        option doublecross
+                        option threeway
+                        option cutter
+                p
+                    input(type='number',size='4', placeholder='Bus 1', ng-model='turnout.bus1')
+                p
+                    input(type='number',size='4', placeholder='Address 1', ng-model='turnout.address1')
+                p
+                    label.checkbox Address 1 switched
+                        input(type='checkbox', ng-model='turnout.address1switched')
+                p
+                    input(type='number',size='4', placeholder='Bus 2', ng-model='turnout.bus2')
+                p
+                    input(type='number',size='4', placeholder='Address 2', ng-model='turnout.address2')
+                p
+                    label.checkbox Address 2 switched
+                        input(type='checkbox', ng-model='turnout.address2switched')
+                p
+                    select(ng-model='turnout.defaultState')
+                        option left
+                        option right
+                        option straight
+                        option curved
+                p
+                    select(ng-model='turnout.orientation')
+                        option north
+                        option east
+                        option south
+                        option west
+                p
+                    button.btn(type='submit') Edit
+    div.span5
+        div.alert(ng-show='error')
+            button.close(type='button', data-dismiss='alert')
+            {{error}}
 

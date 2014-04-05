@@ -647,8 +647,8 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
     })(
             'undefined' != typeof io ? io : module.exports
-            , 'undefined' != typeof io ? io : module.parent.exports
-        );
+        , 'undefined' != typeof io ? io : module.parent.exports
+    );
 
     /**
      * socket.io
@@ -680,11 +680,11 @@ var io = ('undefined' === typeof module ? {} : module.exports);
         function date(d, key) {
             return isFinite(d.valueOf()) ?
                 d.getUTCFullYear() + '-' +
-                    f(d.getUTCMonth() + 1) + '-' +
-                    f(d.getUTCDate()) + 'T' +
-                    f(d.getUTCHours()) + ':' +
-                    f(d.getUTCMinutes()) + ':' +
-                    f(d.getUTCSeconds()) + 'Z' : null;
+                f(d.getUTCMonth() + 1) + '-' +
+                f(d.getUTCDate()) + 'T' +
+                f(d.getUTCHours()) + ':' +
+                f(d.getUTCMinutes()) + ':' +
+                f(d.getUTCSeconds()) + 'Z' : null;
         };
 
         var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
@@ -968,8 +968,8 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
     })(
             'undefined' != typeof io ? io : module.exports
-            , typeof JSON !== 'undefined' ? JSON : undefined
-        );
+        , typeof JSON !== 'undefined' ? JSON : undefined
+    );
 
     /**
      * socket.io
@@ -1078,7 +1078,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
                 case 'ack':
                     data = packet.ackId
                         + (packet.args && packet.args.length
-                        ? '+' + JSON.stringify(packet.args) : '');
+                            ? '+' + JSON.stringify(packet.args) : '');
                     break;
             }
 
@@ -1233,8 +1233,8 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
     })(
             'undefined' != typeof io ? io : module.exports
-            , 'undefined' != typeof io ? io : module.parent.exports
-        );
+        , 'undefined' != typeof io ? io : module.parent.exports
+    );
     /**
      * socket.io
      * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -1489,8 +1489,8 @@ var io = ('undefined' === typeof module ? {} : module.exports);
         };
     })(
             'undefined' != typeof io ? io : module.exports
-            , 'undefined' != typeof io ? io : module.parent.exports
-        );
+        , 'undefined' != typeof io ? io : module.parent.exports
+    );
     /**
      * socket.io
      * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -1606,7 +1606,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
             };
 
             var url = [
-                'http' + (options.secure ? 's' : '') + ':/'
+                    'http' + (options.secure ? 's' : '') + ':/'
                 , options.host + ':' + options.port
                 , options.resource
                 , io.protocol
@@ -1839,7 +1839,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
             // ensure disconnection
             var xhr = io.util.request();
             var uri = [
-                'http' + (this.options.secure ? 's' : '') + ':/'
+                    'http' + (this.options.secure ? 's' : '') + ':/'
                 , this.options.host + ':' + this.options.port
                 , this.options.resource
                 , io.protocol
@@ -2052,9 +2052,9 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
     })(
             'undefined' != typeof io ? io : module.exports
-            , 'undefined' != typeof io ? io : module.parent.exports
-            , this
-        );
+        , 'undefined' != typeof io ? io : module.parent.exports
+        , this
+    );
     /**
      * socket.io
      * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -2291,8 +2291,8 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
     })(
             'undefined' != typeof io ? io : module.exports
-            , 'undefined' != typeof io ? io : module.parent.exports
-        );
+        , 'undefined' != typeof io ? io : module.parent.exports
+    );
 
     /**
      * socket.io
@@ -2481,9 +2481,9 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
     })(
             'undefined' != typeof io ? io.Transport : module.exports
-            , 'undefined' != typeof io ? io : module.parent.exports
-            , this
-        );
+        , 'undefined' != typeof io ? io : module.parent.exports
+        , this
+    );
 
     /**
      * socket.io
@@ -2593,7 +2593,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
                 var options = socket.options
                     , port = options['flash policy port']
                     , path = [
-                        'http' + (options.secure ? 's' : '') + ':/'
+                            'http' + (options.secure ? 's' : '') + ':/'
                         , options.host + ':' + options.port
                         , options.resource
                         , 'static/flashsocket'
@@ -2637,7 +2637,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
         Flashsocket.check = function () {
             if (
                 typeof WebSocket == 'undefined'
-                    || !('__initialize' in WebSocket) || !swfobject
+                || !('__initialize' in WebSocket) || !swfobject
                 ) return false;
 
             return swfobject.getFlashPlayerVersion().major >= 10;
@@ -2673,8 +2673,8 @@ var io = ('undefined' === typeof module ? {} : module.exports);
         io.transports.push('flashsocket');
     })(
             'undefined' != typeof io ? io.Transport : module.exports
-            , 'undefined' != typeof io ? io : module.parent.exports
-        );
+        , 'undefined' != typeof io ? io : module.parent.exports
+    );
     /*	SWFObject v2.2 <http://code.google.com/p/swfobject/> 
      is released under the MIT License <http://www.opensource.org/licenses/mit-license.php> 
      */
@@ -3363,7 +3363,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
         }
         if (location.protocol == "file:") {
             console.error(
-                "WARNING: web-socket-js doesn't work in file:///... URL " +
+                    "WARNING: web-socket-js doesn't work in file:///... URL " +
                     "unless you set Flash Security Settings properly. " +
                     "Open the page via Web server i.e. http://...");
         }
@@ -3909,9 +3909,9 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
     })(
             'undefined' != typeof io ? io.Transport : module.exports
-            , 'undefined' != typeof io ? io : module.parent.exports
-            , this
-        );
+        , 'undefined' != typeof io ? io : module.parent.exports
+        , this
+    );
     /**
      * socket.io
      * Copyright(c) 2011 LearnBoost <dev@learnboost.com>
@@ -4086,8 +4086,8 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
     })(
             'undefined' != typeof io ? io.Transport : module.exports
-            , 'undefined' != typeof io ? io : module.parent.exports
-        );
+        , 'undefined' != typeof io ? io : module.parent.exports
+    );
 
     /**
      * socket.io
@@ -4264,9 +4264,9 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
     })(
             'undefined' != typeof io ? io.Transport : module.exports
-            , 'undefined' != typeof io ? io : module.parent.exports
-            , this
-        );
+        , 'undefined' != typeof io ? io : module.parent.exports
+        , this
+    );
 
     /**
      * socket.io
@@ -4521,9 +4521,9 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 
     })(
             'undefined' != typeof io ? io.Transport : module.exports
-            , 'undefined' != typeof io ? io : module.parent.exports
-            , this
-        );
+        , 'undefined' != typeof io ? io : module.parent.exports
+        , this
+    );
 
     if (typeof define === "function" && define.amd) {
         define([], function () {

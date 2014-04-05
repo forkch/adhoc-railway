@@ -1,41 +1,41 @@
 div.row
-  div.span12
-    h3 Routes
+    div.span12
+        h3 Routes
 div.row
-  div.span12
-    a.btn(href='addRouteGroup') Add Route Group 
-      i.icon-plus
+    div.span12
+        a.btn(href='addRouteGroup') Add Route Group
+            i.icon-plus
 
 div.row(ng-repeat='routeGroup in routeGroups')
-  div.span10
-    
-    div(style='font-size: 17.5px;line-height:40px;font-weight:bold;') {{routeGroup.name}} 
-      div.btn-group.routeGroup.editRemove
-        a.btn(href='editRouteGroup/{{routeGroup._id}}')
-          i.icon-edit
-        button.btn(ng-click='removeRouteGroup(routeGroup._id)')
-          i.icon-remove
+    div.span10
 
-    
-    div(ng-repeat='route in routeGroup.routes')
-      div.well.turnout
-        div.turnout.number
-          {{route.number}} 
-        div.turnout.address
-          {{route.orientation}} &gt; 
-          {{route.name}}
-        div.btn-group.turnout.editRemove
-          a.btn(ng-href='editRoute/{{route._id}}')
-            i.icon-edit
-          button.btn(ng-click='removeRoute(route._id)')
-            i.icon-remove
-    div
-      a.btn(href='addRoute/{{routeGroup._id}}')
-        i.icon-plus
+        div(style='font-size: 17.5px;line-height:40px;font-weight:bold;') {{routeGroup.name}}
+            div.btn-group.routeGroup.editRemove
+                a.btn(href='editRouteGroup/{{routeGroup._id}}')
+                    i.icon-edit
+                button.btn(ng-click='removeRouteGroup(routeGroup._id)')
+                    i.icon-remove
+
+
+        div(ng-repeat='route in routeGroup.routes')
+            div.well.turnout
+                div.turnout.number
+                    {{route.number}}
+                div.turnout.address
+                    {{route.orientation}} &gt;
+                    {{route.name}}
+                div.btn-group.turnout.editRemove
+                    a.btn(ng-href='editRoute/{{route._id}}')
+                        i.icon-edit
+                    button.btn(ng-click='removeRoute(route._id)')
+                        i.icon-remove
+        div
+            a.btn(href='addRoute/{{routeGroup._id}}')
+                i.icon-plus
 
 div.row
-  div.span3
-    button.btn(ng-click='clearRoutes()', style='margin-top:30px;')
-      i.icon-remove(style='padding-right:10px;')
-      | Remove all Routes
+    div.span3
+        button.btn(ng-click='clearRoutes()', style='margin-top:30px;')
+            i.icon-remove(style='padding-right:10px;')
+            | Remove all Routes
 

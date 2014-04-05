@@ -1,15 +1,15 @@
 div.row
-  div.span10
-    h3 Edit Locomotive Group
+    div.span10
+        h3 Edit Locomotive Group
 div.row
-  div.span5
-    form(ng-submit='editLocomotiveGroup()')
-      fieldset
-        p
-          input(autofocus='true', type='text', size='12', placeholder='Name', ng-model='locomotiveGroup.name')
-        p
-          button.btn(type='submit') Edit
-  div.span5
-    div.alert(ng-show='error')
-      button.close(type='button', data-dismiss='alert')
-      {{error}}
+    div.span5
+        form(ng-submit='editLocomotiveGroup()')
+            fieldset
+                p
+                    input(autofocus='true', type='text', size='12', placeholder='Name', ng-model='locomotiveGroup.name')
+                p
+                    button.btn(type='submit') Edit
+    div.span5
+        div.alert(ng-show='error')
+            button.close(type='button', data-dismiss='alert')
+            {{error}}

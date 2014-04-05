@@ -922,13 +922,13 @@ angular.module('ui.bootstrap.popover', [])
 
         var template =
             '<popover-popup ' +
-                'popover-title="{{tt_title}}" ' +
-                'popover-content="{{tt_popover}}" ' +
-                'placement="{{tt_placement}}" ' +
-                'animation="tt_animation()" ' +
-                'is-open="tt_isOpen"' +
-                '>' +
-                '</popover-popup>';
+            'popover-title="{{tt_title}}" ' +
+            'popover-content="{{tt_popover}}" ' +
+            'placement="{{tt_placement}}" ' +
+            'animation="tt_animation()" ' +
+            'is-open="tt_isOpen"' +
+            '>' +
+            '</popover-popup>';
 
         return {
             scope: true,
@@ -1159,12 +1159,12 @@ angular.module('ui.bootstrap.tooltip', [])
 
         var template =
             '<tooltip-popup ' +
-                'tooltip-title="{{tt_tooltip}}" ' +
-                'placement="{{tt_placement}}" ' +
-                'animation="tt_animation()" ' +
-                'is-open="tt_isOpen"' +
-                '>' +
-                '</tooltip-popup>';
+            'tooltip-title="{{tt_tooltip}}" ' +
+            'placement="{{tt_placement}}" ' +
+            'animation="tt_animation()" ' +
+            'is-open="tt_isOpen"' +
+            '>' +
+            '</tooltip-popup>';
 
         return {
             scope: true,
@@ -1380,7 +1380,7 @@ angular.module('ui.bootstrap.transition', [])
 
 angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function ($templateCache) {
     $templateCache.put("template/accordion/accordion-group.html",
-        "<div class=\"accordion-group\">" +
+            "<div class=\"accordion-group\">" +
             "  <div class=\"accordion-heading\" ><a class=\"accordion-toggle\" ng-click=\"isOpen = !isOpen\">{{heading}}</a></div>" +
             "  <div class=\"accordion-body\" collapse=\"!isOpen\">" +
             "    <div class=\"accordion-inner\" ng-transclude></div>  </div>" +
@@ -1394,7 +1394,7 @@ angular.module("template/accordion/accordion.html", []).run(["$templateCache", f
 
 angular.module("template/alert/alert.html", []).run(["$templateCache", function ($templateCache) {
     $templateCache.put("template/alert/alert.html",
-        "<div class='alert' ng-class='type && \"alert-\" + type'>" +
+            "<div class='alert' ng-class='type && \"alert-\" + type'>" +
             "    <button type='button' class='close' ng-click='close()'>&times;</button>" +
             "    <div ng-transclude></div>" +
             "</div>");
@@ -1402,7 +1402,7 @@ angular.module("template/alert/alert.html", []).run(["$templateCache", function 
 
 angular.module("template/carousel/carousel.html", []).run(["$templateCache", function ($templateCache) {
     $templateCache.put("template/carousel/carousel.html",
-        "<div ng-mouseenter=\"pause()\" ng-mouseleave=\"play()\" class=\"carousel\">" +
+            "<div ng-mouseenter=\"pause()\" ng-mouseleave=\"play()\" class=\"carousel\">" +
             "    <div class=\"carousel-inner\" ng-transclude></div>" +
             "    <a ng-click=\"prev()\" class=\"carousel-control left\">&lsaquo;</a>" +
             "    <a ng-click=\"next()\" class=\"carousel-control right\">&rsaquo;</a>" +
@@ -1412,7 +1412,7 @@ angular.module("template/carousel/carousel.html", []).run(["$templateCache", fun
 
 angular.module("template/carousel/slide.html", []).run(["$templateCache", function ($templateCache) {
     $templateCache.put("template/carousel/slide.html",
-        "<div ng-class=\"{" +
+            "<div ng-class=\"{" +
             "    'active': leaving || (active && !entering)," +
             "    'prev': (next || active) && direction=='prev'," +
             "    'next': (next || active) && direction=='next'," +
@@ -1424,7 +1424,7 @@ angular.module("template/carousel/slide.html", []).run(["$templateCache", functi
 
 angular.module("template/dialog/message.html", []).run(["$templateCache", function ($templateCache) {
     $templateCache.put("template/dialog/message.html",
-        "<div class=\"modal-header\">" +
+            "<div class=\"modal-header\">" +
             "	<h1>{{ title }}</h1>" +
             "</div>" +
             "<div class=\"modal-body\">" +
@@ -1438,7 +1438,7 @@ angular.module("template/dialog/message.html", []).run(["$templateCache", functi
 
 angular.module("template/pagination/pagination.html", []).run(["$templateCache", function ($templateCache) {
     $templateCache.put("template/pagination/pagination.html",
-        "<div class=\"pagination\"><ul>" +
+            "<div class=\"pagination\"><ul>" +
             "  <li ng-class=\"{disabled: noPrevious()}\"><a ng-click=\"selectPrevious()\">{{previousText || 'Previous'}}</a></li>" +
             "  <li ng-repeat=\"page in pages\" ng-class=\"{active: isActive(page)}\"><a ng-click=\"selectPage(page)\">{{page}}</a></li>" +
             "  <li ng-class=\"{disabled: noNext()}\"><a ng-click=\"selectNext()\">{{nextText || 'Next'}}</a></li>" +
@@ -1449,7 +1449,7 @@ angular.module("template/pagination/pagination.html", []).run(["$templateCache",
 
 angular.module("template/popover/popover.html", []).run(["$templateCache", function ($templateCache) {
     $templateCache.put("template/popover/popover.html",
-        "<div class=\"popover {{placement}}\" ng-class=\"{ in: isOpen(), fade: animation() }\">" +
+            "<div class=\"popover {{placement}}\" ng-class=\"{ in: isOpen(), fade: animation() }\">" +
             "  <div class=\"arrow\"></div>" +
             "" +
             "  <div class=\"popover-inner\">" +
@@ -1462,13 +1462,13 @@ angular.module("template/popover/popover.html", []).run(["$templateCache", funct
 
 angular.module("template/tabs/pane.html", []).run(["$templateCache", function ($templateCache) {
     $templateCache.put("template/tabs/pane.html",
-        "<div class=\"tab-pane\" ng-class=\"{active: selected}\" ng-show=\"selected\" ng-transclude></div>" +
+            "<div class=\"tab-pane\" ng-class=\"{active: selected}\" ng-show=\"selected\" ng-transclude></div>" +
             "");
 }]);
 
 angular.module("template/tabs/tabs.html", []).run(["$templateCache", function ($templateCache) {
     $templateCache.put("template/tabs/tabs.html",
-        "<div class=\"tabbable\">" +
+            "<div class=\"tabbable\">" +
             "  <ul class=\"nav nav-tabs\">" +
             "    <li ng-repeat=\"pane in panes\" ng-class=\"{active:pane.selected}\">" +
             "      <a href=\"\" ng-click=\"select(pane)\">{{pane.heading}}</a>" +
@@ -1481,7 +1481,7 @@ angular.module("template/tabs/tabs.html", []).run(["$templateCache", function ($
 
 angular.module("template/tooltip/tooltip-popup.html", []).run(["$templateCache", function ($templateCache) {
     $templateCache.put("template/tooltip/tooltip-popup.html",
-        "<div class=\"tooltip {{placement}}\" ng-class=\"{ in: isOpen(), fade: animation() }\">" +
+            "<div class=\"tooltip {{placement}}\" ng-class=\"{ in: isOpen(), fade: animation() }\">" +
             "  <div class=\"tooltip-arrow\"></div>" +
             "  <div class=\"tooltip-inner\" ng-bind=\"tooltipTitle\"></div>" +
             "</div>" +

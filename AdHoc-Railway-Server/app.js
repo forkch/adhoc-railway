@@ -71,7 +71,7 @@ io.sockets.on('connection', function (client) {
     return socketHandler(client);
 });
 
-function sendResponse(err, res, next, successCode,errCode,  data) {
+function sendResponse(err, res, next, successCode, errCode, data) {
     if (!err) {
         res.send(successCode, data);
     } else {

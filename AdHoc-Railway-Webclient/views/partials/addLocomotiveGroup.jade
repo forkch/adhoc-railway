@@ -1,17 +1,17 @@
 div.row
 div.row
-  div.span10
-    h3 Add Locomotive Group
+    div.span10
+        h3 Add Locomotive Group
 div.row
-  div.span5
-    form(ng-submit='addLocomotiveGroup()')
-      fieldset
-        p
-          input(autofocus='true', type='text', size='12', placeholder='Name', ng-model='locomotiveGroup.name')
-        p
-          button.btn(type='submit') Add
-          
-  div.span5
-    div.alert(ng-show='error')
-      button.close(type='button', data-dismiss='alert')
-      {{error}}
+    div.span5
+        form(ng-submit='addLocomotiveGroup()')
+            fieldset
+                p
+                    input(autofocus='true', type='text', size='12', placeholder='Name', ng-model='locomotiveGroup.name')
+                p
+                    button.btn(type='submit') Add
+
+    div.span5
+        div.alert(ng-show='error')
+            button.close(type='button', data-dismiss='alert')
+            {{error}}

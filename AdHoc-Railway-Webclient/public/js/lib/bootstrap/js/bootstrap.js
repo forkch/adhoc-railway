@@ -300,7 +300,7 @@
         cycle: function (e) {
             if (!e) this.paused = false
             this.options.interval
-                && !this.paused
+            && !this.paused
             && (this.interval = setInterval($.proxy(this.next, this), this.options.interval))
             return this
         }, to: function (pos) {
@@ -900,7 +900,7 @@
                     .appendTo(document.body)
 
                 this.$backdrop.click(
-                    this.options.backdrop == 'static' ?
+                        this.options.backdrop == 'static' ?
                         $.proxy(this.$element[0].focus, this.$element[0])
                         : $.proxy(this.hide, this)
                 )
@@ -1381,8 +1381,8 @@
                     return ( $href
                         && $href.length
                         && [
-                        [ $href.position().top + self.$scrollElement.scrollTop(), href ]
-                    ] ) || null
+                            [ $href.position().top + self.$scrollElement.scrollTop(), href ]
+                        ] ) || null
                 })
                 .sort(function (a, b) {
                     return a[0] - b[0]
@@ -1407,8 +1407,8 @@
 
             for (i = offsets.length; i--;) {
                 activeTarget != targets[i]
-                    && scrollTop >= offsets[i]
-                    && (!offsets[i + 1] || scrollTop <= offsets[i + 1])
+                && scrollTop >= offsets[i]
+                && (!offsets[i + 1] || scrollTop <= offsets[i + 1])
                 && this.activate(targets[i])
             }
         }, activate: function (target) {

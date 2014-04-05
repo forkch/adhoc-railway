@@ -67,7 +67,7 @@
 
     var Error = window.Error,
         /** holds major version number for IE or NaN for real browsers */
-            msie = int((/msie (\d+)/.exec(lowercase(navigator.userAgent)) || [])[1]),
+        msie = int((/msie (\d+)/.exec(lowercase(navigator.userAgent)) || [])[1]),
         jqLite,           // delay binding since jQuery could be loaded after us.
         jQuery,           // delay binding
         slice = [].slice,
@@ -75,7 +75,7 @@
         toString = Object.prototype.toString,
 
         /** @name angular */
-            angular = window.angular || (window.angular = {}),
+        angular = window.angular || (window.angular = {}),
         angularModule,
         nodeName_,
         uid = ['0', '0', '0'];
@@ -1510,7 +1510,7 @@
      */
     function camelCase(name) {
         return name.
-            replace(SPECIAL_CHARS_REGEXP,function (_, separator, letter, offset) {
+            replace(SPECIAL_CHARS_REGEXP, function (_, separator, letter, offset) {
                 return offset ? letter.toUpperCase() : letter;
             }).
             replace(MOZ_HACK_REGEXP, 'Moz$1');
@@ -2840,7 +2840,7 @@
                 for (i = 0, length = $inject.length; i < length; i++) {
                     key = $inject[i];
                     args.push(
-                        locals && locals.hasOwnProperty(key)
+                            locals && locals.hasOwnProperty(key)
                             ? locals[key]
                             : getService(key, path)
                     );
@@ -4298,7 +4298,7 @@
                                 }
 
                                 $element.data(
-                                    '$' + directive.name + 'Controller',
+                                        '$' + directive.name + 'Controller',
                                     $controller(controller, locals));
                             });
                         }
@@ -4308,7 +4308,7 @@
                             try {
                                 linkFn = preLinkFns[i];
                                 linkFn(scope, $element, attrs,
-                                    linkFn.require && getControllers(linkFn.require, $element));
+                                        linkFn.require && getControllers(linkFn.require, $element));
                             } catch (e) {
                                 $exceptionHandler(e, startingTag($element));
                             }
@@ -4322,7 +4322,7 @@
                             try {
                                 linkFn = postLinkFns[i];
                                 linkFn(scope, $element, attrs,
-                                    linkFn.require && getControllers(linkFn.require, $element));
+                                        linkFn.require && getControllers(linkFn.require, $element));
                             } catch (e) {
                                 $exceptionHandler(e, startingTag($element));
                             }
@@ -5457,7 +5457,7 @@
                     pathPrefix = pathPrefixFromBase(basePath);
                     appBaseUrl =
                         composeProtocolHostPort(initUrlParts.protocol, initUrlParts.host, initUrlParts.port) +
-                            pathPrefix + '/';
+                        pathPrefix + '/';
 
                     if ($sniffer.history) {
                         $location = new LocationUrl(
@@ -5471,9 +5471,9 @@
                 } else {
                     appBaseUrl =
                         composeProtocolHostPort(initUrlParts.protocol, initUrlParts.host, initUrlParts.port) +
-                            (initUrlParts.path || '') +
-                            (initUrlParts.search ? ('?' + initUrlParts.search) : '') +
-                            '#' + hashPrefix + '/';
+                        (initUrlParts.path || '') +
+                        (initUrlParts.search ? ('?' + initUrlParts.search) : '') +
+                        '#' + hashPrefix + '/';
 
                     $location = new LocationHashbangUrl(initUrl, hashPrefix, appBaseUrl);
                 }
@@ -14417,7 +14417,7 @@
 
                     if (!(match = optionsExp.match(NG_OPTIONS_REGEXP))) {
                         throw Error(
-                            "Expected ngOptions in form of '_select_ (as _label_)? for (_key_,)?_value_ in _collection_'" +
+                                "Expected ngOptions in form of '_select_ (as _label_)? for (_key_,)?_value_ in _collection_'" +
                                 " but got '" + optionsExp + "'.");
                     }
 
