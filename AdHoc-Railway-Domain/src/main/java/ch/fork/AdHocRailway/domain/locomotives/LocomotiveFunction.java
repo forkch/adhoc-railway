@@ -1,5 +1,6 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import com.google.gson.annotations.Expose;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -12,11 +13,16 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
         Serializable {
 
 
+    @Expose
     private final int number;
 
+    @Expose
     private String description;
+
+    @Expose
     private boolean isEmergencyBrakeFunction;
 
+    @Expose
     private int deactivationDelay;
 
     public LocomotiveFunction(final int number, final String description,
