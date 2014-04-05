@@ -20,9 +20,7 @@ package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
 import com.google.gson.annotations.Expose;
-import com.sun.org.apache.xpath.internal.operations.Equals;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -189,7 +187,6 @@ public class Locomotive extends AbstractItem implements Serializable,
     public void setFunctions(final SortedSet<LocomotiveFunction> functions) {
         final SortedSet<LocomotiveFunction> old = this.functions;
         this.functions = functions;
-        currentFunctions = new boolean[functions.size()];
         changeSupport
                 .firePropertyChange(PROPERTYNAME_FUNCTIONS, old, this.functions);
     }
@@ -246,6 +243,10 @@ public class Locomotive extends AbstractItem implements Serializable,
     }
 
     public LocomotiveDirection getCurrentDirection() {
+
+        if (currentDirection == null) {
+            currentDirection = LocomotiveDirection.FORWARD;
+        }
         return currentDirection;
     }
 
