@@ -38,7 +38,6 @@ import java.awt.event.MouseEvent;
 
 public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
-
     private Turnout turnout;
 
     private JLabel numberLabel;
@@ -129,24 +128,32 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
     private class MouseAction extends MouseAdapter {
         @Override
         public void mouseClicked(final MouseEvent e) {
-            if (!connectedToRailway) {
-                return;
-            }
 
             if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
-                final TurnoutController turnoutControl = ctx
-                        .getTurnoutControl();
-                if (!testMode) {
-                    turnoutControl.toggle(turnout);
-                } else {
-                    turnoutControl.toggleTest(turnout);
-                }
+                handleLeftClick();
             } else if (e.getClickCount() == 1
                     && e.getButton() == MouseEvent.BUTTON3) {
 
-                if (ctx.isEditingMode()) {
-                    displaySwitchConfig();
-                }
+                handleRightClick();
+            }
+        }
+
+        private void handleRightClick() {
+            if (ctx.isEditingMode()) {
+                displaySwitchConfig();
+            }
+        }
+
+        private void handleLeftClick() {
+            if (!connectedToRailway) {
+                return;
+            }
+            final TurnoutController turnoutControl = ctx
+                    .getTurnoutControl();
+            if (!testMode) {
+                turnoutControl.toggle(turnout);
+            } else {
+                turnoutControl.toggleTest(turnout);
             }
         }
 

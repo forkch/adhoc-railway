@@ -213,8 +213,5 @@ module.exports = function (socket) {
             sendBroadcastToClients(err, 'locomotive:init', locomotiveGroups, fn);
 
         });
-
-
-        socket.broadcast.emit('locomotive:init', result);
     });
 };

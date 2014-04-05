@@ -1,6 +1,8 @@
 package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
 import ch.fork.AdHocRailway.domain.turnouts.*;
+import ch.fork.AdHocRailway.utils.GsonFactory;
+import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,7 +12,6 @@ import java.util.Map;
 
 public class SIOTurnoutMapper {
 
-    public static Map<String, String> turnoutIdMap = new HashMap<String, String>();
     public static Map<String, String> turnoutGroupIdMap = new HashMap<String, String>();
 
     public static TurnoutGroup mapTurnoutGroupFromJSON(
@@ -28,6 +29,9 @@ public class SIOTurnoutMapper {
                     .getJSONArray("turnouts");
             if (turnoutsJSON != null) {
                 for (int i = 0; i < turnoutsJSON.length(); i++) {
+
+                    Gson gson = GsonFactory.createGson();
+                    Turnout turnout1 = gson.fromJson(turnoutsJSON.getJSONObject(i).toString(), Turnout.class);
                     Turnout turnout = mapTurnoutFromJSON(turnoutsJSON
                             .getJSONObject(i));
                     turnout.setTurnoutGroup(turnoutGroup);
@@ -43,7 +47,6 @@ public class SIOTurnoutMapper {
         Turnout turnout = new Turnout();
         String sioId = turnoutJSON.getString("id");
         String id = sioId;
-        turnoutIdMap.put(id, sioId);
         turnout.setId(id);
         mergeTurnoutBaseInfo(turnoutJSON, turnout);
         turnout.init();
@@ -92,7 +95,7 @@ public class SIOTurnoutMapper {
     public static JSONObject mapTurnoutToJSON(Turnout turnout)
             throws JSONException {
         JSONObject turnoutJSON = new JSONObject();
-        turnoutJSON.put("id", turnoutIdMap.get(turnout.getId()));
+        turnoutJSON.put("id", turnout.getId());
         turnoutJSON.put("number", turnout.getNumber());
         turnoutJSON.put("description", turnout.getDescription());
         turnoutJSON.put("bus1", turnout.getBus1());

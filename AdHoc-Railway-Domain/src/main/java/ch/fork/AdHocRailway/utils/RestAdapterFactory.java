@@ -1,6 +1,7 @@
-package ch.fork.AdHocRailway.services.impl.rest;
+package ch.fork.AdHocRailway.utils;
 
 import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.services.impl.rest.AdHocServerError;
 import com.google.gson.*;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
@@ -17,11 +18,8 @@ public class RestAdapterFactory {
 
 
     public static RestAdapter createRestAdapter(final String appId) {
-        Gson gson = new GsonBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
-                .registerTypeAdapter(Boolean.class, new BooleanSerializer())
-                .create();
 
+        Gson gson = GsonFactory.createGson();
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://localhost:3000")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
@@ -35,21 +33,6 @@ public class RestAdapterFactory {
                 .setErrorHandler(new AdHocRailwayRetrofitErrorHandler())
                 .build();
         return restAdapter;
-    }
-
-    private static class BooleanSerializer implements JsonSerializer<Boolean>, JsonDeserializer<Boolean> {
-        @Override
-        public Boolean deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            if(json == null) {
-                return Boolean.FALSE;
-            }
-            return Boolean.parseBoolean(json.getAsString());
-        }
-
-        @Override
-        public JsonElement serialize(Boolean src, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(src.toString());
-        }
     }
 
     private static class AdHocRailwayRetrofitErrorHandler implements ErrorHandler {

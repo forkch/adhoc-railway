@@ -5,6 +5,7 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
 import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
+import ch.fork.AdHocRailway.utils.RestAdapterFactory;
 import org.apache.log4j.Logger;
 import retrofit.RestAdapter;
 

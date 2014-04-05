@@ -72,8 +72,7 @@ public class SIORouteMapper {
         JSONArray routedTurnouts = new JSONArray();
         for (RouteItem routeItem : route.getRouteItems()) {
             JSONObject routedTurnout = new JSONObject();
-            routedTurnout.put("turnoutId", SIOTurnoutServiceEventHandler
-                    .getSIOIdByTurnout(routeItem.getTurnout()));
+            routedTurnout.put("turnoutId", routeItem.getTurnout().getId());
             routedTurnout.put("state", routeItem.getRoutedState().toString()
                     .toLowerCase());
             routedTurnouts.put(routedTurnout);

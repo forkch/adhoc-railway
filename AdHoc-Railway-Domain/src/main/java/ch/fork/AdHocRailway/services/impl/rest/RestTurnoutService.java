@@ -5,6 +5,7 @@ import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.services.TurnoutService;
 import ch.fork.AdHocRailway.services.TurnoutServiceListener;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
+import ch.fork.AdHocRailway.utils.RestAdapterFactory;
 import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import retrofit.RestAdapter;
@@ -67,7 +68,6 @@ public class RestTurnoutService implements TurnoutService {
 
     @Override
     public void addTurnout(Turnout turnout) {
-        String i = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(turnout);
         Turnout addTurnout = restTurnoutServiceClient.addTurnout(turnout);
         turnout.setId(addTurnout.getId());
         if (listenerOk()) {
