@@ -4,7 +4,6 @@ var locomotiveApi = require('./rest/locomotiveRESTApi');
 var turnoutApi = require('./rest/turnoutRESTApi');
 var mongoose = require('mongoose');
 
-var mdns = require('mdns');
 
 var Logger = require('bunyan');
 var log = new Logger({
