@@ -25,10 +25,7 @@ public class SIOTurnoutServiceEventHandler {
         final SortedSet<TurnoutGroup> turnoutGroups = new TreeSet<TurnoutGroup>();
         for (int i = 0; i < turnoutGroupsJ.length(); i++) {
             final JSONObject turnoutGroupJSON = turnoutGroupsJ.getJSONObject(i);
-            //final TurnoutGroup turnoutGroup = SIOTurnoutMapper
-            //        .mapTurnoutGroupFromJSON(turnoutGroupJSON);
-            String s = turnoutGroupJSON.toString();
-            TurnoutGroup turnoutGroup = gson.fromJson(s, TurnoutGroup.class);
+            TurnoutGroup turnoutGroup = deserializeTurnoutGroup(turnoutGroupJSON);
 
             sioIdToTurnoutGroupMap.put(turnoutGroup.getId(),
                     turnoutGroup);
@@ -36,6 +33,7 @@ public class SIOTurnoutServiceEventHandler {
             for (final Turnout turnout : turnoutGroup.getTurnouts()) {
                 sioIdToTurnoutMap.put(turnout.getId(),
                         turnout);
+                turnout.setTurnoutGroup(turnoutGroup);
             }
             turnoutGroups.add(turnoutGroup);
         }
@@ -44,11 +42,14 @@ public class SIOTurnoutServiceEventHandler {
 
     }
 
+    private static TurnoutGroup deserializeTurnoutGroup(JSONObject turnoutGroupJSON) {
+        return gson.fromJson(turnoutGroupJSON.toString(), TurnoutGroup.class);
+    }
+
     public static void handleTurnoutAdded(final JSONObject turnoutJSON,
                                           final TurnoutServiceListener listener) throws JSONException {
-        final Turnout turnout = SIOTurnoutMapper
-                .mapTurnoutFromJSON(turnoutJSON);
-        sioIdToTurnoutMap.put(turnoutJSON.getString("id"), turnout);
+        final Turnout turnout = deserializeTurnout(turnoutJSON);
+        sioIdToTurnoutMap.put(turnout.getId(), turnout);
         final TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap
                 .get(turnoutJSON.get("groupId"));
         turnout.setTurnoutGroup(turnoutGroup);
@@ -56,14 +57,14 @@ public class SIOTurnoutServiceEventHandler {
         listener.turnoutAdded(turnout);
     }
 
+    private static Turnout deserializeTurnout(JSONObject turnoutJSON) {
+        return gson.fromJson(turnoutJSON.toString(), Turnout.class);
+    }
+
     public static void handleTurnoutUpdated(final JSONObject turnoutJSON,
                                             final TurnoutServiceListener listener) throws JSONException {
-        final Turnout turnout = sioIdToTurnoutMap.get(turnoutJSON
-                .getString("id"));
-
-        SIOTurnoutMapper.mergeTurnoutBaseInfo(turnoutJSON, turnout);
-        turnout.setTurnoutGroup(sioIdToTurnoutGroupMap.get(turnoutJSON
-                .getString("groupId")));
+        final Turnout turnout = deserializeTurnout(turnoutJSON);
+        turnout.setTurnoutGroup(sioIdToTurnoutGroupMap.get(turnout.getId()));
         listener.turnoutUpdated(turnout);
 
     }
@@ -71,11 +72,10 @@ public class SIOTurnoutServiceEventHandler {
     public static void handleTurnoutRemoved(final JSONObject turnoutJSON,
                                             final TurnoutServiceListener listener) throws JSONException {
 
-        final Turnout turnout = sioIdToTurnoutMap.remove(turnoutJSON
-                .getString("id"));
+        final Turnout turnout = deserializeTurnout(turnoutJSON);
 
         final TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap
-                .get(turnoutJSON.get("groupId"));
+                .get(turnout.getId());
         turnoutGroup.removeTurnout(turnout);
         listener.turnoutRemoved(turnout);
 
@@ -84,9 +84,8 @@ public class SIOTurnoutServiceEventHandler {
     public static void handleTurnoutGroupAdded(
             final JSONObject turnoutGroupJSON,
             final TurnoutServiceListener listener) throws JSONException {
-        final TurnoutGroup turnoutGroup = SIOTurnoutMapper
-                .mapTurnoutGroupFromJSON(turnoutGroupJSON);
-        sioIdToTurnoutGroupMap.put(turnoutGroupJSON.getString("id"),
+        final TurnoutGroup turnoutGroup = deserializeTurnoutGroup(turnoutGroupJSON);
+        sioIdToTurnoutGroupMap.put(turnoutGroup.getId(),
                 turnoutGroup);
         listener.turnoutGroupAdded(turnoutGroup);
     }
@@ -94,20 +93,17 @@ public class SIOTurnoutServiceEventHandler {
     public static void handleTurnoutGroupUpdated(
             final JSONObject turnoutGroupJSON,
             final TurnoutServiceListener listener) throws JSONException {
-        final TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap
-                .get(turnoutGroupJSON.getString("id"));
-        SIOTurnoutMapper.mergeTurnoutGroupBaseInfo(turnoutGroup,
-                turnoutGroupJSON);
+        final TurnoutGroup turnoutGroup = deserializeTurnoutGroup(turnoutGroupJSON);
+        sioIdToTurnoutGroupMap.put(turnoutGroup.getId(),
+                turnoutGroup);
         listener.turnoutGroupUpdated(turnoutGroup);
     }
 
     public static void handleTurnoutGroupRemoved(
             final JSONObject turnoutGroupJSON,
             final TurnoutServiceListener listener) throws JSONException {
-        final TurnoutGroup turnoutGroup = SIOTurnoutMapper
-                .mapTurnoutGroupFromJSON(turnoutGroupJSON);
-        sioIdToTurnoutGroupMap.remove(turnoutGroupJSON.getString("id"));
-        SIOTurnoutMapper.turnoutGroupIdMap.remove(turnoutGroup.getId());
+        final TurnoutGroup turnoutGroup = deserializeTurnoutGroup(turnoutGroupJSON);
+        sioIdToTurnoutGroupMap.remove(turnoutGroup.getId());
         listener.turnoutGroupRemoved(turnoutGroup);
     }
 
@@ -115,18 +111,4 @@ public class SIOTurnoutServiceEventHandler {
         return sioIdToTurnoutMap.get(sioId);
     }
 
-
-    public static void addIdToTurnout(final Turnout turnout, final String sioId) {
-        final String id = sioId.toString();
-        turnout.setId(id);
-        sioIdToTurnoutMap.put(sioId, turnout);
-    }
-
-    public static void addIdToTurnoutGroup(final TurnoutGroup group,
-                                           final String sioId) {
-        final String id = sioId.toString();
-        group.setId(id);
-        sioIdToTurnoutGroupMap.put(sioId, group);
-        SIOTurnoutMapper.turnoutGroupIdMap.put(id, sioId);
-    }
 }
