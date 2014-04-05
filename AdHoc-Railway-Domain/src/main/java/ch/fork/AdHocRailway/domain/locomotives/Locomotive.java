@@ -20,6 +20,7 @@ package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
 import com.google.gson.annotations.Expose;
+import com.sun.org.apache.xpath.internal.operations.Equals;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -79,7 +80,7 @@ public class Locomotive extends AbstractItem implements Serializable,
     private int address2;
     @Expose
     private SortedSet<LocomotiveFunction> functions = new TreeSet<LocomotiveFunction>();
-    @XStreamOmitField
+
     private transient LocomotiveGroup group;
 
     private transient int currentSpeed = 0;
@@ -228,48 +229,6 @@ public class Locomotive extends AbstractItem implements Serializable,
                 this.group);
     }
 
-    @Override
-    public int compareTo(final Locomotive o) {
-        if (this == o) {
-            return 0;
-        }
-        if (o == null) {
-            return -1;
-        }
-        return name.compareTo(o.getName());
-
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        final EqualsBuilder equalsBuilder = new EqualsBuilder();
-        final Locomotive other = (Locomotive) obj;
-        if (other == null) {
-            return false;
-        }
-        equalsBuilder.append(this.getBus(), other.getBus())
-                .append(this.getAddress1(), other.getAddress1())
-                .append(this.getAddress2(), other.getAddress2())
-                .append(this.getType(), other.getType())
-                .append(this.getFunctions(), other.getFunctions());
-
-        return equalsBuilder.build();
-    }
-
-    @Override
-    public int hashCode() {
-        final HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        return hashCodeBuilder.append(bus).append(address1).append(address2)
-                .append(type).append(functions).build();
-
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this,
-                ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
     public void addPropertyChangeListener(final PropertyChangeListener x) {
         changeSupport.addPropertyChangeListener(x);
     }
@@ -296,6 +255,9 @@ public class Locomotive extends AbstractItem implements Serializable,
     }
 
     public boolean[] getCurrentFunctions() {
+        if (currentFunctions == null) {
+            currentFunctions = new boolean[functions.size()];
+        }
         return currentFunctions;
     }
 
@@ -327,4 +289,27 @@ public class Locomotive extends AbstractItem implements Serializable,
         this.groupId = groupId;
     }
 
+    @Override
+    public int compareTo(final Locomotive o) {
+        if (o == null) {
+            return 1;
+        }
+        return name.compareTo(o.getName());
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+                ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

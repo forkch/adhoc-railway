@@ -55,6 +55,21 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
         return fns;
     }
 
+    public static SortedSet<LocomotiveFunction> getFunctionsForType(LocomotiveType type) {
+        switch (type) {
+
+            case DELTA:
+                return getDeltaFunctions();
+            case DIGITAL:
+                return getDigitalFunctions();
+            case SIMULATED_MFX:
+                return getSimulatedMfxFunctions();
+            case MFX:
+                return getDigitalFunctions();
+        }
+        return getDeltaFunctions();
+    }
+
     public boolean isEmergencyBrakeFunction() {
         return isEmergencyBrakeFunction;
     }

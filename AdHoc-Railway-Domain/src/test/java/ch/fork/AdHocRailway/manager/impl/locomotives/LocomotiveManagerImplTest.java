@@ -88,6 +88,7 @@ public class LocomotiveManagerImplTest {
         // given
         final LocomotiveGroup newGroup = new LocomotiveGroup("1", "test");
         final Locomotive locomotive = new Locomotive();
+        locomotive.setName("name");
 
         // when
         locomotiveManagerImpl.addLocomotiveGroup(newGroup);
@@ -126,6 +127,7 @@ public class LocomotiveManagerImplTest {
 
         // given
         final Locomotive locomotive = new Locomotive();
+        locomotive.setName("name");
         final LocomotiveGroup newGroup = new LocomotiveGroup("1", "test");
         newGroup.addLocomotive(locomotive);
         locomotive.setGroup(newGroup);

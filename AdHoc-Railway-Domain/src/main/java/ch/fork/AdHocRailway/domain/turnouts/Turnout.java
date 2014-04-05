@@ -253,26 +253,6 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
                 this.orientation);
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(id).hashCode();
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        Turnout rhs = (Turnout) obj;
-        return new EqualsBuilder().append(id, rhs.getId()).build().booleanValue();
-    }
-
-    @Override
-    public int compareTo(final Turnout o) {
-        return new CompareToBuilder().append(number, o.getNumber()).build();
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(number).append(type).append(bus1).append(address1).append(address1Switched).append(bus2).append(address2).append(address2Switched).build();
-    }
 
     public void addPropertyChangeListener(final PropertyChangeListener x) {
         changeSupport.addPropertyChangeListener(x);
@@ -321,5 +301,25 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+
+    @Override
+    public int compareTo(final Turnout o) {
+        return Integer.compare(number, o.getNumber());
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

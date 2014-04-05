@@ -84,22 +84,21 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int compareTo(final TurnoutGroup o) {
-        return new CompareToBuilder().append(getName(), o.getName()).build();
+        return name.compareTo(o.getName());
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).hashCode();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
     public boolean equals(final Object obj) {
-        TurnoutGroup rhs = (TurnoutGroup) obj;
-        return new EqualsBuilder().append(id, rhs.getId()).build().booleanValue();
+        return EqualsBuilder.reflectionEquals(this, obj);
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(false, ToStringStyle.SHORT_PREFIX_STYLE).append(name).build();
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

@@ -20,6 +20,8 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -116,51 +118,6 @@ public class Route extends AbstractItem implements java.io.Serializable,
                 this.routeGroup);
     }
 
-    @Override
-    public int compareTo(final Route o) {
-        if (this == o) {
-            return 0;
-        }
-        if (o == null) {
-            return -1;
-        }
-        if (number > o.getNumber()) {
-            return 1;
-        } else if (number == o.getNumber()) {
-            return 0;
-        } else {
-            return -1;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        return result;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Route other = (Route) obj;
-        return id == other.id;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this,
-                ToStringStyle.SHORT_PREFIX_STYLE);
-    }
 
     public void addPropertyChangeListener(final PropertyChangeListener x) {
         changeSupport.addPropertyChangeListener(x);
@@ -184,5 +141,25 @@ public class Route extends AbstractItem implements java.io.Serializable,
 
     public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public int compareTo(final Route o) {
+        return Integer.compare(number, o.getNumber());
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

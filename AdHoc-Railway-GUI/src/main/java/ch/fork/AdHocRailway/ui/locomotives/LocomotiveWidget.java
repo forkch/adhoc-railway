@@ -35,6 +35,7 @@ import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
+import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveGroupListCellRenderer;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import ch.fork.AdHocRailway.utils.LocomotiveHelper;
 import com.google.common.eventbus.Subscribe;
@@ -178,6 +179,7 @@ public class LocomotiveWidget extends JPanel implements
                 .deriveFont(14));
         locomotiveGroupComboBox.setMaximumRowCount(10);
         locomotiveGroupComboBox.setSelectedIndex(-1);
+        locomotiveGroupComboBox.setRenderer(new LocomotiveGroupListCellRenderer());
 
         groupSelectAction = new LocomotiveGroupSelectAction();
         locomotiveGroupComboBox.addItemListener(groupSelectAction);
@@ -796,28 +798,38 @@ public class LocomotiveWidget extends JPanel implements
             }
             if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
 
-                if (ctx.isEditingMode()) {
-                    if (!isFree()) {
-                        return;
-                    }
-                    final LocomotiveController locomotiveControl = ctx
-                            .getLocomotiveControl();
-
-                    locomotiveControl.removeLocomotiveChangeListener(
-                            myLocomotive, LocomotiveWidget.this);
-                    new LocomotiveConfig(ctx, frame, myLocomotive, myLocomotive.getGroup());
-
-                    locomotiveControl.addLocomotiveChangeListener(myLocomotive,
-                            LocomotiveWidget.this);
-                    locomotiveChanged(myLocomotive);
-                } else {
-
+                if (handleLeftClick()) {
+                    return;
                 }
             } else if (e.getButton() == MouseEvent.BUTTON2) {
-                final ToggleDirectionAction a = new ToggleDirectionAction();
-                a.actionPerformed(null);
+                handleMiddleClick();
             }
             updateWidget();
+        }
+
+        private void handleMiddleClick() {
+            final ToggleDirectionAction a = new ToggleDirectionAction();
+            a.actionPerformed(null);
+        }
+
+        private boolean handleLeftClick() {
+            if (ctx.isEditingMode()) {
+                if (!isFree()) {
+                    return true;
+                }
+                final LocomotiveController locomotiveControl = ctx
+                        .getLocomotiveControl();
+
+                locomotiveControl.removeLocomotiveChangeListener(
+                        myLocomotive, LocomotiveWidget.this);
+                new LocomotiveConfig(ctx, frame, myLocomotive, myLocomotive.getGroup());
+
+                locomotiveControl.addLocomotiveChangeListener(myLocomotive,
+                        LocomotiveWidget.this);
+                locomotiveChanged(myLocomotive);
+
+            }
+            return false;
         }
     }
 

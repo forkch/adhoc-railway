@@ -20,7 +20,10 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class RouteItem extends AbstractItem implements java.io.Serializable,
         Comparable<RouteItem> {
@@ -33,6 +36,7 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     private Turnout turnout;
     @XStreamOmitField
     private Route route;
+
     private TurnoutState routedState;
 
     public RouteItem() {
@@ -44,52 +48,6 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
         this.turnout = turnout;
         this.route = route;
         this.routedState = routedState;
-    }
-
-    @Override
-    public int compareTo(final RouteItem o) {
-        if (this == o) {
-            return 0;
-        }
-        if (o == null) {
-            return -1;
-        }
-        if (turnout == null) {
-            return -1;
-        }
-        if (o.getTurnout() == null) {
-            return 1;
-        }
-        return turnout.compareTo(o.getTurnout());
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        final RouteItem l = (RouteItem) o;
-        if (id != l.getId()) {
-            return false;
-        }
-        if (!turnout.equals(l.getTurnout())) {
-            return false;
-        }
-        return routedState.equals(l.getRoutedState());
-    }
-
-    @Override
-    public int hashCode() {
-        return turnout.hashCode() + routedState.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
     }
 
     public int getId() {
@@ -132,4 +90,23 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
                 this.routedState);
     }
 
+    @Override
+    public int compareTo(final RouteItem o) {
+        return turnout.compareTo(o.getTurnout());
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

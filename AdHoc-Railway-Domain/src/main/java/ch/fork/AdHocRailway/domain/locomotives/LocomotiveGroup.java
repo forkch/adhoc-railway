@@ -19,9 +19,13 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import com.google.common.collect.Sets;
 import com.google.gson.annotations.Expose;
+import com.sun.org.apache.xpath.internal.operations.Equals;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import org.apache.commons.lang3.builder.*;
+import sun.misc.Compare;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
@@ -107,48 +111,22 @@ public class LocomotiveGroup extends AbstractItem implements
 
     @Override
     public int compareTo(final LocomotiveGroup o) {
-        if (this == o) {
-            return 0;
-        }
-        if (o == null) {
-            return -1;
-        }
         return name.compareTo(o.getName());
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final LocomotiveGroup other = (LocomotiveGroup) obj;
-        if (id != other.id) {
-            return false;
-        }
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, obj);
     }
 
     @Override
     public String toString() {
-        return name;
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
 }

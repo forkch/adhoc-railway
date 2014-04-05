@@ -46,7 +46,7 @@ public class LocomotiveTestHelper {
         final JSONObject locomotiveJSON = new JSONObject();
         locomotiveJSON.put("id", id);
         locomotiveJSON.put("name", NAME + id);
-        locomotiveJSON.put("description", DESCRIPTION);
+        locomotiveJSON.put("desc", DESCRIPTION);
         locomotiveJSON.put("image", IMAGE_PNG);
         locomotiveJSON.put("bus", BUS);
         locomotiveJSON.put("address1", ADDRESS_1);

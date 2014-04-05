@@ -1,8 +1,11 @@
 package ch.fork.AdHocRailway.services.impl.socketio.locomotives;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
+import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
+import ch.fork.AdHocRailway.utils.GsonFactory;
+import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,23 +20,27 @@ public class SIOLocomotiveServiceEventHandler {
     private static Map<String, LocomotiveGroup> sioIdToLocomotiveGroupMap = new HashMap<String, LocomotiveGroup>();
     private static Map<String, Locomotive> sioIdToLocomotiveMap = new HashMap<String, Locomotive>();
 
+    private static Gson gson = GsonFactory.createGson();
+
     public static SortedSet<LocomotiveGroup> handleLocomotiveInit(
-            final JSONArray data, final LocomotiveServiceListener listener)
+            final JSONArray locomotiveGroupsJSON, final LocomotiveServiceListener listener)
             throws JSONException {
 
         final SortedSet<LocomotiveGroup> locomotiveGroups = new TreeSet<LocomotiveGroup>();
-        for (int i = 0; i < data.length(); i++) {
-            final JSONObject locomotiveGroupJSON = data
+        for (int i = 0; i < locomotiveGroupsJSON.length(); i++) {
+            final JSONObject locomotiveGroupJSON = locomotiveGroupsJSON
                     .getJSONObject(i);
-            final LocomotiveGroup locomotiveGroup = SIOLocomotiveMapper
-                    .mapLocomotiveGroupFromJSON(locomotiveGroupJSON);
+            final LocomotiveGroup locomotiveGroup = deserializeLocomotiveGroup(locomotiveGroupJSON);
 
-            sioIdToLocomotiveGroupMap.put(locomotiveGroupJSON.getString("id"),
+            sioIdToLocomotiveGroupMap.put(locomotiveGroup.getId(),
                     locomotiveGroup);
 
             for (final Locomotive locomotive : locomotiveGroup.getLocomotives()) {
-                sioIdToLocomotiveMap.put(SIOLocomotiveMapper.locomotiveIdMap
-                        .get(locomotive.getId()), locomotive);
+                sioIdToLocomotiveMap.put(locomotive.getId(), locomotive);
+                locomotive.setGroup(locomotiveGroup);
+                if (locomotive.getFunctions().size() == 0) {
+                    locomotive.setFunctions(LocomotiveFunction.getFunctionsForType(locomotive.getType()));
+                }
             }
             locomotiveGroups.add(locomotiveGroup);
         }
@@ -46,12 +53,14 @@ public class SIOLocomotiveServiceEventHandler {
     public static Locomotive handleLocomotiveAdded(
             final JSONObject locomotiveJSON,
             final LocomotiveServiceListener listener) throws JSONException {
-        final Locomotive locomotive = SIOLocomotiveMapper
-                .mapLocomotiveFromJSON(locomotiveJSON);
-        sioIdToLocomotiveMap.put(locomotiveJSON.getString("id"), locomotive);
+        final Locomotive locomotive = deserializeLocomotive(locomotiveJSON);
+        sioIdToLocomotiveMap.put(locomotive.getId(), locomotive);
         final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
-                .get(locomotiveJSON.get("groupId"));
+                .get(locomotive.getGroupId());
         locomotive.setGroup(locomotiveGroup);
+        if (locomotive.getFunctions().size() == 0) {
+            locomotive.setFunctions(LocomotiveFunction.getFunctionsForType(locomotive.getType()));
+        }
         locomotiveGroup.addLocomotive(locomotive);
         listener.locomotiveAdded(locomotive);
         return locomotive;
@@ -60,12 +69,12 @@ public class SIOLocomotiveServiceEventHandler {
     public static Locomotive handleLocomotiveUpdated(
             final JSONObject locomotiveJSON,
             final LocomotiveServiceListener listener) throws JSONException {
-        final Locomotive locomotive = sioIdToLocomotiveMap.get(locomotiveJSON
-                .getString("id"));
+        final Locomotive locomotive = deserializeLocomotive(locomotiveJSON);
 
-        SIOLocomotiveMapper.mergeLocomotiveBaseInfo(locomotiveJSON, locomotive);
-        locomotive.setGroup(sioIdToLocomotiveGroupMap.get(locomotiveJSON
-                .getString("groupId")));
+        locomotive.setGroup(sioIdToLocomotiveGroupMap.get(locomotive.getId()));
+        if (locomotive.getFunctions().size() == 0) {
+            locomotive.setFunctions(LocomotiveFunction.getFunctionsForType(locomotive.getType()));
+        }
         listener.locomotiveUpdated(locomotive);
         return locomotive;
 
@@ -74,12 +83,10 @@ public class SIOLocomotiveServiceEventHandler {
     public static Locomotive handleLocomotiveRemoved(
             final JSONObject locomotiveJSON,
             final LocomotiveServiceListener listener) throws JSONException {
-        final Locomotive locomotive = sioIdToLocomotiveMap
-                .remove(locomotiveJSON.getString("id"));
-        SIOLocomotiveMapper.locomotiveIdMap.remove(locomotive.getId());
+        final Locomotive locomotive = deserializeLocomotive(locomotiveJSON);
 
         final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
-                .get(locomotiveJSON.get("groupId"));
+                .get(locomotive.getGroupId());
         locomotiveGroup.removeLocomotive(locomotive);
         listener.locomotiveRemoved(locomotive);
 
@@ -89,9 +96,8 @@ public class SIOLocomotiveServiceEventHandler {
     public static LocomotiveGroup handleLocomotiveGroupAdded(
             final JSONObject locomotiveGroupJSON,
             final LocomotiveServiceListener listener) throws JSONException {
-        final LocomotiveGroup locomotiveGroup = SIOLocomotiveMapper
-                .mapLocomotiveGroupFromJSON(locomotiveGroupJSON);
-        sioIdToLocomotiveGroupMap.put(locomotiveGroupJSON.getString("id"),
+        final LocomotiveGroup locomotiveGroup = deserializeLocomotiveGroup(locomotiveGroupJSON);
+        sioIdToLocomotiveGroupMap.put(locomotiveGroup.getId(),
                 locomotiveGroup);
         listener.locomotiveGroupAdded(locomotiveGroup);
         return locomotiveGroup;
@@ -100,10 +106,8 @@ public class SIOLocomotiveServiceEventHandler {
     public static LocomotiveGroup handleLocomotiveGroupUpdated(
             final JSONObject locomotiveGroupJSON,
             final LocomotiveServiceListener listener) throws JSONException {
-        final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
-                .get(locomotiveGroupJSON.getString("id"));
-        SIOLocomotiveMapper.mergeLocomotiveGroupBaseInfo(locomotiveGroup,
-                locomotiveGroupJSON);
+        final LocomotiveGroup locomotiveGroup = deserializeLocomotiveGroup(locomotiveGroupJSON);
+        sioIdToLocomotiveGroupMap.put(locomotiveGroup.getId(), locomotiveGroup);
         listener.locomotiveGroupUpdated(locomotiveGroup);
         return locomotiveGroup;
     }
@@ -111,28 +115,17 @@ public class SIOLocomotiveServiceEventHandler {
     public static LocomotiveGroup handleLocomotiveGroupRemoved(
             final JSONObject locomotiveGroupJSON,
             final LocomotiveServiceListener listener) throws JSONException {
-        final LocomotiveGroup locomotiveGroup = SIOLocomotiveMapper
-                .mapLocomotiveGroupFromJSON(locomotiveGroupJSON);
-        sioIdToLocomotiveGroupMap.remove(locomotiveGroupJSON.getString("id"));
-        SIOLocomotiveMapper.locomotiveGroupIdMap
-                .remove(locomotiveGroup.getId());
+        final LocomotiveGroup locomotiveGroup = deserializeLocomotiveGroup(locomotiveGroupJSON);
+        sioIdToLocomotiveGroupMap.remove(locomotiveGroup.getId());
         listener.locomotiveGroupRemoved(locomotiveGroup);
         return locomotiveGroup;
     }
 
-    public static void addIdToLocomotive(final Locomotive locomotive,
-                                         final String sioId) {
-        final String id = sioId;
-        locomotive.setId(id);
-        sioIdToLocomotiveMap.put(sioId, locomotive);
-        SIOLocomotiveMapper.locomotiveIdMap.put(id, sioId);
+    private static LocomotiveGroup deserializeLocomotiveGroup(JSONObject locomotiveGroupJSON) {
+        return gson.fromJson(locomotiveGroupJSON.toString(), LocomotiveGroup.class);
     }
 
-    public static void addIdToLocomotiveGroup(final LocomotiveGroup group,
-                                              final String sioId) {
-        final String id = sioId;
-        group.setId(id);
-        sioIdToLocomotiveGroupMap.put(sioId, group);
-        SIOLocomotiveMapper.locomotiveGroupIdMap.put(id, sioId);
+    private static Locomotive deserializeLocomotive(JSONObject locomotiveJSON) {
+        return gson.fromJson(locomotiveJSON.toString(), Locomotive.class);
     }
 }

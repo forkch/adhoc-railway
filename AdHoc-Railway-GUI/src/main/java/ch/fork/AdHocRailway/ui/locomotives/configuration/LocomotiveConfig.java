@@ -71,7 +71,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
     private JTextField descTextField;
     private JTextField imageTextField;
     @SuppressWarnings("rawtypes")
-    private JComboBox locomotiveTypeComboBox;
+    private JComboBox<LocomotiveType> locomotiveTypeComboBox;
     private JButton okButton;
     private JButton cancelButton;
     private JLabel imageLabel;

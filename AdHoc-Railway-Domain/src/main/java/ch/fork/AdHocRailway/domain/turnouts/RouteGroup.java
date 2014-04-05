@@ -19,6 +19,10 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
@@ -71,39 +75,31 @@ public class RouteGroup extends AbstractItem implements java.io.Serializable,
 
     }
 
-    @Override
-    public int compareTo(final RouteGroup o) {
-        return name.compareTo(o.getName());
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        final RouteGroup l = (RouteGroup) o;
-        return id == l.getId();
-    }
-
-    @Override
-    public int hashCode() {
-        return Integer.valueOf(id).hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
     public void addPropertyChangeListener(final PropertyChangeListener x) {
         changeSupport.addPropertyChangeListener(x);
     }
 
     public void removePropertyChangeListener(final PropertyChangeListener x) {
         changeSupport.removePropertyChangeListener(x);
+    }
+
+    @Override
+    public int compareTo(final RouteGroup o) {
+        return name.compareTo(o.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }
