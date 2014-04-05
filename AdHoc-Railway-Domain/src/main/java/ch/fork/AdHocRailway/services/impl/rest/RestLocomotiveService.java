@@ -4,7 +4,7 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
-import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
+import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveCallback;
 import ch.fork.AdHocRailway.utils.RestAdapterFactory;
 import org.apache.log4j.Logger;
 import retrofit.RestAdapter;
@@ -17,7 +17,7 @@ import java.util.SortedSet;
 public class RestLocomotiveService implements LocomotiveService {
     private static final Logger LOGGER = Logger.getLogger(RestLocomotiveService.class);
 
-    private final SIOLocomotiveService sioLocomotiveService;
+    private final SIOLocomotiveCallback sioLocomotiveService;
 
     private final RestLocomotiveServiceClient locomotiveServiceClient;
     private LocomotiveServiceListener listener;
@@ -25,7 +25,7 @@ public class RestLocomotiveService implements LocomotiveService {
     public RestLocomotiveService(String uuid) {
         RestAdapter restAdapter = RestAdapterFactory.createRestAdapter(uuid);
         locomotiveServiceClient = restAdapter.create(RestLocomotiveServiceClient.class);
-        sioLocomotiveService = new SIOLocomotiveService();
+        sioLocomotiveService = new SIOLocomotiveCallback();
     }
 
     @Override

@@ -1,7 +1,7 @@
-package ch.fork.AdHocRailway.services.impl.socketio.locomotives;
+package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
 import ch.fork.AdHocRailway.manager.ManagerException;
-import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
+import ch.fork.AdHocRailway.services.TurnoutServiceListener;
 import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
@@ -11,19 +11,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SIOLocomotiveService implements IOCallback {
+public class SIOTurnoutCallback implements IOCallback {
 
     private static final Logger LOGGER = Logger
-            .getLogger(SIOLocomotiveService.class);
+            .getLogger(SIOTurnoutCallback.class);
 
-    private LocomotiveServiceListener listener;
+    private TurnoutServiceListener listener;
     private SIOService sioService;
 
-
-    public SIOLocomotiveService() {
+    public SIOTurnoutCallback() {
     }
 
-    public void init(final LocomotiveServiceListener listener) {
+    public void init(final TurnoutServiceListener listener) {
         this.listener = listener;
 
         sioService = SIOService.getInstance();
@@ -38,45 +37,45 @@ public class SIOLocomotiveService implements IOCallback {
     public synchronized void on(final String event, final IOAcknowledge arg1,
                                 final Object... jsonData) {
 
-        final SIOLocomotiveServiceEvent serviceEvent = SIOLocomotiveServiceEvent
+        final SIOTurnoutServiceEvent serviceEvent = SIOTurnoutServiceEvent
                 .fromEvent(event);
         if (serviceEvent == null) {
             return;
         }
-        LOGGER.info("on(message: " + event + ", args: " + jsonData + ")");
+
+        LOGGER.info("on(message: " + event + ", args: " + jsonData.toString() + ")");
         try {
             switch (serviceEvent) {
-                case LOCOMOTIVE_INIT:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveInit((JSONArray) (jsonData[0]),
+                case TURNOUT_INIT:
+                    SIOTurnoutServiceEventHandler.handleTurnoutInit((JSONArray) jsonData[0], listener);
+                    break;
+                case TURNOUT_ADDED:
+                    SIOTurnoutServiceEventHandler
+                            .handleTurnoutAdded((JSONObject) jsonData[0], listener);
+                    break;
+                case TURNOUT_GROUP_ADDED:
+                    SIOTurnoutServiceEventHandler.handleTurnoutGroupAdded((JSONObject) jsonData[0],
                             listener);
                     break;
-                case LOCOMOTIVE_ADDED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveAdded((JSONObject) (jsonData[0]),
+                case TURNOUT_GROUP_REMOVED:
+                    SIOTurnoutServiceEventHandler.handleTurnoutGroupRemoved((JSONObject) jsonData[0],
                             listener);
                     break;
-                case LOCOMOTIVE_GROUP_ADDED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveGroupAdded(
-                            (JSONObject) (jsonData[0]), listener);
-                    break;
-                case LOCOMOTIVE_GROUP_REMOVED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveGroupRemoved(
-                            (JSONObject) (jsonData[0]), listener);
-                    break;
-                case LOCOMOTIVE_GROUP_UPDATED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveGroupUpdated(
-                            (JSONObject) (jsonData[0]), listener);
-                    break;
-                case LOCOMOTIVE_REMOVED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveRemoved((JSONObject) (jsonData[0]),
+                case TURNOUT_GROUP_UPDATED:
+                    SIOTurnoutServiceEventHandler.handleTurnoutGroupUpdated((JSONObject) jsonData[0],
                             listener);
                     break;
-                case LOCOMOTIVE_UPDATED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveUpdated((JSONObject) (jsonData[0]),
+                case TURNOUT_REMOVED:
+                    SIOTurnoutServiceEventHandler.handleTurnoutRemoved((JSONObject) jsonData[0],
+                            listener);
+                    break;
+                case TURNOUT_UPDATED:
+                    SIOTurnoutServiceEventHandler.handleTurnoutUpdated((JSONObject) jsonData[0],
                             listener);
                     break;
                 default:
                     listener.failure(new ManagerException(
-                            "unregonized event '" + event + "' received"));
+                            "unrecognized event '" + event + "' received"));
                     break;
 
             }

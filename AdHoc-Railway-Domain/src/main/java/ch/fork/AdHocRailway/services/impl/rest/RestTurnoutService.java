@@ -4,7 +4,7 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.services.TurnoutService;
 import ch.fork.AdHocRailway.services.TurnoutServiceListener;
-import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
+import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutCallback;
 import ch.fork.AdHocRailway.utils.RestAdapterFactory;
 import org.apache.log4j.Logger;
 import retrofit.RestAdapter;
@@ -18,7 +18,7 @@ public class RestTurnoutService implements TurnoutService {
 
     private static final Logger LOGGER = Logger.getLogger(RestTurnoutService.class);
 
-    private final SIOTurnoutService sioTurnoutService;
+    private final SIOTurnoutCallback sioTurnoutService;
 
     private final RestTurnoutServiceClient restTurnoutServiceClient;
     private TurnoutServiceListener listener;
@@ -26,7 +26,7 @@ public class RestTurnoutService implements TurnoutService {
     public RestTurnoutService(String uuid) {
         RestAdapter restAdapter = RestAdapterFactory.createRestAdapter(uuid);
         restTurnoutServiceClient = restAdapter.create(RestTurnoutServiceClient.class);
-        sioTurnoutService = new SIOTurnoutService();
+        sioTurnoutService = new SIOTurnoutCallback();
     }
 
     @Override
