@@ -24,7 +24,7 @@ exports.init = function (server, sendDataToWebsocketClients) {
     server.post('/locomotiveGroup', function (req, res, next) {
         locomotiveController.addLocomotiveGroup(req.params, function (err, locomotiveGroup) {
             res.send(locomotiveGroup);
-            sendDataToWebsocketClients('locomotiveGroup:added', locomotiveGroup);
+            sendDataToWebsocketClients(req, 'locomotiveGroup:added', locomotiveGroup);
             next();
         });
     });

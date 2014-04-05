@@ -70,6 +70,7 @@ public class Locomotive extends AbstractItem implements Serializable,
 
     @XStreamOmitField
     private LocomotiveGroup group;
+
     public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_NAME = "name";
     public static final String PROPERTYNAME_DESCRIPTION = "desc";
@@ -326,4 +327,5 @@ public class Locomotive extends AbstractItem implements Serializable,
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
+
 }

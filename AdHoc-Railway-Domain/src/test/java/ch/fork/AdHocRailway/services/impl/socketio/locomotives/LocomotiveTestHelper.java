@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.services.impl.socketio.locomotives;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,10 +32,10 @@ public class LocomotiveTestHelper {
         if (locomotivesJSON.size() == 0) {
             return locomotiveGroupJSON;
         }
-        final JSONObject locomotives = new JSONObject();
+        final JSONArray locomotives = new JSONArray();
         for (final JSONObject locomotiveJSON : locomotivesJSON) {
             locomotiveJSON.put("group", id);
-            locomotives.put(locomotiveJSON.getString("id"), locomotiveJSON);
+            locomotives.put(locomotiveJSON);
         }
         locomotiveGroupJSON.put("locomotives", locomotives);
         return locomotiveGroupJSON;

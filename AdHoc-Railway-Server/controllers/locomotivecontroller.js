@@ -45,7 +45,6 @@ exports.addLocomotiveGroup = function (locomotiveGroup, fn) {
     console.log('adding new locomotive group: ' + locomotiveGroup.name);
     var group = new LocomotiveGroupModel(locomotiveGroup);
     group.save(function (err, addedlocomotiveGroup) {
-        console.log(err);
         if (!err) {
             var locomotiveGroup = addedlocomotiveGroup.toJSON();
             locomotiveGroup.locomotives = [];

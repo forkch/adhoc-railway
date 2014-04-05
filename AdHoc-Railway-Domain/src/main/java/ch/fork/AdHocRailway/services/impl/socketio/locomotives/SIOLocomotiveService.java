@@ -16,8 +16,9 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.SortedSet;
+import java.util.UUID;
 
-public class SIOLocomotiveService implements LocomotiveService, IOCallback {
+public class SIOLocomotiveService implements IOCallback {
 
     private static final Logger LOGGER = Logger
             .getLogger(SIOLocomotiveService.class);
@@ -25,15 +26,24 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
     private LocomotiveServiceListener listener;
     private SIOService sioService;
 
+
     public SIOLocomotiveService() {
     }
 
-    @Override
     public void init(final LocomotiveServiceListener listener) {
         this.listener = listener;
 
         sioService = SIOService.getInstance();
         sioService.addIOCallback(this);
+    }
+
+    /*@Override
+    public void init(final LocomotiveServiceListener listener) {
+        this.listener = listener;
+
+        sioService = SIOService.getInstance();
+        sioService.addIOCallback(this);
+        uuid = UUID.randomUUID().toString();
     }
 
     @Override
@@ -68,7 +78,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
     }
 
     @Override
-    public void addLocomotive(final Locomotive turnout) {
+    public void addLocomotive(final Locomotive locomotive) {
         LOGGER.info(SIOLocomotiveServiceEvent.LOCOMOTIVE_ADD_REQUEST);
         sioService.checkSocket();
         try {
@@ -84,14 +94,14 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
                     } else {
                         final String sioId = (String) arg0[2];
                         SIOLocomotiveServiceEventHandler.addIdToLocomotive(
-                                turnout, sioId);
-                        listener.locomotiveAdded(turnout);
+                                locomotive, sioId);
+                        listener.locomotiveAdded(locomotive);
                     }
                 }
             };
 
             final JSONObject addLocomotiveJson = SIOLocomotiveMapper
-                    .mapLocomotiveToJSON(turnout);
+                    .mapLocomotiveToJSON(locomotive);
 
             sioService
                     .getSocket()
@@ -316,7 +326,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
     @Override
     public void disconnect() {
         sioService.removeIOCallback(this);
-    }
+    }*/
 
     @Override
     public synchronized void on(final String event, final IOAcknowledge arg1,
@@ -327,36 +337,35 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
         if (serviceEvent == null) {
             return;
         }
-        final JSONObject data = (JSONObject) jsonData[0];
-        LOGGER.info("on(message: " + event + ", args: " + data + ")");
+        LOGGER.info("on(message: " + event + ", args: " + jsonData + ")");
         try {
             switch (serviceEvent) {
                 case LOCOMOTIVE_INIT:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveInit((JSONArray) jsonData[0],
+                    SIOLocomotiveServiceEventHandler.handleLocomotiveInit((JSONArray) (jsonData[0]),
                             listener);
                     break;
                 case LOCOMOTIVE_ADDED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveAdded(data,
+                    SIOLocomotiveServiceEventHandler.handleLocomotiveAdded((JSONObject) (jsonData[0]),
                             listener);
                     break;
                 case LOCOMOTIVE_GROUP_ADDED:
                     SIOLocomotiveServiceEventHandler.handleLocomotiveGroupAdded(
-                            data, listener);
+                            (JSONObject) (jsonData[0]), listener);
                     break;
                 case LOCOMOTIVE_GROUP_REMOVED:
                     SIOLocomotiveServiceEventHandler.handleLocomotiveGroupRemoved(
-                            data, listener);
+                            (JSONObject) (jsonData[0]), listener);
                     break;
                 case LOCOMOTIVE_GROUP_UPDATED:
                     SIOLocomotiveServiceEventHandler.handleLocomotiveGroupUpdated(
-                            data, listener);
+                            (JSONObject) (jsonData[0]), listener);
                     break;
                 case LOCOMOTIVE_REMOVED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveRemoved(data,
+                    SIOLocomotiveServiceEventHandler.handleLocomotiveRemoved((JSONObject) (jsonData[0]),
                             listener);
                     break;
                 case LOCOMOTIVE_UPDATED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveUpdated(data,
+                    SIOLocomotiveServiceEventHandler.handleLocomotiveUpdated((JSONObject) (jsonData[0]),
                             listener);
                     break;
                 default:
@@ -367,7 +376,7 @@ public class SIOLocomotiveService implements LocomotiveService, IOCallback {
             }
         } catch (final JSONException e) {
             listener.failure(new ManagerException(
-                    "error parsing event '" + event + "'"));
+                    "error parsing event '" + event + "'", e));
         }
     }
 

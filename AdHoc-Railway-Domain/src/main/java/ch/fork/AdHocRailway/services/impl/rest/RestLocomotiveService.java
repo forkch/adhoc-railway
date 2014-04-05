@@ -4,11 +4,13 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
+import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
 import org.apache.log4j.Logger;
 import retrofit.RestAdapter;
 
 import java.util.SortedSet;
+import java.util.UUID;
 
 /**
  * Created by fork on 3/27/14.
@@ -19,6 +21,7 @@ public class RestLocomotiveService implements LocomotiveService {
     private final SIOLocomotiveService sioLocomotiveService;
 
     private final RestLocomotiveServiceClient locomotiveServiceClient;
+    private final String uuid;
     private LocomotiveServiceListener listener;
 
     public RestLocomotiveService() {
@@ -26,14 +29,17 @@ public class RestLocomotiveService implements LocomotiveService {
                 .setEndpoint("http://localhost:3000")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
+        uuid = UUID.randomUUID().toString();
+        SIOService.setUUID(uuid);
 
         locomotiveServiceClient = restAdapter.create(RestLocomotiveServiceClient.class);
         sioLocomotiveService = new SIOLocomotiveService();
+
     }
 
     @Override
     public void addLocomotive(Locomotive locomotive) {
-        locomotiveServiceClient.addLocomotive(locomotive);
+        locomotiveServiceClient.addLocomotive(locomotive, uuid);
         LOGGER.info("addLocomotive(): " + locomotive);
 
         if (listenerOk()) listener.locomotiveAdded(locomotive);
@@ -41,7 +47,7 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void removeLocomotive(Locomotive locomotive) {
-        locomotiveServiceClient.deleteLocomotive(locomotive.getId());
+        locomotiveServiceClient.deleteLocomotive(locomotive.getId(), uuid);
         LOGGER.info("removeLocomotive(): " + locomotive);
 
         if (listenerOk()) listener.locomotiveRemoved(locomotive);
@@ -50,7 +56,7 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void updateLocomotive(Locomotive locomotive) {
-        locomotiveServiceClient.updateLocomotive(locomotive);
+        locomotiveServiceClient.updateLocomotive(locomotive, uuid);
         LOGGER.info("updateLocomotive(): " + locomotive);
         if (listenerOk())
             listener.locomotiveUpdated(locomotive);
@@ -59,7 +65,7 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public SortedSet<LocomotiveGroup> getAllLocomotiveGroups() {
-        SortedSet<LocomotiveGroup> allLocomotivesGroups = locomotiveServiceClient.getAllLocomotivesGroups();
+        SortedSet<LocomotiveGroup> allLocomotivesGroups = locomotiveServiceClient.getAllLocomotivesGroups(uuid);
         LOGGER.info("getAllLocomotiveGroups(): " + allLocomotivesGroups);
 
         for (LocomotiveGroup allLocomotiveGroup : allLocomotivesGroups) {
@@ -73,7 +79,7 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void addLocomotiveGroup(LocomotiveGroup group) {
-        LocomotiveGroup locomotiveGroup = locomotiveServiceClient.addLocomotiveGroup(group);
+        LocomotiveGroup locomotiveGroup = locomotiveServiceClient.addLocomotiveGroup(group, uuid);
         LOGGER.info("addLocomotiveGroup(): " + locomotiveGroup);
 
         if (listenerOk()) listener.locomotiveGroupAdded(locomotiveGroup);
@@ -82,7 +88,7 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void removeLocomotiveGroup(LocomotiveGroup group) {
-        LocomotiveGroup locomotiveGroup = locomotiveServiceClient.deleteLocomotiveGroup(group.getId());
+        LocomotiveGroup locomotiveGroup = locomotiveServiceClient.deleteLocomotiveGroup(group.getId(), uuid);
         LOGGER.info("removeLocomotiveGroup(): " + locomotiveGroup);
 
         if (listenerOk()) listener.locomotiveGroupRemoved(locomotiveGroup);
@@ -90,14 +96,14 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void updateLocomotiveGroup(LocomotiveGroup group) {
-        LocomotiveGroup locomotiveGroup = locomotiveServiceClient.updateLocomotiveGroup(group);
+        LocomotiveGroup locomotiveGroup = locomotiveServiceClient.updateLocomotiveGroup(group, uuid);
         LOGGER.info("updateLocomotiveGroup(): " + locomotiveGroup);
         if (listenerOk()) listener.locomotiveGroupUpdated(locomotiveGroup);
     }
 
     @Override
     public void clear() {
-        SortedSet<LocomotiveGroup> locomotiveGroups = locomotiveServiceClient.deleteAllLocomotiveGroups();
+        SortedSet<LocomotiveGroup> locomotiveGroups = locomotiveServiceClient.deleteAllLocomotiveGroups(uuid);
         if (listenerOk()) listener.locomotivesUpdated(locomotiveGroups);
     }
 
