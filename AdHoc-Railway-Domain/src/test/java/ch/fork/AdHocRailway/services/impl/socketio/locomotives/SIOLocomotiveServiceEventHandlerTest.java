@@ -136,7 +136,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
 
         final JSONObject createJSONLocomotive2 = LocomotiveTestHelper
                 .createJSONLocomotive("2", "digital", 5);
-        createJSONLocomotive2.put("group", GROUP_ID);
+        createJSONLocomotive2.put("groupId", GROUP_ID);
 
         SIOLocomotiveServiceEventHandler.handleLocomotiveAdded(
                 createJSONLocomotive2, listenerMock);
@@ -188,7 +188,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
     private Tuple<JSONObject, Locomotive> addLocomotive() throws JSONException {
         final JSONObject createJSONLocomotive2 = LocomotiveTestHelper
                 .createJSONLocomotive("2", "delta", 5);
-        createJSONLocomotive2.put("group", GROUP_ID);
+        createJSONLocomotive2.put("groupId", GROUP_ID);
 
         final Locomotive handleLocomotiveAdded = SIOLocomotiveServiceEventHandler
                 .handleLocomotiveAdded(createJSONLocomotive2, listenerMock);
