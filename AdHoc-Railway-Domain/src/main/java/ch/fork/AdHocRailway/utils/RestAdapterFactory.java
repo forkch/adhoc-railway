@@ -2,14 +2,12 @@ package ch.fork.AdHocRailway.utils;
 
 import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.services.impl.rest.AdHocServerError;
-import com.google.gson.*;
+import com.google.gson.Gson;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.converter.GsonConverter;
-
-import java.lang.reflect.Type;
 
 /**
  * Created by fork on 4/4/14.
@@ -39,7 +37,7 @@ public class RestAdapterFactory {
 
         @Override
         public Throwable handleError(RetrofitError cause) {
-            if(cause.getResponse().getStatus() == 400) {
+            if (cause.getResponse().getStatus() == 400) {
                 AdHocServerError error = (AdHocServerError) cause.getBodyAs(AdHocServerError.class);
                 return new ManagerException(error.getMsg(), cause);
             }

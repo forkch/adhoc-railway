@@ -63,10 +63,10 @@ public class SIOTurnoutMapper {
         turnout.setAddress1(turnoutJSON.getInt("address1"));
         turnout.setAddress2(turnoutJSON.optInt("address2", 0));
 
-        if(turnoutJSON.has("address1switched")) {
+        if (turnoutJSON.has("address1switched")) {
             turnout.setAddress1Switched(turnoutJSON.getBoolean("address1switched"));
         }
-        if(turnoutJSON.has("address2switched")) {
+        if (turnoutJSON.has("address2switched")) {
             turnout.setAddress2Switched(turnoutJSON.getBoolean("address2switched"));
         }
         turnout.setOrientation(TurnoutOrientation.fromString(turnoutJSON

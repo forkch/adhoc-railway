@@ -29,20 +29,17 @@ import java.util.SortedSet;
 public class LocomotiveGroup extends AbstractItem implements
         java.io.Serializable, Comparable<LocomotiveGroup> {
 
-    @XStreamAsAttribute
-    @Expose
-    private String id;
-
-    @XStreamAsAttribute
-    @Expose
-    private String name;
-
-    @Expose
-    private SortedSet<Locomotive> locomotives = Sets.newTreeSet();
-
     public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_NAME = "name";
     public static final String PROPERTYNAME_LOCOMOTIVES = "locomotives";
+    @XStreamAsAttribute
+    @Expose
+    private String id;
+    @XStreamAsAttribute
+    @Expose
+    private String name;
+    @Expose
+    private SortedSet<Locomotive> locomotives = Sets.newTreeSet();
 
     public LocomotiveGroup() {
         super();

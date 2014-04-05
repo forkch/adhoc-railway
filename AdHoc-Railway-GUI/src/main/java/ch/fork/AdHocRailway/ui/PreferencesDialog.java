@@ -39,6 +39,7 @@ import java.util.TreeSet;
 
 public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
+    private final ApplicationContext ctx;
     private JSpinner defaultRoutingDelay;
     private SpinnerNumberModel defaultActivationTimeModel;
     private SpinnerNumberModel defaultRoutingDelayModel;
@@ -52,7 +53,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
     private JCheckBox writeLog;
     private JCheckBox fullscreen;
     private JCheckBox tabbedTrackCheckBox;
-
     private boolean okPressed;
     private boolean cancelPressed;
     private JCheckBox autoconnectCheckBox;
@@ -67,7 +67,6 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
     private JSpinner adHocServerPortField;
     private SpinnerNumberModel adHocServerPortModel;
     private JCheckBox autoDiscoverServers;
-    private final ApplicationContext ctx;
     private JComboBox<RailwayDevice> adhocDeviceComboBox;
     private JComboBox<String> adHocBrainPort;
 

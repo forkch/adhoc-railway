@@ -50,37 +50,26 @@ import java.util.SortedSet;
 public class RoutesConfigurationDialog extends JDialog implements
         RouteManagerListener {
 
+    private final RouteManager routeManager;
+    private final RouteContext ctx;
+    public StringBuffer enteredNumberKeys;
+    public ThreeDigitDisplay digitDisplay;
+    protected boolean okPressed;
     private JList<?> routeGroupList;
-
     private JButton addRouteGroupButton;
-
     private JButton removeRouteGroupButton;
-
     private JList<?> routesList;
-
     private JButton addRouteButton;
-
     private JButton removeRouteButton;
-
     private SelectionInList<RouteGroup> routeGroupModel;
     private JButton okButton;
-    protected boolean okPressed;
     private SelectionInList<Route> routesModel;
-    public StringBuffer enteredNumberKeys;
     private PanelBuilder builder;
     private RouteGroupConfigPanel routeGroupConfig;
-    public ThreeDigitDisplay digitDisplay;
-
     private com.jgoodies.common.collect.ArrayListModel<RouteGroup> routeGroups;
     private com.jgoodies.common.collect.ArrayListModel<Route> routes;
-
-    private final RouteManager routeManager;
-
     private JButton editGroupButton;
-
     private JButton duplicateRouteButton;
-
-    private final RouteContext ctx;
 
     public RoutesConfigurationDialog(final JFrame parent, final RouteContext ctx) {
         super(parent, "Edit Routes", true);
@@ -204,6 +193,103 @@ public class RoutesConfigurationDialog extends JDialog implements
 
     }
 
+    @Override
+    public void routesUpdated(final SortedSet<RouteGroup> updatedRouteGroups) {
+        routeGroups.addAll(updatedRouteGroups);
+    }
+
+    @Override
+    public void routeRemoved(final Route route) {
+        if (route.getRouteGroup().equals(routeGroupModel.getSelection())) {
+            routes.remove(route);
+        }
+    }
+
+    @Override
+    public void routeAdded(final Route route) {
+        if (route.getRouteGroup().equals(routeGroupModel.getSelection())) {
+            routes.add(route);
+        }
+    }
+
+    @Override
+    public void routeUpdated(final Route route) {
+        if (route.getRouteGroup().equals(routeGroupModel.getSelection())) {
+            routes.remove(route);
+            routes.add(route);
+        }
+    }
+
+    @Override
+    public void routeGroupAdded(final RouteGroup routeGroup) {
+        routeGroups.add(routeGroup);
+    }
+
+    @Override
+    public void routeGroupRemoved(final RouteGroup routeGroup) {
+        if (routeGroupModel.getSelection().equals(routeGroup)) {
+            routes.clear();
+        }
+        routeGroups.remove(routeGroup);
+
+    }
+
+    @Override
+    public void routeGroupUpdated(final RouteGroup routeGroup) {
+        routeGroups.remove(routeGroup);
+        routeGroups.add(routeGroup);
+    }
+
+    @Override
+    public void failure(final ManagerException routeManagerException) {
+
+    }
+
+    private int getNextRouteNumber(final RouteGroup selectedRouteGroup) {
+        final int nextNumber = routeManager.getNextFreeRouteNumber();
+        return nextNumber;
+    }
+
+    /**
+     * Used to renders RouteGroups in JLists and JComboBoxes. If the combo box
+     * selection is null, an empty text <code>""</code> is rendered.
+     */
+    private static final class RouteGroupListCellRenderer extends
+            DefaultListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(final JList<?> list,
+                                                      final Object value, final int index, final boolean isSelected,
+                                                      final boolean cellHasFocus) {
+            final Component component = super.getListCellRendererComponent(
+                    list, value, index, isSelected, cellHasFocus);
+
+            final RouteGroup group = (RouteGroup) value;
+            setText(group == null ? "" : (" " + group.getName()));
+            return component;
+        }
+    }
+
+    /**
+     * Used to renders Route in JLists and JComboBoxes. If the combo box
+     * selection is null, an empty text <code>""</code> is rendered.
+     */
+    private static final class RouteListCellRenderer extends
+            DefaultListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(final JList<?> list,
+                                                      final Object value, final int index, final boolean isSelected,
+                                                      final boolean cellHasFocus) {
+            final Component component = super.getListCellRendererComponent(
+                    list, value, index, isSelected, cellHasFocus);
+
+            final Route route = (Route) value;
+            setText(route == null ? "" : ("#" + route.getNumber() + ": " + route.getName()));
+            return component;
+        }
+    }
+
     /**
      * Sets the selected RouteGroup as bean in the details model.
      */
@@ -246,46 +332,6 @@ public class RoutesConfigurationDialog extends JDialog implements
             if (selectedRoute == null) {
                 return;
             }
-        }
-    }
-
-    /**
-     * Used to renders RouteGroups in JLists and JComboBoxes. If the combo box
-     * selection is null, an empty text <code>""</code> is rendered.
-     */
-    private static final class RouteGroupListCellRenderer extends
-            DefaultListCellRenderer {
-
-        @Override
-        public Component getListCellRendererComponent(final JList<?> list,
-                                                      final Object value, final int index, final boolean isSelected,
-                                                      final boolean cellHasFocus) {
-            final Component component = super.getListCellRendererComponent(
-                    list, value, index, isSelected, cellHasFocus);
-
-            final RouteGroup group = (RouteGroup) value;
-            setText(group == null ? "" : (" " + group.getName()));
-            return component;
-        }
-    }
-
-    /**
-     * Used to renders Route in JLists and JComboBoxes. If the combo box
-     * selection is null, an empty text <code>""</code> is rendered.
-     */
-    private static final class RouteListCellRenderer extends
-            DefaultListCellRenderer {
-
-        @Override
-        public Component getListCellRendererComponent(final JList<?> list,
-                                                      final Object value, final int index, final boolean isSelected,
-                                                      final boolean cellHasFocus) {
-            final Component component = super.getListCellRendererComponent(
-                    list, value, index, isSelected, cellHasFocus);
-
-            final Route route = (Route) value;
-            setText(route == null ? "" : ("#" + route.getNumber() + ": " + route.getName()));
-            return component;
         }
     }
 
@@ -355,7 +401,8 @@ public class RoutesConfigurationDialog extends JDialog implements
                     RoutesConfigurationDialog.this,
                     "Really remove Route-Group '"
                             + routeGroupToDelete.getName() + "' ?",
-                    "Remove Route-Group", JOptionPane.YES_NO_OPTION);
+                    "Remove Route-Group", JOptionPane.YES_NO_OPTION
+            );
             if (response == JOptionPane.YES_OPTION) {
                 try {
                     routeManager.removeRouteGroup(routeGroupToDelete);
@@ -476,62 +523,5 @@ public class RoutesConfigurationDialog extends JDialog implements
                 routesList.clearSelection();
             }
         }
-    }
-
-    @Override
-    public void routesUpdated(final SortedSet<RouteGroup> updatedRouteGroups) {
-        routeGroups.addAll(updatedRouteGroups);
-    }
-
-    @Override
-    public void routeRemoved(final Route route) {
-        if (route.getRouteGroup().equals(routeGroupModel.getSelection())) {
-            routes.remove(route);
-        }
-    }
-
-    @Override
-    public void routeAdded(final Route route) {
-        if (route.getRouteGroup().equals(routeGroupModel.getSelection())) {
-            routes.add(route);
-        }
-    }
-
-    @Override
-    public void routeUpdated(final Route route) {
-        if (route.getRouteGroup().equals(routeGroupModel.getSelection())) {
-            routes.remove(route);
-            routes.add(route);
-        }
-    }
-
-    @Override
-    public void routeGroupAdded(final RouteGroup routeGroup) {
-        routeGroups.add(routeGroup);
-    }
-
-    @Override
-    public void routeGroupRemoved(final RouteGroup routeGroup) {
-        if (routeGroupModel.getSelection().equals(routeGroup)) {
-            routes.clear();
-        }
-        routeGroups.remove(routeGroup);
-
-    }
-
-    @Override
-    public void routeGroupUpdated(final RouteGroup routeGroup) {
-        routeGroups.remove(routeGroup);
-        routeGroups.add(routeGroup);
-    }
-
-    @Override
-    public void failure(final ManagerException routeManagerException) {
-
-    }
-
-    private int getNextRouteNumber(final RouteGroup selectedRouteGroup) {
-        final int nextNumber = routeManager.getNextFreeRouteNumber();
-        return nextNumber;
     }
 }

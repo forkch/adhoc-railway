@@ -1,10 +1,6 @@
 package ch.fork.AdHocRailway.utils;
 
-import ch.fork.AdHocRailway.manager.ManagerException;
-import ch.fork.AdHocRailway.services.impl.rest.AdHocServerError;
 import com.google.gson.*;
-import retrofit.ErrorHandler;
-import retrofit.RetrofitError;
 
 import java.lang.reflect.Type;
 

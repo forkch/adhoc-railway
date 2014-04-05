@@ -36,15 +36,10 @@ public class TurnoutManagerImpl implements TurnoutManager,
             .getLogger(TurnoutManagerImpl.class);
 
     private final Map<Integer, Turnout> numberToTurnoutCache = new HashMap<Integer, Turnout>();
-
-    private TurnoutService turnoutService;
-
     private final SortedSet<TurnoutGroup> turnoutGroups = new TreeSet<TurnoutGroup>();
-
     private final Set<TurnoutManagerListener> listeners = new HashSet<TurnoutManagerListener>();
-
     private final Set<TurnoutManagerListener> listenersToBeRemovedInNextEvent = new HashSet<TurnoutManagerListener>();
-
+    private TurnoutService turnoutService;
     private int lastProgrammedAddress = 1;
 
     private int lastProgrammedNumber = 0;
@@ -188,7 +183,8 @@ public class TurnoutManagerImpl implements TurnoutManager,
                             return Integer.valueOf(o1.getNumber()).compareTo(
                                     o2.getNumber());
                         }
-                    });
+                    }
+            );
             turnoutsNumbers.addAll(getAllTurnouts());
             if (turnoutsNumbers.isEmpty()) {
                 lastProgrammedNumber = 0;

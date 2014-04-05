@@ -49,6 +49,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TurnoutConfig extends JDialog {
+    private final TurnoutGroup selectedTurnoutGroup;
+    private final PresentationModel<Turnout> presentationModel;
+    private final Trigger trigger = new Trigger();
+    private final Turnout testTurnout;
+    private final TurnoutManager turnoutManager;
+    private final TurnoutContext ctx;
     private JSpinner numberTextField;
     private JTextField descTextField;
     private JSpinner bus1TextField;
@@ -60,17 +66,12 @@ public class TurnoutConfig extends JDialog {
     private JComboBox<?> turnoutTypeComboBox;
     private JComboBox<?> turnoutDefaultStateComboBox;
     private JComboBox<?> turnoutOrientationComboBox;
-
-    private final TurnoutGroup selectedTurnoutGroup;
-    private final PresentationModel<Turnout> presentationModel;
     private JButton okButton;
     private JButton cancelButton;
     private TurnoutWidget testTurnoutWidget;
     private PanelBuilder builder;
     private List<Turnout> allTurnouts;
     private ErrorPanel errorPanel;
-    private final Trigger trigger = new Trigger();
-    private final Turnout testTurnout;
     private BufferedValueModel numberModel;
     private BufferedValueModel descriptionModel;
     private BufferedValueModel bus1Model;
@@ -82,8 +83,6 @@ public class TurnoutConfig extends JDialog {
     private BufferedValueModel turnoutTypeModel;
     private BufferedValueModel defaultStateModel;
     private BufferedValueModel orientationModel;
-    private final TurnoutManager turnoutManager;
-    private final TurnoutContext ctx;
 
     public TurnoutConfig(final JDialog owner, final TurnoutContext ctx,
                          final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup) {
@@ -211,7 +210,8 @@ public class TurnoutConfig extends JDialog {
         turnoutDefaultStateComboBox = BasicComponentFactory
                 .createComboBox(new SelectionInList<TurnoutState>(
                         new TurnoutState[]{TurnoutState.STRAIGHT,
-                                TurnoutState.LEFT}, defaultStateModel));
+                                TurnoutState.LEFT}, defaultStateModel
+                ));
         turnoutDefaultStateComboBox
                 .setRenderer(new TurnoutDefaultStateComboBoxCellRenderer());
 

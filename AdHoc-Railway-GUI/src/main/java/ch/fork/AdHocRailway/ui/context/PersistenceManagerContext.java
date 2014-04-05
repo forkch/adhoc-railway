@@ -14,9 +14,9 @@ public interface PersistenceManagerContext {
 
     LocomotiveManager getLocomotiveManager();
 
-    EventBus getMainBus();
-
     void setLocomotiveManager(final LocomotiveManager locomotiveManager);
+
+    EventBus getMainBus();
 
     TurnoutManager getTurnoutManager();
 

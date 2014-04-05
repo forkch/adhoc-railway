@@ -36,6 +36,22 @@ public abstract class LocomotiveController implements
     private final Map<Locomotive, List<LocomotiveChangeListener>> listeners = new HashMap<Locomotive, List<LocomotiveChangeListener>>();
     private final Set<Locomotive> activeLocomotives = new HashSet<Locomotive>();
 
+    public static LocomotiveController createLocomotiveController(
+            final RailwayDevice railwayDevice) {
+        if (railwayDevice == null) {
+            return new DummyLocomotiveController();
+        }
+        switch (railwayDevice) {
+            case ADHOC_BRAIN:
+                return new BrainLocomotiveControlAdapter(
+                        BrainController.getInstance());
+            case SRCP:
+                return new SRCPLocomotiveControlAdapter();
+            default:
+                return new DummyLocomotiveController();
+
+        }
+    }
 
     public abstract void toggleDirection(final Locomotive locomotive);
 
@@ -165,23 +181,6 @@ public abstract class LocomotiveController implements
             }
         });
         t.start();
-    }
-
-    public static LocomotiveController createLocomotiveController(
-            final RailwayDevice railwayDevice) {
-        if (railwayDevice == null) {
-            return new DummyLocomotiveController();
-        }
-        switch (railwayDevice) {
-            case ADHOC_BRAIN:
-                return new BrainLocomotiveControlAdapter(
-                        BrainController.getInstance());
-            case SRCP:
-                return new SRCPLocomotiveControlAdapter();
-            default:
-                return new DummyLocomotiveController();
-
-        }
     }
 
     public void removeLocomotiveChangeListener(LocomotiveChangeListener listener) {

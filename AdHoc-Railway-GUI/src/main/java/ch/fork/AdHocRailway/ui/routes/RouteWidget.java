@@ -39,6 +39,8 @@ import java.awt.event.MouseEvent;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
+    private final boolean testMode;
+    private final RouteContext ctx;
     private boolean connectedToRailway;
     private Route route;
     private JLabel nameLabel;
@@ -48,8 +50,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
     private JProgressBar routingProgress;
     private JLabel numberLabel;
     private JLabel orientationLabel;
-    private final boolean testMode;
-    private final RouteContext ctx;
 
     public RouteWidget(final RouteContext ctx, final Route route,
                        final boolean testMode) {
@@ -128,47 +128,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         return count;
     }
 
-    private class MouseAction extends MouseAdapter {
-
-        @Override
-        public void mouseClicked(final MouseEvent e) {
-            if (!connectedToRailway)
-                return;
-            try {
-                if (e.getClickCount() == 1
-                        && e.getButton() == MouseEvent.BUTTON1) {
-                    if (route.isRouting()) {
-                        return;
-                    }
-                    final RouteController routeControl = ctx.getRouteControl();
-                    if (!testMode) {
-                        routeControl.toggle(route);
-                    } else {
-                        routeControl.toggleTest(route);
-                    }
-                } else if (e.getClickCount() == 1
-                        && e.getButton() == MouseEvent.BUTTON3) {
-
-                    if (ctx.isEditingMode()) {
-                        displayRouteConfig();
-                    }
-                }
-            } catch (final ControllerException e1) {
-                ctx.getMainApp().handleException(e1);
-            }
-        }
-
-        private void displayRouteConfig() {
-            final RouteController routeControl = ctx.getRouteControl();
-            routeControl.removeRouteChangeListener(route, RouteWidget.this);
-            new RouteConfig(ctx.getMainFrame(), ctx, route,
-                    route.getRouteGroup());
-            routeControl.addRouteChangeListener(route, RouteWidget.this);
-
-            routeChanged(route);
-        }
-    }
-
     @Override
     public void routeChanged(final Route changedRoute) {
         if (route.equals(changedRoute)) {
@@ -221,5 +180,47 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
     public void setRoute(final Route route) {
         this.route = route;
         updateRoute();
+    }
+
+    private class MouseAction extends MouseAdapter {
+
+        @Override
+        public void mouseClicked(final MouseEvent e) {
+            if (!connectedToRailway) {
+                return;
+            }
+            try {
+                if (e.getClickCount() == 1
+                        && e.getButton() == MouseEvent.BUTTON1) {
+                    if (route.isRouting()) {
+                        return;
+                    }
+                    final RouteController routeControl = ctx.getRouteControl();
+                    if (!testMode) {
+                        routeControl.toggle(route);
+                    } else {
+                        routeControl.toggleTest(route);
+                    }
+                } else if (e.getClickCount() == 1
+                        && e.getButton() == MouseEvent.BUTTON3) {
+
+                    if (ctx.isEditingMode()) {
+                        displayRouteConfig();
+                    }
+                }
+            } catch (final ControllerException e1) {
+                ctx.getMainApp().handleException(e1);
+            }
+        }
+
+        private void displayRouteConfig() {
+            final RouteController routeControl = ctx.getRouteControl();
+            routeControl.removeRouteChangeListener(route, RouteWidget.this);
+            new RouteConfig(ctx.getMainFrame(), ctx, route,
+                    route.getRouteGroup());
+            routeControl.addRouteChangeListener(route, RouteWidget.this);
+
+            routeChanged(route);
+        }
     }
 }

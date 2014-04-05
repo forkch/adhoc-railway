@@ -87,7 +87,7 @@ public class SIOLocomotiveMapper {
             for (int i = 0; i < functionsJSON.length(); i++) {
                 final JSONObject functionJSON = functionsJSON.getJSONObject(i);
 
-                if(functionJSON.has("number")) {
+                if (functionJSON.has("number")) {
                     final LocomotiveFunction function = new LocomotiveFunction(
                             functionJSON.getInt("number"),
                             functionJSON.getString("description"),

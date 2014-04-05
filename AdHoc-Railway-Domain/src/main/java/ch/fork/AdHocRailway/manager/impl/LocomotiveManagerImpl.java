@@ -39,14 +39,10 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
     private final SortedSet<Locomotive> addressLocomotiveCache = new TreeSet<Locomotive>();
     private final SortedSet<LocomotiveGroup> locomotiveGroups = new TreeSet<LocomotiveGroup>();
-    private LocomotiveService locomotiveService;
-
     private final Set<LocomotiveManagerListener> listeners = new HashSet<LocomotiveManagerListener>();
-
     private final Set<LocomotiveManagerListener> listenersToBeRemovedInNextEvent = new HashSet<LocomotiveManagerListener>();
-
     private final Map<Integer, Locomotive> numberToLocomotiveMap = new HashMap<Integer, Locomotive>();
-
+    private LocomotiveService locomotiveService;
     private EventBus eventBus;
 
     public LocomotiveManagerImpl() {
@@ -66,7 +62,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
         if (group == null) {
             throw new IllegalArgumentException("group must not be null");
         }
-        if (StringUtils.isBlank(group.getId() )) {
+        if (StringUtils.isBlank(group.getId())) {
             throw new ManagerException(
                     "Cannot delete ALL_LOCOMOTIVES_GROUP");
         }

@@ -12,9 +12,9 @@ import ch.fork.AdHocRailway.domain.turnouts.Turnout;
  */
 public class RouteChangingThread implements Runnable, TurnoutChangeListener {
 
-    private TurnoutController turnoutControl;
     private final Route route;
     private final boolean enable;
+    private TurnoutController turnoutControl;
     private long routingDelay;
     private RouteChangingListener listener;
 

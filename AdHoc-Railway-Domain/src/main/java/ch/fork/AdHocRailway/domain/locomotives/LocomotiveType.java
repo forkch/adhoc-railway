@@ -32,6 +32,15 @@ public enum LocomotiveType {
 
     }
 
+    public static LocomotiveType fromString(final String string) {
+        for (final LocomotiveType lt : values()) {
+            if (lt.getId().equalsIgnoreCase(string)) {
+                return lt;
+            }
+        }
+        return null;
+    }
+
     public int getFunctionCount() {
         return functionCount;
     }
@@ -42,15 +51,6 @@ public enum LocomotiveType {
 
     public int getStepping() {
         return stepping;
-    }
-
-    public static LocomotiveType fromString(final String string) {
-        for (final LocomotiveType lt : values()) {
-            if (lt.getId().equalsIgnoreCase(string)) {
-                return lt;
-            }
-        }
-        return null;
     }
 
     public String getId() {

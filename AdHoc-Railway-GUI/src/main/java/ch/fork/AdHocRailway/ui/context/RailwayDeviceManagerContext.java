@@ -20,29 +20,29 @@ public interface RailwayDeviceManagerContext {
 
     void setPowerController(final PowerController powerControl);
 
-    void setLocomotiveControl(final LocomotiveController locomotiveControl);
+    TurnoutController getTurnoutControl();
 
     void setTurnoutControl(final TurnoutController turnoutControl);
-
-    void setLockControl(final SRCPLockControl instance);
-
-    void setRouteControl(final RouteController routeControl);
-
-    void setSession(final SRCPSession session);
-
-    TurnoutController getTurnoutControl();
 
     TurnoutManager getTurnoutManager();
 
     SRCPSession getSession();
 
+    void setSession(final SRCPSession session);
+
     PowerController getPowerControl();
 
     RouteController getRouteControl();
 
+    void setRouteControl(final RouteController routeControl);
+
     SRCPLockControl getLockControl();
 
+    void setLockControl(final SRCPLockControl instance);
+
     LocomotiveController getLocomotiveControl();
+
+    void setLocomotiveControl(final LocomotiveController locomotiveControl);
 
     RouteManager getRouteManager();
 

@@ -43,11 +43,11 @@ public class SIOTurnoutService implements IOCallback {
             return;
         }
 
-        LOGGER.info("on(message: " + event + ", args: " + jsonData+ ")");
+        LOGGER.info("on(message: " + event + ", args: " + jsonData + ")");
         try {
             switch (serviceEvent) {
                 case TURNOUT_INIT:
-                    SIOTurnoutServiceEventHandler.handleTurnoutInit((JSONArray)jsonData[0], listener);
+                    SIOTurnoutServiceEventHandler.handleTurnoutInit((JSONArray) jsonData[0], listener);
                     break;
                 case TURNOUT_ADDED:
                     SIOTurnoutServiceEventHandler

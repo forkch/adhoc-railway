@@ -37,6 +37,23 @@ public abstract class TurnoutController {
     protected final List<TurnoutChangeListener> generalListeners = Lists
             .newLinkedList();
 
+    public static TurnoutController createTurnoutController(
+            final RailwayDevice railwayDevice) {
+
+        if (railwayDevice == null) {
+            return new DummyTurnoutController();
+        }
+        switch (railwayDevice) {
+            case ADHOC_BRAIN:
+                return new BrainTurnoutControlAdapter(BrainController.getInstance());
+            case SRCP:
+                return new SRCPTurnoutControlAdapter();
+            default:
+                return new DummyTurnoutController();
+        }
+
+    }
+
     public abstract void toggle(final Turnout turnout);
 
     public abstract void toggleTest(final Turnout turnout);
@@ -95,24 +112,6 @@ public abstract class TurnoutController {
                 scl.turnoutChanged(turnout);
             }
         }
-    }
-
-
-    public static TurnoutController createTurnoutController(
-            final RailwayDevice railwayDevice) {
-
-        if (railwayDevice == null) {
-            return new DummyTurnoutController();
-        }
-        switch (railwayDevice) {
-            case ADHOC_BRAIN:
-                return new BrainTurnoutControlAdapter(BrainController.getInstance());
-            case SRCP:
-                return new SRCPTurnoutControlAdapter();
-            default:
-                return new DummyTurnoutController();
-        }
-
     }
 
     public void setNonDefaultState(final Turnout turnout) {

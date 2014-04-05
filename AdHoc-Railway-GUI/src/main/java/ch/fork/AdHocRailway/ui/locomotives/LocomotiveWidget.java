@@ -55,41 +55,24 @@ public class LocomotiveWidget extends JPanel implements
         LocomotiveChangeListener, LocomotiveManagerListener {
 
 
-    private JComboBox<Locomotive> locomotiveComboBox;
-
-    private JComboBox<LocomotiveGroup> locomotiveGroupComboBox;
-
-    private JProgressBar speedBar;
-
-    private JButton increaseSpeed;
-
-    private JButton decreaseSpeed;
-
-    private JButton stopButton;
-
-    private JButton directionButton;
-
-    private LockToggleButton lockButton;
-
-    private Locomotive myLocomotive;
-
     private final int number;
-
     private final List<FunctionToggleButton> functionToggleButtons = new ArrayList<FunctionToggleButton>();
-
-    private LocomotiveSelectAction locomotiveSelectAction;
-
-    private LocomotiveGroupSelectAction groupSelectAction;
-
     private final JFrame frame;
-
     private final LocomotiveGroup allLocomotivesGroup;
-
-    private JPanel functionsPanel;
-
     private final LocomotiveContext ctx;
-
     public boolean directionToggeled;
+    private JComboBox<Locomotive> locomotiveComboBox;
+    private JComboBox<LocomotiveGroup> locomotiveGroupComboBox;
+    private JProgressBar speedBar;
+    private JButton increaseSpeed;
+    private JButton decreaseSpeed;
+    private JButton stopButton;
+    private JButton directionButton;
+    private LockToggleButton lockButton;
+    private Locomotive myLocomotive;
+    private LocomotiveSelectAction locomotiveSelectAction;
+    private LocomotiveGroupSelectAction groupSelectAction;
+    private JPanel functionsPanel;
     private DefaultComboBoxModel<LocomotiveGroup> locomotiveGroupComboBoxModel;
     private DefaultComboBoxModel<Locomotive> locomotiveComboBoxModel;
 
@@ -533,6 +516,24 @@ public class LocomotiveWidget extends JPanel implements
 
     }
 
+    private void processMouseMovement(MouseEvent e) {
+        if (myLocomotive == null) {
+            return;
+        }
+        double i = (double) e.getY() / speedBar.getHeight();
+        int drivingSteps = myLocomotive.getType().getDrivingSteps();
+        int newSpeed = (int) ((1 - i) * (drivingSteps + 1));
+        newSpeed = Math.max(0, Math.min(drivingSteps, newSpeed));
+        if (newSpeed != myLocomotive.getCurrentSpeed()) {
+            ctx.getLocomotiveControl().setSpeed(myLocomotive, newSpeed, myLocomotive.getCurrentFunctions());
+        }
+    }
+
+    @Override
+    public void failure(
+            final ManagerException locomotiveManagerException) {
+    }
+
     private class LocomotiveGroupSelectAction implements ItemListener {
 
         @Override
@@ -754,18 +755,6 @@ public class LocomotiveWidget extends JPanel implements
         }
     }
 
-    private void processMouseMovement(MouseEvent e) {
-        if (myLocomotive == null)
-            return;
-        double i = (double) e.getY() / speedBar.getHeight();
-        int drivingSteps = myLocomotive.getType().getDrivingSteps();
-        int newSpeed = (int) ((1 - i) * (drivingSteps + 1));
-        newSpeed = Math.max(0, Math.min(drivingSteps, newSpeed));
-        if (newSpeed != myLocomotive.getCurrentSpeed()) {
-            ctx.getLocomotiveControl().setSpeed(myLocomotive, newSpeed, myLocomotive.getCurrentFunctions());
-        }
-    }
-
     private class LockAction extends AbstractAction {
 
         @Override
@@ -851,11 +840,6 @@ public class LocomotiveWidget extends JPanel implements
             }
             a.actionPerformed(null);
         }
-    }
-
-    @Override
-    public void failure(
-            final ManagerException locomotiveManagerException) {
     }
 
 }

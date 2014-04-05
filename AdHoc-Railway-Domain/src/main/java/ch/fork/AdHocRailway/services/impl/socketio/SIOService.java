@@ -18,10 +18,8 @@ public class SIOService {
     private static final Logger LOGGER = Logger.getLogger(SIOService.class);
     private static final SIOService INSTANCE = new SIOService();
     private static String uuid;
-
-    private SocketIO socket;
-
     private final Set<IOCallback> otherCallbacks = new HashSet<IOCallback>();
+    private SocketIO socket;
 
     private SIOService() {
 

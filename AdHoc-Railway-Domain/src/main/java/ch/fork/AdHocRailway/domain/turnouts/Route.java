@@ -30,26 +30,19 @@ import java.util.TreeSet;
 public class Route extends AbstractItem implements java.io.Serializable,
         Comparable<Route> {
 
-    private int id = -1;
-
-    @XStreamOmitField
-    private RouteGroup routeGroup;
-
-    private int number;
-
-    private String name;
-
-    private String orientation;
-
-    private SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>();
-
     public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_NUMBER = "number";
     public static final String PROPERTYNAME_NAME = "name";
     public static final String PROPERTYNAME_ORIENTATION = "orientation";
     public static final String PROPERTYNAME_ROUTE_GROUP = "routeGroup";
     public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
-
+    private int id = -1;
+    @XStreamOmitField
+    private RouteGroup routeGroup;
+    private int number;
+    private String name;
+    private String orientation;
+    private SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>();
     private transient boolean enabled = false;
     private transient boolean routing = false;
 

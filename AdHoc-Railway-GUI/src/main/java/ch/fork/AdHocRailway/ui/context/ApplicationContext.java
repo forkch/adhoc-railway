@@ -98,13 +98,13 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
         this.routeManager = routePersistence;
     }
 
+    public File getActualFile() {
+        return actualFile;
+    }
+
     @Override
     public void setActualFile(File file) {
         this.actualFile = file;
-    }
-
-    public File getActualFile() {
-        return actualFile;
     }
 
     @Override
@@ -124,9 +124,9 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
     }
 
     @Override
-    public void setPreviousLocoDir(File previousLocodir) {
-
-        this.previousLocodir = previousLocodir;
+    public void setLocomotiveManager(
+            final LocomotiveManager locomotivePersistence) {
+        this.locomotiveManager = locomotivePersistence;
     }
 
     @Override
@@ -135,9 +135,9 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
     }
 
     @Override
-    public void setLocomotiveManager(
-            final LocomotiveManager locomotivePersistence) {
-        this.locomotiveManager = locomotivePersistence;
+    public void setPreviousLocoDir(File previousLocodir) {
+
+        this.previousLocodir = previousLocodir;
     }
 
     @Override
@@ -150,13 +150,13 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
         this.powerControl = powerControl;
     }
 
+    public int getActiveBoosterCount() {
+        return this.activeBoosterCount;
+    }
+
     @Override
     public void setActiveBoosterCount(final int activeBoosterCount) {
         this.activeBoosterCount = activeBoosterCount;
-    }
-
-    public int getActiveBoosterCount() {
-        return this.activeBoosterCount;
     }
 
     @Override
@@ -207,14 +207,14 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
         this.mainApp = mainApp;
     }
 
-    public void setRailwayDeviceManager(
-            final RailwayDeviceManager railwayDeviceManager) {
-        this.railwayDeviceManager = railwayDeviceManager;
-    }
-
     @Override
     public RailwayDeviceManager getRailwayDeviceManager() {
         return railwayDeviceManager;
+    }
+
+    public void setRailwayDeviceManager(
+            final RailwayDeviceManager railwayDeviceManager) {
+        this.railwayDeviceManager = railwayDeviceManager;
     }
 
     @Override

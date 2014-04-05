@@ -3,8 +3,8 @@ package ch.fork.AdHocRailway.domain.power;
 public class Booster {
 
     private final int boosterNumber;
-    private BoosterState state;
     private final PowerSupply supply;
+    private BoosterState state;
 
     public Booster(final PowerSupply supply, final int boosterNumber) {
         this.supply = supply;

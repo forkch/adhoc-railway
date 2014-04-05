@@ -33,9 +33,8 @@ import java.util.Map;
 
 public class ImageTools {
 
-    private static final Logger LOGGER = Logger.getLogger(ImageTools.class);
-
     public final static Map<String, ImageIcon> cache = new HashMap<String, ImageIcon>();
+    private static final Logger LOGGER = Logger.getLogger(ImageTools.class);
 
     public static ImageIcon createImageIcon(final String icon) {
         if (!cache.containsKey(icon)) {

@@ -31,9 +31,9 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     private final Map<SRCPLocomotive, Locomotive> SRCPLocomotiveLocomotiveMap = new HashMap<SRCPLocomotive, Locomotive>();
 
     private final SRCPLocomotiveControl locomotiveControl;
+    private final RateLimiter rateLimiter;
     ExecutorService executorService;
     private boolean emergencyStopPending;
-    private final RateLimiter rateLimiter;
 
     public SRCPLocomotiveControlAdapter() {
         locomotiveControl = SRCPLocomotiveControl.getInstance();
@@ -83,7 +83,8 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
                         if (!emergencyStopPending) {
                             locomotiveControl.setSpeed(sLocomotive, speed,
                                     SimulatedMFXLocomotivesHelper.convertToMultipartFunctions(
-                                            locomotive.getType(), functions));
+                                            locomotive.getType(), functions)
+                            );
                         } else {
                             LOGGER.info("cancelling speed command: " + speed);
                         }

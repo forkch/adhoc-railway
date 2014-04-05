@@ -32,17 +32,12 @@ import java.awt.*;
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
 
-    private RouteGroupsPanel routeGroupsTabbedPane;
-
-    private TurnoutGroupsPanel turnoutGroupsTabbedPane;
-
     private final Preferences preferences = Preferences.getInstance();
-
-    private JTabbedPane trackControlPane;
-
     private final TurnoutContext turnoutCtx;
-
     private final RouteContext routeContext;
+    private RouteGroupsPanel routeGroupsTabbedPane;
+    private TurnoutGroupsPanel turnoutGroupsTabbedPane;
+    private JTabbedPane trackControlPane;
 
     public TrackControlPanel(final TrackContext ctx) {
         this.turnoutCtx = ctx;

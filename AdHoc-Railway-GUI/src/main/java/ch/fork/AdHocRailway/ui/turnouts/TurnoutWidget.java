@@ -38,25 +38,16 @@ import java.awt.event.MouseEvent;
 
 public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
 
-    private Turnout turnout;
-
-    private JLabel numberLabel;
-
-    private TurnoutCanvas turnoutCanvas;
-
-    private TurnoutState actualTurnoutState = TurnoutState.UNDEF;
-
-    private boolean connectedToRailway;
-
     private final boolean testMode;
-
     private final boolean forHistory;
-
-    private JPanel statePanel;
-
     private final TurnoutManager turnoutManager;
-
     private final TurnoutContext ctx;
+    private Turnout turnout;
+    private JLabel numberLabel;
+    private TurnoutCanvas turnoutCanvas;
+    private TurnoutState actualTurnoutState = TurnoutState.UNDEF;
+    private boolean connectedToRailway;
+    private JPanel statePanel;
 
     public TurnoutWidget(final TurnoutContext ctx, final Turnout turnout,
                          final boolean forHistory) {
@@ -125,58 +116,13 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
         turnoutCanvas.setToolTipText(turnoutDescription);
     }
 
-    private class MouseAction extends MouseAdapter {
-        @Override
-        public void mouseClicked(final MouseEvent e) {
-
-            if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
-                handleLeftClick();
-            } else if (e.getClickCount() == 1
-                    && e.getButton() == MouseEvent.BUTTON3) {
-
-                handleRightClick();
-            }
-        }
-
-        private void handleRightClick() {
-            if (ctx.isEditingMode()) {
-                displaySwitchConfig();
-            }
-        }
-
-        private void handleLeftClick() {
-            if (!connectedToRailway) {
-                return;
-            }
-            final TurnoutController turnoutControl = ctx
-                    .getTurnoutControl();
-            if (!testMode) {
-                turnoutControl.toggle(turnout);
-            } else {
-                turnoutControl.toggleTest(turnout);
-            }
-        }
-
-        private void displaySwitchConfig() {
-            if (testMode) {
-                return;
-            }
-
-            final TurnoutController turnoutControl = ctx.getTurnoutControl();
-            turnoutControl
-                    .removeGeneralTurnoutChangeListener(TurnoutWidget.this);
-            new TurnoutConfig(ctx.getMainFrame(), ctx, turnout,
-                    turnout.getTurnoutGroup());
-            TurnoutHelper.validateTurnout(turnoutManager, turnout,
-                    TurnoutWidget.this);
-            turnoutControl.addGeneralTurnoutChangeListener(TurnoutWidget.this);
-
-            turnoutChanged(turnout);
-        }
-    }
-
     public Turnout getTurnout() {
         return turnout;
+    }
+
+    public void setTurnout(final Turnout turnout) {
+        this.turnout = turnout;
+        updateTurnout();
     }
 
     @Override
@@ -236,12 +182,57 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
         turnoutCanvas.setTurnoutState(TurnoutState.UNDEF);
     }
 
-    public void setTurnout(final Turnout turnout) {
-        this.turnout = turnout;
-        updateTurnout();
-    }
-
     public void revalidateTurnout() {
         TurnoutHelper.validateTurnout(turnoutManager, turnout, this);
+    }
+
+    private class MouseAction extends MouseAdapter {
+        @Override
+        public void mouseClicked(final MouseEvent e) {
+
+            if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
+                handleLeftClick();
+            } else if (e.getClickCount() == 1
+                    && e.getButton() == MouseEvent.BUTTON3) {
+
+                handleRightClick();
+            }
+        }
+
+        private void handleRightClick() {
+            if (ctx.isEditingMode()) {
+                displaySwitchConfig();
+            }
+        }
+
+        private void handleLeftClick() {
+            if (!connectedToRailway) {
+                return;
+            }
+            final TurnoutController turnoutControl = ctx
+                    .getTurnoutControl();
+            if (!testMode) {
+                turnoutControl.toggle(turnout);
+            } else {
+                turnoutControl.toggleTest(turnout);
+            }
+        }
+
+        private void displaySwitchConfig() {
+            if (testMode) {
+                return;
+            }
+
+            final TurnoutController turnoutControl = ctx.getTurnoutControl();
+            turnoutControl
+                    .removeGeneralTurnoutChangeListener(TurnoutWidget.this);
+            new TurnoutConfig(ctx.getMainFrame(), ctx, turnout,
+                    turnout.getTurnoutGroup());
+            TurnoutHelper.validateTurnout(turnoutManager, turnout,
+                    TurnoutWidget.this);
+            turnoutControl.addGeneralTurnoutChangeListener(TurnoutWidget.this);
+
+            turnoutChanged(turnout);
+        }
     }
 }

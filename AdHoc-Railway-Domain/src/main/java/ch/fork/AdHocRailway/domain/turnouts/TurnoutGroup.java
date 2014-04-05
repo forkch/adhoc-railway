@@ -29,16 +29,13 @@ import java.util.TreeSet;
 public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
         Comparable<TurnoutGroup> {
 
+    public static final String PROPERTYNAME_NAME = "name";
     @Expose
     private String id;
-
     @Expose
     private String name;
-
     @Expose
     private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
-
-    public static final String PROPERTYNAME_NAME = "name";
 
     public TurnoutGroup() {
     }

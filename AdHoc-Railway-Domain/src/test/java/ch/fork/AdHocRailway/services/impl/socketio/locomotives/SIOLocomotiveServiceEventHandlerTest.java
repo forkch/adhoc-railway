@@ -27,11 +27,10 @@ public class SIOLocomotiveServiceEventHandlerTest {
 
     private static final String GROUP_ID = "1234";
     private static final String GROUP_ID2 = "12342";
-    @Mock
-    private LocomotiveServiceListener listenerMock;
-
     @Captor
     private final ArgumentCaptor<SortedSet<LocomotiveGroup>> locomotiveGroupsCaptor = null;
+    @Mock
+    private LocomotiveServiceListener listenerMock;
 
     @Before
     public void setup() {

@@ -25,11 +25,11 @@ public class XMLServiceHelper {
     private static final Logger LOGGER = Logger
             .getLogger(XMLServiceHelper.class);
 
-    public static String nextValue() {
-        return UUID.randomUUID().toString();
+    public XMLServiceHelper() {
     }
 
-    public XMLServiceHelper() {
+    public static String nextValue() {
+        return UUID.randomUUID().toString();
     }
 
     public void loadFile(final XMLLocomotiveService locomotiveService,

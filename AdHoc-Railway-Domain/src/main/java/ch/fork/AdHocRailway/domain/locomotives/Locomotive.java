@@ -38,48 +38,6 @@ import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.REVERS
 public class Locomotive extends AbstractItem implements Serializable,
         Comparable<Locomotive> {
 
-    @XStreamAsAttribute
-    @Expose
-    private String id;
-
-    @XStreamAsAttribute
-    @Expose
-    private String name;
-
-    @XStreamAsAttribute
-    @Expose
-    private String groupId;
-
-    @XStreamAsAttribute
-    @Expose
-    private String desc;
-
-    @XStreamAsAttribute
-    @Expose
-    private String image;
-
-    @Expose
-    private String imageBase64;
-
-    @XStreamAsAttribute
-    @Expose
-    private LocomotiveType type;
-
-    @XStreamAsAttribute
-    @Expose
-    private int bus;
-
-    @XStreamAsAttribute
-    @Expose
-    private int address1;
-
-    @XStreamAsAttribute
-    @Expose
-    private int address2;
-
-    @Expose
-    private SortedSet<LocomotiveFunction> functions = new TreeSet<LocomotiveFunction>();
-
     public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_NAME = "name";
     public static final String PROPERTYNAME_DESCRIPTION = "desc";
@@ -88,10 +46,39 @@ public class Locomotive extends AbstractItem implements Serializable,
     public static final String PROPERTYNAME_ADDRESS1 = "address1";
     public static final String PROPERTYNAME_ADDRESS2 = "address2";
     public static final String PROPERTYNAME_BUS = "bus";
-
     public static final String PROPERTYNAME_FUNCTIONS = "functions";
     public static final String PROPERTYNAME_LOCOMOTIVE_GROUP = "group";
-
+    @XStreamAsAttribute
+    @Expose
+    private String id;
+    @XStreamAsAttribute
+    @Expose
+    private String name;
+    @XStreamAsAttribute
+    @Expose
+    private String groupId;
+    @XStreamAsAttribute
+    @Expose
+    private String desc;
+    @XStreamAsAttribute
+    @Expose
+    private String image;
+    @Expose
+    private String imageBase64;
+    @XStreamAsAttribute
+    @Expose
+    private LocomotiveType type;
+    @XStreamAsAttribute
+    @Expose
+    private int bus;
+    @XStreamAsAttribute
+    @Expose
+    private int address1;
+    @XStreamAsAttribute
+    @Expose
+    private int address2;
+    @Expose
+    private SortedSet<LocomotiveFunction> functions = new TreeSet<LocomotiveFunction>();
     @XStreamOmitField
     private transient LocomotiveGroup group;
 

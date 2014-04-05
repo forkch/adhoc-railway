@@ -34,6 +34,24 @@ public abstract class RouteController {
     private final Map<Route, List<RouteChangeListener>> listeners = Maps
             .newHashMap();
 
+    public static RouteController createLocomotiveController(
+            final RailwayDevice railwayDevice,
+            final TurnoutController turnoutController) {
+        if (railwayDevice == null) {
+            return new DummyRouteController(turnoutController);
+        }
+        switch (railwayDevice) {
+            case ADHOC_BRAIN:
+                return new BrainRouteControlAdapter(turnoutController);
+            case SRCP:
+                return new SRCPRouteControlAdapter(
+                        (SRCPTurnoutControlAdapter) turnoutController);
+            default:
+                return new DummyRouteController(turnoutController);
+
+        }
+    }
+
     public abstract void enableRoute(final Route r);
 
     public abstract void disableRoute(final Route r);
@@ -103,24 +121,6 @@ public abstract class RouteController {
             for (final RouteChangeListener listener : listeners.get(route)) {
                 listener.routeChanged(route);
             }
-        }
-    }
-
-    public static RouteController createLocomotiveController(
-            final RailwayDevice railwayDevice,
-            final TurnoutController turnoutController) {
-        if (railwayDevice == null) {
-            return new DummyRouteController(turnoutController);
-        }
-        switch (railwayDevice) {
-            case ADHOC_BRAIN:
-                return new BrainRouteControlAdapter(turnoutController);
-            case SRCP:
-                return new SRCPRouteControlAdapter(
-                        (SRCPTurnoutControlAdapter) turnoutController);
-            default:
-                return new DummyRouteController(turnoutController);
-
         }
     }
 }

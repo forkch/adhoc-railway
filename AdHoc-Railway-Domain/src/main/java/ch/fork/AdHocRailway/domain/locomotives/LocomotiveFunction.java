@@ -28,33 +28,6 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
         this.setDeactivationDelay(deactivationDelay);
     }
 
-    public boolean isEmergencyBrakeFunction() {
-        return isEmergencyBrakeFunction;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setDescription(final String description) {
-        this.description = description;
-    }
-
-    public void setEmergencyBrakeFunction(final boolean isEmergencyBrakeFunction) {
-        this.isEmergencyBrakeFunction = isEmergencyBrakeFunction;
-    }
-
-    public String getShortDescription() {
-        if (number == 0) {
-            return "Fn";
-        }
-        return "Fn" + (number);
-    }
-
     public static SortedSet<LocomotiveFunction> getDeltaFunctions() {
         final LocomotiveFunction fn = new LocomotiveFunction(0, "Licht", false,
                 -1);
@@ -80,6 +53,33 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
         final SortedSet<LocomotiveFunction> fns = getDigitalFunctions();
         fns.addAll(Arrays.asList(f5, f6, f7, f8));
         return fns;
+    }
+
+    public boolean isEmergencyBrakeFunction() {
+        return isEmergencyBrakeFunction;
+    }
+
+    public void setEmergencyBrakeFunction(final boolean isEmergencyBrakeFunction) {
+        this.isEmergencyBrakeFunction = isEmergencyBrakeFunction;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public String getShortDescription() {
+        if (number == 0) {
+            return "Fn";
+        }
+        return "Fn" + (number);
     }
 
     @Override

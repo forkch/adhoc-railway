@@ -16,9 +16,9 @@ public class BrainController {
 
     private static final Logger LOGGER = Logger
             .getLogger(BrainController.class);
-    private OutputStream out;
-    private final List<BrainListener> listeners = new ArrayList<BrainListener>();
     private static final BrainController INSTANCE = new BrainController();
+    private final List<BrainListener> listeners = new ArrayList<BrainListener>();
+    private OutputStream out;
     private CommPort commPort;
     private InputStream in;
 
@@ -30,6 +30,12 @@ public class BrainController {
 
     public static BrainController getInstance() {
         return INSTANCE;
+    }
+
+    public static void main(final String[] args) throws IOException {
+        final BrainController instance2 = BrainController.getInstance();
+
+        instance2.write("XGO");
     }
 
     public void connect(final String portName) {
@@ -78,41 +84,6 @@ public class BrainController {
                     "error while closing the connection to the brain");
         } finally {
             connected = false;
-        }
-    }
-
-    /**
-     * Handles the input coming from the serial port. A new line character is
-     * treated as the end of a block in this example.
-     */
-    public class SerialReader implements SerialPortEventListener {
-        private final InputStream in;
-        private final byte[] buffer = new byte[1024];
-
-        public SerialReader(final InputStream in) {
-            this.in = in;
-        }
-
-        @Override
-        public void serialEvent(final SerialPortEvent arg0) {
-            int data;
-
-            try {
-                int len = 0;
-                while ((data = in.read()) > -1) {
-                    if (data == 0x0d) {
-                        break;
-                    }
-                    buffer[len++] = (byte) data;
-                }
-                final String receivedString = new String(buffer, 0, len);
-                for (final BrainListener listener : listeners) {
-                    listener.receivedMessage(receivedString);
-                }
-                LOGGER.debug(receivedString);
-            } catch (final IOException e) {
-                LOGGER.error("error receiving data from serialport", e);
-            }
         }
     }
 
@@ -179,10 +150,39 @@ public class BrainController {
         listeners.remove(listener);
     }
 
-    public static void main(final String[] args) throws IOException {
-        final BrainController instance2 = BrainController.getInstance();
+    /**
+     * Handles the input coming from the serial port. A new line character is
+     * treated as the end of a block in this example.
+     */
+    public class SerialReader implements SerialPortEventListener {
+        private final InputStream in;
+        private final byte[] buffer = new byte[1024];
 
-        instance2.write("XGO");
+        public SerialReader(final InputStream in) {
+            this.in = in;
+        }
+
+        @Override
+        public void serialEvent(final SerialPortEvent arg0) {
+            int data;
+
+            try {
+                int len = 0;
+                while ((data = in.read()) > -1) {
+                    if (data == 0x0d) {
+                        break;
+                    }
+                    buffer[len++] = (byte) data;
+                }
+                final String receivedString = new String(buffer, 0, len);
+                for (final BrainListener listener : listeners) {
+                    listener.receivedMessage(receivedString);
+                }
+                LOGGER.debug(receivedString);
+            } catch (final IOException e) {
+                LOGGER.error("error receiving data from serialport", e);
+            }
+        }
     }
 
 }

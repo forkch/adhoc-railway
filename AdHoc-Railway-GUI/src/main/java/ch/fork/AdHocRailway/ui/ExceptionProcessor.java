@@ -28,9 +28,8 @@ import org.apache.log4j.Logger;
 public class ExceptionProcessor {
     private static final Logger LOGGER = Logger
             .getLogger(ExceptionProcessor.class);
-    private final ErrorPanel errorPanel;
-
     private static ExceptionProcessor instance;
+    private final ErrorPanel errorPanel;
 
     private ExceptionProcessor(final ErrorPanel errorPanel) {
         this.errorPanel = errorPanel;

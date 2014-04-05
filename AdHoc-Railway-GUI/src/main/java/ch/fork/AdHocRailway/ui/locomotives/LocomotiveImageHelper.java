@@ -17,14 +17,14 @@ import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class LocomotiveImageHelper {
+
+    public final static String EMTPY_LOCO_ICON = "empty.png";
+    public final static Map<String, ImageIcon> cache = new HashMap<String, ImageIcon>();
+
     private static final Logger LOGGER = Logger
             .getLogger(LocomotiveImageHelper.class);
-    private static Map<String, String> imageToPathMap = new HashMap<String, String>();
-
     private static final String BASE_PATH = "locoimages";
-    public final static String EMTPY_LOCO_ICON = "empty.png";
-
-    public final static Map<String, ImageIcon> cache = new HashMap<String, ImageIcon>();
+    private static Map<String, String> imageToPathMap = new HashMap<String, String>();
 
     static {
         LOGGER.info("start reading locomotive image files");

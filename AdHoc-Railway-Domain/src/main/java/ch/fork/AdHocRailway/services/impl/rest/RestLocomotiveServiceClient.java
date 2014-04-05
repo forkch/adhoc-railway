@@ -34,10 +34,10 @@ public interface RestLocomotiveServiceClient {
 
     @POST("/locomotive")
     Locomotive addLocomotive(@Body Locomotive locomotive);
-    
+
     @PUT("/locomotive")
     Locomotive updateLocomotive(@Body Locomotive locomotive);
-    
+
     @DELETE("/locomotive/{id}")
     Locomotive deleteLocomotive(@Path("id") String id);
-    }
+}

@@ -25,11 +25,11 @@ import java.awt.event.ActionListener;
 
 public abstract class ConfigurationDialog extends JDialog {
 
-    protected boolean okPressed;
-    protected boolean cancelPressed;
     public JButton okButton;
     public JButton cancelButton;
     public JPanel mainButtonPanel;
+    protected boolean okPressed;
+    protected boolean cancelPressed;
 
     public ConfigurationDialog(JFrame owner, String title) {
         super(owner, title, true);

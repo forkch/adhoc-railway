@@ -32,8 +32,8 @@ public class RailwayDeviceManager implements CommandDataListener,
     private static final Logger LOGGER = Logger
             .getLogger(RailwayDeviceManager.class);
     private static final String SRCP_SERVER_TCP_LOCAL = "_srcpd._tcp.local.";
-    private JmDNS adhocServermDNS;
     private final RailwayDeviceManagerContext appContext;
+    private JmDNS adhocServermDNS;
     private boolean connected = false;
 
     public RailwayDeviceManager(final RailwayDeviceManagerContext appContext) {
@@ -192,7 +192,8 @@ public class RailwayDeviceManager implements CommandDataListener,
                             connectToSRCPServer(info.getInet4Addresses()[0]
                                     .getHostAddress(), info.getPort());
                         }
-                    });
+                    }
+            );
         } catch (final IOException e) {
             throw new AdHocRailwayException(
                     "failure during autodiscovery/autoconnect to SRCP-Server",
@@ -225,7 +226,8 @@ public class RailwayDeviceManager implements CommandDataListener,
 
             appContext.getMainBus().post(
                     new CommandLogEvent("Connected to server " + host
-                            + " on port " + port));
+                            + " on port " + port)
+            );
 
             final SRCPTurnoutControlAdapter srcpTurnoutControlAdapter = (SRCPTurnoutControlAdapter) appContext
                     .getTurnoutControl();
@@ -264,7 +266,8 @@ public class RailwayDeviceManager implements CommandDataListener,
 
             appContext.getMainBus().post(
                     new CommandLogEvent("Disconnected from server " + host
-                            + " on port " + port));
+                            + " on port " + port)
+            );
         } catch (final SRCPException e) {
             throw new AdHocRailwayException(
                     "failed to disconnect from SRCP server", e);

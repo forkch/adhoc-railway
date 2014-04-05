@@ -8,9 +8,8 @@ import ch.fork.AdHocRailway.domain.turnouts.Route;
 public class BrainRouteControlAdapter extends RouteController {
 
     private final TurnoutController turnoutControl;
-
-    private long routingDelay;
     private final RouteChangingThread.RouteChangingListener routeChangingListener;
+    private long routingDelay;
 
     public BrainRouteControlAdapter(final TurnoutController turnoutController) {
         this.turnoutControl = turnoutController;

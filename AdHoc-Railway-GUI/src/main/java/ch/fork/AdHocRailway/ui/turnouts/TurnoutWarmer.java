@@ -34,12 +34,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class TurnoutWarmer extends ConfigurationDialog {
-    private JSpinner turnoutNumberField;
-    private JToggleButton warmButton;
     private final TurnoutManager turnoutPersistence;
     private final TurnoutController turnoutControl;
-    private TurnoutWarmupThread t;
     private final TurnoutContext ctx;
+    private JSpinner turnoutNumberField;
+    private JToggleButton warmButton;
+    private TurnoutWarmupThread t;
 
     public TurnoutWarmer(final JFrame owner, final TurnoutContext ctx) {
         super(owner, "Turnout Programmer");

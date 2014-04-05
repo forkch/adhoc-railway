@@ -10,11 +10,11 @@ import java.io.IOException;
 
 public class ImagePreviewPanel extends JPanel implements PropertyChangeListener {
 
+    private static final int ACCSIZE = 155;
+    private final Color bg;
     private int width, height;
     private ImageIcon icon;
     private Image image;
-    private static final int ACCSIZE = 155;
-    private final Color bg;
 
     public ImagePreviewPanel() {
         setPreferredSize(new Dimension(ACCSIZE, -1));

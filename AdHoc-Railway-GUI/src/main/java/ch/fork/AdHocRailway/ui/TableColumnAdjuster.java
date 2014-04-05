@@ -32,11 +32,11 @@ public class TableColumnAdjuster implements PropertyChangeListener,
         TableModelListener {
     private final JTable table;
     private final int spacing;
+    private final Map<TableColumn, Integer> columnSizes = new HashMap<TableColumn, Integer>();
     private boolean isColumnHeaderIncluded;
     private boolean isColumnDataIncluded;
     private boolean isOnlyAdjustLarger;
     private boolean isDynamicAdjustment;
-    private final Map<TableColumn, Integer> columnSizes = new HashMap<TableColumn, Integer>();
 
     /*
      * Specify the table and use default spacing

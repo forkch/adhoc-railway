@@ -37,20 +37,13 @@ import java.util.*;
 public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     private static final Logger LOGGER = Logger
             .getLogger(RouteManagerImpl.class);
-
-    private RouteService routeService;
-
     private final SortedSet<RouteGroup> routeGroups = new TreeSet<RouteGroup>();
-
     private final Map<Integer, Route> numberToRouteCache = new HashMap<Integer, Route>();
-
     private final Set<RouteManagerListener> listeners = new HashSet<RouteManagerListener>();
     private final Set<RouteManagerListener> listenersToBeRemovedInNextEvent = new HashSet<RouteManagerListener>();
-
-    private int lastProgrammedNumber = 0;
-
     private final TurnoutManager turnoutManager;
-
+    private RouteService routeService;
+    private int lastProgrammedNumber = 0;
     private EventBus eventBus;
 
     public RouteManagerImpl(final TurnoutManager turnoutManager) {
@@ -222,7 +215,8 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
                             return Integer.valueOf(o1.getNumber()).compareTo(
                                     o2.getNumber());
                         }
-                    });
+                    }
+            );
             routesNumbers.addAll(getAllRoutes());
             if (routesNumbers.isEmpty()) {
                 lastProgrammedNumber = 0;

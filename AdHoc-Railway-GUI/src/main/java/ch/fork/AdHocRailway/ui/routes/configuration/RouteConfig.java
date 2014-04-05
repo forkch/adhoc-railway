@@ -51,10 +51,17 @@ import java.util.*;
 import java.util.List;
 
 public class RouteConfig extends JDialog {
+    private final PresentationModel<Route> presentationModel;
+    private final Trigger trigger = new Trigger();
+    private final RouteGroup selectedRouteGroup;
+    private final Route testRoute;
+    private final RouteContext routeContext;
+    private final RouteManager routeManager;
+    private final TurnoutManager turnoutManager;
+    public StringBuffer enteredNumberKeys;
+    public ThreeDigitDisplay digitDisplay;
     private boolean okPressed;
     private boolean cancelPressed;
-
-    private final PresentationModel<Route> presentationModel;
     private JButton okButton;
     private JButton cancelButton;
     private JSpinner routeNumberSpinner;
@@ -62,22 +69,14 @@ public class RouteConfig extends JDialog {
     private SelectionInList<RouteItem> routeItemModel;
     private JTable routeItemTable;
     private JButton recordRouteButton;
-    public StringBuffer enteredNumberKeys;
     private JButton removeRouteItemButton;
-    public ThreeDigitDisplay digitDisplay;
     private JTextField routeOrientationField;
     private JPanel mainPanel;
-    private final Trigger trigger = new Trigger();
-    private final RouteGroup selectedRouteGroup;
     private ErrorPanel errorPanel;
     private RouteWidget testRouteWidget;
-    private final Route testRoute;
     private BufferedValueModel routeNumberModel;
     private BufferedValueModel routeNameModel;
     private BufferedValueModel routeOrientationModel;
-    private final RouteContext routeContext;
-    private final RouteManager routeManager;
-    private final TurnoutManager turnoutManager;
 
     public RouteConfig(final JDialog owner, final RouteContext ctx,
                        final Route myRoute, final RouteGroup selectedRouteGroup) {
@@ -205,6 +204,45 @@ public class RouteConfig extends JDialog {
                 Route.PROPERTYNAME_ROUTE_ITEMS));
     }
 
+    private Component buildRouteItemButtonBar() {
+        return ButtonBarFactory.buildCenteredBar(recordRouteButton,
+                removeRouteItemButton);
+    }
+
+    public boolean validate(final Route routeToValidate) {
+        boolean valid = true;
+        if (RouteHelper.isNumberValid(routeToValidate,
+                presentationModel.getBean(), routeManager)) {
+            setSpinnerColor(routeNumberSpinner,
+                    UIConstants.DEFAULT_TEXTFIELD_COLOR);
+            okButton.setEnabled(true);
+        } else {
+            setSpinnerColor(routeNumberSpinner, UIConstants.ERROR_COLOR);
+            valid = false;
+            okButton.setEnabled(false);
+        }
+
+        return valid;
+    }
+
+    private void setSpinnerColor(final JSpinner spinner, final Color color) {
+        final JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner
+                .getEditor();
+        editor.getTextField().setBackground(color);
+    }
+
+    private JComponent buildButtonBar() {
+        return ButtonBarFactory.buildRightAlignedBar(okButton, cancelButton);
+    }
+
+    public boolean isOkPressed() {
+        return okPressed;
+    }
+
+    public boolean isCancelPressed() {
+        return cancelPressed;
+    }
+
     class RouteChangeListener implements PropertyChangeListener {
 
         private final String property;
@@ -237,37 +275,6 @@ public class RouteConfig extends JDialog {
         }
     }
 
-    private Component buildRouteItemButtonBar() {
-        return ButtonBarFactory.buildCenteredBar(recordRouteButton,
-                removeRouteItemButton);
-    }
-
-    public boolean validate(final Route routeToValidate) {
-        boolean valid = true;
-        if (RouteHelper.isNumberValid(routeToValidate,
-                presentationModel.getBean(), routeManager)) {
-            setSpinnerColor(routeNumberSpinner,
-                    UIConstants.DEFAULT_TEXTFIELD_COLOR);
-            okButton.setEnabled(true);
-        } else {
-            setSpinnerColor(routeNumberSpinner, UIConstants.ERROR_COLOR);
-            valid = false;
-            okButton.setEnabled(false);
-        }
-
-        return valid;
-    }
-
-    private void setSpinnerColor(final JSpinner spinner, final Color color) {
-        final JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner
-                .getEditor();
-        editor.getTextField().setBackground(color);
-    }
-
-    private JComponent buildButtonBar() {
-        return ButtonBarFactory.buildRightAlignedBar(okButton, cancelButton);
-    }
-
     private class RecordRouteAction extends AbstractAction {
 
         private boolean recording;
@@ -289,7 +296,8 @@ public class RouteConfig extends JDialog {
                                     "Error",
                                     JOptionPane.ERROR_MESSAGE,
                                     ImageTools
-                                            .createImageIconFromIconSet("dialog-error.png"));
+                                            .createImageIconFromIconSet("dialog-error.png")
+                            );
                     return;
                 }
 
@@ -321,7 +329,8 @@ public class RouteConfig extends JDialog {
                             Integer.toString(i),
                             KeyStroke.getKeyStroke("NUMPAD"
                                     + Integer.toString(i)),
-                            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+                            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+                    );
                 }
             }
             for (final JPanel p : panels) {
@@ -373,7 +382,8 @@ public class RouteConfig extends JDialog {
                                     "Error",
                                     JOptionPane.ERROR_MESSAGE,
                                     ImageTools
-                                            .createImageIconFromIconSet("dialog-error.png"));
+                                            .createImageIconFromIconSet("dialog-error.png")
+                            );
                 } else {
                     TurnoutState routedState = null;
                     if (this instanceof CurvedLeftAction) {
@@ -513,10 +523,6 @@ public class RouteConfig extends JDialog {
         }
     }
 
-    public boolean isOkPressed() {
-        return okPressed;
-    }
-
     class ApplyChangesAction extends AbstractAction {
 
         public ApplyChangesAction() {
@@ -583,10 +589,6 @@ public class RouteConfig extends JDialog {
             cancelPressed = true;
             RouteConfig.this.setVisible(false);
         }
-    }
-
-    public boolean isCancelPressed() {
-        return cancelPressed;
     }
 
 }

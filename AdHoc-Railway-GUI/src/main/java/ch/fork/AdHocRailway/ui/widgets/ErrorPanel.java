@@ -26,11 +26,45 @@ import java.awt.event.MouseEvent;
 public class ErrorPanel extends JPanel {
 
     public static final Color COLOR = new Color(255, 186, 68);
+    private final int pause = 5000;
+    boolean active = true;
     private JTextArea errorTextArea;
     private JLabel iconLabel;
-    private final int pause = 5000;
     private float alpha = 1.0f;
-    boolean active = true;
+    final Runnable closerRunner = new Runnable() {
+        @Override
+        public void run() {
+            while (active) {
+                repaint();
+                ErrorPanel.this.alpha -= 0.05f;
+                if (ErrorPanel.this.alpha < 0.1f) {
+                    ErrorPanel.this.alpha = 0.0f;
+                    active = false;
+                }
+                try {
+                    Thread.sleep(50);
+                } catch (final InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            errorTextArea.setText("");
+            iconLabel.setIcon(null);
+        }
+    };
+    final Runnable waitRunner = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(pause);
+                final Thread closer = new Thread(closerRunner);
+                closer.start();
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    private RoundedPanel panel;
 
     public ErrorPanel() {
         initGUI();
@@ -82,15 +116,6 @@ public class ErrorPanel extends JPanel {
         errorPanelCloser.start();
     }
 
-    private class ErrorConfirmAction extends MouseAdapter {
-        @Override
-        public void mouseClicked(final MouseEvent e) {
-            if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
-                SwingUtilities.invokeLater(closerRunner);
-            }
-        }
-    }
-
     @Override
     protected void paintComponent(final Graphics g) {
         super.paintComponent(g);
@@ -100,39 +125,12 @@ public class ErrorPanel extends JPanel {
         g2.setComposite(alphaCompositge);
     }
 
-    final Runnable waitRunner = new Runnable() {
+    private class ErrorConfirmAction extends MouseAdapter {
         @Override
-        public void run() {
-            try {
-                Thread.sleep(pause);
-                final Thread closer = new Thread(closerRunner);
-                closer.start();
-            } catch (final Exception e) {
-                e.printStackTrace();
+        public void mouseClicked(final MouseEvent e) {
+            if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
+                SwingUtilities.invokeLater(closerRunner);
             }
         }
-    };
-
-    final Runnable closerRunner = new Runnable() {
-        @Override
-        public void run() {
-            while (active) {
-                repaint();
-                ErrorPanel.this.alpha -= 0.05f;
-                if (ErrorPanel.this.alpha < 0.1f) {
-                    ErrorPanel.this.alpha = 0.0f;
-                    active = false;
-                }
-                try {
-                    Thread.sleep(50);
-                } catch (final InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            }
-            errorTextArea.setText("");
-            iconLabel.setIcon(null);
-        }
-    };
-    private RoundedPanel panel;
+    }
 }

@@ -30,46 +30,6 @@ import java.util.Set;
 public class Turnout extends AbstractItem implements java.io.Serializable,
         Comparable<Turnout> {
 
-    @Expose
-    private String id = null;
-
-    @Expose
-    private int number;
-
-    @Expose
-    private String description;
-
-    @Expose
-    private TurnoutType type;
-
-    @Expose
-    private TurnoutState defaultState;
-
-    @Expose
-    private TurnoutOrientation orientation;
-
-    @Expose
-    private int bus1;
-
-    @Expose
-    private int address1;
-
-    @Expose
-    private boolean address1Switched;
-
-    @Expose
-    private int bus2;
-
-    @Expose
-    private int address2;
-
-    @Expose
-    private boolean address2Switched;
-
-    @XStreamAsAttribute
-    @Expose
-    private String groupId;
-
     public static final String PROPERTYNAME_NUMBER = "number";
     public static final String PROPERTYNAME_DESCRIPTION = "description";
     public static final String PROPERTYNAME_TURNOUT_TYPE = "type";
@@ -83,7 +43,33 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_ADDRESS2_SWITCHED = "address2Switched";
     public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
     public static final String PROPERTYNAME_TURNOUT_GROUP = "turnoutGroup";
-
+    @Expose
+    private String id = null;
+    @Expose
+    private int number;
+    @Expose
+    private String description;
+    @Expose
+    private TurnoutType type;
+    @Expose
+    private TurnoutState defaultState;
+    @Expose
+    private TurnoutOrientation orientation;
+    @Expose
+    private int bus1;
+    @Expose
+    private int address1;
+    @Expose
+    private boolean address1Switched;
+    @Expose
+    private int bus2;
+    @Expose
+    private int address2;
+    @Expose
+    private boolean address2Switched;
+    @XStreamAsAttribute
+    @Expose
+    private String groupId;
     private transient Set<RouteItem> routeItems = new HashSet<RouteItem>();
     private transient TurnoutGroup turnoutGroup;
     private transient TurnoutState actualState = TurnoutState.UNDEF;
@@ -329,11 +315,11 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
         return TurnoutState.UNDEF;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
     public String getGroupId() {
         return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 }

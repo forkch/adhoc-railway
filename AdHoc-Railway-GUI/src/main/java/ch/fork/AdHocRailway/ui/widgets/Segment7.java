@@ -23,13 +23,9 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class Segment7 extends JPanel {
-    private int digit;
     private final boolean hasfocus;
-    private boolean displayPeriod = false;
-
     private final int[] periodx = {0, 0, 1, 1};
     private final int[] periody = {19, 18, 18, 19};
-
     private final int[][] polysx = {{1, 2, 8, 9, 8, 2}, // Segment 0
             {9, 10, 10, 9, 8, 8}, // Segment 1
             {9, 10, 10, 9, 8, 8}, // Segment 2
@@ -58,6 +54,8 @@ public class Segment7 extends JPanel {
             {1, 1, 1, 1, 0, 1, 1}, // Ziffer 9
             {0, 0, 0, 0, 0, 0, 0} // Ziffer -
     };
+    private int digit;
+    private boolean displayPeriod = false;
 
     public Segment7() {
         this(-1);

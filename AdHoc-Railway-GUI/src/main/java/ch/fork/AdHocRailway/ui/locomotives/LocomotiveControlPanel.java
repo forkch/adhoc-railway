@@ -36,8 +36,8 @@ import java.util.List;
 public class LocomotiveControlPanel extends JPanel {
 
     private final List<LocomotiveWidget> locomotiveWidgets;
-    private JPanel controlPanel;
     private final LocomotiveContext ctx;
+    private JPanel controlPanel;
 
     public LocomotiveControlPanel(final LocomotiveContext ctx) {
         super();

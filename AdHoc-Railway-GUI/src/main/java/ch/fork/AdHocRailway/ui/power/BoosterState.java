@@ -12,10 +12,6 @@ public enum BoosterState {
 
     }
 
-    public String getSrcpState() {
-        return srcpState;
-    }
-
     public static boolean isActive(final String srcpState) {
         return StringUtils.equalsIgnoreCase(ACTIVE.getSrcpState(), srcpState);
     }
@@ -26,5 +22,9 @@ public enum BoosterState {
 
     public static boolean isShortcut(final String srcpState) {
         return StringUtils.equalsIgnoreCase(SHORTCUT.getSrcpState(), srcpState);
+    }
+
+    public String getSrcpState() {
+        return srcpState;
     }
 }

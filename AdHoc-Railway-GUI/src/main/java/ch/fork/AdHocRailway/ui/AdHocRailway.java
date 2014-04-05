@@ -67,10 +67,8 @@ import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSe
 public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         PreferencesKeys {
 
-    private static final Logger LOGGER = Logger.getLogger(AdHocRailway.class);
-
     public static final String TITLE = "AdHoc-Railway";
-
+    private static final Logger LOGGER = Logger.getLogger(AdHocRailway.class);
     private TrackControlPanel trackControlPanel;
 
     private LocomotiveControlPanel locomotiveControlPanel;
@@ -134,10 +132,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private PersistenceManager persistenceManager;
     private RailwayDeviceManager railwayDeviceManager;
-
-    public static void setupGlobalExceptionHandling() {
-
-    }
 
     public AdHocRailway(org.apache.commons.cli.CommandLine parsedCommandLine) {
         super(TITLE);
@@ -208,6 +202,20 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         }
     }
 
+    public static void setupGlobalExceptionHandling() {
+
+    }
+
+    public static void main(final String[] args) throws ParseException {
+
+        Options options = new Options();
+        options.addOption("c", "clean", false, "start with a clean config");
+        CommandLineParser parser = new BasicParser();
+
+        org.apache.commons.cli.CommandLine parsedCommandLine = parser.parse(options, args);
+
+        AdHocRailway adHocRailway = new AdHocRailway(parsedCommandLine);
+    }
 
     @Override
     public void addMenu(final JMenu menu) {
@@ -645,6 +653,21 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         return statusBarPanel;
     }
 
+    @Subscribe
+    public void initProceeded(final InitProceededEvent event) {
+        initProceeded(event.getMessage());
+    }
+
+    @Subscribe
+    public void updateCommandLog(final CommandLogEvent event) {
+        updateCommandHistory(event.getMessage());
+    }
+
+    @Subscribe
+    public void updateMainTitle(final UpdateMainTitleEvent event) {
+        setTitle(event.getTitle());
+    }
+
     private class CommandHistoryUpdater implements Runnable {
 
         private final String text;
@@ -971,7 +994,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                                 "Active Boosters",
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.QUESTION_MESSAGE,
-                                createImageIconFromIconSet("dialog-warning.png"));
+                                createImageIconFromIconSet("dialog-warning.png")
+                        );
                 if (exit == JOptionPane.NO_OPTION
                         || exit == JOptionPane.CANCEL_OPTION || exit == -1) {
                     return;
@@ -1180,31 +1204,5 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             appContext.getMainBus().post(new EditingModeEvent(editingMode));
 
         }
-    }
-
-    public static void main(final String[] args) throws ParseException {
-
-        Options options = new Options();
-        options.addOption("c", "clean", false, "start with a clean config");
-        CommandLineParser parser = new BasicParser();
-
-        org.apache.commons.cli.CommandLine parsedCommandLine = parser.parse(options, args);
-
-        AdHocRailway adHocRailway = new AdHocRailway(parsedCommandLine);
-    }
-
-    @Subscribe
-    public void initProceeded(final InitProceededEvent event) {
-        initProceeded(event.getMessage());
-    }
-
-    @Subscribe
-    public void updateCommandLog(final CommandLogEvent event) {
-        updateCommandHistory(event.getMessage());
-    }
-
-    @Subscribe
-    public void updateMainTitle(final UpdateMainTitleEvent event) {
-        setTitle(event.getTitle());
     }
 }

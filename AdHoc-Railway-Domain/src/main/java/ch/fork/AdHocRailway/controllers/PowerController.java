@@ -14,6 +14,23 @@ public abstract class PowerController {
 
     protected final Set<PowerChangeListener> listeners = new HashSet<PowerChangeListener>();
 
+    public static PowerController createPowerController(
+            final RailwayDevice railwayDevice) {
+        if (railwayDevice == null) {
+            return new DummyPowerController();
+        }
+        switch (railwayDevice) {
+            case ADHOC_BRAIN:
+                return new BrainPowerControlAdapter(BrainController.getInstance());
+            case SRCP:
+                return new SRCPPowerControlAdapter();
+            default:
+                return new DummyPowerController();
+
+        }
+
+    }
+
     public void addPowerChangeListener(final PowerChangeListener listener) {
         listeners.add(listener);
     }
@@ -39,21 +56,4 @@ public abstract class PowerController {
     public abstract void powerOff(final PowerSupply supply);
 
     public abstract PowerSupply getPowerSupply(final int busNumber);
-
-    public static PowerController createPowerController(
-            final RailwayDevice railwayDevice) {
-        if (railwayDevice == null) {
-            return new DummyPowerController();
-        }
-        switch (railwayDevice) {
-            case ADHOC_BRAIN:
-                return new BrainPowerControlAdapter(BrainController.getInstance());
-            case SRCP:
-                return new SRCPPowerControlAdapter();
-            default:
-                return new DummyPowerController();
-
-        }
-
-    }
 }

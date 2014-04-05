@@ -42,6 +42,7 @@ public class PersistenceManager {
     private final PersistenceManagerContext appContext;
 
     private final String uuid = UUID.randomUUID().toString();
+
     public PersistenceManager(final PersistenceManagerContext ctx) {
         this.appContext = ctx;
 
@@ -92,7 +93,8 @@ public class PersistenceManager {
     private void createLocomotiveManagerOnContext(final boolean useAdHocServer) {
         appContext.getMainBus().post(
                 new InitProceededEvent(
-                        "Loading Persistence Layer (Locomotives)"));
+                        "Loading Persistence Layer (Locomotives)")
+        );
         LocomotiveManager locomotiveManager = appContext.getLocomotiveManager();
 
         if (locomotiveManager == null) {
@@ -118,7 +120,8 @@ public class PersistenceManager {
             if (StringUtils.isNotBlank(lastFile)) {
                 openFile(new File(
                         preferences
-                                .getStringValue(PreferencesKeys.LAST_OPENED_FILE)));
+                                .getStringValue(PreferencesKeys.LAST_OPENED_FILE)
+                ));
             }
         } else if (useAdHocServer
                 && !appContext.getPreferences().getBooleanValue(
@@ -142,10 +145,11 @@ public class PersistenceManager {
 
         new XMLServiceHelper()
                 .loadFile((XMLLocomotiveService) appContext
-                        .getLocomotiveManager().getService(),
+                                .getLocomotiveManager().getService(),
                         (XMLTurnoutService) appContext.getTurnoutManager()
                                 .getService(), (XMLRouteService) appContext
-                        .getRouteManager().getService(), file);
+                                .getRouteManager().getService(), file
+                );
 
 
         appContext.setActualFile(file);
@@ -155,12 +159,15 @@ public class PersistenceManager {
 
         appContext.getMainBus().post(
                 new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
-                        + file.getAbsolutePath() + "]"));
+                        + file.getAbsolutePath() + "]")
+        );
 
         appContext.getMainBus().post(
                 new CommandLogEvent(
                         "AdHoc-Railway Configuration loaded ("
-                                + file + ")"));
+                                + file + ")"
+                )
+        );
     }
 
     private void loadAndFillImageBase64() {
@@ -200,14 +207,16 @@ public class PersistenceManager {
             public void disconnected() {
                 appContext.getMainBus().post(
                         new CommandLogEvent(
-                                "Successfully connected to AdHoc-Server"));
+                                "Successfully connected to AdHoc-Server")
+                );
             }
 
             @Override
             public void connectionError(final AdHocRailwayException ex) {
                 appContext.getMainBus().post(
                         new CommandLogEvent("Connection error: "
-                                + ex.getMessage()));
+                                + ex.getMessage())
+                );
                 appContext.getPreferences().setBooleanValue(
                         PreferencesKeys.USE_ADHOC_SERVER, false);
                 try {
@@ -224,12 +233,15 @@ public class PersistenceManager {
 
                 appContext.getMainBus().post(
                         new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
-                                + url + "]"));
+                                + url + "]")
+                );
 
                 appContext.getMainBus().post(
                         new CommandLogEvent(
                                 "Successfully connected to AdHoc-Server: "
-                                        + url));
+                                        + url
+                        )
+                );
 
             }
         });
@@ -272,7 +284,8 @@ public class PersistenceManager {
 
                             connectToAdHocServer(url);
                         }
-                    });
+                    }
+            );
         } catch (final IOException e) {
             throw new AdHocRailwayException(
                     "failure during autodiscovery/autoconnect to AdHoc-Server",

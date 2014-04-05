@@ -25,19 +25,26 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class RouteItem extends AbstractItem implements java.io.Serializable,
         Comparable<RouteItem> {
 
-    private int id;
-
-    private Turnout turnout;
-
-    @XStreamOmitField
-    private Route route;
-
-    private TurnoutState routedState;
-
     public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_TURNOUT = "turnout";
     public static final String PROPERTYNAME_ROUTE = "route";
     public static final String PROPERTYNAME_ROUTED_STATE = "routedState";
+    private int id;
+    private Turnout turnout;
+    @XStreamOmitField
+    private Route route;
+    private TurnoutState routedState;
+
+    public RouteItem() {
+    }
+
+    public RouteItem(final int id, final Turnout turnout, final Route route,
+                     final TurnoutState routedState) {
+        this.id = id;
+        this.turnout = turnout;
+        this.route = route;
+        this.routedState = routedState;
+    }
 
     @Override
     public int compareTo(final RouteItem o) {
@@ -83,17 +90,6 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }
-
-    public RouteItem() {
-    }
-
-    public RouteItem(final int id, final Turnout turnout, final Route route,
-                     final TurnoutState routedState) {
-        this.id = id;
-        this.turnout = turnout;
-        this.route = route;
-        this.routedState = routedState;
     }
 
     public int getId() {

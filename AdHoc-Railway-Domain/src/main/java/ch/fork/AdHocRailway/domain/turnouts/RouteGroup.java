@@ -27,13 +27,10 @@ import java.util.TreeSet;
 public class RouteGroup extends AbstractItem implements java.io.Serializable,
         Comparable<RouteGroup> {
 
-    private int id;
-
-    private String name;
-
-    private SortedSet<Route> routes = new TreeSet<Route>();
-
     public static final String PROPERTYNAME_NAME = "name";
+    private int id;
+    private String name;
+    private SortedSet<Route> routes = new TreeSet<Route>();
 
     public RouteGroup() {
     }

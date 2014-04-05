@@ -28,9 +28,9 @@ import static ch.fork.AdHocRailway.technical.configuration.PreferencesKeys.*;
 
 public class Preferences {
     private static final Logger LOGGER = Logger.getLogger(Preferences.class);
+    private static Preferences instance = null;
     private Map<String, String> preferences;
     private List<String> hostnames;
-    private static Preferences instance = null;
     private Properties props;
     private File configFile;
     private Map<String, KeyBoardLayout> keyBoardLayouts;
@@ -43,6 +43,15 @@ public class Preferences {
         hostnames.add("localhost");
         initDefaultValues();
 
+    }
+
+    public static Preferences getInstance() {
+        if (instance == null) {
+            instance = new Preferences();
+            return instance;
+        } else {
+            return instance;
+        }
     }
 
     private void initDefaultValues() {
@@ -169,15 +178,6 @@ public class Preferences {
             layout.addEntry(keyStroke, pair[1].trim());
         }
         return layout;
-    }
-
-    public static Preferences getInstance() {
-        if (instance == null) {
-            instance = new Preferences();
-            return instance;
-        } else {
-            return instance;
-        }
     }
 
     public void save() throws FileNotFoundException, IOException {

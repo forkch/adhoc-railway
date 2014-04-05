@@ -6,7 +6,6 @@ import ch.fork.AdHocRailway.services.TurnoutService;
 import ch.fork.AdHocRailway.services.TurnoutServiceListener;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
 import ch.fork.AdHocRailway.utils.RestAdapterFactory;
-import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import retrofit.RestAdapter;
 

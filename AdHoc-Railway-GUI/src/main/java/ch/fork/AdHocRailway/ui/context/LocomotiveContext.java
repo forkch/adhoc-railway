@@ -11,7 +11,7 @@ public interface LocomotiveContext extends ControllerContext {
 
     public abstract LocomotiveManager getLocomotiveManager();
 
-    void setPreviousLocoDir(File previousLocodir);
-
     File getPreviousLocoDir();
+
+    void setPreviousLocoDir(File previousLocodir);
 }
