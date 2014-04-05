@@ -4,7 +4,6 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import retrofit.http.*;
 
-import java.util.List;
 import java.util.SortedSet;
 
 /**

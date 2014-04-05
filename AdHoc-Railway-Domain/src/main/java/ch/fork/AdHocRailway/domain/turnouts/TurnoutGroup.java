@@ -20,7 +20,6 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
 import com.google.gson.annotations.Expose;
-import com.sun.xml.internal.bind.v2.runtime.RuntimeUtil;
 import org.apache.commons.lang3.builder.*;
 
 import java.beans.PropertyChangeListener;

@@ -1,9 +1,6 @@
 package ch.fork.AdHocRailway.services.impl.socketio.locomotives;
 
-import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.manager.ManagerException;
-import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
 import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
 import io.socket.IOAcknowledge;
@@ -13,10 +10,6 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Arrays;
-import java.util.SortedSet;
-import java.util.UUID;
 
 public class SIOLocomotiveService implements IOCallback {
 

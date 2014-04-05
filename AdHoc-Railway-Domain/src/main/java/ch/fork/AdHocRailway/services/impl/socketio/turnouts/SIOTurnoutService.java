@@ -1,9 +1,6 @@
 package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
-import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.manager.ManagerException;
-import ch.fork.AdHocRailway.services.TurnoutService;
 import ch.fork.AdHocRailway.services.TurnoutServiceListener;
 import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
 import io.socket.IOAcknowledge;
@@ -13,9 +10,6 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Arrays;
-import java.util.SortedSet;
 
 public class SIOTurnoutService implements IOCallback {
 

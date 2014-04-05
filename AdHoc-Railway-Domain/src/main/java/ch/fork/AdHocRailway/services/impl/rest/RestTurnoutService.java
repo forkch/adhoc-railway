@@ -2,17 +2,14 @@ package ch.fork.AdHocRailway.services.impl.rest;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
 import ch.fork.AdHocRailway.services.TurnoutService;
 import ch.fork.AdHocRailway.services.TurnoutServiceListener;
-import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
 import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import retrofit.RestAdapter;
 
 import java.util.SortedSet;
-import java.util.UUID;
 
 /**
  * Created by fork on 4/4/14.

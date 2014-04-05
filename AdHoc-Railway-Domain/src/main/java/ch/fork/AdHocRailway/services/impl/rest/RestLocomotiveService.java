@@ -4,15 +4,11 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
-import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import retrofit.RestAdapter;
 
 import java.util.SortedSet;
-import java.util.UUID;
 
 /**
  * Created by fork on 3/27/14.

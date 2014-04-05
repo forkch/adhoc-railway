@@ -22,7 +22,6 @@ import ch.fork.AdHocRailway.domain.AbstractItem;
 import com.google.common.collect.Sets;
 import com.google.gson.annotations.Expose;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;

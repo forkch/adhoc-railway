@@ -2,9 +2,7 @@ package ch.fork.AdHocRailway.ui;
 
 import ch.fork.AdHocRailway.services.impl.rest.RestLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.rest.RestTurnoutService;
-import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
-import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;

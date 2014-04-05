@@ -5,7 +5,6 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.manager.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.manager.impl.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.services.LocomotiveService;
-import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
 import com.google.common.eventbus.EventBus;
 import org.junit.Before;
 import org.junit.Test;

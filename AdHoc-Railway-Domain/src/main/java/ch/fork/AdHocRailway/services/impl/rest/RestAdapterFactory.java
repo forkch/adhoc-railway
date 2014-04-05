@@ -2,14 +2,11 @@ package ch.fork.AdHocRailway.services.impl.rest;
 
 import ch.fork.AdHocRailway.manager.ManagerException;
 import com.google.gson.*;
-import com.google.gson.internal.bind.DateTypeAdapter;
-import org.apache.commons.lang3.StringUtils;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.converter.GsonConverter;
-import retrofit.http.Header;
 
 import java.lang.reflect.Type;
 
