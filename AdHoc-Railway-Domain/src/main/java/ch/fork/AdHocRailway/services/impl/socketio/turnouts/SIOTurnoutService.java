@@ -10,13 +10,14 @@ import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIOException;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.SortedSet;
 
-public class SIOTurnoutService implements TurnoutService, IOCallback {
+public class SIOTurnoutService implements IOCallback {
 
     private static final Logger LOGGER = Logger
             .getLogger(SIOTurnoutService.class);
@@ -27,15 +28,7 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
     public SIOTurnoutService() {
     }
 
-    @Override
-    public void init(final TurnoutServiceListener listener) {
-        this.listener = listener;
-
-        sioService = SIOService.getInstance();
-        sioService.addIOCallback(this);
-    }
-
-    @Override
+    /*@Override
     public void clear() {
         LOGGER.info(SIOTurnoutServiceEvent.TURNOUT_CLEAR_REQUEST);
         sioService.checkSocket();
@@ -49,7 +42,7 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
                 if (err) {
                     listener.failure(new ManagerException(msg));
                 } else {
-                    final JSONObject data = (JSONObject) arg0[2];
+                    final JSONArray data = (JSONArray) arg0[2];
                     try {
                         SIOTurnoutServiceEventHandler.handleTurnoutInit(data,
                                 listener);
@@ -178,7 +171,7 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
 
                 try {
                     SIOTurnoutServiceEventHandler.handleTurnoutInit(
-                            (JSONObject) arg0[0], listener);
+                            (JSONArray) arg0[0], listener);
 
                 } catch (final JSONException e) {
                     throw new ManagerException(
@@ -299,8 +292,15 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
             throw new ManagerException("error updating turnout group", e);
         }
     }
+*/
 
-    @Override
+    public void init(final TurnoutServiceListener listener) {
+        this.listener = listener;
+
+        sioService = SIOService.getInstance();
+        sioService.addIOCallback(this);
+    }
+
     public void disconnect() {
         sioService.removeIOCallback(this);
     }
@@ -314,35 +314,35 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
         if (serviceEvent == null) {
             return;
         }
-        final JSONObject data = (JSONObject) jsonData[0];
-        LOGGER.info("on(message: " + event + ", args: " + data + ")");
+
+        LOGGER.info("on(message: " + event + ", args: " + jsonData+ ")");
         try {
             switch (serviceEvent) {
                 case TURNOUT_INIT:
-                    SIOTurnoutServiceEventHandler.handleTurnoutInit(data, listener);
+                    SIOTurnoutServiceEventHandler.handleTurnoutInit((JSONArray)jsonData[0], listener);
                     break;
                 case TURNOUT_ADDED:
                     SIOTurnoutServiceEventHandler
-                            .handleTurnoutAdded(data, listener);
+                            .handleTurnoutAdded((JSONObject) jsonData[0], listener);
                     break;
                 case TURNOUT_GROUP_ADDED:
-                    SIOTurnoutServiceEventHandler.handleTurnoutGroupAdded(data,
+                    SIOTurnoutServiceEventHandler.handleTurnoutGroupAdded((JSONObject) jsonData[0],
                             listener);
                     break;
                 case TURNOUT_GROUP_REMOVED:
-                    SIOTurnoutServiceEventHandler.handleTurnoutGroupRemoved(data,
+                    SIOTurnoutServiceEventHandler.handleTurnoutGroupRemoved((JSONObject) jsonData[0],
                             listener);
                     break;
                 case TURNOUT_GROUP_UPDATED:
-                    SIOTurnoutServiceEventHandler.handleTurnoutGroupUpdated(data,
+                    SIOTurnoutServiceEventHandler.handleTurnoutGroupUpdated((JSONObject) jsonData[0],
                             listener);
                     break;
                 case TURNOUT_REMOVED:
-                    SIOTurnoutServiceEventHandler.handleTurnoutRemoved(data,
+                    SIOTurnoutServiceEventHandler.handleTurnoutRemoved((JSONObject) jsonData[0],
                             listener);
                     break;
                 case TURNOUT_UPDATED:
-                    SIOTurnoutServiceEventHandler.handleTurnoutUpdated(data,
+                    SIOTurnoutServiceEventHandler.handleTurnoutUpdated((JSONObject) jsonData[0],
                             listener);
                     break;
                 default:
@@ -353,7 +353,7 @@ public class SIOTurnoutService implements TurnoutService, IOCallback {
             }
         } catch (final JSONException e) {
             listener.failure(new ManagerException(
-                    "error parsing event '" + event + "'"));
+                    "error parsing event '" + event + "'", e));
         }
     }
 

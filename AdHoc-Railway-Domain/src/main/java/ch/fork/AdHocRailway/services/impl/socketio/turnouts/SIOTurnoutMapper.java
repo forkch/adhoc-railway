@@ -1,6 +1,7 @@
 package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
 import ch.fork.AdHocRailway.domain.turnouts.*;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,27 +10,26 @@ import java.util.Map;
 
 public class SIOTurnoutMapper {
 
-    public static Map<Integer, String> turnoutIdMap = new HashMap<Integer, String>();
-    public static Map<Integer, String> turnoutGroupIdMap = new HashMap<Integer, String>();
+    public static Map<String, String> turnoutIdMap = new HashMap<String, String>();
+    public static Map<String, String> turnoutGroupIdMap = new HashMap<String, String>();
 
     public static TurnoutGroup mapTurnoutGroupFromJSON(
             JSONObject turnoutGroupJSON) throws JSONException {
         TurnoutGroup turnoutGroup = new TurnoutGroup();
-        String sioId = turnoutGroupJSON.getString("_id");
-        int id = sioId.hashCode();
+        String sioId = turnoutGroupJSON.getString("id");
+        String id = sioId;
         turnoutGroupIdMap.put(id, sioId);
         turnoutGroup.setId(id);
 
         mergeTurnoutGroupBaseInfo(turnoutGroup, turnoutGroupJSON);
 
         if (turnoutGroupJSON.has("turnouts")) {
-            JSONObject turnoutsJSON = turnoutGroupJSON
-                    .getJSONObject("turnouts");
-            String[] turnoutIds = JSONObject.getNames(turnoutsJSON);
-            if (turnoutIds != null) {
-                for (String turnoutId : turnoutIds) {
+            JSONArray turnoutsJSON = turnoutGroupJSON
+                    .getJSONArray("turnouts");
+            if (turnoutsJSON != null) {
+                for (int i = 0; i < turnoutsJSON.length(); i++) {
                     Turnout turnout = mapTurnoutFromJSON(turnoutsJSON
-                            .getJSONObject(turnoutId));
+                            .getJSONObject(i));
                     turnout.setTurnoutGroup(turnoutGroup);
                     turnoutGroup.addTurnout(turnout);
                 }
@@ -41,8 +41,8 @@ public class SIOTurnoutMapper {
     public static Turnout mapTurnoutFromJSON(JSONObject turnoutJSON)
             throws JSONException {
         Turnout turnout = new Turnout();
-        String sioId = turnoutJSON.getString("_id");
-        int id = sioId.hashCode();
+        String sioId = turnoutJSON.getString("id");
+        String id = sioId;
         turnoutIdMap.put(id, sioId);
         turnout.setId(id);
         mergeTurnoutBaseInfo(turnoutJSON, turnout);
@@ -59,14 +59,18 @@ public class SIOTurnoutMapper {
         turnout.setBus2(turnoutJSON.optInt("bus2", 0));
         turnout.setAddress1(turnoutJSON.getInt("address1"));
         turnout.setAddress2(turnoutJSON.optInt("address2", 0));
-        turnout.setAddress1Switched(turnoutJSON.getBoolean("address1switched"));
-        turnout.setAddress2Switched(turnoutJSON.getBoolean("address2switched"));
 
+        if(turnoutJSON.has("address1switched")) {
+            turnout.setAddress1Switched(turnoutJSON.getBoolean("address1switched"));
+        }
+        if(turnoutJSON.has("address2switched")) {
+            turnout.setAddress2Switched(turnoutJSON.getBoolean("address2switched"));
+        }
         turnout.setOrientation(TurnoutOrientation.fromString(turnoutJSON
                 .getString("orientation")));
         turnout.setDefaultState(TurnoutState.fromString(turnoutJSON
                 .getString("defaultState")));
-        turnout.setTurnoutType(TurnoutType.fromString(turnoutJSON
+        turnout.setType(TurnoutType.fromString(turnoutJSON
                 .getString("type")));
     }
 
@@ -80,7 +84,7 @@ public class SIOTurnoutMapper {
     public static JSONObject mapTurnoutGroupToJSON(TurnoutGroup group)
             throws JSONException {
         JSONObject turnoutGroupJSON = new JSONObject();
-        turnoutGroupJSON.put("_id", turnoutGroupIdMap.get(group.getId()));
+        turnoutGroupJSON.put("id", turnoutGroupIdMap.get(group.getId()));
         turnoutGroupJSON.put("name", group.getName());
         return turnoutGroupJSON;
     }
@@ -88,7 +92,7 @@ public class SIOTurnoutMapper {
     public static JSONObject mapTurnoutToJSON(Turnout turnout)
             throws JSONException {
         JSONObject turnoutJSON = new JSONObject();
-        turnoutJSON.put("_id", turnoutIdMap.get(turnout.getId()));
+        turnoutJSON.put("id", turnoutIdMap.get(turnout.getId()));
         turnoutJSON.put("number", turnout.getNumber());
         turnoutJSON.put("description", turnout.getDescription());
         turnoutJSON.put("bus1", turnout.getBus1());
@@ -101,7 +105,7 @@ public class SIOTurnoutMapper {
                 .toLowerCase());
         turnoutJSON.put("defaultState", turnout.getDefaultState().name()
                 .toLowerCase());
-        turnoutJSON.put("type", turnout.getTurnoutType().name().toLowerCase());
+        turnoutJSON.put("type", turnout.getType().name().toLowerCase());
         turnoutJSON.put("group",
                 turnoutGroupIdMap.get(turnout.getTurnoutGroup().getId()));
 

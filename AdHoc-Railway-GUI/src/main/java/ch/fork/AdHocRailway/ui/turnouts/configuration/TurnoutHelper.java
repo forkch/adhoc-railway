@@ -41,7 +41,7 @@ public class TurnoutHelper {
                 .setAddress1(turnoutPersistence.getLastProgrammedAddress() + 1);
         newTurnout.setDefaultState(TurnoutState.STRAIGHT);
         newTurnout.setOrientation(TurnoutOrientation.EAST);
-        newTurnout.setTurnoutType(TurnoutType.DEFAULT_LEFT);
+        newTurnout.setType(TurnoutType.DEFAULT_LEFT);
         return newTurnout;
     }
 
@@ -157,7 +157,7 @@ public class TurnoutHelper {
         description.append("<h1>" + turnout.getNumber() + "</h1>");
         description.append("<table>");
 
-        addTableRow("Type:", turnout.getTurnoutType().toString(), description);
+        addTableRow("Type:", turnout.getType().toString(), description);
         addTableRow("Default-State:", turnout.getDefaultState().toString(),
                 description);
         addTableRow("Orientation:", turnout.getOrientation().toString(),

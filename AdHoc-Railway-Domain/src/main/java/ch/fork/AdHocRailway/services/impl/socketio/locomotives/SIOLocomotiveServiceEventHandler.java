@@ -50,7 +50,7 @@ public class SIOLocomotiveServiceEventHandler {
                 .mapLocomotiveFromJSON(locomotiveJSON);
         sioIdToLocomotiveMap.put(locomotiveJSON.getString("id"), locomotive);
         final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
-                .get(locomotiveJSON.get("group"));
+                .get(locomotiveJSON.get("groupId"));
         locomotive.setGroup(locomotiveGroup);
         locomotiveGroup.addLocomotive(locomotive);
         listener.locomotiveAdded(locomotive);
@@ -65,7 +65,7 @@ public class SIOLocomotiveServiceEventHandler {
 
         SIOLocomotiveMapper.mergeLocomotiveBaseInfo(locomotiveJSON, locomotive);
         locomotive.setGroup(sioIdToLocomotiveGroupMap.get(locomotiveJSON
-                .getString("group")));
+                .getString("groupId")));
         listener.locomotiveUpdated(locomotive);
         return locomotive;
 
@@ -79,7 +79,7 @@ public class SIOLocomotiveServiceEventHandler {
         SIOLocomotiveMapper.locomotiveIdMap.remove(locomotive.getId());
 
         final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
-                .get(locomotiveJSON.get("group"));
+                .get(locomotiveJSON.get("groupId"));
         locomotiveGroup.removeLocomotive(locomotive);
         listener.locomotiveRemoved(locomotive);
 

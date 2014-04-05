@@ -6,6 +6,8 @@ import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
 import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import retrofit.RestAdapter;
 
@@ -15,31 +17,24 @@ import java.util.UUID;
 /**
  * Created by fork on 3/27/14.
  */
-public class RestLocomotiveService implements LocomotiveService {
+public class RestLocomotiveService  implements LocomotiveService {
     private static final Logger LOGGER = Logger.getLogger(RestLocomotiveService.class);
 
     private final SIOLocomotiveService sioLocomotiveService;
 
     private final RestLocomotiveServiceClient locomotiveServiceClient;
-    private final String uuid;
     private LocomotiveServiceListener listener;
 
-    public RestLocomotiveService() {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("http://localhost:3000")
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build();
-        uuid = UUID.randomUUID().toString();
-        SIOService.setUUID(uuid);
-
+    public RestLocomotiveService(String uuid) {
+        RestAdapter restAdapter = RestAdapterFactory.createRestAdapter(uuid);
         locomotiveServiceClient = restAdapter.create(RestLocomotiveServiceClient.class);
         sioLocomotiveService = new SIOLocomotiveService();
-
     }
 
     @Override
     public void addLocomotive(Locomotive locomotive) {
-        locomotiveServiceClient.addLocomotive(locomotive, uuid);
+        Locomotive addLocomotive = locomotiveServiceClient.addLocomotive(locomotive);
+        locomotive.setId(addLocomotive.getId());
         LOGGER.info("addLocomotive(): " + locomotive);
 
         if (listenerOk()) listener.locomotiveAdded(locomotive);
@@ -47,7 +42,7 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void removeLocomotive(Locomotive locomotive) {
-        locomotiveServiceClient.deleteLocomotive(locomotive.getId(), uuid);
+        locomotiveServiceClient.deleteLocomotive(locomotive.getId());
         LOGGER.info("removeLocomotive(): " + locomotive);
 
         if (listenerOk()) listener.locomotiveRemoved(locomotive);
@@ -56,16 +51,15 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void updateLocomotive(Locomotive locomotive) {
-        locomotiveServiceClient.updateLocomotive(locomotive, uuid);
+        locomotiveServiceClient.updateLocomotive(locomotive);
         LOGGER.info("updateLocomotive(): " + locomotive);
         if (listenerOk())
             listener.locomotiveUpdated(locomotive);
     }
 
-
     @Override
     public SortedSet<LocomotiveGroup> getAllLocomotiveGroups() {
-        SortedSet<LocomotiveGroup> allLocomotivesGroups = locomotiveServiceClient.getAllLocomotivesGroups(uuid);
+        SortedSet<LocomotiveGroup> allLocomotivesGroups = locomotiveServiceClient.getAllLocomotivesGroups();
         LOGGER.info("getAllLocomotiveGroups(): " + allLocomotivesGroups);
 
         for (LocomotiveGroup allLocomotiveGroup : allLocomotivesGroups) {
@@ -79,31 +73,31 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void addLocomotiveGroup(LocomotiveGroup group) {
-        LocomotiveGroup locomotiveGroup = locomotiveServiceClient.addLocomotiveGroup(group, uuid);
-        LOGGER.info("addLocomotiveGroup(): " + locomotiveGroup);
+        LocomotiveGroup addLocomotiveGroup = locomotiveServiceClient.addLocomotiveGroup(group);
+        LOGGER.info("addLocomotiveGroup(): " + addLocomotiveGroup);
+        group.setId(addLocomotiveGroup.getId());
 
-        if (listenerOk()) listener.locomotiveGroupAdded(locomotiveGroup);
-
+        if (listenerOk()) listener.locomotiveGroupAdded(group);
     }
 
     @Override
     public void removeLocomotiveGroup(LocomotiveGroup group) {
-        LocomotiveGroup locomotiveGroup = locomotiveServiceClient.deleteLocomotiveGroup(group.getId(), uuid);
-        LOGGER.info("removeLocomotiveGroup(): " + locomotiveGroup);
+        LocomotiveGroup deleteLocomotiveGroup = locomotiveServiceClient.deleteLocomotiveGroup(group.getId());
+        LOGGER.info("removeLocomotiveGroup(): " + deleteLocomotiveGroup);
 
-        if (listenerOk()) listener.locomotiveGroupRemoved(locomotiveGroup);
+        if (listenerOk()) listener.locomotiveGroupRemoved(group);
     }
 
     @Override
     public void updateLocomotiveGroup(LocomotiveGroup group) {
-        LocomotiveGroup locomotiveGroup = locomotiveServiceClient.updateLocomotiveGroup(group, uuid);
-        LOGGER.info("updateLocomotiveGroup(): " + locomotiveGroup);
-        if (listenerOk()) listener.locomotiveGroupUpdated(locomotiveGroup);
+        LocomotiveGroup updateLocomotiveGroup = locomotiveServiceClient.updateLocomotiveGroup(group);
+        LOGGER.info("updateLocomotiveGroup(): " + updateLocomotiveGroup);
+        if (listenerOk()) listener.locomotiveGroupUpdated(group);
     }
 
     @Override
     public void clear() {
-        SortedSet<LocomotiveGroup> locomotiveGroups = locomotiveServiceClient.deleteAllLocomotiveGroups(uuid);
+        SortedSet<LocomotiveGroup> locomotiveGroups = locomotiveServiceClient.deleteAllLocomotiveGroups();
         if (listenerOk()) listener.locomotivesUpdated(locomotiveGroups);
     }
 
@@ -115,6 +109,7 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void disconnect() {
+        sioLocomotiveService.disconnect();
 
     }
 
@@ -122,11 +117,4 @@ public class RestLocomotiveService implements LocomotiveService {
         return listener != null;
     }
 
-    public static void main(String[] args) {
-        RestLocomotiveService s = new RestLocomotiveService();
-        SortedSet<LocomotiveGroup> allLocomotiveGroups = s.getAllLocomotiveGroups();
-
-        s.addLocomotiveGroup(new LocomotiveGroup("", "some name"));
-        s.getAllLocomotiveGroups();
-    }
 }

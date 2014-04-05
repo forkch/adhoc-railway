@@ -46,9 +46,8 @@ exports.addLocomotiveGroup = function (locomotiveGroup, fn) {
     var group = new LocomotiveGroupModel(locomotiveGroup);
     group.save(function (err, addedlocomotiveGroup) {
         if (!err) {
-            var locomotiveGroup = addedlocomotiveGroup.toJSON();
-            locomotiveGroup.locomotives = [];
-            fn(false, locomotiveGroup);
+            addedlocomotiveGroup.locomotives = [];
+            fn(false, addedlocomotiveGroup.toJSON());
         } else {
             fn(true, 'failed to save locomotive group');
         }
@@ -62,12 +61,8 @@ exports.updateLocomotiveGroup = function (locomotiveGroup, fn) {
     }
     console.log('updating locomotive group ' + JSON.stringify(locomotiveGroup));
 
-    var id = locomotiveGroup.id;
-    delete locomotiveGroup.id;
-
-    LocomotiveGroupModel.update({_id: id}, locomotiveGroup, function (err) {
+    LocomotiveGroupModel.update({_id: locomotiveGroup.id}, locomotiveGroup, function (err) {
         if (!err) {
-            locomotiveGroup.id = id;
             fn(false, locomotiveGroup);
         } else {
             fn(true, 'failed to update locomotive group');
@@ -83,7 +78,7 @@ exports.removeLocomotiveGroup = function (locomotiveGroupId, fn) {
                     if (!err) {
                         locomotiveGroup.remove(function (err) {
                             if (!err) {
-                                fn(err, locomotiveGroup);
+                                fn(err, locomotiveGroup.toJSON());
                             } else {
                                 fn(err, 'failed to remove locomotive group');
                             }
@@ -128,7 +123,7 @@ exports.addLocomotive = function (locomotive, fn) {
                     console.log(locomotiveGroup);
                     locomotiveGroup.locomotives.push(addedLocomotive.id);
                     locomotiveGroup.save();
-                    fn(false, addedLocomotive);
+                    fn(false, addedLocomotive.toJSON());
                 } else {
                     console.error(err);
                     fn(true, 'failed to add locomotive to group');
@@ -169,7 +164,7 @@ exports.removeLocomotive = function (locomotiveId, fn) {
                 locomotive.remove(function (err) {
                     LocomotiveGroupModel.update({}, {$pull: {locomotives: locomotiveId}}, function (err, locomotiveGroup) {
                         if (!err) {
-                            fn(err, locomotive);
+                            fn(err, locomotive.toJSON());
                         } else {
                             fn(err, 'failed to remove locomotive');
                         }

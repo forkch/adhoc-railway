@@ -91,8 +91,8 @@ function AddTurnoutGroupCtrl($scope, socket, $location) {
 AddTurnoutGroupCtrl.$inject = ['$scope', 'socket', '$location'];
 
 function EditTurnoutGroupCtrl($scope, socket, $location, $routeParams) {
-    socket.emit('turnoutGroup:getById', $routeParams.id, function (turnoutGroup) {
-        if (turnoutGroup != null) {
+    socket.emit('turnoutGroup:getById', $routeParams.id, function (err, turnoutGroup) {
+        if (!err) {
             $scope.turnoutGroup = turnoutGroup;
         }
     });
@@ -135,8 +135,8 @@ function AddTurnoutCtrl($scope, socket, $location, $routeParams) {
 AddTurnoutCtrl.$inject = ['$scope', 'socket', '$location', '$routeParams'];
 
 function EditTurnoutCtrl($scope, socket, $location, $routeParams) {
-    socket.emit('turnout:getById', $routeParams.id, function (turnout) {
-        if (turnout != null) {
+    socket.emit('turnout:getById', $routeParams.id, function (err, turnout) {
+        if (!err) {
             $scope.turnout = turnout;
         }
     });

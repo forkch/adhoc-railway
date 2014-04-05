@@ -30,7 +30,7 @@ exports.getTurnoutGroupById = function (turnoutGroupId, fn) {
     console.log('turnoutGroup:getById: ' + turnoutGroupId);
     TurnoutGroupModel.findById(turnoutGroupId, function (err, turnoutGroup) {
         if (!err) {
-            fn(err, turnoutGroup);
+            fn(err, turnoutGroup.toJSON());
         } else {
             fn(err, 'failed to find turnout group with id ' + turnoutGroupId);
         }
@@ -45,9 +45,8 @@ exports.addTurnoutGroup = function (turnoutGroup, fn) {
     var group = new TurnoutGroupModel(turnoutGroup);
     group.save(function (err, addedTurnoutGroup) {
         if (!err) {
-            var turnoutGroup = addedTurnoutGroup.toJSON();
-            turnoutGroup.turnouts = {};
-            fn(err, turnoutGroup);
+            addedTurnoutGroup.turnouts = [];
+            fn(err, addedTurnoutGroup.toJSON());
         } else {
             fn(err, 'failed to save turnout group');
         }
@@ -61,12 +60,8 @@ exports.updateTurnoutGroup = function (turnoutGroup, fn) {
     }
     console.log('updating turnout group ' + JSON.stringify(turnoutGroup));
 
-    var id = turnoutGroup.id;
-    delete turnoutGroup.id;
-
-    TurnoutGroupModel.update({_id: id}, turnoutGroup, function (err) {
+    TurnoutGroupModel.update({_id: turnoutGroup.id}, turnoutGroup, function (err) {
         if (!err) {
-            turnoutGroup.id = id;
             fn(err, turnoutGroup);
         } else {
             fn(err, 'failed to update turnout group');
@@ -79,10 +74,10 @@ exports.removeTurnoutGroup = function (turnoutGroupId, fn) {
     TurnoutModel.remove({"groupId": turnoutGroupId}, function (err) {
         if (!err) {
             TurnoutGroupModel.findById(turnoutGroupId, function (err, turnoutGroup) {
-                if (!err) {
+                if (!err && turnoutGroup) {
                     turnoutGroup.remove(function (err) {
                         if (!err) {
-                            fn(err, turnoutGroup);
+                            fn(err, turnoutGroup.toJSON());
                         } else {
                             fn(err, 'failed to remove turnout group');
                         }
@@ -134,7 +129,7 @@ exports.addTurnout = function (turnout, fn) {
                     console.log(turnoutGroup);
                     turnoutGroup.turnouts.push(addedTurnout.id);
                     turnoutGroup.save();
-                    fn(err, addedTurnout);
+                    fn(err, addedTurnout.toJSON());
                 } else {
                     fn(err, 'failed to add turnout');
                 }
@@ -174,7 +169,7 @@ exports.removeTurnout = function (turnoutId, fn) {
                 turnout.remove(function (err) {
                     TurnoutGroupModel.update({}, {$pull: {turnouts: turnoutId}}, function (err, turnoutGroup) {
                         if (!err) {
-                            fn(err, turnout);
+                            fn(err, turnout.toJSON());
                         } else {
                             fn(err, 'failed to remove turnout');
                         }
@@ -257,6 +252,10 @@ validateTurnout = function (turnout, fn) {
         return false;
     }
 
+    if(!turnout.type) {
+        fn(true, "turnout type must be specified");
+        return false;
+    }
     if (turnout.type.toUpperCase() === "threeway".toUpperCase()) {
         if (!turnout.bus2 || turnout.bus2 < 1) {
             fn(true, 'bus 2 must be greater 0');

@@ -19,6 +19,9 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import com.google.gson.annotations.Expose;
+import com.sun.xml.internal.bind.v2.runtime.RuntimeUtil;
+import org.apache.commons.lang3.builder.*;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
@@ -27,10 +30,13 @@ import java.util.TreeSet;
 public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
         Comparable<TurnoutGroup> {
 
-    private int id;
+    @Expose
+    private String id;
 
+    @Expose
     private String name;
 
+    @Expose
     private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
 
     public static final String PROPERTYNAME_NAME = "name";
@@ -38,11 +44,11 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
     public TurnoutGroup() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(final int id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -82,31 +88,22 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int compareTo(final TurnoutGroup o) {
-        return name.compareTo(o.getName());
+        return new CompareToBuilder().append(getName(), o.getName()).build();
     }
 
     @Override
     public int hashCode() {
-        return Integer.valueOf(id).hashCode();
+        return new HashCodeBuilder().append(id).hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final TurnoutGroup other = (TurnoutGroup) obj;
-        return id == other.id;
+        TurnoutGroup rhs = (TurnoutGroup) obj;
+        return new EqualsBuilder().append(id, rhs.getId()).build().booleanValue();
     }
 
     @Override
     public String toString() {
-        return name;
+        return new ToStringBuilder(false, ToStringStyle.SHORT_PREFIX_STYLE).append(name).build();
     }
 }

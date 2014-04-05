@@ -20,6 +20,7 @@ package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
 import com.google.common.collect.Sets;
+import com.google.gson.annotations.Expose;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -30,11 +31,14 @@ public class LocomotiveGroup extends AbstractItem implements
         java.io.Serializable, Comparable<LocomotiveGroup> {
 
     @XStreamAsAttribute
+    @Expose
     private String id;
 
     @XStreamAsAttribute
+    @Expose
     private String name;
 
+    @Expose
     private SortedSet<Locomotive> locomotives = Sets.newTreeSet();
 
     public static final String PROPERTYNAME_ID = "id";

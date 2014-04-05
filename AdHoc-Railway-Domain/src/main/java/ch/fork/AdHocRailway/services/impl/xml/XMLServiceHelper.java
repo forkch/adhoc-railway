@@ -18,16 +18,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.SortedSet;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class XMLServiceHelper {
 
     private static final Logger LOGGER = Logger
             .getLogger(XMLServiceHelper.class);
-    private static final AtomicInteger counter = new AtomicInteger();
 
-    public static int nextValue() {
-        return counter.getAndIncrement();
+    public static String nextValue() {
+        return UUID.randomUUID().toString();
     }
 
     public XMLServiceHelper() {

@@ -13,32 +13,32 @@ import java.util.SortedSet;
 public interface RestLocomotiveServiceClient {
 
     @GET("/locomotiveGroup")
-    SortedSet<LocomotiveGroup> getAllLocomotivesGroups(@Header("adhoc-railway-appid") String appId);
+    SortedSet<LocomotiveGroup> getAllLocomotivesGroups();
 
     @DELETE("/locomotiveGroup")
-    SortedSet<LocomotiveGroup> deleteAllLocomotiveGroups(@Header("adhoc-railway-appid") String appId);
+    SortedSet<LocomotiveGroup> deleteAllLocomotiveGroups();
 
     @GET("/locomotiveGroup/{id}")
-    LocomotiveGroup getLocomotiveGroupById(@Path("id") String id, @Header("adhoc-railway-appid") String appId);
+    LocomotiveGroup getLocomotiveGroupById(@Path("id") String id);
 
     @POST("/locomotiveGroup")
-    LocomotiveGroup addLocomotiveGroup(@Body LocomotiveGroup group, @Header("adhoc-railway-appid") String appId);
+    LocomotiveGroup addLocomotiveGroup(@Body LocomotiveGroup group);
 
     @PUT("/locomotiveGroup")
-    LocomotiveGroup updateLocomotiveGroup(@Body LocomotiveGroup group, @Header("adhoc-railway-appid") String appId);
+    LocomotiveGroup updateLocomotiveGroup(@Body LocomotiveGroup group);
 
     @DELETE("/locomotiveGroup/{id}")
-    LocomotiveGroup deleteLocomotiveGroup(@Path("id") String id, @Header("adhoc-railway-appid") String appId);
+    LocomotiveGroup deleteLocomotiveGroup(@Path("id") String id);
 
     @GET("/locomotive/{id}")
-    Locomotive getLocomotiveById(@Path("id") String id, @Header("adhoc-railway-appid") String appId);
+    Locomotive getLocomotiveById(@Path("id") String id);
 
     @POST("/locomotive")
-    LocomotiveGroup addLocomotive(@Body Locomotive locomotive, @Header("adhoc-railway-appid") String appId);
-
+    Locomotive addLocomotive(@Body Locomotive locomotive);
+    
     @PUT("/locomotive")
-    LocomotiveGroup updateLocomotive(@Body Locomotive locomotive, @Header("adhoc-railway-appid") String appId);
-
+    Locomotive updateLocomotive(@Body Locomotive locomotive);
+    
     @DELETE("/locomotive/{id}")
-    LocomotiveGroup deleteLocomotive(@Path("id") String id, @Header("adhoc-railway-appid") String appId);
-}
+    Locomotive deleteLocomotive(@Path("id") String id);
+    }

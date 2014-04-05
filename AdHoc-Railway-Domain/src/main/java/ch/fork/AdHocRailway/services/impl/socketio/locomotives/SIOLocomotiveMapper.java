@@ -87,13 +87,16 @@ public class SIOLocomotiveMapper {
 
             for (int i = 0; i < functionsJSON.length(); i++) {
                 final JSONObject functionJSON = functionsJSON.getJSONObject(i);
-                final LocomotiveFunction function = new LocomotiveFunction(
-                        functionJSON.getInt("number"),
-                        functionJSON.getString("description"),
-                        functionJSON.getBoolean("emergencyBrakeFunction"),
-                        functionJSON.optInt("deactivationDelay", -1));
 
-                locomotive.addLocomotiveFunction(function);
+                if(functionJSON.has("number")) {
+                    final LocomotiveFunction function = new LocomotiveFunction(
+                            functionJSON.getInt("number"),
+                            functionJSON.getString("description"),
+                            functionJSON.getBoolean("emergencyBrakeFunction"),
+                            functionJSON.optInt("deactivationDelay", -1));
+
+                    locomotive.addLocomotiveFunction(function);
+                }
             }
 
         }

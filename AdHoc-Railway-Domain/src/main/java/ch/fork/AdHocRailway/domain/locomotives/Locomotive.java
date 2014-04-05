@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import com.google.gson.annotations.Expose;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -38,38 +39,46 @@ public class Locomotive extends AbstractItem implements Serializable,
         Comparable<Locomotive> {
 
     @XStreamAsAttribute
+    @Expose
     private String id;
 
     @XStreamAsAttribute
+    @Expose
     private String name;
 
     @XStreamAsAttribute
+    @Expose
+    private String groupId;
+
+    @XStreamAsAttribute
+    @Expose
     private String desc;
 
     @XStreamAsAttribute
+    @Expose
     private String image;
 
+    @Expose
     private String imageBase64;
 
     @XStreamAsAttribute
+    @Expose
     private LocomotiveType type;
 
     @XStreamAsAttribute
+    @Expose
     private int bus;
 
     @XStreamAsAttribute
+    @Expose
     private int address1;
 
     @XStreamAsAttribute
+    @Expose
     private int address2;
 
+    @Expose
     private SortedSet<LocomotiveFunction> functions = new TreeSet<LocomotiveFunction>();
-
-    @XStreamAsAttribute
-    private String groupId;
-
-    @XStreamOmitField
-    private LocomotiveGroup group;
 
     public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_NAME = "name";
@@ -82,6 +91,9 @@ public class Locomotive extends AbstractItem implements Serializable,
 
     public static final String PROPERTYNAME_FUNCTIONS = "functions";
     public static final String PROPERTYNAME_LOCOMOTIVE_GROUP = "group";
+
+    @XStreamOmitField
+    private transient LocomotiveGroup group;
 
     private transient int currentSpeed = 0;
 

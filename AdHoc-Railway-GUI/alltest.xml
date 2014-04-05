@@ -1891,7 +1891,7 @@
                     </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
                 </changeSupport>
                 <id>1512841196</id>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <number>1</number>
                 <description></description>
                 <defaultState>LEFT</defaultState>
@@ -1921,7 +1921,7 @@
                     </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
                 </changeSupport>
                 <id>1972119563</id>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <number>2</number>
                 <description></description>
                 <defaultState>STRAIGHT</defaultState>
@@ -1951,7 +1951,7 @@
                     </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
                 </changeSupport>
                 <id>434201276</id>
-                <turnoutType>THREEWAY</turnoutType>
+                <type>THREEWAY</type>
                 <number>3</number>
                 <description></description>
                 <defaultState>STRAIGHT</defaultState>
@@ -1981,7 +1981,7 @@
                     </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
                 </changeSupport>
                 <id>-1965740233</id>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <number>4</number>
                 <description></description>
                 <defaultState>STRAIGHT</defaultState>
@@ -2011,7 +2011,7 @@
                     </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
                 </changeSupport>
                 <id>-1666422421</id>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <number>5</number>
                 <description></description>
                 <defaultState>STRAIGHT</defaultState>
@@ -2041,7 +2041,7 @@
                     </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
                 </changeSupport>
                 <id>-1844541092</id>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <number>6</number>
                 <description></description>
                 <defaultState>STRAIGHT</defaultState>
@@ -2071,7 +2071,7 @@
                     </com.jgoodies.binding.beans.ExtendedPropertyChangeSupport>
                 </changeSupport>
                 <id>492138200</id>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <number>7</number>
                 <description></description>
                 <defaultState>STRAIGHT</defaultState>

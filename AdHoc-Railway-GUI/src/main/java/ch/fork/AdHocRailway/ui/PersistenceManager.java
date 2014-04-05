@@ -31,6 +31,7 @@ import javax.jmdns.ServiceInfo;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.UUID;
 
 public class PersistenceManager {
 
@@ -40,6 +41,7 @@ public class PersistenceManager {
 
     private final PersistenceManagerContext appContext;
 
+    private final String uuid = UUID.randomUUID().toString();
     public PersistenceManager(final PersistenceManagerContext ctx) {
         this.appContext = ctx;
 
@@ -82,7 +84,7 @@ public class PersistenceManager {
         }
         appContext.setTurnoutManager(turnoutManager);
         turnoutManager.setTurnoutService(ServiceFactory
-                .createTurnoutService(useAdHocServer));
+                .createTurnoutService(useAdHocServer, uuid));
         turnoutManager.initialize(appContext.getMainBus());
         return turnoutManager;
     }
@@ -99,7 +101,7 @@ public class PersistenceManager {
         }
 
         locomotiveManager.setLocomotiveService(ServiceFactory
-                .createLocomotiveService(useAdHocServer));
+                .createLocomotiveService(useAdHocServer, uuid));
         locomotiveManager.initialize(appContext.getMainBus());
     }
 
@@ -191,6 +193,7 @@ public class PersistenceManager {
     }
 
     public void connectToAdHocServer(final String url) {
+        SIOService.setUUID(uuid);
         SIOService.getInstance().connect(url, new ServiceListener() {
 
             @Override

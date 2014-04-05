@@ -32,15 +32,15 @@ exports.init = function (server, sendDataToWebsocketClients) {
     server.put('/locomotiveGroup', function (req, res, next) {
         locomotiveController.updateLocomotiveGroup(req.params, function (err, locomotiveGroup) {
             res.send(locomotiveGroup);
-            sendDataToWebsocketClients('locomotiveGroup:updated', locomotiveGroup);
+            sendDataToWebsocketClients(req, 'locomotiveGroup:updated', locomotiveGroup);
             next();
         });
     });
 
     server.del('/locomotiveGroup/:id', function (req, res, next) {
         locomotiveController.removeLocomotiveGroup(req.params.id, function (err, locomotiveGroup) {
-            res.send(locomotiveGroupId);
-            sendDataToWebsocketClients('locomotiveGroup:removed', locomotiveGroup);
+            res.send(locomotiveGroup);
+            sendDataToWebsocketClients(req, 'locomotiveGroup:removed', locomotiveGroup);
             next();
         });
     });
@@ -48,7 +48,7 @@ exports.init = function (server, sendDataToWebsocketClients) {
     server.del('/locomotiveGroup/:id', function (req, res, next) {
         locomotiveController.clear(req.params.id, function (err, locomotiveGroup) {
             res.send(locomotiveGroup);
-            sendDataToWebsocketClients('locomotiveGroup:removed', locomotiveGroup);
+            sendDataToWebsocketClients(req, 'locomotiveGroup:removed', locomotiveGroup);
             next();
         });
     });
@@ -62,8 +62,8 @@ exports.init = function (server, sendDataToWebsocketClients) {
 
     server.post('/locomotive', function (req, res, next) {
         locomotiveController.addLocomotive(req.params, function (err, locomotive) {
-            res.send(locomotive._id);
-            sendDataToWebsocketClients('locomotive:added', locomotive);
+            res.send(locomotive);
+            sendDataToWebsocketClients(req, 'locomotive:added', locomotive);
             next();
         });
     });
@@ -71,15 +71,15 @@ exports.init = function (server, sendDataToWebsocketClients) {
     server.put('/locomotive', function (req, res, next) {
         locomotiveController.updateLocomotive(req.params, function (err, locomotive) {
             res.send(locomotive);
-            sendDataToWebsocketClients('locomotive:updated', locomotive);
+            sendDataToWebsocketClients(req, 'locomotive:updated', locomotive);
             next();
         });
     });
 
     server.del('/locomotive/:id', function (req, res, next) {
-        locomotiveController.removeLocomotive(req.params.id, function (err, locomotiveId) {
-            res.send(locomotiveId);
-            sendDataToWebsocketClients('locomotive:removed', locomotiveId);
+        locomotiveController.removeLocomotive(req.params.id, function (err, locomotive) {
+            res.send(locomotive);
+            sendDataToWebsocketClients(req, 'locomotive:removed', locomotiveId);
             next();
         });
     });

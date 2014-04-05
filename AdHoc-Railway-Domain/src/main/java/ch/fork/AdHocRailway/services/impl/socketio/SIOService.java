@@ -28,7 +28,6 @@ public class SIOService {
     }
 
     public static SIOService getInstance() {
-
         return INSTANCE;
     }
 

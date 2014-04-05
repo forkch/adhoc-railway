@@ -191,7 +191,7 @@ public class TurnoutConfig extends JDialog {
         turnoutTypeComboBox
                 .addActionListener(new TurnoutTypeSelectionListener());
 
-        switch (presentationModel.getBean().getTurnoutType()) {
+        switch (presentationModel.getBean().getType()) {
             case DEFAULT_LEFT:
             case DOUBLECROSS:
             case CUTTER:
@@ -499,7 +499,7 @@ public class TurnoutConfig extends JDialog {
 
             });
 
-            if (turnout.getId() != -1) {
+            if (turnout.getId() != null) {
                 turnoutManager.updateTurnout(turnout);
             } else {
                 turnoutManager.addTurnoutToGroup(turnout, selectedTurnoutGroup);

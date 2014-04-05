@@ -321,12 +321,11 @@ public class SIOLocomotiveService implements IOCallback {
             throw new ManagerException(
                     "error updating turnout group", e);
         }
-    }
+    }*/
 
-    @Override
     public void disconnect() {
         sioService.removeIOCallback(this);
-    }*/
+    }
 
     @Override
     public synchronized void on(final String event, final IOAcknowledge arg1,
@@ -376,7 +375,7 @@ public class SIOLocomotiveService implements IOCallback {
             }
         } catch (final JSONException e) {
             listener.failure(new ManagerException(
-                    "error parsing event '" + event + "'", e));
+                    "error parsing event '" + event + "'",e));
         }
     }
 

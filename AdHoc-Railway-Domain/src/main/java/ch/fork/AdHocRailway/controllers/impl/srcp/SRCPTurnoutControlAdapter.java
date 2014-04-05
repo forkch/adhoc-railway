@@ -175,7 +175,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 
     private void setSRCPTurnoutType(final Turnout turnout,
                                     final SRCPTurnout sTurnout) {
-        switch (turnout.getTurnoutType()) {
+        switch (turnout.getType()) {
             case DEFAULT_LEFT:
             case DEFAULT_RIGHT:
                 sTurnout.setTurnoutType(SRCPTurnoutTypes.DEFAULT);

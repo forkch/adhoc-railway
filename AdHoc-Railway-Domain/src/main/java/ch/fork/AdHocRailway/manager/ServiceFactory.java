@@ -4,6 +4,7 @@ import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.RouteService;
 import ch.fork.AdHocRailway.services.TurnoutService;
 import ch.fork.AdHocRailway.services.impl.rest.RestLocomotiveService;
+import ch.fork.AdHocRailway.services.impl.rest.RestTurnoutService;
 import ch.fork.AdHocRailway.services.impl.socketio.locomotives.SIOLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIOTurnoutService;
@@ -14,19 +15,19 @@ import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
 public class ServiceFactory {
 
     public static LocomotiveService createLocomotiveService(
-            final boolean useAdHocServer) {
+            final boolean useAdHocServer, String uuid) {
 
         if (useAdHocServer) {
-            return new RestLocomotiveService();
+            return new RestLocomotiveService(uuid);
         } else {
             return new XMLLocomotiveService();
         }
     }
 
     public static TurnoutService createTurnoutService(
-            final boolean useAdHocServer) {
+            final boolean useAdHocServer, String uuid) {
         if (useAdHocServer) {
-            return new SIOTurnoutService();
+            return new RestTurnoutService(uuid);
         } else {
             return new XMLTurnoutService();
         }

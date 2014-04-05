@@ -19,9 +19,9 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.gson.annotations.Expose;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import org.apache.commons.lang3.builder.*;
 
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;
@@ -30,33 +30,49 @@ import java.util.Set;
 public class Turnout extends AbstractItem implements java.io.Serializable,
         Comparable<Turnout> {
 
-    private int id = -1;
+    @Expose
+    private String id = null;
 
+    @Expose
     private int number;
-    private String description;
-    private TurnoutType turnoutType;
 
+    @Expose
+    private String description;
+
+    @Expose
+    private TurnoutType type;
+
+    @Expose
     private TurnoutState defaultState;
 
+    @Expose
     private TurnoutOrientation orientation;
 
+    @Expose
     private int bus1;
+
+    @Expose
     private int address1;
 
+    @Expose
     private boolean address1Switched;
+
+    @Expose
     private int bus2;
+
+    @Expose
     private int address2;
 
+    @Expose
     private boolean address2Switched;
-    private Set<RouteItem> routeItems = new HashSet<RouteItem>();
 
-    @XStreamOmitField
-    private TurnoutGroup turnoutGroup;
-    private transient TurnoutState actualState = TurnoutState.UNDEF;
+    @XStreamAsAttribute
+    @Expose
+    private String groupId;
 
     public static final String PROPERTYNAME_NUMBER = "number";
     public static final String PROPERTYNAME_DESCRIPTION = "description";
-    public static final String PROPERTYNAME_TURNOUT_TYPE = "turnoutType";
+    public static final String PROPERTYNAME_TURNOUT_TYPE = "type";
     public static final String PROPERTYNAME_DEFAULT_STATE = "defaultState";
     public static final String PROPERTYNAME_ORIENTATION = "orientation";
     public static final String PROPERTYNAME_BUS1 = "bus1";
@@ -68,6 +84,11 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
     public static final String PROPERTYNAME_TURNOUT_GROUP = "turnoutGroup";
 
+    private transient Set<RouteItem> routeItems = new HashSet<RouteItem>();
+    private transient TurnoutGroup turnoutGroup;
+    private transient TurnoutState actualState = TurnoutState.UNDEF;
+
+
     public Turnout() {
 
     }
@@ -78,11 +99,11 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
         actualState = TurnoutState.UNDEF;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(final int id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -96,15 +117,15 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
         changeSupport.firePropertyChange(PROPERTYNAME_NUMBER, old, this.number);
     }
 
-    public TurnoutType getTurnoutType() {
-        return this.turnoutType;
+    public TurnoutType getType() {
+        return this.type;
     }
 
-    public void setTurnoutType(final TurnoutType turnoutType) {
-        final TurnoutType old = this.turnoutType;
-        this.turnoutType = turnoutType;
+    public void setType(final TurnoutType type) {
+        final TurnoutType old = this.type;
+        this.type = type;
         changeSupport.firePropertyChange(PROPERTYNAME_TURNOUT_TYPE, old,
-                this.turnoutType);
+                this.type);
     }
 
     public String getDescription() {
@@ -205,23 +226,23 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     }
 
     public boolean isDefaultLeft() {
-        return getTurnoutType() == TurnoutType.DEFAULT_LEFT;
+        return getType() == TurnoutType.DEFAULT_LEFT;
     }
 
     public boolean isDefaultRight() {
-        return getTurnoutType() == TurnoutType.DEFAULT_RIGHT;
+        return getType() == TurnoutType.DEFAULT_RIGHT;
     }
 
     public boolean isDoubleCross() {
-        return getTurnoutType() == TurnoutType.DOUBLECROSS;
+        return getType() == TurnoutType.DOUBLECROSS;
     }
 
     public boolean isThreeWay() {
-        return getTurnoutType() == TurnoutType.THREEWAY;
+        return getType() == TurnoutType.THREEWAY;
     }
 
     public boolean isCutter() {
-        return getTurnoutType() == TurnoutType.CUTTER;
+        return getType() == TurnoutType.CUTTER;
     }
 
     public TurnoutGroup getTurnoutGroup() {
@@ -248,48 +269,23 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        return result;
+        return new HashCodeBuilder().append(id).hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Turnout other = (Turnout) obj;
-        return id == other.id;
+        Turnout rhs = (Turnout) obj;
+        return new EqualsBuilder().append(id, rhs.getId()).build().booleanValue();
     }
 
     @Override
     public int compareTo(final Turnout o) {
-        if (this == o) {
-            return 0;
-        }
-        if (o == null) {
-            return -1;
-        }
-        if (number > o.getNumber()) {
-            return 1;
-        } else if (number == o.getNumber()) {
-            return 0;
-        } else {
-            return -1;
-        }
+        return new CompareToBuilder().append(number, o.getNumber()).build();
     }
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this,
-                ToStringStyle.SHORT_PREFIX_STYLE);
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(number).append(type).append(bus1).append(address1).append(address1Switched).append(bus2).append(address2).append(address2Switched).build();
     }
 
     public void addPropertyChangeListener(final PropertyChangeListener x) {
@@ -309,7 +305,7 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     }
 
     public TurnoutState getToggledState() {
-        if (TurnoutType.THREEWAY.equals(getTurnoutType())) {
+        if (TurnoutType.THREEWAY.equals(getType())) {
             if (TurnoutState.STRAIGHT.equals(actualState)) {
                 return TurnoutState.RIGHT;
             }
@@ -331,5 +327,13 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
             return TurnoutState.STRAIGHT;
         }
         return TurnoutState.UNDEF;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getGroupId() {
+        return groupId;
     }
 }
