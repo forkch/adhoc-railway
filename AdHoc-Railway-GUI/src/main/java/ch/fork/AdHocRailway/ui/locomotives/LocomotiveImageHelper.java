@@ -104,7 +104,7 @@ public class LocomotiveImageHelper {
         final String key = getKey(locomotive, height);
         final ImageIcon icon = new ImageIcon(img);
         //cache.put(key, icon);
-        LOGGER.info("cache-miss: put icon for " + key + " in cache");
+        LOGGER.debug("cache-miss: put icon for " + key + " in cache");
         return icon;
 
     }
@@ -119,7 +119,7 @@ public class LocomotiveImageHelper {
             final String key = getKey(locomotive, height);
             final ImageIcon icon = new ImageIcon(img);
             //cache.put(key, icon);
-            LOGGER.info("cache-miss: put icon for " + key + " in cache");
+            LOGGER.debug("cache-miss: put icon for " + key + " in cache");
             return icon;
 
         } catch (final IOException e) {
