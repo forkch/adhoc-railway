@@ -18,9 +18,9 @@ exports.getAllLocomotiveGroups = function (fn) {
     console.log("getAllLocomotiveGroups");
     getAllLocomotiveData(function (err, result) {
         if (!err) {
-            fn(false, result);
+            fn(err, result);
         } else {
-            fn(true, 'failed to find all locomotive groups');
+            fn(err, {msg:'failed to find all locomotive groups'});
         }
     });
 }
@@ -29,16 +29,16 @@ exports.getLocomotiveGroupById = function (locomotiveGroupId, fn) {
     console.log('getLocomotiveGroupById: ' + locomotiveGroupId);
     LocomotiveGroupModel.findById(locomotiveGroupId, function (err, locomotiveGroup) {
         if (!err) {
-            fn(false, locomotiveGroup);
+            fn(err, locomotiveGroup);
         } else {
-            fn('failed to find locomotive group with id ' + locomotiveGroupId);
+            fn(err, {msg:'failed to find locomotive group with id ' + locomotiveGroupId});
         }
     });
 }
 
 exports.addLocomotiveGroup = function (locomotiveGroup, fn) {
     if (locomotiveGroup.name == null || locomotiveGroup.name.length == 0) {
-        fn(true, 'name must be defined');
+        fn(true, {msg:'name must be defined'});
         return;
     }
 
@@ -47,25 +47,25 @@ exports.addLocomotiveGroup = function (locomotiveGroup, fn) {
     group.save(function (err, addedlocomotiveGroup) {
         if (!err) {
             addedlocomotiveGroup.locomotives = [];
-            fn(false, addedlocomotiveGroup.toJSON());
+            fn(err, addedlocomotiveGroup.toJSON());
         } else {
-            fn(true, 'failed to save locomotive group');
+            fn(err, {msg:'failed to save locomotive group'});
         }
     });
 }
 
 exports.updateLocomotiveGroup = function (locomotiveGroup, fn) {
     if (locomotiveGroup.name == null || locomotiveGroup.name.length == 0) {
-        fn(true, 'name must be defined');
+        fn(err, {msg:'name must be defined'});
         return;
     }
     console.log('updating locomotive group ' + JSON.stringify(locomotiveGroup));
 
     LocomotiveGroupModel.update({_id: locomotiveGroup.id}, locomotiveGroup, function (err) {
         if (!err) {
-            fn(false, locomotiveGroup);
+            fn(err, locomotiveGroup);
         } else {
-            fn(true, 'failed to update locomotive group');
+            fn(err, {msg:'failed to update locomotive group'});
         }
     });
 }
@@ -80,7 +80,7 @@ exports.removeLocomotiveGroup = function (locomotiveGroupId, fn) {
                             if (!err) {
                                 fn(err, locomotiveGroup.toJSON());
                             } else {
-                                fn(err, 'failed to remove locomotive group');
+                                fn(err, {msg: 'failed to remove locomotive group'});
                             }
                         });
 
@@ -102,9 +102,9 @@ exports.getLocomotiveById = function (locomotiveId, fn) {
     console.log('locomotive:getById: ' + locomotiveId);
     LocomotiveModel.findById(locomotiveId, function (err, locomotive) {
         if (!err) {
-            fn(false, locomotive);
+            fn(err, locomotive);
         } else {
-            fn(true, 'failed to find locomotive with id ' + locomotiveId);
+            fn(err, {msg:'failed to find locomotive with id ' + locomotiveId});
         }
     });
 }
@@ -123,15 +123,15 @@ exports.addLocomotive = function (locomotive, fn) {
                     console.log(locomotiveGroup);
                     locomotiveGroup.locomotives.push(addedLocomotive.id);
                     locomotiveGroup.save();
-                    fn(false, addedLocomotive.toJSON());
+                    fn(err, addedLocomotive.toJSON());
                 } else {
                     console.error(err);
-                    fn(true, 'failed to add locomotive to group');
+                    fn(err, {msg:'failed to add locomotive to group'});
                 }
             });
         } else {
             console.error(err);
-            fn(true, 'failed to add locomotive');
+            fn(err, {msg:'failed to add locomotive'});
         }
     });
 
@@ -233,28 +233,28 @@ getAllLocomotiveData = function (fn) {
 
 validateLocomotive = function (locomotive, fn) {
     if (!locomotive.name || locomotive.name.length < 1) {
-        fn(true, 'name must be specified');
+        fn(true, {msg:'name must be specified'});
         return false;
     }
     if (!locomotive.type || locomotive.type.length < 1) {
-        fn(true, 'type must be specified');
+        fn(true, {msg:'type must be specified'});
         return false;
     }
 
     if (!locomotive.bus || locomotive.bus < 1) {
-        fn(true, 'bus must be greater 0');
+        fn(true, {msg:'bus must be greater 0'});
         return false;
     }
 
     if (!locomotive.address1 || locomotive.address1 < 1) {
-        fn(true, 'address 1 must be greater 0');
+        fn(true, {msg:'address 1 must be greater 0'});
         return false;
     }
 
     if (locomotive.type.toUpperCase() === "SIMULATED-MFX") {
 
         if (!locomotive.address2 || locomotive.address2 < 1) {
-            fn(true, 'address 2 must be greater 0');
+            fn(true, {msg:'address 2 must be greater 0'});
             return false;
         }
     }

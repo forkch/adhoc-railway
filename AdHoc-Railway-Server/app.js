@@ -71,7 +71,18 @@ io.sockets.on('connection', function (client) {
     return socketHandler(client);
 });
 
-function sendDataToWebsocketClients(req, event, data) {
+function sendResponse(err, res, next, successCode,errCode,  data) {
+    if (!err) {
+        res.send(successCode, data);
+    } else {
+        res.send(errCode, data);
+    }
+    next();
+}
+function sendDataToWebsocketClients(err, req, event, data) {
+    if (err) {
+        return;
+    }
     var restCallAppId = req.headers['adhoc-railway-appid'];
     Object.keys(clients).forEach(function (socketIOAppId) {
         console.log("restAppId: " + restCallAppId + " --> socketIOAppId: " + socketIOAppId);
@@ -81,8 +92,8 @@ function sendDataToWebsocketClients(req, event, data) {
         }
     });
 }
-locomotiveApi.init(server, sendDataToWebsocketClients);
-turnoutApi.init(server, sendDataToWebsocketClients);
+locomotiveApi.init(server, sendDataToWebsocketClients, sendResponse);
+turnoutApi.init(server, sendDataToWebsocketClients, sendResponse);
 
 var Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
 mongoose.connect('mongodb://localhost/baehnle');

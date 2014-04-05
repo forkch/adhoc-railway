@@ -21,7 +21,7 @@ exports.getAllTurnoutGroups = function (fn) {
         if (!err) {
             fn(err, result);
         } else {
-            fn(err, 'failed to find all turnout groups');
+            fn(err, {msg:'failed to find all turnout groups'});
         }
     });
 }
@@ -32,14 +32,14 @@ exports.getTurnoutGroupById = function (turnoutGroupId, fn) {
         if (!err) {
             fn(err, turnoutGroup.toJSON());
         } else {
-            fn(err, 'failed to find turnout group with id ' + turnoutGroupId);
+            fn(err, {msg:'failed to find turnout group with id ' + turnoutGroupId});
         }
     });
 }
 
 exports.addTurnoutGroup = function (turnoutGroup, fn) {
     if (turnoutGroup.name == null || turnoutGroup.name.length == 0) {
-        fn(true, 'name must be defined');
+        fn(true, {msg:'name must be defined'});
         return;
     }
     var group = new TurnoutGroupModel(turnoutGroup);
@@ -48,14 +48,14 @@ exports.addTurnoutGroup = function (turnoutGroup, fn) {
             addedTurnoutGroup.turnouts = [];
             fn(err, addedTurnoutGroup.toJSON());
         } else {
-            fn(err, 'failed to save turnout group');
+            fn(err, {msg:'failed to save turnout group'});
         }
     });
 }
 
 exports.updateTurnoutGroup = function (turnoutGroup, fn) {
     if (turnoutGroup.name == null || turnoutGroup.name.length == 0) {
-        fn(true, 'name must be defined');
+        fn(true, {msg:'name must be defined'});
         return;
     }
     console.log('updating turnout group ' + JSON.stringify(turnoutGroup));
@@ -64,7 +64,7 @@ exports.updateTurnoutGroup = function (turnoutGroup, fn) {
         if (!err) {
             fn(err, turnoutGroup);
         } else {
-            fn(err, 'failed to update turnout group');
+            fn(err, {msg:'failed to update turnout group'});
         }
     });
 }
@@ -79,15 +79,15 @@ exports.removeTurnoutGroup = function (turnoutGroupId, fn) {
                         if (!err) {
                             fn(err, turnoutGroup.toJSON());
                         } else {
-                            fn(err, 'failed to remove turnout group');
+                            fn(err, {msg:'failed to remove turnout group'});
                         }
                     });
                 } else {
-                    fn(err, 'failed to remove turnout group');
+                    fn(err, {msg:'failed to remove turnout group'});
                 }
             });
         } else {
-            fn(err, 'failed to remove the turnouts associated to turnout group');
+            fn(err, {msg:'failed to remove the turnouts associated to turnout group'});
         }
     });
 }
@@ -98,7 +98,7 @@ exports.getAllTurnouts = function (fn) {
         if (!err) {
             fn(false, turnouts);
         } else {
-            fn(true, 'failed to find all turnouts');
+            fn(true, {msg:'failed to find all turnouts'});
         }
     });
 }
@@ -109,7 +109,7 @@ exports.getTurnoutById = function (turnoutId, fn) {
         if (!err) {
             fn(err, turnout);
         } else {
-            fn(err, 'failed to find turnout with id ' + turnoutId);
+            fn(err, {msg:'failed to find turnout with id ' + turnoutId});
         }
     });
 }
@@ -131,11 +131,11 @@ exports.addTurnout = function (turnout, fn) {
                     turnoutGroup.save();
                     fn(err, addedTurnout.toJSON());
                 } else {
-                    fn(err, 'failed to add turnout');
+                    fn(err, {msg:'failed to add turnout'});
                 }
             });
         } else {
-            fn(err, 'failed to add turnout');
+            fn(err, {msg:'failed to add turnout'});
         }
     });
 
@@ -156,7 +156,7 @@ exports.updateTurnout = function (turnout, fn) {
             turnout.id = id;
             fn(err, turnout);
         } else {
-            fn(err, 'failed to update turnout');
+            fn(err, {msg:'failed to update turnout'});
         }
     });
 }
@@ -171,15 +171,15 @@ exports.removeTurnout = function (turnoutId, fn) {
                         if (!err) {
                             fn(err, turnout.toJSON());
                         } else {
-                            fn(err, 'failed to remove turnout');
+                            fn(err, {msg:'failed to remove turnout'});
                         }
                     });
                 });
             } else {
-                fn(err, 'turnout not found');
+                fn(err, {msg:'turnout not found'});
             }
         } else {
-            fn(err, 'failed to remove turnout ');
+            fn(err, {msg:'failed to remove turnout '});
         }
     });
 }
@@ -195,11 +195,11 @@ exports.clear = function (fn) {
                         }
                     });
                 } else {
-                    fn(err, 'failed to clear turnout groups', '');
+                    fn(err, {msg:'failed to clear turnout groups'});
                 }
             });
         } else {
-            fn(err, 'failed to clear turnouts', '');
+            fn(err, {msg:'failed to clear turnouts'});
         }
     });
 }
@@ -239,31 +239,31 @@ getAllTurnoutData = function (fn) {
 
 validateTurnout = function (turnout, fn) {
     if (!turnout.number || turnout.number < 1) {
-        fn(true, 'number must be greater 0');
+        fn(true, {msg:'number must be greater 0'});
         return false;
     }
     if (!turnout.bus1 || turnout.bus1 < 1) {
-        fn(true, 'bus 1 must be greater 0');
+        fn(true, {msg:'bus 1 must be greater 0'});
         return false;
     }
 
     if (!turnout.address1 || turnout.address1 < 1) {
-        fn(true, 'address 1 must be greater 0');
+        fn(true, {msg:'address 1 must be greater 0'});
         return false;
     }
 
     if(!turnout.type) {
-        fn(true, "turnout type must be specified");
+        fn(true, {msg:'turnout type must be specified'});
         return false;
     }
     if (turnout.type.toUpperCase() === "threeway".toUpperCase()) {
         if (!turnout.bus2 || turnout.bus2 < 1) {
-            fn(true, 'bus 2 must be greater 0');
+            fn(true, {msg:'bus 2 must be greater 0'});
             return false;
         }
 
         if (!turnout.address2 || turnout.address2 < 1) {
-            fn(true, 'address 2 must be greater 0');
+            fn(true, {msg:'address 2 must be greater 0'});
             return false;
         }
     }

@@ -1,10 +1,13 @@
 package ch.fork.AdHocRailway.services.impl.rest;
 
+import ch.fork.AdHocRailway.manager.ManagerException;
 import com.google.gson.*;
 import com.google.gson.internal.bind.DateTypeAdapter;
 import org.apache.commons.lang3.StringUtils;
+import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 import retrofit.converter.GsonConverter;
 import retrofit.http.Header;
 
@@ -32,6 +35,7 @@ public class RestAdapterFactory {
                         request.addHeader("adhoc-railway-appid", appId);
                     }
                 })
+                .setErrorHandler(new AdHocRailwayRetrofitErrorHandler())
                 .build();
         return restAdapter;
     }
@@ -48,6 +52,18 @@ public class RestAdapterFactory {
         @Override
         public JsonElement serialize(Boolean src, Type typeOfSrc, JsonSerializationContext context) {
             return new JsonPrimitive(src.toString());
+        }
+    }
+
+    private static class AdHocRailwayRetrofitErrorHandler implements ErrorHandler {
+
+        @Override
+        public Throwable handleError(RetrofitError cause) {
+            if(cause.getResponse().getStatus() == 400) {
+                AdHocServerError error = (AdHocServerError) cause.getBodyAs(AdHocServerError.class);
+                return new ManagerException(error.getMsg(), cause);
+            }
+            throw new IllegalStateException("unknown error during the communication with the server");
         }
     }
 }
