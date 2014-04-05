@@ -7,8 +7,11 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import com.google.common.eventbus.EventBus;
 
 import java.io.File;
+import java.util.UUID;
 
 public interface PersistenceManagerContext {
+
+    String getAppUUID();
 
     Preferences getPreferences();
 

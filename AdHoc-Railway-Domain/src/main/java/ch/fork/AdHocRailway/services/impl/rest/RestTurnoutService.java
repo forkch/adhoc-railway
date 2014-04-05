@@ -23,8 +23,8 @@ public class RestTurnoutService implements TurnoutService {
     private final RestTurnoutServiceClient restTurnoutServiceClient;
     private TurnoutServiceListener listener;
 
-    public RestTurnoutService(String uuid) {
-        RestAdapter restAdapter = RestAdapterFactory.createRestAdapter(uuid);
+    public RestTurnoutService(String endpointUrl, String uuid) {
+        RestAdapter restAdapter = RestAdapterFactory.createRestAdapter(endpointUrl, uuid);
         restTurnoutServiceClient = restAdapter.create(RestTurnoutServiceClient.class);
         sioTurnoutService = new SIOTurnoutCallback();
     }

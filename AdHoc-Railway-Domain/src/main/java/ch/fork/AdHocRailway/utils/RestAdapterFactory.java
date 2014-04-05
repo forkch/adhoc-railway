@@ -15,11 +15,11 @@ import retrofit.converter.GsonConverter;
 public class RestAdapterFactory {
 
 
-    public static RestAdapter createRestAdapter(final String appId) {
+    public static RestAdapter createRestAdapter(String endpointURL, final String appId) {
 
         Gson gson = GsonFactory.createGson();
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("http://localhost:3000")
+                .setEndpoint(endpointURL)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setConverter(new GsonConverter(gson))
                 .setRequestInterceptor(new RequestInterceptor() {

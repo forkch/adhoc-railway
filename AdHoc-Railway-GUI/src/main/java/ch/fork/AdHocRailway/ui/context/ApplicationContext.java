@@ -16,10 +16,13 @@ import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.UUID;
 
 public class ApplicationContext implements TurnoutContext, RouteContext,
         LocomotiveContext, TrackContext, PowerContext,
         PersistenceManagerContext, RailwayDeviceManagerContext {
+
+    public static final String APP_UUID = UUID.randomUUID().toString();
 
     private final EventBus mainBus = new EventBus();
 
@@ -220,5 +223,10 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
     @Override
     public EventBus getMainBus() {
         return mainBus;
+    }
+
+    @Override
+    public String getAppUUID() {
+        return APP_UUID;
     }
 }
