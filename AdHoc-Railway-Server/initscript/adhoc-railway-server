@@ -13,7 +13,7 @@ export HOME=/home/baehnle
 
 case "$1" in
   start)
-    forever -p /home/baehnle/.forever -a -l adhoc-railway-server.log --minUptime 5000 --sourceDir=/home/baehnle/AdHoc-Railway/AdHoc-Railway-Server/ start app.js
+    forever -p /home/baehnle/.forever -a -l adhoc-railway-server.log --minUptime 5000 --sourceDir=/home/baehnle/Code/adhoc-railway/AdHoc-Railway-Server/ start app.js
     ;;
   stop)
     forever -p /home/baehnle/.forever --sourceDir=/home/baehnle/AdHoc-Railway/AdHoc-Railway-Server/ stop app.js
