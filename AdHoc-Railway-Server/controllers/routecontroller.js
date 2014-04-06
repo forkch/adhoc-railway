@@ -2,6 +2,7 @@ var TurnoutGroupModel = require('../models/turnout_model').TurnoutGroupModel;
 var TurnoutModel = require('../models/turnout_model').TurnoutModel;
 var RouteGroupModel = require('../models/turnout_model').RouteGroupModel;
 var RouteModel = require('../models/turnout_model').RouteModel;
+
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
@@ -179,48 +180,6 @@ exports.removeRoute = function (socket, route, fn) {
         } else {
             fn(true, 'failed to remove route ');
         }
-    });
-}
-
-exports.addRoutedTurnout = function (socket, routeId, routedTurnout, fn) {
-
-    RouteModel.findById(routeId, function (err, route) {
-        if (!err) {
-
-            route.routedTurnouts.push(routedTurnout);
-            route.save();
-
-        } else {
-            fn(true, 'failed to find route with id ' + routeId);
-            return;
-        }
-
-    });
-}
-
-exports.updateRoutedTurnout = function (socket, routeId, routedTurnout, fn) {
-
-    RouteModel.update({_id: routeId}, {$set: {routedTurnouts: {'turnoutId': routedTurnout.turnoutId}}}, function (err, route) {
-        if (!err) {
-            fn(false, '');
-        } else {
-            fn(true, 'failed to update routedTurnout');
-            return;
-        }
-
-    });
-}
-
-exports.removeRoutedTurnout = function (socket, routeId, routedTurnout, fn) {
-
-    RouteModel.update({_id: routeId}, {$pull: {routedTurnouts: {'turnoutId': routedTurnout.turnoutId}}}, function (err, route) {
-        if (!err) {
-            fn(false, '');
-        } else {
-            fn(true, 'failed to remove routedTurnout');
-            return;
-        }
-
     });
 }
 
