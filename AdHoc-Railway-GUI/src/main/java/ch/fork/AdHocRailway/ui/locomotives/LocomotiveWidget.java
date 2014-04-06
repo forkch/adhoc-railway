@@ -152,7 +152,6 @@ public class LocomotiveWidget extends JPanel implements
 
         locomotiveComboBox.setSelectedIndex(-1);
         ignoreGroupAndLocomotiveSelectionEvents = false;
-        connectedToRailway = false;
     }
 
     public Locomotive getMyLocomotive() {
