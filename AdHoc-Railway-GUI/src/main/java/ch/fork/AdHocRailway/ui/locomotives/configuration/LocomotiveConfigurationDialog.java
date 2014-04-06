@@ -58,7 +58,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
     private final LocomotiveContext ctx;
     private boolean okPressed;
     private JTable locomotivesTable;
-    private JList<?> locomotiveGroupList;
+    private JList<LocomotiveGroup> locomotiveGroupList;
     private JButton addLocomotiveButton;
     private JButton removeLocomotiveButton;
     private JButton addGroupButton;
@@ -99,7 +99,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
         locomotiveGroups = new ArrayListModel<LocomotiveGroup>();
 
         locomotiveGroupModel = new SelectionInList<LocomotiveGroup>(
-                (ListModel<?>) locomotiveGroups);
+                (ListModel<LocomotiveGroup>) locomotiveGroups);
 
         locomotiveGroupList = BasicComponentFactory
                 .createList(locomotiveGroupModel);
