@@ -48,6 +48,10 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.concurrent.Delayed;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIcon;
 import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
@@ -61,6 +65,8 @@ public class LocomotiveWidget extends JPanel implements
     private final JFrame frame;
     private final LocomotiveGroup allLocomotivesGroup;
     private final LocomotiveContext ctx;
+    private final ScheduledExecutorService worker =
+            Executors.newSingleThreadScheduledExecutor();
     public boolean directionToggeled;
     private JComboBox<Locomotive> locomotiveComboBox;
     private JComboBox<LocomotiveGroup> locomotiveGroupComboBox;
@@ -76,11 +82,10 @@ public class LocomotiveWidget extends JPanel implements
     private JPanel functionsPanel;
     private DefaultComboBoxModel<LocomotiveGroup> locomotiveGroupComboBoxModel;
     private DefaultComboBoxModel<Locomotive> locomotiveComboBoxModel;
-
     private boolean ignoreGroupAndLocomotiveSelectionEvents;
     private boolean disableListener;
     private boolean connectedToRailway;
-
+    private boolean waitForConfirmation = false;
     public LocomotiveWidget(final LocomotiveContext ctx, final int number,
                             final JFrame frame) {
         super();
@@ -427,6 +432,8 @@ public class LocomotiveWidget extends JPanel implements
             return;
         }
 
+        waitForConfirmation = false;
+
         if (myLocomotive.equals(changedLocomotive)) {
             SwingUtilities.invokeLater(new Runnable() {
 
@@ -641,6 +648,8 @@ public class LocomotiveWidget extends JPanel implements
             final LocomotiveController locomotiveControl = ctx
                     .getLocomotiveControl();
             doPerformAction(locomotiveControl, myLocomotive);
+
+
             if (time == 0) {
                 time = System.currentTimeMillis();
             } else {
@@ -687,6 +696,19 @@ public class LocomotiveWidget extends JPanel implements
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
+
+            if (waitForConfirmation) {
+                return;
+            }
+
+            waitForConfirmation = true;
+
+            worker.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    waitForConfirmation = false;
+                }
+            }, 2, TimeUnit.SECONDS);
             locomotiveControl.increaseSpeed(myLocomotive);
         }
     }
@@ -698,6 +720,18 @@ public class LocomotiveWidget extends JPanel implements
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
+            if (waitForConfirmation) {
+                return;
+            }
+
+            waitForConfirmation = true;
+
+            worker.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    waitForConfirmation = false;
+                }
+            }, 2, TimeUnit.SECONDS);
             locomotiveControl.decreaseSpeed(myLocomotive);
         }
     }
