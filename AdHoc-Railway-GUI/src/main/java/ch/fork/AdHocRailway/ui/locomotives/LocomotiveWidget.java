@@ -85,7 +85,7 @@ public class LocomotiveWidget extends JPanel implements
     private boolean ignoreGroupAndLocomotiveSelectionEvents;
     private boolean disableListener;
     private boolean connectedToRailway;
-    private boolean waitForConfirmation = false;
+
     public LocomotiveWidget(final LocomotiveContext ctx, final int number,
                             final JFrame frame) {
         super();
@@ -353,7 +353,6 @@ public class LocomotiveWidget extends JPanel implements
         }
         speedBar.requestFocus();
 
-        waitForConfirmation = false;
     }
 
     private void updateLockedState(final LocomotiveController locomotiveControl) {
@@ -708,18 +707,7 @@ public class LocomotiveWidget extends JPanel implements
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
 
-            if (waitForConfirmation) {
-                return;
-            }
 
-            waitForConfirmation = true;
-
-            worker.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    waitForConfirmation = false;
-                }
-            }, 2, TimeUnit.SECONDS);
             locomotiveControl.increaseSpeed(myLocomotive);
         }
     }
@@ -731,18 +719,6 @@ public class LocomotiveWidget extends JPanel implements
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
-            if (waitForConfirmation) {
-                return;
-            }
-
-            waitForConfirmation = true;
-
-            worker.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    waitForConfirmation = false;
-                }
-            }, 2, TimeUnit.SECONDS);
             locomotiveControl.decreaseSpeed(myLocomotive);
         }
     }
