@@ -133,6 +133,7 @@ public class Preferences {
         setBooleanValue(LOGGING, true);
         setBooleanValue(FULLSCREEN, false);
         setBooleanValue(TABBED_TRACK, true);
+        setBooleanValue(TABLET_MODE, false);
         setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES, false);
         setBooleanValue(OPEN_LAST_FILE, false);
         setIntValue(DEFAULT_TURNOUT_BUS, 1);

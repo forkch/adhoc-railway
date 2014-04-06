@@ -228,7 +228,7 @@ public class LocomotiveWidget extends JPanel implements
 
         controlPanel.add(functionsPanel, "grow, west");
         controlPanel.add(speedControlPanel, "grow");
-        controlPanel.add(speedBar, "east, width 45");
+        controlPanel.add(speedBar, "east, width 50");
 
         return controlPanel;
     }
@@ -269,11 +269,15 @@ public class LocomotiveWidget extends JPanel implements
         directionButton.setFocusable(false);
         lockButton.setFocusable(false);
 
-        speedControlPanel.add(increaseSpeed, "height 30, growx");
-        speedControlPanel.add(decreaseSpeed, "height 30, growx");
-        speedControlPanel.add(stopButton, "height 30, growx");
-        speedControlPanel.add(directionButton, "height 30, growx");
-        speedControlPanel.add(lockButton, "height 30, growx");
+        String params = "height 30, growx";
+        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.TABLET_MODE)) {
+            params = "height " + UIConstants.SIZE_TABLET + ", growx";
+        }
+        speedControlPanel.add(increaseSpeed, params);
+        speedControlPanel.add(decreaseSpeed, params);
+        speedControlPanel.add(stopButton, params);
+        speedControlPanel.add(directionButton, params);
+        speedControlPanel.add(lockButton, params);
         return speedControlPanel;
     }
 
@@ -301,6 +305,11 @@ public class LocomotiveWidget extends JPanel implements
             functionsPanel.setLayout(new MigLayout("wrap, fill"));
         }
 
+
+        String params = "height 30, width 60";
+        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.TABLET_MODE)) {
+            params = "height " + UIConstants.SIZE_TABLET + ", width 60";
+        }
         for (final LocomotiveFunction fn : myLocomotive.getFunctions()) {
             final FunctionToggleButton functionButton = new FunctionToggleButton(
                     fn.getShortDescription());
@@ -310,7 +319,7 @@ public class LocomotiveWidget extends JPanel implements
             functionButton.setToolTipText(fn.getDescription());
 
             functionButton.setFocusable(false);
-            functionsPanel.add(functionButton, "height 30, width 60");
+            functionsPanel.add(functionButton, params);
         }
         revalidate();
     }
@@ -343,6 +352,8 @@ public class LocomotiveWidget extends JPanel implements
             locomotiveComboBox.setEnabled(false);
         }
         speedBar.requestFocus();
+
+        waitForConfirmation = false;
     }
 
     private void updateLockedState(final LocomotiveController locomotiveControl) {
@@ -432,7 +443,6 @@ public class LocomotiveWidget extends JPanel implements
             return;
         }
 
-        waitForConfirmation = false;
 
         if (myLocomotive.equals(changedLocomotive)) {
             SwingUtilities.invokeLater(new Runnable() {
@@ -556,6 +566,7 @@ public class LocomotiveWidget extends JPanel implements
             if (!isFree()) {
                 return;
             }
+
             final LocomotiveGroup lg = (LocomotiveGroup) locomotiveGroupComboBoxModel
                     .getSelectedItem();
             final int idx = locomotiveGroupComboBox.getSelectedIndex();

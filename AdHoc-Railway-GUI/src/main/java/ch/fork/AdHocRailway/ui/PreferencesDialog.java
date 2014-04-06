@@ -53,6 +53,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
     private JCheckBox writeLog;
     private JCheckBox fullscreen;
     private JCheckBox tabbedTrackCheckBox;
+    private JCheckBox tabletMode;
     private boolean okPressed;
     private boolean cancelPressed;
     private JCheckBox autoconnectCheckBox;
@@ -169,6 +170,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         writeLog = new JCheckBox();
         fullscreen = new JCheckBox();
         tabbedTrackCheckBox = new JCheckBox();
+        tabletMode = new JCheckBox();
         openLastFileCheckBox = new JCheckBox();
 
         autoDiscoverServers = new JCheckBox();
@@ -197,6 +199,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         p.add(writeLog);
         p.add(new JLabel("Tabbed Track-Control"));
         p.add(tabbedTrackCheckBox);
+        p.add(new JLabel("Tablet mode"));
+        p.add(tabletMode);
         p.add(new JLabel("Open last file"));
         p.add(openLastFileCheckBox);
         p.add(new JLabel("Auto Discover servers"));
@@ -301,6 +305,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         writeLog.setSelected(p.getBooleanValue(LOGGING));
         fullscreen.setSelected(p.getBooleanValue(FULLSCREEN));
         tabbedTrackCheckBox.setSelected(p.getBooleanValue(TABBED_TRACK));
+        tabletMode.setSelected(p.getBooleanValue(TABLET_MODE));
         openLastFileCheckBox.setSelected(p.getBooleanValue(OPEN_LAST_FILE));
 
         autoDiscoverServers.setSelected(p
@@ -344,6 +349,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         p.setBooleanValue(LOGGING, writeLog.isSelected());
         p.setBooleanValue(FULLSCREEN, fullscreen.isSelected());
         p.setBooleanValue(TABBED_TRACK, tabbedTrackCheckBox.isSelected());
+        p.setBooleanValue(TABLET_MODE, tabletMode.isSelected());
         p.setBooleanValue(OPEN_LAST_FILE, openLastFileCheckBox.isSelected());
         p.setBooleanValue(AUTO_DISCOVER,
                 autoDiscoverServers.isSelected());

@@ -8,6 +8,7 @@ import ch.fork.AdHocRailway.domain.power.PowerSupply;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.PowerContext;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
@@ -175,8 +176,12 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
         allBoostersOn.addActionListener(new AllBoostersOnAction());
         allBoostersOff.addActionListener(new AllBoostersOffAction());
 
-        powerControlPanel.add(allBoostersOn, "growx");
-        powerControlPanel.add(allBoostersOff, "growx, wrap 15");
+        String params = "height 30, growx";
+        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.TABLET_MODE)) {
+            params = "height " + UIConstants.SIZE_TABLET + ", growx";
+        }
+        powerControlPanel.add(allBoostersOn, params);
+        powerControlPanel.add(allBoostersOff, params + ", wrap 15");
 
         for (int i = 0; i < numberOfBoosters; i++) {
 
@@ -185,7 +190,7 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
             boosterButton.setHorizontalAlignment(SwingConstants.LEADING);
             final ToggleBoosterAction action = new ToggleBoosterAction();
             boosterButton.addActionListener(action);
-            powerControlPanel.add(boosterButton, "growx");
+            powerControlPanel.add(boosterButton, params);
 
             numberToPowerToggleButtons.put(i, boosterButton);
             numberToActionListener.put(i, action);

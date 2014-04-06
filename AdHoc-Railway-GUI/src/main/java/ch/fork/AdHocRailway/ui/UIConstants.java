@@ -32,4 +32,5 @@ public interface UIConstants {
     public static final Color STATE_RED = new Color(255, 0, 0);
     public static final Color STATE_GREEN = new Color(0, 192, 0);
     static final int HISTORY_LENGTH = 10;
+    public static final int SIZE_TABLET = 50;
 }
