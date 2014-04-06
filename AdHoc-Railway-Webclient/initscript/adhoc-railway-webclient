@@ -1,89 +1,27 @@
-#!/bin/sh
-
-NODE_ENV="production"
-NODE_APP='app.js'
-APP_DIR='/home/baehnle/AdHoc-Railway/AdHoc-Railway-Webclient/';
-PID_FILE=$APP_DIR/app.pid
-LOG_FILE=$APP_DIR/app.log
-CONFIG_DIR=$APP_DIR/config
-PORT=3030
-NODE_EXEC=`which node`
-
-###############
-
-# REDHAT chkconfig header
-
-# chkconfig: - 58 74
-# description: adhoc-railway-webclient process
 ### BEGIN INIT INFO
-# Provides: adhoc-railway-webclient
-# Required-Start:    $network $remote_fs $local_fs adhoc-railway-server
-# Required-Stop:     $network $remote_fs $local_fs
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: start and stop adhoc-railway-webclient
-# Description: Node process for adhoc-railway-webclient
+# Provides:             adhoc-railway-webclient
+# Required-Start:	$network $local_fs mongod adhoc-railway-server
+# Required-Stop:
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    AdHoc-Railway-Webclient node app
 ### END INIT INFO
 
-start_app (){
-    if [ -f $PID_FILE ]
-    then
-        echo "$PID_FILE exists, process is already running or crashed"
-        exit 1
-    else
-        echo "Starting node app..."
-        PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $NODE_EXEC $APP_DIR/$NODE_APP  1>$LOG_FILE 2>&1 &
-        echo $! > $PID_FILE;
-    fi
-}
-
-stop_app (){
-    if [ ! -f $PID_FILE ]
-    then
-        echo "$PID_FILE does not exist, process is not running"
-        exit 1
-    else
-        echo "Stopping $APP_DIR/$NODE_APP ..."
-        echo "Killing `cat $PID_FILE`"
-        kill `cat $PID_FILE`;
-        rm -f $PID_FILE;
-        echo "Node stopped"
-    fi
-}
+export PATH=$PATH:/usr/local/bin:/usr/local/lib/node_modules/forever/bin
+export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
+export HOME=/home/baehnle
 
 case "$1" in
-    start)
-        start_app
+  start)
+    forever -p /home/baehnle/.forever -a -l adhoc-railway-webclient.log --minUptime 5000 --sourceDir=/home/baehnle/AdHoc-Railway/AdHoc-Railway-Webclient/ start app.js
     ;;
-
-    stop)
-        stop_app
+  stop)
+    forever -p /home/baehnle/.forever --sourceDir=/home/baehnle/AdHoc-Railway/AdHoc-Railway-Webclient/ stop app.js
     ;;
+  *)
 
-    restart)
-        stop_app
-        start_app
-    ;;
-
-    status)
-        if [ -f $PID_FILE ]
-        then
-            PID=`cat $PID_FILE`
-            if [ -z "`ps ef | awk '{print $1}' | grep "^$PID$"`" ]
-            then
-                echo "Node app stopped but pid file exists"
-            else
-                echo "Node app running with pid $PID"
-
-            fi
-        else
-            echo "Node app stopped"
-        fi
-    ;;
-
-    *)
-        echo "Usage: $0 {start|stop|restart|status}"
-        exit 1
-    ;;
+  echo "Usage: /etc/init.d/adhoc-railway-webclient {start|stop}"
+  exit 1
+  ;;
 esac
-
+exit 0
