@@ -71,7 +71,7 @@ public class SIOLocomotiveServiceEventHandler {
             final LocomotiveServiceListener listener) throws JSONException {
         final Locomotive locomotive = deserializeLocomotive(locomotiveJSON);
 
-        locomotive.setGroup(sioIdToLocomotiveGroupMap.get(locomotive.getId()));
+        locomotive.setGroup(sioIdToLocomotiveGroupMap.get(locomotive.getGroupId()));
         if (locomotive.getFunctions().size() == 0) {
             locomotive.setFunctions(LocomotiveFunction.getFunctionsForType(locomotive.getType()));
         }

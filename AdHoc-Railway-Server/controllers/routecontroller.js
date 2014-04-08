@@ -129,7 +129,7 @@ exports.addRoute = function (route, fn) {
     console.log('adding new route ' + JSON.stringify(route));
     new RouteModel(route).save(function (err, addedRoute) {
         if (!err) {
-            console.log(addedRoute.group);
+            console.log(addedRoute.groupId);
             RouteGroupModel.findById({_id: addedRoute.groupId}, function (err, routeGroup) {
                 if (!err) {
                     console.log(routeGroup);

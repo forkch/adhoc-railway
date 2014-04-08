@@ -22,7 +22,7 @@ public class RestLocomotiveService implements LocomotiveService {
     private final RestLocomotiveServiceClient locomotiveServiceClient;
     private LocomotiveServiceListener listener;
 
-    public RestLocomotiveService(String uuid, String endpointURL) {
+    public RestLocomotiveService(String endpointURL, String uuid) {
         RestAdapter restAdapter = RestAdapterFactory.createRestAdapter(endpointURL, uuid);
         locomotiveServiceClient = restAdapter.create(RestLocomotiveServiceClient.class);
         sioLocomotiveService = new SIOLocomotiveCallback();

@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import com.google.gson.annotations.Expose;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -32,8 +33,11 @@ public class RouteGroup extends AbstractItem implements java.io.Serializable,
         Comparable<RouteGroup> {
 
     public static final String PROPERTYNAME_NAME = "name";
+    @Expose
     private String id;
+    @Expose
     private String name;
+    @Expose
     private SortedSet<Route> routes = new TreeSet<Route>();
 
     public RouteGroup() {
@@ -90,12 +94,12 @@ public class RouteGroup extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return HashCodeBuilder.reflectionHashCode(this, new String[]{"routes"});
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        return EqualsBuilder.reflectionEquals(this, obj, new String[]{"routes"});
     }
 
     @Override

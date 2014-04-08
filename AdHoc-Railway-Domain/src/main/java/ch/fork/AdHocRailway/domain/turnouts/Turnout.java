@@ -79,6 +79,22 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
 
     }
 
+    public Turnout(Turnout old) {
+        id = old.getId();
+        number = old.getNumber();
+        description = old.getDescription();
+        type = old.getType();
+        defaultState = old.getDefaultState();
+        orientation = old.getOrientation();
+        bus1 = old.getBus1();
+        address1 = old.getAddress1();
+        address1Switched = old.isAddress1Switched();
+        bus2 = old.getBus2();
+        address2 = old.getAddress2();
+        address2Switched = old.isAddress2Switched();
+        groupId = old.getGroupId();
+    }
+
     @Override
     public void init() {
         super.init();
@@ -238,6 +254,7 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     public void setTurnoutGroup(final TurnoutGroup turnoutGroup) {
         final TurnoutGroup old = this.turnoutGroup;
         this.turnoutGroup = turnoutGroup;
+        setGroupId(turnoutGroup.getId());
         changeSupport.firePropertyChange(PROPERTYNAME_TURNOUT_GROUP, old,
                 this.turnoutGroup);
     }

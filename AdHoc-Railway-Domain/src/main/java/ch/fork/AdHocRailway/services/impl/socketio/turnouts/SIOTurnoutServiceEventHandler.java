@@ -42,29 +42,23 @@ public class SIOTurnoutServiceEventHandler {
 
     }
 
-    private static TurnoutGroup deserializeTurnoutGroup(JSONObject turnoutGroupJSON) {
-        return gson.fromJson(turnoutGroupJSON.toString(), TurnoutGroup.class);
-    }
 
     public static void handleTurnoutAdded(final JSONObject turnoutJSON,
                                           final TurnoutServiceListener listener) throws JSONException {
         final Turnout turnout = deserializeTurnout(turnoutJSON);
         sioIdToTurnoutMap.put(turnout.getId(), turnout);
         final TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap
-                .get(turnoutJSON.get("groupId"));
+                .get(turnout.getGroupId());
         turnout.setTurnoutGroup(turnoutGroup);
         turnoutGroup.addTurnout(turnout);
         listener.turnoutAdded(turnout);
     }
 
-    private static Turnout deserializeTurnout(JSONObject turnoutJSON) {
-        return gson.fromJson(turnoutJSON.toString(), Turnout.class);
-    }
 
     public static void handleTurnoutUpdated(final JSONObject turnoutJSON,
                                             final TurnoutServiceListener listener) throws JSONException {
         final Turnout turnout = deserializeTurnout(turnoutJSON);
-        turnout.setTurnoutGroup(sioIdToTurnoutGroupMap.get(turnout.getId()));
+        turnout.setTurnoutGroup(sioIdToTurnoutGroupMap.get(turnout.getGroupId()));
         listener.turnoutUpdated(turnout);
 
     }
@@ -75,7 +69,7 @@ public class SIOTurnoutServiceEventHandler {
         final Turnout turnout = deserializeTurnout(turnoutJSON);
 
         final TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap
-                .get(turnout.getId());
+                .get(turnout.getGroupId());
         turnoutGroup.removeTurnout(turnout);
         listener.turnoutRemoved(turnout);
 
@@ -111,4 +105,11 @@ public class SIOTurnoutServiceEventHandler {
         return sioIdToTurnoutMap.get(sioId);
     }
 
+    private static TurnoutGroup deserializeTurnoutGroup(JSONObject turnoutGroupJSON) {
+        return gson.fromJson(turnoutGroupJSON.toString(), TurnoutGroup.class);
+    }
+
+    private static Turnout deserializeTurnout(JSONObject turnoutJSON) {
+        return gson.fromJson(turnoutJSON.toString(), Turnout.class);
+    }
 }

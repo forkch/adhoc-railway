@@ -69,4 +69,6 @@ public interface TurnoutManager {
     void disconnect();
 
     TurnoutService getService();
+
+    Turnout getTurnoutById(String turnoutId);
 }

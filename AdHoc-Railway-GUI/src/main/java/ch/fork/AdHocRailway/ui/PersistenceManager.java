@@ -67,7 +67,7 @@ public class PersistenceManager {
         }
         appContext.setRouteManager(routeManager);
         routeManager.setRouteService(ServiceFactory
-                .createRouteService(useAdHocServer));
+                .createRouteService(useAdHocServer, appContext));
         routeManager.initialize(appContext.getMainBus());
     }
 

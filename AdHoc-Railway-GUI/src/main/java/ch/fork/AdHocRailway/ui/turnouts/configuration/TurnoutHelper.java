@@ -130,12 +130,7 @@ public class TurnoutHelper {
     }
 
     public static Turnout copyTurnout(final Turnout old) {
-        final Turnout t = new Turnout();
-        try {
-            BeanUtils.copyProperties(t, old);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        final Turnout t = new Turnout(old);
         return t;
     }
 

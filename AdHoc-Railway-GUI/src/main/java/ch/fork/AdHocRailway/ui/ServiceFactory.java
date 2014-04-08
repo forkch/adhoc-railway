@@ -4,8 +4,8 @@ import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.RouteService;
 import ch.fork.AdHocRailway.services.TurnoutService;
 import ch.fork.AdHocRailway.services.impl.rest.RestLocomotiveService;
+import ch.fork.AdHocRailway.services.impl.rest.RestRouteService;
 import ch.fork.AdHocRailway.services.impl.rest.RestTurnoutService;
-import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
@@ -19,7 +19,7 @@ public class ServiceFactory {
 
         if (useAdHocServer) {
             String endpointURL = getEndpointUrl(appContext);
-            return new RestLocomotiveService(appContext.getAppUUID(), endpointURL);
+            return new RestLocomotiveService(endpointURL, appContext.getAppUUID());
         } else {
             return new XMLLocomotiveService();
         }
@@ -29,25 +29,27 @@ public class ServiceFactory {
             final boolean useAdHocServer, PersistenceManagerContext appContext) {
         if (useAdHocServer) {
             String endpointURL = getEndpointUrl(appContext);
-            return new RestTurnoutService(appContext.getAppUUID(), endpointURL);
+            return new RestTurnoutService(endpointURL, appContext.getAppUUID());
         } else {
             return new XMLTurnoutService();
         }
+    }
+
+
+    public static RouteService createRouteService(final boolean useAdHocServer, PersistenceManagerContext appContext) {
+
+        if (useAdHocServer) {
+            String endpointURL = getEndpointUrl(appContext);
+            return new RestRouteService(endpointURL, appContext.getAppUUID());
+        } else {
+            return new XMLRouteService();
+        }
+
     }
 
     private static String getEndpointUrl(PersistenceManagerContext appContext) {
         String host = appContext.getPreferences().getStringValue(PreferencesKeys.ADHOC_SERVER_HOSTNAME);
         String port = appContext.getPreferences().getStringValue(PreferencesKeys.ADHOC_SERVER_PORT);
         return "http://" + host + ":" + port;
-    }
-
-    public static RouteService createRouteService(final boolean useAdHocServer) {
-
-        if (useAdHocServer) {
-            return new SIORouteService();
-        } else {
-            return new XMLRouteService();
-        }
-
     }
 }

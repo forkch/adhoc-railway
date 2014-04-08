@@ -5,7 +5,7 @@ import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
 import ch.fork.AdHocRailway.services.RouteService;
 import ch.fork.AdHocRailway.services.RouteServiceListener;
-import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteService;
+import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteCallback;
 import ch.fork.AdHocRailway.utils.RestAdapterFactory;
 import org.apache.log4j.Logger;
 import retrofit.RestAdapter;
@@ -19,7 +19,7 @@ public class RestRouteService implements RouteService {
 
     private static final Logger LOGGER = Logger.getLogger(RestRouteService.class);
 
-    private final SIORouteService sioRouteService;
+    private final SIORouteCallback sioRouteService;
 
     private final RestRouteServiceClient restRouteServiceClient;
     private RouteServiceListener listener;
@@ -27,7 +27,7 @@ public class RestRouteService implements RouteService {
     public RestRouteService(String endpointUrl, String uuid) {
         RestAdapter restAdapter = RestAdapterFactory.createRestAdapter(endpointUrl, uuid);
         restRouteServiceClient = restAdapter.create(RestRouteServiceClient.class);
-        sioRouteService = new SIORouteService();
+        sioRouteService = new SIORouteCallback();
     }
 
     @Override

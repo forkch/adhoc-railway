@@ -282,6 +282,9 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
         LOGGER.info("routeUpdated: " + route);
         cleanupListeners();
         putInCache(route);
+        for (RouteItem routeItem : route.getRouteItems()) {
+            routeItem.setTurnout(turnoutManager.getTurnoutById(routeItem.getTurnoutId()));
+        }
         for (final RouteManagerListener l : listeners) {
             l.routeUpdated(route);
         }

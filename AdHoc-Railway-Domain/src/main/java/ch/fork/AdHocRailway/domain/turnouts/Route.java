@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import com.google.gson.annotations.Expose;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -38,15 +39,23 @@ public class Route extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_ORIENTATION = "orientation";
     public static final String PROPERTYNAME_ROUTE_GROUP = "routeGroup";
     public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
+
+    @Expose
     private String id;
-    @XStreamOmitField
-    private RouteGroup routeGroup;
+    @Expose
     private int number;
+    @Expose
     private String name;
+    @Expose
     private String orientation;
+    @Expose
     private SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>();
+    @Expose
+    private String groupId;
+
     private transient boolean enabled = false;
     private transient boolean routing = false;
+    private transient RouteGroup routeGroup;
 
     public Route() {
     }
@@ -114,6 +123,7 @@ public class Route extends AbstractItem implements java.io.Serializable,
     public void setRouteGroup(final RouteGroup routeGroup) {
         final RouteGroup old = this.routeGroup;
         this.routeGroup = routeGroup;
+        setGroupId(routeGroup.getId());
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_GROUP, old,
                 this.routeGroup);
     }
@@ -150,16 +160,24 @@ public class Route extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return HashCodeBuilder.reflectionHashCode(this, new String[]{"routeItems"});
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        return EqualsBuilder.reflectionEquals(this, obj, new String[]{"routeItems"});
     }
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 }

@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import com.google.gson.annotations.Expose;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -32,17 +33,21 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_TURNOUT = "turnout";
     public static final String PROPERTYNAME_ROUTE = "route";
     public static final String PROPERTYNAME_ROUTED_STATE = "routedState";
-    private int id;
-    private Turnout turnout;
-    @XStreamOmitField
-    private Route route;
+    @Expose
+    private String id;
+    @Expose
+    private String turnoutId;
+
+    private transient Turnout turnout;
+
+    private transient Route route;
 
     private TurnoutState routedState;
 
     public RouteItem() {
     }
 
-    public RouteItem(final int id, final Turnout turnout, final Route route,
+    public RouteItem(final String id, final Turnout turnout, final Route route,
                      final TurnoutState routedState) {
         this.id = id;
         this.turnout = turnout;
@@ -50,11 +55,11 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
         this.routedState = routedState;
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(final int id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -65,6 +70,7 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     public void setTurnout(final Turnout turnout) {
         final Turnout old = this.turnout;
         this.turnout = turnout;
+        setTurnoutId(turnout.getId());
         changeSupport.firePropertyChange(PROPERTYNAME_TURNOUT, old,
                 this.turnout);
     }
@@ -92,7 +98,7 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int compareTo(final RouteItem o) {
-        return turnout.compareTo(o.getTurnout());
+        return id.compareTo(o.getId());
     }
 
     @Override
@@ -108,5 +114,13 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public String getTurnoutId() {
+        return turnoutId;
+    }
+
+    public void setTurnoutId(String turnoutId) {
+        this.turnoutId = turnoutId;
     }
 }

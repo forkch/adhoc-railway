@@ -26,7 +26,9 @@ import ch.fork.AdHocRailway.manager.impl.events.TurnoutsUpdatedEvent;
 import ch.fork.AdHocRailway.services.TurnoutService;
 import ch.fork.AdHocRailway.services.TurnoutServiceListener;
 import com.google.common.eventbus.EventBus;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import sun.swing.StringUIClientPropertyKey;
 
 import java.util.*;
 
@@ -100,7 +102,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
         }
         group.getTurnouts().add(turnout);
         turnout.setTurnoutGroup(group);
-        turnout.setGroupId(group.getId());
         turnoutService.addTurnout(turnout);
         if (turnout.getType().equals(TurnoutType.THREEWAY)) {
             lastProgrammedAddress = turnout.getAddress2();
@@ -339,5 +340,15 @@ public class TurnoutManagerImpl implements TurnoutManager,
     @Override
     public TurnoutService getService() {
         return turnoutService;
+    }
+
+    @Override
+    public Turnout getTurnoutById(String turnoutId) {
+        for (Turnout turnout : numberToTurnoutCache.values()) {
+            if (StringUtils.equals(turnoutId, turnout.getId())) {
+                return turnout;
+            }
+        }
+        return null;
     }
 }

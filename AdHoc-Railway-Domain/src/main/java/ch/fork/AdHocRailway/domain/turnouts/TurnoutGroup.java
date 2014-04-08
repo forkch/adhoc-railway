@@ -89,12 +89,12 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return HashCodeBuilder.reflectionHashCode(this, new String[]{"turnouts"});
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        return EqualsBuilder.reflectionEquals(this, obj, new String[]{"turnouts"});
     }
 
     @Override

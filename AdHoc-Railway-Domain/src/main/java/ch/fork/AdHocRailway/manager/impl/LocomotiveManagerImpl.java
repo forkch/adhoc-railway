@@ -92,7 +92,6 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
         }
         group.addLocomotive(locomotive);
         locomotive.setGroup(group);
-        locomotive.setGroupId(locomotive.getGroup().getId());
         locomotiveService.addLocomotive(locomotive);
     }
 
