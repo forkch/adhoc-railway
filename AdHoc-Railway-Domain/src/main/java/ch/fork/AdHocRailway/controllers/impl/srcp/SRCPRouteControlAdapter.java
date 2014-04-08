@@ -89,7 +89,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
     private SRCPRoute createSRCPRoute(
             final SRCPTurnoutControlAdapter turnoutControl, final Route route) {
         final SRCPRoute sRoute = new SRCPRoute();
-        for (final RouteItem routeItem : route.getRouteItems()) {
+        for (final RouteItem routeItem : route.getRoutedTurnouts()) {
 
             final SRCPRouteItem sRouteItem = new SRCPRouteItem();
             final SRCPTurnout sTurnout = turnoutControl
@@ -152,7 +152,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
 
     private void applyNewSettings(final Route route) {
         sRouteTemp.getRouteItems().clear();
-        for (final RouteItem routeItem : route.getRouteItems()) {
+        for (final RouteItem routeItem : route.getRoutedTurnouts()) {
 
             final SRCPRouteItem sRouteItem = new SRCPRouteItem();
             final SRCPTurnout sTurnout = turnoutControl

@@ -111,9 +111,9 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     @Override
     public void removeRoute(final Route route) {
         LOGGER.debug("removeRoute()");
-        if (!route.getRouteItems().isEmpty()) {
+        if (!route.getRoutedTurnouts().isEmpty()) {
             final SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>(
-                    route.getRouteItems());
+                    route.getRoutedTurnouts());
             for (final RouteItem routeitem : routeItems) {
                 removeRouteItem(routeitem);
             }
@@ -123,9 +123,9 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
         final RouteGroup group = route.getRouteGroup();
         group.getRoutes().remove(route);
 
-        final Set<RouteItem> routeItems = route.getRouteItems();
+        final Set<RouteItem> routeItems = route.getRoutedTurnouts();
         for (final RouteItem ri : routeItems) {
-            route.getRouteItems().remove(ri);
+            route.getRoutedTurnouts().remove(ri);
         }
         removeFromCache(route);
     }
@@ -179,7 +179,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
             throw new ManagerException("RouteItem has no associated Route");
         }
         this.routeService.addRouteItem(item);
-        item.getRoute().getRouteItems().add(item);
+        item.getRoute().getRoutedTurnouts().add(item);
     }
 
     @Override
@@ -191,7 +191,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
         turnout.getRouteItems().remove(item);
 
         final Route route = item.getRoute();
-        route.getRouteItems().remove(item);
+        route.getRoutedTurnouts().remove(item);
     }
 
     @Override
@@ -286,10 +286,8 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     }
 
     private void fillTurnoutsToRouteItems(Route route) {
-        for (RouteItem routeItem : route.getRouteItems()) {
-
-            final int number = routeItem.getTurnout().getNumber();
-            routeItem.setTurnout(turnoutManager.getTurnoutByNumber(number));
+        for (RouteItem routeItem : route.getRoutedTurnouts()) {
+            routeItem.setTurnout(turnoutManager.getTurnoutById(routeItem.getTurnoutId()));
         }
     }
 

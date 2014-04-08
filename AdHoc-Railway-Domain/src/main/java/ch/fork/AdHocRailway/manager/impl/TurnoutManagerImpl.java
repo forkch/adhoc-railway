@@ -28,7 +28,6 @@ import ch.fork.AdHocRailway.services.TurnoutServiceListener;
 import com.google.common.eventbus.EventBus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import sun.swing.StringUIClientPropertyKey;
 
 import java.util.*;
 
@@ -122,7 +121,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
         final Set<RouteItem> routeItems = turnout.getRouteItems();
         for (final RouteItem ri : routeItems) {
             final Route route = ri.getRoute();
-            route.getRouteItems().remove(ri);
+            route.getRoutedTurnouts().remove(ri);
         }
     }
 

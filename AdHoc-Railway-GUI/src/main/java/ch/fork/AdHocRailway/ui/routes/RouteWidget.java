@@ -118,7 +118,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
     private int getRouteItemCount() {
         int count = 0;
-        for (final RouteItem routeItem : route.getRouteItems()) {
+        for (final RouteItem routeItem : route.getRoutedTurnouts()) {
             if (routeItem.getTurnout().isThreeWay()) {
                 count += 2;
             } else {

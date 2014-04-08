@@ -31,7 +31,7 @@ public class RouteChangingThread implements Runnable, TurnoutChangeListener {
         try {
             route.setRouting(true);
             turnoutControl.addGeneralTurnoutChangeListener(this);
-            for (final RouteItem routeItem : route.getRouteItems()) {
+            for (final RouteItem routeItem : route.getRoutedTurnouts()) {
                 final Turnout turnout = routeItem.getTurnout();
                 if (enable) {
                     switch (routeItem.getState()) {

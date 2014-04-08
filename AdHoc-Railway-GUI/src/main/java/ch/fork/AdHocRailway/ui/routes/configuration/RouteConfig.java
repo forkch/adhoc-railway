@@ -143,7 +143,7 @@ public class RouteConfig extends JDialog {
                 routeItemModel.getSelectionIndexHolder()));
 
         routeItemModel.setList(new ArrayList<RouteItem>(presentationModel
-                .getBean().getRouteItems()));
+                .getBean().getRoutedTurnouts()));
 
         final TableColumn routedStateColumn = routeItemTable.getColumnModel()
                 .getColumn(1);
@@ -416,7 +416,7 @@ public class RouteConfig extends JDialog {
 
                     RouteItem itemToRemove = null;
                     final SortedSet<RouteItem> itemsOfRoute = route
-                            .getRouteItems();
+                            .getRoutedTurnouts();
                     for (final RouteItem item : itemsOfRoute) {
                         if (item.getTurnout().equals(turnout)) {
                             itemToRemove = item;
@@ -435,7 +435,7 @@ public class RouteConfig extends JDialog {
                         i.setId(UUID.randomUUID().toString()); //just a dummy id
                         routeManager.addRouteItemToGroup(i, route);
                         final List<RouteItem> routeItems = new ArrayList<RouteItem>(
-                                route.getRouteItems());
+                                route.getRoutedTurnouts());
                         routeItemModel.setList(routeItems);
                     } catch (final ManagerException e1) {
                         e1.printStackTrace();
@@ -520,7 +520,7 @@ public class RouteConfig extends JDialog {
             }
             routeManager.removeRouteItem(routeItem);
             final List<RouteItem> routeItems = new ArrayList<RouteItem>(
-                    selectedRoute.getRouteItems());
+                    selectedRoute.getRoutedTurnouts());
             routeItemModel.setList(routeItems);
         }
     }

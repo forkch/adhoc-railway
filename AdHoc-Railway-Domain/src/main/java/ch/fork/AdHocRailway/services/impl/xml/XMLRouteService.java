@@ -134,7 +134,7 @@ public class XMLRouteService implements RouteService {
                     route.setId(UUID.randomUUID().toString());
                     routes.add(route);
                     route.setRouteGroup(routeGroup);
-                    for (final RouteItem item : route.getRouteItems()) {
+                    for (final RouteItem item : route.getRoutedTurnouts()) {
                         item.init();
                     }
                 }

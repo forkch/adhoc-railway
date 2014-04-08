@@ -20,7 +20,6 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
 import com.google.gson.annotations.Expose;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -38,7 +37,7 @@ public class Route extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_NAME = "name";
     public static final String PROPERTYNAME_ORIENTATION = "orientation";
     public static final String PROPERTYNAME_ROUTE_GROUP = "routeGroup";
-    public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
+    public static final String PROPERTYNAME_ROUTE_ITEMS = "routedTurnouts";
 
     @Expose
     private String id;
@@ -49,7 +48,7 @@ public class Route extends AbstractItem implements java.io.Serializable,
     @Expose
     private String orientation;
     @Expose
-    private SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>();
+    private SortedSet<RouteItem> routedTurnouts = new TreeSet<RouteItem>();
     @Expose
     private String groupId;
 
@@ -101,19 +100,19 @@ public class Route extends AbstractItem implements java.io.Serializable,
                 this.orientation);
     }
 
-    public SortedSet<RouteItem> getRouteItems() {
-        return this.routeItems;
+    public SortedSet<RouteItem> getRoutedTurnouts() {
+        return this.routedTurnouts;
     }
 
-    public void setRouteItems(final SortedSet<RouteItem> routeItems) {
-        final SortedSet<RouteItem> old = this.routeItems;
-        this.routeItems = routeItems;
+    public void setRoutedTurnouts(final SortedSet<RouteItem> routedTurnouts) {
+        final SortedSet<RouteItem> old = this.routedTurnouts;
+        this.routedTurnouts = routedTurnouts;
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_ITEMS, old,
-                this.routeItems);
+                this.routedTurnouts);
     }
 
     public void addRouteItem(final RouteItem routeItem) {
-        routeItems.add(routeItem);
+        routedTurnouts.add(routeItem);
     }
 
     public RouteGroup getRouteGroup() {
@@ -160,12 +159,12 @@ public class Route extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, new String[]{"routeItems"});
+        return HashCodeBuilder.reflectionHashCode(this, new String[]{"routedTurnouts"});
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj, new String[]{"routeItems"});
+        return EqualsBuilder.reflectionEquals(this, obj, new String[]{"routedTurnouts"});
     }
 
     @Override

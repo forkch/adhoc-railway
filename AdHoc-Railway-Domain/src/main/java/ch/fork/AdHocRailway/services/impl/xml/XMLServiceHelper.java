@@ -170,7 +170,7 @@ public class XMLServiceHelper {
         xstream.addImplicitCollection(LocomotiveGroup.class, "locomotives");
         xstream.addImplicitCollection(TurnoutGroup.class, "turnouts");
         xstream.addImplicitCollection(RouteGroup.class, "routes");
-        xstream.addImplicitCollection(Route.class, "routeItems");
+        xstream.addImplicitCollection(Route.class, "routedTurnouts");
 
         xstream.registerConverter(new LocomotiveTypeConverter());
         xstream.autodetectAnnotations(true);

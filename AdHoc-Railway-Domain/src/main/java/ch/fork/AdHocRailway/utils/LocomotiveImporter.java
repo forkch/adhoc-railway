@@ -50,7 +50,7 @@ public class LocomotiveImporter {
         for (final RouteGroup group : routeGroups) {
             for (Route route : group.getRoutes()) {
                 routeManager.addRouteToGroup(route, group);
-                for (RouteItem routeItem : route.getRouteItems()) {
+                for (RouteItem routeItem : route.getRoutedTurnouts()) {
                     routeManager.addRouteItemToGroup(routeItem, route);
                 }
             }

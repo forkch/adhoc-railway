@@ -24,7 +24,7 @@ public class RouteHelper {
         newRoute.setOrientation(selectedRoute.getOrientation());
         newRoute.setNumber(nextNumber);
         newRoute.setRouteGroup(selectedRouteGroup);
-        for (final RouteItem origRouteItem : selectedRoute.getRouteItems()) {
+        for (final RouteItem origRouteItem : selectedRoute.getRoutedTurnouts()) {
             final RouteItem routeItem = copyRouteItem(origRouteItem);
             routeItem.setRoute(newRoute);
             newRoute.addRouteItem(routeItem);
@@ -92,7 +92,7 @@ public class RouteHelper {
         description.append("<h3>Turnouts</h3>");
         description.append("<table>");
 
-        for (final RouteItem item : route.getRouteItems()) {
+        for (final RouteItem item : route.getRoutedTurnouts()) {
             addTableRow("", "" + item.getTurnout().getNumber() + ": "
                     + item.getState().toString(), description);
         }
