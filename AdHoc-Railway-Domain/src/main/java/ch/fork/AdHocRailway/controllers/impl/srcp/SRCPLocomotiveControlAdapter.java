@@ -108,7 +108,6 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
             @Override
             public void run() {
                 try {
-
                     LOGGER.info(">>>>>EMERGENCY STOP<<<<<");
                     final int emergencyStopFunction = locomotive
                             .getEmergencyStopFunction();
