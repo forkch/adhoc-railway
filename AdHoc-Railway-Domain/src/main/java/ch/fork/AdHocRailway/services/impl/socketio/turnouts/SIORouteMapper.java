@@ -10,14 +10,14 @@ import java.util.Map;
 
 public class SIORouteMapper {
 
-    public static Map<Integer, String> routeIdMap = new HashMap<Integer, String>();
-    public static Map<Integer, String> routeGroupIdMap = new HashMap<Integer, String>();
+    public static Map<String, String> routeIdMap = new HashMap<String, String>();
+    public static Map<String, String> routeGroupIdMap = new HashMap<String, String>();
 
     public static RouteGroup mapRouteGroupFromJSON(JSONObject routeGroupJSON)
             throws JSONException {
         RouteGroup routeGroup = new RouteGroup();
         String sioId = routeGroupJSON.getString("_id");
-        int id = sioId.hashCode();
+        String id = sioId;
         routeGroupIdMap.put(id, sioId);
         routeGroup.setId(id);
 
@@ -45,7 +45,7 @@ public class SIORouteMapper {
             throws JSONException {
         Route route = new Route();
         String sioId = routeJSON.getString("_id");
-        int id = sioId.hashCode();
+        String id = sioId;
         routeIdMap.put(id, sioId);
         route.setId(id);
         mergeRouteBaseInfo(routeJSON, route);

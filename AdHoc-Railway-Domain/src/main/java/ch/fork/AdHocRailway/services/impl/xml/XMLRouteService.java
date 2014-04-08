@@ -123,7 +123,7 @@ public class XMLRouteService implements RouteService {
         if (groups != null) {
             for (final RouteGroup routeGroup : groups) {
                 routeGroup.init();
-                routeGroup.setId(UUID.randomUUID().hashCode());
+                routeGroup.setId(UUID.randomUUID().toString());
                 routeGroups.add(routeGroup);
                 if (routeGroup.getRoutes() == null
                         || routeGroup.getRoutes().isEmpty()) {
@@ -131,7 +131,7 @@ public class XMLRouteService implements RouteService {
                 }
                 for (final Route route : routeGroup.getRoutes()) {
                     route.init();
-                    route.setId(UUID.randomUUID().hashCode());
+                    route.setId(UUID.randomUUID().toString());
                     routes.add(route);
                     route.setRouteGroup(routeGroup);
                     for (final RouteItem item : route.getRouteItems()) {

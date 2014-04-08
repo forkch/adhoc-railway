@@ -95,7 +95,7 @@ public class SIORouteServiceEventHandler {
     }
 
     public static void addIdToRoute(final Route route, final String sioId) {
-        final int id = sioId.hashCode();
+        final String id = sioId;
         route.setId(id);
         sioIdToRouteMap.put(sioId, route);
         SIORouteMapper.routeIdMap.put(id, sioId);
@@ -104,7 +104,7 @@ public class SIORouteServiceEventHandler {
 
     public static void addIdToRouteGroup(final RouteGroup group,
                                          final String sioId) {
-        final int id = sioId.hashCode();
+        final String id = sioId;
         group.setId(id);
         sioIdToRouteGroupMap.put(sioId, group);
         SIORouteMapper.routeGroupIdMap.put(id, sioId);

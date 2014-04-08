@@ -32,18 +32,18 @@ public class RouteGroup extends AbstractItem implements java.io.Serializable,
         Comparable<RouteGroup> {
 
     public static final String PROPERTYNAME_NAME = "name";
-    private int id;
+    private String id;
     private String name;
     private SortedSet<Route> routes = new TreeSet<Route>();
 
     public RouteGroup() {
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(final int id) {
+    public void setId(final String id) {
         this.id = id;
     }
 

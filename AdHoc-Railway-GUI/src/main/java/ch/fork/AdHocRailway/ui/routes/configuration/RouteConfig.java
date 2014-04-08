@@ -40,6 +40,7 @@ import com.jgoodies.binding.value.BufferedValueModel;
 import com.jgoodies.binding.value.Trigger;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -566,7 +567,7 @@ public class RouteConfig extends JDialog {
                 }
 
             });
-            if (route.getId() == -1) {
+            if (StringUtils.isBlank(route.getId())) {
                 routeManager.addRouteToGroup(route, selectedRouteGroup);
             } else {
                 routeManager.updateRoute(route);

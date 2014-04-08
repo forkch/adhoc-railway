@@ -38,7 +38,7 @@ public class Route extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_ORIENTATION = "orientation";
     public static final String PROPERTYNAME_ROUTE_GROUP = "routeGroup";
     public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
-    private int id = -1;
+    private String id;
     @XStreamOmitField
     private RouteGroup routeGroup;
     private int number;
@@ -51,12 +51,12 @@ public class Route extends AbstractItem implements java.io.Serializable,
     public Route() {
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(final int id) {
-        final int old = this.id;
+    public void setId(final String id) {
+        final String old = this.id;
         this.id = id;
         changeSupport.firePropertyChange(PROPERTYNAME_ID, old, this.id);
     }
