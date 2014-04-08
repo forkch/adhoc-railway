@@ -186,30 +186,39 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
         @Override
         public void mouseClicked(final MouseEvent e) {
-            if (!connectedToRailway) {
-                return;
-            }
+
             try {
                 if (e.getClickCount() == 1
                         && e.getButton() == MouseEvent.BUTTON1) {
-                    if (route.isRouting()) {
-                        return;
-                    }
-                    final RouteController routeControl = ctx.getRouteControl();
-                    if (!testMode) {
-                        routeControl.toggle(route);
-                    } else {
-                        routeControl.toggleTest(route);
-                    }
+                    handleLeftClick();
                 } else if (e.getClickCount() == 1
                         && e.getButton() == MouseEvent.BUTTON3) {
 
-                    if (ctx.isEditingMode()) {
-                        displayRouteConfig();
-                    }
+                    handleRightClick();
                 }
             } catch (final ControllerException e1) {
                 ctx.getMainApp().handleException(e1);
+            }
+        }
+
+        private void handleRightClick() {
+            if (ctx.isEditingMode()) {
+                displayRouteConfig();
+            }
+        }
+
+        private void handleLeftClick() {
+            if (!connectedToRailway) {
+                return;
+            }
+            if (route.isRouting()) {
+                return;
+            }
+            final RouteController routeControl = ctx.getRouteControl();
+            if (!testMode) {
+                routeControl.toggle(route);
+            } else {
+                routeControl.toggleTest(route);
             }
         }
 
