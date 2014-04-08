@@ -2,6 +2,7 @@ var restify = require('restify');
 var socketHandler = require('./socketio/socket.js');
 var locomotiveApi = require('./rest/locomotiveRESTApi');
 var turnoutApi = require('./rest/turnoutRESTApi');
+var routeApi = require('./rest/routeRESTApi');
 var mongoose = require('mongoose');
 
 
@@ -93,6 +94,7 @@ function sendDataToWebsocketClients(err, req, event, data) {
 }
 locomotiveApi.init(server, sendDataToWebsocketClients, sendResponse);
 turnoutApi.init(server, sendDataToWebsocketClients, sendResponse);
+routeApi.init(server, sendDataToWebsocketClients, sendResponse);
 
 var Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
 mongoose.connect('mongodb://localhost/baehnle');

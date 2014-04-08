@@ -27,7 +27,7 @@ exports.RouteSchema = new Schema({
     number: {type: Number, index: true},
     name: String,
     orientation: String,
-    group: ObjectId,
+    groupId: ObjectId,
     routedTurnouts: [
         {
             turnoutId: ObjectId,

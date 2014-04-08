@@ -20,7 +20,12 @@ module.exports = function (socket) {
         }
     });
 
-    routeController.init(socket);
+
+    routeController.init(function (err, allRouteGroups) {
+        if (!err) {
+            socket.emit('route:init', allRouteGroups);
+        }
+    });
 
     locomotiveController.init(function (err, allLocomotiveGroups) {
         if (!err) {
@@ -51,9 +56,9 @@ module.exports = function (socket) {
             sendBroadcastToClients(err, 'turnoutGroup:updated', turnoutGroup, fn);
         });
     });
-    socket.on('turnoutGroup:remove', function (turnoutGroup, fn) {
+    socket.on('turnoutGroup:remove', function (turnoutGroupId, fn) {
         console.log('turnoutGroup:remove');
-        turnoutController.removeTurnoutGroup(turnoutGroup, function (err, turnoutGroup) {
+        turnoutController.removeTurnoutGroup(turnoutGroupId, function (err, turnoutGroup) {
             sendBroadcastToClients(err, 'turnoutGroup:removed', turnoutGroup, fn);
         });
     });
@@ -82,9 +87,9 @@ module.exports = function (socket) {
         });
     });
 
-    socket.on('turnout:remove', function (turnout, fn) {
+    socket.on('turnout:remove', function (turnoutId, fn) {
         console.log('turnout:remove');
-        turnoutController.removeTurnout(turnout, function (err, turnoutGroup) {
+        turnoutController.removeTurnout(turnoutId, function (err, turnoutGroup) {
             sendBroadcastToClients(err, 'turnout:removed', turnoutGroup, fn);
         });
     });
@@ -100,52 +105,66 @@ module.exports = function (socket) {
 
     socket.on('routeGroup:getAll', function (dummy, fn) {
         console.log('route:getAll');
-        routeController.getAllRouteGroups(socket, fn);
+        routeController.getAllRouteGroups(fn);
     });
 
     socket.on('routeGroup:getById', function (routeGroupId, fn) {
         console.log('routeGroup:getById');
-        routeController.getRouteGroupById(socket, routeGroupId, fn);
+        routeController.getRouteGroupById(routeGroupId, fn);
     });
 
     socket.on('routeGroup:add', function (routeGroup, fn) {
         console.log('routeGroup:add');
-        routeController.addRouteGroup(socket, routeGroup, fn);
+        routeController.addRouteGroup(routeGroup, function (err, routeGroup) {
+            sendBroadcastToClients(err, 'routeGroup:added', routeGroup, fn);
+        });
     });
 
     socket.on('routeGroup:update', function (routeGroup, fn) {
         console.log('routeGroup:update');
-        routeController.updateRouteGroup(socket, routeGroup, fn);
+        routeController.updateRouteGroup(routeGroup, function (err, routeGroup) {
+            sendBroadcastToClients(err, 'routeGroup:updated', routeGroup, fn);
+        });
     });
 
-    socket.on('routeGroup:remove', function (routeGroup, fn) {
+    socket.on('routeGroup:remove', function (routeGroupId, fn) {
         console.log('routeGroup:remove');
-        routeController.removeRouteGroup(socket, routeGroup, fn);
+        routeController.removeRouteGroup(routeGroupId, function (err, routeGroup) {
+            sendBroadcastToClients(err, 'routeGroup:removed', routeGroup, fn);
+        });
     });
 
     socket.on('route:getById', function (routeId, fn) {
         console.log('route:getById');
-        routeController.getRouteById(socket, routeId, fn);
+        routeController.getRouteById(routeId, fn);
     });
 
     socket.on('route:add', function (route, fn) {
         console.log('route:add');
-        routeController.addRoute(socket, route, fn);
+        routeController.addRoute(route, function (err, route) {
+            sendBroadcastToClients(err, 'route:added', route, fn);
+        });
     });
 
     socket.on('route:update', function (route, fn) {
         console.log('route:update');
-        routeController.updateRoute(socket, route, fn);
+        routeController.updateRoute(route, function (err, route) {
+            sendBroadcastToClients(err, 'route:updated', route, fn);
+        });
     });
 
-    socket.on('route:remove', function (route, fn) {
+    socket.on('route:remove', function (routeId, fn) {
         console.log('route:remove');
-        routeController.removeRoute(socket, route, fn);
+        routeController.removeRoute(routeId, function (err, route) {
+            sendBroadcastToClients(err, 'route:removed', route, fn);
+        });
     });
 
-    socket.on('route:clear', function (dummy, fn) {
+    socket.on('route:clear', function (fn) {
         console.log('route:clear');
-        routeController.clear(socket, fn);
+        routeController.clear(function (err, routeGroups) {
+            sendBroadcastToClients(err, 'routeGroups:init', routeGroups, fn);
+        });
     });
 
     /* LOCOMOTIVES */

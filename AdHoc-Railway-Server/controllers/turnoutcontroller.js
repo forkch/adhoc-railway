@@ -167,7 +167,7 @@ exports.removeTurnout = function (turnoutId, fn) {
         if (!err) {
             if (turnout) {
                 turnout.remove(function (err) {
-                    TurnoutGroupModel.update({}, {$pull: {turnouts: turnoutId}}, function (err, turnoutGroup) {
+                    TurnoutGroupModel.update({}, {$pull: {turnouts: turnoutId}}, function (err) {
                         if (!err) {
                             fn(err, turnout.toJSON());
                         } else {
@@ -209,11 +209,11 @@ getAllTurnoutData = function (fn) {
 
     TurnoutGroupModel.find().exec(function (err, turnoutGroups) {
         if (err) {
-            fn(err, null);
+            fn(err, {msg: 'failed to load turnout groups'});
         }
         TurnoutModel.find().exec(function (err, turnouts) {
             if (err) {
-                fn(err, null);
+                fn(err, {msg: 'failed to load turnouts'});
             }
             var turnoutsByGroupId = {};
             for (t in turnouts) {

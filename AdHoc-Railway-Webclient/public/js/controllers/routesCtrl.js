@@ -3,14 +3,14 @@
 function RoutesCtrl($scope, socket) {
     $scope.routes = {};
     $scope.routeGroups = {};
-    socket.emit('routeGroup:getAll', '', function (err, data) {
+    socket.emit('routeGroup:getAll', '', function (err, routeGroups) {
         if (!err) {
-            receivedNewRouteGroups(data.routeGroups, $scope);
+            receivedNewRouteGroups(routeGroups, $scope);
         }
     });
 
-    socket.on('route:init', function (data) {
-        receivedNewRouteGroups(data.routeGroups, $scope);
+    socket.on('route:init', function (routeGroups) {
+        receivedNewRouteGroups(routeGroups, $scope);
     });
 
     socket.on('routeGroup:added', function (routeGroup) {
@@ -22,7 +22,7 @@ function RoutesCtrl($scope, socket) {
     });
 
     socket.on('routeGroup:removed', function (routeGroup) {
-        removeRouteGroup(routeGroup._id, $scope);
+        removeRouteGroup(routeGroup, $scope);
     });
 
     socket.on('route:added', function (route) {
@@ -34,13 +34,13 @@ function RoutesCtrl($scope, socket) {
     });
 
     socket.on('route:removed', function (route) {
-        removeRoute(route._id, $scope);
+        removeRoute(route, $scope);
     });
 
     $scope.removeRoute = function (routeId) {
         $scope.error = null;
 
-        socket.emit('route:remove', $scope.routes[routeId], function (err, msg) {
+        socket.emit('route:remove', routeId, function (err, msg) {
             if (!err) {
                 removeRoute(routeId, $scope);
             } else {
@@ -50,7 +50,7 @@ function RoutesCtrl($scope, socket) {
     }
     $scope.removeRouteGroup = function (routeGroupId) {
         $scope.error = null;
-        socket.emit('routeGroup:remove', $scope.routeGroups[routeGroupId], function (err, msg) {
+        socket.emit('routeGroup:remove', routeGroupId, function (err, msg) {
             if (!err) {
                 removeRouteGroup(routeGroupId, $scope);
             } else {
@@ -61,9 +61,9 @@ function RoutesCtrl($scope, socket) {
 
     $scope.clearRoutes = function () {
         $scope.error = null;
-        socket.emit('route:clear', '', function (err, msg, data) {
+        socket.emit('route:clear', '', function (err, msg) {
             if (!err) {
-                receivedNewRouteGroups(data.routeGroups, $scope);
+                receivedNewRouteGroups(msg, $scope);
             } else {
                 $scope.error = 'Error clearing routes: ' + msg;
             }
@@ -78,7 +78,7 @@ function AddRouteGroupCtrl($scope, socket, $location, $routeParams) {
     }
     $scope.addRouteGroup = function () {
         $scope.error = null;
-        socket.emit('routeGroup:add', $scope.routeGroup, function (err, msg, routeGroup) {
+        socket.emit('routeGroup:add', $scope.routeGroup, function (err, msg) {
             if (!err) {
                 $location.path('/routes')
             } else {
@@ -92,8 +92,8 @@ function AddRouteGroupCtrl($scope, socket, $location, $routeParams) {
 AddRouteGroupCtrl.$inject = ['$scope', 'socket', '$location', '$routeParams'];
 
 function EditRouteGroupCtrl($scope, socket, $location, $routeParams) {
-    socket.emit('routeGroup:getById', $routeParams.id, function (routeGroup) {
-        if (routeGroup != null) {
+    socket.emit('routeGroup:getById', $routeParams.id, function (err, routeGroup) {
+        if (!err && routeGroup != null) {
             $scope.routeGroup = routeGroup;
         }
     });
@@ -113,7 +113,7 @@ EditRouteGroupCtrl.$inject = ['$scope', 'socket', '$location', '$routeParams'];
 
 function AddRouteCtrl($scope, socket, $location, $routeParams) {
     $scope.route = {
-        group: $routeParams.groupId,
+        groupId: $routeParams.groupId,
         routedTurnouts: []
     }
 
@@ -134,7 +134,7 @@ function AddRouteCtrl($scope, socket, $location, $routeParams) {
     $scope.addRoute = function () {
         $scope.error = null;
         populateTurnoutIds($scope);
-        socket.emit('route:add', $scope.route, function (err, msg, route) {
+        socket.emit('route:add', $scope.route, function (err, msg) {
             if (!err) {
                 $location.path('/routes')
             } else {
@@ -148,8 +148,8 @@ AddRouteCtrl.$inject = ['$scope', 'socket', '$location', '$routeParams'];
 
 function EditRouteCtrl($scope, socket, $location, $routeParams) {
     getAllTurnouts(socket, $scope, function () {
-        socket.emit('route:getById', $routeParams.id, function (route) {
-            if (route != null) {
+        socket.emit('route:getById', $routeParams.id, function (err, route) {
+            if (!err) {
                 $scope.route = route;
                 angular.forEach($scope.route.routedTurnouts, function (routedTurnout) {
                     var turnout = $scope.turnoutById[routedTurnout.turnoutId];
@@ -164,7 +164,7 @@ function EditRouteCtrl($scope, socket, $location, $routeParams) {
 
     $scope.addRoutedTurnout = function () {
         var rt = {number: $scope.newRoutedTurnout.number, state: $scope.newRoutedTurnout.state};
-        rt._id = $scope.turnoutByNumber[$scope.newRoutedTurnout.number]._id;
+        rt.id = $scope.turnoutByNumber[$scope.newRoutedTurnout.number].id;
         $scope.route.routedTurnouts.push(rt);
         $scope.newRoutedTurnout = null;
     }
@@ -196,39 +196,42 @@ EditRouteCtrl.$inject = ['$scope', 'socket', '$location', '$routeParams'];
 function receivedNewRouteGroups(routeGroups, $scope) {
     $scope.routes = {};
     $scope.routeGroups = {};
-    angular.forEach(routeGroups, function (routeGroup, key) {
-        $scope.routeGroups[routeGroup._id] = routeGroup;
-        angular.forEach(routeGroup.routes, function (route, id) {
+    angular.forEach(routeGroups, function (routeGroup) {
+        var groupId = routeGroup.id;
+        $scope.routeGroups[groupId] = routeGroup;
+        angular.forEach(routeGroup.routes, function (route) {
+            var routeId = route.id;
             if ($scope.routes === undefined) {
                 $scope.routes = {};
             }
-            $scope.routes[id] = route;
+            $scope.routes[routeId] = route;
+            $scope.routeGroups[groupId].routes[routeId] = route;
         });
     });
 }
 
 function addRouteGroup(routeGroup, $scope) {
-    $scope.routeGroups[routeGroup._id] = routeGroup;
+    $scope.routeGroups[routeGroup.id] = routeGroup;
 }
 
 function addRoute(route, $scope) {
-    $scope.routes[route._id] = route;
-    var routes = $scope.routeGroups[route.group].routes;
+    $scope.routes[route.id] = route;
+    var routes = $scope.routeGroups[route.groupId].routes;
     if (!routes) {
         routes = {};
     }
-    routes[route._id] = route;
+    routes[route.id] = route;
 }
 
 function updateRoute(route, $scope) {
-    var routeId = route._id;
-    var groupId = $scope.routes[routeId].group;
+    var routeId = route.id;
+    var groupId = $scope.routes[routeId].groupId;
     $scope.routes[routeId] = route;
     $scope.routeGroups[groupId].routes[routeId] = route;
 }
 
 function removeRoute(routeId, $scope) {
-    var groupId = $scope.routes[routeId].group;
+    var groupId = $scope.routes[routeId].groupId;
     delete $scope.routes[routeId];
     delete $scope.routeGroups[groupId].routes[routeId];
 }
@@ -237,21 +240,21 @@ function removeRouteGroup(routeGroupId, $scope) {
 }
 
 function updateRouteGroup(routeGroup, $scope) {
-    $scope.routeGroups[routeGroup._id].number = routeGroup.number;
-    $scope.routeGroups[routeGroup._id].name = routeGroup.name;
-    $scope.routeGroups[routeGroup._id].orientation = routeGroup.orientation;
+    $scope.routeGroups[routeGroup.id].number = routeGroup.number;
+    $scope.routeGroups[routeGroup.id].name = routeGroup.name;
+    $scope.routeGroups[routeGroup.id].orientation = routeGroup.orientation;
 
 }
 
 function getAllTurnouts(socket, $scope, fn) {
-    socket.emit('turnout:getAll', '', function (err, msg, turnouts) {
+    socket.emit('turnout:getAll', '', function (err, turnouts) {
         if (!err) {
             $scope.turnouts = turnouts;
             $scope.turnoutByNumber = {};
             $scope.turnoutById = {};
             angular.forEach(turnouts, function (t) {
                 $scope.turnoutByNumber[t.number] = t;
-                $scope.turnoutById[t._id] = t;
+                $scope.turnoutById[t.id] = t;
             });
         } else {
             $scope.error = 'Error getting all turnouts (' + msg + ')';
@@ -264,6 +267,6 @@ function getAllTurnouts(socket, $scope, fn) {
 }
 function populateTurnoutIds($scope) {
     angular.forEach($scope.route.routedTurnouts, function (routedTurnout) {
-        routedTurnout.turnoutId = $scope.turnoutByNumber[routedTurnout.number]._id;
+        routedTurnout.turnoutId = $scope.turnoutByNumber[routedTurnout.number].id;
     });
 }

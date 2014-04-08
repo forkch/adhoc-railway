@@ -189,8 +189,8 @@ function addTurnout(turnout, $scope) {
 function updateTurnout(turnout, $scope) {
     var turnoutId = turnout.id;
     var groupId = $scope.turnouts[turnoutId].groupId;
-    $scope.turnouts[turnout.id] = turnout;
-    $scope.turnoutGroups[groupId].turnouts[turnout.id] = turnout;
+    $scope.turnouts[turnoutId] = turnout;
+    $scope.turnoutGroups[groupId].turnouts[turnoutId] = turnout;
 }
 
 function removeTurnout(turnoutId, $scope) {
