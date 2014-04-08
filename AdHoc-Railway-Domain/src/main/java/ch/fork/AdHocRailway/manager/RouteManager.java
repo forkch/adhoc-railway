@@ -45,7 +45,7 @@ public interface RouteManager {
 
     void updateRouteGroup(final RouteGroup routeGroup);
 
-    void addRouteItem(final RouteItem item);
+    void addRouteItemToGroup(final RouteItem item, Route route);
 
     void removeRouteItem(final RouteItem item);
 

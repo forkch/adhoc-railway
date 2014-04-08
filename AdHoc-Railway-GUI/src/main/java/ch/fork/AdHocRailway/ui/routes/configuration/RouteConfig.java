@@ -428,11 +428,12 @@ public class RouteConfig extends JDialog {
                     }
                     final RouteItem i = new RouteItem();
                     i.setRoute(route);
-                    i.setRoutedState(routedState);
+                    i.setState(routedState);
                     i.setTurnout(turnout);
 
                     try {
-                        routeManager.addRouteItem(i);
+                        i.setId(UUID.randomUUID().toString()); //just a dummy id
+                        routeManager.addRouteItemToGroup(i, route);
                         final List<RouteItem> routeItems = new ArrayList<RouteItem>(
                                 route.getRouteItems());
                         routeItemModel.setList(routeItems);

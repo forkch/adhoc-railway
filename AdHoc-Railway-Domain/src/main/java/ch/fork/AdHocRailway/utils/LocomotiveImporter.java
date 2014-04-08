@@ -51,7 +51,7 @@ public class LocomotiveImporter {
             for (Route route : group.getRoutes()) {
                 routeManager.addRouteToGroup(route, group);
                 for (RouteItem routeItem : route.getRouteItems()) {
-                    routeManager.addRouteItem(routeItem);
+                    routeManager.addRouteItemToGroup(routeItem, route);
                 }
             }
         }

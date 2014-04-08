@@ -21,7 +21,7 @@ public class RouteItemTableModel extends AbstractTableAdapter<RouteItem> {
             case 0:
                 return routeItem.getTurnout().getNumber();
             case 1:
-                return routeItem.getRoutedState();
+                return routeItem.getState();
             default:
                 throw new IllegalStateException("Unknown column");
         }

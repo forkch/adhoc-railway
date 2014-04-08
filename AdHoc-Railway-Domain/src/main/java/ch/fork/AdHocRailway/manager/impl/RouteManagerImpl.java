@@ -168,15 +168,13 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     }
 
     @Override
-    public void addRouteItem(final RouteItem item) {
-        LOGGER.debug("addRouteItem()");
+    public void addRouteItemToGroup(final RouteItem item, Route route) {
+        LOGGER.debug("addRouteItemToGroup()");
 
         if (item.getTurnout() == null) {
             throw new ManagerException(
                     "RouteItem has no associated Turnout");
         }
-        item.getTurnout().getRouteItems().add(item);
-
         if (item.getRoute() == null) {
             throw new ManagerException("RouteItem has no associated Route");
         }
@@ -198,8 +196,8 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 
     @Override
     public void updateRouteItem(final RouteItem item) {
-        LOGGER.debug("updateRouteItem()");
-        this.routeService.updateRouteItem(item);
+       /* LOGGER.debug("updateRouteItem()");
+        this.routeService.updateRouteItem(item);*/
 
     }
 
@@ -255,9 +253,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
             putRouteGroupInCache(group);
             for (final Route route : group.getRoutes()) {
                 putInCache(route);
-                for (final RouteItem routeItem : route.getRouteItems()) {
-                    reassignTurnoutToRouteItem(routeItem);
-                }
+                fillTurnoutsToRouteItems(route);
             }
         }
         for (final RouteManagerListener l : listeners) {
@@ -272,6 +268,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
         LOGGER.info("routeAdded: " + route);
         cleanupListeners();
         putInCache(route);
+        fillTurnoutsToRouteItems(route);
         for (final RouteManagerListener l : listeners) {
             l.routeAdded(route);
         }
@@ -282,11 +279,17 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
         LOGGER.info("routeUpdated: " + route);
         cleanupListeners();
         putInCache(route);
-        for (RouteItem routeItem : route.getRouteItems()) {
-            routeItem.setTurnout(turnoutManager.getTurnoutById(routeItem.getTurnoutId()));
-        }
+        fillTurnoutsToRouteItems(route);
         for (final RouteManagerListener l : listeners) {
             l.routeUpdated(route);
+        }
+    }
+
+    private void fillTurnoutsToRouteItems(Route route) {
+        for (RouteItem routeItem : route.getRouteItems()) {
+
+            final int number = routeItem.getTurnout().getNumber();
+            routeItem.setTurnout(turnoutManager.getTurnoutByNumber(number));
         }
     }
 
@@ -347,11 +350,6 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
         routesUpdated(new TreeSet<RouteGroup>());
     }
 
-    private void reassignTurnoutToRouteItem(final RouteItem routeItem) {
-
-        final int number = routeItem.getTurnout().getNumber();
-        routeItem.setTurnout(turnoutManager.getTurnoutByNumber(number));
-    }
 
     private void putInCache(final Route route) {
         numberToRouteCache.put(route.getNumber(), route);

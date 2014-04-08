@@ -20,7 +20,6 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
 import com.google.gson.annotations.Expose;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -32,17 +31,18 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_TURNOUT = "turnout";
     public static final String PROPERTYNAME_ROUTE = "route";
-    public static final String PROPERTYNAME_ROUTED_STATE = "routedState";
+    public static final String PROPERTYNAME_ROUTED_STATE = "state";
     @Expose
     private String id;
     @Expose
     private String turnoutId;
+    @Expose
+    private TurnoutState state;
 
     private transient Turnout turnout;
 
     private transient Route route;
 
-    private TurnoutState routedState;
 
     public RouteItem() {
     }
@@ -52,7 +52,7 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
         this.id = id;
         this.turnout = turnout;
         this.route = route;
-        this.routedState = routedState;
+        this.state = routedState;
     }
 
     public String getId() {
@@ -85,15 +85,15 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTE, old, this.route);
     }
 
-    public TurnoutState getRoutedState() {
-        return this.routedState;
+    public TurnoutState getState() {
+        return this.state;
     }
 
-    public void setRoutedState(final TurnoutState routedState) {
-        final TurnoutState old = this.routedState;
-        this.routedState = routedState;
+    public void setState(final TurnoutState state) {
+        final TurnoutState old = this.state;
+        this.state = state;
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTED_STATE, old,
-                this.routedState);
+                this.state);
     }
 
     @Override

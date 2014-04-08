@@ -34,7 +34,7 @@ public class RouteChangingThread implements Runnable, TurnoutChangeListener {
             for (final RouteItem routeItem : route.getRouteItems()) {
                 final Turnout turnout = routeItem.getTurnout();
                 if (enable) {
-                    switch (routeItem.getRoutedState()) {
+                    switch (routeItem.getState()) {
                         case LEFT:
                             turnoutControl.setCurvedLeft(turnout);
 

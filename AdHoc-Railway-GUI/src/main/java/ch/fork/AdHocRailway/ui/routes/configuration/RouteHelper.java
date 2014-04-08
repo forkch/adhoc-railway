@@ -37,7 +37,7 @@ public class RouteHelper {
     private static RouteItem copyRouteItem(final RouteItem origRouteItem) {
         final RouteItem item = new RouteItem();
         item.setTurnout(origRouteItem.getTurnout());
-        item.setRoutedState(origRouteItem.getRoutedState());
+        item.setState(origRouteItem.getState());
         return item;
     }
 
@@ -94,7 +94,7 @@ public class RouteHelper {
 
         for (final RouteItem item : route.getRouteItems()) {
             addTableRow("", "" + item.getTurnout().getNumber() + ": "
-                    + item.getRoutedState().toString(), description);
+                    + item.getState().toString(), description);
         }
 
         description.append("</table>");
