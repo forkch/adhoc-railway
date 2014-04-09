@@ -8,7 +8,7 @@ import ch.fork.AdHocRailway.domain.turnouts.*;
 import ch.fork.AdHocRailway.manager.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
-import ch.fork.AdHocRailway.utils.LocomotiveImporter;
+import ch.fork.AdHocRailway.utils.DataImporter;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -109,7 +109,7 @@ public class XMLServiceHelper {
                     fileToImport));
 
             addFunctionsIfNeccesaray(data);
-            new LocomotiveImporter().importLocomotives(locomotivePersistence,
+            new DataImporter().importLocomotives(locomotivePersistence,
                     data.getLocomotiveGroups());
             LOGGER.info("finished importing locomotives from file: "
                     + fileToImport);
@@ -190,15 +190,15 @@ public class XMLServiceHelper {
                     fileToImport));
 
             addFunctionsIfNeccesaray(data);
-            new LocomotiveImporter().importLocomotives(locomotivePersistence,
+            new DataImporter().importLocomotives(locomotivePersistence,
                     data.getLocomotiveGroups());
             LOGGER.info("finished importing locomotives from file: " + fileToImport);
 
-            new LocomotiveImporter().importTurnouts(turnoutManager,
+            new DataImporter().importTurnouts(turnoutManager,
                     data.getTurnoutGroups());
             LOGGER.info("finished importing locomotives from file: " + fileToImport);
 
-            new LocomotiveImporter().importRoutes(routeManager,
+            new DataImporter().importRoutes(routeManager,
                     data.getRouteGroups());
             LOGGER.info("finished importing locomotives from file: "
                     + fileToImport);

@@ -9,7 +9,7 @@ import ch.fork.AdHocRailway.manager.TurnoutManager;
 
 import java.util.SortedSet;
 
-public class LocomotiveImporter {
+public class DataImporter {
 
     public void importLocomotives(
             final LocomotiveManager locomotiveManager,
