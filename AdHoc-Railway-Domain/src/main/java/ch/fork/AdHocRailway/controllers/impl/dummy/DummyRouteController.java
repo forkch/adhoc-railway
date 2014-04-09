@@ -18,18 +18,17 @@ public class DummyRouteController extends RouteController {
         routeChangingListener = new RouteChangingThread.RouteChangingListener() {
             @Override
             public void informNextTurnoutRouted(final Route route) {
-                informNextTurnoutRouted(route);
+                DummyRouteController.super.informNextTurnoutRouted(route);
             }
 
             @Override
             public void informNextTurnoutDerouted(final Route route) {
-                informNextTurnoutDerouted(route);
-
+                DummyRouteController.super.informNextTurnoutDerouted(route);
             }
 
             @Override
             public void informRouteChanged(final Route route) {
-                informRouteChanged(route);
+                DummyRouteController.super.informRouteChanged(route);
             }
         };
     }
