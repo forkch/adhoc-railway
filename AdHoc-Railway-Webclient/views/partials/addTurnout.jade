@@ -9,11 +9,11 @@ div.row
                     input(autofocus='true', type='number', size='4', placeholder='Number', ng-model='turnout.number')
                 p
                     select(ng-model='turnout.type')
-                        option default_left
-                        option default_right
-                        option doublecross
-                        option threeway
-                        option cutter
+                        option DEFAULT_LEFT
+                        option DEFAULT_RIGHT
+                        option DOUBLECROSS
+                        option THREEWAY
+                        option CUTTER
                 p
                     input(type='number',size='4', placeholder='Bus 1', ng-model='turnout.bus1')
                 p
@@ -30,16 +30,16 @@ div.row
                         input(type='checkbox', ng-model='turnout.address2switched')
                 p
                     select(ng-model='turnout.defaultState')
-                        option left
-                        option right
-                        option straight
-                        option curved
+                        option LEFT
+                        option RIGHT
+                        option STRAIGHT
+                        option CURVED
                 p
                     select(ng-model='turnout.orientation')
-                        option north
-                        option east
-                        option south
-                        option west
+                        option NORTH
+                        option EAST
+                        option SOUTH
+                        option WEST
                 p
                     button.btn(type='submit') Add
     div.span5

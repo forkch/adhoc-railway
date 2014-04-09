@@ -4,15 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 public enum TurnoutType {
 
-    @SerializedName("DEFAULT_LEFT")
     DEFAULT_LEFT("Default Left"),
-    @SerializedName("DEFAULT_RIGHT")
     DEFAULT_RIGHT("Default Right"),
-    @SerializedName("DOUBLECROSS")
     DOUBLECROSS("Doublecross"),
-    @SerializedName("TRHEEWAY")
     THREEWAY("Threeway"),
-    @SerializedName("CUTTER")
     CUTTER("Cutter");
 
     private final String humanName;

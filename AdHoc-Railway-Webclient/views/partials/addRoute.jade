@@ -32,10 +32,10 @@ div.row-fluid
                 | Number: {{routedTurnout.number}}
             p
                 select(ng-model='routedTurnout.state')
-                    option left
-                    option right
-                    option straight
-                    option curved
+                    option LEFT
+                    option RIGHT
+                    option STRAIGHT
+                    option CURVED
             p
                 button.btn(ng-click='removeRoutedTurnout(routedTurnout)')
                     i.icon-remove
@@ -45,10 +45,10 @@ div.row-fluid
                     option(ng-repeat='turnout in turnouts') {{turnout.number}}
             p
                 select(ng-model='newRoutedTurnout.state')
-                    option left
-                    option right
-                    option straight
-                    option curved
+                    option LEFT
+                    option RIGHT
+                    option STRAIGHT
+                    option CURVED
                 br
                 button.btn(ng-click='addRoutedTurnout()') Add
 

@@ -195,7 +195,7 @@ exports.removeRoute = function (routeId, fn) {
     });
 }
 
-exports.clear = function (socket, fn) {
+exports.clear = function (fn) {
     RouteModel.remove(function (err) {
         if (!err) {
             RouteGroupModel.remove(function (err) {

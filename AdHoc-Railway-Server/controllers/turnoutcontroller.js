@@ -256,7 +256,10 @@ validateTurnout = function (turnout, fn) {
         fn(true, {msg: 'turnout type must be specified'});
         return false;
     }
-    if (turnout.type.toUpperCase() === "threeway".toUpperCase()) {
+    turnout.type = turnout.type.toUpperCase();
+    turnout.defaultState = turnout.defaultState.toUpperCase();
+    turnout.orientation = turnout.orientation.toUpperCase();
+    if (turnout.type === "THREEWAY") {
         if (!turnout.bus2 || turnout.bus2 < 1) {
             fn(true, {msg: 'bus 2 must be greater 0'});
             return false;
