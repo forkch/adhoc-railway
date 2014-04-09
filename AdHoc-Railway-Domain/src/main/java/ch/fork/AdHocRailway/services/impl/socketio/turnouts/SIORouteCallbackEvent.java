@@ -1,6 +1,6 @@
 package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
-public enum SIORouteServiceEvent {
+public enum SIORouteCallbackEvent {
     // @formatter:off
     ROUTE_INIT("route:init"),
     ROUTE_ADDED("route:added"),
@@ -25,12 +25,12 @@ public enum SIORouteServiceEvent {
     // @formatter:on
     private final String event;
 
-    private SIORouteServiceEvent(String event) {
+    private SIORouteCallbackEvent(String event) {
         this.event = event;
     }
 
-    public static SIORouteServiceEvent fromEvent(String event2) {
-        for (SIORouteServiceEvent e : values()) {
+    public static SIORouteCallbackEvent fromEvent(String event2) {
+        for (SIORouteCallbackEvent e : values()) {
             if (e.getEvent().equalsIgnoreCase(event2)) {
                 return e;
             }

@@ -35,7 +35,7 @@ public class SIORouteCallback implements IOCallback {
     @Override
     public synchronized void on(final String event, final IOAcknowledge arg1,
                                 final Object... jsonData) {
-        final SIORouteServiceEvent serviceEvent = SIORouteServiceEvent
+        final SIORouteCallbackEvent serviceEvent = SIORouteCallbackEvent
                 .fromEvent(event);
 
         if (serviceEvent == null) {
@@ -45,28 +45,28 @@ public class SIORouteCallback implements IOCallback {
         try {
             switch (serviceEvent) {
                 case ROUTE_INIT:
-                    SIORouteServiceEventHandler.handleRouteInit((JSONArray) jsonData[0], listener);
+                    SIORouteCallbackEventHandler.handleRouteInit((JSONArray) jsonData[0], listener);
                     break;
                 case ROUTE_ADDED:
-                    SIORouteServiceEventHandler.handleRouteAdded((JSONObject) jsonData[0], listener);
+                    SIORouteCallbackEventHandler.handleRouteAdded((JSONObject) jsonData[0], listener);
                     break;
                 case ROUTE_GROUP_ADDED:
-                    SIORouteServiceEventHandler.handleRouteGroupAdded((JSONObject) jsonData[0],
+                    SIORouteCallbackEventHandler.handleRouteGroupAdded((JSONObject) jsonData[0],
                             listener);
                     break;
                 case ROUTE_GROUP_REMOVED:
-                    SIORouteServiceEventHandler.handleRouteGroupRemoved((JSONObject) jsonData[0],
+                    SIORouteCallbackEventHandler.handleRouteGroupRemoved((JSONObject) jsonData[0],
                             listener);
                     break;
                 case ROUTE_GROUP_UPDATED:
-                    SIORouteServiceEventHandler.handleRouteGroupUpdated((JSONObject) jsonData[0],
+                    SIORouteCallbackEventHandler.handleRouteGroupUpdated((JSONObject) jsonData[0],
                             listener);
                     break;
                 case ROUTE_REMOVED:
-                    SIORouteServiceEventHandler.handleRouteRemoved((JSONObject) jsonData[0], listener);
+                    SIORouteCallbackEventHandler.handleRouteRemoved((JSONObject) jsonData[0], listener);
                     break;
                 case ROUTE_UPDATED:
-                    SIORouteServiceEventHandler.handleRouteUpdated((JSONObject) jsonData[0], listener);
+                    SIORouteCallbackEventHandler.handleRouteUpdated((JSONObject) jsonData[0], listener);
                     break;
                 default:
                     break;

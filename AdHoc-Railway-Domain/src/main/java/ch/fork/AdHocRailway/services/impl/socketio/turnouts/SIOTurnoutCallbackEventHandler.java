@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class SIOTurnoutServiceEventHandler {
+public class SIOTurnoutCallbackEventHandler {
 
     private static Map<String, TurnoutGroup> sioIdToTurnoutGroupMap = new HashMap<String, TurnoutGroup>();
     private static Map<String, Turnout> sioIdToTurnoutMap = new HashMap<String, Turnout>();

@@ -1,6 +1,6 @@
 package ch.fork.AdHocRailway.services.impl.socketio.locomotives;
 
-public enum SIOLocomotiveServiceEvent {
+public enum SIOLocomotiveCallbackEvent {
     // @formatter:off
     LOCOMOTIVE_INIT("locomotive:init"),
     LOCOMOTIVE_ADDED("locomotive:added"),
@@ -24,12 +24,12 @@ public enum SIOLocomotiveServiceEvent {
     // @formatter:on
     private final String event;
 
-    private SIOLocomotiveServiceEvent(final String event) {
+    private SIOLocomotiveCallbackEvent(final String event) {
         this.event = event;
     }
 
-    public static SIOLocomotiveServiceEvent fromEvent(final String event2) {
-        for (final SIOLocomotiveServiceEvent e : values()) {
+    public static SIOLocomotiveCallbackEvent fromEvent(final String event2) {
+        for (final SIOLocomotiveCallbackEvent e : values()) {
             if (e.getEvent().equalsIgnoreCase(event2)) {
                 return e;
             }

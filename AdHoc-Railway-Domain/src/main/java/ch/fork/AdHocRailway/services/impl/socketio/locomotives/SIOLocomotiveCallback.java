@@ -38,7 +38,7 @@ public class SIOLocomotiveCallback implements IOCallback {
     public synchronized void on(final String event, final IOAcknowledge arg1,
                                 final Object... jsonData) {
 
-        final SIOLocomotiveServiceEvent serviceEvent = SIOLocomotiveServiceEvent
+        final SIOLocomotiveCallbackEvent serviceEvent = SIOLocomotiveCallbackEvent
                 .fromEvent(event);
         if (serviceEvent == null) {
             return;
@@ -47,31 +47,31 @@ public class SIOLocomotiveCallback implements IOCallback {
         try {
             switch (serviceEvent) {
                 case LOCOMOTIVE_INIT:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveInit((JSONArray) (jsonData[0]),
+                    SIOLocomotiveCallbackEventHandler.handleLocomotiveInit((JSONArray) (jsonData[0]),
                             listener);
                     break;
                 case LOCOMOTIVE_ADDED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveAdded((JSONObject) (jsonData[0]),
+                    SIOLocomotiveCallbackEventHandler.handleLocomotiveAdded((JSONObject) (jsonData[0]),
                             listener);
                     break;
                 case LOCOMOTIVE_GROUP_ADDED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveGroupAdded(
+                    SIOLocomotiveCallbackEventHandler.handleLocomotiveGroupAdded(
                             (JSONObject) (jsonData[0]), listener);
                     break;
                 case LOCOMOTIVE_GROUP_REMOVED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveGroupRemoved(
+                    SIOLocomotiveCallbackEventHandler.handleLocomotiveGroupRemoved(
                             (JSONObject) (jsonData[0]), listener);
                     break;
                 case LOCOMOTIVE_GROUP_UPDATED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveGroupUpdated(
+                    SIOLocomotiveCallbackEventHandler.handleLocomotiveGroupUpdated(
                             (JSONObject) (jsonData[0]), listener);
                     break;
                 case LOCOMOTIVE_REMOVED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveRemoved((JSONObject) (jsonData[0]),
+                    SIOLocomotiveCallbackEventHandler.handleLocomotiveRemoved((JSONObject) (jsonData[0]),
                             listener);
                     break;
                 case LOCOMOTIVE_UPDATED:
-                    SIOLocomotiveServiceEventHandler.handleLocomotiveUpdated((JSONObject) (jsonData[0]),
+                    SIOLocomotiveCallbackEventHandler.handleLocomotiveUpdated((JSONObject) (jsonData[0]),
                             listener);
                     break;
                 default:

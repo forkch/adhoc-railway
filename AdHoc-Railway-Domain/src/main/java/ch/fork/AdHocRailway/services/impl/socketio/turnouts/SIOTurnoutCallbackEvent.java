@@ -1,6 +1,6 @@
 package ch.fork.AdHocRailway.services.impl.socketio.turnouts;
 
-public enum SIOTurnoutServiceEvent {
+public enum SIOTurnoutCallbackEvent {
     // @formatter:off
     TURNOUT_INIT("turnout:init"),
     TURNOUT_ADDED("turnout:added"),
@@ -24,12 +24,12 @@ public enum SIOTurnoutServiceEvent {
     // @formatter:on
     private final String event;
 
-    private SIOTurnoutServiceEvent(String event) {
+    private SIOTurnoutCallbackEvent(String event) {
         this.event = event;
     }
 
-    public static SIOTurnoutServiceEvent fromEvent(String event2) {
-        for (SIOTurnoutServiceEvent e : values()) {
+    public static SIOTurnoutCallbackEvent fromEvent(String event2) {
+        for (SIOTurnoutCallbackEvent e : values()) {
             if (e.getEvent().equalsIgnoreCase(event2)) {
                 return e;
             }

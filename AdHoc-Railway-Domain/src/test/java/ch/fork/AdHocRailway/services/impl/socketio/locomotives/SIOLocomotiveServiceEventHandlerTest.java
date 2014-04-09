@@ -55,7 +55,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
         initJSON.put(0, group1);
         initJSON.put(1, group2);
 
-        SIOLocomotiveServiceEventHandler.handleLocomotiveInit(initJSON,
+        SIOLocomotiveCallbackEventHandler.handleLocomotiveInit(initJSON,
                 listenerMock);
 
         verify(listenerMock).locomotivesUpdated(
@@ -77,7 +77,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
                 .createJSONLocomotiveGroup(GROUP_ID,
                         Arrays.asList(createJSONLocomotive));
 
-        SIOLocomotiveServiceEventHandler.handleLocomotiveGroupAdded(
+        SIOLocomotiveCallbackEventHandler.handleLocomotiveGroupAdded(
                 createJSONLocomotiveGroup, listenerMock);
         verify(listenerMock).locomotiveGroupAdded(captor.capture());
 
@@ -96,7 +96,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
         final LocomotiveGroup addEmptyLocomotiveGroup = addEmptyLocomotiveGroup()
                 .getSecond();
 
-        SIOLocomotiveServiceEventHandler.handleLocomotiveGroupRemoved(
+        SIOLocomotiveCallbackEventHandler.handleLocomotiveGroupRemoved(
                 jsonEmptyLocomotiveGroup, listenerMock);
 
         verify(listenerMock).locomotiveGroupRemoved(captor.capture());
@@ -116,7 +116,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
                 jsonEmptyLocomotiveGroup.toString());
         updatedGroupJson.put("name", "newName");
 
-        SIOLocomotiveServiceEventHandler.handleLocomotiveGroupUpdated(
+        SIOLocomotiveCallbackEventHandler.handleLocomotiveGroupUpdated(
                 updatedGroupJson, listenerMock);
 
         verify(listenerMock).locomotiveGroupUpdated(captor.capture());
@@ -137,7 +137,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
                 .createJSONLocomotive("2", "digital", 5);
         createJSONLocomotive2.put("groupId", GROUP_ID);
 
-        SIOLocomotiveServiceEventHandler.handleLocomotiveAdded(
+        SIOLocomotiveCallbackEventHandler.handleLocomotiveAdded(
                 createJSONLocomotive2, listenerMock);
 
         verify(listenerMock).locomotiveAdded(captor.capture());
@@ -159,7 +159,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
                 .getFirst().toString());
         updatedLocomotiveJSON.put("name", "newName");
 
-        SIOLocomotiveServiceEventHandler.handleLocomotiveUpdated(
+        SIOLocomotiveCallbackEventHandler.handleLocomotiveUpdated(
                 updatedLocomotiveJSON, listenerMock);
 
         verify(listenerMock).locomotiveUpdated(captor.capture());
@@ -175,7 +175,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
         addEmptyLocomotiveGroup();
         final Tuple<JSONObject, Locomotive> addLocomotive = addLocomotive();
 
-        SIOLocomotiveServiceEventHandler.handleLocomotiveRemoved(
+        SIOLocomotiveCallbackEventHandler.handleLocomotiveRemoved(
                 addLocomotive.getFirst(), listenerMock);
 
         verify(listenerMock).locomotiveRemoved(captor.capture());
@@ -189,7 +189,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
                 .createJSONLocomotive("2", "delta", 5);
         createJSONLocomotive2.put("groupId", GROUP_ID);
 
-        final Locomotive handleLocomotiveAdded = SIOLocomotiveServiceEventHandler
+        final Locomotive handleLocomotiveAdded = SIOLocomotiveCallbackEventHandler
                 .handleLocomotiveAdded(createJSONLocomotive2, listenerMock);
         verify(listenerMock).locomotiveAdded(any(Locomotive.class));
 
@@ -205,7 +205,7 @@ public class SIOLocomotiveServiceEventHandlerTest {
 
         return new Tuple<JSONObject, LocomotiveGroup>(
                 createJSONLocomotiveGroup,
-                SIOLocomotiveServiceEventHandler.handleLocomotiveGroupAdded(
+                SIOLocomotiveCallbackEventHandler.handleLocomotiveGroupAdded(
                         createJSONLocomotiveGroup, listenerMock)
         );
     }

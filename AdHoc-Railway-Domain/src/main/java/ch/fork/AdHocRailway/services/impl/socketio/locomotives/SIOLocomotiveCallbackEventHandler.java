@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class SIOLocomotiveServiceEventHandler {
+public class SIOLocomotiveCallbackEventHandler {
 
     private static Map<String, LocomotiveGroup> sioIdToLocomotiveGroupMap = new HashMap<String, LocomotiveGroup>();
     private static Map<String, Locomotive> sioIdToLocomotiveMap = new HashMap<String, Locomotive>();

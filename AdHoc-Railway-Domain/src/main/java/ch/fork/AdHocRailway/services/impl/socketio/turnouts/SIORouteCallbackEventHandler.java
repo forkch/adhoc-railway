@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class SIORouteServiceEventHandler {
+public class SIORouteCallbackEventHandler {
 
     private static Map<String, RouteGroup> sioIdToRouteGroupMap = new HashMap<String, RouteGroup>();
     private static Map<String, Route> sioIdToRouteMap = new HashMap<String, Route>();

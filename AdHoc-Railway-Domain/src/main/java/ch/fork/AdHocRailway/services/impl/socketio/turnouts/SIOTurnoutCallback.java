@@ -37,7 +37,7 @@ public class SIOTurnoutCallback implements IOCallback {
     public synchronized void on(final String event, final IOAcknowledge arg1,
                                 final Object... jsonData) {
 
-        final SIOTurnoutServiceEvent serviceEvent = SIOTurnoutServiceEvent
+        final SIOTurnoutCallbackEvent serviceEvent = SIOTurnoutCallbackEvent
                 .fromEvent(event);
         if (serviceEvent == null) {
             return;
@@ -47,30 +47,30 @@ public class SIOTurnoutCallback implements IOCallback {
         try {
             switch (serviceEvent) {
                 case TURNOUT_INIT:
-                    SIOTurnoutServiceEventHandler.handleTurnoutInit((JSONArray) jsonData[0], listener);
+                    SIOTurnoutCallbackEventHandler.handleTurnoutInit((JSONArray) jsonData[0], listener);
                     break;
                 case TURNOUT_ADDED:
-                    SIOTurnoutServiceEventHandler
+                    SIOTurnoutCallbackEventHandler
                             .handleTurnoutAdded((JSONObject) jsonData[0], listener);
                     break;
                 case TURNOUT_GROUP_ADDED:
-                    SIOTurnoutServiceEventHandler.handleTurnoutGroupAdded((JSONObject) jsonData[0],
+                    SIOTurnoutCallbackEventHandler.handleTurnoutGroupAdded((JSONObject) jsonData[0],
                             listener);
                     break;
                 case TURNOUT_GROUP_REMOVED:
-                    SIOTurnoutServiceEventHandler.handleTurnoutGroupRemoved((JSONObject) jsonData[0],
+                    SIOTurnoutCallbackEventHandler.handleTurnoutGroupRemoved((JSONObject) jsonData[0],
                             listener);
                     break;
                 case TURNOUT_GROUP_UPDATED:
-                    SIOTurnoutServiceEventHandler.handleTurnoutGroupUpdated((JSONObject) jsonData[0],
+                    SIOTurnoutCallbackEventHandler.handleTurnoutGroupUpdated((JSONObject) jsonData[0],
                             listener);
                     break;
                 case TURNOUT_REMOVED:
-                    SIOTurnoutServiceEventHandler.handleTurnoutRemoved((JSONObject) jsonData[0],
+                    SIOTurnoutCallbackEventHandler.handleTurnoutRemoved((JSONObject) jsonData[0],
                             listener);
                     break;
                 case TURNOUT_UPDATED:
-                    SIOTurnoutServiceEventHandler.handleTurnoutUpdated((JSONObject) jsonData[0],
+                    SIOTurnoutCallbackEventHandler.handleTurnoutUpdated((JSONObject) jsonData[0],
                             listener);
                     break;
                 default:
