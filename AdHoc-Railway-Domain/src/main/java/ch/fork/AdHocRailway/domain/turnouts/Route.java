@@ -159,12 +159,16 @@ public class Route extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, new String[]{"routedTurnouts"});
+        return new HashCodeBuilder().append(id).build();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj, new String[]{"routedTurnouts"});
+        if (!(obj instanceof Route)) {
+            return false;
+        }
+        Route rhs = (Route) obj;
+        return new EqualsBuilder().append(id, rhs.getId()).build();
     }
 
     @Override

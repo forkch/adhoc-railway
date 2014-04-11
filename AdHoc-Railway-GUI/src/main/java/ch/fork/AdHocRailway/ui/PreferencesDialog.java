@@ -34,6 +34,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -75,6 +76,11 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         super(owner, "Preferences", true);
         this.ctx = ctx;
         initGUI();
+        initShortcuts();
+    }
+
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_ENTER, 0, new ApplyChangesAction());
     }
 
     private void initGUI() {
@@ -102,22 +108,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
         final JButton okButton = new JButton("OK",
                 ImageTools.createImageIconFromIconSet("dialog-ok-apply.png"));
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                okPressed = true;
-
-                JOptionPane
-                        .showMessageDialog(
-                                PreferencesDialog.this,
-                                "Please restart application for the changes to have effect",
-                                "Please restart",
-                                JOptionPane.INFORMATION_MESSAGE);
-                PreferencesDialog.this.setVisible(false);
-
-                savePreferences();
-            }
-        });
+        okButton.addActionListener(new ApplyChangesAction());
         final JButton cancelButton = new JButton("Cancel",
                 ImageTools.createImageIconFromIconSet("dialog-cancel.png"));
         cancelPressed = false;
@@ -393,4 +384,21 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         adHocServerHostField.setEnabled(!en);
         adHocServerPortField.setEnabled(!en);
     }
+
+    private class ApplyChangesAction extends AbstractAction {
+        public void actionPerformed(final ActionEvent e) {
+            okPressed = true;
+
+            JOptionPane
+                    .showMessageDialog(
+                            PreferencesDialog.this,
+                            "Please restart application for the changes to have effect",
+                            "Please restart",
+                            JOptionPane.INFORMATION_MESSAGE);
+            PreferencesDialog.this.setVisible(false);
+
+            savePreferences();
+        }
+    }
+
 }

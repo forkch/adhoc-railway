@@ -20,8 +20,6 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
 import com.google.gson.annotations.Expose;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -103,12 +101,16 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return id.hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if (!(obj instanceof RouteItem)) {
+            return false;
+        }
+        return id.equals(((RouteItem) obj).getId());
+
     }
 
     @Override

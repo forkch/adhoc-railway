@@ -19,13 +19,11 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import com.google.common.collect.Sets;
 import com.google.gson.annotations.Expose;
-import com.sun.org.apache.xpath.internal.operations.Equals;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import org.apache.commons.lang3.builder.*;
-import sun.misc.Compare;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
@@ -116,12 +114,15 @@ public class LocomotiveGroup extends AbstractItem implements
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, new String[]{"locomotives"});
+        return id.hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj, new String[]{"locomotives"});
+        if (!(obj instanceof LocomotiveGroup)) {
+            return false;
+        }
+        return id.equals(((LocomotiveGroup) obj).getId());
     }
 
     @Override

@@ -21,8 +21,6 @@ package ch.fork.AdHocRailway.domain.locomotives;
 import ch.fork.AdHocRailway.domain.AbstractItem;
 import com.google.gson.annotations.Expose;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -301,12 +299,15 @@ public class Locomotive extends AbstractItem implements Serializable,
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if (!(obj instanceof LocomotiveGroup)) {
+            return false;
+        }
+        return id.equals(((LocomotiveGroup) obj).getId());
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return id.hashCode();
     }
 
     @Override

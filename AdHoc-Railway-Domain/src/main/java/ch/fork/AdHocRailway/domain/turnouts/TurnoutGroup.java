@@ -20,7 +20,8 @@ package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
 import com.google.gson.annotations.Expose;
-import org.apache.commons.lang3.builder.*;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
@@ -89,12 +90,15 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, new String[]{"turnouts"});
+        return id.hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj, new String[]{"turnouts"});
+        if (!(obj instanceof RouteGroup)) {
+            return false;
+        }
+        return id.equals(((TurnoutGroup) obj).getId());
     }
 
     @Override
