@@ -16,7 +16,6 @@ import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 import com.google.common.eventbus.Subscribe;
-import javafx.scene.input.KeyCode;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
