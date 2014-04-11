@@ -22,6 +22,7 @@ import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.turnouts.*;
 import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.ui.GlobalKeyShortcutHelper;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.tools.ImageTools;
@@ -43,6 +44,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
@@ -115,6 +117,7 @@ public class TurnoutConfig extends JDialog {
         initComponents();
         buildPanel();
         initEventHandling();
+        initShortcuts();
         address1TextField.requestFocusInWindow();
         pack();
         SwingUtils.addEscapeListener(this);
@@ -310,7 +313,10 @@ public class TurnoutConfig extends JDialog {
                 Turnout.PROPERTYNAME_DEFAULT_STATE));
         orientationModel.addValueChangeListener(new TurnoutChangeListener(
                 Turnout.PROPERTYNAME_ORIENTATION));
+    }
 
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_ENTER, 0, new ApplyChangesAction());
     }
 
     private BufferedValueModel getBufferedModel(

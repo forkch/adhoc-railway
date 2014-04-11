@@ -24,6 +24,7 @@ import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.ui.GlobalKeyShortcutHelper;
 import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
@@ -46,6 +47,7 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
@@ -110,6 +112,7 @@ public class RouteConfig extends JDialog {
         initComponents();
         buildPanel();
         initEventHandling();
+        initShortcuts();
 
         pack();
         SwingUtils.addEscapeListener(this);
@@ -203,6 +206,11 @@ public class RouteConfig extends JDialog {
                 Route.PROPERTYNAME_ORIENTATION));
         routeItemModel.addPropertyChangeListener(new RouteChangeListener(
                 Route.PROPERTYNAME_ROUTE_ITEMS));
+    }
+
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_R, 0, new RecordRouteAction());
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_ENTER, 0, new ApplyChangesAction());
     }
 
     private Component buildRouteItemButtonBar() {
@@ -302,14 +310,49 @@ public class RouteConfig extends JDialog {
                     return;
                 }
 
+                initKeyboardActions(selectedRoute);
                 recordRouteButton.setIcon(ImageTools
                         .createImageIconFromIconSet("media-record.png"));
-                initKeyboardActions(selectedRoute);
                 recording = true;
             } else {
+                removeKeyboarAtions();
                 recordRouteButton.setIcon(ImageTools
                         .createImageIconFromIconSet("media-playback-stop.png"));
                 recording = false;
+            }
+        }
+
+        private void removeKeyboarAtions() {
+            final Set<JPanel> panels = new HashSet<JPanel>();
+
+            panels.add(digitDisplay);
+            panels.add(mainPanel);
+
+            final KeyBoardLayout kbl = Preferences.getInstance()
+                    .getKeyBoardLayout();
+            for (final JPanel p : panels) {
+                for (int i = 0; i <= 10; i++) {
+                    p.unregisterKeyboardAction(KeyStroke.getKeyStroke(Integer.toString(i)));
+                    p.unregisterKeyboardAction(KeyStroke.getKeyStroke("NUMPAD"
+                                    + Integer.toString(i))
+                    );
+                }
+                for (KeyStroke keyStroke1 : kbl.getKeys("CurvedLeft")) {
+                    p.unregisterKeyboardAction(keyStroke1);
+                }
+                for (KeyStroke keyStroke : kbl.getKeys("CurvedRight")) {
+                    p.unregisterKeyboardAction(keyStroke);
+                }
+                for (KeyStroke keyStroke : kbl.getKeys("Straight")) {
+                    p.unregisterKeyboardAction(keyStroke);
+                }
+                for (KeyStroke keyStroke : kbl.getKeys("EnableRoute")) {
+                    p.unregisterKeyboardAction(keyStroke);
+                }
+                for (KeyStroke keyStroke : kbl.getKeys("DisableRoute")) {
+                    p.unregisterKeyboardAction(keyStroke);
+                }
+
             }
         }
 
@@ -334,9 +377,9 @@ public class RouteConfig extends JDialog {
                     );
                 }
             }
+            final KeyBoardLayout kbl = Preferences.getInstance()
+                    .getKeyBoardLayout();
             for (final JPanel p : panels) {
-                final KeyBoardLayout kbl = Preferences.getInstance()
-                        .getKeyBoardLayout();
                 final InputMap inputMap = p
                         .getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
                 p.getActionMap().put("CurvedLeft", new CurvedLeftAction(route));

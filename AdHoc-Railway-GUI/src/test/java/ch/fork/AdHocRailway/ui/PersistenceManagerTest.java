@@ -1,6 +1,7 @@
 package ch.fork.AdHocRailway.ui;
 
 import ch.fork.AdHocRailway.services.impl.rest.RestLocomotiveService;
+import ch.fork.AdHocRailway.services.impl.rest.RestRouteService;
 import ch.fork.AdHocRailway.services.impl.rest.RestTurnoutService;
 import ch.fork.AdHocRailway.services.impl.socketio.turnouts.SIORouteCallback;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
@@ -46,7 +47,7 @@ public class PersistenceManagerTest {
         Assert.assertTrue(applicationContext.getLocomotiveManager()
                 .getService() instanceof RestLocomotiveService);
         Assert.assertTrue(applicationContext.getTurnoutManager().getService() instanceof RestTurnoutService);
-        Assert.assertTrue(applicationContext.getRouteManager().getService() instanceof SIORouteCallback);
+        Assert.assertTrue(applicationContext.getRouteManager().getService() instanceof RestRouteService);
     }
 
     private PersistenceManagerContext createApplicationContextForAdHocServer() {

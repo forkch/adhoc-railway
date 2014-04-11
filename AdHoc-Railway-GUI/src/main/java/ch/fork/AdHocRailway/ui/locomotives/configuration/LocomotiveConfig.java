@@ -24,6 +24,7 @@ import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.manager.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.ui.GlobalKeyShortcutHelper;
 import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
@@ -52,6 +53,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -106,11 +108,15 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
     private void initGUI() {
         buildPanel();
+        initShortcuts();
         pack();
         SwingUtils.addEscapeListener(this);
         setLocationRelativeTo(getParent());
-
         setVisible(true);
+    }
+
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_ENTER, 0, new ApplyChangesAction());
     }
 
     private void initComponents() {
@@ -201,7 +207,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
         validate(presentationModel.getBean(), null);
         presentationModel.getBean().addPropertyChangeListener(this);
-        okButton = new JButton(new ApplyChangesAction(false));
+        okButton = new JButton(new ApplyChangesAction());
         cancelButton = new JButton(new CancelAction());
     }
 
@@ -456,12 +462,9 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
     class ApplyChangesAction extends AbstractAction {
 
-        private final boolean createNextTurnout;
-
-        public ApplyChangesAction(final boolean createNextTurnout) {
+        public ApplyChangesAction() {
             super("OK", ImageTools
                     .createImageIconFromIconSet("dialog-ok-apply.png"));
-            this.createNextTurnout = createNextTurnout;
         }
 
         @Override
@@ -488,11 +491,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
                             locomotivePersistence
                                     .removeLocomotiveManagerListenerInNextEvent(this);
 
-                            if (createNextTurnout) {
-
-                            } else {
-                                LocomotiveConfig.this.setVisible(false);
-                            }
+                            LocomotiveConfig.this.setVisible(false);
                         }
 
                         @Override

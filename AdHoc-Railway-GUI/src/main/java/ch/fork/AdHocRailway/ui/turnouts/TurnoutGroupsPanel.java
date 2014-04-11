@@ -16,9 +16,12 @@ import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 import com.google.common.eventbus.Subscribe;
+import javafx.scene.input.KeyCode;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -51,6 +54,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
         initToolBar();
         initMenuBar();
         initActionListeners();
+
         ctx.getMainBus().register(this);
     }
 
@@ -66,6 +70,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
     }
 
     private void initActionListeners() {
+        ctx.getMainApp().registerKey(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK, new AddTurnoutsAction());
     }
 
     private void updateTurnouts(final SortedSet<TurnoutGroup> turnoutGroups) {

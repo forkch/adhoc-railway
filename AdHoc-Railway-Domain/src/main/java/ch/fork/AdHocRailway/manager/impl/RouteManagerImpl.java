@@ -253,7 +253,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
             putRouteGroupInCache(group);
             for (final Route route : group.getRoutes()) {
                 putInCache(route);
-                fillTurnoutsToRouteItems(route);
+                populateTransientFields(route);
             }
         }
         for (final RouteManagerListener l : listeners) {
@@ -268,7 +268,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
         LOGGER.info("routeAdded: " + route);
         cleanupListeners();
         putInCache(route);
-        fillTurnoutsToRouteItems(route);
+        populateTransientFields(route);
         for (final RouteManagerListener l : listeners) {
             l.routeAdded(route);
         }
@@ -279,15 +279,16 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
         LOGGER.info("routeUpdated: " + route);
         cleanupListeners();
         putInCache(route);
-        fillTurnoutsToRouteItems(route);
+        populateTransientFields(route);
         for (final RouteManagerListener l : listeners) {
             l.routeUpdated(route);
         }
     }
 
-    private void fillTurnoutsToRouteItems(Route route) {
+    private void populateTransientFields(Route route) {
         for (RouteItem routeItem : route.getRoutedTurnouts()) {
             routeItem.setTurnout(turnoutManager.getTurnoutById(routeItem.getTurnoutId()));
+            routeItem.setRoute(route);
         }
     }
 

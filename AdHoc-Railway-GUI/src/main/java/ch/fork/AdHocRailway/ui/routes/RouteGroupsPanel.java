@@ -3,18 +3,26 @@ package ch.fork.AdHocRailway.ui.routes;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
+import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.RouteManagerListener;
 import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
+import ch.fork.AdHocRailway.ui.routes.configuration.RouteHelper;
+import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 import com.google.common.eventbus.Subscribe;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
+
+import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
 
 public class RouteGroupsPanel extends JTabbedPane implements
         RouteManagerListener {
@@ -34,7 +42,11 @@ public class RouteGroupsPanel extends JTabbedPane implements
         ctx.getMainBus().register(this);
         routePersistence = ctx.getRouteManager();
         routePersistence.addRouteManagerListener(this);
+        initActionListeners();
+    }
 
+    private void initActionListeners() {
+        ctx.getMainApp().registerKey(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK, new AddRoutesAction());
     }
 
     @Subscribe
@@ -205,6 +217,30 @@ public class RouteGroupsPanel extends JTabbedPane implements
     public void failure(final ManagerException arg0) {
         if (disableListener) {
             return;
+        }
+    }
+
+    private class AddRoutesAction extends AbstractAction {
+        public AddRoutesAction() {
+            super("Add Routes\u2026",
+                    createImageIconFromIconSet("document-new.png"));
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            if (indexToRouteGroup.isEmpty()) {
+                JOptionPane.showMessageDialog(ctx.getMainFrame(),
+                        "Please configure a group first", "Add Route",
+                        JOptionPane.INFORMATION_MESSAGE,
+                        createImageIconFromIconSet("dialog-information.png"));
+                return;
+            }
+            final int selectedGroupPane = getSelectedIndex();
+
+            final RouteGroup selectedTurnoutGroup = indexToRouteGroup
+                    .get(selectedGroupPane);
+
+            RouteHelper.addNewRouteDialog(ctx, selectedTurnoutGroup);
         }
     }
 }

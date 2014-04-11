@@ -241,19 +241,18 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     @Override
+    public void registerKey(final int keyEvent, int modifiers, Action action) {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), keyEvent, modifiers, action);
+    }
+
+    @Override
     public void registerEscapeKey(final Action action) {
-        final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        final JRootPane rootPane = getRootPane();
-        rootPane.registerKeyboardAction(action, stroke,
-                JComponent.WHEN_IN_FOCUSED_WINDOW);
+        registerKey(KeyEvent.VK_ESCAPE, 0, action);
     }
 
     @Override
     public void registerSpaceKey(final Action action) {
-        final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0);
-        final JRootPane rootPane = getRootPane();
-        rootPane.registerKeyboardAction(action, stroke,
-                JComponent.WHEN_IN_FOCUSED_WINDOW);
+        registerKey(KeyEvent.VK_SPACE, 0, action);
     }
 
     @Subscribe
@@ -475,7 +474,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         locomotivesItem = new JMenuItem(new LocomotivesAction());
         preferencesItem = new JMenuItem(new PreferencesAction());
         editMenu.setMnemonic(KeyEvent.VK_E);
-        switchesItem.setMnemonic(KeyEvent.VK_S);
+        switchesItem.setMnemonic(KeyEvent.VK_T);
         switchesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 ActionEvent.ALT_MASK));
         routesItem.setMnemonic(KeyEvent.VK_R);
