@@ -52,7 +52,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
         initToolBar();
         initMenuBar();
-        initActionListeners();
+        initShortcuts();
 
         ctx.getMainBus().register(this);
     }
@@ -68,7 +68,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
         updateTurnouts(ctx.getTurnoutManager().getAllTurnoutGroups());
     }
 
-    private void initActionListeners() {
+    private void initShortcuts() {
         ctx.getMainApp().registerKey(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK, new AddTurnoutsAction());
     }
 

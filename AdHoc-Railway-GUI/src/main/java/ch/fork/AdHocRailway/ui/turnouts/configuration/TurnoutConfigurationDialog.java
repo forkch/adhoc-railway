@@ -264,6 +264,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
     @Override
     public void turnoutGroupAdded(final TurnoutGroup group) {
         turnoutGroups.add(group);
+        turnoutGroupModel.setSelection(group);
     }
 
     @Override
@@ -355,7 +356,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
             turnoutManager.addTurnoutGroup(newTurnoutGroup);
             turnoutGroupConfig.setTurnoutGroup(null);
-
         }
     }
 

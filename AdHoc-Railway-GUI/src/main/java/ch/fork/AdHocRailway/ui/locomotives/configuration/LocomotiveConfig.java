@@ -109,6 +109,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
     private void initGUI() {
         buildPanel();
         initShortcuts();
+        nameTextField.requestFocus();
         pack();
         SwingUtils.addEscapeListener(this);
         setLocationRelativeTo(getParent());

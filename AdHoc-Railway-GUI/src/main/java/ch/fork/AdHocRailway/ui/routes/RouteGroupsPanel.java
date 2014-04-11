@@ -3,7 +3,6 @@ package ch.fork.AdHocRailway.ui.routes;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
-import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.RouteManagerListener;
@@ -11,7 +10,6 @@ import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteHelper;
-import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 import com.google.common.eventbus.Subscribe;
 
 import javax.swing.*;
@@ -42,10 +40,10 @@ public class RouteGroupsPanel extends JTabbedPane implements
         ctx.getMainBus().register(this);
         routePersistence = ctx.getRouteManager();
         routePersistence.addRouteManagerListener(this);
-        initActionListeners();
+        initShortcuts();
     }
 
-    private void initActionListeners() {
+    private void initShortcuts() {
         ctx.getMainApp().registerKey(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK, new AddRoutesAction());
     }
 

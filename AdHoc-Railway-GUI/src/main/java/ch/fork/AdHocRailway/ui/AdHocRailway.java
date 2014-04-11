@@ -358,6 +358,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         });
         setRailwayDeviceLabelText();
 
+        initShortcuts();
         appContext.getMainBus().register(this);
         appContext.getMainBus().post(
                 new EditingModeEvent(appContext.isEditingMode()));
@@ -473,9 +474,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         routesItem = new JMenuItem(new RoutesAction());
         locomotivesItem = new JMenuItem(new LocomotivesAction());
         preferencesItem = new JMenuItem(new PreferencesAction());
-        editMenu.setMnemonic(KeyEvent.VK_E);
+        enableEditing.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
+                ActionEvent.ALT_MASK));
+
         switchesItem.setMnemonic(KeyEvent.VK_T);
-        switchesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+        switchesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                 ActionEvent.ALT_MASK));
         routesItem.setMnemonic(KeyEvent.VK_R);
         routesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
@@ -617,6 +620,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         toolbarErrorPanel.add(errorPanel, BorderLayout.EAST);
 
         add(toolbarErrorPanel, BorderLayout.PAGE_START);
+    }
+
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK, new EnableEditingAction());
     }
 
     private void setRailwayDeviceLabelText() {
