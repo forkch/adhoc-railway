@@ -28,6 +28,9 @@ import ch.fork.AdHocRailway.ui.turnouts.TurnoutGroupsPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
@@ -49,6 +52,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
         setLayout(new BorderLayout(5, 5));
         initTurnoutPanel();
         initRoutesPanel();
+        initShortcuts();
 
         final JPanel controlPanel = new JPanel(new GridLayout(1, 2));
         if (preferences.getBooleanValue(TABBED_TRACK)) {
@@ -75,6 +79,13 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
         add(controlPanel, BorderLayout.CENTER);
     }
 
+    private void initShortcuts() {
+        for (int i = 0; i < 10; i++) {
+            char c = Character.forDigit(i + 1, 10);
+            turnoutCtx.getMainApp().registerKey(KeyEvent.getExtendedKeyCodeForChar(c), InputEvent.CTRL_DOWN_MASK, new SelectGroupAction(i));
+        }
+    }
+
     private void initTurnoutPanel() {
         turnoutGroupsTabbedPane = new TurnoutGroupsPanel(turnoutCtx,
                 JTabbedPane.BOTTOM);
@@ -85,4 +96,22 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
                 JTabbedPane.BOTTOM);
     }
 
+    private class SelectGroupAction extends AbstractAction {
+        private int groupNumber;
+
+        public SelectGroupAction(int groupNumber) {
+            this.groupNumber = groupNumber;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (groupNumber < turnoutGroupsTabbedPane.getTabCount()) {
+                turnoutGroupsTabbedPane.setSelectedIndex(groupNumber);
+            }
+            if (groupNumber < routeGroupsTabbedPane.getTabCount()) {
+                routeGroupsTabbedPane.setSelectedIndex(groupNumber);
+            }
+
+        }
+    }
 }

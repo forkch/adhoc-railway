@@ -70,6 +70,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
     private void initShortcuts() {
         ctx.getMainApp().registerKey(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK, new AddTurnoutsAction());
+
     }
 
     private void updateTurnouts(final SortedSet<TurnoutGroup> turnoutGroups) {
@@ -374,4 +375,5 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
             new TurnoutWarmer(ctx.getMainFrame(), ctx);
         }
     }
+
 }
