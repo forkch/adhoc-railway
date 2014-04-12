@@ -23,6 +23,8 @@ import com.google.gson.annotations.Expose;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.UUID;
+
 public class RouteItem extends AbstractItem implements java.io.Serializable,
         Comparable<RouteItem> {
 
@@ -31,7 +33,8 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_ROUTE = "route";
     public static final String PROPERTYNAME_ROUTED_STATE = "state";
     @Expose
-    private String id;
+    private String id = UUID.randomUUID().toString();
+    ;
     @Expose
     private String turnoutId;
     @Expose

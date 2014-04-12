@@ -28,6 +28,7 @@ import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.FORWARD;
 import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.REVERSE;
@@ -47,7 +48,7 @@ public class Locomotive extends AbstractItem implements Serializable,
     public static final String PROPERTYNAME_LOCOMOTIVE_GROUP = "group";
     @XStreamAsAttribute
     @Expose
-    private String id;
+    private String id = UUID.randomUUID().toString();
     @XStreamAsAttribute
     @Expose
     private String name;

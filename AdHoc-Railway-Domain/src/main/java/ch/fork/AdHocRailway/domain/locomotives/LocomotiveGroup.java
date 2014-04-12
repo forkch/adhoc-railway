@@ -27,6 +27,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
+import java.util.UUID;
 
 public class LocomotiveGroup extends AbstractItem implements
         java.io.Serializable, Comparable<LocomotiveGroup> {
@@ -36,7 +37,8 @@ public class LocomotiveGroup extends AbstractItem implements
     public static final String PROPERTYNAME_LOCOMOTIVES = "locomotives";
     @XStreamAsAttribute
     @Expose
-    private String id;
+    private String id = UUID.randomUUID().toString();
+    ;
     @XStreamAsAttribute
     @Expose
     private String name;

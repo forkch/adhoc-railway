@@ -28,6 +28,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 
 public class Route extends AbstractItem implements java.io.Serializable,
         Comparable<Route> {
@@ -40,7 +41,8 @@ public class Route extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_ROUTE_ITEMS = "routedTurnouts";
 
     @Expose
-    private String id;
+    private String id = UUID.randomUUID().toString();
+    ;
     @Expose
     private int number;
     @Expose

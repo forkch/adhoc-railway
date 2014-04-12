@@ -26,13 +26,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 
 public class RouteGroup extends AbstractItem implements java.io.Serializable,
         Comparable<RouteGroup> {
 
     public static final String PROPERTYNAME_NAME = "name";
     @Expose
-    private String id;
+    private String id = UUID.randomUUID().toString();
+    ;
     @Expose
     private String name;
     @Expose

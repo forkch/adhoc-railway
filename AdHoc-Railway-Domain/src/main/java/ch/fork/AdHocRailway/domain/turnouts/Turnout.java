@@ -29,6 +29,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public class Turnout extends AbstractItem implements java.io.Serializable,
         Comparable<Turnout> {
@@ -47,7 +48,8 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
     public static final String PROPERTYNAME_TURNOUT_GROUP = "turnoutGroup";
     @Expose
-    private String id = null;
+    private String id = UUID.randomUUID().toString();
+    ;
     @Expose
     private int number;
     @Expose
