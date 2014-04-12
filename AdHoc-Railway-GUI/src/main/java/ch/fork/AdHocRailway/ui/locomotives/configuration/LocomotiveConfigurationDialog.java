@@ -281,7 +281,8 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
     @Override
     public void locomotiveGroupRemoved(final LocomotiveGroup group) {
-        if (locomotiveGroupModel.getSelection().equals(group)) {
+        LocomotiveGroup selection = locomotiveGroupModel.getSelection();
+        if (selection != null && selection.equals(group)) {
             locomotives.clear();
         }
         locomotiveGroups.remove(group);

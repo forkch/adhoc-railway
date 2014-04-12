@@ -269,7 +269,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
     @Override
     public void turnoutGroupRemoved(final TurnoutGroup group) {
-        if (turnoutGroupModel.getSelection().equals(group)) {
+        TurnoutGroup selectedGroup = turnoutGroupModel.getSelection();
+        if (selectedGroup != null && selectedGroup.equals(group)) {
             turnouts.clear();
         }
         turnoutGroups.remove(group);

@@ -227,7 +227,8 @@ public class RoutesConfigurationDialog extends JDialog implements
 
     @Override
     public void routeGroupRemoved(final RouteGroup routeGroup) {
-        if (routeGroupModel.getSelection().equals(routeGroup)) {
+        RouteGroup selection = routeGroupModel.getSelection();
+        if (selection != null && selection.equals(routeGroup)) {
             routes.clear();
         }
         routeGroups.remove(routeGroup);
