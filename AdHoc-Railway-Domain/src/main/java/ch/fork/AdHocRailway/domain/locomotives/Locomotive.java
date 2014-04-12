@@ -299,10 +299,10 @@ public class Locomotive extends AbstractItem implements Serializable,
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof LocomotiveGroup)) {
+        if (!(obj instanceof Locomotive)) {
             return false;
         }
-        return id.equals(((LocomotiveGroup) obj).getId());
+        return id.equals(((Locomotive) obj).getId());
     }
 
     @Override

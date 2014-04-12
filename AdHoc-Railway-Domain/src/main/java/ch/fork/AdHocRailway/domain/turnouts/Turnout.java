@@ -335,6 +335,9 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
 
     @Override
     public boolean equals(final Object obj) {
+        if (!(obj instanceof Turnout)) {
+            return false;
+        }
         Turnout rhs = (Turnout) obj;
         return new EqualsBuilder().append(id, rhs.getId()).build();
     }

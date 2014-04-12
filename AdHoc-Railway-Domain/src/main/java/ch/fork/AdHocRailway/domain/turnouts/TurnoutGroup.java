@@ -95,7 +95,7 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof RouteGroup)) {
+        if (!(obj instanceof TurnoutGroup)) {
             return false;
         }
         return id.equals(((TurnoutGroup) obj).getId());
