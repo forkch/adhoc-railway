@@ -13,7 +13,9 @@ import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
-import de.dermoba.srcp.model.locomotives.*;
+import de.dermoba.srcp.model.locomotives.SRCPLocomotive;
+import de.dermoba.srcp.model.locomotives.SRCPLocomotiveChangeListener;
+import de.dermoba.srcp.model.locomotives.SRCPLocomotiveControl;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -27,6 +29,16 @@ import java.util.concurrent.ExecutorService;
 public class SRCPLocomotiveControlAdapter extends LocomotiveController
         implements SRCPLocomotiveChangeListener, SRCPLockChangeListener {
     private static final Logger LOGGER = Logger.getLogger(SRCPLocomotiveControlAdapter.class);
+
+    private static final Map<LocomotiveType, SRCPLocomotiveCreateStrategy> TYPE_TO_CREATE_STRATEGY_MAP = new HashMap<LocomotiveType, SRCPLocomotiveCreateStrategy>();
+
+    static {
+        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.DELTA, new DeltaLocomotiveCreateStrategy());
+        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.DIGITAL, new DigitalLocomotiveCreateStrategy());
+        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.SIMULATED_MFX, new SimulatedMFXLocomotiveCreateStrategy());
+        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.MFX, new SimulatedMFXLocomotiveCreateStrategy());
+    }
+
     private final Map<Locomotive, SRCPLocomotive> locomotiveSRCPLocomotiveMap = new HashMap<Locomotive, SRCPLocomotive>();
     private final Map<SRCPLocomotive, Locomotive> SRCPLocomotiveLocomotiveMap = new HashMap<SRCPLocomotive, Locomotive>();
 
@@ -238,38 +250,19 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         if (locomotive == null) {
             throw new IllegalArgumentException("locomotive must not be null");
         }
+
         SRCPLocomotive srcpLocomotive = locomotiveSRCPLocomotiveMap
                 .get(locomotive);
+        final LocomotiveType type = locomotive.getType();
         if (srcpLocomotive == null) {
-            srcpLocomotive = createSRCPLocomotive(locomotive);
-
+            srcpLocomotive = TYPE_TO_CREATE_STRATEGY_MAP.get(type).createSRCPLocomotive(locomotive);
             locomotiveSRCPLocomotiveMap.put(locomotive, srcpLocomotive);
             SRCPLocomotiveLocomotiveMap.put(srcpLocomotive, locomotive);
+        } else {
+            srcpLocomotive = TYPE_TO_CREATE_STRATEGY_MAP.get(type).updateSRCPLocomotive(srcpLocomotive, locomotive);
         }
-        return srcpLocomotive;
-    }
 
-    private SRCPLocomotive createSRCPLocomotive(final Locomotive locomotive) {
-        final LocomotiveType type = locomotive.getType();
-        SRCPLocomotive sLocomotive = null;
-        switch (type) {
-            case DELTA:
-                sLocomotive = new MMDeltaLocomotive();
-                break;
-            case DIGITAL:
-                sLocomotive = new MMDigitalLocomotive();
-                break;
-            case SIMULATED_MFX:
-                final DoubleMMDigitalLocomotive doubleMMDigitalLocomotive = new DoubleMMDigitalLocomotive();
-                doubleMMDigitalLocomotive.setAddress2(locomotive.getAddress2());
-                sLocomotive = doubleMMDigitalLocomotive;
-                break;
-            default:
-                return null;
-        }
-        sLocomotive.setBus(locomotive.getBus());
-        sLocomotive.setAddress(locomotive.getAddress1());
-        return sLocomotive;
+        return srcpLocomotive;
     }
 
     private void setFunctions(final Locomotive locomotive,

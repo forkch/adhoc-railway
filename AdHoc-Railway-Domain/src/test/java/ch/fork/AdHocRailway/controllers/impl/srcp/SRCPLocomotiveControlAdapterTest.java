@@ -102,7 +102,7 @@ public class SRCPLocomotiveControlAdapterTest {
         locomotive.setId("1");
         locomotive.setName("testname");
         locomotive.setDesc("description");
-        locomotive.setBus(1);
+        locomotive.setBus(2);
         locomotive.setAddress1(1);
         locomotive.setAddress2(2);
         locomotive.setImage("image.png");

@@ -163,7 +163,7 @@ public class LocomotiveManagerImplTest {
         locomotiveManagerImpl.locomotiveGroupAdded(newGroup1);
         verify(listenerMock).locomotiveGroupAdded(newGroup1);
 
-        final LocomotiveGroup newGroup2 = new LocomotiveGroup("1", "test2");
+        final LocomotiveGroup newGroup2 = new LocomotiveGroup("2", "test2");
         locomotiveManagerImpl.locomotiveGroupAdded(newGroup2);
         verify(listenerMock).locomotiveGroupAdded(newGroup2);
 
