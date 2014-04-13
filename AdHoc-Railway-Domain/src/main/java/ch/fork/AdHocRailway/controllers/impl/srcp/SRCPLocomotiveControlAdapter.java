@@ -13,9 +13,7 @@ import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
-import de.dermoba.srcp.model.locomotives.SRCPLocomotive;
-import de.dermoba.srcp.model.locomotives.SRCPLocomotiveChangeListener;
-import de.dermoba.srcp.model.locomotives.SRCPLocomotiveControl;
+import de.dermoba.srcp.model.locomotives.*;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -250,19 +248,41 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         if (locomotive == null) {
             throw new IllegalArgumentException("locomotive must not be null");
         }
+        final LocomotiveType type = locomotive.getType();
 
         SRCPLocomotive srcpLocomotive = locomotiveSRCPLocomotiveMap
                 .get(locomotive);
-        final LocomotiveType type = locomotive.getType();
         if (srcpLocomotive == null) {
             srcpLocomotive = TYPE_TO_CREATE_STRATEGY_MAP.get(type).createSRCPLocomotive(locomotive);
             locomotiveSRCPLocomotiveMap.put(locomotive, srcpLocomotive);
             SRCPLocomotiveLocomotiveMap.put(srcpLocomotive, locomotive);
         } else {
+            if (!typesMatch(locomotive.getType(), srcpLocomotive)) {
+                locomotiveSRCPLocomotiveMap.remove(locomotive);
+                SRCPLocomotiveLocomotiveMap.remove(srcpLocomotive);
+                srcpLocomotive = TYPE_TO_CREATE_STRATEGY_MAP.get(type).createSRCPLocomotive(locomotive);
+                locomotiveSRCPLocomotiveMap.put(locomotive, srcpLocomotive);
+                SRCPLocomotiveLocomotiveMap.put(srcpLocomotive, locomotive);
+            }
             srcpLocomotive = TYPE_TO_CREATE_STRATEGY_MAP.get(type).updateSRCPLocomotive(srcpLocomotive, locomotive);
         }
 
         return srcpLocomotive;
+    }
+
+    private boolean typesMatch(LocomotiveType type, SRCPLocomotive srcpLocomotive) {
+        switch (type) {
+
+            case DELTA:
+                return srcpLocomotive instanceof MMDeltaLocomotive;
+            case DIGITAL:
+                return srcpLocomotive instanceof MMDigitalLocomotive;
+            case SIMULATED_MFX:
+                return srcpLocomotive instanceof DoubleMMDigitalLocomotive;
+            case MFX:
+                return srcpLocomotive instanceof MMDigitalLocomotive;
+        }
+        return false;
     }
 
     private void setFunctions(final Locomotive locomotive,
