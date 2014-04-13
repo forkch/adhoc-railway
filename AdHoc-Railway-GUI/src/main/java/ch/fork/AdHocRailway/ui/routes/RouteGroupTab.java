@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.ui.routes;
 
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteHelper;
 import ch.fork.AdHocRailway.ui.widgets.WidgetTab;
@@ -47,6 +48,8 @@ public class RouteGroupTab extends WidgetTab {
 
     public void addRoute(final Route route) {
         final RouteWidget routeWidget = new RouteWidget(ctx, route, false);
+        routeWidget.connectedToRailwayDevice(new ConnectedToRailwayEvent(ctx.getRailwayDeviceManager().isConnected()));
+
         addWidget(routeWidget);
         routeToRouteWidget.put(route, routeWidget);
     }
