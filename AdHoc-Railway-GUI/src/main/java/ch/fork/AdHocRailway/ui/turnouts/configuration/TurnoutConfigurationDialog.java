@@ -412,7 +412,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
                     turnoutManager, nextNumber);
 
             new TurnoutConfig(TurnoutConfigurationDialog.this, ctx, newTurnout,
-                    selectedTurnoutGroup);
+                    selectedTurnoutGroup, true);
         }
 
     }
@@ -462,7 +462,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
             final int row = turnoutsTable.getSelectedRow();
             final Turnout turnout = turnoutModel.getElementAt(row);
             new TurnoutConfig(TurnoutConfigurationDialog.this, ctx, turnout,
-                    turnout.getTurnoutGroup());
+                    turnout.getTurnoutGroup(), false);
         }
     }
 

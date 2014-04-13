@@ -49,7 +49,7 @@ public class RouteHelper {
         final Route newTurnout = createDefaultRoute(routePersistence,
                 nextNumber);
 
-        new RouteConfig(ctx.getMainFrame(), ctx, newTurnout, selectedRouteGroup);
+        new RouteConfig(ctx.getMainFrame(), ctx, newTurnout, selectedRouteGroup, true);
     }
 
     public static Route copyRoute(final Route old) {

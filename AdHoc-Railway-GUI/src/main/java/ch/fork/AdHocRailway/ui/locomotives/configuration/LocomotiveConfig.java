@@ -63,9 +63,10 @@ import java.util.List;
 public class LocomotiveConfig extends JDialog implements PropertyChangeListener {
 
 
-    private final LocomotiveContext ctx;
-    private final PresentationModel<Locomotive> presentationModel;
     private final Trigger trigger = new Trigger();
+    private LocomotiveContext ctx;
+    private boolean createLocomotive;
+    private PresentationModel<Locomotive> presentationModel;
     private JTextField nameTextField;
     private JSpinner busSpinner;
     private JSpinner address1Spinner;
@@ -87,19 +88,21 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
     public LocomotiveConfig(final LocomotiveContext ctx, final Frame owner,
                             final Locomotive myLocomotive,
-                            final LocomotiveGroup selectedLocomotiveGroup) {
+                            final LocomotiveGroup selectedLocomotiveGroup, boolean createLocomotive) {
         super(owner, "Locomotive Config", true);
-        this.ctx = ctx;
-        this.presentationModel = new PresentationModel<Locomotive>(
-                myLocomotive, trigger);
-        initGUI();
+        init(ctx, myLocomotive, selectedLocomotiveGroup, createLocomotive);
     }
 
     public LocomotiveConfig(final LocomotiveContext ctx, final JDialog owner,
                             final Locomotive myLocomotive,
-                            final LocomotiveGroup selectedLocomotiveGroup) {
+                            final LocomotiveGroup selectedLocomotiveGroup, boolean createLocomotive) {
         super(owner, "Locomotive Config", true);
+        init(ctx, myLocomotive, selectedLocomotiveGroup, createLocomotive);
+    }
+
+    private void init(LocomotiveContext ctx, Locomotive myLocomotive, LocomotiveGroup selectedLocomotiveGroup, boolean createLocomotive) {
         this.ctx = ctx;
+        this.createLocomotive = createLocomotive;
         this.selectedLocomotiveGroup = selectedLocomotiveGroup;
         this.presentationModel = new PresentationModel<Locomotive>(
                 myLocomotive, trigger);
@@ -502,11 +505,11 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
                         }
 
                     });
-            if (StringUtils.isNotBlank(locomotive.getId())) {
-                ctx.getLocomotiveManager().updateLocomotive(locomotive);
-            } else {
+            if (createLocomotive) {
                 ctx.getLocomotiveManager().addLocomotiveToGroup(locomotive,
                         selectedLocomotiveGroup);
+            } else {
+                ctx.getLocomotiveManager().updateLocomotive(locomotive);
             }
 
         }

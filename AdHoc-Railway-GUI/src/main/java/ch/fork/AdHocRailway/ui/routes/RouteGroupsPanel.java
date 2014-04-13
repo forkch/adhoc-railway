@@ -168,9 +168,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
             @Override
             public void run() {
-                addRouteGroup(-1, group);
-                revalidate();
-                repaint();
+                updateRoutes(ctx.getRouteManager().getAllRouteGroups());
             }
         });
     }
@@ -184,11 +182,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
             @Override
             public void run() {
-                final RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
-                        .get(group);
-                remove(routeGroupTab);
-                revalidate();
-                repaint();
+                updateRoutes(ctx.getRouteManager().getAllRouteGroups());
             }
         });
 
@@ -230,7 +224,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
                 JOptionPane.showMessageDialog(ctx.getMainFrame(),
                         "Please configure a group first", "Add Route",
                         JOptionPane.INFORMATION_MESSAGE,
-                        createImageIconFromIconSet("dialog-information.png"));
+                        createImageIconFromIconSet("dialog-warning.png"));
                 return;
             }
             final int selectedGroupPane = getSelectedIndex();

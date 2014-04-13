@@ -51,12 +51,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TurnoutConfig extends JDialog {
-    private final TurnoutGroup selectedTurnoutGroup;
-    private final PresentationModel<Turnout> presentationModel;
     private final Trigger trigger = new Trigger();
-    private final Turnout testTurnout;
-    private final TurnoutManager turnoutManager;
-    private final TurnoutContext ctx;
+    private TurnoutGroup selectedTurnoutGroup;
+    private PresentationModel<Turnout> presentationModel;
+    private Turnout testTurnout;
+    private TurnoutManager turnoutManager;
+    private TurnoutContext ctx;
+    private boolean createTurnout;
     private JSpinner numberTextField;
     private JTextField descTextField;
     private JSpinner bus1TextField;
@@ -87,22 +88,22 @@ public class TurnoutConfig extends JDialog {
     private BufferedValueModel orientationModel;
 
     public TurnoutConfig(final JDialog owner, final TurnoutContext ctx,
-                         final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup) {
+                         final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup, boolean createTurnout) {
         super(owner, "Turnout Config", true);
-        this.ctx = ctx;
-
-        turnoutManager = ctx.getTurnoutManager();
-        testTurnout = TurnoutHelper.copyTurnout(myTurnout);
-        this.presentationModel = new PresentationModel<Turnout>(myTurnout,
-                trigger);
-        this.selectedTurnoutGroup = selectedTurnoutGroup;
-        initGUI();
+        init(ctx, myTurnout, selectedTurnoutGroup, createTurnout);
     }
 
     public TurnoutConfig(final Frame owner, final TurnoutContext ctx,
-                         final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup) {
+                         final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup, boolean createTurnout) {
         super(owner, "Turnout Config", true);
+
+        init(ctx, myTurnout, selectedTurnoutGroup, createTurnout);
+    }
+
+    private void init(final TurnoutContext ctx, final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup, boolean createTurnout) {
         this.ctx = ctx;
+        this.createTurnout = createTurnout;
+
         turnoutManager = ctx.getTurnoutManager();
         testTurnout = TurnoutHelper.copyTurnout(myTurnout);
         this.presentationModel = new PresentationModel<Turnout>(myTurnout,
@@ -505,10 +506,10 @@ public class TurnoutConfig extends JDialog {
 
             });
 
-            if (turnout.getId() != null) {
-                turnoutManager.updateTurnout(turnout);
-            } else {
+            if (createTurnout) {
                 turnoutManager.addTurnoutToGroup(turnout, selectedTurnoutGroup);
+            } else {
+                turnoutManager.updateTurnout(turnout);
             }
 
         }

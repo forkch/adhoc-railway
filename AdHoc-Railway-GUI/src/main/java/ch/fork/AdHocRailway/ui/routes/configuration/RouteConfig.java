@@ -41,7 +41,6 @@ import com.jgoodies.binding.value.BufferedValueModel;
 import com.jgoodies.binding.value.Trigger;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import net.miginfocom.swing.MigLayout;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -54,15 +53,16 @@ import java.util.*;
 import java.util.List;
 
 public class RouteConfig extends JDialog {
-    private final PresentationModel<Route> presentationModel;
     private final Trigger trigger = new Trigger();
-    private final RouteGroup selectedRouteGroup;
-    private final Route testRoute;
-    private final RouteContext routeContext;
-    private final RouteManager routeManager;
-    private final TurnoutManager turnoutManager;
     public StringBuffer enteredNumberKeys;
     public ThreeDigitDisplay digitDisplay;
+    private PresentationModel<Route> presentationModel;
+    private RouteGroup selectedRouteGroup;
+    private Route testRoute;
+    private RouteContext routeContext;
+    private boolean createRoute;
+    private RouteManager routeManager;
+    private TurnoutManager turnoutManager;
     private boolean okPressed;
     private boolean cancelPressed;
     private JButton okButton;
@@ -82,29 +82,28 @@ public class RouteConfig extends JDialog {
     private BufferedValueModel routeOrientationModel;
 
     public RouteConfig(final JDialog owner, final RouteContext ctx,
-                       final Route myRoute, final RouteGroup selectedRouteGroup) {
+                       final Route myRoute, final RouteGroup selectedRouteGroup, boolean createRoute) {
         super(owner, "Route Config", true);
-        this.routeContext = ctx;
-        routeManager = ctx.getRouteManager();
-        turnoutManager = ctx.getTurnoutManager();
+        init(ctx, myRoute, selectedRouteGroup, createRoute);
 
-        testRoute = RouteHelper.copyRoute(myRoute);
-        this.selectedRouteGroup = selectedRouteGroup;
-        this.presentationModel = new PresentationModel<Route>(myRoute, trigger);
-        initGUI();
     }
 
     public RouteConfig(final Frame owner, final RouteContext ctx,
-                       final Route myRoute, final RouteGroup selectedRouteGroup) {
+                       final Route myRoute, final RouteGroup selectedRouteGroup, boolean createRoute) {
         super(owner, "Route Config", true);
+        init(ctx, myRoute, selectedRouteGroup, createRoute);
+    }
+
+    private void init(final RouteContext ctx,
+                      final Route myRoute, final RouteGroup selectedRouteGroup, boolean createRoute) {
         this.routeContext = ctx;
+        this.createRoute = createRoute;
         routeManager = ctx.getRouteManager();
         turnoutManager = ctx.getTurnoutManager();
 
         testRoute = RouteHelper.copyRoute(myRoute);
         this.selectedRouteGroup = selectedRouteGroup;
         this.presentationModel = new PresentationModel<Route>(myRoute, trigger);
-
         initGUI();
     }
 
@@ -613,7 +612,7 @@ public class RouteConfig extends JDialog {
                 }
 
             });
-            if (StringUtils.isBlank(route.getId())) {
+            if (createRoute) {
                 routeManager.addRouteToGroup(route, selectedRouteGroup);
             } else {
                 routeManager.updateRoute(route);

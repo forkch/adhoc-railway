@@ -226,7 +226,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
             final RouteController routeControl = ctx.getRouteControl();
             routeControl.removeRouteChangeListener(route, RouteWidget.this);
             new RouteConfig(ctx.getMainFrame(), ctx, route,
-                    route.getRouteGroup());
+                    route.getRouteGroup(), false);
             routeControl.addRouteChangeListener(route, RouteWidget.this);
 
             routeChanged(route);

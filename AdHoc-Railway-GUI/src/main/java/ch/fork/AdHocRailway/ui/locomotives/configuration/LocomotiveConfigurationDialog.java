@@ -408,7 +408,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
             final Locomotive newLocomotive = createDefaultLocomotive();
 
             new LocomotiveConfig(ctx, LocomotiveConfigurationDialog.this,
-                    newLocomotive, selectedLocomotiveGroup);
+                    newLocomotive, selectedLocomotiveGroup, true);
         }
 
         private Locomotive createDefaultLocomotive() {
@@ -435,7 +435,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
             final int selectedRow = locomotivesTable.getSelectedRow();
             new LocomotiveConfig(ctx, LocomotiveConfigurationDialog.this,
                     locomotiveModel.getElementAt(selectedRow),
-                    selectedLocomotiveGroup);
+                    selectedLocomotiveGroup, false);
             final List<Locomotive> locomotives = new ArrayList<Locomotive>(
                     selectedLocomotiveGroup.getLocomotives());
             locomotiveModel.setList(locomotives);

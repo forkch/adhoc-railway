@@ -222,7 +222,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
             @Override
             public void run() {
-                addTurnoutGroup(-1, group);
+                updateTurnouts(ctx.getTurnoutManager().getAllTurnoutGroups());
 
             }
         });
@@ -237,11 +237,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
             @Override
             public void run() {
-                final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
-                        .get(group);
-                remove(turnoutGroupTab);
-                revalidate();
-                repaint();
+                updateTurnouts(ctx.getTurnoutManager().getAllTurnoutGroups());
             }
         });
 
@@ -335,7 +331,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                 JOptionPane.showMessageDialog(ctx.getMainFrame(),
                         "Please configure a group first", "Add Turnouts",
                         JOptionPane.INFORMATION_MESSAGE,
-                        createImageIconFromIconSet("dialog-information.png"));
+                        createImageIconFromIconSet("dialog-warning.png"));
                 return;
             }
             final int selectedGroupPane = getSelectedIndex();

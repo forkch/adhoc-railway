@@ -442,7 +442,7 @@ public class RoutesConfigurationDialog extends JDialog implements
                     nextNumber);
 
             new RouteConfig(RoutesConfigurationDialog.this, ctx, newRoute,
-                    selectedRouteGroup);
+                    selectedRouteGroup, true);
         }
     }
 
@@ -479,7 +479,7 @@ public class RoutesConfigurationDialog extends JDialog implements
                     selectedRoute, selectedRouteGroup, nextNumber);
 
             new RouteConfig(RoutesConfigurationDialog.this, ctx, newRoute,
-                    selectedRouteGroup);
+                    selectedRouteGroup, true);
         }
     }
 
@@ -490,7 +490,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 
             final Route route = (Route) routesList.getSelectedValue();
             new RouteConfig(RoutesConfigurationDialog.this, ctx, route,
-                    route.getRouteGroup());
+                    route.getRouteGroup(), true);
         }
     }
 

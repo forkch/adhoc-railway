@@ -227,7 +227,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
             turnoutControl
                     .removeGeneralTurnoutChangeListener(TurnoutWidget.this);
             new TurnoutConfig(ctx.getMainFrame(), ctx, turnout,
-                    turnout.getTurnoutGroup());
+                    turnout.getTurnoutGroup(), false);
             TurnoutHelper.validateTurnout(turnoutManager, turnout,
                     TurnoutWidget.this);
             turnoutControl.addGeneralTurnoutChangeListener(TurnoutWidget.this);

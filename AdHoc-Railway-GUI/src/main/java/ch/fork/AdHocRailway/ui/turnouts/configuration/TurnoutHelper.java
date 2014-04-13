@@ -24,7 +24,7 @@ public class TurnoutHelper {
                 turnoutManager, nextNumber);
 
         new TurnoutConfig(ctx.getMainFrame(), ctx, newTurnout,
-                selectedTurnoutGroup);
+                selectedTurnoutGroup, true);
     }
 
     public static Turnout createDefaultTurnout(

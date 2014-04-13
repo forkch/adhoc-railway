@@ -839,7 +839,7 @@ public class LocomotiveWidget extends JPanel implements
 
                 locomotiveControl.removeLocomotiveChangeListener(
                         myLocomotive, LocomotiveWidget.this);
-                new LocomotiveConfig(ctx, frame, myLocomotive, myLocomotive.getGroup());
+                new LocomotiveConfig(ctx, frame, myLocomotive, myLocomotive.getGroup(), false);
 
                 locomotiveControl.addLocomotiveChangeListener(myLocomotive,
                         LocomotiveWidget.this);
