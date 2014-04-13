@@ -20,14 +20,14 @@ package ch.fork.AdHocRailway.ui.turnouts;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
+import ch.fork.AdHocRailway.ui.utils.ImageTools;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromCustom;
+import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromCustom;
 
 public class TurnoutCanvas extends JPanel {
     public static final String DEFAULT_SWITCH_RIGHT = "canvas/default_switch_right.png";

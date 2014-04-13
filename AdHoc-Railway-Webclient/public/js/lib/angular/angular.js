@@ -852,7 +852,7 @@
     /**
      * This method is intended for encoding *key* or *value* parts of query component. We need a custom
      * method becuase encodeURIComponent is too agressive and encodes stuff that doesn't have to be
-     * encoded per http://tools.ietf.org/html/rfc3986:
+     * encoded per http://utils.ietf.org/html/rfc3986:
      *    query       = *( pchar / "/" / "?" )
      *    pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
      *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
@@ -2396,7 +2396,7 @@
      *
      * In JavaScript calling `toString()` on a function returns the function definition. The definition can then be
      * parsed and the function arguments can be extracted. *NOTE:* This does not work with minification, and obfuscation
-     * tools since these tools change the argument names.
+     * utils since these utils change the argument names.
      *
      * ## `$inject` Annotation
      * By adding a `$inject` property onto a function the injection parameters can be specified.

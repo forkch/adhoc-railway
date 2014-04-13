@@ -32,6 +32,7 @@ import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfiguration
 import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
+import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
 import ch.fork.AdHocRailway.ui.widgets.ErrorPanel;
 import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 import ch.fork.AdHocRailway.ui.widgets.SplashWindow;
@@ -61,8 +62,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Set;
 
-import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromCustom;
-import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
+import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromCustom;
+import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromIconSet;
 
 public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         PreferencesKeys {

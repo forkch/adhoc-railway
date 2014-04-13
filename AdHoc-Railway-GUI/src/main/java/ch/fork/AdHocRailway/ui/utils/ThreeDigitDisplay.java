@@ -23,7 +23,7 @@
  *
  * Copyright (C) Siemens Schweiz AG 2008, All Rights Reserved, Confidential
  */
-package ch.fork.AdHocRailway.ui;
+package ch.fork.AdHocRailway.ui.utils;
 
 import ch.fork.AdHocRailway.ui.widgets.Segment7;
 

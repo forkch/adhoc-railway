@@ -252,7 +252,7 @@
             /**
              * This method is intended for encoding *key* or *value* parts of query component. We need a custom
              * method becuase encodeURIComponent is too agressive and encodes stuff that doesn't have to be
-             * encoded per http://tools.ietf.org/html/rfc3986:
+             * encoded per http://utils.ietf.org/html/rfc3986:
              *    query       = *( pchar / "/" / "?" )
              *    pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
              *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"

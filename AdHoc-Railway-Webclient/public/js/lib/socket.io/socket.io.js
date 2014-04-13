@@ -3344,7 +3344,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
 // Copyright: Hiroshi Ichikawa <http://gimite.net/en/>
 // License: New BSD License
 // Reference: http://dev.w3.org/html5/websockets/
-// Reference: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol
+// Reference: http://utils.ietf.org/html/draft-hixie-thewebsocketprotocol
 
     (function () {
 

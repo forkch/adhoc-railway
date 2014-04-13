@@ -21,7 +21,7 @@ package ch.fork.AdHocRailway.ui.turnouts;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
-import ch.fork.AdHocRailway.ui.tools.SwingUtils;
+import ch.fork.AdHocRailway.ui.utils.SwingUtils;
 import ch.fork.AdHocRailway.ui.widgets.ConfigurationDialog;
 
 import javax.swing.*;

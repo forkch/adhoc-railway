@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 
-import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
+import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromIconSet;
 
 public class RouteGroupsPanel extends JTabbedPane implements
         RouteManagerListener {

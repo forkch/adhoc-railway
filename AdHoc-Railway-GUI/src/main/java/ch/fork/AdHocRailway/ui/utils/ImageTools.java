@@ -16,7 +16,7 @@
  *
  *----------------------------------------------------------------------*/
 
-package ch.fork.AdHocRailway.ui.tools;
+package ch.fork.AdHocRailway.ui.utils;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
