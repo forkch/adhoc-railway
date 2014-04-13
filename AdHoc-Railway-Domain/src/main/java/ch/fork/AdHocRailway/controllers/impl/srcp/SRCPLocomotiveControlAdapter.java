@@ -253,26 +253,28 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         SRCPLocomotive srcpLocomotive = locomotiveSRCPLocomotiveMap
                 .get(locomotive);
         if (srcpLocomotive == null) {
-            srcpLocomotive = TYPE_TO_CREATE_STRATEGY_MAP.get(type).createSRCPLocomotive(locomotive);
-            locomotiveSRCPLocomotiveMap.put(locomotive, srcpLocomotive);
-            SRCPLocomotiveLocomotiveMap.put(srcpLocomotive, locomotive);
+            srcpLocomotive = createNewSRCPLocomotive(locomotive, type);
         } else {
             if (!typesMatch(locomotive.getType(), srcpLocomotive)) {
                 locomotiveSRCPLocomotiveMap.remove(locomotive);
                 SRCPLocomotiveLocomotiveMap.remove(srcpLocomotive);
-                srcpLocomotive = TYPE_TO_CREATE_STRATEGY_MAP.get(type).createSRCPLocomotive(locomotive);
-                locomotiveSRCPLocomotiveMap.put(locomotive, srcpLocomotive);
-                SRCPLocomotiveLocomotiveMap.put(srcpLocomotive, locomotive);
+                srcpLocomotive = createNewSRCPLocomotive(locomotive, type);
             }
             srcpLocomotive = TYPE_TO_CREATE_STRATEGY_MAP.get(type).updateSRCPLocomotive(srcpLocomotive, locomotive);
         }
+        return srcpLocomotive;
+    }
 
+    private SRCPLocomotive createNewSRCPLocomotive(Locomotive locomotive, LocomotiveType type) {
+        SRCPLocomotive srcpLocomotive;
+        srcpLocomotive = TYPE_TO_CREATE_STRATEGY_MAP.get(type).createSRCPLocomotive(locomotive);
+        locomotiveSRCPLocomotiveMap.put(locomotive, srcpLocomotive);
+        SRCPLocomotiveLocomotiveMap.put(srcpLocomotive, locomotive);
         return srcpLocomotive;
     }
 
     private boolean typesMatch(LocomotiveType type, SRCPLocomotive srcpLocomotive) {
         switch (type) {
-
             case DELTA:
                 return srcpLocomotive instanceof MMDeltaLocomotive;
             case DIGITAL:
