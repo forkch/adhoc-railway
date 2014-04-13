@@ -257,7 +257,7 @@ public class RailwayDeviceManager implements CommandDataListener,
             final String host = preferences.getStringValue(SRCP_HOSTNAME);
             final int port = preferences.getIntValue(SRCP_PORT);
 
-            appContext.getLocomotiveControl().emergencyStopActiveLocos();
+            //appContext.getLocomotiveControl().emergencyStopActiveLocos();
             SRCPSession session = appContext.getSession();
             session.disconnect();
             session = null;

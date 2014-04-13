@@ -48,10 +48,8 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
-import java.util.concurrent.Delayed;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIcon;
 import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
@@ -581,7 +579,6 @@ public class LocomotiveWidget extends JPanel implements
 
             locomotiveComboBox.setSelectedIndex(-1);
             try {
-                resetLoco();
                 locomotiveGroupComboBox.setSelectedIndex(idx);
             } catch (final ControllerException e1) {
                 ctx.getMainApp().handleException(e1);

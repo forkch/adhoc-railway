@@ -55,7 +55,6 @@ public class KeyControl extends SimpleInternalFrame {
     private JPanel turnoutsHistory;
     private JScrollPane historyPane;
     private ThreeDigitDisplay digitDisplay;
-    private boolean cancelClearThread;
 
     public KeyControl(final ApplicationContext ctx) {
         super("Track Control / History");
@@ -189,7 +188,6 @@ public class KeyControl extends SimpleInternalFrame {
                 return;
             }
             digitDisplay.setNumber(switchNumber);
-            new Thread(new ResetControlRunner()).start();
         }
     }
 
@@ -261,7 +259,6 @@ public class KeyControl extends SimpleInternalFrame {
         private void handleSwitchChange(final ActionEvent e,
                                         final int enteredNumber) {
 
-            cancelClearThread = true;
             Turnout searchedTurnout = null;
             searchedTurnout = turnoutManager.getTurnoutByNumber(enteredNumber);
             if (searchedTurnout == null) {
@@ -287,7 +284,6 @@ public class KeyControl extends SimpleInternalFrame {
                                        final int enteredNumber) {
             Route searchedRoute = null;
 
-            cancelClearThread = true;
 
             searchedRoute = ctx.getRouteManager().getRouteByNumber(
                     enteredNumber);
@@ -308,7 +304,6 @@ public class KeyControl extends SimpleInternalFrame {
         private void handleLocomotiveChange(final ActionEvent e,
                                             final int functionNumber) {
 
-            cancelClearThread = true;
             Locomotive searchedLocomotive = null;
 
             if (functionNumber > 16) {
@@ -361,17 +356,5 @@ public class KeyControl extends SimpleInternalFrame {
 
     private class DisableRouteAction extends SwitchingAction {
 
-    }
-
-    private class ResetControlRunner implements Runnable {
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(5000);
-                reset();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
