@@ -60,13 +60,17 @@ exports.updateTurnoutGroup = function (turnoutGroup, fn) {
     }
     console.log('updating turnout group ' + JSON.stringify(turnoutGroup));
 
-    TurnoutGroupModel.update({_id: turnoutGroup.id}, turnoutGroup, function (err) {
-        if (!err) {
-            fn(err, turnoutGroup);
-        } else {
-            fn(err, {msg: 'failed to update turnout group'});
+    TurnoutGroupModel.update({_id: turnoutGroup.id},
+        {'$set': {
+            'name': turnoutGroup.name
         }
-    });
+        }, function (err) {
+            if (!err) {
+                fn(err, turnoutGroup);
+            } else {
+                fn(err, {msg: 'failed to update turnout group'});
+            }
+        });
 }
 
 exports.removeTurnoutGroup = function (turnoutGroupId, fn) {

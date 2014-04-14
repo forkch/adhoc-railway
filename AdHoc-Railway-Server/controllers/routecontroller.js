@@ -66,13 +66,17 @@ exports.updateRouteGroup = function (routeGroup, fn) {
     var id = routeGroup._id;
     delete routeGroup._id;
 
-    RouteGroupModel.update({_id: id}, routeGroup, function (err) {
-        if (!err) {
-            fn(err, routeGroup);
-        } else {
-            fn(err, {msg: 'failed to update routes group'});
+    RouteGroupModel.update({_id: id},
+        {'$set': {
+            'name': routeGroup.name
         }
-    });
+        }, function (err) {
+            if (!err) {
+                fn(err, routeGroup);
+            } else {
+                fn(err, {msg: 'failed to update routes group'});
+            }
+        });
 }
 
 exports.removeRouteGroup = function (routeGroupId, fn) {

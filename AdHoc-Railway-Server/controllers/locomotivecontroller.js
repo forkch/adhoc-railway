@@ -63,13 +63,17 @@ exports.updateLocomotiveGroup = function (locomotiveGroup, fn) {
     }
     console.log('updating locomotive group ' + JSON.stringify(locomotiveGroup));
 
-    LocomotiveGroupModel.update({_id: locomotiveGroup.id}, locomotiveGroup, function (err) {
-        if (!err) {
-            fn(err, locomotiveGroup);
-        } else {
-            fn(err, {msg: 'failed to update locomotive group'});
+    LocomotiveGroupModel.update({_id: locomotiveGroup.id},
+        {'$set': {
+            'name': routeGroup.name
         }
-    });
+        }, function (err) {
+            if (!err) {
+                fn(err, locomotiveGroup);
+            } else {
+                fn(err, {msg: 'failed to update locomotive group'});
+            }
+        });
 }
 
 exports.removeLocomotiveGroup = function (locomotiveGroupId, fn) {
