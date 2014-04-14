@@ -1,0 +1,41 @@
+apply plugin: 'maven-publish'
+archivesBaseName = 'adhocrailway-domain'
+
+
+dependencies {
+
+    compile fileTree(dir: 'lib', includes: ['*.jar'])
+
+    compile 'de.dermoba:jsrcpc:+'
+    compile 'com.thoughtworks.xstream:xstream:1.4.4'
+    compile 'org.rxtx:rxtx:2.1.7'
+    compile 'org.json:json:20090211'
+    compile 'com.squareup.retrofit:retrofit:1.5.0'
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'AdHoc-Railway-Domain', 'Implementation-Version': version
+    }
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "/home/fork/Code/forkch-mvn-repo"
+        }
+    }
+}

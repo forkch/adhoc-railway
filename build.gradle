@@ -14,6 +14,8 @@ subprojects {
     dependencies {
         testCompile 'junit:junit:4.+'
         testCompile 'org.mockito:mockito-all:1.9.5'
+        compile 'org.apache.commons:commons-lang3:3.1'
+        compile 'commons-io:commons-io:2.4'
     }
 
     repositories {
@@ -38,14 +40,19 @@ subprojects {
 
 }
 
-project(':AdHoc-Railway-Domain') {
-}
 
-project(':AdHoc-Railway-GUI') {
+project(':ch.fork.AdHocRailway.ui') {
     dependencies {
-        compile project(':AdHoc-Railway-Domain')
+        compile project(':ch.fork.AdHocRailway.domain')
     }
 
 }
+
+project(':ch.fork.AdHocRailway.domain') {
+    dependencies {
+        compile project(':ch.fork.AdHocRailway.model')
+    }
+}
+
 task wrapper(type: Wrapper) {
 }

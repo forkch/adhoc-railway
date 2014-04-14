@@ -1,0 +1,183 @@
+apply plugin: 'application'
+
+archivesBaseName = 'adhocrailway-gui'
+
+mainClassName = "ch.fork.AdHocRailway.ui.AdHocRailway"
+
+dependencies {
+    compile fileTree(dir: 'lib', includes: ['*.jar'])
+    compile 'de.dermoba:jsrcpc:+'
+    compile 'jgoodies:forms:1.0.5'
+    compile 'com.jgoodies:jgoodies-common:1.4.0'
+    compile 'com.jgoodies:looks:2.2.2'
+    compile 'com.jgoodies:binding:2.0.6'
+    compile 'com.miglayout:miglayout:3.7.4'
+    compile 'commons-beanutils:commons-beanutils:1.8.3'
+    compile 'javax.jmdns:jmdns:3.4.1'
+    compile 'org.imgscalr:imgscalr-lib:4.2'
+    compile 'com.google.guava:guava:14.0.1'
+    compile 'com.google.inject:guice:3.0'
+    compile 'commons-cli:commons-cli:1.2'
+    compile 'commons-codec:commons-codec:1.9'
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'AdHoc-Railway-GUI', 'Implementation-Version': version, 'Permissions': 'all-permissions'
+    }
+}
+
+startScripts {
+    doLast {
+        unixScript.text = unixScript.text.replace('DEFAULT_JVM_OPTS=""', 'DEFAULT_JVM_OPTS="-Djava.library.path=/usr/lib/jni/"')
+        windowsScript.text = windowsScript.text.replace('DEFAULT_JVM_OPTS=', 'DEFAULT_JVM_OPTS=')
+    }
+}
+
+task createSamples {
+    def samples = file("$buildDir/samples")
+    outputs.dir samples
+    doLast {
+        samples.mkdirs()
+        copy {
+            from 'samples'
+            into samples
+
+        }
+    }
+}
+task createLocoimages {
+    def locoimages = file("$buildDir/locoimages")
+    outputs.dir locoimages
+    doLast {
+        locoimages.mkdirs()
+        copy {
+            from 'locoimages'
+            into locoimages
+
+        }
+    }
+}
+
+applicationDistribution.from(createSamples) {
+    into "samples"
+}
+applicationDistribution.from(createLocoimages) {
+    into "locoimages"
+}
+
+
+task copyFiles(type: Copy, dependsOn: [jar]) {
+    from configurations.runtime
+    from("model/libs")
+    into("webstart/lib")
+    include('*.jar')
+}
+
+task signAll(dependsOn: [copyFiles]) << {
+    new File('webstart/signed').mkdirs()
+    def libFiles = files { file('webstart/lib').listFiles() }
+    libFiles.each {
+        ant.signjar(
+                destDir: 'webstart/signed',
+                alias: 'http://www.fork.ch',
+                jar: it,
+                keystore: 'src/jnlp/keys/forkch.keys',
+                storepass: 'forkch123',
+                preservelastmodified: 'true')
+    }
+}
+
+task generateJnlp(dependsOn: [signAll]) << {
+    File jnlpTemplateFile = new File('src/jnlp/template/template.vm')
+    def root = new XmlParser().parse(jnlpTemplateFile)
+    def jnlpFileName = "${archivesBaseName}-${version}.jnlp"
+    // Setting values in the jnlp template
+    // Setting root values
+    // File CodeBase
+    //root.@codebase = 'file:/'+new File('webstart/signed').absolutePath
+    //root.@codebase = '.'
+    // Hppt CodeBase
+    root.@codebase = 'http://adhocserver/adhoc-railway'
+    root.@href = jnlpFileName
+    // Setting information values
+    def information = root.information[0]
+    def title = information.title[0]
+    def vendor = information.vendor[0]
+    title.setValue("AdHoc-Railway-GUI")
+    vendor.setValue("www.fork.ch")
+    def descriptionList = information.description
+    descriptionList.each {
+        it.setValue("Simple example of generating webstart files using gradle")
+    }
+    // Setting resources
+    def resource = root.resources[0]
+    def j2se = resource.j2se[0]
+    j2se.@version = "1.7+"
+    def collection = files { file('webstart/lib').listFiles() }
+    def mainJar = "${archivesBaseName}-${version}.jar"
+    collection.each {
+        def resourceValues = [href: it.name]
+        if (mainJar == it.name) {
+            resourceValues = [href: it.name, main: 'true']
+        }
+        resource.appendNode('jar', resourceValues)
+    }
+    // Setting the main class
+    def applicationDesc = root.'application-desc'[0]
+    applicationDesc.'@main-class' = "ch.fork.AdHocRailway.ui.AdHocRailway"
+    // Writing the jnlp file filled
+    File jnlpFile = new File('webstart/signed/' + jnlpFileName)
+    new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
+}
+
+task generateJnlpLocal(dependsOn: [signAll]) << {
+    File jnlpTemplateFile = new File('src/jnlp/template/template.vm')
+    def root = new XmlParser().parse(jnlpTemplateFile)
+    def jnlpFileName = "${archivesBaseName}-${version}.jnlp"
+    // Setting values in the jnlp template
+    // Setting root values
+    // File CodeBase
+    //root.@codebase = 'file:/'+new File('webstart/signed').absolutePath
+    root.@codebase = '.'
+    // Hppt CodeBase
+    //root.@codebase = 'http://adhocserver/adhoc-railway'
+    root.@href = jnlpFileName
+    // Setting information values
+    def information = root.information[0]
+    def title = information.title[0]
+    def vendor = information.vendor[0]
+    title.setValue("AdHoc-Railway-GUI")
+    vendor.setValue("www.fork.ch")
+    def descriptionList = information.description
+    descriptionList.each {
+        it.setValue("Simple example of generating webstart files using gradle")
+    }
+    // Setting resources
+    def resource = root.resources[0]
+    def j2se = resource.j2se[0]
+    j2se.@version = "1.7+"
+    def collection = files { file('webstart/lib').listFiles() }
+    def mainJar = "${archivesBaseName}-${version}.jar"
+    collection.each {
+        def resourceValues = [href: it.name]
+        if (mainJar == it.name) {
+            resourceValues = [href: it.name, main: 'true']
+        }
+        resource.appendNode('jar', resourceValues)
+    }
+    // Setting the main class
+    def applicationDesc = root.'application-desc'[0]
+    applicationDesc.'@main-class' = "ch.fork.AdHocRailway.ui.AdHocRailway"
+    // Writing the jnlp file filled
+    File jnlpFile = new File('webstart/signed/' + jnlpFileName)
+    new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
+}
+
+task generateWebStartFiles(dependsOn: [generateJnlp]) << {
+    println("Generating all webstart files in:webstart/signed")
+}
+
+task generateWebStartFilesLocal(dependsOn: [generateJnlpLocal]) << {
+    println("Generating all webstart files in:webstart/signed")
+}

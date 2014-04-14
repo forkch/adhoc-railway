@@ -1,1 +1,2 @@
-include 'AdHoc-Railway-Domain', 'AdHoc-Railway-GUI'
+include 'ch.fork.AdHocRailway.ui', 'ch.fork.AdHocRailway.domain', 'ch.fork.AdHocRailway.model'
+
