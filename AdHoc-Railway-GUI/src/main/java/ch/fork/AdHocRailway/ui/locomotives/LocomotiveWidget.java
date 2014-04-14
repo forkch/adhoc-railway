@@ -18,23 +18,26 @@
 
 package ch.fork.AdHocRailway.ui.locomotives;
 
-import ch.fork.AdHocRailway.controllers.LockingException;
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.manager.locomotives.*;
+import ch.fork.AdHocRailway.manager.LocomotiveManagerListener;
+import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
+import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveGroupListCellRenderer;
+import ch.fork.AdHocRailway.ui.utils.ImageTools;
+import ch.fork.AdHocRailway.ui.utils.UIConstants;
+import ch.fork.AdHocRailway.utils.LocomotiveHelper;
 import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 
@@ -45,52 +48,38 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
-import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIcon;
-import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
+import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIcon;
+import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromIconSet;
 
 public class LocomotiveWidget extends JPanel implements
         LocomotiveChangeListener, LocomotiveManagerListener {
 
 
-    private JComboBox<Locomotive> locomotiveComboBox;
-
-    private JComboBox<LocomotiveGroup> locomotiveGroupComboBox;
-
-    private JProgressBar speedBar;
-
-    private JButton increaseSpeed;
-
-    private JButton decreaseSpeed;
-
-    private JButton stopButton;
-
-    private JButton directionButton;
-
-    private LockToggleButton lockButton;
-
-    private Locomotive myLocomotive;
-
     private final int number;
-
     private final List<FunctionToggleButton> functionToggleButtons = new ArrayList<FunctionToggleButton>();
-
-    private LocomotiveSelectAction locomotiveSelectAction;
-
-    private LocomotiveGroupSelectAction groupSelectAction;
-
     private final JFrame frame;
-
     private final LocomotiveGroup allLocomotivesGroup;
-
-    private JPanel functionsPanel;
-
     private final LocomotiveContext ctx;
-
+    private final ScheduledExecutorService worker =
+            Executors.newSingleThreadScheduledExecutor();
     public boolean directionToggeled;
+    private JComboBox<Locomotive> locomotiveComboBox;
+    private JComboBox<LocomotiveGroup> locomotiveGroupComboBox;
+    private JProgressBar speedBar;
+    private JButton increaseSpeed;
+    private JButton decreaseSpeed;
+    private JButton stopButton;
+    private JButton directionButton;
+    private LockToggleButton lockButton;
+    private Locomotive myLocomotive;
+    private LocomotiveSelectAction locomotiveSelectAction;
+    private LocomotiveGroupSelectAction groupSelectAction;
+    private JPanel functionsPanel;
     private DefaultComboBoxModel<LocomotiveGroup> locomotiveGroupComboBoxModel;
     private DefaultComboBoxModel<Locomotive> locomotiveComboBoxModel;
-
     private boolean ignoreGroupAndLocomotiveSelectionEvents;
     private boolean disableListener;
     private boolean connectedToRailway;
@@ -109,10 +98,11 @@ public class LocomotiveWidget extends JPanel implements
         initGUI();
         initKeyboardActions();
 
-        allLocomotivesGroup = new LocomotiveGroup(Integer.MIN_VALUE, "All");
+        allLocomotivesGroup = new LocomotiveGroup("", "All");
         ctx.getLocomotiveManager().addLocomotiveManagerListener(this);
         connectedToRailway = false;
     }
+
     @Subscribe
     public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
         if (event.isConnected()) {
@@ -160,7 +150,6 @@ public class LocomotiveWidget extends JPanel implements
 
         locomotiveComboBox.setSelectedIndex(-1);
         ignoreGroupAndLocomotiveSelectionEvents = false;
-        connectedToRailway = false;
     }
 
     public Locomotive getMyLocomotive() {
@@ -190,7 +179,10 @@ public class LocomotiveWidget extends JPanel implements
         locomotiveGroupComboBox.setFocusable(false);
         locomotiveGroupComboBox.setFont(locomotiveGroupComboBox.getFont()
                 .deriveFont(14));
+        locomotiveGroupComboBox.setMaximumRowCount(10);
         locomotiveGroupComboBox.setSelectedIndex(-1);
+        locomotiveGroupComboBox.setRenderer(new LocomotiveGroupListCellRenderer());
+
         groupSelectAction = new LocomotiveGroupSelectAction();
         locomotiveGroupComboBox.addItemListener(groupSelectAction);
 
@@ -201,10 +193,6 @@ public class LocomotiveWidget extends JPanel implements
         locomotiveSelectAction = new LocomotiveSelectAction();
         locomotiveComboBox.addItemListener(locomotiveSelectAction);
         locomotiveComboBox.setRenderer(new LocomotiveComboBoxRenderer());
-
-        final String locomotiveDescriptionToolTip = LocomotiveHelper
-                .getLocomotiveDescription(myLocomotive);
-        setToolTipText(locomotiveDescriptionToolTip);
 
         add(locomotiveGroupComboBox, "span 3, grow, width 200");
         add(locomotiveComboBox, "span 3, grow, width 200");
@@ -237,19 +225,9 @@ public class LocomotiveWidget extends JPanel implements
 
         controlPanel.add(functionsPanel, "grow, west");
         controlPanel.add(speedControlPanel, "grow");
-        controlPanel.add(speedBar, "east, width 45");
+        controlPanel.add(speedBar, "east, width 50");
 
         return controlPanel;
-    }
-
-    private void processMouseMovement(MouseEvent e) {
-        double i = (double) e.getY() / speedBar.getHeight();
-        int drivingSteps = myLocomotive.getType().getDrivingSteps();
-        int newSpeed = (int) ((1 - i) * (drivingSteps + 1));
-        newSpeed = Math.max(0, Math.min(drivingSteps, newSpeed));
-        if (newSpeed != myLocomotive.getCurrentSpeed()) {
-            ctx.getLocomotiveControl().setSpeed(myLocomotive, newSpeed, myLocomotive.getCurrentFunctions());
-        }
     }
 
     private JPanel initFunctionsControl() {
@@ -288,11 +266,15 @@ public class LocomotiveWidget extends JPanel implements
         directionButton.setFocusable(false);
         lockButton.setFocusable(false);
 
-        speedControlPanel.add(increaseSpeed, "height 30, growx");
-        speedControlPanel.add(decreaseSpeed, "height 30, growx");
-        speedControlPanel.add(stopButton, "height 30, growx");
-        speedControlPanel.add(directionButton, "height 30, growx");
-        speedControlPanel.add(lockButton, "height 30, growx");
+        String params = "height 30, growx";
+        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.TABLET_MODE)) {
+            params = "height " + UIConstants.SIZE_TABLET + ", growx";
+        }
+        speedControlPanel.add(increaseSpeed, params);
+        speedControlPanel.add(decreaseSpeed, params);
+        speedControlPanel.add(stopButton, params);
+        speedControlPanel.add(directionButton, params);
+        speedControlPanel.add(lockButton, params);
         return speedControlPanel;
     }
 
@@ -320,6 +302,11 @@ public class LocomotiveWidget extends JPanel implements
             functionsPanel.setLayout(new MigLayout("wrap, fill"));
         }
 
+
+        String params = "height 30, width 60";
+        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.TABLET_MODE)) {
+            params = "height " + UIConstants.SIZE_TABLET + ", width 60";
+        }
         for (final LocomotiveFunction fn : myLocomotive.getFunctions()) {
             final FunctionToggleButton functionButton = new FunctionToggleButton(
                     fn.getShortDescription());
@@ -329,7 +316,7 @@ public class LocomotiveWidget extends JPanel implements
             functionButton.setToolTipText(fn.getDescription());
 
             functionButton.setFocusable(false);
-            functionsPanel.add(functionButton, "height 30, width 60");
+            functionsPanel.add(functionButton, params);
         }
         revalidate();
     }
@@ -362,6 +349,7 @@ public class LocomotiveWidget extends JPanel implements
             locomotiveComboBox.setEnabled(false);
         }
         speedBar.requestFocus();
+
     }
 
     private void updateLockedState(final LocomotiveController locomotiveControl) {
@@ -451,6 +439,7 @@ public class LocomotiveWidget extends JPanel implements
             return;
         }
 
+
         if (myLocomotive.equals(changedLocomotive)) {
             SwingUtilities.invokeLater(new Runnable() {
 
@@ -526,7 +515,7 @@ public class LocomotiveWidget extends JPanel implements
 
     }
 
-    private void resetLoco() throws LocomotiveException {
+    private void resetLoco() {
         if (myLocomotive == null) {
             return;
         }
@@ -542,6 +531,24 @@ public class LocomotiveWidget extends JPanel implements
 
     }
 
+    private void processMouseMovement(MouseEvent e) {
+        if (myLocomotive == null) {
+            return;
+        }
+        double i = (double) e.getY() / speedBar.getHeight();
+        int drivingSteps = myLocomotive.getType().getDrivingSteps();
+        int newSpeed = (int) ((1 - i) * (drivingSteps + 1));
+        newSpeed = Math.max(0, Math.min(drivingSteps, newSpeed));
+        if (newSpeed != myLocomotive.getCurrentSpeed()) {
+            ctx.getLocomotiveControl().setSpeed(myLocomotive, newSpeed, myLocomotive.getCurrentFunctions());
+        }
+    }
+
+    @Override
+    public void failure(
+            final ManagerException locomotiveManagerException) {
+    }
+
     private class LocomotiveGroupSelectAction implements ItemListener {
 
         @Override
@@ -555,6 +562,7 @@ public class LocomotiveWidget extends JPanel implements
             if (!isFree()) {
                 return;
             }
+
             final LocomotiveGroup lg = (LocomotiveGroup) locomotiveGroupComboBoxModel
                     .getSelectedItem();
             final int idx = locomotiveGroupComboBox.getSelectedIndex();
@@ -571,9 +579,8 @@ public class LocomotiveWidget extends JPanel implements
 
             locomotiveComboBox.setSelectedIndex(-1);
             try {
-                resetLoco();
                 locomotiveGroupComboBox.setSelectedIndex(idx);
-            } catch (final LocomotiveException e1) {
+            } catch (final ControllerException e1) {
                 ctx.getMainApp().handleException(e1);
             }
 
@@ -617,7 +624,7 @@ public class LocomotiveWidget extends JPanel implements
                     final String locomotiveDescriptionToolTip = LocomotiveHelper
                             .getLocomotiveDescription(myLocomotive);
 
-                    LocomotiveWidget.this.setToolTipText(locomotiveDescriptionToolTip);
+                    locomotiveComboBox.setToolTipText(locomotiveDescriptionToolTip);
 
                     updateFunctionButtons();
                     updateWidget();
@@ -628,7 +635,7 @@ public class LocomotiveWidget extends JPanel implements
                     locomotiveComboBox.setBackground(UIConstants.ERROR_COLOR);
                     locomotiveComboBox.setSelectedItem(myLocomotive);
                 }
-            } catch (final LocomotiveException e1) {
+            } catch (final ControllerException e1) {
                 ctx.getMainApp().handleException(e1);
             }
         }
@@ -647,6 +654,8 @@ public class LocomotiveWidget extends JPanel implements
             final LocomotiveController locomotiveControl = ctx
                     .getLocomotiveControl();
             doPerformAction(locomotiveControl, myLocomotive);
+
+
             if (time == 0) {
                 time = System.currentTimeMillis();
             } else {
@@ -657,7 +666,7 @@ public class LocomotiveWidget extends JPanel implements
 
         protected abstract void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive) throws LocomotiveException;
+                final Locomotive myLocomotive);
     }
 
     private class LocomotiveFunctionAction extends LocomotiveControlAction {
@@ -671,7 +680,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive) throws LocomotiveException {
+                final Locomotive myLocomotive) {
             final boolean state = functionToggleButtons.get(function)
                     .isSelected();
 
@@ -692,7 +701,9 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive) throws LocomotiveException {
+                final Locomotive myLocomotive) {
+
+
             locomotiveControl.increaseSpeed(myLocomotive);
         }
     }
@@ -703,7 +714,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive) throws LocomotiveException {
+                final Locomotive myLocomotive) {
             locomotiveControl.decreaseSpeed(myLocomotive);
         }
     }
@@ -714,7 +725,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
-                final Locomotive myLocomotive) throws LocomotiveException {
+                final Locomotive myLocomotive) {
             if (Preferences.getInstance().getBooleanValue(
                     PreferencesKeys.STOP_ON_DIRECTION_CHANGE)
                     && myLocomotive.getCurrentSpeed() != 0) {
@@ -788,7 +799,7 @@ public class LocomotiveWidget extends JPanel implements
                     }
                 }
                 speedBar.requestFocus();
-            } catch (final LockingException ex) {
+            } catch (final ControllerException ex) {
                 ctx.getMainApp().handleException(ex);
                 lockButton.setSelected(lockButtonState);
             }
@@ -804,29 +815,38 @@ public class LocomotiveWidget extends JPanel implements
             }
             if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
 
-                if (ctx.isEditingMode()) {
-                    if (!isFree()) {
-                        return;
-                    }
-                    final LocomotiveController locomotiveControl = ctx
-                            .getLocomotiveControl();
-
-                    locomotiveControl.removeLocomotiveChangeListener(
-                            myLocomotive, LocomotiveWidget.this);
-                    new LocomotiveConfig(frame, ctx.getLocomotiveManager(),
-                            myLocomotive, myLocomotive.getGroup());
-
-                    locomotiveControl.addLocomotiveChangeListener(myLocomotive,
-                            LocomotiveWidget.this);
-                    locomotiveChanged(myLocomotive);
-                } else {
-
+                if (handleLeftClick()) {
+                    return;
                 }
             } else if (e.getButton() == MouseEvent.BUTTON2) {
-                final ToggleDirectionAction a = new ToggleDirectionAction();
-                a.actionPerformed(null);
+                handleMiddleClick();
             }
             updateWidget();
+        }
+
+        private void handleMiddleClick() {
+            final ToggleDirectionAction a = new ToggleDirectionAction();
+            a.actionPerformed(null);
+        }
+
+        private boolean handleLeftClick() {
+            if (ctx.isEditingMode()) {
+                if (!isFree()) {
+                    return true;
+                }
+                final LocomotiveController locomotiveControl = ctx
+                        .getLocomotiveControl();
+
+                locomotiveControl.removeLocomotiveChangeListener(
+                        myLocomotive, LocomotiveWidget.this);
+                new LocomotiveConfig(ctx, frame, myLocomotive, myLocomotive.getGroup(), false);
+
+                locomotiveControl.addLocomotiveChangeListener(myLocomotive,
+                        LocomotiveWidget.this);
+                locomotiveChanged(myLocomotive);
+
+            }
+            return false;
         }
     }
 
@@ -849,11 +869,6 @@ public class LocomotiveWidget extends JPanel implements
             }
             a.actionPerformed(null);
         }
-    }
-
-    @Override
-    public void failure(
-            final LocomotiveManagerException locomotiveManagerException) {
     }
 
 }

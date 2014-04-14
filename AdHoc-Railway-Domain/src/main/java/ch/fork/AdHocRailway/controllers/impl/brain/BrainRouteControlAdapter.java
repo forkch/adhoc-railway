@@ -4,14 +4,12 @@ import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.controllers.impl.RouteChangingThread;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
-import ch.fork.AdHocRailway.manager.turnouts.RouteException;
 
 public class BrainRouteControlAdapter extends RouteController {
 
     private final TurnoutController turnoutControl;
-
-    private long routingDelay;
     private final RouteChangingThread.RouteChangingListener routeChangingListener;
+    private long routingDelay;
 
     public BrainRouteControlAdapter(final TurnoutController turnoutController) {
         this.turnoutControl = turnoutController;
@@ -35,14 +33,14 @@ public class BrainRouteControlAdapter extends RouteController {
     }
 
     @Override
-    public void enableRoute(final Route r) throws RouteException {
+    public void enableRoute(final Route r) {
         final Thread brainRouterThread = new Thread(new RouteChangingThread(turnoutControl, r,
                 true, routingDelay, routeChangingListener));
         brainRouterThread.start();
     }
 
     @Override
-    public void disableRoute(final Route r) throws RouteException {
+    public void disableRoute(final Route r) {
         final Thread brainRouterThread = new Thread(new RouteChangingThread(turnoutControl, r,
                 false, routingDelay, routeChangingListener));
         brainRouterThread.start();

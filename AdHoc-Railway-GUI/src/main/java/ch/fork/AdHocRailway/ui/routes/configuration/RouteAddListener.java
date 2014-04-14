@@ -2,7 +2,7 @@ package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManagerListener;
+import ch.fork.AdHocRailway.manager.RouteManagerListener;
 
 import java.util.SortedSet;
 

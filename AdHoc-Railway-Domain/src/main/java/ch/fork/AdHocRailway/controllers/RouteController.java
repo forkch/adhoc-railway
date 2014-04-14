@@ -18,12 +18,11 @@
 
 package ch.fork.AdHocRailway.controllers;
 
-import ch.fork.AdHocRailway.controllers.impl.RouteChangingThread;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainRouteControlAdapter;
+import ch.fork.AdHocRailway.controllers.impl.dummy.DummyRouteController;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
-import ch.fork.AdHocRailway.manager.turnouts.RouteException;
 import com.google.common.collect.Maps;
 
 import java.util.LinkedList;
@@ -35,11 +34,31 @@ public abstract class RouteController {
     private final Map<Route, List<RouteChangeListener>> listeners = Maps
             .newHashMap();
 
-    public abstract void enableRoute(final Route r) throws RouteException;
+    public static RouteController createLocomotiveController(
+            final RailwayDevice railwayDevice,
+            final TurnoutController turnoutController) {
+        if (railwayDevice == null) {
+            return new DummyRouteController(turnoutController);
+        }
+        switch (railwayDevice) {
+            case ADHOC_BRAIN:
+                return new BrainRouteControlAdapter(turnoutController);
+            case SRCP:
+                return new SRCPRouteControlAdapter(
+                        (SRCPTurnoutControlAdapter) turnoutController);
+            default:
+                return new DummyRouteController(turnoutController);
 
-    public abstract void disableRoute(final Route r) throws RouteException;
+        }
+    }
 
-    public void toggle(final Route route) throws RouteException {
+    public abstract void enableRoute(final Route r);
+
+    public abstract void disableRoute(final Route r);
+
+    public abstract void setRoutingDelay(final int intValue);
+
+    public void toggle(final Route route) {
         if (route.isEnabled()) {
             disableRoute(route);
         } else {
@@ -47,11 +66,9 @@ public abstract class RouteController {
         }
     }
 
-    public void toggleTest(final Route route) throws RouteException {
+    public void toggleTest(final Route route) {
         toggle(route);
     }
-
-    ;
 
     public void addRouteChangeListener(final Route route,
                                        final RouteChangeListener listener) {
@@ -105,77 +122,5 @@ public abstract class RouteController {
                 listener.routeChanged(route);
             }
         }
-    }
-
-    public static RouteController createLocomotiveController(
-            final RailwayDevice railwayDevice,
-            final TurnoutController turnoutController) {
-        if (railwayDevice == null) {
-            return new NullRouteController(turnoutController);
-        }
-        switch (railwayDevice) {
-            case ADHOC_BRAIN:
-                return new BrainRouteControlAdapter(turnoutController);
-            case SRCP:
-                return new SRCPRouteControlAdapter(
-                        (SRCPTurnoutControlAdapter) turnoutController);
-            default:
-                return new NullRouteController(turnoutController);
-
-        }
-    }
-
-    public abstract void setRoutingDelay(final int intValue);
-
-    static class NullRouteController extends RouteController {
-
-        private final RouteChangingThread.RouteChangingListener routeChangingListener;
-        private final TurnoutController turnoutControl;
-        private int routingDelay;
-
-        public NullRouteController(final TurnoutController turnoutControl) {
-            this.turnoutControl = turnoutControl;
-            routeChangingListener = new RouteChangingThread.RouteChangingListener() {
-                @Override
-                public void informNextTurnoutRouted(final Route route) {
-                    NullRouteController.this.informNextTurnoutRouted(route);
-                }
-
-                @Override
-                public void informNextTurnoutDerouted(final Route route) {
-                    NullRouteController.this.informNextTurnoutDerouted(route);
-
-                }
-
-                @Override
-                public void informRouteChanged(final Route route) {
-                    NullRouteController.this.informRouteChanged(route);
-                }
-            };
-        }
-
-        @Override
-        public void enableRoute(final Route r) throws RouteException {
-            final Thread brainRouterThread = new Thread(
-                    new RouteChangingThread(turnoutControl, r, true,
-                            routingDelay, routeChangingListener));
-            brainRouterThread.start();
-        }
-
-        @Override
-        public void disableRoute(final Route r) throws RouteException {
-
-            final Thread brainRouterThread = new Thread(
-                    new RouteChangingThread(turnoutControl, r, false,
-                            routingDelay, routeChangingListener));
-            brainRouterThread.start();
-        }
-
-        @Override
-        public void setRoutingDelay(final int routingDelay) {
-
-            this.routingDelay = routingDelay;
-        }
-
     }
 }

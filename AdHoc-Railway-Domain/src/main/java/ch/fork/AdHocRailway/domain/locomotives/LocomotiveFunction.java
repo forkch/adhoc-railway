@@ -1,5 +1,6 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import com.google.gson.annotations.Expose;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -12,11 +13,16 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
         Serializable {
 
 
+    @Expose
     private final int number;
 
+    @Expose
     private String description;
+
+    @Expose
     private boolean isEmergencyBrakeFunction;
 
+    @Expose
     private int deactivationDelay;
 
     public LocomotiveFunction(final int number, final String description,
@@ -26,33 +32,6 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
         this.description = description;
         this.isEmergencyBrakeFunction = isEmergencyBrakeFunction;
         this.setDeactivationDelay(deactivationDelay);
-    }
-
-    public boolean isEmergencyBrakeFunction() {
-        return isEmergencyBrakeFunction;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setDescription(final String description) {
-        this.description = description;
-    }
-
-    public void setEmergencyBrakeFunction(final boolean isEmergencyBrakeFunction) {
-        this.isEmergencyBrakeFunction = isEmergencyBrakeFunction;
-    }
-
-    public String getShortDescription() {
-        if (number == 0) {
-            return "Fn";
-        }
-        return "Fn" + (number);
     }
 
     public static SortedSet<LocomotiveFunction> getDeltaFunctions() {
@@ -82,10 +61,52 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
         return fns;
     }
 
+    public static SortedSet<LocomotiveFunction> getFunctionsForType(LocomotiveType type) {
+        switch (type) {
+
+            case DELTA:
+                return getDeltaFunctions();
+            case DIGITAL:
+                return getDigitalFunctions();
+            case SIMULATED_MFX:
+                return getSimulatedMfxFunctions();
+            case MFX:
+                return getDigitalFunctions();
+        }
+        return getDeltaFunctions();
+    }
+
+    public boolean isEmergencyBrakeFunction() {
+        return isEmergencyBrakeFunction;
+    }
+
+    public void setEmergencyBrakeFunction(final boolean isEmergencyBrakeFunction) {
+        this.isEmergencyBrakeFunction = isEmergencyBrakeFunction;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public String getShortDescription() {
+        if (number == 0) {
+            return "Fn";
+        }
+        return "Fn" + (number);
+    }
+
     @Override
     public int compareTo(final LocomotiveFunction o) {
         return Integer.valueOf(number)
-                .compareTo(Integer.valueOf(o.getNumber()));
+                .compareTo(o.getNumber());
     }
 
     @Override

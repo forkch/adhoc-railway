@@ -19,49 +19,54 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import com.google.gson.annotations.Expose;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 
 public class Route extends AbstractItem implements java.io.Serializable,
         Comparable<Route> {
-
-    private int id = -1;
-
-    @XStreamOmitField
-    private RouteGroup routeGroup;
-
-    private int number;
-
-    private String name;
-
-    private String orientation;
-
-    private SortedSet<RouteItem> routeItems = new TreeSet<RouteItem>();
 
     public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_NUMBER = "number";
     public static final String PROPERTYNAME_NAME = "name";
     public static final String PROPERTYNAME_ORIENTATION = "orientation";
     public static final String PROPERTYNAME_ROUTE_GROUP = "routeGroup";
-    public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
+    public static final String PROPERTYNAME_ROUTE_ITEMS = "routedTurnouts";
+
+    @Expose
+    private String id = UUID.randomUUID().toString();
+    ;
+    @Expose
+    private int number;
+    @Expose
+    private String name;
+    @Expose
+    private String orientation;
+    @Expose
+    private SortedSet<RouteItem> routedTurnouts = new TreeSet<RouteItem>();
+    @Expose
+    private String groupId;
 
     private transient boolean enabled = false;
     private transient boolean routing = false;
+    private transient RouteGroup routeGroup;
 
     public Route() {
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(final int id) {
-        final int old = this.id;
+    public void setId(final String id) {
+        final String old = this.id;
         this.id = id;
         changeSupport.firePropertyChange(PROPERTYNAME_ID, old, this.id);
     }
@@ -97,19 +102,19 @@ public class Route extends AbstractItem implements java.io.Serializable,
                 this.orientation);
     }
 
-    public SortedSet<RouteItem> getRouteItems() {
-        return this.routeItems;
+    public SortedSet<RouteItem> getRoutedTurnouts() {
+        return this.routedTurnouts;
     }
 
-    public void setRouteItems(final SortedSet<RouteItem> routeItems) {
-        final SortedSet<RouteItem> old = this.routeItems;
-        this.routeItems = routeItems;
+    public void setRoutedTurnouts(final SortedSet<RouteItem> routedTurnouts) {
+        final SortedSet<RouteItem> old = this.routedTurnouts;
+        this.routedTurnouts = routedTurnouts;
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_ITEMS, old,
-                this.routeItems);
+                this.routedTurnouts);
     }
 
     public void addRouteItem(final RouteItem routeItem) {
-        routeItems.add(routeItem);
+        routedTurnouts.add(routeItem);
     }
 
     public RouteGroup getRouteGroup() {
@@ -119,58 +124,11 @@ public class Route extends AbstractItem implements java.io.Serializable,
     public void setRouteGroup(final RouteGroup routeGroup) {
         final RouteGroup old = this.routeGroup;
         this.routeGroup = routeGroup;
+        setGroupId(routeGroup.getId());
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_GROUP, old,
                 this.routeGroup);
     }
 
-    @Override
-    public int compareTo(final Route o) {
-        if (this == o) {
-            return 0;
-        }
-        if (o == null) {
-            return -1;
-        }
-        if (number > o.getNumber()) {
-            return 1;
-        } else if (number == o.getNumber()) {
-            return 0;
-        } else {
-            return -1;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        return result;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Route other = (Route) obj;
-        if (id != other.id) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this,
-                ToStringStyle.SHORT_PREFIX_STYLE);
-    }
 
     public void addPropertyChangeListener(final PropertyChangeListener x) {
         changeSupport.addPropertyChangeListener(x);
@@ -194,5 +152,37 @@ public class Route extends AbstractItem implements java.io.Serializable,
 
     public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public int compareTo(final Route o) {
+        return Integer.compare(number, o.getNumber());
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(id).build();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof Route)) {
+            return false;
+        }
+        Route rhs = (Route) obj;
+        return new EqualsBuilder().append(id, rhs.getId()).build();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 }

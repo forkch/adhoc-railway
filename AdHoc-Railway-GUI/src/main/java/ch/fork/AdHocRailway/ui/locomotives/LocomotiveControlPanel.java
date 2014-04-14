@@ -18,19 +18,13 @@
 
 package ch.fork.AdHocRailway.ui.locomotives;
 
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
-import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
-import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -38,15 +32,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
 
-public class LocomotiveControlPanel extends JPanel implements
-        LocomotiveManagerListener {
+public class LocomotiveControlPanel extends JPanel {
 
     private final List<LocomotiveWidget> locomotiveWidgets;
-    private JPanel controlPanel;
     private final LocomotiveContext ctx;
-    private boolean disableListener;
+    private JPanel controlPanel;
 
     public LocomotiveControlPanel(final LocomotiveContext ctx) {
         super();
@@ -55,16 +46,6 @@ public class LocomotiveControlPanel extends JPanel implements
 
         locomotiveWidgets = new ArrayList<LocomotiveWidget>();
         initGUI();
-    }
-
-    @Subscribe
-    public void startImport(final StartImportEvent event) {
-        disableListener = true;
-    }
-
-    @Subscribe
-    public void endImport(final EndImportEvent event) {
-        disableListener = false;
     }
 
     private void initGUI() {
@@ -78,12 +59,6 @@ public class LocomotiveControlPanel extends JPanel implements
         add(locomotivesFrame, BorderLayout.NORTH);
 
         ctx.getMainApp().registerSpaceKey(new LocomotiveStopAction());
-        // getActionMap().put("LocomotiveStop", new LocomotiveStopAction());
-        // Preferences
-        // .getInstance()
-        // .getKeyBoardLayout()
-        // .assignKeys(getInputMap(WHEN_IN_FOCUSED_WINDOW),
-        // "LocomotiveStop");
         update();
     }
 
@@ -131,51 +106,9 @@ public class LocomotiveControlPanel extends JPanel implements
                     }
                     locomotiveControl.emergencyStop(myLocomotive);
                 }
-            } catch (final LocomotiveException e3) {
+            } catch (final ControllerException e3) {
                 ctx.getMainApp().handleException(e3);
             }
         }
-    }
-
-    @Override
-    public void locomotiveAdded(final Locomotive locomotive) {
-
-    }
-
-    @Override
-    public void locomotiveUpdated(final Locomotive locomotive) {
-
-    }
-
-    @Override
-    public void locomotiveGroupAdded(final LocomotiveGroup group) {
-
-    }
-
-    @Override
-    public void locomotiveRemoved(final Locomotive locomotive) {
-
-    }
-
-    @Override
-    public void locomotiveGroupRemoved(final LocomotiveGroup group) {
-
-    }
-
-    @Override
-    public void locomotiveGroupUpdated(final LocomotiveGroup group) {
-
-    }
-
-    @Override
-    public void locomotivesUpdated(
-            final SortedSet<LocomotiveGroup> locomotiveGroups) {
-
-    }
-
-    @Override
-    public void failure(
-            final LocomotiveManagerException locomotiveManagerException) {
-
     }
 }

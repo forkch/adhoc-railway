@@ -18,7 +18,7 @@
 
 package ch.fork.AdHocRailway.ui;
 
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
+import ch.fork.AdHocRailway.ui.utils.ImageTools;
 import ch.fork.AdHocRailway.ui.widgets.ErrorPanel;
 import de.dermoba.srcp.common.exception.SRCPException;
 import org.apache.commons.lang3.StringUtils;
@@ -28,9 +28,8 @@ import org.apache.log4j.Logger;
 public class ExceptionProcessor {
     private static final Logger LOGGER = Logger
             .getLogger(ExceptionProcessor.class);
-    private final ErrorPanel errorPanel;
-
     private static ExceptionProcessor instance;
+    private final ErrorPanel errorPanel;
 
     private ExceptionProcessor(final ErrorPanel errorPanel) {
         this.errorPanel = errorPanel;
@@ -68,4 +67,9 @@ public class ExceptionProcessor {
 
     }
 
+    public void displayMessage(String message) {
+
+        errorPanel.setErrorTextIcon(message,
+                ImageTools.createImageIconFromIconSet("dialog-error.png"));
+    }
 }

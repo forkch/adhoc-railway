@@ -1,6 +1,9 @@
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.utils.UIConstants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,16 +12,22 @@ import java.awt.*;
  * Used to renders LocomotiveGroups in JLists and JComboBoxes. If the combo box
  * selection is null, an empty text <code>""</code> is rendered.
  */
-public class LocomotiveGroupListCellRenderer extends DefaultListCellRenderer {
+public class LocomotiveGroupListCellRenderer extends JLabel implements
+        ListCellRenderer<LocomotiveGroup> {
+
+    private final boolean tabletMode;
+
+    public LocomotiveGroupListCellRenderer() {
+        this.tabletMode = Preferences.getInstance().getBooleanValue(PreferencesKeys.TABLET_MODE);
+    }
 
     @Override
-    public Component getListCellRendererComponent(JList<?> list, Object value,
-                                                  int index, boolean isSelected, boolean cellHasFocus) {
-        Component component = super.getListCellRendererComponent(list, value,
-                index, isSelected, cellHasFocus);
-
-        LocomotiveGroup group = (LocomotiveGroup) value;
+    public Component getListCellRendererComponent(JList<? extends LocomotiveGroup> list, LocomotiveGroup group, int index, boolean isSelected, boolean cellHasFocus) {
         setText(group == null ? "" : group.getName());
-        return component;
+        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        if (tabletMode) {
+            setPreferredSize(new Dimension(getWidth(), UIConstants.SIZE_TABLET));
+        }
+        return this;
     }
 }

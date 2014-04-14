@@ -28,9 +28,9 @@ import static ch.fork.AdHocRailway.technical.configuration.PreferencesKeys.*;
 
 public class Preferences {
     private static final Logger LOGGER = Logger.getLogger(Preferences.class);
+    private static Preferences instance = null;
     private Map<String, String> preferences;
     private List<String> hostnames;
-    private static Preferences instance = null;
     private Properties props;
     private File configFile;
     private Map<String, KeyBoardLayout> keyBoardLayouts;
@@ -45,14 +45,23 @@ public class Preferences {
 
     }
 
+    public static Preferences getInstance() {
+        if (instance == null) {
+            instance = new Preferences();
+            return instance;
+        } else {
+            return instance;
+        }
+    }
+
     private void initDefaultValues() {
         setStringValue(SRCP_HOSTNAME, "localhost");
         setIntValue(SRCP_PORT, 4303);
-        setBooleanValue(SRCP_AUTOCONNECT, false);
+        setBooleanValue(AUTOCONNECT_TO_RAILWAY, false);
         setStringValue(ADHOC_SERVER_HOSTNAME, "localhost");
         setIntValue(ADHOC_SERVER_PORT, 3000);
         setIntValue(ACTIVATION_TIME, 50);
-        setIntValue(ROUTING_DELAY, 150);
+        setIntValue(ROUTING_DELAY, 250);
         setIntValue(LOCOMOTIVE_CONTROLES, 4);
         setStringValue(KEYBOARD_LAYOUT, "Swiss German");
         setStringValue(KEYBOARD_LAYOUT + ".de_ch", "Swiss German" // Display
@@ -124,6 +133,7 @@ public class Preferences {
         setBooleanValue(LOGGING, true);
         setBooleanValue(FULLSCREEN, false);
         setBooleanValue(TABBED_TRACK, true);
+        setBooleanValue(TABLET_MODE, false);
         setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES, false);
         setBooleanValue(OPEN_LAST_FILE, false);
         setIntValue(DEFAULT_TURNOUT_BUS, 1);
@@ -169,15 +179,6 @@ public class Preferences {
             layout.addEntry(keyStroke, pair[1].trim());
         }
         return layout;
-    }
-
-    public static Preferences getInstance() {
-        if (instance == null) {
-            instance = new Preferences();
-            return instance;
-        } else {
-            return instance;
-        }
     }
 
     public void save() throws FileNotFoundException, IOException {
@@ -328,7 +329,7 @@ public class Preferences {
 
     public void loadPreferences(boolean cleanConfig) {
 
-            final boolean found = findConfigFile();
+        final boolean found = findConfigFile();
 
         if (!cleanConfig) {
             if (!found) {

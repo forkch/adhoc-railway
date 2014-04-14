@@ -1,8 +1,6 @@
 package ch.fork.AdHocRailway.ui.locomotives;
 
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveHelper;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,9 +18,10 @@ public class LocomotiveComboBoxRenderer extends JPanel implements
         textLabel = new JLabel();
         iconLabel = new JLabel();
         iconLabel.setHorizontalAlignment(JLabel.CENTER);
+        iconLabel.setVerticalAlignment(JLabel.CENTER);
 
         add(textLabel, BorderLayout.NORTH);
-        add(iconLabel, BorderLayout.SOUTH);
+        add(iconLabel, BorderLayout.CENTER);
 
     }
 
@@ -48,7 +47,7 @@ public class LocomotiveComboBoxRenderer extends JPanel implements
 
         // Set the icon and text. If icon was null, say so.
         textLabel.setText(locomotive.getName());
-        iconLabel.setIcon(ImageTools.getLocomotiveIcon(locomotive, 120));
+        iconLabel.setIcon(LocomotiveImageHelper.getLocomotiveIcon(locomotive, 120));
 
         return this;
 

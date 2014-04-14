@@ -19,10 +19,8 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import com.google.gson.annotations.Expose;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -30,6 +28,7 @@ import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.FORWARD;
 import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.REVERSE;
@@ -37,36 +36,6 @@ import static ch.fork.AdHocRailway.domain.locomotives.LocomotiveDirection.REVERS
 public class Locomotive extends AbstractItem implements Serializable,
         Comparable<Locomotive> {
 
-    @XStreamAsAttribute
-    private int id = -1;
-
-    @XStreamAsAttribute
-    private String name;
-
-    @XStreamAsAttribute
-    private String desc;
-
-    @XStreamAsAttribute
-    private String image;
-
-    private String imageBase64;
-
-    @XStreamAsAttribute
-    private LocomotiveType type;
-
-    @XStreamAsAttribute
-    private int bus;
-
-    @XStreamAsAttribute
-    private int address1;
-
-    @XStreamAsAttribute
-    private int address2;
-
-    private SortedSet<LocomotiveFunction> functions = new TreeSet<LocomotiveFunction>();
-
-    @XStreamOmitField
-    private LocomotiveGroup group;
     public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_NAME = "name";
     public static final String PROPERTYNAME_DESCRIPTION = "desc";
@@ -75,9 +44,41 @@ public class Locomotive extends AbstractItem implements Serializable,
     public static final String PROPERTYNAME_ADDRESS1 = "address1";
     public static final String PROPERTYNAME_ADDRESS2 = "address2";
     public static final String PROPERTYNAME_BUS = "bus";
-
     public static final String PROPERTYNAME_FUNCTIONS = "functions";
     public static final String PROPERTYNAME_LOCOMOTIVE_GROUP = "group";
+    @XStreamAsAttribute
+    @Expose
+    private String id = UUID.randomUUID().toString();
+    @XStreamAsAttribute
+    @Expose
+    private String name;
+    @XStreamAsAttribute
+    @Expose
+    private String groupId;
+    @XStreamAsAttribute
+    @Expose
+    private String desc;
+    @XStreamAsAttribute
+    @Expose
+    private String image;
+    @Expose
+    private String imageBase64;
+    @XStreamAsAttribute
+    @Expose
+    private LocomotiveType type;
+    @XStreamAsAttribute
+    @Expose
+    private int bus;
+    @XStreamAsAttribute
+    @Expose
+    private int address1;
+    @XStreamAsAttribute
+    @Expose
+    private int address2;
+    @Expose
+    private SortedSet<LocomotiveFunction> functions = new TreeSet<LocomotiveFunction>();
+
+    private transient LocomotiveGroup group;
 
     private transient int currentSpeed = 0;
 
@@ -96,12 +97,12 @@ public class Locomotive extends AbstractItem implements Serializable,
         currentFunctions = new boolean[functions.size()];
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(final int id) {
-        final int old = this.id;
+    public void setId(final String id) {
+        final String old = this.id;
         this.id = id;
         changeSupport.firePropertyChange(PROPERTYNAME_ID, old, this.id);
     }
@@ -186,7 +187,7 @@ public class Locomotive extends AbstractItem implements Serializable,
         final SortedSet<LocomotiveFunction> old = this.functions;
         this.functions = functions;
         changeSupport
-                .firePropertyChange(PROPERTYNAME_NAME, old, this.functions);
+                .firePropertyChange(PROPERTYNAME_FUNCTIONS, old, this.functions);
     }
 
     public void addLocomotiveFunction(final LocomotiveFunction function) {
@@ -220,60 +221,9 @@ public class Locomotive extends AbstractItem implements Serializable,
     public void setGroup(final LocomotiveGroup locomotiveGroup) {
         final LocomotiveGroup old = this.group;
         this.group = locomotiveGroup;
+        setGroupId(locomotiveGroup.getId());
         changeSupport.firePropertyChange(PROPERTYNAME_LOCOMOTIVE_GROUP, old,
                 this.group);
-    }
-
-    @Override
-    public int compareTo(final Locomotive o) {
-        if (this == o) {
-            return 0;
-        }
-        if (o == null) {
-            return -1;
-        }
-        if (name == null) {
-            if (id > o.getId()) {
-                return 1;
-            } else if (id == o.getId()) {
-                return 0;
-            } else {
-                return -1;
-            }
-        } else {
-            return name.compareTo(o.getName());
-        }
-
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        final EqualsBuilder equalsBuilder = new EqualsBuilder();
-        final Locomotive other = (Locomotive) obj;
-        if (other == null) {
-            return false;
-        }
-        equalsBuilder.append(this.getBus(), other.getBus())
-                .append(this.getAddress1(), other.getAddress1())
-                .append(this.getAddress2(), other.getAddress2())
-                .append(this.getType(), other.getType())
-                .append(this.getFunctions(), other.getFunctions());
-
-        return equalsBuilder.build();
-    }
-
-    @Override
-    public int hashCode() {
-        final HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        return hashCodeBuilder.append(bus).append(address1).append(address2)
-                .append(type).append(functions).build();
-
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this,
-                ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
     public void addPropertyChangeListener(final PropertyChangeListener x) {
@@ -293,6 +243,10 @@ public class Locomotive extends AbstractItem implements Serializable,
     }
 
     public LocomotiveDirection getCurrentDirection() {
+
+        if (currentDirection == null) {
+            currentDirection = LocomotiveDirection.FORWARD;
+        }
         return currentDirection;
     }
 
@@ -302,6 +256,9 @@ public class Locomotive extends AbstractItem implements Serializable,
     }
 
     public boolean[] getCurrentFunctions() {
+        if (currentFunctions == null) {
+            currentFunctions = new boolean[functions.size()];
+        }
         return currentFunctions;
     }
 
@@ -323,5 +280,40 @@ public class Locomotive extends AbstractItem implements Serializable,
 
     public void setImageBase64(String imageBase64) {
         this.imageBase64 = imageBase64;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    @Override
+    public int compareTo(final Locomotive o) {
+        if (o == null) {
+            return 1;
+        }
+        return name.compareTo(o.getName());
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof Locomotive)) {
+            return false;
+        }
+        return id.equals(((Locomotive) obj).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+                ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

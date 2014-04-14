@@ -1,0 +1,17 @@
+{
+    "name": "AdHoc-Railway-Server",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "restify": "",
+        "socket.io": "",
+        "mongoose": "",
+        "colorize": "",
+        "ain2": "",
+        "mdns": "",
+        "bunyan ": ""
+    }
+}

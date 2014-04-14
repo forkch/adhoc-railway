@@ -1,9 +1,9 @@
 package ch.fork.AdHocRailway.controllers.impl.srcp;
 
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
-import ch.fork.AdHocRailway.manager.turnouts.RouteException;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.routes.*;
@@ -35,39 +35,39 @@ public class SRCPRouteControlAdapter extends RouteController implements
     }
 
     @Override
-    public void enableRoute(final Route route) throws RouteException {
+    public void enableRoute(final Route route) {
         final SRCPRoute sRoute = getOrCreateSRCPRoute(route);
         try {
             route.setRouting(true);
             routeControl.enableRoute(sRoute);
         } catch (final SRCPModelException e) {
-            throw new RouteException("Route Error", e);
+            throw new ControllerException("Route Error", e);
         }
     }
 
     @Override
-    public void disableRoute(final Route route) throws RouteException {
+    public void disableRoute(final Route route) {
         final SRCPRoute sRoute = getOrCreateSRCPRoute(route);
         try {
             route.setRouting(true);
             routeControl.disableRoute(sRoute);
         } catch (final SRCPModelException e) {
-            throw new RouteException("Route Error", e);
+            throw new ControllerException("Route Error", e);
         }
     }
 
     @Override
-    public void toggle(final Route route) throws RouteException {
+    public void toggle(final Route route) {
         final SRCPRoute sRoute = getOrCreateSRCPRoute(route);
         try {
             routeControl.toggle(sRoute);
         } catch (final SRCPModelException e) {
-            throw new RouteException("Route Error", e);
+            throw new ControllerException("Route Error", e);
         }
     }
 
     @Override
-    public void toggleTest(final Route route) throws RouteException {
+    public void toggleTest(final Route route) {
         routesSRCPRoutesMap.remove(route);
         SRCPRoutesRoutesMap.remove(sRouteTemp);
         if (routeTemp == null || !routeTemp.equals(route)) {
@@ -82,20 +82,20 @@ public class SRCPRouteControlAdapter extends RouteController implements
         try {
             routeControl.toggle(sRouteTemp);
         } catch (final SRCPModelException e) {
-            throw new RouteException("Route Error", e);
+            throw new ControllerException("Route Error", e);
         }
     }
 
     private SRCPRoute createSRCPRoute(
             final SRCPTurnoutControlAdapter turnoutControl, final Route route) {
         final SRCPRoute sRoute = new SRCPRoute();
-        for (final RouteItem routeItem : route.getRouteItems()) {
+        for (final RouteItem routeItem : route.getRoutedTurnouts()) {
 
             final SRCPRouteItem sRouteItem = new SRCPRouteItem();
             final SRCPTurnout sTurnout = turnoutControl
                     .getOrCreateSRCPTurnout(routeItem.getTurnout());
             sRouteItem.setTurnout(sTurnout);
-            switch (routeItem.getRoutedState()) {
+            switch (routeItem.getState()) {
                 case LEFT:
                     sRouteItem.setRoutedState(SRCPTurnoutState.LEFT);
                     break;
@@ -152,13 +152,13 @@ public class SRCPRouteControlAdapter extends RouteController implements
 
     private void applyNewSettings(final Route route) {
         sRouteTemp.getRouteItems().clear();
-        for (final RouteItem routeItem : route.getRouteItems()) {
+        for (final RouteItem routeItem : route.getRoutedTurnouts()) {
 
             final SRCPRouteItem sRouteItem = new SRCPRouteItem();
             final SRCPTurnout sTurnout = turnoutControl
                     .getOrCreateSRCPTurnout(routeItem.getTurnout());
             sRouteItem.setTurnout(sTurnout);
-            switch (routeItem.getRoutedState()) {
+            switch (routeItem.getState()) {
                 case LEFT:
                     sRouteItem.setRoutedState(SRCPTurnoutState.LEFT);
                     break;

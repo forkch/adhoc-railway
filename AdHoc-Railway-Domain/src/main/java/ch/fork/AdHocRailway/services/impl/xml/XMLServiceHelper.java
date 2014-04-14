@@ -1,12 +1,14 @@
 package ch.fork.AdHocRailway.services.impl.xml;
 
+import ch.fork.AdHocRailway.AdHocRailwayException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.turnouts.*;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.manager.LocomotiveManager;
+import ch.fork.AdHocRailway.manager.RouteManager;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.utils.DataImporter;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -16,19 +18,18 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.SortedSet;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 public class XMLServiceHelper {
 
     private static final Logger LOGGER = Logger
             .getLogger(XMLServiceHelper.class);
-    private static final AtomicInteger counter = new AtomicInteger();
-
-    public static int nextValue() {
-        return counter.getAndIncrement();
-    }
 
     public XMLServiceHelper() {
+    }
+
+    public static String nextValue() {
+        return UUID.randomUUID().toString();
     }
 
     public void loadFile(final XMLLocomotiveService locomotiveService,
@@ -52,8 +53,7 @@ public class XMLServiceHelper {
             LOGGER.info("finished loading locomotives, turnout and routes  from file: "
                     + xmlFile);
         } catch (final FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new AdHocRailwayException("could not find file " + xmlFile);
         }
 
     }
@@ -83,7 +83,6 @@ public class XMLServiceHelper {
 
         LOGGER.info("finished saving locomotives, turnout and routes  to file: "
                 + xmlFile);
-
     }
 
     public void exportLocomotivesToFile(final File fileToExport,
@@ -110,13 +109,12 @@ public class XMLServiceHelper {
                     fileToImport));
 
             addFunctionsIfNeccesaray(data);
-            new LocomotiveImporter().importLocomotives(locomotivePersistence,
+            new DataImporter().importLocomotives(locomotivePersistence,
                     data.getLocomotiveGroups());
             LOGGER.info("finished importing locomotives from file: "
                     + fileToImport);
         } catch (final FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new AdHocRailwayException("could not find file " + fileToImport);
         }
     }
 
@@ -172,7 +170,7 @@ public class XMLServiceHelper {
         xstream.addImplicitCollection(LocomotiveGroup.class, "locomotives");
         xstream.addImplicitCollection(TurnoutGroup.class, "turnouts");
         xstream.addImplicitCollection(RouteGroup.class, "routes");
-        xstream.addImplicitCollection(Route.class, "routeItems");
+        xstream.addImplicitCollection(Route.class, "routedTurnouts");
 
         xstream.registerConverter(new LocomotiveTypeConverter());
         xstream.autodetectAnnotations(true);
@@ -192,15 +190,15 @@ public class XMLServiceHelper {
                     fileToImport));
 
             addFunctionsIfNeccesaray(data);
-            new LocomotiveImporter().importLocomotives(locomotivePersistence,
+            new DataImporter().importLocomotives(locomotivePersistence,
                     data.getLocomotiveGroups());
             LOGGER.info("finished importing locomotives from file: " + fileToImport);
 
-            new LocomotiveImporter().importTurnouts(turnoutManager,
+            new DataImporter().importTurnouts(turnoutManager,
                     data.getTurnoutGroups());
             LOGGER.info("finished importing locomotives from file: " + fileToImport);
 
-            new LocomotiveImporter().importRoutes(routeManager,
+            new DataImporter().importRoutes(routeManager,
                     data.getRouteGroups());
             LOGGER.info("finished importing locomotives from file: "
                     + fileToImport);

@@ -2051,7 +2051,7 @@
                 <id>-1513361729</id>
                 <number>64</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2066,7 +2066,7 @@
                 <id>1653011190</id>
                 <number>65</number>
                 <description></description>
-                <turnoutType>DOUBLECROSS</turnoutType>
+                <type>DOUBLECROSS</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2081,7 +2081,7 @@
                 <id>776778019</id>
                 <number>66</number>
                 <description></description>
-                <turnoutType>DOUBLECROSS</turnoutType>
+                <type>DOUBLECROSS</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2096,7 +2096,7 @@
                 <id>-1066476381</id>
                 <number>67</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2111,7 +2111,7 @@
                 <id>-1667435227</id>
                 <number>68</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2126,7 +2126,7 @@
                 <id>-2110968166</id>
                 <number>69</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2141,7 +2141,7 @@
                 <id>-1420849881</id>
                 <number>70</number>
                 <description></description>
-                <turnoutType>THREEWAY</turnoutType>
+                <type>THREEWAY</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2156,7 +2156,7 @@
                 <id>-1048755025</id>
                 <number>71</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2171,7 +2171,7 @@
                 <id>1112475122</id>
                 <number>72</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2186,7 +2186,7 @@
                 <id>876456379</id>
                 <number>73</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2201,7 +2201,7 @@
                 <id>655343669</id>
                 <number>74</number>
                 <description></description>
-                <turnoutType>DOUBLECROSS</turnoutType>
+                <type>DOUBLECROSS</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2216,7 +2216,7 @@
                 <id>1664409972</id>
                 <number>75</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2231,7 +2231,7 @@
                 <id>818993288</id>
                 <number>76</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2246,7 +2246,7 @@
                 <id>172119059</id>
                 <number>77</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2261,7 +2261,7 @@
                 <id>1017757442</id>
                 <number>78</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2276,7 +2276,7 @@
                 <id>862489334</id>
                 <number>79</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2291,7 +2291,7 @@
                 <id>-1985903149</id>
                 <number>80</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2306,7 +2306,7 @@
                 <id>1015083802</id>
                 <number>81</number>
                 <description></description>
-                <turnoutType>THREEWAY</turnoutType>
+                <type>THREEWAY</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2321,7 +2321,7 @@
                 <id>1557044616</id>
                 <number>82</number>
                 <description></description>
-                <turnoutType>DOUBLECROSS</turnoutType>
+                <type>DOUBLECROSS</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2336,7 +2336,7 @@
                 <id>630667790</id>
                 <number>83</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2351,7 +2351,7 @@
                 <id>-803942011</id>
                 <number>84</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2366,7 +2366,7 @@
                 <id>-398745067</id>
                 <number>85</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2381,7 +2381,7 @@
                 <id>182702023</id>
                 <number>86</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2396,7 +2396,7 @@
                 <id>-1295324987</id>
                 <number>87</number>
                 <description></description>
-                <turnoutType>DOUBLECROSS</turnoutType>
+                <type>DOUBLECROSS</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2411,7 +2411,7 @@
                 <id>-2143657415</id>
                 <number>88</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>EAST</orientation>
                 <bus1>1</bus1>
@@ -2426,7 +2426,7 @@
                 <id>99950415</id>
                 <number>89</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>EAST</orientation>
                 <bus1>1</bus1>
@@ -2441,7 +2441,7 @@
                 <id>-1380354176</id>
                 <number>90</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2456,7 +2456,7 @@
                 <id>1999800963</id>
                 <number>91</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2471,7 +2471,7 @@
                 <id>812543150</id>
                 <number>92</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>WEST</orientation>
                 <bus1>1</bus1>
@@ -2486,7 +2486,7 @@
                 <id>915409863</id>
                 <number>93</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2501,7 +2501,7 @@
                 <id>1953355215</id>
                 <number>94</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2516,7 +2516,7 @@
                 <id>1006546555</id>
                 <number>95</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2531,7 +2531,7 @@
                 <id>-662868691</id>
                 <number>96</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>EAST</orientation>
                 <bus1>1</bus1>
@@ -2546,7 +2546,7 @@
                 <id>2035591261</id>
                 <number>97</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>EAST</orientation>
                 <bus1>1</bus1>
@@ -2565,7 +2565,7 @@
                 <id>-1011834073</id>
                 <number>38</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>WEST</orientation>
                 <bus1>1</bus1>
@@ -2580,7 +2580,7 @@
                 <id>-2086934100</id>
                 <number>39</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2595,7 +2595,7 @@
                 <id>-761888488</id>
                 <number>40</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>LEFT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2610,7 +2610,7 @@
                 <id>1194766371</id>
                 <number>41</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2625,7 +2625,7 @@
                 <id>-297386693</id>
                 <number>42</number>
                 <description></description>
-                <turnoutType>DOUBLECROSS</turnoutType>
+                <type>DOUBLECROSS</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2640,7 +2640,7 @@
                 <id>-92208100</id>
                 <number>43</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2655,7 +2655,7 @@
                 <id>1950925553</id>
                 <number>44</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2670,7 +2670,7 @@
                 <id>1438943211</id>
                 <number>45</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2685,7 +2685,7 @@
                 <id>1133283128</id>
                 <number>46</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2700,7 +2700,7 @@
                 <id>1364528428</id>
                 <number>47</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2715,7 +2715,7 @@
                 <id>137121678</id>
                 <number>48</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2730,7 +2730,7 @@
                 <id>2118212859</id>
                 <number>49</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2745,7 +2745,7 @@
                 <id>-586230738</id>
                 <number>50</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2760,7 +2760,7 @@
                 <id>-547082615</id>
                 <number>51</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2775,7 +2775,7 @@
                 <id>694203896</id>
                 <number>52</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2790,7 +2790,7 @@
                 <id>-216899943</id>
                 <number>53</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2805,7 +2805,7 @@
                 <id>-504607411</id>
                 <number>54</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2820,7 +2820,7 @@
                 <id>1400008462</id>
                 <number>55</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2835,7 +2835,7 @@
                 <id>739383082</id>
                 <number>56</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2850,7 +2850,7 @@
                 <id>-1875330171</id>
                 <number>57</number>
                 <description></description>
-                <turnoutType>DOUBLECROSS</turnoutType>
+                <type>DOUBLECROSS</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2865,7 +2865,7 @@
                 <id>1775616210</id>
                 <number>58</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>LEFT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2880,7 +2880,7 @@
                 <id>480039823</id>
                 <number>59</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2895,7 +2895,7 @@
                 <id>-1535003062</id>
                 <number>60</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2910,7 +2910,7 @@
                 <id>2141762069</id>
                 <number>61</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>LEFT</defaultState>
                 <orientation>EAST</orientation>
                 <bus1>1</bus1>
@@ -2925,7 +2925,7 @@
                 <id>1345269770</id>
                 <number>62</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2940,7 +2940,7 @@
                 <id>756288139</id>
                 <number>63</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>EAST</orientation>
                 <bus1>1</bus1>
@@ -2959,7 +2959,7 @@
                 <id>-195523370</id>
                 <number>1</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -2974,7 +2974,7 @@
                 <id>-1089278662</id>
                 <number>2</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -2989,7 +2989,7 @@
                 <id>-828366217</id>
                 <number>3</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3004,7 +3004,7 @@
                 <id>66268545</id>
                 <number>4</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>LEFT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3019,7 +3019,7 @@
                 <id>-1512714129</id>
                 <number>5</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>EAST</orientation>
                 <bus1>1</bus1>
@@ -3034,7 +3034,7 @@
                 <id>-1031547462</id>
                 <number>6</number>
                 <description></description>
-                <turnoutType>DOUBLECROSS</turnoutType>
+                <type>DOUBLECROSS</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3049,7 +3049,7 @@
                 <id>2105305151</id>
                 <number>7</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3064,7 +3064,7 @@
                 <id>-1826791611</id>
                 <number>8</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3079,7 +3079,7 @@
                 <id>2147454132</id>
                 <number>9</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3094,7 +3094,7 @@
                 <id>2005048481</id>
                 <number>10</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3109,7 +3109,7 @@
                 <id>-2102365735</id>
                 <number>11</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3124,7 +3124,7 @@
                 <id>-1336682466</id>
                 <number>12</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3139,7 +3139,7 @@
                 <id>1216318795</id>
                 <number>13</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3154,7 +3154,7 @@
                 <id>-777521158</id>
                 <number>14</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3169,7 +3169,7 @@
                 <id>-1023358039</id>
                 <number>15</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3184,7 +3184,7 @@
                 <id>951391007</id>
                 <number>16</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3199,7 +3199,7 @@
                 <id>-756874551</id>
                 <number>17</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3214,7 +3214,7 @@
                 <id>-1590374635</id>
                 <number>18</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3229,7 +3229,7 @@
                 <id>-1943965792</id>
                 <number>19</number>
                 <description></description>
-                <turnoutType>DOUBLECROSS</turnoutType>
+                <type>DOUBLECROSS</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3244,7 +3244,7 @@
                 <id>-509854053</id>
                 <number>20</number>
                 <description></description>
-                <turnoutType>DOUBLECROSS</turnoutType>
+                <type>DOUBLECROSS</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3259,7 +3259,7 @@
                 <id>1928142870</id>
                 <number>21</number>
                 <description></description>
-                <turnoutType>DOUBLECROSS</turnoutType>
+                <type>DOUBLECROSS</type>
                 <defaultState>LEFT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3274,7 +3274,7 @@
                 <id>-395520266</id>
                 <number>22</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3289,7 +3289,7 @@
                 <id>547529397</id>
                 <number>23</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3304,7 +3304,7 @@
                 <id>-89879878</id>
                 <number>24</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3319,7 +3319,7 @@
                 <id>-2061325784</id>
                 <number>25</number>
                 <description></description>
-                <turnoutType>THREEWAY</turnoutType>
+                <type>THREEWAY</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3334,7 +3334,7 @@
                 <id>1388703038</id>
                 <number>26</number>
                 <description></description>
-                <turnoutType>THREEWAY</turnoutType>
+                <type>THREEWAY</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3349,7 +3349,7 @@
                 <id>-507911263</id>
                 <number>27</number>
                 <description></description>
-                <turnoutType>THREEWAY</turnoutType>
+                <type>THREEWAY</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3364,7 +3364,7 @@
                 <id>-1591380540</id>
                 <number>28</number>
                 <description></description>
-                <turnoutType>THREEWAY</turnoutType>
+                <type>THREEWAY</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3379,7 +3379,7 @@
                 <id>1762642464</id>
                 <number>29</number>
                 <description></description>
-                <turnoutType>DOUBLECROSS</turnoutType>
+                <type>DOUBLECROSS</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3394,7 +3394,7 @@
                 <id>-240433051</id>
                 <number>30</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3409,7 +3409,7 @@
                 <id>-1205988675</id>
                 <number>31</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>NORTH</orientation>
                 <bus1>1</bus1>
@@ -3424,7 +3424,7 @@
                 <id>-1164970646</id>
                 <number>32</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3439,7 +3439,7 @@
                 <id>-231684297</id>
                 <number>33</number>
                 <description></description>
-                <turnoutType>THREEWAY</turnoutType>
+                <type>THREEWAY</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3454,7 +3454,7 @@
                 <id>583658085</id>
                 <number>34</number>
                 <description></description>
-                <turnoutType>THREEWAY</turnoutType>
+                <type>THREEWAY</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3469,7 +3469,7 @@
                 <id>344933843</id>
                 <number>35</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>
@@ -3484,7 +3484,7 @@
                 <id>1980305393</id>
                 <number>36</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>EAST</orientation>
                 <bus1>1</bus1>
@@ -3499,7 +3499,7 @@
                 <id>1147352893</id>
                 <number>37</number>
                 <description></description>
-                <turnoutType>DEFAULT_LEFT</turnoutType>
+                <type>DEFAULT_LEFT</type>
                 <defaultState>STRAIGHT</defaultState>
                 <orientation>SOUTH</orientation>
                 <bus1>1</bus1>

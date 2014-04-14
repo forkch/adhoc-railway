@@ -18,17 +18,17 @@
 
 package ch.fork.AdHocRailway.ui.routes;
 
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.RouteChangeListener;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
-import ch.fork.AdHocRailway.manager.turnouts.RouteException;
-import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteConfig;
 import ch.fork.AdHocRailway.ui.routes.configuration.RouteHelper;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
+import ch.fork.AdHocRailway.ui.utils.ImageTools;
+import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 
@@ -39,6 +39,8 @@ import java.awt.event.MouseEvent;
 
 public class RouteWidget extends JPanel implements RouteChangeListener {
 
+    private final boolean testMode;
+    private final RouteContext ctx;
     private boolean connectedToRailway;
     private Route route;
     private JLabel nameLabel;
@@ -48,8 +50,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
     private JProgressBar routingProgress;
     private JLabel numberLabel;
     private JLabel orientationLabel;
-    private final boolean testMode;
-    private final RouteContext ctx;
 
     public RouteWidget(final RouteContext ctx, final Route route,
                        final boolean testMode) {
@@ -118,7 +118,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
     private int getRouteItemCount() {
         int count = 0;
-        for (final RouteItem routeItem : route.getRouteItems()) {
+        for (final RouteItem routeItem : route.getRoutedTurnouts()) {
             if (routeItem.getTurnout().isThreeWay()) {
                 count += 2;
             } else {
@@ -126,47 +126,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
             }
         }
         return count;
-    }
-
-    private class MouseAction extends MouseAdapter {
-
-        @Override
-        public void mouseClicked(final MouseEvent e) {
-            if(!connectedToRailway)
-                return;
-            try {
-                if (e.getClickCount() == 1
-                        && e.getButton() == MouseEvent.BUTTON1) {
-                    if (route.isRouting()) {
-                        return;
-                    }
-                    final RouteController routeControl = ctx.getRouteControl();
-                    if (!testMode) {
-                        routeControl.toggle(route);
-                    } else {
-                        routeControl.toggleTest(route);
-                    }
-                } else if (e.getClickCount() == 1
-                        && e.getButton() == MouseEvent.BUTTON3) {
-
-                    if (ctx.isEditingMode()) {
-                        displayRouteConfig();
-                    }
-                }
-            } catch (final RouteException e1) {
-                ctx.getMainApp().handleException(e1);
-            }
-        }
-
-        private void displayRouteConfig() {
-            final RouteController routeControl = ctx.getRouteControl();
-            routeControl.removeRouteChangeListener(route, RouteWidget.this);
-            new RouteConfig(ctx.getMainFrame(), ctx, route,
-                    route.getRouteGroup());
-            routeControl.addRouteChangeListener(route, RouteWidget.this);
-
-            routeChanged(route);
-        }
     }
 
     @Override
@@ -221,5 +180,56 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
     public void setRoute(final Route route) {
         this.route = route;
         updateRoute();
+    }
+
+    private class MouseAction extends MouseAdapter {
+
+        @Override
+        public void mouseClicked(final MouseEvent e) {
+
+            try {
+                if (e.getClickCount() == 1
+                        && e.getButton() == MouseEvent.BUTTON1) {
+                    handleLeftClick();
+                } else if (e.getClickCount() == 1
+                        && e.getButton() == MouseEvent.BUTTON3) {
+
+                    handleRightClick();
+                }
+            } catch (final ControllerException e1) {
+                ctx.getMainApp().handleException(e1);
+            }
+        }
+
+        private void handleRightClick() {
+            if (ctx.isEditingMode()) {
+                displayRouteConfig();
+            }
+        }
+
+        private void handleLeftClick() {
+            if (!connectedToRailway) {
+                return;
+            }
+            if (route.isRouting()) {
+                return;
+            }
+            final RouteController routeControl = ctx.getRouteControl();
+            if (!testMode) {
+                routeControl.toggle(route);
+            } else {
+                routeControl.toggleTest(route);
+            }
+        }
+
+        private void displayRouteConfig() {
+            final RouteController routeControl = ctx.getRouteControl();
+            routeControl.removeRouteChangeListener(route, RouteWidget.this);
+            new RouteConfig(ctx.getMainFrame(), ctx, route,
+                    route.getRouteGroup(), false);
+            routeControl.addRouteChangeListener(route, RouteWidget.this);
+
+            routeChanged(route);
+        }
     }
 }

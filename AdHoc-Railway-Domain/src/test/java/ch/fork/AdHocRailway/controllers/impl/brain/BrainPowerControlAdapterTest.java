@@ -1,7 +1,7 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.PowerChangeListener;
-import ch.fork.AdHocRailway.controllers.PowerException;
 import ch.fork.AdHocRailway.domain.power.Booster;
 import ch.fork.AdHocRailway.domain.power.BoosterState;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
@@ -93,7 +93,7 @@ public class BrainPowerControlAdapterTest {
         assertListenerInformed(powerSupply);
     }
 
-    @Test(expected = PowerException.class)
+    @Test(expected = ControllerException.class)
     public void turn_booster_0_on_exception() throws IOException {
         final PowerSupply powerSupply = new PowerSupply(1);
         givenTestee(powerSupply);
@@ -120,7 +120,7 @@ public class BrainPowerControlAdapterTest {
         assertListenerInformed(powerSupply);
     }
 
-    @Test(expected = PowerException.class)
+    @Test(expected = ControllerException.class)
     public void turn_booster_0_off_exception() {
         final PowerSupply powerSupply = new PowerSupply(1);
         givenTestee(powerSupply);
@@ -168,7 +168,7 @@ public class BrainPowerControlAdapterTest {
 
     }
 
-    @Test(expected = PowerException.class)
+    @Test(expected = ControllerException.class)
     public void turn_all_boosters_on_exception() throws IOException {
         final PowerSupply powerSupply = new PowerSupply(1);
         givenTestee(powerSupply);
@@ -196,7 +196,7 @@ public class BrainPowerControlAdapterTest {
 
     }
 
-    @Test(expected = PowerException.class)
+    @Test(expected = ControllerException.class)
     public void turn_all_boosters_off_exception() throws IOException {
         final PowerSupply powerSupply = new PowerSupply(1);
         givenTestee(powerSupply);
@@ -213,13 +213,13 @@ public class BrainPowerControlAdapterTest {
     }
 
     private void whenBoosterPowerThrowsException(final Booster booster,
-                                                 final String onOff) throws PowerException {
-        Mockito.doThrow(new PowerException()).when(brainController)
+                                                 final String onOff) {
+        Mockito.doThrow(new ControllerException()).when(brainController)
                 .write(onOff + " " + booster.getBoosterNumber());
     }
 
     private void whenAllBoosterPowerThrowsException(final String onOff) {
-        Mockito.doThrow(new PowerException()).when(brainController)
+        Mockito.doThrow(new ControllerException()).when(brainController)
                 .write(onOff);
     }
 

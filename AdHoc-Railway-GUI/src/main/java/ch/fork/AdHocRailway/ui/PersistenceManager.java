@@ -2,13 +2,12 @@ package ch.fork.AdHocRailway.ui;
 
 import ch.fork.AdHocRailway.AdHocRailwayException;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.manager.ServiceFactory;
-import ch.fork.AdHocRailway.manager.impl.locomotives.LocomotiveManagerImpl;
-import ch.fork.AdHocRailway.manager.impl.turnouts.RouteManagerImpl;
-import ch.fork.AdHocRailway.manager.impl.turnouts.TurnoutManagerImpl;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.manager.LocomotiveManager;
+import ch.fork.AdHocRailway.manager.RouteManager;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.manager.impl.LocomotiveManagerImpl;
+import ch.fork.AdHocRailway.manager.impl.RouteManagerImpl;
+import ch.fork.AdHocRailway.manager.impl.TurnoutManagerImpl;
 import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.services.impl.socketio.ServiceListener;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
@@ -21,18 +20,16 @@ import ch.fork.AdHocRailway.ui.bus.events.CommandLogEvent;
 import ch.fork.AdHocRailway.ui.bus.events.InitProceededEvent;
 import ch.fork.AdHocRailway.ui.bus.events.UpdateMainTitleEvent;
 import ch.fork.AdHocRailway.ui.context.PersistenceManagerContext;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
+import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
-import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.SortedSet;
 
 public class PersistenceManager {
 
@@ -42,9 +39,9 @@ public class PersistenceManager {
 
     private final PersistenceManagerContext appContext;
 
+
     public PersistenceManager(final PersistenceManagerContext ctx) {
         this.appContext = ctx;
-
     }
 
     public void loadPersistenceLayer() {
@@ -70,7 +67,7 @@ public class PersistenceManager {
         }
         appContext.setRouteManager(routeManager);
         routeManager.setRouteService(ServiceFactory
-                .createRouteService(useAdHocServer));
+                .createRouteService(useAdHocServer, appContext));
         routeManager.initialize(appContext.getMainBus());
     }
 
@@ -84,7 +81,7 @@ public class PersistenceManager {
         }
         appContext.setTurnoutManager(turnoutManager);
         turnoutManager.setTurnoutService(ServiceFactory
-                .createTurnoutService(useAdHocServer));
+                .createTurnoutService(useAdHocServer, appContext));
         turnoutManager.initialize(appContext.getMainBus());
         return turnoutManager;
     }
@@ -92,7 +89,8 @@ public class PersistenceManager {
     private void createLocomotiveManagerOnContext(final boolean useAdHocServer) {
         appContext.getMainBus().post(
                 new InitProceededEvent(
-                        "Loading Persistence Layer (Locomotives)"));
+                        "Loading Persistence Layer (Locomotives)")
+        );
         LocomotiveManager locomotiveManager = appContext.getLocomotiveManager();
 
         if (locomotiveManager == null) {
@@ -101,7 +99,7 @@ public class PersistenceManager {
         }
 
         locomotiveManager.setLocomotiveService(ServiceFactory
-                .createLocomotiveService(useAdHocServer));
+                .createLocomotiveService(useAdHocServer, appContext));
         locomotiveManager.initialize(appContext.getMainBus());
     }
 
@@ -118,11 +116,12 @@ public class PersistenceManager {
             if (StringUtils.isNotBlank(lastFile)) {
                 openFile(new File(
                         preferences
-                                .getStringValue(PreferencesKeys.LAST_OPENED_FILE)));
+                                .getStringValue(PreferencesKeys.LAST_OPENED_FILE)
+                ));
             }
         } else if (useAdHocServer
                 && !appContext.getPreferences().getBooleanValue(
-                PreferencesKeys.AUTO_DISCOVER_AND_CONNECT_SERVERS)) {
+                PreferencesKeys.AUTO_DISCOVER)) {
 
             final String url = getAdHocServerURL();
             connectToAdHocServer(url);
@@ -142,10 +141,11 @@ public class PersistenceManager {
 
         new XMLServiceHelper()
                 .loadFile((XMLLocomotiveService) appContext
-                        .getLocomotiveManager().getService(),
+                                .getLocomotiveManager().getService(),
                         (XMLTurnoutService) appContext.getTurnoutManager()
                                 .getService(), (XMLRouteService) appContext
-                        .getRouteManager().getService(), file);
+                                .getRouteManager().getService(), file
+                );
 
 
         appContext.setActualFile(file);
@@ -155,18 +155,21 @@ public class PersistenceManager {
 
         appContext.getMainBus().post(
                 new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
-                        + file.getAbsolutePath() + "]"));
+                        + file.getAbsolutePath() + "]")
+        );
 
         appContext.getMainBus().post(
                 new CommandLogEvent(
                         "AdHoc-Railway Configuration loaded ("
-                                + file + ")"));
+                                + file + ")"
+                )
+        );
     }
 
     private void loadAndFillImageBase64() {
         for (Locomotive locomotive : appContext.getLocomotiveManager().getAllLocomotives()) {
             if (StringUtils.isBlank(locomotive.getImageBase64())) {
-                locomotive.setImageBase64(ImageTools.getImageBase64(locomotive));
+                locomotive.setImageBase64(LocomotiveImageHelper.getImageBase64(locomotive));
             }
         }
     }
@@ -193,20 +196,23 @@ public class PersistenceManager {
     }
 
     public void connectToAdHocServer(final String url) {
+        SIOService.setUUID(appContext.getAppUUID());
         SIOService.getInstance().connect(url, new ServiceListener() {
 
             @Override
             public void disconnected() {
                 appContext.getMainBus().post(
                         new CommandLogEvent(
-                                "Successfully connected to AdHoc-Server"));
+                                "Successfully connected to AdHoc-Server")
+                );
             }
 
             @Override
             public void connectionError(final AdHocRailwayException ex) {
                 appContext.getMainBus().post(
                         new CommandLogEvent("Connection error: "
-                                + ex.getMessage()));
+                                + ex.getMessage())
+                );
                 appContext.getPreferences().setBooleanValue(
                         PreferencesKeys.USE_ADHOC_SERVER, false);
                 try {
@@ -223,12 +229,15 @@ public class PersistenceManager {
 
                 appContext.getMainBus().post(
                         new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
-                                + url + "]"));
+                                + url + "]")
+                );
 
                 appContext.getMainBus().post(
                         new CommandLogEvent(
                                 "Successfully connected to AdHoc-Server: "
-                                        + url));
+                                        + url
+                        )
+                );
 
             }
         });
@@ -271,7 +280,8 @@ public class PersistenceManager {
 
                             connectToAdHocServer(url);
                         }
-                    });
+                    }
+            );
         } catch (final IOException e) {
             throw new AdHocRailwayException(
                     "failure during autodiscovery/autoconnect to AdHoc-Server",

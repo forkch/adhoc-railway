@@ -19,34 +19,35 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import com.google.gson.annotations.Expose;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 
 public class RouteGroup extends AbstractItem implements java.io.Serializable,
         Comparable<RouteGroup> {
 
-    private int id;
-
-    private String name;
-
-    private SortedSet<Route> routes = new TreeSet<Route>();
-
-    public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_NAME = "name";
-    public static final String PROPERTYNAME_ROUTE_NUMBER_OFFSET = "routeNumberOffset";
-    public static final String PROPERTYNAME_ROUTE_NUMBER_AMOUNT = "routeNumberAmount";
-    public static final String PROPERTYNAME_ROUTES = "routes";
+    @Expose
+    private String id = UUID.randomUUID().toString();
+    ;
+    @Expose
+    private String name;
+    @Expose
+    private SortedSet<Route> routes = new TreeSet<Route>();
 
     public RouteGroup() {
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(final int id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -78,42 +79,35 @@ public class RouteGroup extends AbstractItem implements java.io.Serializable,
 
     }
 
-    @Override
-    public int compareTo(final RouteGroup o) {
-        return name.compareTo(o.getName());
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        final RouteGroup l = (RouteGroup) o;
-        if (id != l.getId()) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return Integer.valueOf(id).hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
     public void addPropertyChangeListener(final PropertyChangeListener x) {
         changeSupport.addPropertyChangeListener(x);
     }
 
     public void removePropertyChangeListener(final PropertyChangeListener x) {
         changeSupport.removePropertyChangeListener(x);
+    }
+
+    @Override
+    public int compareTo(final RouteGroup o) {
+        return name.compareTo(o.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof RouteGroup)) {
+            return false;
+        }
+        return id.equals(((RouteGroup) obj).getId());
+
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

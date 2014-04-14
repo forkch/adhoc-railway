@@ -19,91 +19,48 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import com.google.gson.annotations.Expose;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.UUID;
 
 public class RouteItem extends AbstractItem implements java.io.Serializable,
         Comparable<RouteItem> {
 
-    private int id;
-
-    private Turnout turnout;
-
-    @XStreamOmitField
-    private Route route;
-
-    private TurnoutState routedState;
-
     public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_TURNOUT = "turnout";
     public static final String PROPERTYNAME_ROUTE = "route";
-    public static final String PROPERTYNAME_ROUTED_STATE = "routedState";
+    public static final String PROPERTYNAME_ROUTED_STATE = "state";
+    @Expose
+    private String id = UUID.randomUUID().toString();
+    ;
+    @Expose
+    private String turnoutId;
+    @Expose
+    private TurnoutState state;
 
-    @Override
-    public int compareTo(final RouteItem o) {
-        if (this == o) {
-            return 0;
-        }
-        if (o == null) {
-            return -1;
-        }
-        if (turnout == null) {
-            return -1;
-        }
-        if (o.getTurnout() == null) {
-            return 1;
-        }
-        return turnout.compareTo(o.getTurnout());
-    }
+    private transient Turnout turnout;
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+    private transient Route route;
 
-        final RouteItem l = (RouteItem) o;
-        if (id != l.getId()) {
-            return false;
-        }
-        if (!turnout.equals(l.getTurnout())) {
-            return false;
-        }
-        if (!routedState.equals(l.getRoutedState())) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return turnout.hashCode() + routedState.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
 
     public RouteItem() {
     }
 
-    public RouteItem(final int id, final Turnout turnout, final Route route,
+    public RouteItem(final String id, final Turnout turnout, final Route route,
                      final TurnoutState routedState) {
         this.id = id;
         this.turnout = turnout;
         this.route = route;
-        this.routedState = routedState;
+        this.state = routedState;
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(final int id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -114,6 +71,7 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     public void setTurnout(final Turnout turnout) {
         final Turnout old = this.turnout;
         this.turnout = turnout;
+        setTurnoutId(turnout.getId());
         changeSupport.firePropertyChange(PROPERTYNAME_TURNOUT, old,
                 this.turnout);
     }
@@ -128,15 +86,46 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTE, old, this.route);
     }
 
-    public TurnoutState getRoutedState() {
-        return this.routedState;
+    public TurnoutState getState() {
+        return this.state;
     }
 
-    public void setRoutedState(final TurnoutState routedState) {
-        final TurnoutState old = this.routedState;
-        this.routedState = routedState;
+    public void setState(final TurnoutState state) {
+        final TurnoutState old = this.state;
+        this.state = state;
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTED_STATE, old,
-                this.routedState);
+                this.state);
     }
 
+    @Override
+    public int compareTo(final RouteItem o) {
+        return id.compareTo(o.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof RouteItem)) {
+            return false;
+        }
+        return id.equals(((RouteItem) obj).getId());
+
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public String getTurnoutId() {
+        return turnoutId;
+    }
+
+    public void setTurnoutId(String turnoutId) {
+        this.turnoutId = turnoutId;
+    }
 }

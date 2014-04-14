@@ -10,16 +10,19 @@ subprojects {
     configurations {
         compileOnly
     }
-    
+
     dependencies {
         testCompile 'junit:junit:4.+'
-	    testCompile 'org.mockito:mockito-all:1.9.5'
+        testCompile 'org.mockito:mockito-all:1.9.5'
     }
 
     repositories {
+        maven {
+            url '/home/fork/Code/forkch-mvn-repo'
+        }
         mavenCentral()
         maven {
-         	url "https://raw.github.com/forkch/forkch-mvn-repo/master"
+            url "https://raw.github.com/forkch/forkch-mvn-repo/master"
         }
     }
 

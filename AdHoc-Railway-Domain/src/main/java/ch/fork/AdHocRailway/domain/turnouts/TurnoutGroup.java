@@ -19,31 +19,35 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
 import ch.fork.AdHocRailway.domain.AbstractItem;
+import com.google.gson.annotations.Expose;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 
 public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
         Comparable<TurnoutGroup> {
 
-    private int id;
-
-    private String name;
-
-    private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
-
-    public static final String PROPERTYNAME_ID = "id";
     public static final String PROPERTYNAME_NAME = "name";
+    @Expose
+    private String id = UUID.randomUUID().toString();
+    ;
+    @Expose
+    private String name;
+    @Expose
+    private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
 
     public TurnoutGroup() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(final int id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -88,29 +92,19 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int hashCode() {
-        return Integer.valueOf(id).hashCode();
+        return id.hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+        if (!(obj instanceof TurnoutGroup)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final TurnoutGroup other = (TurnoutGroup) obj;
-        if (id != other.id) {
-            return false;
-        }
-        return true;
+        return id.equals(((TurnoutGroup) obj).getId());
     }
 
     @Override
     public String toString() {
-        return name;
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

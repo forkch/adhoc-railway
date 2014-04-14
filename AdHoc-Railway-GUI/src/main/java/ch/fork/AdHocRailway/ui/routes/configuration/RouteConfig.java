@@ -19,17 +19,15 @@
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import ch.fork.AdHocRailway.domain.turnouts.*;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.manager.RouteManager;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
-import ch.fork.AdHocRailway.ui.ThreeDigitDisplay;
-import ch.fork.AdHocRailway.ui.UIConstants;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
-import ch.fork.AdHocRailway.ui.tools.SwingUtils;
+import ch.fork.AdHocRailway.ui.utils.*;
 import ch.fork.AdHocRailway.ui.widgets.ErrorPanel;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -45,64 +43,64 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
 import java.util.List;
 
 public class RouteConfig extends JDialog {
+    private final Trigger trigger = new Trigger();
+    public StringBuffer enteredNumberKeys;
+    public ThreeDigitDisplay digitDisplay;
+    private PresentationModel<Route> presentationModel;
+    private RouteGroup selectedRouteGroup;
+    private Route testRoute;
+    private RouteContext routeContext;
+    private boolean createRoute;
+    private RouteManager routeManager;
+    private TurnoutManager turnoutManager;
     private boolean okPressed;
     private boolean cancelPressed;
-
-    private final PresentationModel<Route> presentationModel;
     private JButton okButton;
     private JButton cancelButton;
     private JSpinner routeNumberSpinner;
     private JTextField routeNameField;
     private SelectionInList<RouteItem> routeItemModel;
     private JTable routeItemTable;
-    private JButton recordRouteButton;
-    public StringBuffer enteredNumberKeys;
+    private JToggleButton recordRouteButton;
     private JButton removeRouteItemButton;
-    public ThreeDigitDisplay digitDisplay;
     private JTextField routeOrientationField;
     private JPanel mainPanel;
-    private final Trigger trigger = new Trigger();
-    private final RouteGroup selectedRouteGroup;
     private ErrorPanel errorPanel;
     private RouteWidget testRouteWidget;
-    private final Route testRoute;
     private BufferedValueModel routeNumberModel;
     private BufferedValueModel routeNameModel;
     private BufferedValueModel routeOrientationModel;
-    private final RouteContext routeContext;
-    private final RouteManager routeManager;
-    private final TurnoutManager turnoutManager;
 
     public RouteConfig(final JDialog owner, final RouteContext ctx,
-                       final Route myRoute, final RouteGroup selectedRouteGroup) {
+                       final Route myRoute, final RouteGroup selectedRouteGroup, boolean createRoute) {
         super(owner, "Route Config", true);
-        this.routeContext = ctx;
-        routeManager = ctx.getRouteManager();
-        turnoutManager = ctx.getTurnoutManager();
+        init(ctx, myRoute, selectedRouteGroup, createRoute);
 
-        testRoute = RouteHelper.copyRoute(myRoute);
-        this.selectedRouteGroup = selectedRouteGroup;
-        this.presentationModel = new PresentationModel<Route>(myRoute, trigger);
-        initGUI();
     }
 
     public RouteConfig(final Frame owner, final RouteContext ctx,
-                       final Route myRoute, final RouteGroup selectedRouteGroup) {
+                       final Route myRoute, final RouteGroup selectedRouteGroup, boolean createRoute) {
         super(owner, "Route Config", true);
+        init(ctx, myRoute, selectedRouteGroup, createRoute);
+    }
+
+    private void init(final RouteContext ctx,
+                      final Route myRoute, final RouteGroup selectedRouteGroup, boolean createRoute) {
         this.routeContext = ctx;
+        this.createRoute = createRoute;
         routeManager = ctx.getRouteManager();
         turnoutManager = ctx.getTurnoutManager();
 
         testRoute = RouteHelper.copyRoute(myRoute);
         this.selectedRouteGroup = selectedRouteGroup;
         this.presentationModel = new PresentationModel<Route>(myRoute, trigger);
-
         initGUI();
     }
 
@@ -110,10 +108,13 @@ public class RouteConfig extends JDialog {
         initComponents();
         buildPanel();
         initEventHandling();
+        initShortcuts();
+
 
         pack();
-        setLocationRelativeTo(getParent());
+        routeNameField.requestFocus();
         SwingUtils.addEscapeListener(this);
+        setLocationRelativeTo(getParent());
         setVisible(true);
     }
 
@@ -143,14 +144,14 @@ public class RouteConfig extends JDialog {
                 routeItemModel.getSelectionIndexHolder()));
 
         routeItemModel.setList(new ArrayList<RouteItem>(presentationModel
-                .getBean().getRouteItems()));
+                .getBean().getRoutedTurnouts()));
 
         final TableColumn routedStateColumn = routeItemTable.getColumnModel()
                 .getColumn(1);
         routedStateColumn.setCellRenderer(new RoutedTurnoutStateCellRenderer(
                 routeContext.getTurnoutManager()));
 
-        recordRouteButton = new JButton(new RecordRouteAction());
+        recordRouteButton = new JToggleButton(new RecordRouteAction());
         removeRouteItemButton = new JButton(new RemoveRouteItemAction());
 
         digitDisplay = new ThreeDigitDisplay();
@@ -158,6 +159,7 @@ public class RouteConfig extends JDialog {
         errorPanel = new ErrorPanel();
 
         testRouteWidget = new RouteWidget(routeContext, testRoute, true);
+        testRouteWidget.connectedToRailwayDevice(new ConnectedToRailwayEvent(routeContext.getRailwayDeviceManager().isConnected()));
         okButton = new JButton(new ApplyChangesAction());
         cancelButton = new JButton(new CancelAction());
     }
@@ -184,7 +186,12 @@ public class RouteConfig extends JDialog {
 
         mainPanel.add(infoPanel, "gap unrelated");
         mainPanel.add(testRouteWidget, "wrap");
-        mainPanel.add(buildRouteItemButtonBar(), "span 3, align center, wrap");
+
+        JPanel recordRemoveButtons = new JPanel();
+        recordRemoveButtons.add(recordRouteButton);
+        recordRemoveButtons.add(removeRouteItemButton);
+
+        mainPanel.add(recordRemoveButtons, "center, span 3, wrap");
         mainPanel.add(new JScrollPane(routeItemTable), "span 3, grow x, wrap");
 
         mainPanel.add(errorPanel, "span 2");
@@ -205,41 +212,9 @@ public class RouteConfig extends JDialog {
                 Route.PROPERTYNAME_ROUTE_ITEMS));
     }
 
-    class RouteChangeListener implements PropertyChangeListener {
-
-        private final String property;
-
-        public RouteChangeListener(final String property) {
-            this.property = property;
-        }
-
-        @Override
-        public void propertyChange(final PropertyChangeEvent evt) {
-            if (evt.getPropertyName().equalsIgnoreCase("selectionIndex")) {
-                return;
-            }
-            if (evt.getPropertyName().equalsIgnoreCase("selection")) {
-                return;
-            }
-            if (property.equals(Route.PROPERTYNAME_ROUTE_ITEMS)) {
-                // final SortedSet<RouteItem> routeItems = new
-                // TreeSet<RouteItem>(
-                // (ArrayList<RouteItem>) evt.getNewValue());
-                // RouteHelper.update(testRoute, property, routeItems);
-            } else {
-                RouteHelper.update(testRoute, property, evt.getNewValue());
-            }
-            testRouteWidget.setRoute(testRoute);
-
-            if (!validate(testRoute)) {
-                return;
-            }
-        }
-    }
-
-    private Component buildRouteItemButtonBar() {
-        return ButtonBarFactory.buildCenteredBar(recordRouteButton,
-                removeRouteItemButton);
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK, new RecordRouteAction());
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_ENTER, 0, new ApplyChangesAction());
     }
 
     public boolean validate(final Route routeToValidate) {
@@ -268,6 +243,46 @@ public class RouteConfig extends JDialog {
         return ButtonBarFactory.buildRightAlignedBar(okButton, cancelButton);
     }
 
+    public boolean isOkPressed() {
+        return okPressed;
+    }
+
+    public boolean isCancelPressed() {
+        return cancelPressed;
+    }
+
+    class RouteChangeListener implements PropertyChangeListener {
+
+        private final String property;
+
+        public RouteChangeListener(final String property) {
+            this.property = property;
+        }
+
+        @Override
+        public void propertyChange(final PropertyChangeEvent evt) {
+            if (evt.getPropertyName().equalsIgnoreCase("selectionIndex")) {
+                return;
+            }
+            if (evt.getPropertyName().equalsIgnoreCase("selection")) {
+                return;
+            }
+            if (property.equals(Route.PROPERTYNAME_ROUTE_ITEMS)) {
+                final SortedSet<RouteItem> routeItems = new
+                        TreeSet<RouteItem>(
+                        (ArrayList<RouteItem>) evt.getNewValue());
+                RouteHelper.update(testRoute, property, routeItems);
+            } else {
+                RouteHelper.update(testRoute, property, evt.getNewValue());
+            }
+            testRouteWidget.setRoute(testRoute);
+
+            if (!validate(testRoute)) {
+                return;
+            }
+        }
+    }
+
     private class RecordRouteAction extends AbstractAction {
 
         private boolean recording;
@@ -289,18 +304,54 @@ public class RouteConfig extends JDialog {
                                     "Error",
                                     JOptionPane.ERROR_MESSAGE,
                                     ImageTools
-                                            .createImageIconFromIconSet("dialog-error.png"));
+                                            .createImageIconFromIconSet("dialog-error.png")
+                            );
                     return;
                 }
 
+                initKeyboardActions(selectedRoute);
                 recordRouteButton.setIcon(ImageTools
                         .createImageIconFromIconSet("media-record.png"));
-                initKeyboardActions(selectedRoute);
                 recording = true;
             } else {
+                removeKeyboarAtions();
                 recordRouteButton.setIcon(ImageTools
                         .createImageIconFromIconSet("media-playback-stop.png"));
                 recording = false;
+            }
+        }
+
+        private void removeKeyboarAtions() {
+            final Set<JPanel> panels = new HashSet<JPanel>();
+
+            panels.add(digitDisplay);
+            panels.add(mainPanel);
+
+            final KeyBoardLayout kbl = Preferences.getInstance()
+                    .getKeyBoardLayout();
+            for (final JPanel p : panels) {
+                for (int i = 0; i <= 10; i++) {
+                    p.unregisterKeyboardAction(KeyStroke.getKeyStroke(Integer.toString(i)));
+                    p.unregisterKeyboardAction(KeyStroke.getKeyStroke("NUMPAD"
+                                    + Integer.toString(i))
+                    );
+                }
+                for (KeyStroke keyStroke1 : kbl.getKeys("CurvedLeft")) {
+                    p.unregisterKeyboardAction(keyStroke1);
+                }
+                for (KeyStroke keyStroke : kbl.getKeys("CurvedRight")) {
+                    p.unregisterKeyboardAction(keyStroke);
+                }
+                for (KeyStroke keyStroke : kbl.getKeys("Straight")) {
+                    p.unregisterKeyboardAction(keyStroke);
+                }
+                for (KeyStroke keyStroke : kbl.getKeys("EnableRoute")) {
+                    p.unregisterKeyboardAction(keyStroke);
+                }
+                for (KeyStroke keyStroke : kbl.getKeys("DisableRoute")) {
+                    p.unregisterKeyboardAction(keyStroke);
+                }
+
             }
         }
 
@@ -321,12 +372,13 @@ public class RouteConfig extends JDialog {
                             Integer.toString(i),
                             KeyStroke.getKeyStroke("NUMPAD"
                                     + Integer.toString(i)),
-                            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+                            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+                    );
                 }
             }
+            final KeyBoardLayout kbl = Preferences.getInstance()
+                    .getKeyBoardLayout();
             for (final JPanel p : panels) {
-                final KeyBoardLayout kbl = Preferences.getInstance()
-                        .getKeyBoardLayout();
                 final InputMap inputMap = p
                         .getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
                 p.getActionMap().put("CurvedLeft", new CurvedLeftAction(route));
@@ -373,7 +425,8 @@ public class RouteConfig extends JDialog {
                                     "Error",
                                     JOptionPane.ERROR_MESSAGE,
                                     ImageTools
-                                            .createImageIconFromIconSet("dialog-error.png"));
+                                            .createImageIconFromIconSet("dialog-error.png")
+                            );
                 } else {
                     TurnoutState routedState = null;
                     if (this instanceof CurvedLeftAction) {
@@ -405,7 +458,7 @@ public class RouteConfig extends JDialog {
 
                     RouteItem itemToRemove = null;
                     final SortedSet<RouteItem> itemsOfRoute = route
-                            .getRouteItems();
+                            .getRoutedTurnouts();
                     for (final RouteItem item : itemsOfRoute) {
                         if (item.getTurnout().equals(turnout)) {
                             itemToRemove = item;
@@ -417,15 +470,16 @@ public class RouteConfig extends JDialog {
                     }
                     final RouteItem i = new RouteItem();
                     i.setRoute(route);
-                    i.setRoutedState(routedState);
+                    i.setState(routedState);
                     i.setTurnout(turnout);
 
                     try {
-                        routeManager.addRouteItem(i);
+                        i.setId(UUID.randomUUID().toString()); //just a dummy id
+                        routeManager.addRouteItemToGroup(i, route);
                         final List<RouteItem> routeItems = new ArrayList<RouteItem>(
-                                route.getRouteItems());
+                                route.getRoutedTurnouts());
                         routeItemModel.setList(routeItems);
-                    } catch (final RouteManagerException e1) {
+                    } catch (final ManagerException e1) {
                         e1.printStackTrace();
                     }
                 }
@@ -508,13 +562,9 @@ public class RouteConfig extends JDialog {
             }
             routeManager.removeRouteItem(routeItem);
             final List<RouteItem> routeItems = new ArrayList<RouteItem>(
-                    selectedRoute.getRouteItems());
+                    selectedRoute.getRoutedTurnouts());
             routeItemModel.setList(routeItems);
         }
-    }
-
-    public boolean isOkPressed() {
-        return okPressed;
     }
 
     class ApplyChangesAction extends AbstractAction {
@@ -554,13 +604,13 @@ public class RouteConfig extends JDialog {
 
                 @Override
                 public void failure(
-                        final RouteManagerException routeManagerException) {
+                        final ManagerException routeManagerException) {
 
                     errorPanel.setErrorText(routeManagerException.getMessage());
                 }
 
             });
-            if (route.getId() == -1) {
+            if (createRoute) {
                 routeManager.addRouteToGroup(route, selectedRouteGroup);
             } else {
                 routeManager.updateRoute(route);
@@ -583,10 +633,6 @@ public class RouteConfig extends JDialog {
             cancelPressed = true;
             RouteConfig.this.setVisible(false);
         }
-    }
-
-    public boolean isCancelPressed() {
-        return cancelPressed;
     }
 
 }

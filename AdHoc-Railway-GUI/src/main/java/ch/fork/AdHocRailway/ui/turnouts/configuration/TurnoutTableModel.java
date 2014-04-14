@@ -25,7 +25,7 @@ public class TurnoutTableModel extends AbstractTableAdapter<Turnout> {
             case 0:
                 return turnout.getNumber();
             case 1:
-                return turnout.getTurnoutType();
+                return turnout.getType();
             case 2:
                 return turnout.getBus1();
             case 3:

@@ -20,14 +20,14 @@ package ch.fork.AdHocRailway.ui.turnouts;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
+import ch.fork.AdHocRailway.ui.utils.ImageTools;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromCustom;
+import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromCustom;
 
 public class TurnoutCanvas extends JPanel {
     public static final String DEFAULT_SWITCH_RIGHT = "canvas/default_switch_right.png";
@@ -100,7 +100,8 @@ public class TurnoutCanvas extends JPanel {
             case STRAIGHT:
                 g3.drawImage(
                         createImageIconFromCustom(LED_MIDDLE_YELLOW)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 g3.drawImage(createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 28, 0, this);
                 break;
@@ -110,14 +111,16 @@ public class TurnoutCanvas extends JPanel {
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 break;
             case UNDEF:
                 g3.drawImage(createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 break;
         }
         g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
@@ -131,12 +134,14 @@ public class TurnoutCanvas extends JPanel {
         final Graphics2D g3 = img.createGraphics();
         g3.drawImage(
                 createImageIconFromCustom(DEFAULT_SWITCH_RIGHT)
-                        .getImage(), 0, 0, this);
+                        .getImage(), 0, 0, this
+        );
         switch (turnoutState) {
             case STRAIGHT:
                 g3.drawImage(
                         createImageIconFromCustom(LED_MIDDLE_YELLOW)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 g3.drawImage(createImageIconFromCustom(LED_DOWN_WHITE)
                         .getImage(), 28, 0, this);
                 break;
@@ -144,7 +149,8 @@ public class TurnoutCanvas extends JPanel {
             case RIGHT:
                 g3.drawImage(
                         createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 g3.drawImage(createImageIconFromCustom(LED_DOWN_YELLOW)
                         .getImage(), 28, 0, this);
                 break;
@@ -153,7 +159,8 @@ public class TurnoutCanvas extends JPanel {
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 break;
         }
         g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
@@ -187,21 +194,24 @@ public class TurnoutCanvas extends JPanel {
                 g3.drawImage(
                         ImageTools
                                 .createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 0, 0, this);
+                                .getImage(), 0, 0, this
+                );
                 g3.drawImage(ImageTools
                         .createImageIconFromCustom(LED_UP_YELLOW)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools
                                 .createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 break;
             case RIGHT:
             case LEFT:
                 g3.drawImage(
                         ImageTools
                                 .createImageIconFromCustom(LED_MIDDLE_YELLOW)
-                                .getImage(), 0, 0, this);
+                                .getImage(), 0, 0, this
+                );
                 g3.drawImage(ImageTools
                         .createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 0, 17, this);
@@ -211,7 +221,8 @@ public class TurnoutCanvas extends JPanel {
                 g3.drawImage(
                         ImageTools
                                 .createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 break;
             case UNDEF:
                 g3.drawImage(ImageTools
@@ -220,14 +231,16 @@ public class TurnoutCanvas extends JPanel {
                 g3.drawImage(
                         ImageTools
                                 .createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 0, 0, this);
+                                .getImage(), 0, 0, this
+                );
                 g3.drawImage(ImageTools
                         .createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools
                                 .createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 break;
         }
         rotate(g, img);
@@ -245,48 +258,56 @@ public class TurnoutCanvas extends JPanel {
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 g3.drawImage(ImageTools.createImageIconFromCustom(LED_DOWN_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 0, 0, this);
+                                .getImage(), 0, 0, this
+                );
                 break;
             case STRAIGHT:
                 g3.drawImage(ImageTools.createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools.createImageIconFromCustom(LED_MIDDLE_YELLOW)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 g3.drawImage(ImageTools.createImageIconFromCustom(LED_DOWN_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 0, 0, this);
+                                .getImage(), 0, 0, this
+                );
                 break;
             case RIGHT:
                 g3.drawImage(ImageTools.createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 g3.drawImage(ImageTools.createImageIconFromCustom(LED_DOWN_YELLOW)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 0, 0, this);
+                                .getImage(), 0, 0, this
+                );
                 break;
             case UNDEF:
                 g3.drawImage(ImageTools.createImageIconFromCustom(LED_UP_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 28, 0, this);
+                                .getImage(), 28, 0, this
+                );
                 g3.drawImage(ImageTools.createImageIconFromCustom(LED_DOWN_WHITE)
                         .getImage(), 28, 0, this);
                 g3.drawImage(
                         ImageTools.createImageIconFromCustom(LED_MIDDLE_WHITE)
-                                .getImage(), 0, 0, this);
+                                .getImage(), 0, 0, this
+                );
         }
         rotate(g, img);
     }

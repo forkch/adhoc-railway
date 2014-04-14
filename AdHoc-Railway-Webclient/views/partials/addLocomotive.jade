@@ -1,0 +1,34 @@
+div.row
+    div.span10
+        h3 Add Locomotive
+div.row
+    div.span5
+        form(ng-submit='addLocomotive()')
+            fieldset
+                p
+                    input(autofocus='true', type='text', size='4', placeholder='Name', ng-model='locomotive.name')
+                p
+                    select(ng-model='locomotive.type')
+                        option DIGITAL
+                        option MFX
+                        option SIMULATED_MFX
+                        option DELTA
+                p
+                    input(autofocus='true', type='text', size='4', placeholder='Description', ng-model='locomotive.description')
+                p
+                    input(autofocus='true', type='text', size='4', placeholder='Image', ng-model='locomotive.image')
+                p
+                    input(type='number',size='4', placeholder='Bus', ng-model='locomotive.bus')
+                p
+                    input(type='number',size='4', placeholder='Address 1',
+                    ng-model='locomotive.address1')
+                p
+                    input(type='number',size='4', placeholder='Address 2',
+                    ng-model='locomotive.address2')
+                p
+                    button.btn(type='submit') Add
+    div.span5
+        div.alert(ng-show='error')
+            button.close(type='button', data-dismiss='alert')
+            {{error}}
+

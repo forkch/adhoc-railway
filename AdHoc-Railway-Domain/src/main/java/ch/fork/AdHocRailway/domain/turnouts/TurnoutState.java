@@ -1,7 +1,12 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum TurnoutState {
-    STRAIGHT("Straight"), LEFT("Left"), RIGHT("Right"), UNDEF("N/A");
+    STRAIGHT("Straight"),
+    LEFT("Left"),
+    RIGHT("Right"),
+    UNDEF("N/A");
 
     private final String humanName;
 

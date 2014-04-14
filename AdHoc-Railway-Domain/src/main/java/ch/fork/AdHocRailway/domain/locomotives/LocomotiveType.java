@@ -1,11 +1,16 @@
 package ch.fork.AdHocRailway.domain.locomotives;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum LocomotiveType {
 
-    DELTA("delta", "Märklin Delta", 0, 14, 1), DIGITAL("digital",
-            "Märklin Digital", 5, 14, 1), SIMULATED_MFX("simulated-mfx",
-            "Simulated MFX (2x Märklin Digital)", 9, 14, 1), MFX("mfx",
-            "Märklin mfx", 9, 28, 1);
+    DELTA("delta", "Märklin Delta", 0, 14, 1),
+
+    DIGITAL("digital", "Märklin Digital", 5, 14, 1),
+
+    SIMULATED_MFX("simulated-mfx", "Simulated MFX (2x Märklin Digital)", 9, 14, 1),
+
+    MFX("mfx", "Märklin mfx", 9, 28, 1);
 
     private final int functionCount;
     private final int drivingSteps;
@@ -23,6 +28,15 @@ public enum LocomotiveType {
 
     }
 
+    public static LocomotiveType fromString(final String string) {
+        for (final LocomotiveType lt : values()) {
+            if (lt.getId().equalsIgnoreCase(string)) {
+                return lt;
+            }
+        }
+        return null;
+    }
+
     public int getFunctionCount() {
         return functionCount;
     }
@@ -33,15 +47,6 @@ public enum LocomotiveType {
 
     public int getStepping() {
         return stepping;
-    }
-
-    public static LocomotiveType fromString(final String string) {
-        for (final LocomotiveType lt : values()) {
-            if (lt.getId().equalsIgnoreCase(string)) {
-                return lt;
-            }
-        }
-        return null;
     }
 
     public String getId() {

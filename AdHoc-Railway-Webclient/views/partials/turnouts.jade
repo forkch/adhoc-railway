@@ -1,0 +1,42 @@
+div.row
+    div.span12
+        h3 Turnouts
+div.row
+    div.span12
+        a.btn(href='addTurnoutGroup') Add Turnout Group
+            i.icon-plus
+div.row
+    div.span10
+
+div.row(ng-repeat='turnoutGroup in turnoutGroups')
+    div.span12
+        div(style='font-size: 17.5px;line-height:40px;font-weight:bold;') {{turnoutGroup.name}}
+            div.btn-group.turnoutGroup.editRemove
+                a.btn(href='editTurnoutGroup/{{turnoutGroup.id}}')
+                    i.icon-edit
+                button.btn(ng-click='removeTurnoutGroup(turnoutGroup.id)')
+                    i.icon-remove
+
+        div(ng-repeat='turnout in turnoutGroup.turnouts')
+            div.well.turnout
+                div.turnout.number
+                    {{turnout.number}} |
+                    {{turnout.type}}
+                div.turnout.address
+                    {{turnout.bus1}}/{{turnout.address1}} | {{turnout.bus2}}/{{turnout.address2}}
+                div.btn-group.turnout.editRemove
+                    a.btn(ng-href='editTurnout/{{turnout.id}}')
+                        i.icon-edit
+                    button.btn(ng-click='removeTurnout(turnout.id)')
+                        i.icon-remove
+        div
+            a.btn(href='addTurnout/{{turnoutGroup.id}}')
+                i.icon-plus
+
+div.row
+    div.span3
+        button.btn(ng-click='clearTurnouts()', style='margin-top:30px;')
+            i.icon-remove(style='padding-right:10px;')
+            | Remove all Turnouts
+
+

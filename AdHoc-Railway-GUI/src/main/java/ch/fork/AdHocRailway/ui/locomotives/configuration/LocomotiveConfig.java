@@ -22,11 +22,14 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveType;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManagerException;
-import ch.fork.AdHocRailway.ui.UIConstants;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
-import ch.fork.AdHocRailway.ui.tools.SwingUtils;
+import ch.fork.AdHocRailway.manager.LocomotiveManager;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
+import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
+import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
+import ch.fork.AdHocRailway.ui.utils.ImageTools;
+import ch.fork.AdHocRailway.ui.utils.SwingUtils;
+import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import ch.fork.AdHocRailway.ui.widgets.ErrorPanel;
 import ch.fork.AdHocRailway.ui.widgets.ImagePreviewPanel;
 import com.jgoodies.binding.PresentationModel;
@@ -50,6 +53,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -59,65 +63,46 @@ import java.util.List;
 public class LocomotiveConfig extends JDialog implements PropertyChangeListener {
 
 
+    private final Trigger trigger = new Trigger();
+    private LocomotiveContext ctx;
+    private boolean createLocomotive;
+    private PresentationModel<Locomotive> presentationModel;
     private JTextField nameTextField;
-
     private JSpinner busSpinner;
-
     private JSpinner address1Spinner;
-
     private JSpinner address2Spinner;
-
     private JTextField descTextField;
-
     private JTextField imageTextField;
-
     @SuppressWarnings("rawtypes")
-    private JComboBox locomotiveTypeComboBox;
-
-    private final PresentationModel<Locomotive> presentationModel;
-
+    private JComboBox<LocomotiveType> locomotiveTypeComboBox;
     private JButton okButton;
-
     private JButton cancelButton;
-
     private JLabel imageLabel;
-
     private JPanel imageChoserPanel;
-
     private JButton chooseImageButton;
-
     private LocomotiveGroup selectedLocomotiveGroup;
-
     private JTable functionsTable;
-
     private ArrayListModel<LocomotiveFunction> functions;
-
     private ErrorPanel errorPanel;
-
-    private final LocomotiveManager locomotiveManager;
-
     private SelectionInList<LocomotiveFunction> functionsModel;
 
-    private final Trigger trigger = new Trigger();
-
-    public LocomotiveConfig(final Frame owner,
-                            final LocomotiveManager locomotiveManager,
+    public LocomotiveConfig(final LocomotiveContext ctx, final Frame owner,
                             final Locomotive myLocomotive,
-                            final LocomotiveGroup selectedLocomotiveGroup) {
+                            final LocomotiveGroup selectedLocomotiveGroup, boolean createLocomotive) {
         super(owner, "Locomotive Config", true);
-        this.locomotiveManager = locomotiveManager;
-
-        this.presentationModel = new PresentationModel<Locomotive>(
-                myLocomotive, trigger);
-        initGUI();
+        init(ctx, myLocomotive, selectedLocomotiveGroup, createLocomotive);
     }
 
-    public LocomotiveConfig(final JDialog owner,
-                            final LocomotiveManager locomotiveManager,
+    public LocomotiveConfig(final LocomotiveContext ctx, final JDialog owner,
                             final Locomotive myLocomotive,
-                            final LocomotiveGroup selectedLocomotiveGroup) {
+                            final LocomotiveGroup selectedLocomotiveGroup, boolean createLocomotive) {
         super(owner, "Locomotive Config", true);
-        this.locomotiveManager = locomotiveManager;
+        init(ctx, myLocomotive, selectedLocomotiveGroup, createLocomotive);
+    }
+
+    private void init(LocomotiveContext ctx, Locomotive myLocomotive, LocomotiveGroup selectedLocomotiveGroup, boolean createLocomotive) {
+        this.ctx = ctx;
+        this.createLocomotive = createLocomotive;
         this.selectedLocomotiveGroup = selectedLocomotiveGroup;
         this.presentationModel = new PresentationModel<Locomotive>(
                 myLocomotive, trigger);
@@ -126,11 +111,16 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
     private void initGUI() {
         buildPanel();
+        initShortcuts();
+        nameTextField.requestFocus();
         pack();
-        setLocationRelativeTo(getParent());
         SwingUtils.addEscapeListener(this);
-
+        setLocationRelativeTo(getParent());
         setVisible(true);
+    }
+
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_ENTER, 0, new ApplyChangesAction());
     }
 
     private void initComponents() {
@@ -165,7 +155,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
         imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        imageLabel.setIcon(ImageTools.getLocomotiveIcon(presentationModel
+        imageLabel.setIcon(LocomotiveImageHelper.getLocomotiveIcon(presentationModel
                 .getBean()));
 
         busSpinner = new JSpinner();
@@ -176,7 +166,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
                         1, // defaultValue
                         0, // minValue
                         100, // maxValue
-                        1)); // step
+                        1
+                )); // step
 
         address1Spinner = new JSpinner();
         address1Spinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
@@ -184,7 +175,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
                         .getBufferedModel(Locomotive.PROPERTYNAME_ADDRESS1), 1, // defaultValue
                 0, // minValue
                 324, // maxValue
-                1)); // step
+                1
+        )); // step
 
         address2Spinner = new JSpinner();
         address2Spinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
@@ -192,7 +184,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
                         .getBufferedModel(Locomotive.PROPERTYNAME_ADDRESS2), 1, // defaultValue
                 0, // minValue
                 324, // maxValue
-                1)); // step
+                1
+        )); // step
 
         final List<LocomotiveType> locomotiveTypes = Arrays
                 .asList(LocomotiveType.values());
@@ -218,15 +211,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
         validate(presentationModel.getBean(), null);
         presentationModel.getBean().addPropertyChangeListener(this);
-        okButton = new JButton(new ApplyChangesAction(false));
+        okButton = new JButton(new ApplyChangesAction());
         cancelButton = new JButton(new CancelAction());
-    }
-
-    class CenterRenderer extends DefaultTableCellRenderer {
-
-        protected CenterRenderer() {
-            setHorizontalAlignment(JLabel.CENTER);
-        }
     }
 
     private void buildPanel() {
@@ -313,78 +299,6 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
         return ButtonBarFactory.buildRightAlignedBar(okButton, cancelButton);
     }
 
-    class ApplyChangesAction extends AbstractAction {
-
-        private final boolean createNextTurnout;
-
-        public ApplyChangesAction(final boolean createNextTurnout) {
-            super("OK", ImageTools
-                    .createImageIconFromIconSet("dialog-ok-apply.png"));
-            this.createNextTurnout = createNextTurnout;
-        }
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            trigger.triggerCommit();
-            final Locomotive locomotive = presentationModel.getBean();
-            locomotiveManager
-                    .addLocomotiveManagerListener(new LocomotiveAddListener() {
-
-                        @Override
-                        public void locomotiveAdded(final Locomotive locomotive) {
-                            success(locomotiveManager, locomotive);
-                        }
-
-                        @Override
-                        public void locomotiveUpdated(
-                                final Locomotive locomotive) {
-                            success(locomotiveManager, locomotive);
-                        }
-
-                        private void success(
-                                final LocomotiveManager locomotivePersistence,
-                                final Locomotive locomotive) {
-                            locomotivePersistence
-                                    .removeLocomotiveManagerListenerInNextEvent(this);
-
-                            if (createNextTurnout) {
-
-                            } else {
-                                LocomotiveConfig.this.setVisible(false);
-                            }
-                        }
-
-                        @Override
-                        public void failure(
-                                final LocomotiveManagerException arg0) {
-                            errorPanel.setErrorText(arg0.getMessage());
-                        }
-
-                    });
-            if (locomotive.getId() != -1) {
-                locomotiveManager.updateLocomotive(locomotive);
-            } else {
-                locomotiveManager.addLocomotiveToGroup(locomotive,
-                        selectedLocomotiveGroup);
-            }
-
-        }
-    }
-
-    class CancelAction extends AbstractAction {
-
-        public CancelAction() {
-            super("Cancel", ImageTools
-                    .createImageIconFromIconSet("dialog-cancel.png"));
-        }
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            trigger.triggerFlush();
-            LocomotiveConfig.this.setVisible(false);
-        }
-    }
-
     @Override
     public void propertyChange(final PropertyChangeEvent event) {
         final Locomotive locomotive = presentationModel.getBean();
@@ -466,7 +380,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
                 final int address = ((Integer) address1Spinner.getValue())
                         .intValue();
                 boolean unique = true;
-                for (final Locomotive l : locomotiveManager.getAllLocomotives()) {
+                for (final Locomotive l : ctx.getLocomotiveManager().getAllLocomotives()) {
                     if (l.getBus() == bus && l.getAddress1() == address
                             && !l.equals(locomotive)) {
                         unique = false;
@@ -494,7 +408,11 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
     }
 
     public void chooseLocoImage() {
-        final JFileChooser chooser = new JFileChooser("locoimages");
+        File previousLocoDir = ctx.getPreviousLocoDir();
+        if (previousLocoDir == null) {
+            previousLocoDir = new File("locoimages");
+        }
+        final JFileChooser chooser = new JFileChooser(previousLocoDir);
 
         final ImagePreviewPanel preview = new ImagePreviewPanel();
         chooser.setAccessory(preview);
@@ -523,18 +441,91 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
         final int ret = chooser.showOpenDialog(LocomotiveConfig.this);
         if (ret == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = chooser.getSelectedFile();
+            ctx.setPreviousLocoDir(selectedFile.getParentFile());
             presentationModel.getBean().setImage(
-                    chooser.getSelectedFile().getName());
+                    selectedFile.getName());
             final String image = presentationModel.getBean().getImage();
-            presentationModel.getBean().setImageBase64(ImageTools.getImageBase64(presentationModel.getBean()));
+            presentationModel.getBean().setImageBase64(LocomotiveImageHelper.getImageBase64(presentationModel.getBean()));
             if (image != null && !image.isEmpty()) {
-                imageLabel.setIcon(ImageTools
-                        .getLocomotiveIcon(presentationModel.getBean()));
+                imageLabel.setIcon(LocomotiveImageHelper.getLocomotiveIcon(presentationModel.getBean()));
                 pack();
             } else {
                 imageLabel.setIcon(null);
                 pack();
             }
+        }
+    }
+
+    class CenterRenderer extends DefaultTableCellRenderer {
+
+        protected CenterRenderer() {
+            setHorizontalAlignment(JLabel.CENTER);
+        }
+    }
+
+    class ApplyChangesAction extends AbstractAction {
+
+        public ApplyChangesAction() {
+            super("OK", ImageTools
+                    .createImageIconFromIconSet("dialog-ok-apply.png"));
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            trigger.triggerCommit();
+            final Locomotive locomotive = presentationModel.getBean();
+            ctx.getLocomotiveManager()
+                    .addLocomotiveManagerListener(new LocomotiveAddListener() {
+
+                        @Override
+                        public void locomotiveAdded(final Locomotive locomotive) {
+                            success(ctx.getLocomotiveManager(), locomotive);
+                        }
+
+                        @Override
+                        public void locomotiveUpdated(
+                                final Locomotive locomotive) {
+                            success(ctx.getLocomotiveManager(), locomotive);
+                        }
+
+                        private void success(
+                                final LocomotiveManager locomotivePersistence,
+                                final Locomotive locomotive) {
+                            locomotivePersistence
+                                    .removeLocomotiveManagerListenerInNextEvent(this);
+
+                            LocomotiveConfig.this.setVisible(false);
+                        }
+
+                        @Override
+                        public void failure(
+                                final ManagerException arg0) {
+                            errorPanel.setErrorText(arg0.getMessage());
+                        }
+
+                    });
+            if (createLocomotive) {
+                ctx.getLocomotiveManager().addLocomotiveToGroup(locomotive,
+                        selectedLocomotiveGroup);
+            } else {
+                ctx.getLocomotiveManager().updateLocomotive(locomotive);
+            }
+
+        }
+    }
+
+    class CancelAction extends AbstractAction {
+
+        public CancelAction() {
+            super("Cancel", ImageTools
+                    .createImageIconFromIconSet("dialog-cancel.png"));
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            trigger.triggerFlush();
+            LocomotiveConfig.this.setVisible(false);
         }
     }
 }

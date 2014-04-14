@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.ui.turnouts;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 import ch.fork.AdHocRailway.ui.widgets.WidgetTab;
@@ -50,6 +51,7 @@ public class TurnoutGroupTab extends WidgetTab {
     public void addTurnout(final Turnout turnout) {
         final TurnoutWidget turnoutWidget = new TurnoutWidget(ctx, turnout,
                 false);
+        turnoutWidget.connectedToRailwayDevice(new ConnectedToRailwayEvent(ctx.getRailwayDeviceManager().isConnected()));
         addWidget(turnoutWidget);
         turnoutToTurnoutWidget.put(turnout, turnoutWidget);
     }

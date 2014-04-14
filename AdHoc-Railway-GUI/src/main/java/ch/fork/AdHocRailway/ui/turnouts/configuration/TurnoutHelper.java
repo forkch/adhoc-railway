@@ -1,16 +1,15 @@
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import ch.fork.AdHocRailway.domain.turnouts.*;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.UIConstants;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
+import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import de.dermoba.srcp.model.turnouts.MMTurnout;
 import org.apache.commons.beanutils.BeanUtils;
 
 import javax.swing.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class TurnoutHelper {
@@ -25,7 +24,7 @@ public class TurnoutHelper {
                 turnoutManager, nextNumber);
 
         new TurnoutConfig(ctx.getMainFrame(), ctx, newTurnout,
-                selectedTurnoutGroup);
+                selectedTurnoutGroup, true);
     }
 
     public static Turnout createDefaultTurnout(
@@ -42,7 +41,7 @@ public class TurnoutHelper {
                 .setAddress1(turnoutPersistence.getLastProgrammedAddress() + 1);
         newTurnout.setDefaultState(TurnoutState.STRAIGHT);
         newTurnout.setOrientation(TurnoutOrientation.EAST);
-        newTurnout.setTurnoutType(TurnoutType.DEFAULT_LEFT);
+        newTurnout.setType(TurnoutType.DEFAULT_LEFT);
         return newTurnout;
     }
 
@@ -131,12 +130,7 @@ public class TurnoutHelper {
     }
 
     public static Turnout copyTurnout(final Turnout old) {
-        final Turnout t = new Turnout();
-        try {
-            BeanUtils.copyProperties(t, old);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        final Turnout t = new Turnout(old);
         return t;
     }
 
@@ -158,7 +152,7 @@ public class TurnoutHelper {
         description.append("<h1>" + turnout.getNumber() + "</h1>");
         description.append("<table>");
 
-        addTableRow("Type:", turnout.getTurnoutType().toString(), description);
+        addTableRow("Type:", turnout.getType().toString(), description);
         addTableRow("Default-State:", turnout.getDefaultState().toString(),
                 description);
         addTableRow("Orientation:", turnout.getOrientation().toString(),

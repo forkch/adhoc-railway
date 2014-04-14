@@ -4,9 +4,9 @@ import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveManager;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.manager.LocomotiveManager;
+import ch.fork.AdHocRailway.manager.RouteManager;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.RailwayDeviceManager;
 import com.google.common.eventbus.EventBus;
@@ -16,10 +16,13 @@ import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.UUID;
 
 public class ApplicationContext implements TurnoutContext, RouteContext,
         LocomotiveContext, TrackContext, PowerContext,
         PersistenceManagerContext, RailwayDeviceManagerContext {
+
+    public static final String APP_UUID = UUID.randomUUID().toString();
 
     private final EventBus mainBus = new EventBus();
 
@@ -47,6 +50,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
     private boolean isEditingMode;
     private RailwayDeviceManager railwayDeviceManager;
     private File actualFile;
+    private File previousLocodir;
 
     @Override
     public Preferences getPreferences() {
@@ -97,13 +101,13 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
         this.routeManager = routePersistence;
     }
 
+    public File getActualFile() {
+        return actualFile;
+    }
+
     @Override
     public void setActualFile(File file) {
         this.actualFile = file;
-    }
-
-    public File getActualFile() {
-        return actualFile;
     }
 
     @Override
@@ -129,6 +133,17 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
     }
 
     @Override
+    public File getPreviousLocoDir() {
+        return previousLocodir;
+    }
+
+    @Override
+    public void setPreviousLocoDir(File previousLocodir) {
+
+        this.previousLocodir = previousLocodir;
+    }
+
+    @Override
     public PowerController getPowerControl() {
         return powerControl;
     }
@@ -138,13 +153,13 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
         this.powerControl = powerControl;
     }
 
+    public int getActiveBoosterCount() {
+        return this.activeBoosterCount;
+    }
+
     @Override
     public void setActiveBoosterCount(final int activeBoosterCount) {
         this.activeBoosterCount = activeBoosterCount;
-    }
-
-    public int getActiveBoosterCount() {
-        return this.activeBoosterCount;
     }
 
     @Override
@@ -195,18 +210,23 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
         this.mainApp = mainApp;
     }
 
+    @Override
+    public RailwayDeviceManager getRailwayDeviceManager() {
+        return railwayDeviceManager;
+    }
+
     public void setRailwayDeviceManager(
             final RailwayDeviceManager railwayDeviceManager) {
         this.railwayDeviceManager = railwayDeviceManager;
     }
 
     @Override
-    public RailwayDeviceManager getRailwayDeviceManager() {
-        return railwayDeviceManager;
+    public EventBus getMainBus() {
+        return mainBus;
     }
 
     @Override
-    public EventBus getMainBus() {
-        return mainBus;
+    public String getAppUUID() {
+        return APP_UUID;
     }
 }

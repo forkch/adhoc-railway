@@ -3,28 +3,30 @@ package ch.fork.AdHocRailway.ui.turnouts;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerListener;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.manager.TurnoutManagerListener;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.EditingModeEvent;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
+import ch.fork.AdHocRailway.ui.utils.ImageTools;
 import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 import com.google.common.eventbus.Subscribe;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 
-import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromCustom;
-import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
+import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromCustom;
+import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromIconSet;
 
 public class TurnoutGroupsPanel extends JTabbedPane implements
         TurnoutManagerListener {
@@ -34,16 +36,11 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
     private final Map<TurnoutGroup, TurnoutGroupTab> turnoutGroupToTurnoutGroupTab = new HashMap<TurnoutGroup, TurnoutGroupTab>();
 
     private final TurnoutManager turnoutPersistence;
-
-    private JMenuItem addTurnoutsItem;
-
-    private JMenuItem turnoutsProgrammerItem;
-
-    private JButton addTurnoutsButton;
-
-    private JButton turnoutProgrammerButton;
-
     private final TurnoutContext ctx;
+    private JMenuItem addTurnoutsItem;
+    private JMenuItem turnoutsProgrammerItem;
+    private JButton addTurnoutsButton;
+    private JButton turnoutProgrammerButton;
     private boolean disableListener;
 
     public TurnoutGroupsPanel(final TurnoutContext turnoutCtx,
@@ -55,7 +52,8 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
         initToolBar();
         initMenuBar();
-        initActionListeners();
+        initShortcuts();
+
         ctx.getMainBus().register(this);
     }
 
@@ -70,7 +68,9 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
         updateTurnouts(ctx.getTurnoutManager().getAllTurnoutGroups());
     }
 
-    private void initActionListeners() {
+    private void initShortcuts() {
+        ctx.getMainApp().registerKey(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK, new AddTurnoutsAction());
+
     }
 
     private void updateTurnouts(final SortedSet<TurnoutGroup> turnoutGroups) {
@@ -96,93 +96,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
     }
 
-    private class TurnoutsStraightAction extends AbstractAction {
-
-
-        public TurnoutsStraightAction() {
-            super("Set all turnouts straight\u2026",
-                    createImageIconFromCustom("switch.png"));
-        }
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            final TurnoutStraighter s = new TurnoutStraighter();
-            s.start();
-        }
-
-        private class TurnoutStraighter extends Thread {
-
-            @Override
-            public void run() {
-                try {
-                    final TurnoutController turnoutControl = ctx
-                            .getTurnoutControl();
-                    final int delay = Preferences.getInstance().getIntValue(
-                            PreferencesKeys.ROUTING_DELAY);
-                    for (final Turnout t : turnoutPersistence.getAllTurnouts()) {
-                        turnoutControl.setDefaultState(t);
-                        Thread.sleep(delay);
-                    }
-                } catch (final InterruptedException e1) {
-                    ctx.getMainApp().handleException(e1);
-                }
-            }
-        }
-    }
-
-    private class AddTurnoutsAction extends AbstractAction {
-
-        public AddTurnoutsAction() {
-            super("Add Turnouts\u2026",
-                    createImageIconFromIconSet("document-new.png"));
-        }
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            if (indexToTurnoutGroup.isEmpty()) {
-                JOptionPane.showMessageDialog(ctx.getMainFrame(),
-                        "Please configure a group first", "Add Turnouts",
-                        JOptionPane.INFORMATION_MESSAGE,
-                        createImageIconFromIconSet("dialog-information.png"));
-                return;
-            }
-            final int selectedGroupPane = getSelectedIndex();
-
-            final TurnoutGroup selectedTurnoutGroup = indexToTurnoutGroup
-                    .get(selectedGroupPane);
-
-            TurnoutHelper.addNewTurnoutDialog(ctx, selectedTurnoutGroup);
-        }
-    }
-
-    private class TurnoutProgrammerAction extends AbstractAction {
-
-
-        public TurnoutProgrammerAction() {
-            super("Turnout Decoder Programmer\u2026",
-                    ImageTools
-                            .createImageIconFromCustom("switch_programmer.png"));
-        }
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            new TurnoutProgrammer(ctx.getMainFrame(), ctx);
-        }
-    }
-
-    private class TurnoutWarmerAction extends AbstractAction {
-
-
-        public TurnoutWarmerAction() {
-            super("Turnout Warmer\u2026");
-        }
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            new TurnoutWarmer(ctx.getMainFrame(), ctx);
-        }
-    }
-
     private void initToolBar() {
         /* Turnout Tools */
         final JToolBar turnoutToolsToolBar = new JToolBar();
@@ -200,7 +113,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
     }
 
     private void initMenuBar() {
-		/* TOOLS */
+        /* TOOLS */
         final JMenu toolsMenu = new JMenu("Tools");
         addTurnoutsItem = new JMenuItem(new AddTurnoutsAction());
         final JMenuItem turnoutsStraightItem = new JMenuItem(
@@ -309,7 +222,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
             @Override
             public void run() {
-                addTurnoutGroup(-1, group);
+                updateTurnouts(ctx.getTurnoutManager().getAllTurnoutGroups());
 
             }
         });
@@ -324,11 +237,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
             @Override
             public void run() {
-                final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
-                        .get(group);
-                remove(turnoutGroupTab);
-                revalidate();
-                repaint();
+                updateTurnouts(ctx.getTurnoutManager().getAllTurnoutGroups());
             }
         });
 
@@ -353,7 +262,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
     }
 
     @Override
-    public void failure(final TurnoutManagerException arg0) {
+    public void failure(final ManagerException arg0) {
         if (disableListener) {
             return;
         }
@@ -374,4 +283,93 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
             tgt.revalidateTurnouts();
         }
     }
+
+    private class TurnoutsStraightAction extends AbstractAction {
+
+
+        public TurnoutsStraightAction() {
+            super("Set all turnouts straight\u2026",
+                    createImageIconFromCustom("switch.png"));
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            final TurnoutStraighter s = new TurnoutStraighter();
+            s.start();
+        }
+
+        private class TurnoutStraighter extends Thread {
+
+            @Override
+            public void run() {
+                try {
+                    final TurnoutController turnoutControl = ctx
+                            .getTurnoutControl();
+                    final int delay = Preferences.getInstance().getIntValue(
+                            PreferencesKeys.ROUTING_DELAY);
+                    for (final Turnout t : turnoutPersistence.getAllTurnouts()) {
+                        turnoutControl.setDefaultState(t);
+                        Thread.sleep(delay);
+                    }
+                } catch (final InterruptedException e1) {
+                    ctx.getMainApp().handleException(e1);
+                }
+            }
+        }
+    }
+
+    private class AddTurnoutsAction extends AbstractAction {
+
+        public AddTurnoutsAction() {
+            super("Add Turnouts\u2026",
+                    createImageIconFromIconSet("document-new.png"));
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            if (indexToTurnoutGroup.isEmpty()) {
+                JOptionPane.showMessageDialog(ctx.getMainFrame(),
+                        "Please configure a group first", "Add Turnouts",
+                        JOptionPane.INFORMATION_MESSAGE,
+                        createImageIconFromIconSet("dialog-warning.png"));
+                return;
+            }
+            final int selectedGroupPane = getSelectedIndex();
+
+            final TurnoutGroup selectedTurnoutGroup = indexToTurnoutGroup
+                    .get(selectedGroupPane);
+
+            TurnoutHelper.addNewTurnoutDialog(ctx, selectedTurnoutGroup);
+        }
+    }
+
+    private class TurnoutProgrammerAction extends AbstractAction {
+
+
+        public TurnoutProgrammerAction() {
+            super("Turnout Decoder Programmer\u2026",
+                    ImageTools
+                            .createImageIconFromCustom("switch_programmer.png")
+            );
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            new TurnoutProgrammer(ctx.getMainFrame(), ctx);
+        }
+    }
+
+    private class TurnoutWarmerAction extends AbstractAction {
+
+
+        public TurnoutWarmerAction() {
+            super("Turnout Warmer\u2026");
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            new TurnoutWarmer(ctx.getMainFrame(), ctx);
+        }
+    }
+
 }

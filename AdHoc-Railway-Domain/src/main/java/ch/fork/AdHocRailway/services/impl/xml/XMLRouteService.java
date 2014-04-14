@@ -21,9 +21,8 @@ package ch.fork.AdHocRailway.services.impl.xml;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManagerException;
-import ch.fork.AdHocRailway.services.turnouts.RouteService;
-import ch.fork.AdHocRailway.services.turnouts.RouteServiceListener;
+import ch.fork.AdHocRailway.services.RouteService;
+import ch.fork.AdHocRailway.services.RouteServiceListener;
 import org.apache.log4j.Logger;
 
 import java.util.SortedSet;
@@ -42,19 +41,19 @@ public class XMLRouteService implements RouteService {
     }
 
     @Override
-    public void addRoute(final Route route) throws RouteManagerException {
+    public void addRoute(final Route route) {
         routes.add(route);
         listener.routeAdded(route);
     }
 
     @Override
-    public void removeRoute(final Route route) throws RouteManagerException {
+    public void removeRoute(final Route route) {
         routes.remove(route);
         listener.routeRemoved(route);
     }
 
     @Override
-    public void updateRoute(final Route route) throws RouteManagerException {
+    public void updateRoute(final Route route) {
         routes.remove(route);
         routes.add(route);
         listener.routeUpdated(route);
@@ -62,29 +61,25 @@ public class XMLRouteService implements RouteService {
     }
 
     @Override
-    public SortedSet<RouteGroup> getAllRouteGroups()
-            throws RouteManagerException {
+    public SortedSet<RouteGroup> getAllRouteGroups() {
         return routeGroups;
     }
 
     @Override
-    public void addRouteGroup(final RouteGroup routeGroup)
-            throws RouteManagerException {
+    public void addRouteGroup(final RouteGroup routeGroup) {
         routeGroups.add(routeGroup);
         listener.routeGroupAdded(routeGroup);
     }
 
     @Override
-    public void removeRouteGroup(final RouteGroup routeGroup)
-            throws RouteManagerException {
+    public void removeRouteGroup(final RouteGroup routeGroup) {
         routeGroups.remove(routeGroup);
         listener.routeGroupRemoved(routeGroup);
 
     }
 
     @Override
-    public void updateRouteGroup(final RouteGroup routeGroup)
-            throws RouteManagerException {
+    public void updateRouteGroup(final RouteGroup routeGroup) {
         routeGroups.remove(routeGroup);
         routeGroups.add(routeGroup);
         listener.routeGroupUpdated(routeGroup);
@@ -92,24 +87,22 @@ public class XMLRouteService implements RouteService {
     }
 
     @Override
-    public void addRouteItem(final RouteItem item) throws RouteManagerException {
+    public void addRouteItem(final RouteItem item) {
 
     }
 
     @Override
-    public void removeRouteItem(final RouteItem item)
-            throws RouteManagerException {
+    public void removeRouteItem(final RouteItem item) {
 
     }
 
     @Override
-    public void updateRouteItem(final RouteItem item)
-            throws RouteManagerException {
+    public void updateRouteItem(final RouteItem item) {
 
     }
 
     @Override
-    public void clear() throws RouteManagerException {
+    public void clear() {
         routes.clear();
         routeGroups.clear();
     }
@@ -130,7 +123,7 @@ public class XMLRouteService implements RouteService {
         if (groups != null) {
             for (final RouteGroup routeGroup : groups) {
                 routeGroup.init();
-                routeGroup.setId(UUID.randomUUID().hashCode());
+                routeGroup.setId(UUID.randomUUID().toString());
                 routeGroups.add(routeGroup);
                 if (routeGroup.getRoutes() == null
                         || routeGroup.getRoutes().isEmpty()) {
@@ -138,10 +131,10 @@ public class XMLRouteService implements RouteService {
                 }
                 for (final Route route : routeGroup.getRoutes()) {
                     route.init();
-                    route.setId(UUID.randomUUID().hashCode());
+                    route.setId(UUID.randomUUID().toString());
                     routes.add(route);
                     route.setRouteGroup(routeGroup);
-                    for (final RouteItem item : route.getRouteItems()) {
+                    for (final RouteItem item : route.getRoutedTurnouts()) {
                         item.init();
                     }
                 }

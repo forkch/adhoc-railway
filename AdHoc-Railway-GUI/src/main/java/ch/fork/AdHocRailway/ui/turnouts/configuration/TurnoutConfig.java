@@ -20,13 +20,15 @@ package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.turnouts.*;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
-import ch.fork.AdHocRailway.ui.UIConstants;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
-import ch.fork.AdHocRailway.ui.tools.SwingUtils;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
+import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
+import ch.fork.AdHocRailway.ui.utils.ImageTools;
+import ch.fork.AdHocRailway.ui.utils.SwingUtils;
+import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import ch.fork.AdHocRailway.ui.widgets.ErrorPanel;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -43,12 +45,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.List;
 
 public class TurnoutConfig extends JDialog {
+    private final Trigger trigger = new Trigger();
+    private TurnoutGroup selectedTurnoutGroup;
+    private PresentationModel<Turnout> presentationModel;
+    private Turnout testTurnout;
+    private TurnoutManager turnoutManager;
+    private TurnoutContext ctx;
+    private boolean createTurnout;
     private JSpinner numberTextField;
     private JTextField descTextField;
     private JSpinner bus1TextField;
@@ -60,17 +70,12 @@ public class TurnoutConfig extends JDialog {
     private JComboBox<?> turnoutTypeComboBox;
     private JComboBox<?> turnoutDefaultStateComboBox;
     private JComboBox<?> turnoutOrientationComboBox;
-
-    private final TurnoutGroup selectedTurnoutGroup;
-    private final PresentationModel<Turnout> presentationModel;
     private JButton okButton;
     private JButton cancelButton;
     private TurnoutWidget testTurnoutWidget;
     private PanelBuilder builder;
     private List<Turnout> allTurnouts;
     private ErrorPanel errorPanel;
-    private final Trigger trigger = new Trigger();
-    private final Turnout testTurnout;
     private BufferedValueModel numberModel;
     private BufferedValueModel descriptionModel;
     private BufferedValueModel bus1Model;
@@ -82,26 +87,24 @@ public class TurnoutConfig extends JDialog {
     private BufferedValueModel turnoutTypeModel;
     private BufferedValueModel defaultStateModel;
     private BufferedValueModel orientationModel;
-    private final TurnoutManager turnoutManager;
-    private final TurnoutContext ctx;
 
     public TurnoutConfig(final JDialog owner, final TurnoutContext ctx,
-                         final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup) {
+                         final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup, boolean createTurnout) {
         super(owner, "Turnout Config", true);
-        this.ctx = ctx;
-
-        turnoutManager = ctx.getTurnoutManager();
-        testTurnout = TurnoutHelper.copyTurnout(myTurnout);
-        this.presentationModel = new PresentationModel<Turnout>(myTurnout,
-                trigger);
-        this.selectedTurnoutGroup = selectedTurnoutGroup;
-        initGUI();
+        init(ctx, myTurnout, selectedTurnoutGroup, createTurnout);
     }
 
     public TurnoutConfig(final Frame owner, final TurnoutContext ctx,
-                         final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup) {
+                         final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup, boolean createTurnout) {
         super(owner, "Turnout Config", true);
+
+        init(ctx, myTurnout, selectedTurnoutGroup, createTurnout);
+    }
+
+    private void init(final TurnoutContext ctx, final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup, boolean createTurnout) {
         this.ctx = ctx;
+        this.createTurnout = createTurnout;
+
         turnoutManager = ctx.getTurnoutManager();
         testTurnout = TurnoutHelper.copyTurnout(myTurnout);
         this.presentationModel = new PresentationModel<Turnout>(myTurnout,
@@ -116,10 +119,11 @@ public class TurnoutConfig extends JDialog {
         initComponents();
         buildPanel();
         initEventHandling();
+        initShortcuts();
         address1TextField.requestFocusInWindow();
         pack();
-        setLocationRelativeTo(getParent());
         SwingUtils.addEscapeListener(this);
+        setLocationRelativeTo(getParent());
         setVisible(true);
     }
 
@@ -191,7 +195,7 @@ public class TurnoutConfig extends JDialog {
         turnoutTypeComboBox
                 .addActionListener(new TurnoutTypeSelectionListener());
 
-        switch (presentationModel.getBean().getTurnoutType()) {
+        switch (presentationModel.getBean().getType()) {
             case DEFAULT_LEFT:
             case DOUBLECROSS:
             case CUTTER:
@@ -211,7 +215,8 @@ public class TurnoutConfig extends JDialog {
         turnoutDefaultStateComboBox = BasicComponentFactory
                 .createComboBox(new SelectionInList<TurnoutState>(
                         new TurnoutState[]{TurnoutState.STRAIGHT,
-                                TurnoutState.LEFT}, defaultStateModel));
+                                TurnoutState.LEFT}, defaultStateModel
+                ));
         turnoutDefaultStateComboBox
                 .setRenderer(new TurnoutDefaultStateComboBoxCellRenderer());
 
@@ -223,6 +228,9 @@ public class TurnoutConfig extends JDialog {
         if (!TurnoutHelper.isTurnoutReadyToTest(presentationModel.getBean())) {
             testTurnoutWidget.setEnabled(false);
         }
+
+        testTurnoutWidget.connectedToRailwayDevice(new ConnectedToRailwayEvent(ctx
+                .getRailwayDeviceManager().isConnected()));
 
         errorPanel = new ErrorPanel();
 
@@ -310,7 +318,10 @@ public class TurnoutConfig extends JDialog {
                 Turnout.PROPERTYNAME_DEFAULT_STATE));
         orientationModel.addValueChangeListener(new TurnoutChangeListener(
                 Turnout.PROPERTYNAME_ORIENTATION));
+    }
 
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_ENTER, 0, new ApplyChangesAction());
     }
 
     private BufferedValueModel getBufferedModel(
@@ -493,16 +504,16 @@ public class TurnoutConfig extends JDialog {
                 }
 
                 @Override
-                public void failure(final TurnoutManagerException arg0) {
+                public void failure(final ManagerException arg0) {
                     errorPanel.setErrorText(arg0.getMessage());
                 }
 
             });
 
-            if (turnout.getId() != -1) {
-                turnoutManager.updateTurnout(turnout);
-            } else {
+            if (createTurnout) {
                 turnoutManager.addTurnoutToGroup(turnout, selectedTurnoutGroup);
+            } else {
+                turnoutManager.updateTurnout(turnout);
             }
 
         }

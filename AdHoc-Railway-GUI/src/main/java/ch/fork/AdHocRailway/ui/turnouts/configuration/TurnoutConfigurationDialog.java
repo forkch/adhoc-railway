@@ -20,13 +20,14 @@ package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerListener;
-import ch.fork.AdHocRailway.ui.TableColumnAdjuster;
+import ch.fork.AdHocRailway.manager.ManagerException;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.manager.TurnoutManagerListener;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
-import ch.fork.AdHocRailway.ui.tools.SwingUtils;
+import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
+import ch.fork.AdHocRailway.ui.utils.ImageTools;
+import ch.fork.AdHocRailway.ui.utils.SwingUtils;
+import ch.fork.AdHocRailway.ui.utils.TableColumnAdjuster;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.common.collect.ArrayListModel;
@@ -47,41 +48,25 @@ public class TurnoutConfigurationDialog extends JDialog implements
         TurnoutManagerListener {
 
 
+    private final TurnoutManager turnoutManager;
+    private final TurnoutContext ctx;
     private boolean okPressed;
-
     private JList<?> turnoutGroupList;
-
     private JTable turnoutsTable;
-
     private JButton addGroupButton;
-
     private JButton removeGroupButton;
     private JButton editGroupButton;
-
     private SelectionInList<TurnoutGroup> turnoutGroupModel;
-
     private JButton addTurnoutButton;
-
     private JButton removeTurnoutButton;
-
     private JButton okButton;
-
     private TurnoutGroupConfigPanel turnoutGroupConfig;
-
     private com.jgoodies.common.collect.ArrayListModel<TurnoutGroup> turnoutGroups;
-
     private com.jgoodies.common.collect.ArrayListModel<Turnout> turnouts;
-
     private SelectionInList<Turnout> turnoutModel;
-
     private JScrollPane groupScrollPane;
-
     private JScrollPane turnoutTableScrollPane;
-
     private TableColumnAdjuster tca;
-    private final TurnoutManager turnoutManager;
-
-    private final TurnoutContext ctx;
 
     public TurnoutConfigurationDialog(final JFrame owner,
                                       final TurnoutContext ctx) {
@@ -95,9 +80,17 @@ public class TurnoutConfigurationDialog extends JDialog implements
         initComponents();
         buildPanel();
         initEventHandling();
+        initShortcuts();
         turnoutManager.addTurnoutManagerListener(this);
         pack();
+        SwingUtils.addEscapeListener(this);
+        setLocationRelativeTo(getParent());
         setVisible(true);
+    }
+
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, new AddTurnoutGroupAction());
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, new AddTurnoutAction());
     }
 
     private void initComponents() {
@@ -240,6 +233,69 @@ public class TurnoutConfigurationDialog extends JDialog implements
         return ButtonBarFactory.buildRightAlignedBar(okButton);
     }
 
+    public boolean isOkPressed() {
+        return okPressed;
+    }
+
+    @Override
+    public void turnoutsUpdated(
+            final SortedSet<TurnoutGroup> updatedTurnoutGroups) {
+        this.turnoutGroups.addAll(updatedTurnoutGroups);
+    }
+
+    @Override
+    public void turnoutUpdated(final Turnout turnout) {
+        if (turnout.getTurnoutGroup().equals(turnoutGroupModel.getSelection())) {
+            turnouts.remove(turnout);
+            turnouts.add(turnout);
+        }
+    }
+
+    @Override
+    public void turnoutRemoved(final Turnout turnout) {
+        if (turnout == null) {
+            return;
+        }
+        if (turnout.getTurnoutGroup().equals(turnoutGroupModel.getSelection())) {
+            turnouts.remove(turnout);
+        }
+    }
+
+    @Override
+    public void turnoutAdded(final Turnout turnout) {
+        if (turnout.getTurnoutGroup().equals(turnoutGroupModel.getSelection())) {
+            turnouts.add(turnout);
+        }
+    }
+
+    @Override
+    public void turnoutGroupAdded(final TurnoutGroup group) {
+        turnoutGroups.add(group);
+        turnoutGroupModel.setSelection(group);
+    }
+
+    @Override
+    public void turnoutGroupRemoved(final TurnoutGroup group) {
+        TurnoutGroup selectedGroup = turnoutGroupModel.getSelection();
+        if (selectedGroup != null && selectedGroup.equals(group)) {
+            turnouts.clear();
+        }
+        turnoutGroups.remove(group);
+
+    }
+
+    @Override
+    public void turnoutGroupUpdated(final TurnoutGroup group) {
+        turnoutGroups.remove(group);
+        turnoutGroups.add(group);
+
+    }
+
+    @Override
+    public void failure(final ManagerException arg0) {
+
+    }
+
     /**
      * Sets the selected group as bean in the details model.
      */
@@ -308,7 +364,6 @@ public class TurnoutConfigurationDialog extends JDialog implements
 
             turnoutManager.addTurnoutGroup(newTurnoutGroup);
             turnoutGroupConfig.setTurnoutGroup(null);
-
         }
     }
 
@@ -332,7 +387,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
                     TurnoutConfigurationDialog.this,
                     "Really remove Turnout-Group '" + groupToDelete.getName()
                             + "' ?", "Remove Turnout-Group",
-                    JOptionPane.YES_NO_OPTION);
+                    JOptionPane.YES_NO_OPTION
+            );
             if (response == JOptionPane.YES_OPTION) {
                 turnoutManager.removeTurnoutGroup(groupToDelete);
                 turnoutGroupConfig.setTurnoutGroup(null);
@@ -363,7 +419,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
                     turnoutManager, nextNumber);
 
             new TurnoutConfig(TurnoutConfigurationDialog.this, ctx, newTurnout,
-                    selectedTurnoutGroup);
+                    selectedTurnoutGroup, true);
         }
 
     }
@@ -413,69 +469,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
             final int row = turnoutsTable.getSelectedRow();
             final Turnout turnout = turnoutModel.getElementAt(row);
             new TurnoutConfig(TurnoutConfigurationDialog.this, ctx, turnout,
-                    turnout.getTurnoutGroup());
+                    turnout.getTurnoutGroup(), false);
         }
-    }
-
-    public boolean isOkPressed() {
-        return okPressed;
-    }
-
-    @Override
-    public void turnoutsUpdated(
-            final SortedSet<TurnoutGroup> updatedTurnoutGroups) {
-        this.turnoutGroups.addAll(updatedTurnoutGroups);
-    }
-
-    @Override
-    public void turnoutUpdated(final Turnout turnout) {
-        if (turnout.getTurnoutGroup().equals(turnoutGroupModel.getSelection())) {
-            turnouts.remove(turnout);
-            turnouts.add(turnout);
-        }
-    }
-
-    @Override
-    public void turnoutRemoved(final Turnout turnout) {
-        if (turnout == null) {
-            return;
-        }
-        if (turnout.getTurnoutGroup().equals(turnoutGroupModel.getSelection())) {
-            turnouts.remove(turnout);
-        }
-    }
-
-    @Override
-    public void turnoutAdded(final Turnout turnout) {
-        if (turnout.getTurnoutGroup().equals(turnoutGroupModel.getSelection())) {
-            turnouts.add(turnout);
-        }
-    }
-
-    @Override
-    public void turnoutGroupAdded(final TurnoutGroup group) {
-        turnoutGroups.add(group);
-    }
-
-    @Override
-    public void turnoutGroupRemoved(final TurnoutGroup group) {
-        if (turnoutGroupModel.getSelection().equals(group)) {
-            turnouts.clear();
-        }
-        turnoutGroups.remove(group);
-
-    }
-
-    @Override
-    public void turnoutGroupUpdated(final TurnoutGroup group) {
-        turnoutGroups.remove(group);
-        turnoutGroups.add(group);
-
-    }
-
-    @Override
-    public void failure(final TurnoutManagerException arg0) {
-
     }
 
 }

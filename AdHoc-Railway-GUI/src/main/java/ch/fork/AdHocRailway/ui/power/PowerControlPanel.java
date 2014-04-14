@@ -10,7 +10,8 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.PowerContext;
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
+import ch.fork.AdHocRailway.ui.utils.ImageTools;
+import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -31,17 +32,17 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 
     private static final Logger LOGGER = Logger
             .getLogger(PowerControlPanel.class);
-    private int numberOfBoosters;
     private final ImageIcon stopIcon;
     private final ImageIcon goIcon;
     private final ImageIcon shortcutIcon;
     private final Map<Integer, JToggleButton> numberToPowerToggleButtons = new HashMap<Integer, JToggleButton>();
     private final Map<Integer, ActionListener> numberToActionListener = new HashMap<Integer, ActionListener>();
     private final Map<JToggleButton, Integer> powerToggleButtonsToNumber = new HashMap<JToggleButton, Integer>();
+    private final PowerContext ctx;
+    private int numberOfBoosters;
     private JPanel powerControlPanel;
     private JButton allBoostersOn;
     private JButton allBoostersOff;
-    private final PowerContext ctx;
 
     public PowerControlPanel(final PowerContext ctx) {
         super();
@@ -175,8 +176,12 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
         allBoostersOn.addActionListener(new AllBoostersOnAction());
         allBoostersOff.addActionListener(new AllBoostersOffAction());
 
-        powerControlPanel.add(allBoostersOn, "growx");
-        powerControlPanel.add(allBoostersOff, "growx, wrap 15");
+        String params = "height 30, growx";
+        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.TABLET_MODE)) {
+            params = "height " + UIConstants.SIZE_TABLET + ", growx";
+        }
+        powerControlPanel.add(allBoostersOn, params);
+        powerControlPanel.add(allBoostersOff, params + ", wrap 15");
 
         for (int i = 0; i < numberOfBoosters; i++) {
 
@@ -185,7 +190,7 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
             boosterButton.setHorizontalAlignment(SwingConstants.LEADING);
             final ToggleBoosterAction action = new ToggleBoosterAction();
             boosterButton.addActionListener(action);
-            powerControlPanel.add(boosterButton, "growx");
+            powerControlPanel.add(boosterButton, params);
 
             numberToPowerToggleButtons.put(i, boosterButton);
             numberToActionListener.put(i, action);
@@ -193,71 +198,6 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
             boosterButton.setFocusable(false);
         }
         initKeyboardActions();
-    }
-
-    class AllBoostersOnAction extends AbstractAction {
-
-        public AllBoostersOnAction() {
-            super();
-        }
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-
-            final PowerController powerController = ctx.getPowerControl();
-            final PowerSupply powerSupply = powerController.getPowerSupply(1);
-            powerController.powerOn(powerSupply);
-
-        }
-    }
-
-    class AllBoostersOffAction extends AbstractAction {
-
-        public AllBoostersOffAction() {
-            super();
-        }
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-
-            final PowerController powerController = ctx.getPowerControl();
-            final PowerSupply powerSupply = powerController.getPowerSupply(1);
-            powerController.powerOff(powerSupply);
-        }
-    }
-
-    class ToggleBoosterAction extends AbstractAction {
-
-        public ToggleBoosterAction() {
-            super();
-        }
-
-        @Override
-        public void actionPerformed(final ActionEvent arg0) {
-            final JToggleButton source = (JToggleButton) arg0.getSource();
-
-            final int boosterNumber = powerToggleButtonsToNumber.get(source);
-
-            toogleBooster(boosterNumber, source.isSelected());
-        }
-    }
-
-    class ToggleBoosterKeyAction extends AbstractAction {
-
-        private final int boosterNumber;
-
-        public ToggleBoosterKeyAction(final int number) {
-            super();
-            this.boosterNumber = number;
-        }
-
-        @Override
-        public void actionPerformed(final ActionEvent arg0) {
-
-            final JToggleButton source = numberToPowerToggleButtons
-                    .get(boosterNumber);
-            toogleBooster(boosterNumber, !source.isSelected());
-        }
     }
 
     private void initKeyboardActions() {
@@ -325,5 +265,70 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
             }
         }
         ctx.setActiveBoosterCount(activeBoosterCount);
+    }
+
+    class AllBoostersOnAction extends AbstractAction {
+
+        public AllBoostersOnAction() {
+            super();
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+
+            final PowerController powerController = ctx.getPowerControl();
+            final PowerSupply powerSupply = powerController.getPowerSupply(1);
+            powerController.powerOn(powerSupply);
+
+        }
+    }
+
+    class AllBoostersOffAction extends AbstractAction {
+
+        public AllBoostersOffAction() {
+            super();
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+
+            final PowerController powerController = ctx.getPowerControl();
+            final PowerSupply powerSupply = powerController.getPowerSupply(1);
+            powerController.powerOff(powerSupply);
+        }
+    }
+
+    class ToggleBoosterAction extends AbstractAction {
+
+        public ToggleBoosterAction() {
+            super();
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent arg0) {
+            final JToggleButton source = (JToggleButton) arg0.getSource();
+
+            final int boosterNumber = powerToggleButtonsToNumber.get(source);
+
+            toogleBooster(boosterNumber, source.isSelected());
+        }
+    }
+
+    class ToggleBoosterKeyAction extends AbstractAction {
+
+        private final int boosterNumber;
+
+        public ToggleBoosterKeyAction(final int number) {
+            super();
+            this.boosterNumber = number;
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent arg0) {
+
+            final JToggleButton source = numberToPowerToggleButtons
+                    .get(boosterNumber);
+            toogleBooster(boosterNumber, !source.isSelected());
+        }
     }
 }

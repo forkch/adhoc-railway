@@ -1,7 +1,7 @@
 package ch.fork.AdHocRailway.services.impl.socketio;
 
 import ch.fork.AdHocRailway.AdHocRailwayException;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManagerException;
+import ch.fork.AdHocRailway.manager.ManagerException;
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
@@ -17,18 +17,20 @@ public class SIOService {
 
     private static final Logger LOGGER = Logger.getLogger(SIOService.class);
     private static final SIOService INSTANCE = new SIOService();
-
-    private SocketIO socket;
-
+    private static String uuid;
     private final Set<IOCallback> otherCallbacks = new HashSet<IOCallback>();
+    private SocketIO socket;
 
     private SIOService() {
 
     }
 
     public static SIOService getInstance() {
-
         return INSTANCE;
+    }
+
+    public static void setUUID(String uuid) {
+        SIOService.uuid = uuid;
     }
 
     public void connect(final String url, final ServiceListener mainCallback) {
@@ -49,6 +51,7 @@ public class SIOService {
                     public void onConnect() {
                         LOGGER.info("successfully connected to AdHoc-Server at "
                                 + url);
+                        socket.emit("register", uuid);
                         mainCallback.connected();
                     }
 
@@ -90,14 +93,14 @@ public class SIOService {
                 });
             }
         } catch (final MalformedURLException e) {
-            throw new TurnoutManagerException(
+            throw new ManagerException(
                     "failed to initialize socket.io on " + url, e);
         }
     }
 
     public void checkSocket() {
         if (!socket.isConnected()) {
-            throw new TurnoutManagerException(
+            throw new ManagerException(
                     "not connected to socket.io server");
         }
     }

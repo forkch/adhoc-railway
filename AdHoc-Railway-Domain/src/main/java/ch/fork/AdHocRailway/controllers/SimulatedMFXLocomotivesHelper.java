@@ -7,10 +7,6 @@ public class SimulatedMFXLocomotivesHelper {
     /**
      * For SimulatedMFX Locomotives the higher functions of the second address
      * need to be offsetted by 1 since there is no "F0" on the second address
-     *
-     * @param locomotive
-     * @param functionNumber
-     * @return
      */
     public static int computeMultipartFunctionNumber(final LocomotiveType type,
                                                      final int functionNumber) {
@@ -26,7 +22,7 @@ public class SimulatedMFXLocomotivesHelper {
         }
         if (functionNumber > 4) {
             throw new IllegalArgumentException(
-                    "function number must not be higher than 8 for SIMULATED_MFX locomotives");
+                    "function number must not be higher than 8 for NON SIMULATED_MFX locomotives");
         }
         return multipartFunctionNumber;
     }
@@ -53,10 +49,6 @@ public class SimulatedMFXLocomotivesHelper {
     /**
      * this functions generates SRCP function arrays for simulated MFX
      * locomotives (each its seperate 5-position function array)
-     *
-     * @param locomotive
-     * @param functions
-     * @return
      */
     public static boolean[] convertToMultipartFunctions(
             final LocomotiveType type, final boolean[] functions) {

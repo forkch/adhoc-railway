@@ -1,8 +1,8 @@
 package ch.fork.AdHocRailway.controllers.impl.srcp;
 
+import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.PowerChangeListener;
 import ch.fork.AdHocRailway.controllers.PowerController;
-import ch.fork.AdHocRailway.controllers.PowerException;
 import ch.fork.AdHocRailway.domain.power.Booster;
 import ch.fork.AdHocRailway.domain.power.BoosterState;
 import ch.fork.AdHocRailway.domain.power.PowerSupply;
@@ -53,7 +53,7 @@ public class SRCPPowerControlAdapter extends PowerController implements
             powerControl.setState(srcpSupply, SRCPPowerState.ON,
                     "" + booster.getBoosterNumber());
         } catch (final SRCPModelException e) {
-            throw new PowerException(e.getMessage());
+            throw new ControllerException(e.getMessage());
         }
     }
 
@@ -66,7 +66,7 @@ public class SRCPPowerControlAdapter extends PowerController implements
             powerControl.setState(srcpSupply, SRCPPowerState.OFF,
                     "" + booster.getBoosterNumber());
         } catch (final SRCPModelException e) {
-            throw new PowerException(e.getMessage());
+            throw new ControllerException(e.getMessage());
         }
     }
 
@@ -91,7 +91,7 @@ public class SRCPPowerControlAdapter extends PowerController implements
         try {
             powerControl.setAllStates(SRCPPowerState.ON);
         } catch (final SRCPModelException e) {
-            throw new PowerException(e.getMessage());
+            throw new ControllerException(e.getMessage());
         }
     }
 
@@ -100,7 +100,7 @@ public class SRCPPowerControlAdapter extends PowerController implements
         try {
             powerControl.setAllStates(SRCPPowerState.OFF);
         } catch (final SRCPModelException e) {
-            throw new PowerException(e.getMessage());
+            throw new ControllerException(e.getMessage());
         }
     }
 

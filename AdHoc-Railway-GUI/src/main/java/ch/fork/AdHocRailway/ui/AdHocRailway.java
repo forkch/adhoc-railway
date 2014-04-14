@@ -32,6 +32,7 @@ import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfiguration
 import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
+import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
 import ch.fork.AdHocRailway.ui.widgets.ErrorPanel;
 import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 import ch.fork.AdHocRailway.ui.widgets.SplashWindow;
@@ -61,16 +62,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Set;
 
-import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromCustom;
-import static ch.fork.AdHocRailway.ui.tools.ImageTools.createImageIconFromIconSet;
+import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromCustom;
+import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromIconSet;
 
 public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         PreferencesKeys {
 
-    private static final Logger LOGGER = Logger.getLogger(AdHocRailway.class);
-
     public static final String TITLE = "AdHoc-Railway";
-
+    private static final Logger LOGGER = Logger.getLogger(AdHocRailway.class);
     private TrackControlPanel trackControlPanel;
 
     private LocomotiveControlPanel locomotiveControlPanel;
@@ -135,10 +134,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     private PersistenceManager persistenceManager;
     private RailwayDeviceManager railwayDeviceManager;
 
-    public static void setupGlobalExceptionHandling() {
-
-    }
-
     public AdHocRailway(org.apache.commons.cli.CommandLine parsedCommandLine) {
         super(TITLE);
         try {
@@ -162,7 +157,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
             splash = new SplashWindow(createImageIconFromCustom("splash.png"),
                     this, 500, 12);
-            setIconImage(createImageIconFromCustom("RailControl.png")
+            setIconImage(createImageIconFromCustom("2-Hot-Train-icon 128.png")
                     .getImage());
 
             initProceeded("Loading Persistence Layer (Preferences)");
@@ -201,12 +196,27 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                     handleException(e);
                 }
             });
+            setLocationByPlatform(true);
             setVisible(true);
         } catch (final Exception e) {
             handleException(e);
         }
     }
 
+    public static void setupGlobalExceptionHandling() {
+
+    }
+
+    public static void main(final String[] args) throws ParseException {
+
+        Options options = new Options();
+        options.addOption("c", "clean", false, "start with a clean config");
+        CommandLineParser parser = new BasicParser();
+
+        org.apache.commons.cli.CommandLine parsedCommandLine = parser.parse(options, args);
+
+        AdHocRailway adHocRailway = new AdHocRailway(parsedCommandLine);
+    }
 
     @Override
     public void addMenu(final JMenu menu) {
@@ -216,6 +226,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     @Override
     public void addToolBar(final JToolBar toolbar) {
         toolbarPanel.add(toolbar);
+    }
+
+    @Override
+    public void displayMessage(String message) {
+        final ExceptionProcessor instance2 = ExceptionProcessor.getInstance();
+        instance2.displayMessage(message);
     }
 
     @Override
@@ -232,19 +248,18 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     @Override
+    public void registerKey(final int keyEvent, int modifiers, Action action) {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), keyEvent, modifiers, action);
+    }
+
+    @Override
     public void registerEscapeKey(final Action action) {
-        final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        final JRootPane rootPane = getRootPane();
-        rootPane.registerKeyboardAction(action, stroke,
-                JComponent.WHEN_IN_FOCUSED_WINDOW);
+        registerKey(KeyEvent.VK_ESCAPE, 0, action);
     }
 
     @Override
     public void registerSpaceKey(final Action action) {
-        final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0);
-        final JRootPane rootPane = getRootPane();
-        rootPane.registerKeyboardAction(action, stroke,
-                JComponent.WHEN_IN_FOCUSED_WINDOW);
+        registerKey(KeyEvent.VK_SPACE, 0, action);
     }
 
     @Subscribe
@@ -350,6 +365,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         });
         setRailwayDeviceLabelText();
 
+        initShortcuts();
         appContext.getMainBus().register(this);
         appContext.getMainBus().post(
                 new EditingModeEvent(appContext.isEditingMode()));
@@ -465,9 +481,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         routesItem = new JMenuItem(new RoutesAction());
         locomotivesItem = new JMenuItem(new LocomotivesAction());
         preferencesItem = new JMenuItem(new PreferencesAction());
-        editMenu.setMnemonic(KeyEvent.VK_E);
-        switchesItem.setMnemonic(KeyEvent.VK_S);
-        switchesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+        enableEditing.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
+                ActionEvent.ALT_MASK));
+
+        switchesItem.setMnemonic(KeyEvent.VK_T);
+        switchesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                 ActionEvent.ALT_MASK));
         routesItem.setMnemonic(KeyEvent.VK_R);
         routesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
@@ -611,6 +629,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         add(toolbarErrorPanel, BorderLayout.PAGE_START);
     }
 
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK, new EnableEditingAction());
+    }
+
     private void setRailwayDeviceLabelText() {
         final RailwayDevice railwayDevice = RailwayDevice
                 .fromString(preferences
@@ -642,6 +664,21 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         statusBarPanel.add(progressBar, BorderLayout.WEST);
         statusBarPanel.add(commandHistory, BorderLayout.CENTER);
         return statusBarPanel;
+    }
+
+    @Subscribe
+    public void initProceeded(final InitProceededEvent event) {
+        initProceeded(event.getMessage());
+    }
+
+    @Subscribe
+    public void updateCommandLog(final CommandLogEvent event) {
+        updateCommandHistory(event.getMessage());
+    }
+
+    @Subscribe
+    public void updateMainTitle(final UpdateMainTitleEvent event) {
+        setTitle(event.getTitle());
     }
 
     private class CommandHistoryUpdater implements Runnable {
@@ -970,7 +1007,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                                 "Active Boosters",
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.QUESTION_MESSAGE,
-                                createImageIconFromIconSet("dialog-warning.png"));
+                                createImageIconFromIconSet("dialog-warning.png")
+                        );
                 if (exit == JOptionPane.NO_OPTION
                         || exit == JOptionPane.CANCEL_OPTION || exit == -1) {
                     return;
@@ -1179,31 +1217,5 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             appContext.getMainBus().post(new EditingModeEvent(editingMode));
 
         }
-    }
-
-    public static void main(final String[] args) throws ParseException {
-
-        Options options = new Options();
-        options.addOption("c", "clean", false, "start with a clean config");
-        CommandLineParser parser = new BasicParser();
-
-        org.apache.commons.cli.CommandLine parsedCommandLine = parser.parse(options, args);
-
-        AdHocRailway adHocRailway = new AdHocRailway(parsedCommandLine);
-    }
-
-    @Subscribe
-    public void initProceeded(final InitProceededEvent event) {
-        initProceeded(event.getMessage());
-    }
-
-    @Subscribe
-    public void updateCommandLog(final CommandLogEvent event) {
-        updateCommandHistory(event.getMessage());
-    }
-
-    @Subscribe
-    public void updateMainTitle(final UpdateMainTitleEvent event) {
-        setTitle(event.getTitle());
     }
 }

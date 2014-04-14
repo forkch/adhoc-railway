@@ -10,11 +10,11 @@ import java.io.IOException;
 
 public class ImagePreviewPanel extends JPanel implements PropertyChangeListener {
 
+    private static final int ACCSIZE = 155;
+    private final Color bg;
     private int width, height;
     private ImageIcon icon;
     private Image image;
-    private static final int ACCSIZE = 155;
-    private final Color bg;
 
     public ImagePreviewPanel() {
         setPreferredSize(new Dimension(ACCSIZE, -1));
@@ -62,7 +62,7 @@ public class ImagePreviewPanel extends JPanel implements PropertyChangeListener 
         double ratio = 1.0;
 
 		/*
-		 * Determine how to scale the image. Since the accessory can expand
+         * Determine how to scale the image. Since the accessory can expand
 		 * vertically make sure we don't go larger than 150 when scaling
 		 * vertically.
 		 */
@@ -90,7 +90,7 @@ public class ImagePreviewPanel extends JPanel implements PropertyChangeListener 
         g.setColor(bg);
 
 		/*
-		 * If we don't do this, we will end up with garbage from previous images
+         * If we don't do this, we will end up with garbage from previous images
 		 * if they have larger sizes than the one we are currently drawing.
 		 * Also, it seems that the file list can paint outside of its rectangle,
 		 * and will cause odd behavior if we don't clear or fill the rectangle

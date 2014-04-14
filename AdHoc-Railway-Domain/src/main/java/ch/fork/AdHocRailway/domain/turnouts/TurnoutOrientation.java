@@ -1,7 +1,12 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum TurnoutOrientation {
-    NORTH("North"), SOUTH("South"), WEST("West"), EAST("East");
+    NORTH("North"),
+    SOUTH("South"),
+    WEST("West"),
+    EAST("East");
 
     private final String humanName;
 
@@ -26,4 +31,4 @@ public enum TurnoutOrientation {
     public String toString() {
         return humanName;
     }
-};
+}

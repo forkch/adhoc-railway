@@ -25,12 +25,14 @@ import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.domain.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
+import ch.fork.AdHocRailway.ui.utils.ThreeDigitDisplay;
+import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
 import net.miginfocom.swing.MigLayout;
 
@@ -41,39 +43,20 @@ import java.util.LinkedList;
 
 public class KeyControl extends SimpleInternalFrame {
 
-    private enum KeyControlMode {
-        TURNOUT_MODE, ROUTE_MODE, LOCOMOTIVE_FUNCTION_MODE;
-
-        public boolean isRouteMode() {
-            return this.equals(KeyControlMode.ROUTE_MODE);
-        }
-
-        public boolean isLocomotiveFunctionMode() {
-            return this.equals(KeyControlMode.LOCOMOTIVE_FUNCTION_MODE);
-        }
-
-    }
-
-    ;
-
-    private KeyControlMode mode = KeyControlMode.TURNOUT_MODE;
-    private int locomotiveNumber = -1;
-
-    private StringBuffer enteredNumberKeys;
-
-    private JPanel turnoutsHistory;
-
     private final LinkedList<Object> historyStack = new LinkedList<Object>();
-    ;
 
+    ;
     private final LinkedList<JPanel> historyWidgets = new LinkedList<JPanel>();
-    ;
-
-    private JScrollPane historyPane;
-
-    private ThreeDigitDisplay digitDisplay;
     private final TurnoutManager turnoutManager;
     private final ApplicationContext ctx;
+    private KeyControlMode mode = KeyControlMode.TURNOUT_MODE;
+    private int locomotiveNumber = -1;
+    ;
+    private StringBuffer enteredNumberKeys;
+    ;
+    private JPanel turnoutsHistory;
+    private JScrollPane historyPane;
+    private ThreeDigitDisplay digitDisplay;
 
     public KeyControl(final ApplicationContext ctx) {
         super("Track Control / History");
@@ -84,6 +67,7 @@ public class KeyControl extends SimpleInternalFrame {
         enteredNumberKeys = new StringBuffer();
         initGUI();
         initKeyboardActions();
+
     }
 
     private void initGUI() {
@@ -173,6 +157,26 @@ public class KeyControl extends SimpleInternalFrame {
         repaint();
     }
 
+    private void reset() {
+        enteredNumberKeys = new StringBuffer();
+        mode = KeyControlMode.TURNOUT_MODE;
+        locomotiveNumber = -1;
+        digitDisplay.reset();
+    }
+
+    private enum KeyControlMode {
+        TURNOUT_MODE, ROUTE_MODE, LOCOMOTIVE_FUNCTION_MODE;
+
+        public boolean isRouteMode() {
+            return this.equals(KeyControlMode.ROUTE_MODE);
+        }
+
+        public boolean isLocomotiveFunctionMode() {
+            return this.equals(KeyControlMode.LOCOMOTIVE_FUNCTION_MODE);
+        }
+
+    }
+
     private class NumberEnteredAction extends AbstractAction {
 
 
@@ -182,10 +186,7 @@ public class KeyControl extends SimpleInternalFrame {
             final String switchNumberAsString = enteredNumberKeys.toString();
             final int switchNumber = Integer.parseInt(switchNumberAsString);
             if (switchNumber > 999) {
-                digitDisplay.reset();
-                enteredNumberKeys = new StringBuffer();
-                mode = KeyControlMode.TURNOUT_MODE;
-                locomotiveNumber = -1;
+                reset();
                 return;
             }
             digitDisplay.setNumber(switchNumber);
@@ -199,9 +200,7 @@ public class KeyControl extends SimpleInternalFrame {
         public void actionPerformed(final ActionEvent e) {
             if (enteredNumberKeys.length() == 0 && mode.isRouteMode()) {
                 // reset if no number is entered
-                mode = KeyControlMode.TURNOUT_MODE;
-                locomotiveNumber = -1;
-                digitDisplay.setPeriod(false);
+                reset();
             } else if (enteredNumberKeys.length() != 0 && mode.isRouteMode()) {
                 // someone entered a number followed by a period
                 mode = KeyControlMode.LOCOMOTIVE_FUNCTION_MODE;
@@ -256,14 +255,12 @@ public class KeyControl extends SimpleInternalFrame {
                 }
             }
 
-            enteredNumberKeys = new StringBuffer();
-            mode = KeyControlMode.TURNOUT_MODE;
-            locomotiveNumber = -1;
-            digitDisplay.reset();
+            reset();
         }
 
         private void handleSwitchChange(final ActionEvent e,
                                         final int enteredNumber) {
+
             Turnout searchedTurnout = null;
             searchedTurnout = turnoutManager.getTurnoutByNumber(enteredNumber);
             if (searchedTurnout == null) {
@@ -289,6 +286,7 @@ public class KeyControl extends SimpleInternalFrame {
                                        final int enteredNumber) {
             Route searchedRoute = null;
 
+
             searchedRoute = ctx.getRouteManager().getRouteByNumber(
                     enteredNumber);
             if (searchedRoute == null) {
@@ -307,6 +305,7 @@ public class KeyControl extends SimpleInternalFrame {
 
         private void handleLocomotiveChange(final ActionEvent e,
                                             final int functionNumber) {
+
             Locomotive searchedLocomotive = null;
 
             if (functionNumber > 16) {
@@ -360,5 +359,4 @@ public class KeyControl extends SimpleInternalFrame {
     private class DisableRouteAction extends SwitchingAction {
 
     }
-
 }

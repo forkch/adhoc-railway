@@ -20,7 +20,7 @@ package ch.fork.AdHocRailway.ui.turnouts;
 
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
-import ch.fork.AdHocRailway.manager.turnouts.TurnoutManager;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
@@ -34,12 +34,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class TurnoutWarmer extends ConfigurationDialog {
-    private JSpinner turnoutNumberField;
-    private JToggleButton warmButton;
     private final TurnoutManager turnoutPersistence;
     private final TurnoutController turnoutControl;
-    private TurnoutWarmupThread t;
     private final TurnoutContext ctx;
+    private JSpinner turnoutNumberField;
+    private JToggleButton warmButton;
+    private TurnoutWarmupThread t;
 
     public TurnoutWarmer(final JFrame owner, final TurnoutContext ctx) {
         super(owner, "Turnout Programmer");
@@ -132,8 +132,12 @@ public class TurnoutWarmer extends ConfigurationDialog {
                     final Turnout turnout = turnoutPersistence
                             .getTurnoutByNumber((Integer) turnoutNumberField
                                     .getValue());
+                    if (turnout == null) {
+                        ctx.getMainApp().displayMessage("no valid turnout selected");
+                        return;
+                    }
                     turnoutControl.toggle(turnout);
-                    Thread.sleep(Preferences.getInstance().getIntValue(
+                    Thread.sleep(4 * Preferences.getInstance().getIntValue(
                             PreferencesKeys.ROUTING_DELAY));
                 }
             } catch (final InterruptedException e2) {

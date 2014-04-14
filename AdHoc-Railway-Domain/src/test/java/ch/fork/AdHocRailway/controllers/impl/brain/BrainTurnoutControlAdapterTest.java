@@ -200,7 +200,7 @@ public class BrainTurnoutControlAdapterTest {
         final Turnout t = new Turnout();
         t.setAddress1(address);
         t.setAddress1Switched(inverted);
-        t.setTurnoutType(TurnoutType.DEFAULT_LEFT);
+        t.setType(TurnoutType.DEFAULT_LEFT);
         return t;
     }
 
@@ -211,7 +211,7 @@ public class BrainTurnoutControlAdapterTest {
         t.setAddress1Switched(inverted1);
         t.setAddress2(address2);
         t.setAddress2Switched(inverted2);
-        t.setTurnoutType(TurnoutType.THREEWAY);
+        t.setType(TurnoutType.THREEWAY);
         return t;
     }
 

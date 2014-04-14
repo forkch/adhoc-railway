@@ -25,6 +25,7 @@ public interface PreferencesKeys {
     public static final String KEYBOARD_LAYOUT = "KeyBoardLayout";
     public static final String FULLSCREEN = "Fullscreen";
     public static final String TABBED_TRACK = "TabbedTrack";
+    public static final String TABLET_MODE = "TabletMode";
     public static final String LAST_OPENED_FILE = "LastOpenedFile";
     public static final String USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES = "UseFixedTurnoutAndRouteGroupSizes";
     public static final String OPEN_LAST_FILE = "OpenLastFile";
@@ -42,14 +43,14 @@ public interface PreferencesKeys {
     public static final String RAILWAY_DEVICE = "RailwayDevice";
 
     public static final String ADHOC_BRAIN_PORT = "AdHocBrainPort";
+    public static final String AUTOCONNECT_TO_RAILWAY = "RailwayAutoconnect";
 
     // SERVERS
-    public static final String AUTO_DISCOVER_AND_CONNECT_SERVERS = "AutoDiscoverAndConnectServers";
+    public static final String AUTO_DISCOVER = "AutoDiscoverServers";
 
     // SRCP Server
     public static final String SRCP_HOSTNAME = "SRCPHostname";
     public static final String SRCP_PORT = "SRCPPort";
-    public static final String SRCP_AUTOCONNECT = "SRCPAutoconnect";
 
     // AdHoc-Server Server
     public static final String USE_ADHOC_SERVER = "UseAdHocServer";

@@ -45,6 +45,7 @@ public class SplashWindow extends JWindow {
                 dispose();
             }
         });
+        setLocationByPlatform(true);
         setVisible(true);
     }
 

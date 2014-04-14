@@ -20,9 +20,9 @@ package ch.fork.AdHocRailway.controllers;
 
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainLocomotiveControlAdapter;
+import ch.fork.AdHocRailway.controllers.impl.dummy.DummyLocomotiveController;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
-import ch.fork.AdHocRailway.manager.locomotives.LocomotiveException;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -36,9 +36,36 @@ public abstract class LocomotiveController implements
     private final Map<Locomotive, List<LocomotiveChangeListener>> listeners = new HashMap<Locomotive, List<LocomotiveChangeListener>>();
     private final Set<Locomotive> activeLocomotives = new HashSet<Locomotive>();
 
-    public void activateLoco(final Locomotive locomotive)
-            throws LocomotiveException {
-        if (!isLocomotiveActive(locomotive)) {
+    public static LocomotiveController createLocomotiveController(
+            final RailwayDevice railwayDevice) {
+        if (railwayDevice == null) {
+            return new DummyLocomotiveController();
+        }
+        switch (railwayDevice) {
+            case ADHOC_BRAIN:
+                return new BrainLocomotiveControlAdapter(
+                        BrainController.getInstance());
+            case SRCP:
+                return new SRCPLocomotiveControlAdapter();
+            default:
+                return new DummyLocomotiveController();
+
+        }
+    }
+
+    public abstract void toggleDirection(final Locomotive locomotive);
+
+    public abstract void setSpeed(final Locomotive locomotive, final int speed,
+                                  final boolean[] functions);
+
+    public abstract void setFunction(final Locomotive locomotive,
+                                     final int functionNumber, final boolean state,
+                                     final int deactivationDelay);
+
+    public abstract void emergencyStop(final Locomotive myLocomotive);
+
+    public void activateLoco(final Locomotive locomotive) {
+        if (isLocomotiveInactive(locomotive)) {
             this.activeLocomotives.add(locomotive);
 
             if (locomotive.getCurrentFunctions() == null) {
@@ -56,21 +83,20 @@ public abstract class LocomotiveController implements
         }
     }
 
-    public boolean isLocomotiveActive(final Locomotive locomotive) {
-        return activeLocomotives.contains(locomotive);
+    public boolean isLocomotiveInactive(final Locomotive locomotive) {
+        return !activeLocomotives.contains(locomotive);
     }
 
-    public void deactivateLoco(final Locomotive locomotive)
-            throws LocomotiveException {
+    public void deactivateLoco(final Locomotive locomotive) {
         emergencyStop(locomotive);
         this.activeLocomotives.remove(locomotive);
     }
 
-    public void emergencyStopActiveLocos() throws LocomotiveException {
+    public void emergencyStopActiveLocos() {
         for (final Locomotive locomotive : activeLocomotives) {
             try {
-            emergencyStop(locomotive);
-            }catch(Exception e) {
+                emergencyStop(locomotive);
+            } catch (Exception e) {
                 // moving on
                 LOGGER.warn("could not stop loco " + locomotive);
             }
@@ -118,8 +144,7 @@ public abstract class LocomotiveController implements
         }
     }
 
-    public void increaseSpeed(final Locomotive locomotive)
-            throws LocomotiveException {
+    public void increaseSpeed(final Locomotive locomotive) {
         if (locomotive.getCurrentSpeed() < locomotive.getType()
                 .getDrivingSteps()) {
             setSpeed(locomotive, locomotive.getCurrentSpeed() + 1,
@@ -127,8 +152,7 @@ public abstract class LocomotiveController implements
         }
     }
 
-    public void decreaseSpeed(final Locomotive locomotive)
-            throws LocomotiveException {
+    public void decreaseSpeed(final Locomotive locomotive) {
         if (locomotive.getCurrentSpeed() > 0) {
             setSpeed(locomotive, locomotive.getCurrentSpeed() - 1,
                     locomotive.getCurrentFunctions());
@@ -150,7 +174,7 @@ public abstract class LocomotiveController implements
 
                 } catch (final InterruptedException e) {
                     e.printStackTrace();
-                } catch (final LocomotiveException e) {
+                } catch (final ControllerException e) {
                     e.printStackTrace();
                 }
 
@@ -159,111 +183,7 @@ public abstract class LocomotiveController implements
         t.start();
     }
 
-    /**
-     * Toggles the direction of the Locomotive
-     *
-     * @param locomotive
-     * @throws LocomotiveException
-     */
-    public abstract void toggleDirection(final Locomotive locomotive)
-            throws LocomotiveException;
-
-    /**
-     * Sets the speed of the Locomotive
-     *
-     * @param locomotive
-     * @param speed
-     * @throws LocomotiveException
-     */
-    public abstract void setSpeed(final Locomotive locomotive, final int speed,
-                                  final boolean[] functions) throws LocomotiveException;
-
-    public abstract void setFunction(final Locomotive locomotive,
-                                     final int functionNumber, final boolean state,
-                                     final int deactivationDelay) throws LocomotiveException;
-
-    public abstract void emergencyStop(final Locomotive myLocomotive)
-            throws LocomotiveException;
-
-    public static LocomotiveController createLocomotiveController(
-            final RailwayDevice railwayDevice) {
-        if (railwayDevice == null) {
-            return new NullLocomotiveController();
-        }
-        switch (railwayDevice) {
-            case ADHOC_BRAIN:
-                return new BrainLocomotiveControlAdapter(
-                        BrainController.getInstance());
-            case SRCP:
-                return new SRCPLocomotiveControlAdapter();
-            default:
-                return new NullLocomotiveController();
-
-        }
-    }
-
     public void removeLocomotiveChangeListener(LocomotiveChangeListener listener) {
         listeners.entrySet().remove(listener);
-    }
-
-    static class NullLocomotiveController extends LocomotiveController {
-
-        @Override
-        public boolean isLocked(final Locomotive object)
-                throws LockingException {
-            return false;
-        }
-
-        @Override
-        public boolean isLockedByMe(final Locomotive object)
-                throws LockingException {
-            return true;
-        }
-
-        @Override
-        public boolean acquireLock(final Locomotive object)
-                throws LockingException {
-            return true;
-        }
-
-        @Override
-        public boolean releaseLock(final Locomotive object)
-                throws LockingException {
-            return true;
-        }
-
-        @Override
-        public void toggleDirection(final Locomotive locomotive)
-                throws LocomotiveException {
-            locomotive.setCurrentDirection(locomotive.getToggledDirection());
-            informListeners(locomotive);
-        }
-
-        @Override
-        public void setSpeed(final Locomotive locomotive, final int speed,
-                             final boolean[] functions) throws LocomotiveException {
-            locomotive.setCurrentSpeed(speed);
-            locomotive.setCurrentFunctions(functions);
-            informListeners(locomotive);
-
-        }
-
-        @Override
-        public void setFunction(final Locomotive locomotive,
-                                final int functionNumber, final boolean state,
-                                final int deactivationDelay) throws LocomotiveException {
-            boolean[] currentFunctions = locomotive.getCurrentFunctions();
-            currentFunctions[functionNumber] = state;
-            locomotive.setCurrentFunctions(currentFunctions);
-            informListeners(locomotive);
-        }
-
-        @Override
-        public void emergencyStop(final Locomotive locomotive)
-                throws LocomotiveException {
-            setFunction(locomotive, locomotive.getEmergencyStopFunction(), true, 0);
-            setSpeed(locomotive, 0, locomotive.getCurrentFunctions());
-            informListeners(locomotive);
-        }
     }
 }

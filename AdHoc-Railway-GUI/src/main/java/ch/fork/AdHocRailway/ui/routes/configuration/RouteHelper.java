@@ -3,11 +3,9 @@ package ch.fork.AdHocRailway.ui.routes.configuration;
 import ch.fork.AdHocRailway.domain.turnouts.Route;
 import ch.fork.AdHocRailway.domain.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.domain.turnouts.RouteItem;
-import ch.fork.AdHocRailway.manager.turnouts.RouteManager;
+import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import org.apache.commons.beanutils.BeanUtils;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class RouteHelper {
 
@@ -26,7 +24,7 @@ public class RouteHelper {
         newRoute.setOrientation(selectedRoute.getOrientation());
         newRoute.setNumber(nextNumber);
         newRoute.setRouteGroup(selectedRouteGroup);
-        for (final RouteItem origRouteItem : selectedRoute.getRouteItems()) {
+        for (final RouteItem origRouteItem : selectedRoute.getRoutedTurnouts()) {
             final RouteItem routeItem = copyRouteItem(origRouteItem);
             routeItem.setRoute(newRoute);
             newRoute.addRouteItem(routeItem);
@@ -39,7 +37,7 @@ public class RouteHelper {
     private static RouteItem copyRouteItem(final RouteItem origRouteItem) {
         final RouteItem item = new RouteItem();
         item.setTurnout(origRouteItem.getTurnout());
-        item.setRoutedState(origRouteItem.getRoutedState());
+        item.setState(origRouteItem.getState());
         return item;
     }
 
@@ -51,7 +49,7 @@ public class RouteHelper {
         final Route newTurnout = createDefaultRoute(routePersistence,
                 nextNumber);
 
-        new RouteConfig(ctx.getMainFrame(), ctx, newTurnout, selectedRouteGroup);
+        new RouteConfig(ctx.getMainFrame(), ctx, newTurnout, selectedRouteGroup, true);
     }
 
     public static Route copyRoute(final Route old) {
@@ -94,9 +92,9 @@ public class RouteHelper {
         description.append("<h3>Turnouts</h3>");
         description.append("<table>");
 
-        for (final RouteItem item : route.getRouteItems()) {
+        for (final RouteItem item : route.getRoutedTurnouts()) {
             addTableRow("", "" + item.getTurnout().getNumber() + ": "
-                    + item.getRoutedState().toString(), description);
+                    + item.getState().toString(), description);
         }
 
         description.append("</table>");

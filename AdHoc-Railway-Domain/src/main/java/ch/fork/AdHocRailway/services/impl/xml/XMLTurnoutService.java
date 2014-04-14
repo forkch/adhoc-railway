@@ -20,8 +20,8 @@ package ch.fork.AdHocRailway.services.impl.xml;
 
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutGroup;
-import ch.fork.AdHocRailway.services.turnouts.TurnoutService;
-import ch.fork.AdHocRailway.services.turnouts.TurnoutServiceListener;
+import ch.fork.AdHocRailway.services.TurnoutService;
+import ch.fork.AdHocRailway.services.TurnoutServiceListener;
 import org.apache.log4j.Logger;
 
 import java.util.SortedSet;
@@ -111,11 +111,11 @@ public class XMLTurnoutService implements TurnoutService {
         if (groups != null) {
             for (final TurnoutGroup turnoutGroup : groups) {
                 turnoutGroup.init();
-                turnoutGroup.setId(UUID.randomUUID().hashCode());
+                turnoutGroup.setId(UUID.randomUUID().toString());
                 turnoutGroups.add(turnoutGroup);
                 for (final Turnout turnout : turnoutGroup.getTurnouts()) {
                     turnout.init();
-                    turnout.setId(UUID.randomUUID().hashCode());
+                    turnout.setId(UUID.randomUUID().toString());
                     turnouts.add(turnout);
                     turnout.setTurnoutGroup(turnoutGroup);
                 }

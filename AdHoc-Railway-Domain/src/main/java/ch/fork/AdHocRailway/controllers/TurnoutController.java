@@ -20,6 +20,7 @@ package ch.fork.AdHocRailway.controllers;
 
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
 import ch.fork.AdHocRailway.controllers.impl.brain.BrainTurnoutControlAdapter;
+import ch.fork.AdHocRailway.controllers.impl.dummy.DummyTurnoutController;
 import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.domain.turnouts.Turnout;
 import ch.fork.AdHocRailway.domain.turnouts.TurnoutState;
@@ -35,6 +36,40 @@ public abstract class TurnoutController {
             .newHashMap();
     protected final List<TurnoutChangeListener> generalListeners = Lists
             .newLinkedList();
+
+    public static TurnoutController createTurnoutController(
+            final RailwayDevice railwayDevice) {
+
+        if (railwayDevice == null) {
+            return new DummyTurnoutController();
+        }
+        switch (railwayDevice) {
+            case ADHOC_BRAIN:
+                return new BrainTurnoutControlAdapter(BrainController.getInstance());
+            case SRCP:
+                return new SRCPTurnoutControlAdapter();
+            default:
+                return new DummyTurnoutController();
+        }
+
+    }
+
+    public abstract void toggle(final Turnout turnout);
+
+    public abstract void toggleTest(final Turnout turnout);
+
+    public abstract void setDefaultState(final Turnout turnout);
+
+    public abstract void setStraight(final Turnout turnout);
+
+    public abstract void setCurvedLeft(final Turnout turnout);
+
+    public abstract void setCurvedRight(final Turnout turnout);
+
+    public abstract void setTurnoutWithAddress(final int address,
+                                               final TurnoutState state);
+
+    public abstract void reloadConfiguration();
 
     public void addGeneralTurnoutChangeListener(
             final TurnoutChangeListener listener) {
@@ -79,40 +114,6 @@ public abstract class TurnoutController {
         }
     }
 
-    public abstract void toggle(final Turnout turnout);
-
-    public abstract void toggleTest(final Turnout turnout);
-
-    public abstract void setDefaultState(final Turnout turnout);
-
-    public abstract void setStraight(final Turnout turnout);
-
-    public abstract void setCurvedLeft(final Turnout turnout);
-
-    public abstract void setCurvedRight(final Turnout turnout);
-
-    public abstract void setTurnoutWithAddress(final int address,
-                                               final TurnoutState state);
-
-    public abstract void reloadConfiguration();
-
-    public static TurnoutController createTurnoutController(
-            final RailwayDevice railwayDevice) {
-
-        if (railwayDevice == null) {
-            return new NullTurnoutController();
-        }
-        switch (railwayDevice) {
-            case ADHOC_BRAIN:
-                return new BrainTurnoutControlAdapter(BrainController.getInstance());
-            case SRCP:
-                return new SRCPTurnoutControlAdapter();
-            default:
-                return new NullTurnoutController();
-        }
-
-    }
-
     public void setNonDefaultState(final Turnout turnout) {
         if (turnout.isThreeWay()) {
             return;
@@ -136,53 +137,5 @@ public abstract class TurnoutController {
         generalListeners.remove(listener);
     }
 
-    static class NullTurnoutController extends TurnoutController {
-
-        @Override
-        public void toggle(final Turnout turnout) {
-            turnout.setActualState(turnout.getToggledState());
-            informListeners(turnout);
-        }
-
-        @Override
-        public void toggleTest(final Turnout turnout) {
-            turnout.setActualState(turnout.getToggledState());
-            informListeners(turnout);
-        }
-
-        @Override
-        public void setDefaultState(final Turnout turnout) {
-            turnout.setActualState(turnout.getDefaultState());
-            informListeners(turnout);
-        }
-
-        @Override
-        public void setStraight(final Turnout turnout) {
-            turnout.setActualState(TurnoutState.STRAIGHT);
-            informListeners(turnout);
-        }
-
-        @Override
-        public void setCurvedLeft(final Turnout turnout) {
-            turnout.setActualState(TurnoutState.LEFT);
-            informListeners(turnout);
-        }
-
-        @Override
-        public void setCurvedRight(final Turnout turnout) {
-            turnout.setActualState(TurnoutState.RIGHT);
-            informListeners(turnout);
-        }
-
-        @Override
-        public void setTurnoutWithAddress(final int address,
-                                          final TurnoutState state) {
-        }
-
-        @Override
-        public void reloadConfiguration() {
-        }
-
-    }
 
 }

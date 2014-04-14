@@ -18,7 +18,7 @@
 
 package ch.fork.AdHocRailway.ui.locomotives;
 
-import ch.fork.AdHocRailway.ui.tools.ImageTools;
+import ch.fork.AdHocRailway.ui.utils.ImageTools;
 
 import javax.swing.*;
 

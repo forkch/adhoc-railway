@@ -1,8 +1,14 @@
 package ch.fork.AdHocRailway.domain.turnouts;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum TurnoutType {
-    DEFAULT_LEFT("Default Left"), DEFAULT_RIGHT("Default Right"), DOUBLECROSS(
-            "Doublecross"), THREEWAY("Threeway"), CUTTER("Cutter");
+
+    DEFAULT_LEFT("Default Left"),
+    DEFAULT_RIGHT("Default Right"),
+    DOUBLECROSS("Doublecross"),
+    THREEWAY("Threeway"),
+    CUTTER("Cutter");
 
     private final String humanName;
 
