@@ -1,7 +1,6 @@
 package ch.fork.AdHocRailway.ui;
 
 import ch.fork.AdHocRailway.AdHocRailwayException;
-import ch.fork.AdHocRailway.domain.locomotives.Locomotive;
 import ch.fork.AdHocRailway.manager.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
@@ -20,7 +19,6 @@ import ch.fork.AdHocRailway.ui.bus.events.CommandLogEvent;
 import ch.fork.AdHocRailway.ui.bus.events.InitProceededEvent;
 import ch.fork.AdHocRailway.ui.bus.events.UpdateMainTitleEvent;
 import ch.fork.AdHocRailway.ui.context.PersistenceManagerContext;
-import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -150,9 +148,6 @@ public class PersistenceManager {
 
         appContext.setActualFile(file);
 
-
-        loadAndFillImageBase64();
-
         appContext.getMainBus().post(
                 new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
                         + file.getAbsolutePath() + "]")
@@ -164,14 +159,6 @@ public class PersistenceManager {
                                 + file + ")"
                 )
         );
-    }
-
-    private void loadAndFillImageBase64() {
-        for (Locomotive locomotive : appContext.getLocomotiveManager().getAllLocomotives()) {
-            if (StringUtils.isBlank(locomotive.getImageBase64())) {
-                locomotive.setImageBase64(LocomotiveImageHelper.getImageBase64(locomotive));
-            }
-        }
     }
 
     public void openDatabase() throws IOException {
