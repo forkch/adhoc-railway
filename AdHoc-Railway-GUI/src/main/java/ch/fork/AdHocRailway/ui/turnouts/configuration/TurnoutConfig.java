@@ -22,6 +22,7 @@ import ch.fork.AdHocRailway.domain.Constants;
 import ch.fork.AdHocRailway.domain.turnouts.*;
 import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
@@ -227,6 +228,9 @@ public class TurnoutConfig extends JDialog {
         if (!TurnoutHelper.isTurnoutReadyToTest(presentationModel.getBean())) {
             testTurnoutWidget.setEnabled(false);
         }
+
+        testTurnoutWidget.connectedToRailwayDevice(new ConnectedToRailwayEvent(ctx
+                .getRailwayDeviceManager().isConnected()));
 
         errorPanel = new ErrorPanel();
 

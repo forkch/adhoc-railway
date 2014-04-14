@@ -24,6 +24,7 @@ import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.utils.*;
@@ -67,7 +68,7 @@ public class RouteConfig extends JDialog {
     private JTextField routeNameField;
     private SelectionInList<RouteItem> routeItemModel;
     private JTable routeItemTable;
-    private JButton recordRouteButton;
+    private JToggleButton recordRouteButton;
     private JButton removeRouteItemButton;
     private JTextField routeOrientationField;
     private JPanel mainPanel;
@@ -109,9 +110,9 @@ public class RouteConfig extends JDialog {
         initEventHandling();
         initShortcuts();
 
-        routeNameField.requestFocus();
 
         pack();
+        routeNameField.requestFocus();
         SwingUtils.addEscapeListener(this);
         setLocationRelativeTo(getParent());
         setVisible(true);
@@ -150,7 +151,7 @@ public class RouteConfig extends JDialog {
         routedStateColumn.setCellRenderer(new RoutedTurnoutStateCellRenderer(
                 routeContext.getTurnoutManager()));
 
-        recordRouteButton = new JButton(new RecordRouteAction());
+        recordRouteButton = new JToggleButton(new RecordRouteAction());
         removeRouteItemButton = new JButton(new RemoveRouteItemAction());
 
         digitDisplay = new ThreeDigitDisplay();
@@ -158,6 +159,7 @@ public class RouteConfig extends JDialog {
         errorPanel = new ErrorPanel();
 
         testRouteWidget = new RouteWidget(routeContext, testRoute, true);
+        testRouteWidget.connectedToRailwayDevice(new ConnectedToRailwayEvent(routeContext.getRailwayDeviceManager().isConnected()));
         okButton = new JButton(new ApplyChangesAction());
         cancelButton = new JButton(new CancelAction());
     }
@@ -184,7 +186,12 @@ public class RouteConfig extends JDialog {
 
         mainPanel.add(infoPanel, "gap unrelated");
         mainPanel.add(testRouteWidget, "wrap");
-        mainPanel.add(buildRouteItemButtonBar(), "span 3, align center, wrap");
+
+        JPanel recordRemoveButtons = new JPanel();
+        recordRemoveButtons.add(recordRouteButton);
+        recordRemoveButtons.add(removeRouteItemButton);
+
+        mainPanel.add(recordRemoveButtons, "center, span 3, wrap");
         mainPanel.add(new JScrollPane(routeItemTable), "span 3, grow x, wrap");
 
         mainPanel.add(errorPanel, "span 2");
@@ -206,13 +213,8 @@ public class RouteConfig extends JDialog {
     }
 
     private void initShortcuts() {
-        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_R, 0, new RecordRouteAction());
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK, new RecordRouteAction());
         GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_ENTER, 0, new ApplyChangesAction());
-    }
-
-    private Component buildRouteItemButtonBar() {
-        return ButtonBarFactory.buildCenteredBar(recordRouteButton,
-                removeRouteItemButton);
     }
 
     public boolean validate(final Route routeToValidate) {
@@ -266,10 +268,10 @@ public class RouteConfig extends JDialog {
                 return;
             }
             if (property.equals(Route.PROPERTYNAME_ROUTE_ITEMS)) {
-                // final SortedSet<RouteItem> routeItems = new
-                // TreeSet<RouteItem>(
-                // (ArrayList<RouteItem>) evt.getNewValue());
-                // RouteHelper.update(testRoute, property, routeItems);
+                final SortedSet<RouteItem> routeItems = new
+                        TreeSet<RouteItem>(
+                        (ArrayList<RouteItem>) evt.getNewValue());
+                RouteHelper.update(testRoute, property, routeItems);
             } else {
                 RouteHelper.update(testRoute, property, evt.getNewValue());
             }
