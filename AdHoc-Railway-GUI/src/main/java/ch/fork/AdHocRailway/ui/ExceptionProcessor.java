@@ -67,4 +67,9 @@ public class ExceptionProcessor {
 
     }
 
+    public void displayMessage(String message) {
+
+        errorPanel.setErrorTextIcon(message,
+                ImageTools.createImageIconFromIconSet("dialog-error.png"));
+    }
 }

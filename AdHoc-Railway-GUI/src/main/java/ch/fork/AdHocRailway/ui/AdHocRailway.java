@@ -229,6 +229,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     @Override
+    public void displayMessage(String message) {
+        final ExceptionProcessor instance2 = ExceptionProcessor.getInstance();
+        instance2.displayMessage(message);
+    }
+
+    @Override
     public void handleException(final Throwable ex) {
         handleException(null, ex);
     }

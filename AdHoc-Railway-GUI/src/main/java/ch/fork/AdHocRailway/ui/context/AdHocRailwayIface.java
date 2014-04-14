@@ -22,4 +22,6 @@ public interface AdHocRailwayIface {
     public void updateCommandHistory(final String string);
 
     public void setTitle(final String string);
+
+    void displayMessage(String s);
 }

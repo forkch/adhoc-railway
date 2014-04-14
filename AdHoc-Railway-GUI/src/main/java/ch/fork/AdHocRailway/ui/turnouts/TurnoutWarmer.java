@@ -132,8 +132,12 @@ public class TurnoutWarmer extends ConfigurationDialog {
                     final Turnout turnout = turnoutPersistence
                             .getTurnoutByNumber((Integer) turnoutNumberField
                                     .getValue());
+                    if (turnout == null) {
+                        ctx.getMainApp().displayMessage("no valid turnout selected");
+                        return;
+                    }
                     turnoutControl.toggle(turnout);
-                    Thread.sleep(Preferences.getInstance().getIntValue(
+                    Thread.sleep(4 * Preferences.getInstance().getIntValue(
                             PreferencesKeys.ROUTING_DELAY));
                 }
             } catch (final InterruptedException e2) {
