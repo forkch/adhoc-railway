@@ -27,7 +27,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
 
     server.put('/routeGroup', function (req, res, next) {
         routeController.updateRouteGroup(req.params, function (err, routeGroup) {
-            sendDataToWebsocketClients(req, 'routeGroup:updated', routeGroup);
+            sendDataToWebsocketClients(err, req, 'routeGroup:updated', routeGroup);
             sendResponse(err, res, next, 201, 400, routeGroup);
         });
     });
@@ -35,7 +35,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
     server.del('/routeGroup/:id', function (req, res, next) {
         routeController.removeRouteGroup(req.params.id, function (err, routeGroup) {
 
-            sendDataToWebsocketClients(req, 'routeGroup:removed', routeGroup);
+            sendDataToWebsocketClients(err, req, 'routeGroup:removed', routeGroup);
             sendResponse(err, res, next, 200, 404, routeGroup);
         });
     });
@@ -49,7 +49,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
     server.post('/route', function (req, res, next) {
         routeController.addRoute(req.params, function (err, route) {
 
-            sendDataToWebsocketClients(req, 'route:added', route);
+            sendDataToWebsocketClients(err, req, 'route:added', route);
             sendResponse(err, res, next, 201, 400, route);
         });
     });
@@ -57,7 +57,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
     server.put('/route', function (req, res, next) {
         routeController.updateRoute(req.params, function (err, route) {
 
-            sendDataToWebsocketClients(req, 'route:updated', route);
+            sendDataToWebsocketClients(err, req, 'route:updated', route);
             sendResponse(err, res, next, 201, 400, route);
         });
     });
@@ -65,7 +65,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
     server.del('/route/:id', function (req, res, next) {
         routeController.removeRoute(req.params.id, function (err, route) {
 
-            sendDataToWebsocketClients(req, 'route:removed', route);
+            sendDataToWebsocketClients(err, req, 'route:removed', route);
             sendResponse(err, res, next, 201, 404, route);
         });
     });

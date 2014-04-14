@@ -27,7 +27,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
 
     server.put('/turnoutGroup', function (req, res, next) {
         turnoutController.updateTurnoutGroup(req.params, function (err, turnoutGroup) {
-            sendDataToWebsocketClients(req, 'turnoutGroup:updated', turnoutGroup);
+            sendDataToWebsocketClients(err, req, 'turnoutGroup:updated', turnoutGroup);
             sendResponse(err, res, next, 201, 400, turnoutGroup);
         });
     });
@@ -35,7 +35,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
     server.del('/turnoutGroup/:id', function (req, res, next) {
         turnoutController.removeTurnoutGroup(req.params.id, function (err, turnoutGroup) {
 
-            sendDataToWebsocketClients(req, 'turnoutGroup:removed', turnoutGroup);
+            sendDataToWebsocketClients(err, req, 'turnoutGroup:removed', turnoutGroup);
             sendResponse(err, res, next, 200, 404, turnoutGroup);
         });
     });
@@ -49,7 +49,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
     server.post('/turnout', function (req, res, next) {
         turnoutController.addTurnout(req.params, function (err, turnout) {
 
-            sendDataToWebsocketClients(req, 'turnout:added', turnout);
+            sendDataToWebsocketClients(err, req, 'turnout:added', turnout);
             sendResponse(err, res, next, 201, 400, turnout);
         });
     });
@@ -57,7 +57,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
     server.put('/turnout', function (req, res, next) {
         turnoutController.updateTurnout(req.params, function (err, turnout) {
 
-            sendDataToWebsocketClients(req, 'turnout:updated', turnout);
+            sendDataToWebsocketClients(err, req, 'turnout:updated', turnout);
             sendResponse(err, res, next, 201, 400, turnout);
         });
     });
@@ -65,7 +65,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
     server.del('/turnout/:id', function (req, res, next) {
         turnoutController.removeTurnout(req.params.id, function (err, turnout) {
 
-            sendDataToWebsocketClients(req, 'turnout:removed', turnout);
+            sendDataToWebsocketClients(err, req, 'turnout:removed', turnout);
             sendResponse(err, res, next, 201, 404, turnout);
         });
     });
