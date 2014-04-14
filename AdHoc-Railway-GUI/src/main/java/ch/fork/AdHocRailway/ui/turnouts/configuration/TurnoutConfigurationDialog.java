@@ -24,6 +24,7 @@ import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.manager.TurnoutManagerListener;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
+import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
 import ch.fork.AdHocRailway.ui.utils.ImageTools;
 import ch.fork.AdHocRailway.ui.utils.SwingUtils;
 import ch.fork.AdHocRailway.ui.utils.TableColumnAdjuster;
@@ -79,11 +80,17 @@ public class TurnoutConfigurationDialog extends JDialog implements
         initComponents();
         buildPanel();
         initEventHandling();
+        initShortcuts();
         turnoutManager.addTurnoutManagerListener(this);
         pack();
         SwingUtils.addEscapeListener(this);
         setLocationRelativeTo(getParent());
         setVisible(true);
+    }
+
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, new AddTurnoutGroupAction());
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, new AddTurnoutAction());
     }
 
     private void initComponents() {

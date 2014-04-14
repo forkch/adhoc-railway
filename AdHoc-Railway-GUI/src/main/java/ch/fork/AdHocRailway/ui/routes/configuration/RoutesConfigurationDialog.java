@@ -24,6 +24,7 @@ import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.RouteManagerListener;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
+import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
 import ch.fork.AdHocRailway.ui.utils.ImageTools;
 import ch.fork.AdHocRailway.ui.utils.SwingUtils;
 import ch.fork.AdHocRailway.ui.utils.ThreeDigitDisplay;
@@ -39,10 +40,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -80,6 +78,7 @@ public class RoutesConfigurationDialog extends JDialog implements
 
     private void initGUI() {
         buildPanel();
+        initShortcuts();
         routeManager.addRouteManagerListener(this);
         pack();
         SwingUtils.addEscapeListener(this);
@@ -191,6 +190,11 @@ public class RoutesConfigurationDialog extends JDialog implements
         });
         SwingUtils.addEscapeListener(this);
 
+    }
+
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, new AddRouteGroupAction());
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK, new AddRouteAction());
     }
 
     @Override

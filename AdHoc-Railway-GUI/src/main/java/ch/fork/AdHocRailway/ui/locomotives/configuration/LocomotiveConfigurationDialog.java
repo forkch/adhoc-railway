@@ -27,6 +27,7 @@ import ch.fork.AdHocRailway.manager.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
+import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
 import ch.fork.AdHocRailway.ui.utils.ImageTools;
 import ch.fork.AdHocRailway.ui.utils.SwingUtils;
 import ch.fork.AdHocRailway.ui.utils.TableColumnAdjuster;
@@ -44,10 +45,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
@@ -88,6 +86,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
         initComponents();
         buildPanel();
         initEventHandling();
+        initShortcuts();
         locomotiveManager.addLocomotiveManagerListener(this);
         pack();
         SwingUtils.addEscapeListener(this);
@@ -231,6 +230,10 @@ public class LocomotiveConfigurationDialog extends JDialog implements
         return ButtonBarFactory.buildRightAlignedBar(okButton);
     }
 
+    private void initShortcuts() {
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, new AddLocomotiveGroupAction());
+        GlobalKeyShortcutHelper.registerKey(getRootPane(), KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK, new AddLocomotiveAction());
+    }
     public boolean isOkPressed() {
         return okPressed;
     }
