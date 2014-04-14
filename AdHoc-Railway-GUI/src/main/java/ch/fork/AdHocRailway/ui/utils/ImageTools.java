@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.ui.utils;
 
+import ch.fork.AdHocRailway.ui.AdHocRailway;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 
@@ -39,7 +40,7 @@ public class ImageTools {
     public static ImageIcon createImageIcon(final String icon) {
         if (!cache.containsKey(icon)) {
             final ImageIcon imageIcon = new ImageIcon(
-                    ClassLoader.getSystemResource(icon));
+                    AdHocRailway.class.getClassLoader().getResource(icon));
             cache.put(icon, imageIcon);
             LOGGER.info("cache-miss: put icon for " + icon + " in cache");
             return imageIcon;
