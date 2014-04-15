@@ -1,11 +1,11 @@
 package ch.fork.AdHocRailway.ui;
 
-import ch.fork.AdHocRailway.services.impl.rest.RestLocomotiveService;
-import ch.fork.AdHocRailway.services.impl.rest.RestRouteService;
-import ch.fork.AdHocRailway.services.impl.rest.RestTurnoutService;
-import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
-import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
-import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
+import ch.fork.AdHocRailway.persistence.adhocserver.impl.rest.RestLocomotiveService;
+import ch.fork.AdHocRailway.persistence.adhocserver.impl.rest.RestRouteService;
+import ch.fork.AdHocRailway.persistence.adhocserver.impl.rest.RestTurnoutService;
+import ch.fork.AdHocRailway.persistence.xml.impl.XMLLocomotiveService;
+import ch.fork.AdHocRailway.persistence.xml.impl.XMLRouteService;
+import ch.fork.AdHocRailway.persistence.xml.impl.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;

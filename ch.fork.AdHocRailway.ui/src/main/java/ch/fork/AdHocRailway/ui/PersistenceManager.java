@@ -7,12 +7,12 @@ import ch.fork.AdHocRailway.manager.impl.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.RouteManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.TurnoutManagerImpl;
 import ch.fork.AdHocRailway.model.AdHocRailwayException;
+import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.SIOService;
+import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.ServiceListener;
+import ch.fork.AdHocRailway.persistence.xml.impl.XMLLocomotiveService;
+import ch.fork.AdHocRailway.persistence.xml.impl.XMLRouteService;
+import ch.fork.AdHocRailway.persistence.xml.impl.XMLTurnoutService;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
-import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
-import ch.fork.AdHocRailway.services.impl.socketio.ServiceListener;
-import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
-import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
-import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.bus.events.CommandLogEvent;
@@ -64,7 +64,7 @@ public class PersistenceManager {
             routeManager = new RouteManagerImpl(turnoutManager);
         }
         appContext.setRouteManager(routeManager);
-        routeManager.setRouteService(ServiceFactory
+        routeManager.setRouteService(PersistenceFactory
                 .createRouteService(useAdHocServer, appContext));
         routeManager.initialize(appContext.getMainBus());
     }
@@ -78,7 +78,7 @@ public class PersistenceManager {
             turnoutManager = new TurnoutManagerImpl();
         }
         appContext.setTurnoutManager(turnoutManager);
-        turnoutManager.setTurnoutService(ServiceFactory
+        turnoutManager.setTurnoutService(PersistenceFactory
                 .createTurnoutService(useAdHocServer, appContext));
         turnoutManager.initialize(appContext.getMainBus());
         return turnoutManager;
@@ -96,7 +96,7 @@ public class PersistenceManager {
             appContext.setLocomotiveManager(locomotiveManager);
         }
 
-        locomotiveManager.setLocomotiveService(ServiceFactory
+        locomotiveManager.setLocomotiveService(PersistenceFactory
                 .createLocomotiveService(useAdHocServer, appContext));
         locomotiveManager.initialize(appContext.getMainBus());
     }

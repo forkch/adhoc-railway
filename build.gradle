@@ -4,6 +4,7 @@ subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'maven'
     apply plugin: 'idea'
+    apply plugin: 'maven-publish'
     group = 'ch.fork.adhocrailway'
     version = '2.1.1'
 
@@ -39,12 +40,36 @@ subprojects {
         }
     }
 
-}
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+    }
 
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+
+                artifact sourceJar {
+                    classifier "sources"
+                }
+            }
+        }
+        repositories {
+            maven {
+                url "/home/fork/Code/forkch-mvn-repo"
+            }
+        }
+    }
+}
 
 project(':ch.fork.AdHocRailway.ui') {
     dependencies {
         compile project(':ch.fork.AdHocRailway.domain')
+        compile project(':ch.fork.AdHocRailway.service')
+        compile project(':ch.fork.AdHocRailway.persistence.xml')
+        compile project(':ch.fork.AdHocRailway.persistence.adhocserver')
+        compile project(':ch.fork.AdHocRailway.railway.srcp')
+        compile project(':ch.fork.AdHocRailway.railway.brain')
     }
 }
 
@@ -65,6 +90,36 @@ project(':ch.fork.AdHocRailway.model') {
 project(':ch.fork.AdHocRailway.persistence') {
     dependencies {
         compile project(':ch.fork.AdHocRailway.model')
+    }
+}
+
+project(':ch.fork.AdHocRailway.persistence.xml') {
+    dependencies {
+        compile project(':ch.fork.AdHocRailway.persistence')
+    }
+}
+
+project(':ch.fork.AdHocRailway.persistence.adhocserver') {
+    dependencies {
+        compile project(':ch.fork.AdHocRailway.persistence')
+    }
+}
+
+project(':ch.fork.AdHocRailway.railway') {
+    dependencies {
+        compile project(':ch.fork.AdHocRailway.model')
+    }
+}
+
+project(':ch.fork.AdHocRailway.railway.brain') {
+    dependencies {
+        compile project(':ch.fork.AdHocRailway.service')
+    }
+}
+
+project(':ch.fork.AdHocRailway.railway.srcp') {
+    dependencies {
+        compile project(':ch.fork.AdHocRailway.service')
     }
 }
 

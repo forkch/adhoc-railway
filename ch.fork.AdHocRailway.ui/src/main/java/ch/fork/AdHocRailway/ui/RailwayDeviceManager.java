@@ -1,13 +1,13 @@
 package ch.fork.AdHocRailway.ui;
 
 import ch.fork.AdHocRailway.controllers.*;
-import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
-import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPLocomotiveControlAdapter;
-import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPPowerControlAdapter;
-import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPRouteControlAdapter;
-import ch.fork.AdHocRailway.controllers.impl.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.model.AdHocRailwayException;
 import ch.fork.AdHocRailway.model.power.PowerSupply;
+import ch.fork.AdHocRailway.railway.brain.brain.BrainController;
+import ch.fork.AdHocRailway.railway.srcp.SRCPLocomotiveControlAdapter;
+import ch.fork.AdHocRailway.railway.srcp.SRCPPowerControlAdapter;
+import ch.fork.AdHocRailway.railway.srcp.SRCPRouteControlAdapter;
+import ch.fork.AdHocRailway.railway.srcp.SRCPTurnoutControlAdapter;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.bus.events.CommandLogEvent;
@@ -70,7 +70,7 @@ public class RailwayDeviceManager implements CommandDataListener,
             final TurnoutController turnoutControl) {
         appContext.getMainBus().post(
                 new InitProceededEvent("Loading Control Layer (Routes)"));
-        final RouteController routeControl = RouteController
+        final RouteController routeControl = RailwayDeviceFactory
                 .createLocomotiveController(railwayDevive, turnoutControl);
         routeControl.setRoutingDelay(Preferences.getInstance().getIntValue(
                 PreferencesKeys.ROUTING_DELAY));
@@ -81,7 +81,7 @@ public class RailwayDeviceManager implements CommandDataListener,
             final RailwayDevice railwayDevive) {
         appContext.getMainBus().post(
                 new InitProceededEvent("Loading Control Layer (Turnouts)"));
-        final TurnoutController turnoutControl = TurnoutController
+        final TurnoutController turnoutControl = RailwayDeviceFactory
                 .createTurnoutController(railwayDevive);
         appContext.setTurnoutControl(turnoutControl);
         return turnoutControl;
@@ -91,7 +91,7 @@ public class RailwayDeviceManager implements CommandDataListener,
             final RailwayDevice railwayDevive) {
         appContext.getMainBus().post(
                 new InitProceededEvent("Loading Control Layer (Locomotives)"));
-        final LocomotiveController locomotiveControl = LocomotiveController
+        final LocomotiveController locomotiveControl = RailwayDeviceFactory
                 .createLocomotiveController(railwayDevive);
 
         appContext.setLocomotiveControl(locomotiveControl);
@@ -102,7 +102,7 @@ public class RailwayDeviceManager implements CommandDataListener,
         appContext.getMainBus().post(
                 new InitProceededEvent("Loading Control Layer (Power)"));
 
-        final PowerController powerControl = PowerController
+        final PowerController powerControl = RailwayDeviceFactory
                 .createPowerController(railwayDevive);
 
         powerControl.addOrUpdatePowerSupply(new PowerSupply(1));

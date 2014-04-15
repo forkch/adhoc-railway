@@ -19,7 +19,7 @@
 package ch.fork.AdHocRailway.ui;
 
 import ch.fork.AdHocRailway.controllers.RailwayDevice;
-import ch.fork.AdHocRailway.controllers.impl.brain.BrainController;
+import ch.fork.AdHocRailway.railway.brain.brain.BrainController;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.context.ApplicationContext;

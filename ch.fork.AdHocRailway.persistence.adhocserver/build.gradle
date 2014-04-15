@@ -1,0 +1,9 @@
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    compile fileTree(dir: 'lib', includes: ['*.jar'])
+    compile 'org.json:json:20090211'
+    compile 'com.squareup.retrofit:retrofit:1.5.0'
+
+}
