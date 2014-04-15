@@ -15,6 +15,7 @@ import ch.fork.AdHocRailway.persistence.xml.impl.XMLRouteService;
 import ch.fork.AdHocRailway.persistence.xml.impl.XMLTurnoutService;
 import ch.fork.AdHocRailway.utils.DataImporter;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -155,7 +156,7 @@ public class XMLServiceHelper {
     }
 
     private XStream getXStream() {
-        final XStream xstream = new XStream();
+        final XStream xstream = new XStream(new StaxDriver());
 
         // old configurations
         xstream.omitField(TurnoutGroup.class, "turnoutNumberOffset");

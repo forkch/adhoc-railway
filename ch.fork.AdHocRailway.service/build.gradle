@@ -1,4 +1,7 @@
 apply plugin: 'maven-publish'
 
 dependencies {
+    testCompile 'junit:junit:4.+'
+    testCompile 'org.mockito:mockito-all:1.9.5'
+    compile 'log4j:log4j:1.2.17'
 }
