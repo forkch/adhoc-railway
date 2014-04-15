@@ -12,7 +12,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="ch.fork.AdHocRailway.persistence" exported="" />
+    <orderEntry type="module" module-name="ch.fork.adhocrailway.persistence" exported="" />
+    <orderEntry type="library" exported="" name="Gradle: retrofit-1.5.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gson-2.2.4" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: json-20090211" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: socketio" level="project" />
     <orderEntry type="library" exported="" name="Gradle: log4j-1.2.17" level="project" />
   </component>
 </module>

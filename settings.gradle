@@ -1,10 +1,10 @@
-include 'ch.fork.AdHocRailway.ui',
-        'ch.fork.AdHocRailway.model',
-        'ch.fork.AdHocRailway.service',
-        'ch.fork.AdHocRailway.persistence',
-        'ch.fork.AdHocRailway.persistence.xml',
-        'ch.fork.AdHocRailway.persistence.adhocserver',
-        'ch.fork.AdHocRailway.railway.brain',
-        'ch.fork.AdHocRailway.railway.srcp'
+include 'ch.fork.adhocrailway.ui',
+        'ch.fork.adhocrailway.model',
+        'ch.fork.adhocrailway.service',
+        'ch.fork.adhocrailway.persistence',
+        'ch.fork.adhocrailway.persistence.xml',
+        'ch.fork.adhocrailway.persistence.adhocserver',
+        'ch.fork.adhocrailway.railway.brain',
+        'ch.fork.adhocrailway.railway.srcp'
 
 

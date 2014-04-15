@@ -24,10 +24,10 @@
     <orderEntry type="library" exported="" name="Gradle: commons-cli-1.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-codec-1.9" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-logging-1.1.1" level="project" />
-    <orderEntry type="module" module-name="ch.fork.AdHocRailway.persistence.xml" exported="" />
-    <orderEntry type="module" module-name="ch.fork.AdHocRailway.persistence.adhocserver" exported="" />
-    <orderEntry type="module" module-name="ch.fork.AdHocRailway.railway.srcp" exported="" />
-    <orderEntry type="module" module-name="ch.fork.AdHocRailway.railway.brain" exported="" />
+    <orderEntry type="module" module-name="ch.fork.adhocrailway.persistence.xml" exported="" />
+    <orderEntry type="module" module-name="ch.fork.adhocrailway.persistence.adhocserver" exported="" />
+    <orderEntry type="module" module-name="ch.fork.adhocrailway.railway.srcp" exported="" />
+    <orderEntry type="module" module-name="ch.fork.adhocrailway.railway.brain" exported="" />
     <orderEntry type="library" exported="" name="Gradle: commons-io-2.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: junit-4.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: hamcrest-core-1.3" level="project" />

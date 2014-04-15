@@ -9,31 +9,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -48,31 +48,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -87,31 +87,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -126,31 +126,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>ABV</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -165,31 +165,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -204,31 +204,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -243,31 +243,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>Betriebsgeräusch</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>Lüfter</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>Pfeiffe</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>2</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>ABV</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -284,55 +284,55 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>ABV</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>5</number>
+                        <number>5</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>6</number>
+                        <number>6</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>7</number>
+                        <number>7</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>8</number>
+                        <number>8</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -347,31 +347,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -383,31 +383,31 @@
                         bus="1" address1="5" address2="0">
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -419,31 +419,31 @@
                         bus="1" address1="41" address2="0">
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -458,31 +458,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -497,31 +497,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -533,31 +533,31 @@
                         bus="1" address1="14" address2="0">
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -569,31 +569,31 @@
                         address1="77" address2="0">
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -610,31 +610,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -646,31 +646,31 @@
                         bus="1" address1="17" address2="0">
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -685,31 +685,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -724,7 +724,7 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -739,31 +739,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -780,7 +780,7 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -795,31 +795,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -834,31 +834,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -873,31 +873,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -912,31 +912,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -951,31 +951,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>ABV</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -990,31 +990,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1029,31 +1029,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1068,7 +1068,7 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1085,31 +1085,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>Schlusslicht rot</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>Betriebsgeräusch</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>Pfiff</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>2</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>ABV</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1124,31 +1124,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1163,31 +1163,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1202,31 +1202,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1241,31 +1241,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1280,31 +1280,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1319,7 +1319,7 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1331,31 +1331,31 @@
                         bus="1" address1="46" address2="0">
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1370,31 +1370,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1409,31 +1409,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1448,7 +1448,7 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1463,31 +1463,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>ABV</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1502,31 +1502,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1541,31 +1541,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1580,31 +1580,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1619,31 +1619,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1658,31 +1658,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1699,31 +1699,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1740,31 +1740,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1779,31 +1779,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1818,55 +1818,55 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>Motor</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>Pfeiffe lang</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>3</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>Entkupplung</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>Kompressor</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>5</number>
+                        <number>5</number>
                         <description>Pfeiffe kurz 1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>2</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>6</number>
+                        <number>6</number>
                         <description>Rangiergang</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>7</number>
+                        <number>7</number>
                         <description>Pfeiffe kurz 2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>2</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>8</number>
+                        <number>8</number>
                         <description>Bremsquitschen</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1881,31 +1881,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1920,7 +1920,7 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1932,31 +1932,31 @@
                         bus="1" address1="42" address2="0">
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -1971,55 +1971,55 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>Motorensound</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>Signalhorn</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>5</number>
+                        <number>5</number>
                         <description>F5</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>6</number>
+                        <number>6</number>
                         <description>F6</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>7</number>
+                        <number>7</number>
                         <description>F7</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>8</number>
+                        <number>8</number>
                         <description>Rangiergang</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -2034,31 +2034,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -2073,31 +2073,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>ABV</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -2112,31 +2112,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>ABV</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -2148,31 +2148,31 @@
                         type="digital" bus="1" address1="52" address2="0">
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -2184,55 +2184,55 @@
                         address2="33">
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>ABV</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>5</number>
+                        <number>5</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>6</number>
+                        <number>6</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>7</number>
+                        <number>7</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>8</number>
+                        <number>8</number>
                         <description>-</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -2249,31 +2249,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -2288,31 +2288,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
@@ -2327,31 +2327,31 @@
                 </imageBase64>
                 <functions>
                     <locomotiveFunction>
-                    <number>0</number>
+                        <number>0</number>
                         <description>Licht</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>1</number>
+                        <number>1</number>
                         <description>F1</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>2</number>
+                        <number>2</number>
                         <description>F2</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>3</number>
+                        <number>3</number>
                         <description>F3</description>
                         <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>
                     </locomotiveFunction>
                     <locomotiveFunction>
-                    <number>4</number>
+                        <number>4</number>
                         <description>F4</description>
                         <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
                         <deactivationDelay>-1</deactivationDelay>

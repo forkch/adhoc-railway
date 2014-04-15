@@ -57,50 +57,50 @@ subprojects {
     }
 }
 
-project(':ch.fork.AdHocRailway.ui') {
+project(':ch.fork.adhocrailway.ui') {
     dependencies {
-        compile project(':ch.fork.AdHocRailway.persistence.xml')
-        compile project(':ch.fork.AdHocRailway.persistence.adhocserver')
-        compile project(':ch.fork.AdHocRailway.railway.srcp')
-        compile project(':ch.fork.AdHocRailway.railway.brain')
+        compile project(':ch.fork.adhocrailway.persistence.xml')
+        compile project(':ch.fork.adhocrailway.persistence.adhocserver')
+        compile project(':ch.fork.adhocrailway.railway.srcp')
+        compile project(':ch.fork.adhocrailway.railway.brain')
     }
 }
 
-project(':ch.fork.AdHocRailway.service') {
+project(':ch.fork.adhocrailway.service') {
     dependencies {
-        compile project(':ch.fork.AdHocRailway.persistence')
+        compile project(':ch.fork.adhocrailway.persistence')
     }
 }
-project(':ch.fork.AdHocRailway.model') {
+project(':ch.fork.adhocrailway.model') {
 
 }
-project(':ch.fork.AdHocRailway.persistence') {
+project(':ch.fork.adhocrailway.persistence') {
     dependencies {
-        compile project(':ch.fork.AdHocRailway.model')
-    }
-}
-
-project(':ch.fork.AdHocRailway.persistence.xml') {
-    dependencies {
-        compile project(':ch.fork.AdHocRailway.persistence')
+        compile project(':ch.fork.adhocrailway.model')
     }
 }
 
-project(':ch.fork.AdHocRailway.persistence.adhocserver') {
+project(':ch.fork.adhocrailway.persistence.xml') {
     dependencies {
-        compile project(':ch.fork.AdHocRailway.persistence')
+        compile project(':ch.fork.adhocrailway.persistence')
     }
 }
 
-project(':ch.fork.AdHocRailway.railway.brain') {
+project(':ch.fork.adhocrailway.persistence.adhocserver') {
     dependencies {
-        compile project(':ch.fork.AdHocRailway.service')
+        compile project(':ch.fork.adhocrailway.persistence')
     }
 }
 
-project(':ch.fork.AdHocRailway.railway.srcp') {
+project(':ch.fork.adhocrailway.railway.brain') {
     dependencies {
-        compile project(':ch.fork.AdHocRailway.service')
+        compile project(':ch.fork.adhocrailway.service')
+    }
+}
+
+project(':ch.fork.adhocrailway.railway.srcp') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.service')
     }
 }
 
