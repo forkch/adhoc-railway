@@ -1,5 +1,4 @@
 include 'ch.fork.AdHocRailway.ui',
-        'ch.fork.AdHocRailway.domain',
         'ch.fork.AdHocRailway.model',
         'ch.fork.AdHocRailway.service',
         'ch.fork.AdHocRailway.persistence',

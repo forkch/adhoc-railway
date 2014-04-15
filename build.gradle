@@ -6,7 +6,7 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'maven-publish'
     group = 'ch.fork.adhocrailway'
-    version = '2.1.1'
+    version = '2.2.0'
 
     configurations {
         compileOnly
@@ -64,18 +64,10 @@ subprojects {
 
 project(':ch.fork.AdHocRailway.ui') {
     dependencies {
-        compile project(':ch.fork.AdHocRailway.domain')
-        compile project(':ch.fork.AdHocRailway.service')
         compile project(':ch.fork.AdHocRailway.persistence.xml')
         compile project(':ch.fork.AdHocRailway.persistence.adhocserver')
         compile project(':ch.fork.AdHocRailway.railway.srcp')
         compile project(':ch.fork.AdHocRailway.railway.brain')
-    }
-}
-
-project(':ch.fork.AdHocRailway.domain') {
-    dependencies {
-        compile project(':ch.fork.AdHocRailway.service')
     }
 }
 
