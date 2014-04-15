@@ -22,6 +22,7 @@ import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.model.turnouts.*;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
@@ -604,9 +605,9 @@ public class RouteConfig extends JDialog {
 
                 @Override
                 public void failure(
-                        final ManagerException routeManagerException) {
+                        final AdHocServiceException serviceException) {
 
-                    errorPanel.setErrorText(routeManagerException.getMessage());
+                    errorPanel.setErrorText(serviceException.getMessage());
                 }
 
             });

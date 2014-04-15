@@ -22,10 +22,10 @@ import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.manager.LocomotiveManagerListener;
-import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -546,7 +546,7 @@ public class LocomotiveWidget extends JPanel implements
 
     @Override
     public void failure(
-            final ManagerException locomotiveManagerException) {
+            final AdHocServiceException serviceException) {
     }
 
     private class LocomotiveGroupSelectAction implements ItemListener {

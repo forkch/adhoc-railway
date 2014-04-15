@@ -1,11 +1,11 @@
 package ch.fork.AdHocRailway.ui.routes;
 
 import ch.fork.AdHocRailway.controllers.RouteController;
-import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.RouteManagerListener;
 import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.model.turnouts.RouteGroup;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
@@ -206,7 +206,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
     }
 
     @Override
-    public void failure(final ManagerException arg0) {
+    public void failure(final AdHocServiceException serviceException) {
         if (disableListener) {
             return;
         }

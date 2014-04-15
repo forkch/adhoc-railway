@@ -16,6 +16,7 @@ subprojects {
         testCompile 'org.mockito:mockito-all:1.9.5'
         compile 'org.apache.commons:commons-lang3:3.1'
         compile 'commons-io:commons-io:2.4'
+        compile 'log4j:log4j:1.2.17'
     }
 
     repositories {
@@ -45,10 +46,23 @@ project(':ch.fork.AdHocRailway.ui') {
     dependencies {
         compile project(':ch.fork.AdHocRailway.domain')
     }
-
 }
 
 project(':ch.fork.AdHocRailway.domain') {
+    dependencies {
+        compile project(':ch.fork.AdHocRailway.service')
+    }
+}
+
+project(':ch.fork.AdHocRailway.service') {
+    dependencies {
+        compile project(':ch.fork.AdHocRailway.persistence')
+    }
+}
+project(':ch.fork.AdHocRailway.model') {
+
+}
+project(':ch.fork.AdHocRailway.persistence') {
     dependencies {
         compile project(':ch.fork.AdHocRailway.model')
     }

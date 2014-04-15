@@ -1,6 +1,6 @@
 package ch.fork.AdHocRailway.controllers.impl.brain;
 
-import ch.fork.AdHocRailway.AdHocRailwayException;
+import ch.fork.AdHocRailway.model.AdHocRailwayException;
 
 public class BrainException extends AdHocRailwayException {
 

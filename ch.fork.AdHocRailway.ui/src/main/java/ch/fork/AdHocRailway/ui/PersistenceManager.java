@@ -1,17 +1,17 @@
 package ch.fork.AdHocRailway.ui;
 
-import ch.fork.AdHocRailway.AdHocRailwayException;
 import ch.fork.AdHocRailway.manager.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.manager.impl.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.RouteManagerImpl;
 import ch.fork.AdHocRailway.manager.impl.TurnoutManagerImpl;
+import ch.fork.AdHocRailway.model.AdHocRailwayException;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.services.impl.socketio.ServiceListener;
 import ch.fork.AdHocRailway.services.impl.xml.XMLLocomotiveService;
 import ch.fork.AdHocRailway.services.impl.xml.XMLRouteService;
-import ch.fork.AdHocRailway.services.impl.xml.XMLServiceHelper;
 import ch.fork.AdHocRailway.services.impl.xml.XMLTurnoutService;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -195,7 +195,7 @@ public class PersistenceManager {
             }
 
             @Override
-            public void connectionError(final AdHocRailwayException ex) {
+            public void connectionError(final AdHocServiceException ex) {
                 appContext.getMainBus().post(
                         new CommandLogEvent("Connection error: "
                                 + ex.getMessage())

@@ -18,7 +18,7 @@
 
 package ch.fork.AdHocRailway.technical.configuration;
 
-import ch.fork.AdHocRailway.AdHocRailwayException;
+import ch.fork.AdHocRailway.model.AdHocRailwayException;
 
 public class ConfigurationException extends AdHocRailwayException {
 

@@ -25,6 +25,7 @@ import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveType;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
 import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
@@ -294,7 +295,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
 
     @Override
     public void failure(
-            final ManagerException locomotiveManagerException) {
+            final AdHocServiceException serviceException) {
 
     }
 

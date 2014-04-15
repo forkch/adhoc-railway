@@ -10,7 +10,6 @@ dependencies {
     compile 'com.thoughtworks.xstream:xstream:1.4.4'
     compile 'org.rxtx:rxtx:2.1.7'
     compile 'org.json:json:20090211'
-    compile 'com.squareup.retrofit:retrofit:1.5.0'
 }
 
 jar {

@@ -23,6 +23,7 @@ import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.RouteManagerListener;
 import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.model.turnouts.RouteGroup;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
 import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
 import ch.fork.AdHocRailway.ui.utils.ImageTools;
@@ -246,7 +247,7 @@ public class RoutesConfigurationDialog extends JDialog implements
     }
 
     @Override
-    public void failure(final ManagerException routeManagerException) {
+    public void failure(final AdHocServiceException serviceException) {
 
     }
 

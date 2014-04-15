@@ -18,11 +18,11 @@
 
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
-import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.manager.TurnoutManagerListener;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
 import ch.fork.AdHocRailway.ui.utils.ImageTools;
@@ -292,7 +292,7 @@ public class TurnoutConfigurationDialog extends JDialog implements
     }
 
     @Override
-    public void failure(final ManagerException arg0) {
+    public void failure(final AdHocServiceException serviceException) {
 
     }
 

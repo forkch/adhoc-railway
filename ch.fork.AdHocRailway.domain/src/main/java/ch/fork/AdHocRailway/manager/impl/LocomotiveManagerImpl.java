@@ -24,6 +24,7 @@ import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.manager.impl.events.LocomotivesUpdatedEvent;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
 import com.google.common.eventbus.EventBus;
@@ -267,11 +268,11 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
     @Override
     public void failure(
-            final ManagerException locomotiveManagerException) {
-        LOGGER.warn("failure", locomotiveManagerException);
+            final AdHocServiceException serviceException) {
+        LOGGER.warn("failure", serviceException);
         cleanupListeners();
         for (final LocomotiveManagerListener l : listeners) {
-            l.failure(locomotiveManagerException);
+            l.failure(serviceException);
         }
     }
 

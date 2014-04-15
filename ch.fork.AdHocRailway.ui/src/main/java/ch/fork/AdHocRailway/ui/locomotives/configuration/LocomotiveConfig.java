@@ -19,11 +19,11 @@
 package ch.fork.AdHocRailway.ui.locomotives.configuration;
 
 import ch.fork.AdHocRailway.manager.LocomotiveManager;
-import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveType;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.LocomotiveImageHelper;
 import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
@@ -500,8 +500,8 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
 
                         @Override
                         public void failure(
-                                final ManagerException arg0) {
-                            errorPanel.setErrorText(arg0.getMessage());
+                                final AdHocServiceException serviceException) {
+                            errorPanel.setErrorText(serviceException.getMessage());
                         }
 
                     });

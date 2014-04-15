@@ -27,6 +27,7 @@ import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.model.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.model.turnouts.RouteItem;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.RouteService;
 import ch.fork.AdHocRailway.services.RouteServiceListener;
 import com.google.common.eventbus.EventBus;
@@ -334,11 +335,11 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     }
 
     @Override
-    public void failure(final ManagerException routeManagerException) {
-        LOGGER.info("failure: " + routeManagerException);
+    public void failure(final AdHocServiceException serviceException) {
+        LOGGER.info("failure: " + serviceException);
         cleanupListeners();
         for (final RouteManagerListener l : listeners) {
-            l.failure(routeManagerException);
+            l.failure(serviceException);
         }
     }
 

@@ -1,6 +1,6 @@
 package ch.fork.AdHocRailway.controllers;
 
-import ch.fork.AdHocRailway.AdHocRailwayException;
+import ch.fork.AdHocRailway.model.AdHocRailwayException;
 
 /**
  * Created by fork on 3/23/14.

@@ -1,6 +1,6 @@
 package ch.fork.AdHocRailway.manager;
 
-import ch.fork.AdHocRailway.AdHocRailwayException;
+import ch.fork.AdHocRailway.model.AdHocRailwayException;
 
 public class ManagerException extends AdHocRailwayException {
 

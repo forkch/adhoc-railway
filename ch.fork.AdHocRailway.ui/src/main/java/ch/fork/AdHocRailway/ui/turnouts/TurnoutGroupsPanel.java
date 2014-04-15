@@ -1,11 +1,11 @@
 package ch.fork.AdHocRailway.ui.turnouts;
 
 import ch.fork.AdHocRailway.controllers.TurnoutController;
-import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.manager.TurnoutManagerListener;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
@@ -262,7 +262,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
     }
 
     @Override
-    public void failure(final ManagerException arg0) {
+    public void failure(final AdHocServiceException serviceException) {
         if (disableListener) {
             return;
         }
