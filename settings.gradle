@@ -4,7 +4,6 @@ include 'ch.fork.AdHocRailway.ui',
         'ch.fork.AdHocRailway.persistence',
         'ch.fork.AdHocRailway.persistence.xml',
         'ch.fork.AdHocRailway.persistence.adhocserver',
-        'ch.fork.AdHocRailway.railway',
         'ch.fork.AdHocRailway.railway.brain',
         'ch.fork.AdHocRailway.railway.srcp'
 
