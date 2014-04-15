@@ -97,12 +97,6 @@ project(':ch.fork.AdHocRailway.persistence.adhocserver') {
     }
 }
 
-project(':ch.fork.AdHocRailway.railway') {
-    dependencies {
-        compile project(':ch.fork.AdHocRailway.model')
-    }
-}
-
 project(':ch.fork.AdHocRailway.railway.brain') {
     dependencies {
         compile project(':ch.fork.AdHocRailway.service')
