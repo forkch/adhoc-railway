@@ -66,7 +66,7 @@ public class PersistenceManager {
         appContext.setRouteManager(routeManager);
         routeManager.setRouteService(PersistenceFactory
                 .createRouteService(useAdHocServer, appContext));
-        routeManager.initialize(appContext.getMainBus());
+        routeManager.initialize();
     }
 
     private TurnoutManager createTurnoutManagerOnContext(final boolean useAdHocServer) {
@@ -80,7 +80,7 @@ public class PersistenceManager {
         appContext.setTurnoutManager(turnoutManager);
         turnoutManager.setTurnoutService(PersistenceFactory
                 .createTurnoutService(useAdHocServer, appContext));
-        turnoutManager.initialize(appContext.getMainBus());
+        turnoutManager.initialize();
         return turnoutManager;
     }
 
@@ -98,7 +98,7 @@ public class PersistenceManager {
 
         locomotiveManager.setLocomotiveService(PersistenceFactory
                 .createLocomotiveService(useAdHocServer, appContext));
-        locomotiveManager.initialize(appContext.getMainBus());
+        locomotiveManager.initialize();
     }
 
     public void loadLastFileOrLoadDataFromAdHocServerIfRequested()

@@ -22,7 +22,6 @@ import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.model.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.model.turnouts.RouteItem;
 import ch.fork.AdHocRailway.services.RouteService;
-import com.google.common.eventbus.EventBus;
 
 import java.util.List;
 import java.util.SortedSet;
@@ -59,7 +58,7 @@ public interface RouteManager {
 
     void clearToService();
 
-    void initialize(final EventBus eventBus);
+    void initialize();
 
     void addRouteManagerListener(final RouteManagerListener listener);
 

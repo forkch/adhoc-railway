@@ -21,13 +21,11 @@ package ch.fork.AdHocRailway.manager.impl;
 import ch.fork.AdHocRailway.manager.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.manager.ManagerException;
-import ch.fork.AdHocRailway.manager.impl.events.LocomotivesUpdatedEvent;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
-import com.google.common.eventbus.EventBus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -44,7 +42,6 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     private final Set<LocomotiveManagerListener> listenersToBeRemovedInNextEvent = new HashSet<LocomotiveManagerListener>();
     private final Map<Integer, Locomotive> numberToLocomotiveMap = new HashMap<Integer, Locomotive>();
     private LocomotiveService locomotiveService;
-    private EventBus eventBus;
 
     public LocomotiveManagerImpl() {
         LOGGER.info("LocomotiveManager loaded");
@@ -154,8 +151,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     }
 
     @Override
-    public void initialize(final EventBus eventBus) {
-        this.eventBus = eventBus;
+    public void initialize() {
         clear();
         cleanupListeners();
         locomotiveService.init(this);
@@ -202,9 +198,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
             l.locomotivesUpdated(updatedLocomotiveGroups);
         }
 
-        eventBus.post(new LocomotivesUpdatedEvent(updatedLocomotiveGroups));
     }
-
     @Override
     public void locomotiveAdded(final Locomotive locomotive) {
         LOGGER.info("locomotiveAdded: " + locomotive);

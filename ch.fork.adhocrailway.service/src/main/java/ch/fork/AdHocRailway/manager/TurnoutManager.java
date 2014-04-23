@@ -21,14 +21,13 @@ package ch.fork.AdHocRailway.manager;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.services.TurnoutService;
-import com.google.common.eventbus.EventBus;
 
 import java.util.List;
 import java.util.SortedSet;
 
 public interface TurnoutManager {
 
-    void initialize(final EventBus eventBus);
+    void initialize();
 
     void addTurnoutManagerListener(final TurnoutManagerListener listener);
 

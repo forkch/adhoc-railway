@@ -21,12 +21,10 @@ package ch.fork.AdHocRailway.manager.impl;
 import ch.fork.AdHocRailway.manager.ManagerException;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.manager.TurnoutManagerListener;
-import ch.fork.AdHocRailway.manager.impl.events.TurnoutsUpdatedEvent;
 import ch.fork.AdHocRailway.model.turnouts.*;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.TurnoutService;
 import ch.fork.AdHocRailway.services.TurnoutServiceListener;
-import com.google.common.eventbus.EventBus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -45,8 +43,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
     private int lastProgrammedAddress = 1;
 
     private int lastProgrammedNumber = 0;
-
-    private EventBus eventBus;
 
     public TurnoutManagerImpl() {
         LOGGER.info("TurnoutManagerImpl loaded");
@@ -208,8 +204,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
     }
 
     @Override
-    public void initialize(final EventBus eventBus) {
-        this.eventBus = eventBus;
+    public void initialize() {
         clear();
         cleanupListeners();
         turnoutService.init(this);
@@ -231,7 +226,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
             l.turnoutsUpdated(this.turnoutGroups);
         }
 
-        eventBus.post(new TurnoutsUpdatedEvent(updatedTurnouts));
     }
 
     @Override

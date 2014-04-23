@@ -5,7 +5,6 @@ import ch.fork.AdHocRailway.manager.impl.LocomotiveManagerImpl;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.services.LocomotiveService;
-import com.google.common.eventbus.EventBus;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -23,8 +22,6 @@ public class LocomotiveManagerImplTest {
     private LocomotiveService serviceMock;
     @Mock
     private LocomotiveManagerListener listenerMock;
-    @Mock
-    private EventBus eventbusMock;
 
     @Before
     public void setup() {
@@ -32,7 +29,7 @@ public class LocomotiveManagerImplTest {
         locomotiveManagerImpl = new LocomotiveManagerImpl();
         locomotiveManagerImpl.setLocomotiveService(serviceMock);
         locomotiveManagerImpl.addLocomotiveManagerListener(listenerMock);
-        locomotiveManagerImpl.initialize(eventbusMock);
+        locomotiveManagerImpl.initialize();
 
     }
 

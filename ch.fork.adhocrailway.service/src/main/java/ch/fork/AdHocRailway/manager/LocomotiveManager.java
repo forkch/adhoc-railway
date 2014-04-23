@@ -21,13 +21,12 @@ package ch.fork.AdHocRailway.manager;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.services.LocomotiveService;
-import com.google.common.eventbus.EventBus;
 
 import java.util.SortedSet;
 
 public interface LocomotiveManager {
 
-    void initialize(final EventBus bus);
+    void initialize();
 
     void addLocomotiveManagerListener(final LocomotiveManagerListener listener);
 
