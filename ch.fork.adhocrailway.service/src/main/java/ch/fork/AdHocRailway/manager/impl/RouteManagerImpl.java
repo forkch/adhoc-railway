@@ -52,7 +52,6 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     @Override
     public void addRouteManagerListener(final RouteManagerListener listener) {
         this.listeners.add(listener);
-        listener.routesUpdated(routeGroups);
     }
 
     @Override
@@ -235,7 +234,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 
     @Override
     public void initialize() {
-        clear();
+        clearCache();
         cleanupListeners();
 
         routeService.init(this);

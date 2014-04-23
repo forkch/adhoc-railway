@@ -152,7 +152,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
     @Override
     public void initialize() {
-        clear();
+        clearCache();
         cleanupListeners();
         locomotiveService.init(this);
     }
@@ -161,7 +161,6 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     public void addLocomotiveManagerListener(
             final LocomotiveManagerListener listener) {
         this.listeners.add(listener);
-        listener.locomotivesUpdated(locomotiveGroups);
     }
 
     @Override
