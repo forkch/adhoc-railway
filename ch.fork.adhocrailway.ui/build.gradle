@@ -68,35 +68,31 @@ applicationDistribution.from(createLocoimages) {
 
 task copyFiles(type: Copy, dependsOn: [jar]) {
     from configurations.runtime
-    from("model/libs")
-    into("webstart/lib")
+    from("${buildDir}/libs")
+    into("${buildDir}/webstart/lib")
     include('*.jar')
 }
 
 task signAll(dependsOn: [copyFiles]) << {
-    new File('webstart/signed').mkdirs()
-    def libFiles = files { file('webstart/lib').listFiles() }
+    new File("${buildDir}/webstart/signed").mkdirs()
+    def libFiles = files { file("${buildDir}/webstart/lib").listFiles() }
     libFiles.each {
         ant.signjar(
-                destDir: 'webstart/signed',
+                destDir: "${buildDir}/webstart/signed",
                 alias: 'http://www.fork.ch',
                 jar: it,
-                keystore: 'src/jnlp/keys/forkch.keys',
+                keystore: "${projectDir}/src/jnlp/keys/forkch.keys",
                 storepass: 'forkch123',
                 preservelastmodified: 'true')
     }
 }
 
 task generateJnlp(dependsOn: [signAll]) << {
-    File jnlpTemplateFile = new File('src/jnlp/template/template.vm')
+    File jnlpTemplateFile = new File("${projectDir}/src/jnlp/template/template.vm")
     def root = new XmlParser().parse(jnlpTemplateFile)
     def jnlpFileName = "${archivesBaseName}-${version}.jnlp"
     // Setting values in the jnlp template
     // Setting root values
-    // File CodeBase
-    //root.@codebase = 'file:/'+new File('webstart/signed').absolutePath
-    //root.@codebase = '.'
-    // Hppt CodeBase
     root.@codebase = 'http://adhocserver/adhoc-railway'
     root.@href = jnlpFileName
     // Setting information values
@@ -113,7 +109,7 @@ task generateJnlp(dependsOn: [signAll]) << {
     def resource = root.resources[0]
     def j2se = resource.j2se[0]
     j2se.@version = "1.7+"
-    def collection = files { file('webstart/lib').listFiles() }
+    def collection = files { file("${buildDir}/webstart/lib").listFiles() }
     def mainJar = "${archivesBaseName}-${version}.jar"
     collection.each {
         def resourceValues = [href: it.name]
@@ -126,12 +122,12 @@ task generateJnlp(dependsOn: [signAll]) << {
     def applicationDesc = root.'application-desc'[0]
     applicationDesc.'@main-class' = "ch.fork.AdHocRailway.ui.AdHocRailway"
     // Writing the jnlp file filled
-    File jnlpFile = new File('webstart/signed/' + jnlpFileName)
+    File jnlpFile = new File("${buildDir}/webstart/signed/" + jnlpFileName)
     new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
 }
 
 task generateJnlpLocal(dependsOn: [signAll]) << {
-    File jnlpTemplateFile = new File('src/jnlp/template/template.vm')
+    File jnlpTemplateFile = new File("${projectDir}/src/jnlp/template/template.vm")
     def root = new XmlParser().parse(jnlpTemplateFile)
     def jnlpFileName = "${archivesBaseName}-${version}.jnlp"
     // Setting values in the jnlp template
@@ -156,7 +152,7 @@ task generateJnlpLocal(dependsOn: [signAll]) << {
     def resource = root.resources[0]
     def j2se = resource.j2se[0]
     j2se.@version = "1.7+"
-    def collection = files { file('webstart/lib').listFiles() }
+    def collection = files { file("${buildDir}/webstart/lib").listFiles() }
     def mainJar = "${archivesBaseName}-${version}.jar"
     collection.each {
         def resourceValues = [href: it.name]
@@ -169,7 +165,7 @@ task generateJnlpLocal(dependsOn: [signAll]) << {
     def applicationDesc = root.'application-desc'[0]
     applicationDesc.'@main-class' = "ch.fork.AdHocRailway.ui.AdHocRailway"
     // Writing the jnlp file filled
-    File jnlpFile = new File('webstart/signed/' + jnlpFileName)
+    File jnlpFile = new File("${buildDir}/webstart/signed/" + jnlpFileName)
     new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
 }
 
