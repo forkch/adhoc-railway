@@ -215,6 +215,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
     @Override
     public void locomotiveChanged(final SRCPLocomotive changedSRCPLocomotive) {
+        System.out.println("sdfasdfasdf");
 
         final Locomotive locomotive = SRCPLocomotiveLocomotiveMap
                 .get(changedSRCPLocomotive);
@@ -234,8 +235,10 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         locomotive.setCurrentFunctions(SimulatedMFXLocomotivesHelper
                 .convertFromMultipartFunctions(locomotive.getType(),
                         newFunctions));
-
-        informListeners(locomotive);
+        if (locomotive.getTargetSpeed() == -1 || locomotive.getCurrentSpeed() == locomotive.getTargetSpeed()) {
+            informListeners(locomotive);
+            locomotive.setTargetSpeed(-1);
+        }
     }
 
     @Override

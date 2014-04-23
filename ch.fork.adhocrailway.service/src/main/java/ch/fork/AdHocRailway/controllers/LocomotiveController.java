@@ -125,16 +125,18 @@ public abstract class LocomotiveController implements
     }
 
     public void increaseSpeed(final Locomotive locomotive) {
-        if (locomotive.getCurrentSpeed() < locomotive.getType()
+        if (locomotive.getCurrentOrTargetSpeed() < locomotive.getType()
                 .getDrivingSteps()) {
-            setSpeed(locomotive, locomotive.getCurrentSpeed() + 1,
+            locomotive.setTargetSpeed(locomotive.getCurrentOrTargetSpeed() + 1);
+            setSpeed(locomotive, locomotive.getTargetSpeed(),
                     locomotive.getCurrentFunctions());
         }
     }
 
     public void decreaseSpeed(final Locomotive locomotive) {
-        if (locomotive.getCurrentSpeed() > 0) {
-            setSpeed(locomotive, locomotive.getCurrentSpeed() - 1,
+        if (locomotive.getCurrentOrTargetSpeed() > 0) {
+            locomotive.setTargetSpeed(locomotive.getCurrentOrTargetSpeed() - 1);
+            setSpeed(locomotive, locomotive.getTargetSpeed(),
                     locomotive.getCurrentFunctions());
         }
 

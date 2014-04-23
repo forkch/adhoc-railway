@@ -81,6 +81,7 @@ public class Locomotive extends AbstractItem implements Serializable,
     private transient LocomotiveGroup group;
 
     private transient int currentSpeed = 0;
+    private transient int targetSpeed = -1;
 
     private transient LocomotiveDirection currentDirection = FORWARD;
 
@@ -242,6 +243,21 @@ public class Locomotive extends AbstractItem implements Serializable,
         this.currentSpeed = currentSpeed;
     }
 
+    public int getTargetSpeed() {
+        return targetSpeed;
+    }
+
+    public void setTargetSpeed(int targetSpeed) {
+        this.targetSpeed = targetSpeed;
+    }
+
+    public int getCurrentOrTargetSpeed() {
+        if (targetSpeed == -1) {
+            return currentSpeed;
+        }
+        return targetSpeed;
+    }
+
     public LocomotiveDirection getCurrentDirection() {
 
         if (currentDirection == null) {
@@ -316,4 +332,5 @@ public class Locomotive extends AbstractItem implements Serializable,
         return ToStringBuilder.reflectionToString(this,
                 ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
 }

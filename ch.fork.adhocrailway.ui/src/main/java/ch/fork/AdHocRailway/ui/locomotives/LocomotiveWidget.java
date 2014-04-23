@@ -331,7 +331,8 @@ public class LocomotiveWidget extends JPanel implements
         if (ctx.getRailwayDeviceManager().isConnected()) {
             locomotiveControl.activateLoco(myLocomotive);
         }
-        updateSpeed();
+        final int currentSpeed = myLocomotive.getCurrentSpeed();
+        updateSpeed(currentSpeed);
 
         updateFunctions();
 
@@ -367,8 +368,7 @@ public class LocomotiveWidget extends JPanel implements
         }
     }
 
-    private void updateSpeed() {
-        final int currentSpeed = myLocomotive.getCurrentSpeed();
+    private void updateSpeed(int currentSpeed) {
         final float speedInPercent = ((float) currentSpeed)
                 / ((float) myLocomotive.getType().getDrivingSteps());
 
@@ -702,9 +702,8 @@ public class LocomotiveWidget extends JPanel implements
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
-
-
             locomotiveControl.increaseSpeed(myLocomotive);
+            updateSpeed(myLocomotive.getTargetSpeed());
         }
     }
 
@@ -716,6 +715,7 @@ public class LocomotiveWidget extends JPanel implements
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
             locomotiveControl.decreaseSpeed(myLocomotive);
+            updateSpeed(myLocomotive.getTargetSpeed());
         }
     }
 

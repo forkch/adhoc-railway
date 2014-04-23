@@ -17,6 +17,6 @@ public class SRCPThreadUtils {
     }
 
     public static RateLimiter createRateLimiter() {
-        return RateLimiter.create(5);
+        return RateLimiter.create(2);
     }
 }
