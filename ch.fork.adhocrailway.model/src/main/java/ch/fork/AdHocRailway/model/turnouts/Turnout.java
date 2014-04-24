@@ -49,7 +49,6 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_TURNOUT_GROUP = "turnoutGroup";
     @Expose
     private String id = UUID.randomUUID().toString();
-    ;
     @Expose
     private int number;
     @Expose

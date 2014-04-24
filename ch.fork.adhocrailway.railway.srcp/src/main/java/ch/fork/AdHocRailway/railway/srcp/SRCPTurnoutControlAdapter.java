@@ -151,7 +151,9 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
             srcpTurnout.setBus1(turnout.getBus1());
             srcpTurnout.setBus2(turnout.getBus2());
             srcpTurnout.setAddress1(turnout.getAddress1());
+            srcpTurnout.setAddress1Switched(turnout.isAddress1Switched());
             srcpTurnout.setAddress2(turnout.getAddress2());
+            srcpTurnout.setAddress2Switched(turnout.isAddress2Switched());
         }
         return srcpTurnout;
     }
