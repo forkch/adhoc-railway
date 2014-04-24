@@ -2,10 +2,7 @@ apply plugin: 'maven-publish'
 
 dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
-    compile('com.thoughtworks.xstream:xstream:1.4.4') {
-        exclude group: 'xmlpull'
-        exclude group: 'xpp3'
-    }
+    compile('com.thoughtworks.xstream:xstream:1.4.4')
     compile 'com.google.guava:guava:14.0.1'
     compile 'org.apache.commons:commons-lang3:3.1'
 }

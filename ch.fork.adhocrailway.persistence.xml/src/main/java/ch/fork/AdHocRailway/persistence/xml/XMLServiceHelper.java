@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.ui;
+package ch.fork.AdHocRailway.persistence.xml;
 
 import ch.fork.AdHocRailway.manager.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.RouteManager;
@@ -8,21 +8,15 @@ import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.model.turnouts.*;
-import ch.fork.AdHocRailway.persistence.xml.AdHocRailwayData;
-import ch.fork.AdHocRailway.persistence.xml.LocomotiveTypeConverter;
 import ch.fork.AdHocRailway.persistence.xml.impl.XMLLocomotiveService;
 import ch.fork.AdHocRailway.persistence.xml.impl.XMLRouteService;
 import ch.fork.AdHocRailway.persistence.xml.impl.XMLTurnoutService;
 import ch.fork.AdHocRailway.utils.DataImporter;
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.SortedSet;
 import java.util.UUID;
 
@@ -41,26 +35,33 @@ public class XMLServiceHelper {
     public void loadFile(final XMLLocomotiveService locomotiveService,
                          final XMLTurnoutService turnoutService,
                          final XMLRouteService routeService, final File xmlFile) {
-
-        AdHocRailwayData data;
         try {
-            LOGGER.info("start loading locomotives, turnout and routes  from file: "
-                    + xmlFile);
-            final XStream xstream = getXStream();
-
-            data = (AdHocRailwayData) xstream.fromXML(new FileReader(xmlFile));
-            addFunctionsIfNeccesaray(data);
-
-            locomotiveService.loadLocomotiveGroupsFromXML(data
-                    .getLocomotiveGroups());
-            turnoutService.loadTurnoutGroupsFromXML(data.getTurnoutGroups());
-            routeService.loadRouteGroupsFromXML(data.getRouteGroups());
-
-            LOGGER.info("finished loading locomotives, turnout and routes  from file: "
-                    + xmlFile);
-        } catch (final FileNotFoundException e) {
+            loadFile(locomotiveService, turnoutService, routeService, FileUtils.openInputStream(xmlFile));
+        } catch (IOException e) {
             throw new AdHocRailwayException("could not find file " + xmlFile);
         }
+
+    }
+
+    public void loadFile(final XMLLocomotiveService locomotiveService,
+                         final XMLTurnoutService turnoutService,
+                         final XMLRouteService routeService, final InputStream xmlFile) {
+
+        AdHocRailwayData data;
+        LOGGER.info("start loading locomotives, turnout and routes  from file: "
+                + xmlFile);
+        final XStream xstream = getXStream();
+
+        data = (AdHocRailwayData) xstream.fromXML(xmlFile);
+        addFunctionsIfNeccesaray(data);
+
+        locomotiveService.loadLocomotiveGroupsFromXML(data
+                .getLocomotiveGroups());
+        turnoutService.loadTurnoutGroupsFromXML(data.getTurnoutGroups());
+        routeService.loadRouteGroupsFromXML(data.getRouteGroups());
+
+        LOGGER.info("finished loading locomotives, turnout and routes  from file: "
+                + xmlFile);
 
     }
 
@@ -156,7 +157,7 @@ public class XMLServiceHelper {
     }
 
     private XStream getXStream() {
-        final XStream xstream = new XStream(new StaxDriver());
+        final XStream xstream = new XStream();
 
         // old configurations
         xstream.omitField(TurnoutGroup.class, "turnoutNumberOffset");

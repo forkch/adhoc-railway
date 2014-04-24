@@ -83,6 +83,7 @@ project(':ch.fork.adhocrailway.persistence') {
 project(':ch.fork.adhocrailway.persistence.xml') {
     dependencies {
         compile project(':ch.fork.adhocrailway.persistence')
+        compile project(':ch.fork.adhocrailway.service')
     }
 }
 

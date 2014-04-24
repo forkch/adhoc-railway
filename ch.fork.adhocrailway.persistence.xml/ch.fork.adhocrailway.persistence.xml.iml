@@ -14,6 +14,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="ch.fork.adhocrailway.persistence" exported="" />
     <orderEntry type="library" exported="" name="Gradle: log4j-1.2.17" level="project" />
+    <orderEntry type="module" module-name="ch.fork.adhocrailway.service" exported="" />
+    <orderEntry type="library" exported="" name="Gradle: commons-io-2.4" level="project" />
   </component>
 </module>
 

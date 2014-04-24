@@ -8,10 +8,13 @@ import java.util.SortedSet;
 
 public class AdHocRailwayData {
 
-    private final SortedSet<LocomotiveGroup> locomotiveGroups;
-    private final SortedSet<TurnoutGroup> turnoutGroups;
-    private final SortedSet<RouteGroup> routeGroups;
+    private SortedSet<LocomotiveGroup> locomotiveGroups;
+    private SortedSet<TurnoutGroup> turnoutGroups;
+    private SortedSet<RouteGroup> routeGroups;
 
+    public AdHocRailwayData() {
+
+    }
     public AdHocRailwayData(final SortedSet<LocomotiveGroup> locomotiveGroups,
                             final SortedSet<TurnoutGroup> turnoutGroups,
                             final SortedSet<RouteGroup> routeGroups) {

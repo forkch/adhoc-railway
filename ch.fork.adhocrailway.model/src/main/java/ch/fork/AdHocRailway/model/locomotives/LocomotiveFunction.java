@@ -105,6 +105,10 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
 
     @Override
     public int compareTo(final LocomotiveFunction o) {
+
+        if (o == null) {
+            return 1;
+        }
         return Integer.valueOf(number)
                 .compareTo(o.getNumber());
     }
