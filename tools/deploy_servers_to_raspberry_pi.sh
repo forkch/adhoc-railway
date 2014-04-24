@@ -26,5 +26,6 @@ scp -r AdHoc-Railway-Webclient.tar.gz baehnle@adhocserver:~/AdHoc-Railway
 ssh baehnle@adhocserver 'cd ~/AdHoc-Railway && tar xvf AdHoc-Railway-Webclient.tar.gz'
 ssh baehnle@adhocserver 'rm ~/AdHoc-Railway/AdHoc-Railway-Webclient.tar.gz'
 
-ssh -t baehnle@adhocserver 'sudo service adhoc-railway-server start && sudo service adhoc-railway-webclient start'
+ssh -t baehnle@adhocserver 'time sudo service adhoc-railway-server start && time sudo service adhoc-railway-webclient start'
 cd ..
+
