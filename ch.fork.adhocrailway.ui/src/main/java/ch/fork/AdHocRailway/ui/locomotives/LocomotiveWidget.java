@@ -338,7 +338,7 @@ public class LocomotiveWidget extends JPanel implements
 
         updateDirection();
 
-        updateLockedState(locomotiveControl);
+        //updateLockedState(locomotiveControl);
 
         if (isFree()) {
             locomotiveGroupComboBox.setEnabled(true);
@@ -418,17 +418,19 @@ public class LocomotiveWidget extends JPanel implements
         final LocomotiveController locomotiveControl = ctx
                 .getLocomotiveControl();
         if (myLocomotive.getCurrentSpeed() == 0) {
-            if (locomotiveControl.isLocked(myLocomotive)) {
+            /*if (locomotiveControl.isLocked(myLocomotive)) {
                 return !locomotiveControl.isLockedByMe(myLocomotive);
             } else {
                 return true;
-            }
+            }*/
+            return true;
         } else {
-            if (locomotiveControl.isLocked(myLocomotive)) {
+            /*if (locomotiveControl.isLocked(myLocomotive)) {
                 return !locomotiveControl.isLockedByMe(myLocomotive);
             } else {
                 return false;
-            }
+            }*/
+            return false;
         }
     }
 
