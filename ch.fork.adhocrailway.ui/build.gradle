@@ -91,6 +91,7 @@ task generateJnlp(dependsOn: [signAll]) << {
     File jnlpTemplateFile = new File("${projectDir}/src/jnlp/template/template.vm")
     def root = new XmlParser().parse(jnlpTemplateFile)
     def jnlpFileName = "${archivesBaseName}-${version}.jnlp"
+    def jnlpFileNameLatest = "${archivesBaseName}-latest.jnlp"
     // Setting values in the jnlp template
     // Setting root values
     root.@codebase = 'http://adhocserver/adhoc-railway'
@@ -123,13 +124,16 @@ task generateJnlp(dependsOn: [signAll]) << {
     applicationDesc.'@main-class' = "ch.fork.AdHocRailway.ui.AdHocRailway"
     // Writing the jnlp file filled
     File jnlpFile = new File("${buildDir}/webstart/signed/" + jnlpFileName)
+    File jnlpFileLatest = new File("${buildDir}/webstart/signed/" + jnlpFileNameLatest)
     new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
+    new XmlNodePrinter(new PrintWriter(jnlpFileLatest)).print(root)
 }
 
 task generateJnlpLocal(dependsOn: [signAll]) << {
     File jnlpTemplateFile = new File("${projectDir}/src/jnlp/template/template.vm")
     def root = new XmlParser().parse(jnlpTemplateFile)
     def jnlpFileName = "${archivesBaseName}-${version}.jnlp"
+    def jnlpFileNameLatest = "${archivesBaseName}-latest.jnlp"
     // Setting values in the jnlp template
     // Setting root values
     // File CodeBase
@@ -166,7 +170,9 @@ task generateJnlpLocal(dependsOn: [signAll]) << {
     applicationDesc.'@main-class' = "ch.fork.AdHocRailway.ui.AdHocRailway"
     // Writing the jnlp file filled
     File jnlpFile = new File("${buildDir}/webstart/signed/" + jnlpFileName)
+    File jnlpFileLatest = new File("${buildDir}/webstart/signed/" + jnlpFileNameLatest)
     new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
+    new XmlNodePrinter(new PrintWriter(jnlpFileLatest)).print(root)
 }
 
 task generateWebStartFiles(dependsOn: [generateJnlp]) << {
