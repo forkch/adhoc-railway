@@ -2,6 +2,6 @@
 
 cd AdHoc-Railway-Deployment-Page
 
-grunt build
+grunt clean build
 
 scp -r dist/* baehnle@adhocserver:/var/www/
