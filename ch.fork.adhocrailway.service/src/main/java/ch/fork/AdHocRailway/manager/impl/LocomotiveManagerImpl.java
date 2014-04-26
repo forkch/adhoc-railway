@@ -198,6 +198,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
         }
 
     }
+
     @Override
     public void locomotiveAdded(final Locomotive locomotive) {
         LOGGER.info("locomotiveAdded: " + locomotive);
@@ -273,7 +274,6 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     public void disconnect() {
         cleanupListeners();
         locomotiveService.disconnect();
-        locomotivesUpdated(new TreeSet<LocomotiveGroup>());
     }
 
     private void cleanupListeners() {

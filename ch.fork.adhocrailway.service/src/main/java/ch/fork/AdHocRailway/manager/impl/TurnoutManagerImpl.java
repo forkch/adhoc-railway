@@ -301,7 +301,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
     public void disconnect() {
         cleanupListeners();
         turnoutService.disconnect();
-        turnoutsUpdated(new TreeSet<TurnoutGroup>());
     }
 
     @Override

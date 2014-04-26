@@ -344,7 +344,6 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     public void disconnect() {
         cleanupListeners();
         routeService.disconnect();
-        routesUpdated(new TreeSet<RouteGroup>());
     }
 
 
