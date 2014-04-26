@@ -94,7 +94,7 @@ task generateJnlp(dependsOn: [signAll]) << {
     def jnlpFileNameLatest = "${archivesBaseName}-latest.jnlp"
     // Setting values in the jnlp template
     // Setting root values
-    root.@codebase = 'http://adhocserver/adhoc-railway'
+    root.@codebase = 'http://adhocserver/adhoc-railway/artifacts'
     root.@href = jnlpFileName
     // Setting information values
     def information = root.information[0]
@@ -140,7 +140,7 @@ task generateJnlpLocal(dependsOn: [signAll]) << {
     //root.@codebase = 'file:/'+new File('webstart/signed').absolutePath
     root.@codebase = '.'
     // Hppt CodeBase
-    //root.@codebase = 'http://adhocserver/adhoc-railway'
+    //root.@codebase = 'http://adhocserver/adhoc-railway/artifacts'
     root.@href = jnlpFileName
     // Setting information values
     def information = root.information[0]
