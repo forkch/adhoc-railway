@@ -282,8 +282,11 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 
     private void populateTransientFields(Route route) {
         for (RouteItem routeItem : route.getRoutedTurnouts()) {
-            routeItem.setTurnout(turnoutManager.getTurnoutById(routeItem.getTurnoutId()));
-            routeItem.setRoute(route);
+            Turnout turnoutById = turnoutManager.getTurnoutById(routeItem.getTurnoutId());
+            if(turnoutById != null) {
+                routeItem.setTurnout(turnoutById);
+                routeItem.setRoute(route);
+            }
         }
     }
 
