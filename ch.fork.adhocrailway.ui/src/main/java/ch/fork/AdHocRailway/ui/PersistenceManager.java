@@ -163,8 +163,8 @@ public class PersistenceManager {
     }
 
     public void openDatabase() throws IOException {
-
         disconnectFromCurrentPersistence();
+
         switchToServerMode();
         loadPersistenceLayer();
         loadLastFileOrLoadDataFromAdHocServerIfRequested();
@@ -191,7 +191,7 @@ public class PersistenceManager {
             public void disconnected() {
                 appContext.getMainBus().post(
                         new CommandLogEvent(
-                                "Successfully connected to AdHoc-Server")
+                                "Successfully disconnected from AdHoc-Server")
                 );
             }
 
@@ -235,6 +235,7 @@ public class PersistenceManager {
         appContext.getTurnoutManager().disconnect();
         appContext.getRouteManager().disconnect();
         appContext.getLocomotiveManager().disconnect();
+        SIOService.getInstance().disconnect();
     }
 
     public void autoDiscoverAdHocServerConnect() {
