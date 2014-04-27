@@ -1,5 +1,6 @@
 package ch.fork.AdHocRailway.ui.context;
 
+import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.manager.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
@@ -29,4 +30,7 @@ public interface PersistenceManagerContext {
     void setRouteManager(final RouteManager routeManager);
 
     void setActualFile(File file);
+
+    public RouteController getRouteControl();
+
 }

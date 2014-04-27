@@ -5,6 +5,7 @@ import ch.fork.AdHocRailway.controllers.impl.dummy.DummyLocomotiveController;
 import ch.fork.AdHocRailway.controllers.impl.dummy.DummyPowerController;
 import ch.fork.AdHocRailway.controllers.impl.dummy.DummyRouteController;
 import ch.fork.AdHocRailway.controllers.impl.dummy.DummyTurnoutController;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.railway.brain.brain.*;
 import ch.fork.AdHocRailway.railway.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.railway.srcp.SRCPPowerControlAdapter;
@@ -47,20 +48,20 @@ public class RailwayDeviceFactory {
 
     }
 
-    public static RouteController createLocomotiveController(
+    public static RouteController createRouteController(
             final RailwayDevice railwayDevice,
-            final TurnoutController turnoutController) {
+            final TurnoutController turnoutController, TurnoutManager turnoutManager) {
         if (railwayDevice == null) {
-            return new DummyRouteController(turnoutController);
+            return new DummyRouteController(turnoutController, turnoutManager);
         }
         switch (railwayDevice) {
             case ADHOC_BRAIN:
-                return new BrainRouteControlAdapter(turnoutController);
+                return new BrainRouteControlAdapter(turnoutController, turnoutManager);
             case SRCP:
                 return new SRCPRouteControlAdapter(
-                        (SRCPTurnoutControlAdapter) turnoutController);
+                        (SRCPTurnoutControlAdapter) turnoutController, turnoutManager);
             default:
-                return new DummyRouteController(turnoutController);
+                return new DummyRouteController(turnoutController, turnoutManager);
 
         }
     }

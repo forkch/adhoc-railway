@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.controllers.impl.dummy;
 import ch.fork.AdHocRailway.controllers.RouteChangingThread;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.model.turnouts.Route;
 
 /**
@@ -13,7 +14,8 @@ public class DummyRouteController extends RouteController {
     private final TurnoutController turnoutControl;
     private int routingDelay;
 
-    public DummyRouteController(final TurnoutController turnoutControl) {
+    public DummyRouteController(final TurnoutController turnoutControl, TurnoutManager turnoutManager) {
+        super(turnoutManager);
         this.turnoutControl = turnoutControl;
         routeChangingListener = new RouteChangingThread.RouteChangingListener() {
             @Override

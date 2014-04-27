@@ -51,7 +51,9 @@ public class PersistenceManager {
         createLocomotiveManagerOnContext(useAdHocServer);
 
         TurnoutManager turnoutManager = createTurnoutManagerOnContext(useAdHocServer);
-
+        if (appContext.getRouteControl() != null) {
+            appContext.getRouteControl().setTurnoutManager(turnoutManager);
+        }
         createRouteManagerOnContext(useAdHocServer, turnoutManager);
     }
 

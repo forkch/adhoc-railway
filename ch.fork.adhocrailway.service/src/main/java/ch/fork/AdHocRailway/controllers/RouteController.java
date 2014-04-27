@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.controllers;
 
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.model.turnouts.Route;
 import com.google.common.collect.Maps;
 
@@ -29,7 +30,12 @@ public abstract class RouteController {
 
     private final Map<Route, List<RouteChangeListener>> listeners = Maps
             .newHashMap();
+    protected TurnoutManager turnoutManager;
 
+    protected RouteController(final TurnoutManager turnoutManager) {
+
+        this.turnoutManager = turnoutManager;
+    }
 
     public abstract void enableRoute(final Route r);
 
@@ -102,4 +108,10 @@ public abstract class RouteController {
             }
         }
     }
+
+    public void setTurnoutManager(TurnoutManager turnoutManager) {
+        this.turnoutManager = turnoutManager;
+    }
+
+    ;
 }

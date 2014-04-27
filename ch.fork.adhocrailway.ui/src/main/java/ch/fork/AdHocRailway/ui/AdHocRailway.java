@@ -166,12 +166,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             preferences.loadPreferences(parsedCommandLine.hasOption("c"));
             appContext.setPreferences(preferences);
 
+            persistenceManager = new PersistenceManager(appContext);
+            persistenceManager.loadPersistenceLayer();
+
             railwayDeviceManager = new RailwayDeviceManager(appContext);
             appContext.setRailwayDeviceManager(railwayDeviceManager);
             railwayDeviceManager.loadControlLayer();
 
-            persistenceManager = new PersistenceManager(appContext);
-            persistenceManager.loadPersistenceLayer();
 
             initProceeded("Creating GUI ...");
 
@@ -200,6 +201,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             setVisible(true);
         } catch (final Exception e) {
             handleException(e);
+            e.printStackTrace();
         }
     }
 

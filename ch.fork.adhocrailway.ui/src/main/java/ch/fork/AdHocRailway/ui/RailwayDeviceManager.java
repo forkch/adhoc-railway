@@ -71,7 +71,7 @@ public class RailwayDeviceManager implements CommandDataListener,
         appContext.getMainBus().post(
                 new InitProceededEvent("Loading Control Layer (Routes)"));
         final RouteController routeControl = RailwayDeviceFactory
-                .createLocomotiveController(railwayDevive, turnoutControl);
+                .createRouteController(railwayDevive, turnoutControl, appContext.getTurnoutManager());
         routeControl.setRoutingDelay(Preferences.getInstance().getIntValue(
                 PreferencesKeys.ROUTING_DELAY));
         appContext.setRouteControl(routeControl);

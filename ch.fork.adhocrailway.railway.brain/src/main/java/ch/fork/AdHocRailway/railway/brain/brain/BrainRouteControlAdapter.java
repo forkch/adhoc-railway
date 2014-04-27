@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.railway.brain.brain;
 import ch.fork.AdHocRailway.controllers.RouteChangingThread;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.model.turnouts.Route;
 
 public class BrainRouteControlAdapter extends RouteController {
@@ -11,7 +12,8 @@ public class BrainRouteControlAdapter extends RouteController {
     private final RouteChangingThread.RouteChangingListener routeChangingListener;
     private long routingDelay;
 
-    public BrainRouteControlAdapter(final TurnoutController turnoutController) {
+    public BrainRouteControlAdapter(final TurnoutController turnoutController, TurnoutManager turnoutManager) {
+        super(turnoutManager);
         this.turnoutControl = turnoutController;
         routeChangingListener = new RouteChangingThread.RouteChangingListener() {
             @Override

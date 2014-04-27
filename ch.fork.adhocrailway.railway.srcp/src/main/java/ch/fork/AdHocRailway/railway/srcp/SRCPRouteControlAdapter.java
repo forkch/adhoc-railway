@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.railway.srcp;
 
 import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.RouteController;
+import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.model.turnouts.RouteItem;
 import de.dermoba.srcp.client.SRCPSession;
@@ -27,7 +28,8 @@ public class SRCPRouteControlAdapter extends RouteController implements
     private SRCPRoute sRouteTemp;
 
     public SRCPRouteControlAdapter(
-            final SRCPTurnoutControlAdapter turnoutControl) {
+            final SRCPTurnoutControlAdapter turnoutControl, final TurnoutManager turnoutManager) {
+        super(turnoutManager);
         this.turnoutControl = turnoutControl;
         routeControl = SRCPRouteControl.getInstance();
 
@@ -157,8 +159,9 @@ public class SRCPRouteControlAdapter extends RouteController implements
         for (final RouteItem routeItem : route.getRoutedTurnouts()) {
 
             final SRCPRouteItem sRouteItem = new SRCPRouteItem();
+            int number = routeItem.getTurnout().getNumber();
             final SRCPTurnout sTurnout = turnoutControl
-                    .getOrCreateSRCPTurnout(routeItem.getTurnout());
+                    .getOrCreateSRCPTurnout(turnoutManager.getTurnoutByNumber(number));
             sRouteItem.setTurnout(sTurnout);
             switch (routeItem.getState()) {
                 case LEFT:
