@@ -20,18 +20,17 @@ package ch.fork.AdHocRailway.controllers;
 
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class TurnoutController {
 
-    protected final Map<Turnout, List<TurnoutChangeListener>> listeners = Maps
+    protected final Map<Turnout, Set<TurnoutChangeListener>> listeners = Maps
             .newHashMap();
-    protected final List<TurnoutChangeListener> generalListeners = Lists
-            .newLinkedList();
+    protected final Set<TurnoutChangeListener> generalListeners = Sets.newHashSet();
 
 
     public abstract void toggle(final Turnout turnout);
@@ -58,10 +57,10 @@ public abstract class TurnoutController {
 
     public void addTurnoutChangeListener(final Turnout turnout,
                                          final TurnoutChangeListener listener) {
-        List<TurnoutChangeListener> turnoutChangeListeners = listeners
+        Set<TurnoutChangeListener> turnoutChangeListeners = listeners
                 .get(turnout);
         if (turnoutChangeListeners == null) {
-            turnoutChangeListeners = Lists.newLinkedList();
+            turnoutChangeListeners = Sets.newHashSet();
             listeners.put(turnout, turnoutChangeListeners);
         }
         turnoutChangeListeners.add(listener);
@@ -73,7 +72,7 @@ public abstract class TurnoutController {
 
     public void removeTurnoutChangeListener(final Turnout turnout,
                                             final TurnoutChangeListener listener) {
-        final List<TurnoutChangeListener> listenersForTurnout = listeners
+        final Set<TurnoutChangeListener> listenersForTurnout = listeners
                 .get(turnout);
         if (listenersForTurnout != null) {
             listenersForTurnout.remove(listener);
@@ -85,7 +84,7 @@ public abstract class TurnoutController {
             scl.turnoutChanged(turnout);
         }
 
-        final List<TurnoutChangeListener> turnoutChangeListeners = listeners
+        final Set<TurnoutChangeListener> turnoutChangeListeners = listeners
                 .get(turnout);
         if (turnoutChangeListeners != null) {
             for (final TurnoutChangeListener scl : turnoutChangeListeners) {

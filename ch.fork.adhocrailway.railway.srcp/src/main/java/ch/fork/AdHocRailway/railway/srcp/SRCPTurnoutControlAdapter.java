@@ -140,13 +140,14 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
         SRCPTurnout srcpTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
         if (srcpTurnout == null) {
             srcpTurnout = createSRCPTurnout(turnout);
+            updateCaches(turnout, srcpTurnout);
         } else {
             if (!turnoutTypesMatch(turnout.getType(), srcpTurnout.getTurnoutType())) {
                 turnoutsSRCPTurnoutsMap.remove(turnout);
                 SRCPTurnoutsTurnoutsMap.remove(srcpTurnout);
                 turnoutControl.removeTurnout(srcpTurnout);
-
                 srcpTurnout = createSRCPTurnout(turnout);
+                updateCaches(turnout, srcpTurnout);
             }
             srcpTurnout.setBus1(turnout.getBus1());
             srcpTurnout.setBus2(turnout.getBus2());
@@ -154,8 +155,16 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
             srcpTurnout.setAddress1Switched(turnout.isAddress1Switched());
             srcpTurnout.setAddress2(turnout.getAddress2());
             srcpTurnout.setAddress2Switched(turnout.isAddress2Switched());
+
+            updateCaches(turnout, srcpTurnout);
         }
         return srcpTurnout;
+    }
+
+    private void updateCaches(Turnout turnout, SRCPTurnout srcpTurnout) {
+        turnoutsSRCPTurnoutsMap.put(turnout, srcpTurnout);
+        SRCPTurnoutsTurnoutsMap.put(srcpTurnout, turnout);
+        turnoutControl.addTurnout(srcpTurnout);
     }
 
     private boolean turnoutTypesMatch(TurnoutType type, SRCPTurnoutTypes turnoutType) {
@@ -201,9 +210,6 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 
         setSRCPTurnoutType(turnout, srcpTurnout);
 
-        turnoutsSRCPTurnoutsMap.put(turnout, srcpTurnout);
-        SRCPTurnoutsTurnoutsMap.put(srcpTurnout, turnout);
-        turnoutControl.addTurnout(srcpTurnout);
         return srcpTurnout;
     }
 
