@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./gradlew clean build distZip generateWebStartFiles
+./gradlew --offline clean build distZip generateWebStartFiles
 
 ssh baehnle@adhocserver 'rm -rf /var/www/adhoc-railway/artifacts/'
 ssh baehnle@adhocserver 'mkdir -p /var/www/adhoc-railway/artifacts'
