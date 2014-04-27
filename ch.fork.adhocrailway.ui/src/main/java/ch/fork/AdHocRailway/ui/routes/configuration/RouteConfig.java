@@ -144,8 +144,10 @@ public class RouteConfig extends JDialog {
         routeItemTable.setSelectionModel(new SingleListSelectionAdapter(
                 routeItemModel.getSelectionIndexHolder()));
 
-        routeItemModel.setList(new ArrayList<RouteItem>(presentationModel
-                .getBean().getRoutedTurnouts()));
+        SortedSet<RouteItem> routedTurnouts = presentationModel
+                .getBean().getRoutedTurnouts();
+
+        routeItemModel.setList(new ArrayList<RouteItem>(routedTurnouts));
 
         final TableColumn routedStateColumn = routeItemTable.getColumnModel()
                 .getColumn(1);
@@ -262,19 +264,16 @@ public class RouteConfig extends JDialog {
 
         @Override
         public void propertyChange(final PropertyChangeEvent evt) {
-            if (evt.getPropertyName().equalsIgnoreCase("selectionIndex")) {
-                return;
-            }
-            if (evt.getPropertyName().equalsIgnoreCase("selection")) {
-                return;
-            }
-            if (property.equals(Route.PROPERTYNAME_ROUTE_ITEMS)) {
+
+            if (evt.getPropertyName().equalsIgnoreCase("list") && property.equals(Route.PROPERTYNAME_ROUTE_ITEMS)) {
                 final SortedSet<RouteItem> routeItems = new
                         TreeSet<RouteItem>(
                         (ArrayList<RouteItem>) evt.getNewValue());
                 RouteHelper.update(testRoute, property, routeItems);
-            } else {
+            } else if (evt.getPropertyName().equalsIgnoreCase(property)) {
                 RouteHelper.update(testRoute, property, evt.getNewValue());
+            } else {
+                return;
             }
             testRouteWidget.setRoute(testRoute);
 

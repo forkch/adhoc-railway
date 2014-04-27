@@ -61,6 +61,17 @@ public class Route extends AbstractItem implements java.io.Serializable,
     public Route() {
     }
 
+    public Route(Route old) {
+        this.id = old.getId();
+        this.number = old.getNumber();
+        this.name = old.getName();
+        this.orientation = old.getOrientation();
+        for (RouteItem routeItem : old.getRoutedTurnouts()) {
+            addRouteItem(new RouteItem(routeItem));
+        }
+        this.groupId = old.getGroupId();
+    }
+
     public String getId() {
         return this.id;
     }

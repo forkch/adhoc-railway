@@ -53,9 +53,8 @@ public class RouteHelper {
     }
 
     public static Route copyRoute(final Route old) {
-        final Route r = new Route();
+        final Route r = new Route(old);
         try {
-            BeanUtils.copyProperties(r, old);
         } catch (Exception e) {
             e.printStackTrace();
         }

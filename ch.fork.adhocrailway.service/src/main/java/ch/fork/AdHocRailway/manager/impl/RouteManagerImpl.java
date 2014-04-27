@@ -288,6 +288,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
                 routeItem.setRoute(route);
             }
         }
+        route.setRoutedTurnouts(new TreeSet<RouteItem>(route.getRoutedTurnouts()));
     }
 
     @Override

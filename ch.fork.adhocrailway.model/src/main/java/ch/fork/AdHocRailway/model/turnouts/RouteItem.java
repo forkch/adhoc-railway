@@ -47,12 +47,11 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     public RouteItem() {
     }
 
-    public RouteItem(final String id, final Turnout turnout, final Route route,
-                     final RouteItemState routedState) {
-        this.id = id;
-        this.turnout = turnout;
-        this.route = route;
-        this.state = routedState;
+    public RouteItem(RouteItem routeItem) {
+        this.id = routeItem.getId();
+        this.turnoutId = routeItem.getTurnoutId();
+        this.state = routeItem.getState();
+        this.turnout = new Turnout(routeItem.getTurnout());
     }
 
     public String getId() {
@@ -98,7 +97,11 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int compareTo(final RouteItem o) {
-        return id.compareTo(o.getId());
+        if (this.turnout == null && o.getTurnout() == null) {
+            return id.compareTo(o.getId());
+        } else {
+            return Integer.compare(turnout.getNumber(), o.getTurnout().getNumber());
+        }
     }
 
     @Override
