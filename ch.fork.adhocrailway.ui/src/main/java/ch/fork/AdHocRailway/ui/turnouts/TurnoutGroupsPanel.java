@@ -309,7 +309,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                             PreferencesKeys.ROUTING_DELAY);
                     for (final Turnout t : turnoutPersistence.getAllTurnouts()) {
                         turnoutControl.setDefaultState(t);
-                        Thread.sleep(delay);
+                        Thread.sleep(2 * delay);
                     }
                 } catch (final InterruptedException e1) {
                     ctx.getMainApp().handleException(e1);

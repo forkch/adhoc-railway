@@ -8,7 +8,6 @@ import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.routes.*;
 import de.dermoba.srcp.model.turnouts.SRCPTurnout;
-import de.dermoba.srcp.model.turnouts.SRCPTurnoutState;
 
 import java.util.HashMap;
 import java.util.List;
@@ -73,10 +72,9 @@ public class SRCPRouteControlAdapter extends RouteController implements
         if (routeTemp == null || !routeTemp.equals(route)) {
             routeTemp = route;
             // just create a temporary SRCPTurnout
-            sRouteTemp = createSRCPRoute(turnoutControl, route);
-        } else {
-            applyNewSettings(route);
+            sRouteTemp = new SRCPRoute();
         }
+        applyNewSettings(sRouteTemp, route);
         routesSRCPRoutesMap.put(route, sRouteTemp);
         SRCPRoutesRoutesMap.put(sRouteTemp, route);
         try {
@@ -87,8 +85,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
     }
 
     private SRCPRoute createSRCPRoute(
-            final SRCPTurnoutControlAdapter turnoutControl, final Route route) {
-        final SRCPRoute sRoute = new SRCPRoute();
+            final SRCPTurnoutControlAdapter turnoutControl, SRCPRoute sRoute, final Route route) {
         for (final RouteItem routeItem : route.getRoutedTurnouts()) {
 
             final SRCPRouteItem sRouteItem = new SRCPRouteItem();
@@ -97,18 +94,23 @@ public class SRCPRouteControlAdapter extends RouteController implements
             sRouteItem.setTurnout(sTurnout);
             switch (routeItem.getState()) {
                 case LEFT:
-                    sRouteItem.setRoutedState(SRCPTurnoutState.LEFT);
+                    sRouteItem.setRoutedState(SRCPRouteItemState.LEFT);
                     break;
                 case RIGHT:
 
-                    sRouteItem.setRoutedState(SRCPTurnoutState.RIGHT);
+                    sRouteItem.setRoutedState(SRCPRouteItemState.RIGHT);
                     break;
                 case STRAIGHT:
-                    sRouteItem.setRoutedState(SRCPTurnoutState.STRAIGHT);
+                    sRouteItem.setRoutedState(SRCPRouteItemState.STRAIGHT);
+                    break;
+                case DEFAULT:
+                    sRouteItem.setRoutedState(SRCPRouteItemState.DEFAULT);
+                    break;
+                case NON_DEFAULT:
+
+                    sRouteItem.setRoutedState(SRCPRouteItemState.NON_DEFAULT);
                     break;
                 default:
-
-                    sRouteItem.setRoutedState(SRCPTurnoutState.UNDEF);
             }
             sRoute.addRouteItem(sRouteItem);
         }
@@ -150,8 +152,8 @@ public class SRCPRouteControlAdapter extends RouteController implements
         routeControl.setSession(session);
     }
 
-    private void applyNewSettings(final Route route) {
-        sRouteTemp.getRouteItems().clear();
+    private void applyNewSettings(final SRCPRoute sRoute, final Route route) {
+        sRoute.getRouteItems().clear();
         for (final RouteItem routeItem : route.getRoutedTurnouts()) {
 
             final SRCPRouteItem sRouteItem = new SRCPRouteItem();
@@ -160,20 +162,24 @@ public class SRCPRouteControlAdapter extends RouteController implements
             sRouteItem.setTurnout(sTurnout);
             switch (routeItem.getState()) {
                 case LEFT:
-                    sRouteItem.setRoutedState(SRCPTurnoutState.LEFT);
+                    sRouteItem.setRoutedState(SRCPRouteItemState.LEFT);
                     break;
                 case RIGHT:
-
-                    sRouteItem.setRoutedState(SRCPTurnoutState.RIGHT);
+                    sRouteItem.setRoutedState(SRCPRouteItemState.RIGHT);
                     break;
                 case STRAIGHT:
-                    sRouteItem.setRoutedState(SRCPTurnoutState.STRAIGHT);
+                    sRouteItem.setRoutedState(SRCPRouteItemState.STRAIGHT);
+                    break;
+                case DEFAULT:
+                    sRouteItem.setRoutedState(SRCPRouteItemState.DEFAULT);
+                    break;
+                case NON_DEFAULT:
+                    sRouteItem.setRoutedState(SRCPRouteItemState.NON_DEFAULT);
                     break;
                 default:
-
-                    sRouteItem.setRoutedState(SRCPTurnoutState.UNDEF);
+                    sRouteItem.setRoutedState(SRCPRouteItemState.UNDEF);
             }
-            sRouteTemp.addRouteItem(sRouteItem);
+            sRoute.addRouteItem(sRouteItem);
         }
     }
 
@@ -183,11 +189,11 @@ public class SRCPRouteControlAdapter extends RouteController implements
         }
         SRCPRoute sRoute = routesSRCPRoutesMap.get(route);
         if (sRoute == null) {
-
-            sRoute = createSRCPRoute(turnoutControl, route);
-            routesSRCPRoutesMap.put(route, sRoute);
-            SRCPRoutesRoutesMap.put(sRoute, route);
+            sRoute = new SRCPRoute();
         }
+        applyNewSettings(sRoute, route);
+        routesSRCPRoutesMap.put(route, sRoute);
+        SRCPRoutesRoutesMap.put(sRoute, route);
         return sRoute;
     }
 

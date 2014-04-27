@@ -34,7 +34,6 @@ public class RouteChangingThread implements Runnable, TurnoutChangeListener {
                     switch (routeItem.getState()) {
                         case LEFT:
                             turnoutControl.setCurvedLeft(turnout);
-
                             break;
                         case RIGHT:
                             turnoutControl.setCurvedRight(turnout);
@@ -42,7 +41,13 @@ public class RouteChangingThread implements Runnable, TurnoutChangeListener {
                         case STRAIGHT:
                             turnoutControl.setStraight(turnout);
                             break;
-                        case UNDEF:
+
+                        case DEFAULT:
+                            turnoutControl.setDefaultState(turnout);
+                            break;
+                        case NON_DEFAULT:
+                            turnoutControl.setNonDefaultState(turnout);
+                            break;
                         default:
                             throw new IllegalStateException(
                                     "routed state must be one of LEFT, RIGHT or STRAIGHT");

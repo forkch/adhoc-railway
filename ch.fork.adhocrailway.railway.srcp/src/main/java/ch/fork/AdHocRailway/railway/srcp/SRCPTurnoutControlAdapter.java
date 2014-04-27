@@ -93,9 +93,9 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
             }
             turnoutTemp = turnout;
             // just create a temporary SRCPTurnout
-            sTurnoutTemp = createSRCPTurnout(turnout);
+            sTurnoutTemp = new MMTurnout();
         } else {
-            applyNewSettings(turnout);
+            applyNewSettings(sTurnoutTemp, turnout);
             sTurnoutTemp.setInitialized(false);
         }
         turnoutControl.addTurnout(sTurnoutTemp);
@@ -139,25 +139,11 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
         }
         SRCPTurnout srcpTurnout = turnoutsSRCPTurnoutsMap.get(turnout);
         if (srcpTurnout == null) {
-            srcpTurnout = createSRCPTurnout(turnout);
-            updateCaches(turnout, srcpTurnout);
-        } else {
-            if (!turnoutTypesMatch(turnout.getType(), srcpTurnout.getTurnoutType())) {
-                turnoutsSRCPTurnoutsMap.remove(turnout);
-                SRCPTurnoutsTurnoutsMap.remove(srcpTurnout);
-                turnoutControl.removeTurnout(srcpTurnout);
-                srcpTurnout = createSRCPTurnout(turnout);
-                updateCaches(turnout, srcpTurnout);
-            }
-            srcpTurnout.setBus1(turnout.getBus1());
-            srcpTurnout.setBus2(turnout.getBus2());
-            srcpTurnout.setAddress1(turnout.getAddress1());
-            srcpTurnout.setAddress1Switched(turnout.isAddress1Switched());
-            srcpTurnout.setAddress2(turnout.getAddress2());
-            srcpTurnout.setAddress2Switched(turnout.isAddress2Switched());
-
-            updateCaches(turnout, srcpTurnout);
+            srcpTurnout = new MMTurnout();
         }
+        applyNewSettings(srcpTurnout, turnout);
+        updateCaches(turnout, srcpTurnout);
+
         return srcpTurnout;
     }
 
@@ -184,15 +170,15 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
     }
 
 
-    private void applyNewSettings(final Turnout turnout) {
-        sTurnoutTemp.setBus1(turnout.getBus1());
-        sTurnoutTemp.setBus2(turnout.getBus2());
-        sTurnoutTemp.setAddress1(turnout.getAddress1());
-        sTurnoutTemp.setAddress2(turnout.getAddress2());
-        sTurnoutTemp.setAddress1Switched(turnout.isAddress1Switched());
-        sTurnoutTemp.setAddress2Switched(turnout.isAddress2Switched());
-        setSRCPTurnoutDefaultState(sTurnoutTemp, turnout);
-        setSRCPTurnoutType(turnout, sTurnoutTemp);
+    private void applyNewSettings(SRCPTurnout sTurnout, final Turnout turnout) {
+        sTurnout.setBus1(turnout.getBus1());
+        sTurnout.setBus2(turnout.getBus2());
+        sTurnout.setAddress1(turnout.getAddress1());
+        sTurnout.setAddress2(turnout.getAddress2());
+        sTurnout.setAddress1Switched(turnout.isAddress1Switched());
+        sTurnout.setAddress2Switched(turnout.isAddress2Switched());
+        setSRCPTurnoutDefaultState(sTurnout, turnout);
+        setSRCPTurnoutType(turnout, sTurnout);
     }
 
     private SRCPTurnout createSRCPTurnout(final Turnout turnout) {

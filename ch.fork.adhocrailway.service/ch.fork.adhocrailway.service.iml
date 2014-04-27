@@ -14,8 +14,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="ch.fork.adhocrailway.persistence" exported="" />
     <orderEntry type="library" exported="" name="Gradle: log4j-1.2.17" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: junit-4.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: mockito-all-1.9.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: junit-4.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: hamcrest-core-1.3" level="project" />
   </component>
 </module>

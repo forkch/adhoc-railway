@@ -429,32 +429,23 @@ public class RouteConfig extends JDialog {
                                             .createImageIconFromIconSet("dialog-error.png")
                             );
                 } else {
-                    TurnoutState routedState = null;
+                    RouteItemState routedState = null;
                     if (this instanceof CurvedLeftAction) {
-                        routedState = TurnoutState.LEFT;
+                        routedState = RouteItemState.LEFT;
                     } else if (this instanceof StraightAction) {
-                        routedState = TurnoutState.STRAIGHT;
+                        routedState = RouteItemState.STRAIGHT;
                     } else if (this instanceof CurvedRightAction) {
-                        routedState = TurnoutState.RIGHT;
+                        routedState = RouteItemState.RIGHT;
                     } else if (this instanceof EnableRouteAction) {
                         // CURVED
                         if (!turnout.isThreeWay()) {
-                            switch (turnout.getDefaultState()) {
-                                case STRAIGHT:
-                                    routedState = TurnoutState.LEFT;
-                                    break;
-                                case LEFT:
-                                case RIGHT:
-                                case UNDEF:
-                                    routedState = TurnoutState.STRAIGHT;
-                                    break;
-                            }
+                            routedState = RouteItemState.NON_DEFAULT;
                         } else {
-                            routedState = TurnoutState.LEFT;
+                            routedState = RouteItemState.LEFT;
                         }
                     } else if (this instanceof DisableRouteAction) {
                         // STRAIGHT
-                        routedState = turnout.getDefaultState();
+                        routedState = RouteItemState.DEFAULT;
                     }
 
                     RouteItem itemToRemove = null;

@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.ui.routes.configuration;
 
 import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.model.turnouts.RouteItemState;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.utils.ImageTools;
@@ -50,17 +51,39 @@ public class RoutedTurnoutStateCellRenderer extends DefaultTableCellRenderer {
         if (currentTurnout == null) {
             return iconLabel;
         }
-        final TurnoutState routedState = (TurnoutState) value;
+        final RouteItemState routedState = (RouteItemState) value;
         String stateString = "";
         switch (routedState) {
             case STRAIGHT:
-                stateString = "straight";
+                if (currentTurnout.getDefaultState() == TurnoutState.STRAIGHT) {
+                    stateString = "straight";
+                } else {
+                    stateString = "curved";
+                }
+
                 break;
             case LEFT:
             case RIGHT:
-                stateString = "curved";
+                if (currentTurnout.getDefaultState() == TurnoutState.STRAIGHT) {
+                    stateString = "curved";
+                } else {
+                    stateString = "straight";
+                }
                 break;
-            case UNDEF:
+            case DEFAULT:
+                if (currentTurnout.getDefaultState() == TurnoutState.STRAIGHT) {
+                    stateString = "straight";
+                } else {
+                    stateString = "curved";
+                }
+                break;
+            case NON_DEFAULT:
+
+                if (currentTurnout.getDefaultState() == TurnoutState.STRAIGHT) {
+                    stateString = "curved";
+                } else {
+                    stateString = "straight";
+                }
                 break;
             default:
                 break;

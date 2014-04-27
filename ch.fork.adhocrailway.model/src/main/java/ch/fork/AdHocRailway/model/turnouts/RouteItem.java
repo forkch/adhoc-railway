@@ -34,11 +34,10 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_ROUTED_STATE = "state";
     @Expose
     private String id = UUID.randomUUID().toString();
-    ;
     @Expose
     private String turnoutId;
     @Expose
-    private TurnoutState state;
+    private RouteItemState state;
 
     private transient Turnout turnout;
 
@@ -49,7 +48,7 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     }
 
     public RouteItem(final String id, final Turnout turnout, final Route route,
-                     final TurnoutState routedState) {
+                     final RouteItemState routedState) {
         this.id = id;
         this.turnout = turnout;
         this.route = route;
@@ -86,12 +85,12 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTE, old, this.route);
     }
 
-    public TurnoutState getState() {
+    public RouteItemState getState() {
         return this.state;
     }
 
-    public void setState(final TurnoutState state) {
-        final TurnoutState old = this.state;
+    public void setState(final RouteItemState state) {
+        final RouteItemState old = this.state;
         this.state = state;
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTED_STATE, old,
                 this.state);
