@@ -114,7 +114,12 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
         if (!(obj instanceof RouteItem)) {
             return false;
         }
-        return id.equals(((RouteItem) obj).getId());
+        RouteItem o = (RouteItem) obj;
+        if (this.turnout == null && o.getTurnout() == null) {
+            return id.equals(o.getId());
+        } else {
+            return turnout.getNumber() == o.getTurnout().getNumber();
+        }
 
     }
 
