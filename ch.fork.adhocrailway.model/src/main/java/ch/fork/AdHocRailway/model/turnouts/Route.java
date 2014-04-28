@@ -26,9 +26,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.beans.PropertyChangeListener;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 
 public class Route extends AbstractItem implements java.io.Serializable,
         Comparable<Route> {
@@ -50,13 +48,14 @@ public class Route extends AbstractItem implements java.io.Serializable,
     @Expose
     private String orientation;
     @Expose
-    private SortedSet<RouteItem> routedTurnouts = new TreeSet<RouteItem>();
+    private Set<RouteItem> routedTurnouts = new HashSet<RouteItem>();
     @Expose
     private String groupId;
 
     private transient boolean enabled = false;
     private transient boolean routing = false;
     private transient RouteGroup routeGroup;
+    private transient SortedSet<RouteItem> routedTurnoutsSorted = new TreeSet<RouteItem>();
 
     public Route() {
     }
@@ -113,19 +112,26 @@ public class Route extends AbstractItem implements java.io.Serializable,
                 this.orientation);
     }
 
-    public SortedSet<RouteItem> getRoutedTurnouts() {
+    public Set<RouteItem> getRoutedTurnouts() {
         return this.routedTurnouts;
     }
 
     public void setRoutedTurnouts(final SortedSet<RouteItem> routedTurnouts) {
-        final SortedSet<RouteItem> old = this.routedTurnouts;
+        final Set<RouteItem> old = this.routedTurnouts;
         this.routedTurnouts = routedTurnouts;
+        routedTurnoutsSorted.clear();
+        routedTurnoutsSorted.addAll(routedTurnouts);
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_ITEMS, old,
                 this.routedTurnouts);
     }
 
+    public SortedSet<RouteItem> getRoutedTurnoutsSorted() {
+        return routedTurnoutsSorted;
+    }
+
     public void addRouteItem(final RouteItem routeItem) {
         routedTurnouts.add(routeItem);
+        routedTurnoutsSorted.add(routeItem);
     }
 
     public RouteGroup getRouteGroup() {
@@ -195,5 +201,10 @@ public class Route extends AbstractItem implements java.io.Serializable,
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+
+    public void removeRouteItem(RouteItem item) {
+        routedTurnouts.remove(item);
+        routedTurnoutsSorted.remove(item);
     }
 }

@@ -145,7 +145,7 @@ public class RouteConfig extends JDialog {
                 routeItemModel.getSelectionIndexHolder()));
 
         SortedSet<RouteItem> routedTurnouts = presentationModel
-                .getBean().getRoutedTurnouts();
+                .getBean().getRoutedTurnoutsSorted();
 
         routeItemModel.setList(new ArrayList<RouteItem>(routedTurnouts));
 
@@ -269,7 +269,7 @@ public class RouteConfig extends JDialog {
                 final SortedSet<RouteItem> routeItems = new
                         TreeSet<RouteItem>(
                         (ArrayList<RouteItem>) evt.getNewValue());
-                RouteHelper.update(testRoute, property, routeItems);
+                testRoute.setRoutedTurnouts(routeItems);
             } else if (evt.getPropertyName().equalsIgnoreCase(property)) {
                 RouteHelper.update(testRoute, property, evt.getNewValue());
             } else {
@@ -448,7 +448,7 @@ public class RouteConfig extends JDialog {
                     }
 
                     RouteItem itemToRemove = null;
-                    final SortedSet<RouteItem> itemsOfRoute = route
+                    final Set<RouteItem> itemsOfRoute = route
                             .getRoutedTurnouts();
                     for (final RouteItem item : itemsOfRoute) {
                         if (item.getTurnout().equals(turnout)) {
@@ -468,7 +468,7 @@ public class RouteConfig extends JDialog {
                         i.setId(UUID.randomUUID().toString()); //just a dummy id
                         routeManager.addRouteItemToGroup(i, route);
                         final List<RouteItem> routeItems = new ArrayList<RouteItem>(
-                                route.getRoutedTurnouts());
+                                route.getRoutedTurnoutsSorted());
                         routeItemModel.setList(routeItems);
                     } catch (final ManagerException e1) {
                         e1.printStackTrace();
@@ -553,7 +553,7 @@ public class RouteConfig extends JDialog {
             }
             routeManager.removeRouteItem(routeItem);
             final List<RouteItem> routeItems = new ArrayList<RouteItem>(
-                    selectedRoute.getRoutedTurnouts());
+                    selectedRoute.getRoutedTurnoutsSorted());
             routeItemModel.setList(routeItems);
         }
     }

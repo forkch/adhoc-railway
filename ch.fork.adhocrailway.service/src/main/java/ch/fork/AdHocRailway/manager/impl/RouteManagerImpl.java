@@ -176,7 +176,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
             throw new ManagerException("RouteItem has no associated Route");
         }
         this.routeService.addRouteItem(item);
-        item.getRoute().getRoutedTurnouts().add(item);
+        item.getRoute().addRouteItem(item);
     }
 
     @Override
@@ -188,7 +188,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
         turnout.getRouteItems().remove(item);
 
         final Route route = item.getRoute();
-        route.getRoutedTurnouts().remove(item);
+        route.removeRouteItem(item);
     }
 
     @Override
@@ -288,7 +288,9 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
                 routeItem.setRoute(route);
             }
         }
-        route.setRoutedTurnouts(new TreeSet<RouteItem>(route.getRoutedTurnouts()));
+        TreeSet<RouteItem> routeItems = new TreeSet<RouteItem>();
+        routeItems.addAll(route.getRoutedTurnouts());
+        route.setRoutedTurnouts(routeItems);
     }
 
     @Override

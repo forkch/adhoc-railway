@@ -97,11 +97,8 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int compareTo(final RouteItem o) {
-        if (this.turnout == null && o.getTurnout() == null) {
-            return id.compareTo(o.getId());
-        } else {
-            return Integer.compare(turnout.getNumber(), o.getTurnout().getNumber());
-        }
+        //return id.compareTo(o.getId());
+        return Integer.compare(turnout.getNumber(), o.getTurnout().getNumber());
     }
 
     @Override
