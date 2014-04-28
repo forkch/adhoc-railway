@@ -215,7 +215,6 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
     @Override
     public void locomotiveChanged(final SRCPLocomotive changedSRCPLocomotive) {
-        System.out.println("sdfasdfasdf");
 
         final Locomotive locomotive = SRCPLocomotiveLocomotiveMap
                 .get(changedSRCPLocomotive);

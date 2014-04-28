@@ -63,13 +63,6 @@ public class RestLocomotiveService implements LocomotiveService {
     public SortedSet<LocomotiveGroup> getAllLocomotiveGroups() {
         SortedSet<LocomotiveGroup> allLocomotivesGroups = locomotiveServiceClient.getAllLocomotivesGroups();
         LOGGER.info("getAllLocomotiveGroups(): " + allLocomotivesGroups);
-
-        for (LocomotiveGroup allLocomotiveGroup : allLocomotivesGroups) {
-            System.out.println(allLocomotiveGroup);
-            for (Locomotive locomotive : allLocomotiveGroup.getLocomotives()) {
-                System.out.println(locomotive);
-            }
-        }
         return allLocomotivesGroups;
     }
 

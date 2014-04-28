@@ -1,5 +1,6 @@
 package ch.fork.AdHocRailway.ui.locomotives;
 
+import ch.fork.AdHocRailway.model.AdHocRailwayException;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.ui.utils.ImageTools;
 import org.apache.commons.lang3.StringUtils;
@@ -28,9 +29,8 @@ public class LocomotiveImageHelper {
             BufferedImage read = ImageIO.read(file);
             return ImageTools.encodeToString(read, "png");
         } catch (IOException e) {
-            System.out.println(file);
+            throw new AdHocRailwayException("error loading image from file " + file, e);
         }
-        return null;
     }
 
     public static ImageIcon getLocomotiveIcon(final Locomotive locomotive) {
