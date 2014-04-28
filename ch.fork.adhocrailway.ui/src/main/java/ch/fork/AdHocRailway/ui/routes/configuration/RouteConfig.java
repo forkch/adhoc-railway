@@ -319,6 +319,7 @@ public class RouteConfig extends JDialog {
                         .createImageIconFromIconSet("media-playback-stop.png"));
                 recording = false;
             }
+            recordRouteButton.requestFocus();
         }
 
         private void removeKeyboarAtions() {
