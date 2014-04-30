@@ -40,6 +40,7 @@ import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import ch.fork.AdHocRailway.utils.LocomotiveHelper;
 import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
@@ -57,6 +58,7 @@ import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromIconSe
 public class LocomotiveWidget extends JPanel implements
         LocomotiveChangeListener, LocomotiveManagerListener {
 
+    private static final Logger LOGGER = Logger.getLogger(LocomotiveWidget.class);
 
     private final int number;
     private final List<FunctionToggleButton> functionToggleButtons = new ArrayList<FunctionToggleButton>();
@@ -332,7 +334,9 @@ public class LocomotiveWidget extends JPanel implements
             locomotiveControl.activateLoco(myLocomotive);
         }
         final int currentSpeed = myLocomotive.getCurrentSpeed();
+
         updateSpeed(currentSpeed);
+        LOGGER.info("speed: " + currentSpeed);
 
         updateFunctions();
 

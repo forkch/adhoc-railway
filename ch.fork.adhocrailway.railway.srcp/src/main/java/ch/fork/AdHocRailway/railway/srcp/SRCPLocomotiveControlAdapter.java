@@ -43,11 +43,18 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     private final SRCPLocomotiveControl locomotiveControl;
     private final RateLimiter rateLimiter;
     ExecutorService executorService;
-    private boolean emergencyStopPending;
+    ExecutorService emergencyExecutorService;
+
+    private enum EmergencyStopState {
+        PENDING, EXECUTED, NONE;
+    }
+
+    private EmergencyStopState emergencyStopState = EmergencyStopState.NONE;
 
     public SRCPLocomotiveControlAdapter() {
         locomotiveControl = SRCPLocomotiveControl.getInstance();
         executorService = SRCPThreadUtils.createExecutorService();
+        emergencyExecutorService = SRCPThreadUtils.createExecutorService();
         rateLimiter = SRCPThreadUtils.createRateLimiter();
         reloadConfiguration();
     }
@@ -81,16 +88,22 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     @Override
     public void setSpeed(final Locomotive locomotive, final int speed,
                          final boolean[] functions) {
+        if(emergencyStopState == EmergencyStopState.EXECUTED || emergencyStopState == EmergencyStopState.NONE) {
+            emergencyStopState = EmergencyStopState.NONE;
+        } else {
+            LOGGER.warn("emergency stop is not yet executed therefore ignoring this command");
+            return;
+        }
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                if (!emergencyStopPending) {
+                if (emergencyStopState == EmergencyStopState.NONE) {
                     try {
                         LOGGER.info("waiting to execute speed command");
                         rateLimiter.acquire();
                         LOGGER.info("executing speed command: " + speed);
-                        if (!emergencyStopPending) {
+                        if (emergencyStopState == EmergencyStopState.NONE) {
                             locomotiveControl.setSpeed(sLocomotive, speed,
                                     SimulatedMFXLocomotivesHelper.convertToMultipartFunctions(
                                             locomotive.getType(), functions)
@@ -113,8 +126,8 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     @Override
     public void emergencyStop(final Locomotive locomotive) {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
-        emergencyStopPending = true;
-        executorService.execute(new Runnable() {
+        emergencyStopState = EmergencyStopState.PENDING;
+        emergencyExecutorService.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -129,7 +142,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
                             srcpEmergencyStopFunction);
                     locomotive.setCurrentSpeed(0);
                     locomotive.setCurrentFunctions(locomotive.getCurrentFunctions());
-                    emergencyStopPending = false;
+                    emergencyStopState = EmergencyStopState.EXECUTED;
                 } catch (SRCPModelException e) {
                     e.printStackTrace();
                 }
