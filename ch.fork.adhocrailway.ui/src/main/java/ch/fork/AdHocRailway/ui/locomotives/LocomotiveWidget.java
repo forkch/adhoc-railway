@@ -709,7 +709,7 @@ public class LocomotiveWidget extends JPanel implements
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
             locomotiveControl.increaseSpeed(myLocomotive);
-            updateSpeed(myLocomotive.getTargetSpeed());
+            updateSpeed(myLocomotive.getCurrentOrTargetSpeed());
         }
     }
 
@@ -721,7 +721,7 @@ public class LocomotiveWidget extends JPanel implements
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
             locomotiveControl.decreaseSpeed(myLocomotive);
-            updateSpeed(myLocomotive.getTargetSpeed());
+            updateSpeed(myLocomotive.getCurrentOrTargetSpeed());
         }
     }
 

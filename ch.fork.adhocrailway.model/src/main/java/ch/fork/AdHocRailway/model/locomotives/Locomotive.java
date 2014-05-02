@@ -26,7 +26,10 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
 
 import static ch.fork.AdHocRailway.model.locomotives.LocomotiveDirection.FORWARD;
 import static ch.fork.AdHocRailway.model.locomotives.LocomotiveDirection.REVERSE;
@@ -74,7 +77,7 @@ public class Locomotive extends AbstractItem implements Serializable,
     @Expose
     private int address2;
     @Expose
-    private Set<LocomotiveFunction> functions = new HashSet<LocomotiveFunction>();
+    private SortedSet<LocomotiveFunction> functions = new TreeSet<LocomotiveFunction>();
 
     private transient LocomotiveGroup group;
 
@@ -184,7 +187,7 @@ public class Locomotive extends AbstractItem implements Serializable,
 
     public void setFunctions(final SortedSet<LocomotiveFunction> functions) {
         final Set<LocomotiveFunction> old = this.functions;
-        this.functions = new HashSet<LocomotiveFunction>(functions);
+        this.functions = new TreeSet<LocomotiveFunction>(functions);
         changeSupport
                 .firePropertyChange(PROPERTYNAME_FUNCTIONS, old, this.functions);
     }

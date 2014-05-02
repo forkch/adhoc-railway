@@ -44,11 +44,6 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     private final RateLimiter rateLimiter;
     ExecutorService executorService;
     ExecutorService emergencyExecutorService;
-
-    private enum EmergencyStopState {
-        PENDING, EXECUTED, NONE;
-    }
-
     private EmergencyStopState emergencyStopState = EmergencyStopState.NONE;
 
     public SRCPLocomotiveControlAdapter() {
@@ -88,7 +83,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     @Override
     public void setSpeed(final Locomotive locomotive, final int speed,
                          final boolean[] functions) {
-        if(emergencyStopState == EmergencyStopState.EXECUTED || emergencyStopState == EmergencyStopState.NONE) {
+        if (emergencyStopState == EmergencyStopState.EXECUTED || emergencyStopState == EmergencyStopState.NONE) {
             emergencyStopState = EmergencyStopState.NONE;
         } else {
             LOGGER.warn("emergency stop is not yet executed therefore ignoring this command");
@@ -134,12 +129,14 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
                     LOGGER.info(">>>>>EMERGENCY STOP<<<<<");
                     final int emergencyStopFunction = locomotive
                             .getEmergencyStopFunction();
+                    System.out.println(">>" + emergencyStopFunction);
 
                     final int srcpEmergencyStopFunction = SimulatedMFXLocomotivesHelper
                             .computeMultipartFunctionNumber(locomotive.getType(),
                                     emergencyStopFunction);
                     locomotiveControl.emergencyStop(sLocomotive,
                             srcpEmergencyStopFunction);
+                    System.out.println(srcpEmergencyStopFunction);
                     locomotive.setCurrentSpeed(0);
                     locomotive.setCurrentFunctions(locomotive.getCurrentFunctions());
                     emergencyStopState = EmergencyStopState.EXECUTED;
@@ -319,6 +316,10 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         for (final Locomotive locomotive : allLocomotives) {
             getOrCreateSrcpLocomotive(locomotive);
         }
+    }
+
+    private enum EmergencyStopState {
+        PENDING, EXECUTED, NONE;
     }
 
 }
