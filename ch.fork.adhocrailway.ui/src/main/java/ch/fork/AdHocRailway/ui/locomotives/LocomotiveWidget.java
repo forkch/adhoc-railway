@@ -115,7 +115,7 @@ public class LocomotiveWidget extends JPanel implements
             connectedToRailway = true;
         } else {
             connectedToRailway = false;
-            ctx.getLocomotiveControl().removeLocomotiveChangeListener(this);
+            ctx.getLocomotiveControl().removeLocomotiveChangeListener(myLocomotive, this);
         }
     }
 
@@ -249,6 +249,8 @@ public class LocomotiveWidget extends JPanel implements
         directionButton = new JButton(
                 createImageIcon("crystal/forward.png"));
         lockButton = new LockToggleButton("");
+
+        lockButton.setVisible(false);
 
         increaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
         decreaseSpeed.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -421,21 +423,11 @@ public class LocomotiveWidget extends JPanel implements
         }
         final LocomotiveController locomotiveControl = ctx
                 .getLocomotiveControl();
-        if (myLocomotive.getCurrentSpeed() == 0) {
-            /*if (locomotiveControl.isLocked(myLocomotive)) {
-                return !locomotiveControl.isLockedByMe(myLocomotive);
-            } else {
-                return true;
-            }*/
+        //if (myLocomotive.getCurrentSpeed() == 0) {
             return true;
-        } else {
-            /*if (locomotiveControl.isLocked(myLocomotive)) {
-                return !locomotiveControl.isLockedByMe(myLocomotive);
-            } else {
-                return false;
-            }*/
-            return false;
-        }
+        //} else {
+        //    return false;
+        //}
     }
 
     @Override
@@ -584,6 +576,8 @@ public class LocomotiveWidget extends JPanel implements
             locomotiveComboBox.setEnabled(true);
 
             locomotiveComboBox.setSelectedIndex(-1);
+            resetLoco();
+            ;
             try {
                 locomotiveGroupComboBox.setSelectedIndex(idx);
             } catch (final ControllerException e1) {

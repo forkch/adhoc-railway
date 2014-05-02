@@ -164,8 +164,4 @@ public abstract class LocomotiveController implements
         });
         t.start();
     }
-
-    public void removeLocomotiveChangeListener(LocomotiveChangeListener listener) {
-        listeners.entrySet().remove(listener);
-    }
 }
