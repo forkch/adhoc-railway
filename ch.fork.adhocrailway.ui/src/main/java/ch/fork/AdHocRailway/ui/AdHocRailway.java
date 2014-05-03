@@ -187,7 +187,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             updateGUI();
             railwayDeviceManager.autoConnectToRailwayDeviceIfRequested();
 
-            setSize(1600, 1000);
 
             initProceeded("AdHoc-Railway started");
             updateCommandHistory("AdHoc-Railway started");
@@ -197,6 +196,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                     handleException(e);
                 }
             });
+            pack();
             setLocationByPlatform(true);
             setVisible(true);
         } catch (final Exception e) {

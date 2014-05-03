@@ -1,5 +1,7 @@
 package ch.fork.AdHocRailway.model.power;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class Booster {
 
     private final int boosterNumber;
@@ -29,4 +31,8 @@ public class Booster {
         return supply;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).append("boosterNumber").append("state").build();
+    }
 }

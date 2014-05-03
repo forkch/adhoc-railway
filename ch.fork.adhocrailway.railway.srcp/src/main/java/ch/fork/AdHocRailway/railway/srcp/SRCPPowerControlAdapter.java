@@ -12,6 +12,7 @@ import de.dermoba.srcp.model.power.SRCPPowerControl;
 import de.dermoba.srcp.model.power.SRCPPowerState;
 import de.dermoba.srcp.model.power.SRCPPowerSupply;
 import de.dermoba.srcp.model.power.SRCPPowerSupplyChangeListener;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,7 @@ import java.util.StringTokenizer;
 
 public class SRCPPowerControlAdapter extends PowerController implements
         SRCPPowerSupplyChangeListener {
+    private final Logger LOGGER = Logger.getLogger(SRCPPowerControlAdapter.class);
 
     private final Map<PowerSupply, SRCPPowerSupply> powerSupplyToSRCPPowerSupply = new HashMap<PowerSupply, SRCPPowerSupply>();
     private final Map<SRCPPowerSupply, PowerSupply> srcpPowerSupplyToPowerSupply = new HashMap<SRCPPowerSupply, PowerSupply>();
@@ -119,6 +121,8 @@ public class SRCPPowerControlAdapter extends PowerController implements
             return;
         }
 
+        LOGGER.info("received new boosterstate: " + freeText);
+
         final Map<Integer, BoosterState> boosterStates = new HashMap<Integer, BoosterState>();
         final StringTokenizer tokenizer = new StringTokenizer(freeText);
         while (tokenizer.hasMoreTokens()) {
@@ -130,8 +134,8 @@ public class SRCPPowerControlAdapter extends PowerController implements
                 try {
                     boosterNumber = Integer.parseInt(t);
                 } catch (final NumberFormatException x) {
+                    LOGGER.error("could not parse booster number", x);
                 }
-
             }
             if (tokenizer.hasMoreTokens()) {
 
@@ -154,6 +158,9 @@ public class SRCPPowerControlAdapter extends PowerController implements
             final Booster booster = supply.getBooster(boosterState.getKey());
             booster.setState(boosterState.getValue());
         }
+
+        LOGGER.info("new booster state: " + boosterStates);
+        LOGGER.info("all booster states: " + supply.getBoosters());
 
         for (final PowerChangeListener l : listeners) {
             l.powerChanged(supply);
