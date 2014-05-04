@@ -112,6 +112,8 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         numberLabel.setText("" + route.getNumber());
         orientationLabel.setText(route.getOrientation());
         nameLabel.setText(route.getName());
+        routingProgress.setMinimum(0);
+        routingProgress.setValue(0);
         routingProgress.setMaximum(getRouteItemCount());
         setToolTipText(RouteHelper.getRouteDescription(route));
     }
@@ -154,6 +156,12 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
                 @Override
                 public void run() {
+
+                    System.out.println(routingProgress.getValue());
+                    System.out.println(routingProgress.getMinimum());
+                    System.out.println(routingProgress.getMaximum());
+
+
                     routingProgress.setValue(routingProgress.getValue() + 1);
                 }
             });
