@@ -26,7 +26,6 @@ import org.apache.log4j.Logger;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.UUID;
 
 public class XMLTurnoutService implements TurnoutService {
     private static final Logger LOGGER = Logger
@@ -109,11 +108,9 @@ public class XMLTurnoutService implements TurnoutService {
         if (groups != null) {
             for (final TurnoutGroup turnoutGroup : groups) {
                 turnoutGroup.init();
-                turnoutGroup.setId(UUID.randomUUID().toString());
                 turnoutGroups.add(turnoutGroup);
                 for (final Turnout turnout : turnoutGroup.getTurnouts()) {
                     turnout.init();
-                    turnout.setId(UUID.randomUUID().toString());
                     turnouts.add(turnout);
                     turnout.setTurnoutGroup(turnoutGroup);
                 }

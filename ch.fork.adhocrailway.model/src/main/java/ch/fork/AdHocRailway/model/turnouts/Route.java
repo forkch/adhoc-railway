@@ -119,6 +119,9 @@ public class Route extends AbstractItem implements java.io.Serializable,
     public void setRoutedTurnouts(final SortedSet<RouteItem> routedTurnouts) {
         final Set<RouteItem> old = this.routedTurnouts;
         this.routedTurnouts = routedTurnouts;
+        if (routedTurnoutsSorted == null) {
+            routedTurnoutsSorted = new TreeSet<RouteItem>();
+        }
         routedTurnoutsSorted.clear();
         routedTurnoutsSorted.addAll(routedTurnouts);
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_ITEMS, old,

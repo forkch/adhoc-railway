@@ -286,6 +286,8 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
             if(turnoutById != null) {
                 routeItem.setTurnout(turnoutById);
                 routeItem.setRoute(route);
+            } else {
+                LOGGER.warn("turnout with id " + routeItem.getTurnoutId() + " not found ");
             }
         }
         TreeSet<RouteItem> routeItems = new TreeSet<RouteItem>();
