@@ -1,8 +1,8 @@
 'use strict';
 
 
-// Declare app level module which depends on filters, and services
-var app = angular.module('myApp', ['ui.bootstrap', 'myApp.services']).
+// Declare app level module which depends on filters, and ch.fork.AdHocRailway.services
+var app = angular.module('myApp', ['ui.bootstrap', 'myApp.ch.fork.AdHocRailway.services']).
     config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
         $routeProvider.when('/turnouts', {templateUrl: 'partials/turnouts', controller: TurnoutsCtrl});
         $routeProvider.when('/addTurnoutGroup', {templateUrl: 'partials/addTurnoutGroup', controller: AddTurnoutGroupCtrl});

@@ -4,16 +4,15 @@ subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'maven'
     apply plugin: 'idea'
+    apply plugin: 'maven-publish'
     group = 'ch.fork.adhocrailway'
-    version = '2.1.1'
+    version = '2.2.5'
 
     configurations {
         compileOnly
     }
 
     dependencies {
-        testCompile 'junit:junit:4.+'
-        testCompile 'org.mockito:mockito-all:1.9.5'
     }
 
     repositories {
@@ -21,9 +20,7 @@ subprojects {
             url '/home/fork/Code/forkch-mvn-repo'
         }
         mavenCentral()
-        maven {
-            url "https://raw.github.com/forkch/forkch-mvn-repo/master"
-        }
+        maven { url 'https://raw.githubusercontent.com/forkch/forkch-mvn-repo/master' }
     }
 
     //Include compileOnly for compilation
@@ -36,16 +33,74 @@ subprojects {
         }
     }
 
-}
-
-project(':AdHoc-Railway-Domain') {
-}
-
-project(':AdHoc-Railway-GUI') {
-    dependencies {
-        compile project(':AdHoc-Railway-Domain')
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
     }
 
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+
+                artifact sourceJar {
+                    classifier "sources"
+                }
+            }
+        }
+        repositories {
+            maven { url '/home/fork/Code/forkch-mvn-repo' }
+        }
+    }
 }
+
+project(':ch.fork.adhocrailway.ui') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.persistence.xml')
+        compile project(':ch.fork.adhocrailway.persistence.adhocserver')
+        compile project(':ch.fork.adhocrailway.railway.srcp')
+        compile project(':ch.fork.adhocrailway.railway.brain')
+    }
+}
+
+project(':ch.fork.adhocrailway.service') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.persistence')
+    }
+}
+project(':ch.fork.adhocrailway.model') {
+
+}
+project(':ch.fork.adhocrailway.persistence') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.model')
+    }
+}
+
+project(':ch.fork.adhocrailway.persistence.xml') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.persistence')
+        compile project(':ch.fork.adhocrailway.service')
+    }
+}
+
+project(':ch.fork.adhocrailway.persistence.adhocserver') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.persistence')
+    }
+}
+
+project(':ch.fork.adhocrailway.railway.brain') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.service')
+    }
+}
+
+project(':ch.fork.adhocrailway.railway.srcp') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.service')
+        compile project(':ch.fork.adhocrailway.persistence')
+    }
+}
+
 task wrapper(type: Wrapper) {
 }

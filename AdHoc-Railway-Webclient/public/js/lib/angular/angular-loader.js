@@ -34,7 +34,7 @@
          *
          * # Module
          *
-         * A module is a collocation of services, directives, filters, and configuration information. Module
+         * A module is a collocation of ch.fork.AdHocRailway.services, directives, filters, and configuration information. Module
          * is used to configure the {@link AUTO.$injector $injector}.
          *
          * <pre>
@@ -44,7 +44,7 @@
          * // register a new service
          * myModule.value('appName', 'MyCoolApp');
          *
-         * // configure existing services inside initialization blocks.
+         * // configure existing ch.fork.AdHocRailway.services inside initialization blocks.
          * myModule.config(function($locationProvider) {
 'use strict';
      *   // Configure existing providers

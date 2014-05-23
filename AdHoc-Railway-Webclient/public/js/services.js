@@ -3,9 +3,9 @@
 /* Services */
 
 
-// Demonstrate how to register services
+// Demonstrate how to register ch.fork.AdHocRailway.services
 // In this case it is a simple value service.
-angular.module('myApp.services', []).
+angular.module('myApp.ch.fork.AdHocRailway.services', []).
     value('version', '0.1').
     factory('socket', function ($rootScope) {
         var socket = io.connect('http://localhost:3000');
