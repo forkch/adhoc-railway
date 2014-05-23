@@ -1,8 +1,11 @@
 AdHoc-Railway
 =============
-https://travis-ci.org/forkch/adhoc-railway.svg?branch=develop
+
+[![Build Status](https://travis-ci.org/forkch/adhoc-railway.svg?branch=develop)](https://travis-ci.org/forkch/adhoc-railway)
 
 # Easy control your adhoc model railway
+
+
 
 ## Credits:
 
