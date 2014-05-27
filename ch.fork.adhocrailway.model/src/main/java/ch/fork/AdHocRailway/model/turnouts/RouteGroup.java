@@ -18,15 +18,18 @@
 
 package ch.fork.AdHocRailway.model.turnouts;
 
-import ch.fork.AdHocRailway.model.AbstractItem;
-import com.google.gson.annotations.Expose;
+import java.beans.PropertyChangeListener;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.UUID;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.beans.PropertyChangeListener;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
+import ch.fork.AdHocRailway.model.AbstractItem;
+
+import com.google.common.collect.Sets;
+import com.google.gson.annotations.Expose;
 
 public class RouteGroup extends AbstractItem implements java.io.Serializable,
         Comparable<RouteGroup> {
@@ -38,7 +41,7 @@ public class RouteGroup extends AbstractItem implements java.io.Serializable,
     @Expose
     private String name;
     @Expose
-    private SortedSet<Route> routes = new TreeSet<Route>();
+    private Set<Route> routes = Sets.newHashSet();
 
     public RouteGroup() {
     }
@@ -62,11 +65,11 @@ public class RouteGroup extends AbstractItem implements java.io.Serializable,
     }
 
     public SortedSet<Route> getRoutes() {
-        return this.routes;
+        return Sets.newTreeSet(this.routes);
     }
 
     public void setRoutes(final SortedSet<Route> routes) {
-        this.routes = routes;
+        this.routes = Sets.newHashSet(routes);
     }
 
     public void addRoute(final Route route) {

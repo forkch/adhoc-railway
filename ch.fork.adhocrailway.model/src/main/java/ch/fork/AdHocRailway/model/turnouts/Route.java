@@ -18,15 +18,18 @@
 
 package ch.fork.AdHocRailway.model.turnouts;
 
-import ch.fork.AdHocRailway.model.AbstractItem;
-import com.google.gson.annotations.Expose;
+import java.beans.PropertyChangeListener;
+import java.util.*;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.beans.PropertyChangeListener;
-import java.util.*;
+import ch.fork.AdHocRailway.model.AbstractItem;
+
+import com.google.common.collect.Sets;
+import com.google.gson.annotations.Expose;
 
 public class Route extends AbstractItem implements java.io.Serializable,
         Comparable<Route> {
@@ -40,7 +43,6 @@ public class Route extends AbstractItem implements java.io.Serializable,
 
     @Expose
     private String id = UUID.randomUUID().toString();
-    ;
     @Expose
     private int number;
     @Expose
@@ -55,7 +57,7 @@ public class Route extends AbstractItem implements java.io.Serializable,
     private transient boolean enabled = false;
     private transient boolean routing = false;
     private transient RouteGroup routeGroup;
-    private transient SortedSet<RouteItem> routedTurnoutsSorted = new TreeSet<RouteItem>();
+    private transient Set<RouteItem> routedTurnoutsSorted = Sets.newHashSet();
 
     public Route() {
     }
@@ -112,8 +114,11 @@ public class Route extends AbstractItem implements java.io.Serializable,
                 this.orientation);
     }
 
-    public Set<RouteItem> getRoutedTurnouts() {
-        return this.routedTurnouts;
+    public SortedSet<RouteItem> getRoutedTurnouts() {
+        if(this.routedTurnouts == null) {
+            return Sets.newTreeSet();
+        }
+        return Sets.newTreeSet(this.routedTurnouts);
     }
 
     public void setRoutedTurnouts(final SortedSet<RouteItem> routedTurnouts) {
@@ -129,7 +134,7 @@ public class Route extends AbstractItem implements java.io.Serializable,
     }
 
     public SortedSet<RouteItem> getRoutedTurnoutsSorted() {
-        return routedTurnoutsSorted;
+        return Sets.newTreeSet(routedTurnoutsSorted);
     }
 
     public void addRouteItem(final RouteItem routeItem) {

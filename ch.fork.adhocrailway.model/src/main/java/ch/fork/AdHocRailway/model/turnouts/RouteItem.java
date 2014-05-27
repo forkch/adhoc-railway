@@ -18,12 +18,14 @@
 
 package ch.fork.AdHocRailway.model.turnouts;
 
-import ch.fork.AdHocRailway.model.AbstractItem;
-import com.google.gson.annotations.Expose;
+import java.util.UUID;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.util.UUID;
+import ch.fork.AdHocRailway.model.AbstractItem;
+
+import com.google.gson.annotations.Expose;
 
 public class RouteItem extends AbstractItem implements java.io.Serializable,
         Comparable<RouteItem> {
@@ -97,7 +99,12 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
 
     @Override
     public int compareTo(final RouteItem o) {
-        //return id.compareTo(o.getId());
+        if(turnout == null) {
+            return -1;
+        }
+        if(o.getTurnout() == null) {
+            return 1;
+        }
         return Integer.compare(turnout.getNumber(), o.getTurnout().getNumber());
     }
 
