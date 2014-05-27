@@ -18,16 +18,19 @@
 
 package ch.fork.AdHocRailway.model.locomotives;
 
-import ch.fork.AdHocRailway.model.AbstractItem;
-import com.google.common.collect.Sets;
-import com.google.gson.annotations.Expose;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import java.beans.PropertyChangeListener;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.UUID;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.beans.PropertyChangeListener;
-import java.util.SortedSet;
-import java.util.UUID;
+import ch.fork.AdHocRailway.model.AbstractItem;
+
+import com.google.common.collect.Sets;
+import com.google.gson.annotations.Expose;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 public class LocomotiveGroup extends AbstractItem implements
         java.io.Serializable, Comparable<LocomotiveGroup> {
@@ -42,7 +45,7 @@ public class LocomotiveGroup extends AbstractItem implements
     @Expose
     private String name;
     @Expose
-    private SortedSet<Locomotive> locomotives = Sets.newTreeSet();
+    private Set<Locomotive> locomotives = Sets.newHashSet();
 
     public LocomotiveGroup() {
         super();
@@ -75,12 +78,12 @@ public class LocomotiveGroup extends AbstractItem implements
     }
 
     public SortedSet<Locomotive> getLocomotives() {
-        return this.locomotives;
+        return Sets.newTreeSet(this.locomotives);
     }
 
     public void setLocomotives(final SortedSet<Locomotive> locomotives) {
-        final SortedSet<Locomotive> old = this.locomotives;
-        this.locomotives = locomotives;
+        final Set<Locomotive> old = this.locomotives;
+        this.locomotives = Sets.newHashSet(locomotives);
         changeSupport.firePropertyChange(PROPERTYNAME_LOCOMOTIVES, old,
                 this.locomotives);
 

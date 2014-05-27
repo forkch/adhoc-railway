@@ -1,23 +1,26 @@
 package ch.fork.AdHocRailway.persistence.xml;
 
+import java.util.Set;
+import java.util.SortedSet;
+
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.model.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutGroup;
 
-import java.util.SortedSet;
+import com.google.common.collect.Sets;
 
 public class AdHocRailwayData {
 
-    private SortedSet<LocomotiveGroup> locomotiveGroups;
-    private SortedSet<TurnoutGroup> turnoutGroups;
-    private SortedSet<RouteGroup> routeGroups;
+    private Set<LocomotiveGroup> locomotiveGroups;
+    private Set<TurnoutGroup> turnoutGroups;
+    private Set<RouteGroup> routeGroups;
 
     public AdHocRailwayData() {
 
     }
-    public AdHocRailwayData(final SortedSet<LocomotiveGroup> locomotiveGroups,
-                            final SortedSet<TurnoutGroup> turnoutGroups,
-                            final SortedSet<RouteGroup> routeGroups) {
+    public AdHocRailwayData(final Set<LocomotiveGroup> locomotiveGroups,
+                            final Set<TurnoutGroup> turnoutGroups,
+                            final Set<RouteGroup> routeGroups) {
         super();
         this.locomotiveGroups = locomotiveGroups;
         this.turnoutGroups = turnoutGroups;
@@ -25,14 +28,14 @@ public class AdHocRailwayData {
     }
 
     public SortedSet<LocomotiveGroup> getLocomotiveGroups() {
-        return locomotiveGroups;
+        return Sets.newTreeSet(locomotiveGroups);
     }
 
     public SortedSet<TurnoutGroup> getTurnoutGroups() {
-        return turnoutGroups;
+        return Sets.newTreeSet(turnoutGroups);
     }
 
     public SortedSet<RouteGroup> getRouteGroups() {
-        return routeGroups;
+        return Sets.newTreeSet(routeGroups);
     }
 }
