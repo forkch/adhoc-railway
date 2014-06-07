@@ -2,3 +2,4 @@ language: java
 
 script: ./gradlew clean build distZip distTar
 
+
