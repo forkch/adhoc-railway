@@ -300,7 +300,9 @@ public class TurnoutManagerImpl implements TurnoutManager,
     @Override
     public void disconnect() {
         cleanupListeners();
-        turnoutService.disconnect();
+        if (turnoutService != null) {
+            turnoutService.disconnect();
+        }
     }
 
     @Override

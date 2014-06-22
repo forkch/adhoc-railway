@@ -283,7 +283,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     private void populateTransientFields(Route route) {
         for (RouteItem routeItem : route.getRoutedTurnouts()) {
             Turnout turnoutById = turnoutManager.getTurnoutById(routeItem.getTurnoutId());
-            if(turnoutById != null) {
+            if (turnoutById != null) {
                 routeItem.setTurnout(turnoutById);
                 routeItem.setRoute(route);
             } else {
@@ -348,7 +348,9 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     @Override
     public void disconnect() {
         cleanupListeners();
-        routeService.disconnect();
+        if (routeService != null) {
+            routeService.disconnect();
+        }
     }
 
 

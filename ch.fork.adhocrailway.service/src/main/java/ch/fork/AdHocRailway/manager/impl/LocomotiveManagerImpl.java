@@ -273,7 +273,9 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     @Override
     public void disconnect() {
         cleanupListeners();
-        locomotiveService.disconnect();
+        if (locomotiveService != null) {
+            locomotiveService.disconnect();
+        }
     }
 
     private void cleanupListeners() {

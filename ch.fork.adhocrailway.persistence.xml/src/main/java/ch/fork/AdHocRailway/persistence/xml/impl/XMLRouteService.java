@@ -18,15 +18,16 @@
 
 package ch.fork.AdHocRailway.persistence.xml.impl;
 
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.log4j.Logger;
+
 import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.model.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.model.turnouts.RouteItem;
 import ch.fork.AdHocRailway.services.RouteService;
 import ch.fork.AdHocRailway.services.RouteServiceListener;
-import org.apache.log4j.Logger;
-
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 public class XMLRouteService implements RouteService {
     private static final Logger LOGGER = Logger
@@ -128,18 +129,9 @@ public class XMLRouteService implements RouteService {
                     routeGroup.setRoutes(new TreeSet<Route>());
                 }
                 for (final Route route : routeGroup.getRoutes()) {
-                    route.init();
+                        route.init();
                     routes.add(route);
                     route.setRouteGroup(routeGroup);
-                    if (route.getRoutedTurnouts() != null) {
-
-                        for (final RouteItem item : route.getRoutedTurnouts()) {
-                            item.init();
-                        }
-                    } else {
-                        route.setRoutedTurnouts(new TreeSet<RouteItem>());
-
-                    }
                 }
             }
         }

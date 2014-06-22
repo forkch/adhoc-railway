@@ -18,15 +18,18 @@
 
 package ch.fork.AdHocRailway.model.turnouts;
 
-import ch.fork.AdHocRailway.model.AbstractItem;
-import com.google.gson.annotations.Expose;
+import java.beans.PropertyChangeListener;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.UUID;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.beans.PropertyChangeListener;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
+import ch.fork.AdHocRailway.model.AbstractItem;
+
+import com.google.common.collect.Sets;
+import com.google.gson.annotations.Expose;
 
 public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
         Comparable<TurnoutGroup> {
@@ -38,7 +41,7 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
     @Expose
     private String name;
     @Expose
-    private SortedSet<Turnout> turnouts = new TreeSet<Turnout>();
+    private Set<Turnout> turnouts = Sets.newHashSet();
 
     public TurnoutGroup() {
     }
@@ -62,11 +65,11 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
     }
 
     public SortedSet<Turnout> getTurnouts() {
-        return this.turnouts;
+        return Sets.newTreeSet(this.turnouts);
     }
 
     public void setTurnouts(final SortedSet<Turnout> turnouts) {
-        this.turnouts = turnouts;
+        this.turnouts = Sets.newHashSet(turnouts);
     }
 
     public void addTurnout(final Turnout turnout) {
