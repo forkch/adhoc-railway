@@ -15,7 +15,7 @@ def getVersionName = { ->
 
 subprojects {
 
-    apply plugin: 'java'
+  apply plugin: 'java'
     apply plugin: 'eclipse'
     apply plugin: 'maven'
     apply plugin: 'idea'
@@ -30,15 +30,14 @@ subprojects {
   dependencies {
   }
 
-    repositories {
-        maven {
-            url '/home/fork/Code/forkch-mvn-repo'
-        }
-        mavenCentral()
-        maven { url 'https://raw.githubusercontent.com/forkch/forkch-mvn-repo/master' }
+  repositories {
+    maven {
+      url '/home/fork/Code/forkch-mvn-repo'
     }
     mavenCentral()
-      maven { url 'https://raw.githubusercontent.com/forkch/forkch-mvn-repo/master' }
+      maven { 
+        url 'https://raw.githubusercontent.com/forkch/forkch-mvn-repo/master' 
+      }
   }
 
   //Include compileOnly for compilation
@@ -108,16 +107,16 @@ project(':ch.fork.adhocrailway.persistence.adhocserver') {
 }
 
 project(':ch.fork.adhocrailway.railway.brain') {
-    dependencies {
-        compile project(':ch.fork.adhocrailway.service')
-    }
+  dependencies {
+    compile project(':ch.fork.adhocrailway.service')
+  }
 }
 
 project(':ch.fork.adhocrailway.railway.srcp') {
-    dependencies {
-        compile project(':ch.fork.adhocrailway.service')
-        compile project(':ch.fork.adhocrailway.persistence')
-    }
+  dependencies {
+    compile project(':ch.fork.adhocrailway.service')
+      compile project(':ch.fork.adhocrailway.persistence')
+  }
 }
 
 task wrapper(type: Wrapper) {
