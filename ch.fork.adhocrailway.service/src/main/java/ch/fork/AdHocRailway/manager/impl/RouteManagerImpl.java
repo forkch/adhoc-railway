@@ -242,7 +242,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 
     @Override
     public void routesUpdated(final SortedSet<RouteGroup> updatedRouteGroups) {
-        LOGGER.info("routesUpdated: " + updatedRouteGroups);
+        LOGGER.debug("routesUpdated: " + updatedRouteGroups);
         cleanupListeners();
         clearCache();
         for (final RouteGroup group : updatedRouteGroups) {

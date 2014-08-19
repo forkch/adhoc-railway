@@ -211,7 +211,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
     @Override
     public void turnoutsUpdated(final SortedSet<TurnoutGroup> updatedTurnouts) {
-        LOGGER.info("turnoutsUpdated: " + updatedTurnouts);
+        LOGGER.debug("turnoutsUpdated: " + updatedTurnouts);
         cleanupListeners();
         clearCache();
         for (final TurnoutGroup group : updatedTurnouts) {

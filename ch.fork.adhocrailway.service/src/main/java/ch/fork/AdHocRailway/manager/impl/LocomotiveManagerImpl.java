@@ -184,7 +184,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     @Override
     public void locomotivesUpdated(
             final SortedSet<LocomotiveGroup> updatedLocomotiveGroups) {
-        LOGGER.info("locomotivesUpdated: " + updatedLocomotiveGroups);
+        LOGGER.debug("locomotivesUpdated: " + updatedLocomotiveGroups);
         cleanupListeners();
         clearCache();
         for (final LocomotiveGroup group : updatedLocomotiveGroups) {
