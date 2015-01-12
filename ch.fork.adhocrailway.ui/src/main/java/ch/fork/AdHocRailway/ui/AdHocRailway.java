@@ -135,7 +135,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     private RailwayDeviceManager railwayDeviceManager;
 
     public AdHocRailway(org.apache.commons.cli.CommandLine parsedCommandLine) {
-        super(TITLE);
+
+        if(!isMac())
+            setTitle(TITLE);
         try {
 
             appContext = new ApplicationContext();
@@ -242,6 +244,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         linuxWinSetup(TITLE);
 
         AdHocRailway adHocRailway = new AdHocRailway(parsedCommandLine);
+
+
     }
 
 
