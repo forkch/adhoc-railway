@@ -149,11 +149,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             LOGGER.info("AdHoc-Railway starting up!!!");
             LOGGER.info("****************************************");
 
-            PlasticLookAndFeel
-                    .setTabStyle(PlasticLookAndFeel.TAB_STYLE_DEFAULT_VALUE);
-            PlasticLookAndFeel.setHighContrastFocusColorsEnabled(false);
-
-            UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
 
             splash = new SplashWindow(createImageIconFromCustom("splash.png"),
                     this, 500, 12);
@@ -208,8 +203,34 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     public static void setupGlobalExceptionHandling() {
 
     }
+    private static void macSetup(String appName) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
+        if(!isMac())
+            return;
 
-    public static void main(final String[] args) throws ParseException {
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+
+        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "WikiTeX");
+
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    }
+
+
+    private static void linuxWinSetup(String title) throws UnsupportedLookAndFeelException {
+        if(isMac())
+            return;
+        PlasticLookAndFeel
+                .setTabStyle(PlasticLookAndFeel.TAB_STYLE_DEFAULT_VALUE);
+        PlasticLookAndFeel.setHighContrastFocusColorsEnabled(false);
+
+        UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
+    }
+
+
+    private static boolean isMac() {
+        String os = System.getProperty("os.name").toLowerCase();
+        return os.startsWith("mac os x");
+    }
+    public static void main(final String[] args) throws Exception {
 
         Options options = new Options();
         options.addOption("c", "clean", false, "start with a clean config");
@@ -217,8 +238,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
         org.apache.commons.cli.CommandLine parsedCommandLine = parser.parse(options, args);
 
+        macSetup(TITLE);
+        linuxWinSetup(TITLE);
+
         AdHocRailway adHocRailway = new AdHocRailway(parsedCommandLine);
     }
+
 
     @Override
     public void addMenu(final JMenu menu) {
@@ -415,12 +440,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         final JMenuItem newItem = new JMenuItem(new NewFileAction());
         newItem.setMnemonic(KeyEvent.VK_N);
         newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
-                ActionEvent.CTRL_MASK));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 
         final JMenuItem openItem = new JMenuItem(new OpenFileAction());
         openItem.setMnemonic(KeyEvent.VK_O);
         openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
-                ActionEvent.CTRL_MASK));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 
         final JMenuItem openDatabaseItem = new JMenuItem(
                 new OpenDatabaseAction());
@@ -428,11 +453,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         saveItem = new JMenuItem(new SaveAction());
         saveItem.setMnemonic(KeyEvent.VK_S);
         saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-                ActionEvent.CTRL_MASK));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 
         saveAsItem = new JMenuItem(new SaveAsAction());
         saveAsItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-                ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | ActionEvent.SHIFT_MASK));
 
         final JMenuItem importAllItem = new JMenuItem(
                 new ImportAllAction());
@@ -461,7 +486,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         final JMenuItem exitItem = new JMenuItem(new ExitAction());
         exitItem.setMnemonic(KeyEvent.VK_X);
         exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-                ActionEvent.CTRL_MASK));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 
         fileMenu.add(newItem);
         fileMenu.add(openItem);
@@ -510,7 +535,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         final JMenu daemonMenu = new JMenu("Device");
         daemonConnectItem = new JMenuItem(new ConnectAction());
         daemonConnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
-                ActionEvent.CTRL_MASK));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         daemonDisconnectItem = new JMenuItem(new DisconnectAction());
         daemonPowerOnItem = new JMenuItem(new PowerOnAction());
         assignAccelerator(daemonPowerOnItem, "PowerOn");

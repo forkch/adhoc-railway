@@ -1,5 +1,13 @@
 language: java
-
-script: ./gradlew clean build distZip distTar
+script: "./gradlew clean build distZip distTar"
+deploy:
+  provider: s3
+  local-dir: ch.fork.adhocrailway.ui/build/distributions/
+  access_key_id: AKIAJA4QRNGVXSMAEBDA
+  secret_access_key:
+    secure: kjn7R44vhIxxezl8O8IUQN0bOPlaJX/lRwAn55EmhsrHIYvfdE5dDoyYFKPvT1HysfDdKG9xr1SKL+pqQh9xhQ4VLiA8RMkx0Jn01Dch1YXRhW6R+NEnUiVDBHjcBN+XihhB1/foMZkn0DNojWAxbyOlAW03pN3sFODxgy8433E=
+  bucket: AdHoc-Railway
+  on:
+    repo: forkch/adhoc-railway
 
 

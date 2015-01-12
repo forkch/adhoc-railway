@@ -12,6 +12,14 @@ def getVersionName = { ->
   return stdout.toString().trim()
 }
 
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'edu.sc.seis.gradle:macappbundle:2.0.0'
+  }
+}
 
 subprojects {
 
