@@ -6,12 +6,20 @@
 def getVersionName = { ->
   def stdout = new ByteArrayOutputStream()
     exec {
-      commandLine 'git', 'describe', '--tags', '--always'
+      commandLine '/usr/local/git/bin/git', 'describe', '--tags', '--always'
         standardOutput = stdout
     }
   return stdout.toString().trim()
 }
 
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'edu.sc.seis.gradle:macappbundle:2.0.0'
+  }
+}
 
 subprojects {
 

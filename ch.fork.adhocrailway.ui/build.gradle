@@ -1,4 +1,9 @@
 apply plugin: 'application'
+apply plugin: 'macAppBundle'
+
+macAppBundle {
+    mainClassName = "ch.fork.AdHocRailway.ui.AdHocRailway"
+}
 
 archivesBaseName = 'adhocrailway-gui'
 
