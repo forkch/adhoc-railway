@@ -45,7 +45,6 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.log4j.*;
 
 import javax.swing.*;
@@ -365,13 +364,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     private void initGUI() {
 
         setFont(new Font("Verdana", Font.PLAIN, 19));
-        setLayout(new BorderLayout(0, 0));
+        setLayout(new BorderLayout());
         initMenu();
         initToolbar();
         statusBarPanel = initStatusBar();
         mainPanel = new JPanel();
 
-        mainPanel = new JPanel(new MigLayout("", "[][grow]", "[grow][]"));
+        mainPanel = new JPanel(new MigLayout("insets 5", "[][grow]", "[grow][]"));
 
         final JPanel segmentPanel = new KeyControl(appContext);
 
@@ -400,6 +399,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         appContext.getMainBus().register(this);
         appContext.getMainBus().post(
                 new EditingModeEvent(appContext.isEditingMode()));
+
     }
 
     private void updateGUI() {
@@ -564,12 +564,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         viewMenu.add(fullscreenItem);
 
 		/* HELP */
-        // JMenu helpMenu = new JMenu("Help");
         addMenu(fileMenu);
         addMenu(editMenu);
         addMenu(daemonMenu);
         addMenu(viewMenu);
-        // addMenu(helpMenu);
         setJMenuBar(menuBar);
     }
 
@@ -653,7 +651,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         addToolBar(daemonToolBar);
         addToolBar(viewToolBar);
 
-        final JPanel toolbarErrorPanel = new JPanel(new BorderLayout(10, 10));
+        final JPanel toolbarErrorPanel = new JPanel(new BorderLayout(2, 2));
         toolbarErrorPanel.add(toolbarPanel, BorderLayout.WEST);
         toolbarErrorPanel.add(errorPanel, BorderLayout.EAST);
 

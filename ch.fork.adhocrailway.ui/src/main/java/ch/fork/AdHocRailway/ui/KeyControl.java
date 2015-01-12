@@ -45,15 +45,12 @@ public class KeyControl extends SimpleInternalFrame {
 
     private final LinkedList<Object> historyStack = new LinkedList<Object>();
 
-    ;
     private final LinkedList<JPanel> historyWidgets = new LinkedList<JPanel>();
     private final TurnoutManager turnoutManager;
     private final ApplicationContext ctx;
     private KeyControlMode mode = KeyControlMode.TURNOUT_MODE;
     private int locomotiveNumber = -1;
-    ;
     private StringBuffer enteredNumberKeys;
-    ;
     private JPanel turnoutsHistory;
     private JScrollPane historyPane;
     private ThreeDigitDisplay digitDisplay;

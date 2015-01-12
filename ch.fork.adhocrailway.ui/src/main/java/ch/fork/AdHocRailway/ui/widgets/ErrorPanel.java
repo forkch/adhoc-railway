@@ -73,13 +73,13 @@ public class ErrorPanel extends JPanel {
     private void initGUI() {
         panel = new RoundedPanel();
         panel.drawBorder = false;
-        panel.arcs = new Dimension(10, 10);
-        panel.setLayout(new BorderLayout(5, 5));
+        panel.arcs = new Dimension(4, 4);
+        panel.setLayout(new BorderLayout(3, 3));
 
-        errorTextArea = new JTextArea(2, 30);
+        errorTextArea = new JTextArea(1, 30);
         errorTextArea.setEditable(false);
         errorTextArea.setForeground(Color.BLACK);
-        errorTextArea.setFont(new Font("Dialog", Font.BOLD, 12));
+        errorTextArea.setFont(new Font("Dialog", Font.BOLD, 11));
 
         iconLabel = new JLabel("");
         addMouseListener(new ErrorConfirmAction());

@@ -49,7 +49,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
     }
 
     private void initGUI() {
-        setLayout(new BorderLayout(5, 5));
+        setLayout(new BorderLayout(0, 0));
         initTurnoutPanel();
         initRoutesPanel();
         initShortcuts();
@@ -60,21 +60,10 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
 
             trackControlPane.add("Turnouts", turnoutGroupsTabbedPane);
             trackControlPane.add("Routes", routeGroupsTabbedPane);
-            final SimpleInternalFrame turnoutRouteFrame = new SimpleInternalFrame(
-                    "Turnouts/Routes");
-            turnoutRouteFrame.add(trackControlPane, BorderLayout.CENTER);
-            controlPanel.add(turnoutRouteFrame);
+            controlPanel.add(trackControlPane);
         } else {
-            final SimpleInternalFrame turnoutFrame = new SimpleInternalFrame(
-                    "Turnouts");
-            final SimpleInternalFrame routesFrame = new SimpleInternalFrame(
-                    "Routes");
-
-            turnoutFrame.add(turnoutGroupsTabbedPane, BorderLayout.CENTER);
-            routesFrame.add(routeGroupsTabbedPane, BorderLayout.CENTER);
-
-            controlPanel.add(turnoutFrame);
-            controlPanel.add(routesFrame);
+            controlPanel.add(turnoutGroupsTabbedPane);
+            controlPanel.add(routeGroupsTabbedPane);
         }
         add(controlPanel, BorderLayout.CENTER);
     }

@@ -50,12 +50,11 @@ public class LocomotiveControlPanel extends JPanel {
 
     private void initGUI() {
         setLayout(new BorderLayout());
-        controlPanel = new JPanel(new MigLayout());
+        controlPanel = new JPanel(new MigLayout("insets 0"));
 
         final SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame(
                 "Trains");
         locomotivesFrame.add(controlPanel, BorderLayout.CENTER);
-        setLayout(new BorderLayout());
         add(locomotivesFrame, BorderLayout.NORTH);
 
         ctx.getMainApp().registerSpaceKey(new LocomotiveStopAction());
