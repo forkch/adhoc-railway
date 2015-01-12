@@ -7,3 +7,5 @@ out
 classes
 logs
 *.swp
+
+*.iml
