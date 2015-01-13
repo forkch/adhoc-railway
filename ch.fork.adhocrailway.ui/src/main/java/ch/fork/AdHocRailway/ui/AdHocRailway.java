@@ -45,6 +45,7 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.log4j.*;
 
 import javax.swing.*;
@@ -207,7 +208,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     private static void macSetup(String appName) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
-        if(!isMac())
+        if(!SystemUtils.IS_OS_MAC_OSX)
             return;
 
         System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -216,8 +217,15 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
 
-    private static void linuxWinSetup(String title) throws UnsupportedLookAndFeelException {
-        if(isMac())
+    private static void winSetup(String title) throws UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+        if(!SystemUtils.IS_OS_WINDOWS)
+            return;
+
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    }
+
+    private static void linuxSetup(String title) throws UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+        if(!SystemUtils.IS_OS_LINUX)
             return;
         PlasticLookAndFeel
                 .setTabStyle(PlasticLookAndFeel.TAB_STYLE_DEFAULT_VALUE);
@@ -231,6 +239,15 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         String os = System.getProperty("os.name").toLowerCase();
         return os.startsWith("mac os x");
     }
+    private static boolean isWin() {
+        String os = System.getProperty("os.name").toLowerCase();
+        return os.startsWith("mac os x");
+    }
+
+    private static boolean isLinux() {
+        String os = System.getProperty("os.name").toLowerCase();
+        return os.startsWith("mac os x");
+    }
     public static void main(final String[] args) throws Exception {
 
         Options options = new Options();
@@ -240,11 +257,15 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         org.apache.commons.cli.CommandLine parsedCommandLine = parser.parse(options, args);
 
         macSetup(TITLE);
-        linuxWinSetup(TITLE);
+        winSetup(TITLE);
+        linuxetup(TITLE);
 
         AdHocRailway adHocRailway = new AdHocRailway(parsedCommandLine);
 
 
+    }
+
+    private static void linuxetup(String title) {
     }
 
 
