@@ -1,5 +1,5 @@
 language: java
-install: true
+install: "./gradlew assemble -x createDmg"
 script: "./gradlew clean build distZip distTar -x createDmg"
 deploy:
   provider: s3
