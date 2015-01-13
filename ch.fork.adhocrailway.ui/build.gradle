@@ -3,6 +3,7 @@ apply plugin: 'macAppBundle'
 
 macAppBundle {
     mainClassName = "ch.fork.AdHocRailway.ui.AdHocRailway"
+    icon = "src/main/resources/custom/2-Hot-Train-icon.icns"
 }
 
 archivesBaseName = 'adhocrailway-gui'
