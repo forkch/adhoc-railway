@@ -1,5 +1,5 @@
 language: java
-script: "./gradlew clean build distZip distTar"
+script: "./gradlew clean build distZip distTar -x createDmg"
 deploy:
   provider: s3
   local-dir: ch.fork.adhocrailway.ui/build/distributions/
