@@ -136,7 +136,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     public AdHocRailway(org.apache.commons.cli.CommandLine parsedCommandLine) {
 
-        if(!isMac()){
+        if(!SystemUtils.IS_OS_MAC_OSX){
             setTitle(TITLE);
         }
         try {
@@ -235,19 +235,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
 
-    private static boolean isMac() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.startsWith("mac os x");
-    }
-    private static boolean isWin() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.startsWith("mac os x");
-    }
-
-    private static boolean isLinux() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.startsWith("mac os x");
-    }
     public static void main(final String[] args) throws Exception {
 
         Options options = new Options();
@@ -258,16 +245,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
         macSetup(TITLE);
         winSetup(TITLE);
-        linuxetup(TITLE);
+        linuxSetup(TITLE);
 
         AdHocRailway adHocRailway = new AdHocRailway(parsedCommandLine);
-
-
     }
-
-    private static void linuxetup(String title) {
-    }
-
 
     @Override
     public void addMenu(final JMenu menu) {
