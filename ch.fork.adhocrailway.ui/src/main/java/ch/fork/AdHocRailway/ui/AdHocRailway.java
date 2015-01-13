@@ -135,8 +135,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     public AdHocRailway(org.apache.commons.cli.CommandLine parsedCommandLine) {
 
-        if(!isMac())
+        if(!isMac()){
             setTitle(TITLE);
+        }
         try {
 
             appContext = new ApplicationContext();
@@ -204,14 +205,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     public static void setupGlobalExceptionHandling() {
 
     }
+
     private static void macSetup(String appName) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
         if(!isMac())
             return;
 
         System.setProperty("apple.laf.useScreenMenuBar", "true");
-
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "WikiTeX");
-
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     }
 
