@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.persistence.adhocserver.impl.rest;
 
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutGroup;
+import retrofit.Callback;
 import retrofit.http.*;
 
 import java.util.SortedSet;

@@ -59,6 +59,7 @@ public interface TurnoutManager {
 
     boolean isTurnoutNumberFree(final int number);
 
+    @Deprecated
     void setTurnoutService(final TurnoutService instance);
 
     void clear();

@@ -44,7 +44,8 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
     private int lastProgrammedNumber = 0;
 
-    public TurnoutManagerImpl() {
+    public TurnoutManagerImpl(final TurnoutService turnoutService) {
+        this.turnoutService = turnoutService;
         LOGGER.info("TurnoutManagerImpl loaded");
     }
 

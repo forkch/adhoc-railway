@@ -76,13 +76,10 @@ public class PersistenceManager {
         appContext.getMainBus().post(
                 new InitProceededEvent("Loading Persistence Layer (Turnouts)"));
 
-        TurnoutManager turnoutManager = appContext.getTurnoutManager();
-        if (turnoutManager == null) {
-            turnoutManager = new TurnoutManagerImpl();
-        }
+            TurnoutManager turnoutManager = new TurnoutManagerImpl(PersistenceFactory
+                    .createTurnoutService(useAdHocServer, appContext));
         appContext.setTurnoutManager(turnoutManager);
-        turnoutManager.setTurnoutService(PersistenceFactory
-                .createTurnoutService(useAdHocServer, appContext));
+
         turnoutManager.initialize();
         return turnoutManager;
     }
