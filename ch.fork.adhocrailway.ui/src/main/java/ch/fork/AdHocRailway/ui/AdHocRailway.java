@@ -381,7 +381,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         mainPanel.add(segmentPanel, "grow");
         mainPanel.add(trackControlPanel, "grow, wrap");
         mainPanel.add(powerControlPanel, "grow");
-        mainPanel.add(locomotiveControlPanel, "shrink 0, wrap");
+        mainPanel.add(locomotiveControlPanel, "grow, wrap");
 
         add(mainPanel, BorderLayout.CENTER);
         add(statusBarPanel, BorderLayout.PAGE_END);

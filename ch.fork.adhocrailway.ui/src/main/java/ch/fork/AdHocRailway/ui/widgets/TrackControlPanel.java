@@ -25,6 +25,7 @@ import ch.fork.AdHocRailway.ui.context.TrackContext;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.routes.RouteGroupsPanel;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutGroupsPanel;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,7 +55,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
         initRoutesPanel();
         initShortcuts();
 
-        final JPanel controlPanel = new JPanel(new GridLayout(1, 2));
+        final JPanel controlPanel = new JPanel(new MigLayout("insets 0, fill"));
         if (preferences.getBooleanValue(TABBED_TRACK)) {
             trackControlPane = new JTabbedPane();
 
@@ -62,8 +63,8 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
             trackControlPane.add("Routes", routeGroupsTabbedPane);
             controlPanel.add(trackControlPane);
         } else {
-            controlPanel.add(turnoutGroupsTabbedPane);
-            controlPanel.add(routeGroupsTabbedPane);
+            controlPanel.add(turnoutGroupsTabbedPane, "w 50%, h 100%");
+            controlPanel.add(routeGroupsTabbedPane, "w 50%, h 100%");
         }
         add(controlPanel, BorderLayout.CENTER);
     }
