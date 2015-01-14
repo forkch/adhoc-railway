@@ -41,7 +41,6 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     @Expose
     private RouteItemState state;
 
-    private transient String turnoutId;
 
     private transient Turnout turnout;
 
@@ -137,11 +136,4 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
         this.turnoutNumber = turnoutNumber;
     }
 
-    public String getTurnoutId() {
-        return turnoutId;
-    }
-
-    public void setTurnoutId(String turnoutId) {
-        this.turnoutId = turnoutId;
-    }
 }
