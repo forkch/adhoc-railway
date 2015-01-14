@@ -29,6 +29,7 @@ import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.RouteService;
 import ch.fork.AdHocRailway.services.RouteServiceListener;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -282,13 +283,14 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     }
 
     private void populateTransientFields(Route route) {
+
         for (RouteItem routeItem : route.getRoutedTurnouts()) {
-            Turnout turnoutById = turnoutManager.getTurnoutById(routeItem.getTurnoutId());
-            if (turnoutById != null) {
-                routeItem.setTurnout(turnoutById);
+            Turnout turnoutByNumber = turnoutManager.getTurnoutByNumber(routeItem.getTurnoutNumber());
+            if (turnoutByNumber != null) {
+                routeItem.setTurnout(turnoutByNumber);
                 routeItem.setRoute(route);
             } else {
-                LOGGER.warn("turnout with id " + routeItem.getTurnoutId() + " not found ");
+                LOGGER.warn("turnout with number " + routeItem.getTurnoutNumber() + " not found ");
             }
         }
         TreeSet<RouteItem> routeItems = new TreeSet<RouteItem>();

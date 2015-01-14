@@ -37,9 +37,11 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     @Expose
     private String id = UUID.randomUUID().toString();
     @Expose
-    private String turnoutId;
+    private int turnoutNumber;
     @Expose
     private RouteItemState state;
+
+    private transient String turnoutId;
 
     private transient Turnout turnout;
 
@@ -51,7 +53,7 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
 
     public RouteItem(RouteItem routeItem) {
         this.id = routeItem.getId();
-        this.turnoutId = routeItem.getTurnoutId();
+        this.turnoutNumber = routeItem.getTurnoutNumber();
         this.state = routeItem.getState();
         this.turnout = new Turnout(routeItem.getTurnout());
     }
@@ -71,7 +73,7 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     public void setTurnout(final Turnout turnout) {
         final Turnout old = this.turnout;
         this.turnout = turnout;
-        setTurnoutId(turnout.getId());
+        this.turnoutNumber = turnout.getNumber();
         changeSupport.firePropertyChange(PROPERTYNAME_TURNOUT, old,
                 this.turnout);
     }
@@ -125,6 +127,14 @@ public class RouteItem extends AbstractItem implements java.io.Serializable,
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public int getTurnoutNumber() {
+        return turnoutNumber;
+    }
+
+    public void setTurnoutNumber(int turnoutNumber) {
+        this.turnoutNumber = turnoutNumber;
     }
 
     public String getTurnoutId() {

@@ -1,6 +1,10 @@
 package ch.fork.AdHocRailway.ui;
 
 import ch.fork.AdHocRailway.controllers.*;
+import ch.fork.AdHocRailway.controllers.impl.dummy.DummyLocomotiveController;
+import ch.fork.AdHocRailway.controllers.impl.dummy.DummyPowerController;
+import ch.fork.AdHocRailway.controllers.impl.dummy.DummyRouteController;
+import ch.fork.AdHocRailway.controllers.impl.dummy.DummyTurnoutController;
 import ch.fork.AdHocRailway.model.AdHocRailwayException;
 import ch.fork.AdHocRailway.model.power.PowerSupply;
 import ch.fork.AdHocRailway.railway.brain.brain.BrainController;
@@ -77,8 +81,16 @@ public class RailwayDeviceManager implements CommandDataListener,
         } else {
             disconnectFromBrain();
         }
+
+        appContext.setLocomotiveControl(new DummyLocomotiveController());
+        appContext.setTurnoutControl(new DummyTurnoutController());
+        appContext.setRouteControl(new DummyRouteController(appContext.getTurnoutControl(), appContext.getTurnoutManager()));
+        appContext.setPowerController(new DummyPowerController());
+
         connected = false;
+
         appContext.getMainBus().post(new ConnectedToRailwayEvent(false));
+
 
     }
 
@@ -170,10 +182,11 @@ public class RailwayDeviceManager implements CommandDataListener,
 
             //appContext.getLocomotiveControl().emergencyStopActiveLocos();
             SRCPSession session = appContext.getSession();
-            session.disconnect();
-            session = null;
-
-            setSessionOnControllers(session);
+            if(session!= null) {
+                session.disconnect();
+                session = null;
+                setSessionOnControllers(session);
+            }
 
             appContext.getMainBus().post(
                     new CommandLogEvent("Disconnected from server " + host

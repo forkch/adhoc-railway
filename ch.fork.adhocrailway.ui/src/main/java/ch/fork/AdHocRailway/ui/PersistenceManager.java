@@ -85,8 +85,18 @@ public class PersistenceManager {
                                 .getRouteManager().getService(), file
                 );
 
-
         appContext.setActualFile(file);
+
+
+        appContext.getPreferences().setStringValue(PreferencesKeys.LAST_OPENED_FILE,
+                file.getAbsolutePath());
+        try {
+            appContext.getPreferences().save();
+        } catch (final IOException e1) {
+             throw new AdHocRailwayException(
+                    "could not save preferences");
+        }
+
         appContext.getMainBus().post(
                 new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
                         + file.getAbsolutePath() + "]")

@@ -72,12 +72,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
         connectedToRailway = false;
     }
 
-
-    @Subscribe
-    public void connectedToPersistence(final ConnectedToPersistenceEvent event) {
-        ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
-    }
-
     @Subscribe
     public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
         if (event.isConnected()) {

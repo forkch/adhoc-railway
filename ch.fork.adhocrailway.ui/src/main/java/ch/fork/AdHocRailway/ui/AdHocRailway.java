@@ -20,6 +20,7 @@ package ch.fork.AdHocRailway.ui;
 
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.controllers.RailwayDevice;
+import ch.fork.AdHocRailway.model.AdHocRailwayException;
 import ch.fork.AdHocRailway.persistence.xml.XMLServiceHelper;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -136,7 +137,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     public AdHocRailway(org.apache.commons.cli.CommandLine parsedCommandLine) {
 
-        if(!SystemUtils.IS_OS_MAC_OSX){
+        if (!SystemUtils.IS_OS_MAC_OSX) {
             setTitle(TITLE);
         }
         try {
@@ -203,7 +204,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     private static void macSetup(String appName) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
-        if(!SystemUtils.IS_OS_MAC_OSX)
+        if (!SystemUtils.IS_OS_MAC_OSX)
             return;
 
         System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -213,14 +214,14 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 
     private static void winSetup(String title) throws UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        if(!SystemUtils.IS_OS_WINDOWS)
+        if (!SystemUtils.IS_OS_WINDOWS)
             return;
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     }
 
     private static void linuxSetup(String title) throws UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        if(!SystemUtils.IS_OS_LINUX)
+        if (!SystemUtils.IS_OS_LINUX)
             return;
         PlasticLookAndFeel
                 .setTabStyle(PlasticLookAndFeel.TAB_STYLE_DEFAULT_VALUE);
@@ -635,7 +636,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         toggleFullscreenButton = new SmallToolbarButton(
                 new ToggleFullscreenAction());
 
-       // viewToolBar.add(refreshButton);
+        // viewToolBar.add(refreshButton);
         viewToolBar.add(toggleFullscreenButton);
 
 		/* ERROR */
@@ -1044,11 +1045,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                 }
             }
 
-            try {
-                appContext.getLockControl().releaseAllLocks();
-                appContext.getLocomotiveControl().emergencyStopActiveLocos();
-            } catch (final SRCPLockingException e1) {
-                handleException(e1);
+            if (appContext.getRailwayDeviceManager().isConnected()) {
+                try {
+                    appContext.getLockControl().releaseAllLocks();
+                    appContext.getLocomotiveControl().emergencyStopActiveLocos();
+                } catch (final SRCPLockingException e1) {
+                    handleException(e1);
+                }
             }
 
             if (appContext.getActualFile() != null) {
@@ -1057,10 +1060,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                 try {
                     preferences.save();
                 } catch (final IOException e1) {
-                    handleException(e1);
+                    throw new AdHocRailwayException(
+                            "could not save preferences");
                 }
             }
-                persistenceManager.disconnectFromCurrentPersistence();
+            persistenceManager.disconnectFromCurrentPersistence();
             System.exit(0);
         }
     }

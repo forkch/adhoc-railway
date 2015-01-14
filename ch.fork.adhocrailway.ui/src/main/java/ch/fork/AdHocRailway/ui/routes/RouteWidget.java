@@ -69,7 +69,9 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
             ctx.getRouteControl().addRouteChangeListener(route, this);
         } else {
             connectedToRailway = false;
-            ctx.getRouteControl().removeRouteChangeListener(route, this);
+            if(ctx.getRouteControl() != null) {
+                ctx.getRouteControl().removeRouteChangeListener(route, this);
+            }
         }
     }
 

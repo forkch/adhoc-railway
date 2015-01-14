@@ -14,6 +14,7 @@ import ch.fork.AdHocRailway.persistence.xml.impl.XMLTurnoutService;
 import ch.fork.AdHocRailway.utils.DataImporter;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -53,6 +54,9 @@ public class XMLServiceHelper {
         final XStream xstream = getXStream();
 
         data = (AdHocRailwayData) xstream.fromXML(xmlFile);
+
+        populateTurnoutsToRouteItems(data);
+
         addFunctionsIfNeccesaray(data);
 
         locomotiveService.loadLocomotiveGroupsFromXML(data
@@ -114,6 +118,7 @@ public class XMLServiceHelper {
             final XStream xstream = getXStream();
             data = (AdHocRailwayData) xstream.fromXML(new FileReader(
                     fileToImport));
+
 
             addFunctionsIfNeccesaray(data);
             new DataImporter().importLocomotives(locomotivePersistence,
@@ -197,6 +202,8 @@ public class XMLServiceHelper {
             data = (AdHocRailwayData) xstream.fromXML(new FileReader(
                     fileToImport));
 
+            populateTurnoutsToRouteItems(data);
+
             addFunctionsIfNeccesaray(data);
             new DataImporter().importLocomotives(locomotivePersistence,
                     data.getLocomotiveGroups()
@@ -215,5 +222,38 @@ public class XMLServiceHelper {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    private void populateTurnoutsToRouteItems(AdHocRailwayData data) {
+        for(RouteGroup routeGroup : data.getRouteGroups()) {
+            for(Route route : routeGroup.getRoutes()) {
+                for(RouteItem routeItem : route.getRoutedTurnouts()) {
+                    if(routeItem.getTurnoutNumber() != 0) {
+                        continue;
+                    }
+                    String turnoutId = routeItem.getTurnoutId();
+                    if(StringUtils.isNotBlank(turnoutId)) {
+                        Turnout turnoutById = getTurnoutById(data, turnoutId);
+                        if(turnoutById != null) {
+                            routeItem.setTurnoutNumber(turnoutById.getNumber());
+                            routeItem.setTurnout(turnoutById);
+                        } else {
+                            LOGGER.warn("turnoutId: " + turnoutId + " not found for routeItemId: " + routeItem.getId());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private Turnout getTurnoutById(AdHocRailwayData data, String turnoutId) {
+
+        for(TurnoutGroup turnoutGroup : data.getTurnoutGroups()) {
+            for (Turnout turnout : turnoutGroup.getTurnouts()) {
+                if (turnout.getId().equals(turnoutId))
+                    return turnout;
+            }
+        }
+        return null;
     }
 }

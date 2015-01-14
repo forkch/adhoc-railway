@@ -85,7 +85,6 @@ public class TurnoutManagerImpl implements TurnoutManager,
 
     @Override
     public Turnout getTurnoutByNumber(final int number) {
-        LOGGER.debug("getTurnoutByNumber()");
         return numberToTurnoutCache.get(number);
     }
 

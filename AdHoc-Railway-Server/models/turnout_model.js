@@ -30,7 +30,7 @@ exports.RouteSchema = new Schema({
     groupId: ObjectId,
     routedTurnouts: [
         {
-            turnoutId: ObjectId,
+            turnoutNumber: Number,
             state: String
         }
     ]
