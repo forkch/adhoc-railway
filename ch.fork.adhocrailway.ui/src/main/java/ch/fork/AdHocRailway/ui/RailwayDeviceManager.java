@@ -43,12 +43,19 @@ public class RailwayDeviceManager implements CommandDataListener,
     public RailwayDeviceManager(final RailwayDeviceManagerContext appContext) {
         this.appContext = appContext;
         appContext.getMainBus().register(this);
+
+        putNullDeviceInitially();
+
+    }
+
+    private void putNullDeviceInitially() {
+        loadControlLayer(RailwayDevice.NULL_DEVICE);
     }
 
 
     public void connect() {
 
-        loadControlLayer();
+        loadControlLayer(getRailwayDevice());
 
         final Preferences preferences = appContext.getPreferences();
         final String railwayDeviceString = preferences
@@ -71,11 +78,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 
     public void disconnect() {
 
-        final Preferences preferences = appContext.getPreferences();
-        final String railwayDeviceString = preferences
-                .getStringValue(RAILWAY_DEVICE);
-        final RailwayDevice railwayDevive = RailwayDevice
-                .fromString(railwayDeviceString);
+        final RailwayDevice railwayDevive = getRailwayDevice();
         if (railwayDevive.equals(RailwayDevice.SRCP)) {
             disconnectFromSRCPServer();
         } else {
@@ -199,12 +202,8 @@ public class RailwayDeviceManager implements CommandDataListener,
         }
     }
 
-    private void loadControlLayer() {
-        final Preferences preferences = appContext.getPreferences();
-        final String railwayDeviceString = preferences
-                .getStringValue(RAILWAY_DEVICE);
-        final RailwayDevice railwayDevive = RailwayDevice
-                .fromString(railwayDeviceString);
+    private void loadControlLayer(RailwayDevice railwayDevice) {
+        final RailwayDevice railwayDevive = getRailwayDevice();
 
         createPowerControllerOnContext(railwayDevive);
 
@@ -215,6 +214,14 @@ public class RailwayDeviceManager implements CommandDataListener,
         createRouteControllerOnContext(railwayDevive, turnoutControl);
 
         createLockControllerOnContext();
+    }
+
+    private RailwayDevice getRailwayDevice() {
+        final Preferences preferences = appContext.getPreferences();
+        final String railwayDeviceString = preferences
+                .getStringValue(RAILWAY_DEVICE);
+        return RailwayDevice
+                .fromString(railwayDeviceString);
     }
 
     private void createLockControllerOnContext() {

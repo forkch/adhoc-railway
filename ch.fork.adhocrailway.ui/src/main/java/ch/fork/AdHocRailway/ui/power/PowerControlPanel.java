@@ -56,7 +56,7 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
     }
 
     private void initGUI() {
-        final MigLayout layout = new MigLayout("wrap 2");
+        final MigLayout layout = new MigLayout("insets 5, wrap 2, fillx");
         powerControlPanel = new JPanel(layout);
 
         initKeyboardActions();

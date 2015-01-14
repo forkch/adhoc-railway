@@ -55,7 +55,7 @@ public class TrackControlPanel extends JPanel implements PreferencesKeys {
         initRoutesPanel();
         initShortcuts();
 
-        final JPanel controlPanel = new JPanel(new MigLayout("insets 0, fill"));
+        final JPanel controlPanel = new JPanel(new MigLayout("debug, insets 0, gap 0, fill"));
         if (preferences.getBooleanValue(TABBED_TRACK)) {
             trackControlPane = new JTabbedPane();
 

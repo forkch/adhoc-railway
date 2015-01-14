@@ -40,6 +40,7 @@ import ch.fork.AdHocRailway.ui.utils.ImageTools;
 import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import ch.fork.AdHocRailway.utils.LocomotiveHelper;
 import com.google.common.eventbus.Subscribe;
+import com.jgoodies.common.base.SystemUtils;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 
@@ -161,9 +162,12 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private void initGUI() {
+
         setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        setLayout(new MigLayout("wrap 3"));
+
+
+        setLayout(new MigLayout("wrap 3, insets 5, gap 0, filly"));
 
         initSelectionPanel();
         final JPanel controlPanel = initControlPanel();
@@ -204,7 +208,7 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private JPanel initControlPanel() {
-        final JPanel controlPanel = new JPanel(new MigLayout("fill"));
+        final JPanel controlPanel = new JPanel(new MigLayout("insets 0, fill"));
 
         speedBar = new JProgressBar(SwingConstants.VERTICAL);
 
@@ -243,7 +247,7 @@ public class LocomotiveWidget extends JPanel implements
     private JPanel initSpeedControl() {
 
         final JPanel speedControlPanel = new JPanel();
-        speedControlPanel.setLayout(new MigLayout("wrap 1, fill"));
+        speedControlPanel.setLayout(new MigLayout("insets 0, wrap 1, fill"));
 
         increaseSpeed = new JButton("+");
         decreaseSpeed = new JButton("-");
@@ -303,9 +307,9 @@ public class LocomotiveWidget extends JPanel implements
         functionToggleButtons.clear();
         functionsPanel.removeAll();
         if (myLocomotive.getFunctions().size() > 5) {
-            functionsPanel.setLayout(new MigLayout("wrap 2, fill"));
+            functionsPanel.setLayout(new MigLayout("insets 0, wrap 2, fill"));
         } else {
-            functionsPanel.setLayout(new MigLayout("wrap, fill"));
+            functionsPanel.setLayout(new MigLayout("insets 0, wrap, fill"));
         }
 
 

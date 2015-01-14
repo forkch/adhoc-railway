@@ -30,9 +30,11 @@ import ch.fork.AdHocRailway.ui.routes.configuration.RouteHelper;
 import ch.fork.AdHocRailway.ui.utils.ImageTools;
 import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import com.google.common.eventbus.Subscribe;
+import com.jgoodies.common.base.SystemUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -69,15 +71,21 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
             ctx.getRouteControl().addRouteChangeListener(route, this);
         } else {
             connectedToRailway = false;
-            if(ctx.getRouteControl() != null) {
+            if (ctx.getRouteControl() != null) {
                 ctx.getRouteControl().removeRouteChangeListener(route, this);
             }
         }
     }
 
     private void initGUI() {
-        setLayout(new MigLayout());
-        setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        setLayout(new MigLayout("insets 5, gap 5"));
+
+        if (SystemUtils.IS_OS_MAC) {
+            Border aquaBorder = UIManager.getBorder("InsetBorder.aquaVariant");
+            setBorder(aquaBorder);
+        } else {
+            setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        }
 
         routeStopIcon = ImageTools
                 .createImageIconFromCustom("route_stop.png");
@@ -122,7 +130,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
     private int getRouteItemCount() {
         int count = 0;
         for (final RouteItem routeItem : route.getRoutedTurnouts()) {
-            if(routeItem.getTurnout()==null) {
+            if (routeItem.getTurnout() == null) {
                 continue;
             }
             if (routeItem.getTurnout().isThreeWay()) {

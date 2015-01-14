@@ -19,6 +19,8 @@ import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 import com.google.common.eventbus.Subscribe;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -47,6 +49,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                               final int tabPlacement) {
         super(tabPlacement);
         this.ctx = turnoutCtx;
+
 
         initToolBar();
         initMenuBar();

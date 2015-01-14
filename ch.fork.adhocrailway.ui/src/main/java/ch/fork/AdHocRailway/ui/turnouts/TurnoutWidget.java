@@ -30,9 +30,11 @@ import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutHelper;
 import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import com.google.common.eventbus.Subscribe;
+import com.jgoodies.common.base.SystemUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -89,12 +91,18 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
         turnoutCanvas.addMouseListener(new MouseAction());
         addMouseListener(new MouseAction());
 
-        setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        if (SystemUtils.IS_OS_MAC) {
+            Border aquaBorder = UIManager.getBorder("InsetBorder.aquaVariant");
+            setBorder(aquaBorder);
+        } else {
+            setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        }
+
         numberLabel = new JLabel();
         numberLabel.setFont(new Font("Dialog", Font.BOLD, 25));
         statePanel = new JPanel();
 
-        setLayout(new MigLayout());
+        setLayout(new MigLayout("insets 5, gap 2"));
 
         if (forHistory) {
             add(numberLabel);

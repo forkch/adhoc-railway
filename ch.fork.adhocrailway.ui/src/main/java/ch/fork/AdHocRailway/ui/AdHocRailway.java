@@ -362,13 +362,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     private void initGUI() {
 
         setFont(new Font("Verdana", Font.PLAIN, 19));
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(0,0));
         initMenu();
         initToolbar();
         statusBarPanel = initStatusBar();
         mainPanel = new JPanel();
 
-        mainPanel = new JPanel(new MigLayout("insets 5", "[][grow]", "[grow][]"));
+        mainPanel = new JPanel(new MigLayout("debug, insets 5, gap 5", "[][grow]", "[grow][]"));
 
         final JPanel segmentPanel = new KeyControl(appContext);
 
