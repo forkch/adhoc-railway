@@ -41,73 +41,6 @@ public class RailwayDeviceManager implements CommandDataListener,
         appContext.getMainBus().register(this);
     }
 
-    private void loadControlLayer() {
-        final Preferences preferences = appContext.getPreferences();
-        final String railwayDeviceString = preferences
-                .getStringValue(RAILWAY_DEVICE);
-        final RailwayDevice railwayDevive = RailwayDevice
-                .fromString(railwayDeviceString);
-
-        createPowerControllerOnContext(railwayDevive);
-
-        createLocomotiveControllerOnContext(railwayDevive);
-
-        final TurnoutController turnoutControl = createTurnoutControllerOnContext(railwayDevive);
-
-        createRouteControllerOnContext(railwayDevive, turnoutControl);
-
-        createLockControllerOnContext();
-    }
-
-    private void createLockControllerOnContext() {
-        appContext.getMainBus().post(
-                new InitProceededEvent("Loading Control Layer (Locks)"));
-        appContext.setLockControl(SRCPLockControl.getInstance());
-    }
-
-    private void createRouteControllerOnContext(
-            final RailwayDevice railwayDevive,
-            final TurnoutController turnoutControl) {
-        appContext.getMainBus().post(
-                new InitProceededEvent("Loading Control Layer (Routes)"));
-        final RouteController routeControl = RailwayDeviceFactory
-                .createRouteController(railwayDevive, turnoutControl, appContext.getTurnoutManager());
-        routeControl.setRoutingDelay(Preferences.getInstance().getIntValue(
-                PreferencesKeys.ROUTING_DELAY));
-        appContext.setRouteControl(routeControl);
-    }
-
-    private TurnoutController createTurnoutControllerOnContext(
-            final RailwayDevice railwayDevive) {
-        appContext.getMainBus().post(
-                new InitProceededEvent("Loading Control Layer (Turnouts)"));
-        final TurnoutController turnoutControl = RailwayDeviceFactory
-                .createTurnoutController(railwayDevive);
-        appContext.setTurnoutControl(turnoutControl);
-        return turnoutControl;
-    }
-
-    private void createLocomotiveControllerOnContext(
-            final RailwayDevice railwayDevive) {
-        appContext.getMainBus().post(
-                new InitProceededEvent("Loading Control Layer (Locomotives)"));
-        final LocomotiveController locomotiveControl = RailwayDeviceFactory
-                .createLocomotiveController(railwayDevive);
-
-        appContext.setLocomotiveControl(locomotiveControl);
-    }
-
-    private void createPowerControllerOnContext(
-            final RailwayDevice railwayDevive) {
-        appContext.getMainBus().post(
-                new InitProceededEvent("Loading Control Layer (Power)"));
-
-        final PowerController powerControl = RailwayDeviceFactory
-                .createPowerController(railwayDevive);
-
-        powerControl.addOrUpdatePowerSupply(new PowerSupply(1));
-        appContext.setPowerController(powerControl);
-    }
 
     public void connect() {
 
@@ -165,41 +98,18 @@ public class RailwayDeviceManager implements CommandDataListener,
         }
     }
 
-    public void autoDiscoverSrcpServerAndConnect() {
-
+    public boolean isBrainAvailable() {
+        final BrainController brainController = BrainController.getInstance();
         try {
-            adhocServermDNS = JmDNS.create();
-            final JmDNS srcpdmDNS = JmDNS.create();
-            srcpdmDNS.addServiceListener(SRCP_SERVER_TCP_LOCAL,
-                    new javax.jmdns.ServiceListener() {
-
-                        @Override
-                        public void serviceResolved(final ServiceEvent event) {
-                            LOGGER.info("resolved SRCPD on " + event);
-
-                        }
-
-                        @Override
-                        public void serviceRemoved(final ServiceEvent event) {
-
-                        }
-
-                        @Override
-                        public void serviceAdded(final ServiceEvent event) {
-                            final ServiceInfo info = adhocServermDNS
-                                    .getServiceInfo(event.getType(),
-                                            event.getName(), true);
-                            LOGGER.info("found SRCPD on " + info);
-                            connectToSRCPServer(info.getInet4Addresses()[0]
-                                    .getHostAddress(), info.getPort());
-                        }
-                    }
-            );
-        } catch (final IOException e) {
-            throw new AdHocRailwayException(
-                    "failure during autodiscovery/autoconnect to SRCP-Server",
-                    e);
+            brainController.getAvailableSerialPortsAsString();
+            return true;
+        } catch (final Exception x) {
+            return false;
         }
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 
     private void connectToNullDevice() {
@@ -276,6 +186,74 @@ public class RailwayDeviceManager implements CommandDataListener,
         }
     }
 
+    private void loadControlLayer() {
+        final Preferences preferences = appContext.getPreferences();
+        final String railwayDeviceString = preferences
+                .getStringValue(RAILWAY_DEVICE);
+        final RailwayDevice railwayDevive = RailwayDevice
+                .fromString(railwayDeviceString);
+
+        createPowerControllerOnContext(railwayDevive);
+
+        createLocomotiveControllerOnContext(railwayDevive);
+
+        final TurnoutController turnoutControl = createTurnoutControllerOnContext(railwayDevive);
+
+        createRouteControllerOnContext(railwayDevive, turnoutControl);
+
+        createLockControllerOnContext();
+    }
+
+    private void createLockControllerOnContext() {
+        appContext.getMainBus().post(
+                new InitProceededEvent("Loading Control Layer (Locks)"));
+        appContext.setLockControl(SRCPLockControl.getInstance());
+    }
+
+    private void createRouteControllerOnContext(
+            final RailwayDevice railwayDevive,
+            final TurnoutController turnoutControl) {
+        appContext.getMainBus().post(
+                new InitProceededEvent("Loading Control Layer (Routes)"));
+        final RouteController routeControl = RailwayDeviceFactory
+                .createRouteController(railwayDevive, turnoutControl, appContext.getTurnoutManager());
+        routeControl.setRoutingDelay(Preferences.getInstance().getIntValue(
+                PreferencesKeys.ROUTING_DELAY));
+        appContext.setRouteControl(routeControl);
+    }
+
+    private TurnoutController createTurnoutControllerOnContext(
+            final RailwayDevice railwayDevive) {
+        appContext.getMainBus().post(
+                new InitProceededEvent("Loading Control Layer (Turnouts)"));
+        final TurnoutController turnoutControl = RailwayDeviceFactory
+                .createTurnoutController(railwayDevive);
+        appContext.setTurnoutControl(turnoutControl);
+        return turnoutControl;
+    }
+
+    private void createLocomotiveControllerOnContext(
+            final RailwayDevice railwayDevive) {
+        appContext.getMainBus().post(
+                new InitProceededEvent("Loading Control Layer (Locomotives)"));
+        final LocomotiveController locomotiveControl = RailwayDeviceFactory
+                .createLocomotiveController(railwayDevive);
+
+        appContext.setLocomotiveControl(locomotiveControl);
+    }
+
+    private void createPowerControllerOnContext(
+            final RailwayDevice railwayDevive) {
+        appContext.getMainBus().post(
+                new InitProceededEvent("Loading Control Layer (Power)"));
+
+        final PowerController powerControl = RailwayDeviceFactory
+                .createPowerController(railwayDevive);
+
+        powerControl.addOrUpdatePowerSupply(new PowerSupply(1));
+        appContext.setPowerController(powerControl);
+    }
+
     private void setSessionOnControllers(final SRCPSession session) {
         ((SRCPPowerControlAdapter) appContext.getPowerControl())
                 .setSession(session);
@@ -328,18 +306,5 @@ public class RailwayDeviceManager implements CommandDataListener,
         LOGGER.info("Info received " + infoData.trim());
     }
 
-    public boolean isBrainAvailable() {
-        final BrainController brainController = BrainController.getInstance();
-        try {
-            brainController.getAvailableSerialPortsAsString();
-            return true;
-        } catch (final Exception x) {
-            return false;
-        }
-    }
-
-    public boolean isConnected() {
-        return connected;
-    }
 
 }

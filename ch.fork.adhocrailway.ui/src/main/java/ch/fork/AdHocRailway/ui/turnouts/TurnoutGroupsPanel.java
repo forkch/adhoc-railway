@@ -36,7 +36,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
 
     private final Map<TurnoutGroup, TurnoutGroupTab> turnoutGroupToTurnoutGroupTab = new HashMap<TurnoutGroup, TurnoutGroupTab>();
 
-    private final TurnoutManager turnoutPersistence;
     private final TurnoutContext ctx;
     private JMenuItem addTurnoutsItem;
     private JMenuItem turnoutsProgrammerItem;
@@ -48,7 +47,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                               final int tabPlacement) {
         super(tabPlacement);
         this.ctx = turnoutCtx;
-        turnoutPersistence = turnoutCtx.getTurnoutManager();
 
         initToolBar();
         initMenuBar();
@@ -312,7 +310,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                             .getTurnoutControl();
                     final int delay = Preferences.getInstance().getIntValue(
                             PreferencesKeys.ROUTING_DELAY);
-                    for (final Turnout t : turnoutPersistence.getAllTurnouts()) {
+                    for (final Turnout t : ctx.getTurnoutManager().getAllTurnouts()) {
                         turnoutControl.setDefaultState(t);
                         Thread.sleep(2 * delay);
                     }

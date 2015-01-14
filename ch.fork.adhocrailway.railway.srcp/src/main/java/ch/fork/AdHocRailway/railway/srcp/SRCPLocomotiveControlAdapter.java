@@ -129,14 +129,12 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
                     LOGGER.info(">>>>>EMERGENCY STOP<<<<<");
                     final int emergencyStopFunction = locomotive
                             .getEmergencyStopFunction();
-                    System.out.println(">>" + emergencyStopFunction);
 
                     final int srcpEmergencyStopFunction = SimulatedMFXLocomotivesHelper
                             .computeMultipartFunctionNumber(locomotive.getType(),
                                     emergencyStopFunction);
                     locomotiveControl.emergencyStop(sLocomotive,
                             srcpEmergencyStopFunction);
-                    System.out.println(srcpEmergencyStopFunction);
                     locomotive.setCurrentSpeed(0);
                     locomotive.setCurrentFunctions(locomotive.getCurrentFunctions());
                     emergencyStopState = EmergencyStopState.EXECUTED;

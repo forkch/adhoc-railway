@@ -1060,9 +1060,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                     handleException(e1);
                 }
             }
-            if (!isFileMode()) {
                 persistenceManager.disconnectFromCurrentPersistence();
-            }
             System.exit(0);
         }
     }

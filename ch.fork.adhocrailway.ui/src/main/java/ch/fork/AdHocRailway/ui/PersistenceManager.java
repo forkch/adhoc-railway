@@ -44,53 +44,6 @@ public class PersistenceManager {
         this.appContext = ctx;
     }
 
-    private void loadPersistenceLayer() {
-
-        final boolean useAdHocServer = appContext.getPreferences()
-                .getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER);
-
-        createLocomotiveManagerOnContext(useAdHocServer);
-
-        TurnoutManager turnoutManager = createTurnoutManagerOnContext(useAdHocServer);
-        createRouteManagerOnContext(useAdHocServer, turnoutManager);
-        appContext.getMainBus().post(new ConnectedToPersistenceEvent(true));
-
-    }
-
-    private void createRouteManagerOnContext(final boolean useAdHocServer,
-                                             TurnoutManager turnoutManager) {
-        appContext.getMainBus().post(
-                new InitProceededEvent("Loading Persistence Layer (Routes)"));
-
-        RouteManager routeManager = new RouteManagerImpl(turnoutManager, PersistenceFactory
-                .createRouteService(useAdHocServer, appContext));
-        appContext.setRouteManager(routeManager);
-        routeManager.initialize();
-    }
-
-    private TurnoutManager createTurnoutManagerOnContext(final boolean useAdHocServer) {
-        appContext.getMainBus().post(
-                new InitProceededEvent("Loading Persistence Layer (Turnouts)"));
-
-        TurnoutManager turnoutManager = new TurnoutManagerImpl(PersistenceFactory
-                .createTurnoutService(useAdHocServer, appContext));
-        appContext.setTurnoutManager(turnoutManager);
-
-        turnoutManager.initialize();
-        return turnoutManager;
-    }
-
-    private void createLocomotiveManagerOnContext(final boolean useAdHocServer) {
-        appContext.getMainBus().post(
-                new InitProceededEvent(
-                        "Loading Persistence Layer (Locomotives)")
-        );
-
-        LocomotiveManager locomotiveManager = new LocomotiveManagerImpl(PersistenceFactory
-                .createLocomotiveService(useAdHocServer, appContext));
-        appContext.setLocomotiveManager(locomotiveManager);
-        locomotiveManager.initialize();
-    }
 
     public void loadLastFileOrLoadDataFromAdHocServerIfRequested()
             throws IOException {
@@ -154,20 +107,8 @@ public class PersistenceManager {
         connectToAdHocServer(getAdHocServerURL());
     }
 
-    public String getAdHocServerURL() {
-        final Preferences preferences = appContext.getPreferences();
-        final StringBuilder b = new StringBuilder();
-        b.append("http://");
 
-        b.append(preferences
-                .getStringValue(PreferencesKeys.ADHOC_SERVER_HOSTNAME));
-        b.append(":");
-        b.append(preferences.getStringValue(PreferencesKeys.ADHOC_SERVER_PORT));
-        final String url = b.toString();
-        return url;
-    }
-
-    public void connectToAdHocServer(final String url) {
+    private void connectToAdHocServer(final String url) {
         final SIOService sioService = new SIOService(appContext.getAppUUID());
         sioService.connect(url, new ServiceListener() {
 
@@ -219,16 +160,75 @@ public class PersistenceManager {
     }
 
     public void disconnectFromCurrentPersistence() {
-        if(appContext.getSioService()!= null) {
+        if (appContext.getSioService() != null) {
             appContext.getSioService().disconnect();
         }
     }
 
-
-    public void createNewFile() throws FileNotFoundException, IOException {
+    public void createNewFile() throws IOException {
         disconnectFromCurrentPersistence();
         switchToFileMode();
         loadPersistenceLayer();
+    }
+
+    private String getAdHocServerURL() {
+        final Preferences preferences = appContext.getPreferences();
+        final StringBuilder b = new StringBuilder();
+        b.append("http://");
+
+        b.append(preferences
+                .getStringValue(PreferencesKeys.ADHOC_SERVER_HOSTNAME));
+        b.append(":");
+        b.append(preferences.getStringValue(PreferencesKeys.ADHOC_SERVER_PORT));
+        final String url = b.toString();
+        return url;
+    }
+
+    private void loadPersistenceLayer() {
+
+        final boolean useAdHocServer = appContext.getPreferences()
+                .getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER);
+
+        createLocomotiveManagerOnContext(useAdHocServer);
+        createTurnoutManagerOnContext(useAdHocServer);
+        createRouteManagerOnContext(useAdHocServer, appContext.getTurnoutManager());
+
+        appContext.getMainBus().post(new ConnectedToPersistenceEvent(true));
+
+    }
+
+    private void createRouteManagerOnContext(final boolean useAdHocServer,
+                                             TurnoutManager turnoutManager) {
+        appContext.getMainBus().post(
+                new InitProceededEvent("Loading Persistence Layer (Routes)"));
+
+        RouteManager routeManager = new RouteManagerImpl(turnoutManager, PersistenceFactory
+                .createRouteService(useAdHocServer, appContext));
+        appContext.setRouteManager(routeManager);
+        routeManager.initialize();
+    }
+
+    private void createTurnoutManagerOnContext(final boolean useAdHocServer) {
+        appContext.getMainBus().post(
+                new InitProceededEvent("Loading Persistence Layer (Turnouts)"));
+
+        TurnoutManager turnoutManager = new TurnoutManagerImpl(PersistenceFactory
+                .createTurnoutService(useAdHocServer, appContext));
+        appContext.setTurnoutManager(turnoutManager);
+
+        turnoutManager.initialize();
+    }
+
+    private void createLocomotiveManagerOnContext(final boolean useAdHocServer) {
+        appContext.getMainBus().post(
+                new InitProceededEvent(
+                        "Loading Persistence Layer (Locomotives)")
+        );
+
+        LocomotiveManager locomotiveManager = new LocomotiveManagerImpl(PersistenceFactory
+                .createLocomotiveService(useAdHocServer, appContext));
+        appContext.setLocomotiveManager(locomotiveManager);
+        locomotiveManager.initialize();
     }
 
     private void switchToFileMode() throws FileNotFoundException, IOException {
