@@ -42,7 +42,11 @@ exports.addTurnoutGroup = function (turnoutGroup, fn) {
         fn(true, {msg: 'name must be defined'});
         return;
     }
+
+    delete turnoutGroup.id;
+    delete turnoutGroup.turnouts;
     var group = new TurnoutGroupModel(turnoutGroup);
+    console.log('adding new turnoutgroup group: ' + turnoutGroup.name);
     group.save(function (err, addedTurnoutGroup) {
         if (!err) {
             addedTurnoutGroup.turnouts = [];

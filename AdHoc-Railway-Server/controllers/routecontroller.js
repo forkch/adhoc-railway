@@ -45,12 +45,16 @@ exports.addRouteGroup = function (routeGroup, fn) {
         fn(true, {msg: 'name must be defined'});
         return;
     }
+    delete routeGroup.id;
+    delete routeGroup.routes;
     var group = new RouteGroupModel(routeGroup);
     group.save(function (err, addedRouteGroup) {
         if (!err) {
             addedRouteGroup.routes = [];
             fn(err, addedRouteGroup.toJSON());
         } else {
+            console.log(routeGroup);
+            console.log(group);
             fn(err, {msg: 'failed to save route group'});
         }
     });
@@ -136,7 +140,6 @@ exports.addRoute = function (route, fn) {
             console.log(addedRoute.groupId);
             RouteGroupModel.findById({_id: addedRoute.groupId}, function (err, routeGroup) {
                 if (!err) {
-                    console.log(routeGroup);
                     routeGroup.routes.push(addedRoute.id);
                     routeGroup.save();
                     fn(err, addedRoute.toJSON());
@@ -236,7 +239,7 @@ getAllRouteData = function (fn) {
             TurnoutModel.find().exec(function (err, turnouts) {
 
 
-                var turnoutById = [];
+                var turnoutById = {};
                 for (t in turnouts) {
                     var turnoutId = turnouts[t].id;
 
@@ -251,15 +254,17 @@ getAllRouteData = function (fn) {
                         routeByGroupId[route.groupId] = [];
                     }
 
-                    if (route.routedTurnouts.length > 0) {
+                   /* if (route.routedTurnouts.length > 0) {
                         for (t in route.routedTurnouts) {
                             var routedTurnout = route.routedTurnouts[t];
                             if (routedTurnout.turnoutId) {
                                 var turnout = turnoutById[routedTurnout.turnoutId];
-                                routedTurnout.turnout = turnout.toJSON();
+                                if(turnout) {
+                                    routedTurnout.turnout = turnout.toJSON();
+                                }
                             }
                         }
-                    }
+                    }*/
 
                     var groupId = route.groupId;
                     routeByGroupId[groupId].push(route.toJSON());
