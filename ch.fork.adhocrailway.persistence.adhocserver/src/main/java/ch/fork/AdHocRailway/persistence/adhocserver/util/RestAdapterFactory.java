@@ -20,7 +20,7 @@ public class RestAdapterFactory {
         Gson gson = GsonFactory.createGson();
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(endpointURL)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.BASIC)
                 .setConverter(new GsonConverter(gson))
                 .setRequestInterceptor(new RequestInterceptor() {
                     @Override

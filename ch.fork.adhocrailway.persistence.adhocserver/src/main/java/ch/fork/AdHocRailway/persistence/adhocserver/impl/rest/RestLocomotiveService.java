@@ -33,7 +33,7 @@ public class RestLocomotiveService implements LocomotiveService {
     public void addLocomotive(Locomotive locomotive) {
         Locomotive addLocomotive = locomotiveServiceClient.addLocomotive(locomotive);
         locomotive.setId(addLocomotive.getId());
-        LOGGER.info("addLocomotive(): " + locomotive);
+        LOGGER.debug("addLocomotive(): " + locomotive);
 
         if (listenerOk()) {
             listener.locomotiveAdded(locomotive);
@@ -43,7 +43,7 @@ public class RestLocomotiveService implements LocomotiveService {
     @Override
     public void removeLocomotive(Locomotive locomotive) {
         locomotiveServiceClient.deleteLocomotive(locomotive.getId());
-        LOGGER.info("removeLocomotive(): " + locomotive);
+        LOGGER.debug("removeLocomotive(): " + locomotive);
 
         if (listenerOk()) {
             listener.locomotiveRemoved(locomotive);
@@ -54,7 +54,7 @@ public class RestLocomotiveService implements LocomotiveService {
     @Override
     public void updateLocomotive(Locomotive locomotive) {
         locomotiveServiceClient.updateLocomotive(locomotive);
-        LOGGER.info("updateLocomotive(): " + locomotive);
+        LOGGER.debug("updateLocomotive(): " + locomotive);
         if (listenerOk()) {
             listener.locomotiveUpdated(locomotive);
         }
@@ -63,14 +63,14 @@ public class RestLocomotiveService implements LocomotiveService {
     @Override
     public SortedSet<LocomotiveGroup> getAllLocomotiveGroups() {
         SortedSet<LocomotiveGroup> allLocomotivesGroups = locomotiveServiceClient.getAllLocomotivesGroups();
-        LOGGER.info("getAllLocomotiveGroups(): " + allLocomotivesGroups);
+        LOGGER.debug("getAllLocomotiveGroups(): " + allLocomotivesGroups);
         return allLocomotivesGroups;
     }
 
     @Override
     public void addLocomotiveGroup(LocomotiveGroup group) {
         LocomotiveGroup addLocomotiveGroup = locomotiveServiceClient.addLocomotiveGroup(group);
-        LOGGER.info("addLocomotiveGroup(): " + addLocomotiveGroup);
+        LOGGER.debug("addLocomotiveGroup(): " + addLocomotiveGroup);
         group.setId(addLocomotiveGroup.getId());
 
         if (listenerOk()) {
@@ -81,7 +81,7 @@ public class RestLocomotiveService implements LocomotiveService {
     @Override
     public void removeLocomotiveGroup(LocomotiveGroup group) {
         LocomotiveGroup deleteLocomotiveGroup = locomotiveServiceClient.deleteLocomotiveGroup(group.getId());
-        LOGGER.info("removeLocomotiveGroup(): " + deleteLocomotiveGroup);
+        LOGGER.debug("removeLocomotiveGroup(): " + deleteLocomotiveGroup);
 
         if (listenerOk()) {
             listener.locomotiveGroupRemoved(group);
@@ -91,7 +91,7 @@ public class RestLocomotiveService implements LocomotiveService {
     @Override
     public void updateLocomotiveGroup(LocomotiveGroup group) {
         LocomotiveGroup updateLocomotiveGroup = locomotiveServiceClient.updateLocomotiveGroup(group);
-        LOGGER.info("updateLocomotiveGroup(): " + updateLocomotiveGroup);
+        LOGGER.debug("updateLocomotiveGroup(): " + updateLocomotiveGroup);
         if (listenerOk()) {
             listener.locomotiveGroupUpdated(group);
         }
