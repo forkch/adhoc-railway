@@ -539,7 +539,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         daemonConnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         daemonDisconnectItem = new JMenuItem(new DisconnectAction());
-        daemonConnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D,
+        daemonDisconnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         daemonPowerOnItem = new JMenuItem(new PowerOnAction());
         assignAccelerator(daemonPowerOnItem, "PowerOn");
