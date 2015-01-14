@@ -539,6 +539,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         daemonConnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         daemonDisconnectItem = new JMenuItem(new DisconnectAction());
+        daemonConnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D,
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         daemonPowerOnItem = new JMenuItem(new PowerOnAction());
         assignAccelerator(daemonPowerOnItem, "PowerOn");
         daemonPowerOnItem.setEnabled(true);
@@ -845,7 +847,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-
             progressBar.setIndeterminate(true);
             final int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
                     "Do you REALLY want to remove all locomotives?",
@@ -961,6 +962,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         @Override
         public void actionPerformed(final ActionEvent e) {
 
+            progressBar.setIndeterminate(true);
             appContext.getMainBus().post(new StartImportEvent());
             progressBar.setIndeterminate(true);
             final JFileChooser fileChooser = new JFileChooser(new File("."));
@@ -1002,7 +1004,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                             fileChooser.getSelectedFile(),
                             appContext.getLocomotiveManager());
                 } catch (final IOException e1) {
-                    e1.printStackTrace();
+                    handleException("failed to export locomotives", e1);
                 }
             }
         }
@@ -1027,7 +1029,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                             appContext.getRouteManager(),
                             fileChooser.getSelectedFile());
                 } catch (final IOException e1) {
-                    e1.printStackTrace();
+                    handleException("failed to export locomotives, turnouts and routes", e1);
                 }
             }
         }
