@@ -19,7 +19,7 @@ public class PersistenceFactory {
 
         if (useAdHocServer) {
             String endpointURL = getEndpointUrl(appContext);
-            return new RestLocomotiveService(endpointURL, appContext.getAppUUID());
+            return new RestLocomotiveService(endpointURL, appContext.getSioService(), appContext.getAppUUID());
         } else {
             return new XMLLocomotiveService();
         }
@@ -29,7 +29,7 @@ public class PersistenceFactory {
             final boolean useAdHocServer, PersistenceManagerContext appContext) {
         if (useAdHocServer) {
             String endpointURL = getEndpointUrl(appContext);
-            return new RestTurnoutService(endpointURL, appContext.getAppUUID());
+            return new RestTurnoutService(endpointURL, appContext.getSioService(), appContext.getAppUUID());
         } else {
             return new XMLTurnoutService();
         }
@@ -40,7 +40,7 @@ public class PersistenceFactory {
 
         if (useAdHocServer) {
             String endpointURL = getEndpointUrl(appContext);
-            return new RestRouteService(endpointURL, appContext.getAppUUID());
+            return new RestRouteService(endpointURL, appContext.getSioService(), appContext.getAppUUID());
         } else {
             return new XMLRouteService();
         }

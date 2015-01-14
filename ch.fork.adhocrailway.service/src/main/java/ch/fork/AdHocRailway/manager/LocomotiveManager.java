@@ -51,6 +51,7 @@ public interface LocomotiveManager {
 
     void updateLocomotiveGroup(final LocomotiveGroup group);
 
+    @Deprecated
     void setLocomotiveService(final LocomotiveService instance);
 
     void clear();

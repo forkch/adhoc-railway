@@ -65,6 +65,7 @@ public interface RouteManager {
     void removeRouteManagerListenerInNextEvent(
             final RouteManagerListener turnoutAddListener);
 
+    @Deprecated
     void setRouteService(final RouteService instance);
 
     void disconnect();

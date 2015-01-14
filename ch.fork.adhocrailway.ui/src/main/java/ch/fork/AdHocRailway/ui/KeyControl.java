@@ -46,7 +46,6 @@ public class KeyControl extends SimpleInternalFrame {
     private final LinkedList<Object> historyStack = new LinkedList<Object>();
 
     private final LinkedList<JPanel> historyWidgets = new LinkedList<JPanel>();
-    private final TurnoutManager turnoutManager;
     private final ApplicationContext ctx;
     private KeyControlMode mode = KeyControlMode.TURNOUT_MODE;
     private int locomotiveNumber = -1;
@@ -58,9 +57,6 @@ public class KeyControl extends SimpleInternalFrame {
     public KeyControl(final ApplicationContext ctx) {
         super("Track Control / History");
         this.ctx = ctx;
-
-        turnoutManager = ctx.getTurnoutManager();
-
         enteredNumberKeys = new StringBuffer();
         initGUI();
         initKeyboardActions();
@@ -259,7 +255,7 @@ public class KeyControl extends SimpleInternalFrame {
                                         final int enteredNumber) {
 
             Turnout searchedTurnout = null;
-            searchedTurnout = turnoutManager.getTurnoutByNumber(enteredNumber);
+            searchedTurnout = ctx.getTurnoutManager().getTurnoutByNumber(enteredNumber);
             if (searchedTurnout == null) {
                 return;
             }

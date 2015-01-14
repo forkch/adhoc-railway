@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.persistence.adhocserver.impl.rest;
 import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.model.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.model.turnouts.RouteItem;
+import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.turnouts.SIORouteCallback;
 import ch.fork.AdHocRailway.persistence.adhocserver.util.RestAdapterFactory;
 import ch.fork.AdHocRailway.services.RouteService;
@@ -24,10 +25,10 @@ public class RestRouteService implements RouteService {
     private final RestRouteServiceClient restRouteServiceClient;
     private RouteServiceListener listener;
 
-    public RestRouteService(String endpointUrl, String uuid) {
+    public RestRouteService(String endpointUrl, SIOService sioService, String uuid) {
         RestAdapter restAdapter = RestAdapterFactory.createRestAdapter(endpointUrl, uuid);
         restRouteServiceClient = restAdapter.create(RestRouteServiceClient.class);
-        sioRouteService = new SIORouteCallback();
+        sioRouteService = new SIORouteCallback(sioService);
     }
 
     @Override

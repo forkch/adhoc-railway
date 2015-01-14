@@ -26,8 +26,7 @@ public class LocomotiveManagerImplTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        locomotiveManagerImpl = new LocomotiveManagerImpl();
-        locomotiveManagerImpl.setLocomotiveService(serviceMock);
+        locomotiveManagerImpl = new LocomotiveManagerImpl(serviceMock);
         locomotiveManagerImpl.addLocomotiveManagerListener(listenerMock);
         locomotiveManagerImpl.initialize();
 

@@ -19,12 +19,13 @@ public class SIORouteCallback implements IOCallback {
     private RouteServiceListener listener;
     private SIOService sioService;
 
-    public SIORouteCallback() {
+    public SIORouteCallback(SIOService sioService) {
+        this.sioService = sioService;
     }
 
     public void init(final RouteServiceListener listener) {
         this.listener = listener;
-        sioService = SIOService.getInstance();
+
         sioService.addIOCallback(this);
     }
 

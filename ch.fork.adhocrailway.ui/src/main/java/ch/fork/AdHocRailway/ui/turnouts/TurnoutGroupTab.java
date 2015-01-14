@@ -51,7 +51,7 @@ public class TurnoutGroupTab extends WidgetTab {
     public void addTurnout(final Turnout turnout) {
         final TurnoutWidget turnoutWidget = new TurnoutWidget(ctx, turnout,
                 false);
-        turnoutWidget.connectedToRailwayDevice(new ConnectedToRailwayEvent(ctx.getRailwayDeviceManager().isConnected()));
+        //turnoutWidget.connectedToRailwayDevice(new ConnectedToRailwayEvent(ctx.getRailwayDeviceManager().isConnected()));
         addWidget(turnoutWidget);
         turnoutToTurnoutWidget.put(turnout, turnoutWidget);
     }

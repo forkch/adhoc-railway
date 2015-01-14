@@ -43,6 +43,7 @@ public class DataImporter {
     }
 
     public void importRoutes(RouteManager routeManager, SortedSet<RouteGroup> routeGroups) {
+        routeManager.clearToService();
         for (final RouteGroup group : routeGroups) {
             routeManager.addRouteGroup(group);
         }
@@ -51,7 +52,9 @@ public class DataImporter {
             for (Route route : group.getRoutes()) {
                 routeManager.addRouteToGroup(route, group);
                 for (RouteItem routeItem : route.getRoutedTurnouts()) {
-                    routeManager.addRouteItemToGroup(routeItem, route);
+                    if(routeItem.getTurnout()!= null) {
+                        routeManager.addRouteItemToGroup(routeItem, route);
+                    }
                 }
             }
         }

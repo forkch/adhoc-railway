@@ -48,7 +48,7 @@ public class RouteGroupTab extends WidgetTab {
 
     public void addRoute(final Route route) {
         final RouteWidget routeWidget = new RouteWidget(ctx, route, false);
-        routeWidget.connectedToRailwayDevice(new ConnectedToRailwayEvent(ctx.getRailwayDeviceManager().isConnected()));
+        //routeWidget.connectedToRailwayDevice(new ConnectedToRailwayEvent(ctx.getRailwayDeviceManager().isConnected()));
 
         addWidget(routeWidget);
         routeToRouteWidget.put(route, routeWidget);

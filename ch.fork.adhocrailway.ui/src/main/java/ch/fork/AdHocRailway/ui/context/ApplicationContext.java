@@ -7,6 +7,7 @@ import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.manager.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.RailwayDeviceManager;
 import com.google.common.eventbus.EventBus;
@@ -51,6 +52,7 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
     private RailwayDeviceManager railwayDeviceManager;
     private File actualFile;
     private File previousLocodir;
+    private SIOService sioService;
 
     @Override
     public Preferences getPreferences() {
@@ -228,5 +230,16 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
     @Override
     public String getAppUUID() {
         return APP_UUID;
+    }
+
+    @Override
+    public void setSIOService(SIOService sioService) {
+
+        this.sioService = sioService;
+    }
+
+    @Override
+    public SIOService getSioService() {
+        return sioService;
     }
 }

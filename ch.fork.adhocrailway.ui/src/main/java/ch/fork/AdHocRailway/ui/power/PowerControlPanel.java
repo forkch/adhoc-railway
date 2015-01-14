@@ -53,7 +53,6 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
         goIcon = ImageTools.createImageIconFromIconSet("go_22.png");
         shortcutIcon = ImageTools.createImageIconFromIconSet("shortcut_22.png");
         initGUI();
-        connectedToRailwayDevice(new ConnectedToRailwayEvent(false));
     }
 
     private void initGUI() {

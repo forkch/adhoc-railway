@@ -19,13 +19,13 @@ public class SIOTurnoutCallback implements IOCallback {
     private TurnoutServiceListener listener;
     private SIOService sioService;
 
-    public SIOTurnoutCallback() {
+    public SIOTurnoutCallback(SIOService sioService) {
+        this.sioService = sioService;
     }
 
     public void init(final TurnoutServiceListener listener) {
         this.listener = listener;
 
-        sioService = SIOService.getInstance();
         sioService.addIOCallback(this);
     }
 

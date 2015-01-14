@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.persistence.adhocserver.impl.rest;
 
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutGroup;
+import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.turnouts.SIOTurnoutCallback;
 import ch.fork.AdHocRailway.persistence.adhocserver.util.RestAdapterFactory;
 import ch.fork.AdHocRailway.services.TurnoutService;
@@ -23,10 +24,10 @@ public class RestTurnoutService implements TurnoutService {
     private final RestTurnoutServiceClient restTurnoutServiceClient;
     private TurnoutServiceListener listener;
 
-    public RestTurnoutService(String endpointUrl, String uuid) {
+    public RestTurnoutService(String endpointUrl, SIOService sioService, String uuid) {
         RestAdapter restAdapter = RestAdapterFactory.createRestAdapter(endpointUrl, uuid);
         restTurnoutServiceClient = restAdapter.create(RestTurnoutServiceClient.class);
-        sioTurnoutService = new SIOTurnoutCallback();
+        sioTurnoutService = new SIOTurnoutCallback(sioService);
     }
 
     @Override

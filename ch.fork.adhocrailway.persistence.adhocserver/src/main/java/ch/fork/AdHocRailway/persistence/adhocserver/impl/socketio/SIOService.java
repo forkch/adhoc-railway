@@ -15,21 +15,12 @@ import java.util.Set;
 public class SIOService {
 
     private static final Logger LOGGER = Logger.getLogger(SIOService.class);
-    private static final SIOService INSTANCE = new SIOService();
     private static String uuid;
     private final Set<IOCallback> otherCallbacks = new HashSet<IOCallback>();
     private SocketIO socket;
 
-    private SIOService() {
-
-    }
-
-    public static SIOService getInstance() {
-        return INSTANCE;
-    }
-
-    public static void setUUID(String uuid) {
-        SIOService.uuid = uuid;
+    public SIOService(String uuid) {
+        this.uuid = uuid;
     }
 
     public void connect(final String url, final ServiceListener mainCallback) {
@@ -110,9 +101,7 @@ public class SIOService {
 
     public void removeIOCallback(final IOCallback callback) {
         otherCallbacks.remove(callback);
-        if (otherCallbacks.isEmpty()) {
-            disconnect();
-        }
+
     }
 
     public SocketIO getSocket() {
@@ -120,11 +109,6 @@ public class SIOService {
     }
 
     public void disconnect() {
-        try {
-            Thread.sleep(1000);
-        } catch (final InterruptedException e) {
-            e.printStackTrace();
-        }
         if (socket != null) {
             socket.disconnect();
             socket = null;

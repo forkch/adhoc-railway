@@ -33,7 +33,6 @@ public abstract class RouteController {
     protected TurnoutManager turnoutManager;
 
     protected RouteController(final TurnoutManager turnoutManager) {
-
         this.turnoutManager = turnoutManager;
     }
 

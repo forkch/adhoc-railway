@@ -13,12 +13,14 @@ import ch.fork.AdHocRailway.ui.context.PersistenceManagerContext;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
+
 public class PersistenceManagerTest {
 
     private PersistenceManager testee;
 
     @Test
-    public void loadingPersistenceForFileMode() {
+    public void loadingPersistenceForFileMode() throws IOException {
         // given
         final PersistenceManagerContext applicationContext = createApplicationContextForFileLoading();
         testee = createTestee(applicationContext);
@@ -34,7 +36,7 @@ public class PersistenceManagerTest {
     }
 
     @Test
-    public void loadingPersistenceForAdHocServerMode() {
+    public void loadingPersistenceForAdHocServerMode() throws IOException {
         // given
         final PersistenceManagerContext applicationContext = createApplicationContextForAdHocServer();
         testee = createTestee(applicationContext);
@@ -58,8 +60,8 @@ public class PersistenceManagerTest {
         return applicationContext;
     }
 
-    private void whenLoadingPersistenceLayer() {
-        testee.loadPersistenceLayer();
+    private void whenLoadingPersistenceLayer() throws IOException {
+        testee.loadLastFileOrLoadDataFromAdHocServerIfRequested();
     }
 
     private PersistenceManager createTestee(

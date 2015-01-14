@@ -6,6 +6,7 @@ import ch.fork.AdHocRailway.manager.RouteManagerListener;
 import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.model.turnouts.RouteGroup;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToPersistenceEvent;
 import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.RouteContext;
@@ -39,8 +40,11 @@ public class RouteGroupsPanel extends JTabbedPane implements
         this.ctx = ctx;
         ctx.getMainBus().register(this);
         routePersistence = ctx.getRouteManager();
-        routePersistence.addRouteManagerListener(this);
         initShortcuts();
+    }
+    @Subscribe
+    public void connectedToPersistence(final ConnectedToPersistenceEvent event) {
+        ctx.getRouteManager().addRouteManagerListener(this);
     }
 
     private void initShortcuts() {
@@ -65,8 +69,6 @@ public class RouteGroupsPanel extends JTabbedPane implements
 
         int i = 1;
 
-        final RouteController routeControl = ctx.getRouteControl();
-        routeControl.removeAllRouteChangeListeners();
 
         for (final RouteGroup routeGroup : routeGroups) {
             indexToRouteGroup.put(i - 1, routeGroup);

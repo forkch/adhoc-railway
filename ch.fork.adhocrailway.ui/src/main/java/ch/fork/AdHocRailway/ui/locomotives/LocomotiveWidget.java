@@ -29,6 +29,7 @@ import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToPersistenceEvent;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
@@ -93,15 +94,11 @@ public class LocomotiveWidget extends JPanel implements
         this.number = number;
         this.frame = frame;
 
-        ctx.getLocomotiveControl().addLocomotiveChangeListener(myLocomotive,
-                this);
-
         ctx.getMainBus().register(this);
         initGUI();
         initKeyboardActions();
 
         allLocomotivesGroup = new LocomotiveGroup("", "All");
-        ctx.getLocomotiveManager().addLocomotiveManagerListener(this);
         connectedToRailway = false;
     }
 
@@ -117,6 +114,11 @@ public class LocomotiveWidget extends JPanel implements
             connectedToRailway = false;
             ctx.getLocomotiveControl().removeLocomotiveChangeListener(myLocomotive, this);
         }
+    }
+
+    @Subscribe
+    public void connectedToPersistence(final ConnectedToPersistenceEvent event) {
+        ctx.getLocomotiveManager().addLocomotiveManagerListener(this);
     }
 
     @Subscribe

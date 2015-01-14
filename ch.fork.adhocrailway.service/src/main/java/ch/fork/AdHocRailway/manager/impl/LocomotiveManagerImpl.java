@@ -43,7 +43,8 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     private final Map<Integer, Locomotive> numberToLocomotiveMap = new HashMap<Integer, Locomotive>();
     private LocomotiveService locomotiveService;
 
-    public LocomotiveManagerImpl() {
+    public LocomotiveManagerImpl(LocomotiveService locomotiveService) {
+        this.locomotiveService = locomotiveService;
         LOGGER.info("LocomotiveManager loaded");
     }
 

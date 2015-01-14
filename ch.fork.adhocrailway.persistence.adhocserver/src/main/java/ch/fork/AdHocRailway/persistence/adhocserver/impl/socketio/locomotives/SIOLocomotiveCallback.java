@@ -20,13 +20,12 @@ public class SIOLocomotiveCallback implements IOCallback {
     private SIOService sioService;
 
 
-    public SIOLocomotiveCallback() {
+    public SIOLocomotiveCallback(SIOService sioService) {
+        this.sioService = sioService;
     }
 
     public void init(final LocomotiveServiceListener listener) {
         this.listener = listener;
-
-        sioService = SIOService.getInstance();
         sioService.addIOCallback(this);
     }
 

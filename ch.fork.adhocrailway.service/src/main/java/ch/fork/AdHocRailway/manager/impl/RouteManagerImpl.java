@@ -44,8 +44,9 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     private RouteService routeService;
     private int lastProgrammedNumber = 0;
 
-    public RouteManagerImpl(final TurnoutManager turnoutManager) {
+    public RouteManagerImpl(final TurnoutManager turnoutManager, final RouteService routeService) {
         this.turnoutManager = turnoutManager;
+        this.routeService = routeService;
         LOGGER.info("RouteMangerImpl loaded");
     }
 

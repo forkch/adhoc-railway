@@ -4,6 +4,7 @@ import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.manager.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import com.google.common.eventbus.EventBus;
 
@@ -33,4 +34,7 @@ public interface PersistenceManagerContext {
 
     public RouteController getRouteControl();
 
+    void setSIOService(SIOService sioService);
+
+    SIOService getSioService();
 }

@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.persistence.adhocserver.impl.rest;
 
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.locomotives.SIOLocomotiveCallback;
 import ch.fork.AdHocRailway.persistence.adhocserver.util.RestAdapterFactory;
 import ch.fork.AdHocRailway.services.LocomotiveService;
@@ -22,10 +23,10 @@ public class RestLocomotiveService implements LocomotiveService {
     private final RestLocomotiveServiceClient locomotiveServiceClient;
     private LocomotiveServiceListener listener;
 
-    public RestLocomotiveService(String endpointURL, String uuid) {
+    public RestLocomotiveService(String endpointURL,SIOService sioService, String uuid) {
         RestAdapter restAdapter = RestAdapterFactory.createRestAdapter(endpointURL, uuid);
         locomotiveServiceClient = restAdapter.create(RestLocomotiveServiceClient.class);
-        sioLocomotiveService = new SIOLocomotiveCallback();
+        sioLocomotiveService = new SIOLocomotiveCallback(sioService);
     }
 
     @Override

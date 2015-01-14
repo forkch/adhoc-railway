@@ -164,14 +164,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             preferences.loadPreferences(parsedCommandLine.hasOption("c"));
             appContext.setPreferences(preferences);
 
-            persistenceManager = new PersistenceManager(appContext);
-            persistenceManager.loadPersistenceLayer();
-
-            railwayDeviceManager = new RailwayDeviceManager(appContext);
-            appContext.setRailwayDeviceManager(railwayDeviceManager);
-            railwayDeviceManager.loadControlLayer();
-
-
             initProceeded("Creating GUI ...");
 
             initGUI();
@@ -179,10 +171,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             LOGGER.info("Finished Creating GUI");
             splash.setVisible(false);
 
+            updateGUI();
+            persistenceManager = new PersistenceManager(appContext);
             persistenceManager
                     .loadLastFileOrLoadDataFromAdHocServerIfRequested();
 
-            updateGUI();
+            railwayDeviceManager = new RailwayDeviceManager(appContext);
+            appContext.setRailwayDeviceManager(railwayDeviceManager);
             railwayDeviceManager.autoConnectToRailwayDeviceIfRequested();
 
 
@@ -558,11 +553,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		/* VIEW */
         final JMenu viewMenu = new JMenu("View");
-        final JMenuItem refreshItem = new JMenuItem(new RefreshAction());
+        //final JMenuItem refreshItem = new JMenuItem(new RefreshAction());
         final JMenuItem fullscreenItem = new JMenuItem(
                 new ToggleFullscreenAction());
 
-        viewMenu.add(refreshItem);
+        //viewMenu.add(refreshItem);
         viewMenu.add(fullscreenItem);
 
 		/* HELP */
@@ -635,12 +630,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
 		/* VIEWS */
         final JToolBar viewToolBar = new JToolBar();
-        final JButton refreshButton = new SmallToolbarButton(
-                new RefreshAction());
+        //final JButton refreshButton = new SmallToolbarButton(
+        //        new RefreshAction());
         toggleFullscreenButton = new SmallToolbarButton(
                 new ToggleFullscreenAction());
 
-        viewToolBar.add(refreshButton);
+       // viewToolBar.add(refreshButton);
         viewToolBar.add(toggleFullscreenButton);
 
 		/* ERROR */
@@ -794,6 +789,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                 public void run() {
 
                     try {
+
+                        railwayDeviceManager.disconnect();
                         progressBar.setIndeterminate(true);
                         disableEnableMenuItems();
 
@@ -823,6 +820,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         public void actionPerformed(final ActionEvent e) {
             try {
 
+                railwayDeviceManager.disconnect();
                 progressBar.setIndeterminate(true);
                 disableEnableMenuItems();
 
@@ -1132,7 +1130,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                 updateCommandHistory("Preferences saved to: "
                         + preferences.getConfigFile());
 
-                railwayDeviceManager.loadControlLayer();
+                railwayDeviceManager.disconnect();
             }
         }
     }
@@ -1186,19 +1184,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         public void actionPerformed(final ActionEvent arg0) {
             final PowerController powerControl = appContext.getPowerControl();
             powerControl.powerOff(powerControl.getPowerSupply(1));
-        }
-    }
-
-    private class RefreshAction extends AbstractAction {
-
-        public RefreshAction() {
-            super("Refresh", createImageIconFromIconSet("view-refresh.png"));
-        }
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            persistenceManager.disconnectFromCurrentPersistence();
-            persistenceManager.loadPersistenceLayer();
         }
     }
 

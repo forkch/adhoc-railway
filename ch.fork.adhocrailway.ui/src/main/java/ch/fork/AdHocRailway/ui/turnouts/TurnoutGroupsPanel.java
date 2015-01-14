@@ -8,6 +8,7 @@ import ch.fork.AdHocRailway.model.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToPersistenceEvent;
 import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.EditingModeEvent;
@@ -48,13 +49,17 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
         super(tabPlacement);
         this.ctx = turnoutCtx;
         turnoutPersistence = turnoutCtx.getTurnoutManager();
-        turnoutPersistence.addTurnoutManagerListener(this);
 
         initToolBar();
         initMenuBar();
         initShortcuts();
 
         ctx.getMainBus().register(this);
+    }
+
+    @Subscribe
+    public void connectedToPersistence(final ConnectedToPersistenceEvent event) {
+        ctx.getTurnoutManager().addTurnoutManagerListener(this);
     }
 
     @Subscribe

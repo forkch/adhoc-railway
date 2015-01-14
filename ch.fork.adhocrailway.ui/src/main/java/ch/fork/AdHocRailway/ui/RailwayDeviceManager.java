@@ -41,7 +41,7 @@ public class RailwayDeviceManager implements CommandDataListener,
         appContext.getMainBus().register(this);
     }
 
-    public void loadControlLayer() {
+    private void loadControlLayer() {
         final Preferences preferences = appContext.getPreferences();
         final String railwayDeviceString = preferences
                 .getStringValue(RAILWAY_DEVICE);
@@ -111,6 +111,8 @@ public class RailwayDeviceManager implements CommandDataListener,
 
     public void connect() {
 
+        loadControlLayer();
+
         final Preferences preferences = appContext.getPreferences();
         final String railwayDeviceString = preferences
                 .getStringValue(RAILWAY_DEVICE);
@@ -153,7 +155,6 @@ public class RailwayDeviceManager implements CommandDataListener,
                 && !preferences
                 .getBooleanValue(PreferencesKeys.AUTO_DISCOVER)) {
             try {
-                loadControlLayer();
                 connect();
             } catch (final Exception x) {
 

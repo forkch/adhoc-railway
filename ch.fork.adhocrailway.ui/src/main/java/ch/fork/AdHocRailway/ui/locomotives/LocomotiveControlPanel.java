@@ -23,8 +23,10 @@ import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToPersistenceEvent;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
+import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -61,10 +63,8 @@ public class LocomotiveControlPanel extends JPanel {
         update();
     }
 
-    public void update() {
-        final LocomotiveController locomotiveControl = ctx
-                .getLocomotiveControl();
-        locomotiveControl.removeAllLocomotiveChangeListener();
+    private void update() {
+
 
         controlPanel.removeAll();
         locomotiveWidgets.clear();

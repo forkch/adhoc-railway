@@ -92,6 +92,9 @@ public class RouteHelper {
         description.append("<table>");
 
         for (final RouteItem item : route.getRoutedTurnouts()) {
+            if (item.getTurnout() == null) {
+                continue;
+        }
             addTableRow("", "" + item.getTurnout().getNumber() + ": "
                     + item.getState().toString(), description);
         }

@@ -199,16 +199,17 @@ public class XMLServiceHelper {
 
             addFunctionsIfNeccesaray(data);
             new DataImporter().importLocomotives(locomotivePersistence,
-                    data.getLocomotiveGroups());
+                    data.getLocomotiveGroups()
+            );
             LOGGER.info("finished importing locomotives from file: " + fileToImport);
 
             new DataImporter().importTurnouts(turnoutManager,
                     data.getTurnoutGroups());
-            LOGGER.info("finished importing locomotives from file: " + fileToImport);
+            LOGGER.info("finished importing turnouts from file: " + fileToImport);
 
             new DataImporter().importRoutes(routeManager,
                     data.getRouteGroups());
-            LOGGER.info("finished importing locomotives from file: "
+            LOGGER.info("finished importing routes from file: "
                     + fileToImport);
         } catch (final FileNotFoundException e) {
             // TODO Auto-generated catch block

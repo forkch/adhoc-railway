@@ -94,6 +94,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
         SwingUtils.addEscapeListener(this);
         setLocationRelativeTo(getParent());
         setVisible(true);
+        locomotiveManager.removeLocomotiveManagerListenerInNextEvent(this);
     }
 
     private void initComponents() {
