@@ -936,9 +936,16 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             final JFileChooser fileChooser = new JFileChooser(new File("."));
             final int returnVal = fileChooser.showOpenDialog(AdHocRailway.this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                new XMLServiceHelper().importLocomotivesFromFile(
-                        fileChooser.getSelectedFile(),
-                        appContext.getLocomotiveManager());
+                final int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
+                        "Do you REALLY want to import all locomotives? This will delete all previous data!",
+                        "Import",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                        createImageIconFromIconSet("dialog-warning.png"));
+                if (result == JOptionPane.YES_OPTION) {
+                    new XMLServiceHelper().importLocomotivesFromFile(
+                            fileChooser.getSelectedFile(),
+                            appContext.getLocomotiveManager());
+                }
             }
 
             progressBar.setIndeterminate(false);
@@ -959,9 +966,18 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             final JFileChooser fileChooser = new JFileChooser(new File("."));
             final int returnVal = fileChooser.showOpenDialog(AdHocRailway.this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                new XMLServiceHelper().importAllFromFile(
-                        fileChooser.getSelectedFile(),
-                        appContext.getLocomotiveManager(), appContext.getTurnoutManager(), appContext.getRouteManager());
+                final int result = JOptionPane.showConfirmDialog(AdHocRailway.this,
+                        "Do you REALLY want to import all locomotives,turnouts and routes? This will delete all previous data!",
+                        "Import",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                        createImageIconFromIconSet("dialog-warning.png"));
+                if (result == JOptionPane.YES_OPTION) {
+
+
+                    new XMLServiceHelper().importAllFromFile(
+                            fileChooser.getSelectedFile(),
+                            appContext.getLocomotiveManager(), appContext.getTurnoutManager(), appContext.getRouteManager());
+                }
             }
 
             progressBar.setIndeterminate(false);
