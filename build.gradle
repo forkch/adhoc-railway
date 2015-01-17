@@ -31,6 +31,9 @@ subprojects {
     group = 'ch.fork.adhocrailway'
     version = getVersionName()
 
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
     configurations {
       compileOnly
     }
