@@ -34,13 +34,10 @@ import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
 import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
-import ch.fork.AdHocRailway.ui.widgets.ErrorPanel;
-import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
-import ch.fork.AdHocRailway.ui.widgets.SplashWindow;
-import ch.fork.AdHocRailway.ui.widgets.TrackControlPanel;
+import ch.fork.AdHocRailway.ui.widgets.*;
 import com.google.common.eventbus.Subscribe;
+import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
-import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.cli.BasicParser;
@@ -174,8 +171,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
             updateGUI();
             persistenceManager = new PersistenceManager(appContext);
-            persistenceManager
-                    .loadLastFileOrLoadDataFromAdHocServerIfRequested();
+            try {
+                persistenceManager
+                        .loadLastFileOrLoadDataFromAdHocServerIfRequested();
+            } catch (AdHocRailwayException x) {
+                handleException(x);
+            }
+
 
             railwayDeviceManager = new RailwayDeviceManager(appContext);
             appContext.setRailwayDeviceManager(railwayDeviceManager);
@@ -227,7 +229,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                 .setTabStyle(PlasticLookAndFeel.TAB_STYLE_DEFAULT_VALUE);
         PlasticLookAndFeel.setHighContrastFocusColorsEnabled(false);
 
-        UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
+        UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
     }
 
 
@@ -362,13 +364,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     private void initGUI() {
 
         setFont(new Font("Verdana", Font.PLAIN, 19));
-        setLayout(new BorderLayout(0,0));
+        setLayout(new BorderLayout(0, 0));
         initMenu();
         initToolbar();
         statusBarPanel = initStatusBar();
         mainPanel = new JPanel();
 
-        mainPanel = new JPanel(new MigLayout("debug, insets 5, gap 5", "[][grow]", "[grow][]"));
+        mainPanel = new JPanel(new MigLayout("insets 5, gap 5, fill", "[][grow]", "[grow][]"));
 
         final JPanel segmentPanel = new KeyControl(appContext);
 
@@ -376,8 +378,11 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         locomotiveControlPanel = new LocomotiveControlPanel(appContext);
         powerControlPanel = new PowerControlPanel(appContext);
 
-        mainPanel.add(segmentPanel, "grow");
-        mainPanel.add(trackControlPanel, "grow, wrap");
+        SimpleInternalFrame trackAndKeyControl = new SimpleInternalFrame("Track control");
+        trackAndKeyControl.add(segmentPanel, BorderLayout.WEST);
+        trackAndKeyControl.add(trackControlPanel, BorderLayout.CENTER);
+        mainPanel.add(trackAndKeyControl, "grow, span 2, wrap");
+        //mainPanel.add(trackControlPanel, "grow, wrap");
         mainPanel.add(powerControlPanel, "grow");
         mainPanel.add(locomotiveControlPanel, "grow, wrap");
 

@@ -16,17 +16,14 @@ import ch.fork.AdHocRailway.persistence.xml.impl.XMLTurnoutService;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
-import ch.fork.AdHocRailway.ui.bus.events.ConnectedToPersistenceEvent;
 import ch.fork.AdHocRailway.ui.bus.events.CommandLogEvent;
+import ch.fork.AdHocRailway.ui.bus.events.ConnectedToPersistenceEvent;
 import ch.fork.AdHocRailway.ui.bus.events.InitProceededEvent;
 import ch.fork.AdHocRailway.ui.bus.events.UpdateMainTitleEvent;
 import ch.fork.AdHocRailway.ui.context.PersistenceManagerContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceEvent;
-import javax.jmdns.ServiceInfo;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -77,36 +74,39 @@ public class PersistenceManager {
 
         loadPersistenceLayer();
 
-        new XMLServiceHelper()
-                .loadFile((XMLLocomotiveService) appContext
-                                .getLocomotiveManager().getService(),
-                        (XMLTurnoutService) appContext.getTurnoutManager()
-                                .getService(), (XMLRouteService) appContext
-                                .getRouteManager().getService(), file
-                );
-
-        appContext.setActualFile(file);
-
-
-        appContext.getPreferences().setStringValue(PreferencesKeys.LAST_OPENED_FILE,
-                file.getAbsolutePath());
         try {
-            appContext.getPreferences().save();
-        } catch (final IOException e1) {
-             throw new AdHocRailwayException(
-                    "could not save preferences");
-        }
+            new XMLServiceHelper()
+                    .loadFile((XMLLocomotiveService) appContext
+                                    .getLocomotiveManager().getService(),
+                            (XMLTurnoutService) appContext.getTurnoutManager()
+                                    .getService(), (XMLRouteService) appContext
+                                    .getRouteManager().getService(), file
+                    );
 
-        appContext.getMainBus().post(
-                new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
-                        + file.getAbsolutePath() + "]")
-        );
-        appContext.getMainBus().post(
-                new CommandLogEvent(
-                        "AdHoc-Railway Configuration loaded ("
-                                + file + ")"
-                )
-        );
+            appContext.setActualFile(file);
+            appContext.getPreferences().setStringValue(PreferencesKeys.LAST_OPENED_FILE,
+                    file.getAbsolutePath());
+            appContext.getPreferences().save();
+
+            appContext.getMainBus().post(
+                    new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
+                            + file.getAbsolutePath() + "]")
+            );
+            appContext.getMainBus().post(
+                    new CommandLogEvent(
+                            "AdHoc-Railway configuration loaded ("
+                                    + file + ")"
+                    )
+            );
+        } catch (Exception x) {
+            appContext.getPreferences().setStringValue(PreferencesKeys.LAST_OPENED_FILE,
+                    null);
+            appContext.getPreferences().setBooleanValue(PreferencesKeys.OPEN_LAST_FILE,
+                    false);
+            appContext.getPreferences().save();
+            throw new AdHocRailwayException(
+                    "error while loading previous AdHoc-Railway configuration.");
+        }
 
     }
 

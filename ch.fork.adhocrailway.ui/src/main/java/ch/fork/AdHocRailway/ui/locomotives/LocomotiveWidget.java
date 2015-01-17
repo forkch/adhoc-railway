@@ -40,7 +40,6 @@ import ch.fork.AdHocRailway.ui.utils.ImageTools;
 import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import ch.fork.AdHocRailway.utils.LocomotiveHelper;
 import com.google.common.eventbus.Subscribe;
-import com.jgoodies.common.base.SystemUtils;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 
@@ -163,11 +162,7 @@ public class LocomotiveWidget extends JPanel implements
 
     private void initGUI() {
 
-        setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-
-
-
-        setLayout(new MigLayout("wrap 3, insets 5, gap 0, filly"));
+        setLayout(new MigLayout("wrap 3, insets 5, gap 5, filly"));
 
         initSelectionPanel();
         final JPanel controlPanel = initControlPanel();
@@ -231,9 +226,9 @@ public class LocomotiveWidget extends JPanel implements
         final JPanel functionsPanel = initFunctionsControl();
         final JPanel speedControlPanel = initSpeedControl();
 
-        controlPanel.add(functionsPanel, "grow, west");
-        controlPanel.add(speedControlPanel, "grow");
-        controlPanel.add(speedBar, "east, width 50");
+        controlPanel.add(functionsPanel, "west, grow");
+        controlPanel.add(speedControlPanel, "gap 5, grow");
+        controlPanel.add(speedBar, "east, gap 5, width 40");
 
         return controlPanel;
     }
@@ -313,9 +308,9 @@ public class LocomotiveWidget extends JPanel implements
         }
 
 
-        String params = "height 30, width 60";
+        String params = "height 30, growx";
         if (Preferences.getInstance().getBooleanValue(PreferencesKeys.TABLET_MODE)) {
-            params = "height " + UIConstants.SIZE_TABLET + ", width 60";
+            params = "height " + UIConstants.SIZE_TABLET + ", growx";
         }
         for (final LocomotiveFunction fn : myLocomotive.getFunctions()) {
             final FunctionToggleButton functionButton = new FunctionToggleButton(
@@ -430,7 +425,7 @@ public class LocomotiveWidget extends JPanel implements
         final LocomotiveController locomotiveControl = ctx
                 .getLocomotiveControl();
         //if (myLocomotive.getCurrentSpeed() == 0) {
-            return true;
+        return true;
         //} else {
         //    return false;
         //}

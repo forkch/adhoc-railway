@@ -23,7 +23,6 @@ import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
-import ch.fork.AdHocRailway.ui.bus.events.ConnectedToPersistenceEvent;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfig;
@@ -95,14 +94,14 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
             Border aquaBorder = UIManager.getBorder("InsetBorder.aquaVariant");
             setBorder(aquaBorder);
         } else {
-            setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+            setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
         }
 
         numberLabel = new JLabel();
         numberLabel.setFont(new Font("Dialog", Font.BOLD, 25));
         statePanel = new JPanel();
 
-        setLayout(new MigLayout("insets 5, gap 2"));
+        setLayout(new MigLayout("insets 5, gap 5"));
 
         if (forHistory) {
             add(numberLabel);

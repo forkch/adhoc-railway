@@ -28,7 +28,8 @@ public class WidgetTab extends JPanel {
     public WidgetTab() {
 
         widgets = new JPanel();
-        widgets.setLayout(new BetterFlowLayout(FlowLayout.LEADING, 0,0));
+        //widgets.setLayout(new BetterFlowLayout(FlowLayout.LEADING, 5,5));
+        widgets.setLayout(new WrapLayout(FlowLayout.LEADING));
 
         final JScrollPane groupScrollPane = new JScrollPane(widgets,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,

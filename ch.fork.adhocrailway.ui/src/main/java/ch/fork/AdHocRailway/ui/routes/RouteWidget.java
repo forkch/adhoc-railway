@@ -84,7 +84,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
             Border aquaBorder = UIManager.getBorder("InsetBorder.aquaVariant");
             setBorder(aquaBorder);
         } else {
-            setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+            setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
         }
 
         routeStopIcon = ImageTools

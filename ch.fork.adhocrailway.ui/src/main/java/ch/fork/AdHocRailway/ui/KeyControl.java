@@ -21,7 +21,6 @@ package ch.fork.AdHocRailway.ui;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
-import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.model.turnouts.Route;
@@ -33,7 +32,6 @@ import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 import ch.fork.AdHocRailway.ui.utils.ThreeDigitDisplay;
 import ch.fork.AdHocRailway.ui.utils.UIConstants;
-import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -41,7 +39,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 
-public class KeyControl extends SimpleInternalFrame {
+public class KeyControl extends JPanel {
 
     private final LinkedList<Object> historyStack = new LinkedList<Object>();
 
@@ -55,15 +53,14 @@ public class KeyControl extends SimpleInternalFrame {
     private ThreeDigitDisplay digitDisplay;
 
     public KeyControl(final ApplicationContext ctx) {
-        super("Track Control / History");
         this.ctx = ctx;
         enteredNumberKeys = new StringBuffer();
         initGUI();
         initKeyboardActions();
-
     }
 
     private void initGUI() {
+        setLayout(new BorderLayout());
         final JPanel segmentPanelNorth = initSegmentPanel();
         turnoutsHistory = new JPanel();
         final JPanel sh1 = new JPanel(new BorderLayout());
@@ -73,6 +70,7 @@ public class KeyControl extends SimpleInternalFrame {
         historyPane = new JScrollPane(turnoutsHistory,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        historyPane.setBorder(BorderFactory.createEmptyBorder());
         sh1.add(historyPane, BorderLayout.CENTER);
 
         add(segmentPanelNorth, BorderLayout.NORTH);
