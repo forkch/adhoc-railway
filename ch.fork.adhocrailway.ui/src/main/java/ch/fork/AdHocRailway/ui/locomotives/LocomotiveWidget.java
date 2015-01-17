@@ -48,8 +48,6 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIcon;
 import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromIconSet;
@@ -63,8 +61,6 @@ public class LocomotiveWidget extends JPanel implements
     private final List<FunctionToggleButton> functionToggleButtons = new ArrayList<FunctionToggleButton>();
     private final JFrame frame;
     private final LocomotiveContext ctx;
-    private final ScheduledExecutorService worker =
-            Executors.newSingleThreadScheduledExecutor();
     public boolean directionToggeled;
     private JProgressBar speedBar;
     private JButton increaseSpeed;
@@ -89,10 +85,7 @@ public class LocomotiveWidget extends JPanel implements
         initKeyboardActions();
 
         if (ctx.getRailwayDeviceManager() != null) {
-            final boolean connected = ctx.getRailwayDeviceManager().isConnected();
-            if (connected) {
-                connectedToRailwayDevice(new ConnectedToRailwayEvent(connected));
-            }
+            connectedToRailwayDevice(new ConnectedToRailwayEvent(ctx.getRailwayDeviceManager().isConnected()));
         }
     }
 
@@ -270,7 +263,6 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private void updateWidget() {
-        LOGGER.info("updateWidget");
         if (myLocomotive == null) {
             return;
         }
@@ -289,8 +281,6 @@ public class LocomotiveWidget extends JPanel implements
 
         updateDirection();
 
-        //updateLockedState(locomotiveControl);
-
         if (isFree()) {
             locomotiveSelectionPanel.setEnabled(true);
         } else {
@@ -300,21 +290,6 @@ public class LocomotiveWidget extends JPanel implements
         }
         speedBar.requestFocus();
 
-    }
-
-    private void updateLockedState(final LocomotiveController locomotiveControl) {
-        final boolean locked = locomotiveControl.isLocked(myLocomotive);
-        lockButton.setSelected(locked);
-        if (locked) {
-            if (locomotiveControl.isLockedByMe(myLocomotive)) {
-                lockButton.setSelectedIcon(ImageTools
-                        .createImageIconFromCustom("locked_by_me.png"));
-
-            } else {
-                lockButton.setSelectedIcon(ImageTools
-                        .createImageIconFromCustom("locked_by_enemy.png"));
-            }
-        }
     }
 
     private void updateSpeed(int currentSpeed) {
@@ -361,23 +336,14 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private boolean isFree() {
-        if (myLocomotive == null) {
-            return true;
-        }
-        if (myLocomotive.getCurrentSpeed() == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return myLocomotive == null || myLocomotive.getCurrentSpeed() == 0;
     }
 
     @Override
     public void locomotiveChanged(final Locomotive changedLocomotive) {
-
         if (myLocomotive == null) {
             return;
         }
-
 
         if (myLocomotive.equals(changedLocomotive)) {
             SwingUtilities.invokeLater(new Runnable() {
@@ -388,7 +354,6 @@ public class LocomotiveWidget extends JPanel implements
                 }
             });
         }
-
     }
 
     @Override
@@ -460,11 +425,6 @@ public class LocomotiveWidget extends JPanel implements
         final LocomotiveController locomotiveControl = ctx
                 .getLocomotiveControl();
         locomotiveControl.removeLocomotiveChangeListener(myLocomotive, this);
-        try {
-            // locomotiveControl.deactivateLoco(myLocomotive);
-        } catch (Exception x) {
-
-        }
         myLocomotive = null;
 
     }
@@ -739,7 +699,7 @@ public class LocomotiveWidget extends JPanel implements
             if (myLocomotive == null) {
                 return;
             }
-            AbstractAction a = null;
+            AbstractAction a;
             switch (e.getWheelRotation()) {
                 case -1:
                     a = new LocomotiveAccelerateAction();

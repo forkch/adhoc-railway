@@ -7,18 +7,16 @@ import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveGroupListCellRenderer;
 import ch.fork.AdHocRailway.utils.LocomotiveHelper;
+import com.google.common.collect.Lists;
 import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
+import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 import java.util.SortedSet;
 
-/**
- * Created by fork on 17.01.15.
- */
 public class LocomotiveSelectionPanel extends JPanel {
 
     public static final int LOCOMOTIVE_IMAGE_HEIGHT = 40;
@@ -30,9 +28,8 @@ public class LocomotiveSelectionPanel extends JPanel {
 
     private JComboBox<Locomotive> locomotiveComboBox;
     private JComboBox<LocomotiveGroup> locomotiveGroupComboBox;
-    private DefaultComboBoxModel<LocomotiveGroup> locomotiveGroupComboBoxModel;
-    private DefaultComboBoxModel<Locomotive> locomotiveComboBoxModel;
-    private boolean ignoreGroupAndLocomotiveSelectionEvents;
+    private LocomotiveGroupComboboxModel locomotiveGroupComboBoxModel;
+    private LocomotiveComboboxModel locomotiveComboBoxModel;
     private final LocomotiveGroup allLocomotivesGroup;
     private LocomotiveComboBoxRenderer locomotiveComboboxRendererWithLocoImage;
     private JLabel locomotiveImage;
@@ -62,23 +59,22 @@ public class LocomotiveSelectionPanel extends JPanel {
         }
         SortedSet<LocomotiveGroup> locomotiveGroups = ctx.getLocomotiveManager().getAllLocomotiveGroups();
 
-        ignoreGroupAndLocomotiveSelectionEvents = true;
-        locomotiveGroupComboBoxModel.removeAllElements();
-        locomotiveComboBoxModel.removeAllElements();
         allLocomotivesGroup.getLocomotives().clear();
-
-        locomotiveGroupComboBoxModel.addElement(allLocomotivesGroup);
 
         for (final LocomotiveGroup lg : locomotiveGroups) {
             for (final Locomotive l : lg.getLocomotives()) {
                 allLocomotivesGroup.addLocomotive(l);
-                locomotiveComboBoxModel.addElement(l);
             }
-            locomotiveGroupComboBoxModel.addElement(lg);
         }
 
-        locomotiveComboBox.setSelectedIndex(-1);
-        ignoreGroupAndLocomotiveSelectionEvents = false;
+        List<LocomotiveGroup> listForModel = Lists.newArrayList();
+        listForModel.add(allLocomotivesGroup);
+        listForModel.addAll(locomotiveGroups);
+
+        locomotiveGroupComboBoxModel.clearAndAddAll(listForModel);
+        locomotiveComboBoxModel.clearAndAddAll(allLocomotivesGroup.getLocomotives());
+        locomotiveGroupComboBox.setSelectedIndex(0);
+
     }
 
     @Override
@@ -97,11 +93,11 @@ public class LocomotiveSelectionPanel extends JPanel {
 
     private void initSelectionPanel() {
         locomotiveGroupComboBox = new JComboBox<LocomotiveGroup>();
-        locomotiveGroupComboBoxModel = new DefaultComboBoxModel<LocomotiveGroup>();
+        locomotiveGroupComboBoxModel = new LocomotiveGroupComboboxModel();
         locomotiveGroupComboBox.setModel(locomotiveGroupComboBoxModel);
         locomotiveGroupComboBox.setFocusable(false);
         locomotiveGroupComboBox.setFont(locomotiveGroupComboBox.getFont()
-                .deriveFont(14));
+                .deriveFont(Font.BOLD));
         locomotiveGroupComboBox.setMaximumRowCount(10);
         locomotiveGroupComboBox.setSelectedIndex(-1);
         locomotiveGroupComboBox.setRenderer(new LocomotiveGroupListCellRenderer());
@@ -110,7 +106,7 @@ public class LocomotiveSelectionPanel extends JPanel {
         locomotiveGroupComboBox.addItemListener(groupSelectAction);
 
         locomotiveComboBox = new JComboBox<Locomotive>();
-        locomotiveComboBoxModel = new DefaultComboBoxModel<Locomotive>();
+        locomotiveComboBoxModel = new LocomotiveComboboxModel();
         locomotiveComboBox.setModel(locomotiveComboBoxModel);
         locomotiveComboBox.setFocusable(false);
         locomotiveSelectAction = new LocomotiveSelectAction();
@@ -136,25 +132,13 @@ public class LocomotiveSelectionPanel extends JPanel {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 return;
             }
-            if (ignoreGroupAndLocomotiveSelectionEvents) {
-                return;
-            }
-
             final LocomotiveGroup selectedLocomotiveGroup = (LocomotiveGroup) locomotiveGroupComboBoxModel
                     .getSelectedItem();
-            final int idx = locomotiveGroupComboBox.getSelectedIndex();
 
             if (selectedLocomotiveGroup == null) {
                 return;
             }
-            locomotiveComboBox.setEnabled(false);
-            locomotiveComboBoxModel.removeAllElements();
-            for (final Locomotive l : selectedLocomotiveGroup.getLocomotives()) {
-                locomotiveComboBoxModel.addElement(l);
-            }
-            locomotiveComboBox.setEnabled(true);
-
-            locomotiveComboBox.setSelectedIndex(-1);
+            locomotiveComboBoxModel.clearAndAddAll(selectedLocomotiveGroup.getLocomotives());
 
             locomotiveImage.setIcon(LocomotiveImageHelper.getEmptyLocoIconScaledToHeight(LOCOMOTIVE_IMAGE_HEIGHT));
             selectionListener.onLocomotiveGroupSelected(selectedLocomotiveGroup);
@@ -167,9 +151,6 @@ public class LocomotiveSelectionPanel extends JPanel {
         @Override
         public void itemStateChanged(final ItemEvent e) {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
-                return;
-            }
-            if (ignoreGroupAndLocomotiveSelectionEvents) {
                 return;
             }
             if (locomotiveComboBox.getItemCount() == 0

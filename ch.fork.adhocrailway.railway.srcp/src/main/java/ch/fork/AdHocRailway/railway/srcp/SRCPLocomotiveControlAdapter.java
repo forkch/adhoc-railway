@@ -16,7 +16,6 @@ import de.dermoba.srcp.model.locking.SRCPLockingException;
 import de.dermoba.srcp.model.locomotives.*;
 import org.apache.log4j.Logger;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -231,7 +230,6 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     @Override
     public void locomotiveChanged(final SRCPLocomotive changedSRCPLocomotive) {
 
-        System.out.println("locomotiveChanged: " + changedSRCPLocomotive.getAddress());
         final Locomotive locomotive = SRCPLocomotiveLocomotiveMap
                 .get(changedSRCPLocomotive);
 
@@ -250,7 +248,6 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         final boolean[] currentFunctions = SimulatedMFXLocomotivesHelper
                 .convertFromMultipartFunctions(locomotive.getType(),
                         newFunctions);
-        System.out.println(Arrays.toString(currentFunctions));
         locomotive.setCurrentFunctions(currentFunctions);
         if (locomotive.getTargetSpeed() == -1 || locomotive.getCurrentSpeed() == locomotive.getTargetSpeed()) {
             informListeners(locomotive);
@@ -327,7 +324,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     }
 
     private enum EmergencyStopState {
-        PENDING, EXECUTED, NONE;
+        PENDING, EXECUTED, NONE
     }
 
 }
