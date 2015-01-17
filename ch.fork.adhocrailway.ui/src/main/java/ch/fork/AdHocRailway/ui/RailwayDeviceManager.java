@@ -162,8 +162,8 @@ public class RailwayDeviceManager implements CommandDataListener,
 
             final SRCPRouteControlAdapter srcpRouteControlAdapter = (SRCPRouteControlAdapter) appContext
                     .getRouteControl();
-            srcpRouteControlAdapter.registerRoutes(appContext.getRouteManager()
-                    .getAllRoutes());
+            //srcpRouteControlAdapter.registerRoutes(appContext.getRouteManager()
+            //        .getAllRoutes());
 
             final SRCPLocomotiveControlAdapter srcpLocomotiveControlAdapter = (SRCPLocomotiveControlAdapter) appContext
                     .getLocomotiveControl();
@@ -203,15 +203,14 @@ public class RailwayDeviceManager implements CommandDataListener,
     }
 
     private void loadControlLayer(RailwayDevice railwayDevice) {
-        final RailwayDevice railwayDevive = getRailwayDevice();
 
-        createPowerControllerOnContext(railwayDevive);
+        createPowerControllerOnContext(railwayDevice);
 
-        createLocomotiveControllerOnContext(railwayDevive);
+        createLocomotiveControllerOnContext(railwayDevice);
 
-        final TurnoutController turnoutControl = createTurnoutControllerOnContext(railwayDevive);
+        final TurnoutController turnoutControl = createTurnoutControllerOnContext(railwayDevice);
 
-        createRouteControllerOnContext(railwayDevive, turnoutControl);
+        createRouteControllerOnContext(railwayDevice, turnoutControl);
 
         createLockControllerOnContext();
     }
@@ -227,6 +226,7 @@ public class RailwayDeviceManager implements CommandDataListener,
     private void createLockControllerOnContext() {
         appContext.getMainBus().post(
                 new InitProceededEvent("Loading Control Layer (Locks)"));
+        SRCPLockControl.getInstance().removeAllLockChangeListener();
         appContext.setLockControl(SRCPLockControl.getInstance());
     }
 

@@ -217,7 +217,7 @@ public class Preferences {
     }
 
     private String get(final String key) {
-        LOGGER.info("setting: " + key + "=" + preferences.get(key));
+        LOGGER.debug("setting: " + key + "=" + preferences.get(key));
         return preferences.get(key);
     }
 

@@ -19,7 +19,6 @@ public class SRCPRouteControlAdapter extends RouteController implements
 
     private final SRCPTurnoutControlAdapter turnoutControl;
     private final Map<Route, SRCPRoute> routesSRCPRoutesMap = new HashMap<Route, SRCPRoute>();
-
     private final Map<SRCPRoute, Route> SRCPRoutesRoutesMap = new HashMap<SRCPRoute, Route>();
     private final SRCPRouteControl routeControl;
 
@@ -32,6 +31,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
         super(turnoutManager);
         this.turnoutControl = turnoutControl;
         routeControl = SRCPRouteControl.getInstance();
+        routeControl.removeAllRouteChangeListeners();
 
     }
 
@@ -159,9 +159,8 @@ public class SRCPRouteControlAdapter extends RouteController implements
         for (final RouteItem routeItem : route.getRoutedTurnoutsSorted()) {
 
             final SRCPRouteItem sRouteItem = new SRCPRouteItem();
-            int number = routeItem.getTurnout().getNumber();
             final SRCPTurnout sTurnout = turnoutControl
-                    .getOrCreateSRCPTurnout(turnoutManager.getTurnoutByNumber(number));
+                    .getOrCreateSRCPTurnout(routeItem.getTurnout());
             sRouteItem.setTurnout(sTurnout);
             switch (routeItem.getState()) {
                 case LEFT:
@@ -193,10 +192,10 @@ public class SRCPRouteControlAdapter extends RouteController implements
         SRCPRoute sRoute = routesSRCPRoutesMap.get(route);
         if (sRoute == null) {
             sRoute = new SRCPRoute();
+            routesSRCPRoutesMap.put(route, sRoute);
+            SRCPRoutesRoutesMap.put(sRoute, route);
         }
         applyNewSettings(sRoute, route);
-        routesSRCPRoutesMap.put(route, sRoute);
-        SRCPRoutesRoutesMap.put(sRoute, route);
         return sRoute;
     }
 

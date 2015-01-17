@@ -30,6 +30,7 @@ public class SRCPPowerControlAdapter extends PowerController implements
 
     public SRCPPowerControlAdapter() {
         powerControl = SRCPPowerControl.getInstance();
+        powerControl.removeAllPowerSupplyChangeListener();
     }
 
     @Override

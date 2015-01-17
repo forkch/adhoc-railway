@@ -48,6 +48,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
     public SRCPLocomotiveControlAdapter() {
         locomotiveControl = SRCPLocomotiveControl.getInstance();
+        locomotiveControl.removeAllLocomotiveChangeListener();
         executorService = SRCPThreadUtils.createExecutorService();
         emergencyExecutorService = SRCPThreadUtils.createExecutorService();
         rateLimiter = SRCPThreadUtils.createRateLimiter();

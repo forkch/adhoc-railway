@@ -43,7 +43,6 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
 
     private final boolean testMode;
     private final RouteContext ctx;
-    private boolean connectedToRailway;
     private Route route;
     private JLabel nameLabel;
     private JLabel iconLabel;
@@ -61,16 +60,17 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         ctx.getMainBus().register(this);
         initGUI();
         updateRoute();
-        connectedToRailway = false;
+        final boolean connected = ctx.getRailwayDeviceManager().isConnected();
+        if (connected) {
+            connectedToRailwayDevice(new ConnectedToRailwayEvent(connected));
+        }
     }
 
     @Subscribe
     public void connectedToRailwayDevice(ConnectedToRailwayEvent event) {
         if (event.isConnected()) {
-            connectedToRailway = true;
             ctx.getRouteControl().addRouteChangeListener(route, this);
         } else {
-            connectedToRailway = false;
             if (ctx.getRouteControl() != null) {
                 ctx.getRouteControl().removeRouteChangeListener(route, this);
             }
@@ -222,7 +222,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         }
 
         private void handleLeftClick() {
-            if (!connectedToRailway) {
+            if (!ctx.getRailwayDeviceManager().isConnected()) {
                 return;
             }
             if (route.isRouting()) {

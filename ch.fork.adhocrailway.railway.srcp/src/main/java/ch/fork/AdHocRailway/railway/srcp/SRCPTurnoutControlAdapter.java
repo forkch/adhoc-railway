@@ -34,6 +34,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
     public SRCPTurnoutControlAdapter() {
 
         turnoutControl = SRCPTurnoutControl.getInstance();
+        turnoutControl.removeAllTurnoutChangeListener();
 
         reloadConfiguration();
     }

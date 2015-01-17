@@ -85,7 +85,6 @@ public class LocomotiveWidget extends JPanel implements
     private DefaultComboBoxModel<Locomotive> locomotiveComboBoxModel;
     private boolean ignoreGroupAndLocomotiveSelectionEvents;
     private boolean disableListener;
-    private boolean connectedToRailway;
 
     public LocomotiveWidget(final LocomotiveContext ctx, final int number,
                             final JFrame frame) {
@@ -99,7 +98,12 @@ public class LocomotiveWidget extends JPanel implements
         initKeyboardActions();
 
         allLocomotivesGroup = new LocomotiveGroup("", "All");
-        connectedToRailway = false;
+        if (ctx.getRailwayDeviceManager() != null) {
+            final boolean connected = ctx.getRailwayDeviceManager().isConnected();
+            if (connected) {
+                connectedToRailwayDevice(new ConnectedToRailwayEvent(connected));
+            }
+        }
     }
 
     @Subscribe
@@ -109,9 +113,7 @@ public class LocomotiveWidget extends JPanel implements
                 ctx.getLocomotiveControl().addLocomotiveChangeListener(
                         myLocomotive, this);
             }
-            connectedToRailway = true;
         } else {
-            connectedToRailway = false;
             ctx.getLocomotiveControl().removeLocomotiveChangeListener(myLocomotive, this);
         }
     }
@@ -649,7 +651,7 @@ public class LocomotiveWidget extends JPanel implements
         @Override
         public void actionPerformed(final ActionEvent e) {
 
-            if (myLocomotive == null || !connectedToRailway) {
+            if (myLocomotive == null || !ctx.getRailwayDeviceManager().isConnected()) {
                 return;
             }
             final LocomotiveController locomotiveControl = ctx
