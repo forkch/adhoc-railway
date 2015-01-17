@@ -10,7 +10,7 @@ public class LocomotiveComboBoxRenderer extends JPanel implements
 
     private final JLabel textLabel;
     private final JLabel iconLabel;
-    private boolean comboboxOpen = false;
+    private boolean comboboxOpen = true;
 
     public LocomotiveComboBoxRenderer() {
         setOpaque(true);
@@ -56,7 +56,7 @@ public class LocomotiveComboBoxRenderer extends JPanel implements
 
     }
 
-    public void setComboboxOpen(boolean comboboxOpen) {
+    public void setDisplayLocoImage(boolean comboboxOpen) {
         this.comboboxOpen = comboboxOpen;
     }
 }
