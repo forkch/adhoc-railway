@@ -270,6 +270,7 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private void updateWidget() {
+        LOGGER.info("updateWidget");
         if (myLocomotive == null) {
             return;
         }
@@ -460,7 +461,7 @@ public class LocomotiveWidget extends JPanel implements
                 .getLocomotiveControl();
         locomotiveControl.removeLocomotiveChangeListener(myLocomotive, this);
         try {
-            locomotiveControl.deactivateLoco(myLocomotive);
+            // locomotiveControl.deactivateLoco(myLocomotive);
         } catch (Exception x) {
 
         }
@@ -517,6 +518,10 @@ public class LocomotiveWidget extends JPanel implements
         } catch (final ControllerException e1) {
             ctx.getMainApp().handleException(e1);
         }
+    }
+
+    public void emergencyStop() {
+        updateWidget();
     }
 
     private abstract class LocomotiveControlAction extends AbstractAction {

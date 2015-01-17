@@ -99,11 +99,9 @@ public class LocomotiveControlPanel extends JPanel {
                     }
                     final LocomotiveController locomotiveControl = ctx
                             .getLocomotiveControl();
-                    if (locomotiveControl.isLocked(myLocomotive)
-                            && !locomotiveControl.isLockedByMe(myLocomotive)) {
-                        continue;
-                    }
+
                     locomotiveControl.emergencyStop(myLocomotive);
+                    widget.emergencyStop();
                 }
             } catch (final ControllerException e3) {
                 ctx.getMainApp().handleException(e3);

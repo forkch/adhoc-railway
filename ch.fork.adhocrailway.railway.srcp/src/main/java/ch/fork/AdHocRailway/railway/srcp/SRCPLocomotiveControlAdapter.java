@@ -16,6 +16,7 @@ import de.dermoba.srcp.model.locking.SRCPLockingException;
 import de.dermoba.srcp.model.locomotives.*;
 import org.apache.log4j.Logger;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -94,12 +95,17 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                if (emergencyStopState == EmergencyStopState.NONE) {
-                    try {
-                        LOGGER.info("waiting to execute speed command");
-                        rateLimiter.acquire();
-                        LOGGER.info("executing speed command: " + speed);
+                synchronized (emergencyStopState) {
+                    if (emergencyStopState == EmergencyStopState.NONE) {
+                        LOGGER.info("cancelling speed command: " + speed);
+                    }
+                }
+                try {
+                    LOGGER.info("waiting to execute speed command");
+                    rateLimiter.acquire();
+                    synchronized (emergencyStopState) {
                         if (emergencyStopState == EmergencyStopState.NONE) {
+                            LOGGER.info("executing speed command: " + speed);
                             locomotiveControl.setSpeed(sLocomotive, speed,
                                     SimulatedMFXLocomotivesHelper.convertToMultipartFunctions(
                                             locomotive.getType(), functions)
@@ -107,12 +113,11 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
                         } else {
                             LOGGER.info("cancelling speed command: " + speed);
                         }
-                    } catch (SRCPModelException e) {
-                        e.printStackTrace();
                     }
-                } else {
-                    LOGGER.info("cancelling speed command: " + speed);
+                } catch (SRCPModelException e) {
+                    e.printStackTrace();
                 }
+
             }
         });
         locomotive.setCurrentSpeed(speed);
@@ -123,20 +128,21 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     public void emergencyStop(final Locomotive locomotive) {
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         emergencyStopState = EmergencyStopState.PENDING;
+        final int emergencyStopFunction = locomotive
+                .getEmergencyStopFunction();
+        final int srcpEmergencyStopFunction = SimulatedMFXLocomotivesHelper
+                .computeMultipartFunctionNumber(locomotive.getType(),
+                        emergencyStopFunction);
+        locomotive.setCurrentSpeed(0);
+        locomotive.setTargetSpeed(-1);
         emergencyExecutorService.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     LOGGER.info(">>>>>EMERGENCY STOP<<<<<");
-                    final int emergencyStopFunction = locomotive
-                            .getEmergencyStopFunction();
 
-                    final int srcpEmergencyStopFunction = SimulatedMFXLocomotivesHelper
-                            .computeMultipartFunctionNumber(locomotive.getType(),
-                                    emergencyStopFunction);
                     locomotiveControl.emergencyStop(sLocomotive,
                             srcpEmergencyStopFunction);
-                    locomotive.setCurrentSpeed(0);
                     locomotive.setCurrentFunctions(locomotive.getCurrentFunctions());
                     emergencyStopState = EmergencyStopState.EXECUTED;
                 } catch (SRCPModelException e) {
@@ -225,6 +231,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     @Override
     public void locomotiveChanged(final SRCPLocomotive changedSRCPLocomotive) {
 
+        System.out.println("locomotiveChanged: " + changedSRCPLocomotive.getAddress());
         final Locomotive locomotive = SRCPLocomotiveLocomotiveMap
                 .get(changedSRCPLocomotive);
 
@@ -240,9 +247,11 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
         final boolean[] newFunctions = changedSRCPLocomotive.getFunctions();
 
-        locomotive.setCurrentFunctions(SimulatedMFXLocomotivesHelper
+        final boolean[] currentFunctions = SimulatedMFXLocomotivesHelper
                 .convertFromMultipartFunctions(locomotive.getType(),
-                        newFunctions));
+                        newFunctions);
+        System.out.println(Arrays.toString(currentFunctions));
+        locomotive.setCurrentFunctions(currentFunctions);
         if (locomotive.getTargetSpeed() == -1 || locomotive.getCurrentSpeed() == locomotive.getTargetSpeed()) {
             informListeners(locomotive);
             locomotive.setTargetSpeed(-1);

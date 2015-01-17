@@ -42,7 +42,7 @@ public abstract class LocomotiveController implements
                                      final int functionNumber, final boolean state,
                                      final int deactivationDelay);
 
-    public abstract void emergencyStop(final Locomotive myLocomotive);
+    public abstract void emergencyStop(final Locomotive locomotive);
 
     public void activateLoco(final Locomotive locomotive) {
         if (isLocomotiveInactive(locomotive)) {
