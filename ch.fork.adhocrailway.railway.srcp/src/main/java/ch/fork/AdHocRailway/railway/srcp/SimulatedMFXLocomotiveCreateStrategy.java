@@ -11,15 +11,7 @@ public class SimulatedMFXLocomotiveCreateStrategy extends SRCPLocomotiveCreateSt
     @Override
     public SRCPLocomotive createSRCPLocomotive(Locomotive locomotive) {
 
-        final DoubleMMDigitalLocomotive doubleMMDigitalLocomotive = new DoubleMMDigitalLocomotive();
-        updateSRCPLocomotive(doubleMMDigitalLocomotive, locomotive);
-        return doubleMMDigitalLocomotive;
-    }
-
-    public SRCPLocomotive updateSRCPLocomotive(DoubleMMDigitalLocomotive doubleMMDigitalLocomotive, Locomotive locomotive) {
-        doubleMMDigitalLocomotive.setBus(locomotive.getBus());
-        doubleMMDigitalLocomotive.setAddress(locomotive.getAddress1());
-        doubleMMDigitalLocomotive.setAddress2(locomotive.getAddress2());
+        final DoubleMMDigitalLocomotive doubleMMDigitalLocomotive = new DoubleMMDigitalLocomotive(locomotive.getBus(), locomotive.getAddress1(), locomotive.getAddress2());
         return doubleMMDigitalLocomotive;
     }
 }
