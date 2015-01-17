@@ -54,7 +54,7 @@ public abstract class LocomotiveController implements
             }
             final boolean[] functions = locomotive.getCurrentFunctions();
             final int emergencyStopFunction = locomotive
-                    .getEmergencyStopFunction();
+                    .getEmergencyStopFunctionNumber();
             if (emergencyStopFunction != -1
                     && functions.length > emergencyStopFunction) {
                 functions[emergencyStopFunction] = false;

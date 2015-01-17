@@ -129,7 +129,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
         emergencyStopState = EmergencyStopState.PENDING;
         final int emergencyStopFunction = locomotive
-                .getEmergencyStopFunction();
+                .getEmergencyStopFunctionNumber();
         final int srcpEmergencyStopFunction = SimulatedMFXLocomotivesHelper
                 .computeMultipartFunctionNumber(locomotive.getType(),
                         emergencyStopFunction);

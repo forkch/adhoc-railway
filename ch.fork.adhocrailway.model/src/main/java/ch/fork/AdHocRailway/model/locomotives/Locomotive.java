@@ -199,7 +199,7 @@ public class Locomotive extends AbstractItem implements Serializable,
         this.functions.add(function);
     }
 
-    public int getEmergencyStopFunction() {
+    public int getEmergencyStopFunctionNumber() {
         for (final LocomotiveFunction function : functions) {
             if (function.isEmergencyBrakeFunction()) {
                 return function.getNumber();

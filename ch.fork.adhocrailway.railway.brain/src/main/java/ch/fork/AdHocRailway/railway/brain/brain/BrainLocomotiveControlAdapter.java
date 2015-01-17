@@ -103,7 +103,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
     @Override
     public void emergencyStop(final Locomotive locomotive) {
-        setFunction(locomotive, locomotive.getEmergencyStopFunction(),
+        setFunction(locomotive, locomotive.getEmergencyStopFunctionNumber(),
                 true, 0);
         setSpeed(locomotive, 0, locomotive.getCurrentFunctions());
 
