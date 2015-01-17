@@ -164,24 +164,24 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
             initProceeded("Creating GUI ...");
 
+            persistenceManager = new PersistenceManager(appContext);
+            railwayDeviceManager = new RailwayDeviceManager(appContext);
+            appContext.setRailwayDeviceManager(railwayDeviceManager);
+
             initGUI();
             disableEnableMenuItems();
             LOGGER.info("Finished Creating GUI");
             splash.setVisible(false);
 
             updateGUI();
-            persistenceManager = new PersistenceManager(appContext);
             try {
                 persistenceManager
                         .loadLastFileOrLoadDataFromAdHocServerIfRequested();
+                railwayDeviceManager.autoConnectToRailwayDeviceIfRequested();
             } catch (AdHocRailwayException x) {
                 handleException(x);
             }
 
-
-            railwayDeviceManager = new RailwayDeviceManager(appContext);
-            appContext.setRailwayDeviceManager(railwayDeviceManager);
-            railwayDeviceManager.autoConnectToRailwayDeviceIfRequested();
 
 
             initProceeded("AdHoc-Railway started");

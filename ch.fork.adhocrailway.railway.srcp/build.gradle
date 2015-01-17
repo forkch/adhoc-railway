@@ -1,6 +1,6 @@
 dependencies {
     testCompile 'junit:junit:4.+'
     testCompile 'org.mockito:mockito-all:1.9.5'
-    compile 'de.dermoba:jsrcpc:+'
+    compile 'de.dermoba:jsrcpc:2.4.+'
 }
 

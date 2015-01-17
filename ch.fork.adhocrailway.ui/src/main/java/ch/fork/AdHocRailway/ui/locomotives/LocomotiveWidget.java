@@ -424,13 +424,11 @@ public class LocomotiveWidget extends JPanel implements
         if (myLocomotive == null) {
             return true;
         }
-        final LocomotiveController locomotiveControl = ctx
-                .getLocomotiveControl();
-        //if (myLocomotive.getCurrentSpeed() == 0) {
+        if (myLocomotive.getCurrentSpeed() == 0) {
         return true;
-        //} else {
-        //    return false;
-        //}
+        } else {
+            return false;
+        }
     }
 
     @Override
