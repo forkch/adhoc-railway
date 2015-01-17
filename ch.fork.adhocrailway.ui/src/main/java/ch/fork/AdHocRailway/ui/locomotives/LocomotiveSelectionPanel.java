@@ -9,7 +9,6 @@ import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveGroupListCell
 import ch.fork.AdHocRailway.utils.LocomotiveHelper;
 import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
-import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
@@ -35,7 +34,7 @@ public class LocomotiveSelectionPanel extends JPanel {
     private DefaultComboBoxModel<Locomotive> locomotiveComboBoxModel;
     private boolean ignoreGroupAndLocomotiveSelectionEvents;
     private final LocomotiveGroup allLocomotivesGroup;
-    private LocomotiveComboBoxRenderer locomotiveComboboxRenderer;
+    private LocomotiveComboBoxRenderer locomotiveComboboxRendererWithLocoImage;
     private JLabel locomotiveImage;
 
     public LocomotiveSelectionPanel(OnLocomotiveSelectionListener selectionListener, LocomotiveContext locomotiveContext) {
@@ -90,7 +89,7 @@ public class LocomotiveSelectionPanel extends JPanel {
 
     private void initGUI() {
 
-        setLayout(new MigLayout("debug, insets 0, gap 5, fill"));
+        setLayout(new MigLayout(" insets 0, gap 5, fill"));
 
         initSelectionPanel();
 
@@ -116,14 +115,8 @@ public class LocomotiveSelectionPanel extends JPanel {
         locomotiveComboBox.setFocusable(false);
         locomotiveSelectAction = new LocomotiveSelectAction();
         locomotiveComboBox.addItemListener(locomotiveSelectAction);
-        locomotiveComboboxRenderer = new LocomotiveComboBoxRenderer();
-        locomotiveComboBox.setRenderer(locomotiveComboboxRenderer);
-
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            locomotiveComboBox.addPopupMenuListener(new LocomotiveComboboxPopupListener());
-        } else {
-            locomotiveComboboxRenderer.setDisplayLocoImage(false);
-        }
+        locomotiveComboboxRendererWithLocoImage = new LocomotiveComboBoxRenderer();
+        locomotiveComboBox.setRenderer(locomotiveComboboxRendererWithLocoImage);
 
         locomotiveImage = new JLabel();
         locomotiveImage.setIcon(LocomotiveImageHelper.getEmptyLocoIconScaledToHeight(LOCOMOTIVE_IMAGE_HEIGHT));
@@ -206,21 +199,4 @@ public class LocomotiveSelectionPanel extends JPanel {
 
     }
 
-    private class LocomotiveComboboxPopupListener implements PopupMenuListener {
-        @Override
-        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-            locomotiveComboboxRenderer.setDisplayLocoImage(true);
-        }
-
-        @Override
-        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-            locomotiveComboboxRenderer.setDisplayLocoImage(false);
-        }
-
-        @Override
-        public void popupMenuCanceled(PopupMenuEvent e) {
-            locomotiveComboboxRenderer.setDisplayLocoImage(false);
-
-        }
-    }
 }
