@@ -155,7 +155,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
         imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        imageLabel.setIcon(LocomotiveImageHelper.getLocomotiveIcon(presentationModel
+        imageLabel.setIcon(LocomotiveImageHelper.getLocomotiveIconOriginalSize(presentationModel
                 .getBean()));
 
         busSpinner = new JSpinner();
@@ -448,7 +448,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
             final String image = presentationModel.getBean().getImage();
             presentationModel.getBean().setImageBase64(LocomotiveImageHelper.getImageBase64(selectedFile));
             if (image != null && !image.isEmpty()) {
-                imageLabel.setIcon(LocomotiveImageHelper.getLocomotiveIcon(presentationModel.getBean()));
+                imageLabel.setIcon(LocomotiveImageHelper.getLocomotiveIconOriginalSize(presentationModel.getBean()));
                 pack();
             } else {
                 imageLabel.setIcon(null);

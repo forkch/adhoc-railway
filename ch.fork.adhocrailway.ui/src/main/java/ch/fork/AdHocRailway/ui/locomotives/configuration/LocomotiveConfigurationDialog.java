@@ -510,7 +510,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
             }
             Locomotive locomotive = locomotiveModel.getElementAt(row);
             String image = (String) value;
-            setIcon(LocomotiveImageHelper.getLocomotiveIcon(locomotive, 120));
+            setIcon(LocomotiveImageHelper.getLocomotiveIconScaledToHeight(locomotive, 120));
 
             return this;
 

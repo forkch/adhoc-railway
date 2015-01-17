@@ -10,6 +10,7 @@ public class LocomotiveComboBoxRenderer extends JPanel implements
 
     private final JLabel textLabel;
     private final JLabel iconLabel;
+    private boolean comboboxOpen = false;
 
     public LocomotiveComboBoxRenderer() {
         setOpaque(true);
@@ -47,10 +48,15 @@ public class LocomotiveComboBoxRenderer extends JPanel implements
 
         // Set the icon and text. If icon was null, say so.
         textLabel.setText(locomotive.getName());
-        iconLabel.setIcon(LocomotiveImageHelper.getLocomotiveIcon(locomotive, 120));
+        if (comboboxOpen) {
+            iconLabel.setIcon(LocomotiveImageHelper.getLocomotiveIconScaledToWidth(locomotive, 150));
+        }
 
         return this;
 
     }
 
+    public void setComboboxOpen(boolean comboboxOpen) {
+        this.comboboxOpen = comboboxOpen;
+    }
 }
