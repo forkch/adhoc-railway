@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.railway.srcp;
+package ch.fork.AdHocRailway.controllers;
 
 import com.google.common.util.concurrent.RateLimiter;
 
@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by fork on 3/23/14.
  */
-public class SRCPThreadUtils {
+public class ThreadUtils {
 
 
     public static ThreadPoolExecutor createExecutorService() {

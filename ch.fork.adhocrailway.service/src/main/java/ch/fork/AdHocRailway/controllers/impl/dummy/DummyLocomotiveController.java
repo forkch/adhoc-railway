@@ -1,12 +1,17 @@
 package ch.fork.AdHocRailway.controllers.impl.dummy;
 
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
+import ch.fork.AdHocRailway.controllers.TaskExecutor;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 
 /**
  * Created by bmu on 24.03.2014.
  */
 public class DummyLocomotiveController extends LocomotiveController {
+
+    public DummyLocomotiveController() {
+        super(null);
+    }
 
     @Override
     public boolean isLocked(final Locomotive object) {

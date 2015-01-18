@@ -25,11 +25,6 @@ import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
 import org.apache.log4j.Logger;
 
-import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceEvent;
-import javax.jmdns.ServiceInfo;
-import java.io.IOException;
-
 public class RailwayDeviceManager implements CommandDataListener,
         InfoDataListener, PreferencesKeys {
 
@@ -204,11 +199,12 @@ public class RailwayDeviceManager implements CommandDataListener,
 
     private void loadControlLayer(RailwayDevice railwayDevice) {
 
+        final TaskExecutor taskExecutor = new TaskExecutor();
         createPowerControllerOnContext(railwayDevice);
 
-        createLocomotiveControllerOnContext(railwayDevice);
+        createLocomotiveControllerOnContext(railwayDevice, taskExecutor);
 
-        final TurnoutController turnoutControl = createTurnoutControllerOnContext(railwayDevice);
+        final TurnoutController turnoutControl = createTurnoutControllerOnContext(railwayDevice, taskExecutor);
 
         createRouteControllerOnContext(railwayDevice, turnoutControl);
 
@@ -243,21 +239,21 @@ public class RailwayDeviceManager implements CommandDataListener,
     }
 
     private TurnoutController createTurnoutControllerOnContext(
-            final RailwayDevice railwayDevive) {
+            final RailwayDevice railwayDevive, TaskExecutor taskExecutor) {
         appContext.getMainBus().post(
                 new InitProceededEvent("Loading Control Layer (Turnouts)"));
         final TurnoutController turnoutControl = RailwayDeviceFactory
-                .createTurnoutController(railwayDevive);
+                .createTurnoutController(railwayDevive, taskExecutor);
         appContext.setTurnoutControl(turnoutControl);
         return turnoutControl;
     }
 
     private void createLocomotiveControllerOnContext(
-            final RailwayDevice railwayDevive) {
+            final RailwayDevice railwayDevive, TaskExecutor taskExecutor) {
         appContext.getMainBus().post(
                 new InitProceededEvent("Loading Control Layer (Locomotives)"));
         final LocomotiveController locomotiveControl = RailwayDeviceFactory
-                .createLocomotiveController(railwayDevive);
+                .createLocomotiveController(railwayDevive, taskExecutor);
 
         appContext.setLocomotiveControl(locomotiveControl);
     }

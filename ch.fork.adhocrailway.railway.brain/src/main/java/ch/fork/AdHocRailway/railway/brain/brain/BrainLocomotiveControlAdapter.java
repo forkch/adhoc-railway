@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.railway.brain.brain;
 
 import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
+import ch.fork.AdHocRailway.controllers.TaskExecutor;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.utils.LocomotiveHelper;
@@ -17,7 +18,8 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
     private final Set<Locomotive> activeLocomotives = Sets.newHashSet();
     private final BrainLocomotiveCommandBuilder brainLocomotiveCommandBuilder;
 
-    public BrainLocomotiveControlAdapter(final BrainController brain) {
+    public BrainLocomotiveControlAdapter(TaskExecutor taskExecutor, final BrainController brain) {
+        super(taskExecutor);
         this.brain = brain;
         brainLocomotiveCommandBuilder = new BrainLocomotiveCommandBuilder();
     }

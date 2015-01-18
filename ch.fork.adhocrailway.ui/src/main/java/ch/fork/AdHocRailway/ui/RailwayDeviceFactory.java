@@ -15,16 +15,16 @@ import ch.fork.AdHocRailway.railway.srcp.SRCPTurnoutControlAdapter;
 public class RailwayDeviceFactory {
 
     public static LocomotiveController createLocomotiveController(
-            final RailwayDevice railwayDevice) {
+            final RailwayDevice railwayDevice, TaskExecutor taskExecutor) {
         if (railwayDevice == null) {
             return new DummyLocomotiveController();
         }
         switch (railwayDevice) {
             case ADHOC_BRAIN:
-                return new BrainLocomotiveControlAdapter(
+                return new BrainLocomotiveControlAdapter(taskExecutor,
                         BrainController.getInstance());
             case SRCP:
-                return new SRCPLocomotiveControlAdapter();
+                return new SRCPLocomotiveControlAdapter(taskExecutor);
             default:
                 return new DummyLocomotiveController();
 
@@ -32,16 +32,16 @@ public class RailwayDeviceFactory {
     }
 
     public static TurnoutController createTurnoutController(
-            final RailwayDevice railwayDevice) {
+            final RailwayDevice railwayDevice, TaskExecutor taskExecutor) {
 
         if (railwayDevice == null) {
             return new DummyTurnoutController();
         }
         switch (railwayDevice) {
             case ADHOC_BRAIN:
-                return new BrainTurnoutControlAdapter(BrainController.getInstance());
+                return new BrainTurnoutControlAdapter(taskExecutor, BrainController.getInstance());
             case SRCP:
-                return new SRCPTurnoutControlAdapter();
+                return new SRCPTurnoutControlAdapter(taskExecutor);
             default:
                 return new DummyTurnoutController();
         }

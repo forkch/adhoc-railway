@@ -1,5 +1,6 @@
 package ch.fork.AdHocRailway.controllers.impl.dummy;
 
+import ch.fork.AdHocRailway.controllers.TaskExecutor;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
@@ -8,6 +9,10 @@ import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
  * Created by bmu on 24.03.2014.
  */
 public class DummyTurnoutController extends TurnoutController {
+
+    public DummyTurnoutController() {
+        super(null);
+    }
 
     @Override
     public void toggle(final Turnout turnout) {

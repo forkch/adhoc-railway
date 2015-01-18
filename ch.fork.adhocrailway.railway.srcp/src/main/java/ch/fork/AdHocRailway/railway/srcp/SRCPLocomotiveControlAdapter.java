@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.railway.srcp;
 import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.controllers.SimulatedMFXLocomotivesHelper;
+import ch.fork.AdHocRailway.controllers.TaskExecutor;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveType;
@@ -41,17 +42,13 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     private final Map<SRCPLocomotive, Locomotive> SRCPLocomotiveLocomotiveMap = new HashMap<SRCPLocomotive, Locomotive>();
 
     private final SRCPLocomotiveControl locomotiveControl;
-    private final RateLimiter rateLimiter;
-    ExecutorService executorService;
-    ExecutorService emergencyExecutorService;
     private EmergencyStopState emergencyStopState = EmergencyStopState.NONE;
 
-    public SRCPLocomotiveControlAdapter() {
+    public SRCPLocomotiveControlAdapter(TaskExecutor taskExecutor) {
+        super(taskExecutor);
         locomotiveControl = SRCPLocomotiveControl.getInstance();
         locomotiveControl.removeAllLocomotiveChangeListener();
-        executorService = SRCPThreadUtils.createExecutorService();
-        emergencyExecutorService = SRCPThreadUtils.createExecutorService();
-        rateLimiter = SRCPThreadUtils.createRateLimiter();
+
         reloadConfiguration();
     }
 
@@ -91,7 +88,8 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
             return;
         }
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
-        executorService.execute(new Runnable() {
+
+        enqueueTask(new Runnable() {
             @Override
             public void run() {
                 synchronized (emergencyStopState) {
@@ -101,7 +99,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
                 }
                 try {
                     LOGGER.info("waiting to execute speed command");
-                    rateLimiter.acquire();
+                    aquireRateLock();
                     synchronized (emergencyStopState) {
                         if (emergencyStopState == EmergencyStopState.NONE) {
                             LOGGER.info("executing speed command: " + speed);
@@ -134,7 +132,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
                         emergencyStopFunction);
         locomotive.setCurrentSpeed(0);
         locomotive.setTargetSpeed(-1);
-        emergencyExecutorService.execute(new Runnable() {
+        enqueueEmergencyTask(new Runnable() {
             @Override
             public void run() {
                 try {

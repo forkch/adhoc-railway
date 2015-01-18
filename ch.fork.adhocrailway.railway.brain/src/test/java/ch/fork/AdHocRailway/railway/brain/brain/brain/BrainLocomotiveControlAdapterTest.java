@@ -158,7 +158,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
     }
 
     private void givenTestee() {
-        testee = new BrainLocomotiveControlAdapter(brainController);
+        testee = new BrainLocomotiveControlAdapter(null, brainController);
     }
 
 }

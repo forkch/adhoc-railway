@@ -18,7 +18,7 @@ public class SRCPLocomotiveControlAdapterTest {
 
     @Before
     public void setup() {
-        testee = new SRCPLocomotiveControlAdapter();
+        testee = new SRCPLocomotiveControlAdapter(null);
     }
 
     @Test(expected = IllegalArgumentException.class)

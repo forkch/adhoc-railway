@@ -1,6 +1,7 @@
 package ch.fork.AdHocRailway.railway.brain.brain;
 
 import ch.fork.AdHocRailway.controllers.ControllerException;
+import ch.fork.AdHocRailway.controllers.TaskExecutor;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
@@ -9,7 +10,8 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
     private final BrainController brain;
 
-    public BrainTurnoutControlAdapter(final BrainController brain) {
+    public BrainTurnoutControlAdapter(TaskExecutor taskExecutor, final BrainController brain) {
+        super(taskExecutor);
         this.brain = brain;
     }
 

@@ -22,9 +22,11 @@ import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.RateLimiter;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 public abstract class TurnoutController {
 
@@ -32,6 +34,20 @@ public abstract class TurnoutController {
             .newHashMap();
     protected final Set<TurnoutChangeListener> generalListeners = Sets.newHashSet();
 
+    private TaskExecutor taskExecutor;
+
+    public TurnoutController(TaskExecutor taskExecutor) {
+        this.taskExecutor = taskExecutor;
+
+    }
+
+    protected void enqueueTask(Runnable runnable) {
+        taskExecutor.enqueueTask(runnable);
+    }
+
+    protected void aquireRateLock() {
+        taskExecutor.aquireRateLock();
+    }
 
     public abstract void toggle(final Turnout turnout);
 

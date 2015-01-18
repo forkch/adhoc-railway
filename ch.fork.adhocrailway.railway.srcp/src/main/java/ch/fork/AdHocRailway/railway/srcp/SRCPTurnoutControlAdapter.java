@@ -1,6 +1,7 @@
 package ch.fork.AdHocRailway.railway.srcp;
 
 import ch.fork.AdHocRailway.controllers.ControllerException;
+import ch.fork.AdHocRailway.controllers.TaskExecutor;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
@@ -31,7 +32,8 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
 
     Turnout turnoutTemp;
 
-    public SRCPTurnoutControlAdapter() {
+    public SRCPTurnoutControlAdapter(TaskExecutor taskExecutor) {
+        super(taskExecutor);
 
         turnoutControl = SRCPTurnoutControl.getInstance();
         turnoutControl.removeAllTurnoutChangeListener();
@@ -42,46 +44,68 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
     @Override
     public void setCurvedLeft(final Turnout turnout) {
         final SRCPTurnout sTurnout = getOrCreateSRCPTurnout(turnout);
-        try {
-            turnoutControl.setCurvedLeft(sTurnout);
-        } catch (final SRCPModelException e) {
-            throw new ControllerException("could not set turnout to curved left",
-                    e);
-        }
+        enqueueTask(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    turnoutControl.setCurvedLeft(sTurnout);
+                } catch (final SRCPModelException e) {
+                    throw new ControllerException("could not set turnout to curved left",
+                            e);
+                }
+            }
+        });
+
     }
 
     @Override
     public void setCurvedRight(final Turnout turnout) {
         final SRCPTurnout sTurnout = getOrCreateSRCPTurnout(turnout);
-        try {
-            turnoutControl.setCurvedRight(sTurnout);
-        } catch (final SRCPModelException e) {
-            throw new ControllerException("could not set turnout to curved right",
-                    e);
-        }
+        enqueueTask(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    turnoutControl.setCurvedRight(sTurnout);
+                } catch (final SRCPModelException e) {
+                    throw new ControllerException("could not set turnout to curved right",
+                            e);
+                }
+            }
+        });
 
     }
 
     @Override
     public void setDefaultState(final Turnout turnout) {
         final SRCPTurnout sTurnout = getOrCreateSRCPTurnout(turnout);
-        try {
-            turnoutControl.setDefaultState(sTurnout);
-        } catch (final SRCPModelException e) {
-            throw new ControllerException(
-                    "could not set turnout to default state", e);
-        }
+        enqueueTask(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    turnoutControl.setDefaultState(sTurnout);
+                } catch (final SRCPModelException e) {
+                    throw new ControllerException(
+                            "could not set turnout to default state", e);
+                }
+            }
+        });
 
     }
 
     @Override
     public void setStraight(final Turnout turnout) {
         final SRCPTurnout sTurnout = getOrCreateSRCPTurnout(turnout);
-        try {
-            turnoutControl.setStraight(sTurnout);
-        } catch (final SRCPModelException e) {
-            throw new ControllerException("could not set turnout to straight", e);
-        }
+        enqueueTask(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    turnoutControl.setStraight(sTurnout);
+                } catch (final SRCPModelException e) {
+                    throw new ControllerException("could not set turnout to straight", e);
+                }
+            }
+        });
     }
 
     @Override
@@ -110,12 +134,16 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
     @Override
     public void toggle(final Turnout turnout) {
         final SRCPTurnout sTurnout = getOrCreateSRCPTurnout(turnout);
-
-        try {
-            turnoutControl.toggle(sTurnout);
-        } catch (final SRCPModelException e) {
-            throw new ControllerException("could not toggle turnout", e);
-        }
+        enqueueTask(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    turnoutControl.toggle(sTurnout);
+                } catch (final SRCPModelException e) {
+                    throw new ControllerException("could not toggle turnout", e);
+                }
+            }
+        });
 
     }
 
@@ -162,22 +190,6 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
         turnoutControl.addTurnout(srcpTurnout);
     }
 
-    private boolean turnoutTypesMatch(TurnoutType type, SRCPTurnoutTypes turnoutType) {
-        switch (type) {
-
-            case DEFAULT_LEFT:
-            case DEFAULT_RIGHT:
-                return turnoutType == SRCPTurnoutTypes.DEFAULT;
-            case DOUBLECROSS:
-                return turnoutType == SRCPTurnoutTypes.DOUBLECROSS;
-            case THREEWAY:
-                return turnoutType == SRCPTurnoutTypes.THREEWAY;
-            case CUTTER:
-                return turnoutType == SRCPTurnoutTypes.CUTTER;
-        }
-        return false;
-    }
-
 
     private void applyNewSettings(SRCPTurnout sTurnout, final Turnout turnout) {
         sTurnout.setBus1(turnout.getBus1());
@@ -188,24 +200,6 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
         sTurnout.setAddress2Switched(turnout.isAddress2Switched());
         setSRCPTurnoutDefaultState(sTurnout, turnout);
         setSRCPTurnoutType(turnout, sTurnout);
-    }
-
-    private SRCPTurnout createSRCPTurnout(final Turnout turnout) {
-        final SRCPTurnout srcpTurnout = new MMTurnout();
-        srcpTurnout.setBus1(turnout.getBus1());
-        srcpTurnout.setBus2(turnout.getBus2());
-
-        srcpTurnout.setAddress1(turnout.getAddress1());
-        srcpTurnout.setAddress2(turnout.getAddress2());
-
-        srcpTurnout.setAddress1Switched(turnout.isAddress1Switched());
-        srcpTurnout.setAddress2Switched(turnout.isAddress2Switched());
-
-        setSRCPTurnoutDefaultState(srcpTurnout, turnout);
-
-        setSRCPTurnoutType(turnout, srcpTurnout);
-
-        return srcpTurnout;
     }
 
     private void setSRCPTurnoutType(final Turnout turnout,

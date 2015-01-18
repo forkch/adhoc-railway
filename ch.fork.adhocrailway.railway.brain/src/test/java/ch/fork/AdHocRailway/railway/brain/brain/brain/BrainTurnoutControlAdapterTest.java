@@ -218,7 +218,7 @@ public class BrainTurnoutControlAdapterTest {
     }
 
     private void givenTestee(final Turnout t) {
-        testee = new BrainTurnoutControlAdapter(brainController);
+        testee = new BrainTurnoutControlAdapter(null, brainController);
         testee.addTurnoutChangeListener(t, listener);
     }
 

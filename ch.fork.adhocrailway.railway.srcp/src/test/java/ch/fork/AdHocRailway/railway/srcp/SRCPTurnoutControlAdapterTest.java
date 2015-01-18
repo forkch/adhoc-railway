@@ -9,7 +9,7 @@ public class SRCPTurnoutControlAdapterTest {
 
     @Before
     public void setup() {
-        adapter = new SRCPTurnoutControlAdapter();
+        adapter = new SRCPTurnoutControlAdapter(null);
     }
 
     @Test(expected = IllegalArgumentException.class)

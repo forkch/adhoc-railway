@@ -19,9 +19,11 @@
 package ch.fork.AdHocRailway.controllers;
 
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
+import com.google.common.util.concurrent.RateLimiter;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 
 public abstract class LocomotiveController implements
         LockController<Locomotive> {
@@ -31,7 +33,23 @@ public abstract class LocomotiveController implements
 
     private final Map<Locomotive, List<LocomotiveChangeListener>> listeners = new HashMap<Locomotive, List<LocomotiveChangeListener>>();
     private final Set<Locomotive> activeLocomotives = new HashSet<Locomotive>();
+    private TaskExecutor taskExecutor;
 
+    public LocomotiveController(TaskExecutor taskExecutor) {
+        this.taskExecutor = taskExecutor;
+    }
+
+    protected void enqueueTask(Runnable runnable) {
+        taskExecutor.enqueueTask(runnable);
+    }
+
+    protected void enqueueEmergencyTask(Runnable runnable) {
+        taskExecutor.enqueueEmergencyTask(runnable);
+    }
+
+    protected void aquireRateLock() {
+        taskExecutor.aquireRateLock();
+    }
 
     public abstract void toggleDirection(final Locomotive locomotive);
 
