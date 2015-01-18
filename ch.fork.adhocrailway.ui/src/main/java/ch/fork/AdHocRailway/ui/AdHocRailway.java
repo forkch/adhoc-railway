@@ -209,7 +209,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             return;
 
         System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "WikiTeX");
+        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "AdHoc-Railway");
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     }
 
@@ -234,15 +234,15 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     public static void main(final String[] args) throws Exception {
 
+        macSetup(TITLE);
+        winSetup(TITLE);
+        linuxSetup(TITLE);
         Options options = new Options();
         options.addOption("c", "clean", false, "start with a clean config");
         CommandLineParser parser = new BasicParser();
 
         org.apache.commons.cli.CommandLine parsedCommandLine = parser.parse(options, args);
 
-        macSetup(TITLE);
-        winSetup(TITLE);
-        linuxSetup(TITLE);
 
         AdHocRailway adHocRailway = new AdHocRailway(parsedCommandLine);
     }

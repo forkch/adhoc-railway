@@ -4,6 +4,12 @@ apply plugin: 'macAppBundle'
 macAppBundle {
     mainClassName = "ch.fork.AdHocRailway.ui.AdHocRailway"
     icon = "src/main/resources/custom/2-Hot-Train-icon.icns"
+    javaProperties.put("apple.laf.useScreenMenuBar", "true")
+    javaProperties.put("com.apple.mrj.application.apple.menu.about.name", "AdHoc-Railway")
+    //}arguments = "-Xdock:name=", "AdHoc-Railway")
+    appName = "AdHoc-Railway"
+    dmgName = "AdHoc-Railway"
+
 }
 
 archivesBaseName = 'adhocrailway-gui'
