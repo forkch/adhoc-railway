@@ -96,8 +96,7 @@ public class LocomotiveSelectionPanel extends JPanel {
         locomotiveGroupComboBoxModel = new LocomotiveGroupComboboxModel();
         locomotiveGroupComboBox.setModel(locomotiveGroupComboBoxModel);
         locomotiveGroupComboBox.setFocusable(false);
-        locomotiveGroupComboBox.setFont(locomotiveGroupComboBox.getFont()
-                .deriveFont(Font.BOLD));
+        locomotiveGroupComboBox.setFont(locomotiveGroupComboBox.getFont());
         locomotiveGroupComboBox.setMaximumRowCount(10);
         locomotiveGroupComboBox.setSelectedIndex(-1);
         locomotiveGroupComboBox.setRenderer(new LocomotiveGroupListCellRenderer());

@@ -103,7 +103,8 @@ public class RailwayDeviceManager implements CommandDataListener,
             try {
                 connect();
             } catch (final Exception x) {
-
+                throw new AdHocRailwayException("failed to autoconnect to railway device",
+                        x);
             }
         } else if (preferences
                 .getBooleanValue(PreferencesKeys.AUTO_DISCOVER)) {
@@ -141,17 +142,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 
     private void connectToSRCPServer(final String host, final int port) {
         try {
-            final SRCPSession session = new SRCPSession(host, port, false);
-            appContext.setSession(session);
-            session.getCommandChannel().addCommandDataListener(this);
-            session.getInfoChannel().addInfoDataListener(this);
-            setSessionOnControllers(session);
-            session.connect();
 
-            appContext.getMainBus().post(
-                    new CommandLogEvent("Connected to server " + host
-                            + " on port " + port)
-            );
 
             final SRCPTurnoutControlAdapter srcpTurnoutControlAdapter = (SRCPTurnoutControlAdapter) appContext
                     .getTurnoutControl();
@@ -168,6 +159,17 @@ public class RailwayDeviceManager implements CommandDataListener,
             srcpLocomotiveControlAdapter.registerLocomotives(appContext
                     .getLocomotiveManager().getAllLocomotives());
 
+            final SRCPSession session = new SRCPSession(host, port, false);
+            appContext.setSession(session);
+            session.getCommandChannel().addCommandDataListener(this);
+            session.getInfoChannel().addInfoDataListener(this);
+            setSessionOnControllers(session);
+            session.connect();
+
+            appContext.getMainBus().post(
+                    new CommandLogEvent("Connected to server " + host
+                            + " on port " + port)
+            );
         } catch (final SRCPException e) {
             throw new AdHocRailwayException("failed to connect to SRCP server",
                     e);

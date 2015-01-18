@@ -177,7 +177,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             try {
                 persistenceManager
                         .loadLastFileOrLoadDataFromAdHocServerIfRequested();
-                railwayDeviceManager.autoConnectToRailwayDeviceIfRequested();
             } catch (AdHocRailwayException x) {
                 handleException(x);
             }
@@ -328,6 +327,14 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         return fileMode;
     }
 
+    @Subscribe
+    public void connectedToPersistence(final ConnectedToPersistenceEvent e) {
+        try {
+            railwayDeviceManager.autoConnectToRailwayDeviceIfRequested();
+        } catch (AdHocRailwayException x) {
+            handleException(x);
+        }
+    }
     @Subscribe
     public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
         final boolean connected = event.isConnected();
