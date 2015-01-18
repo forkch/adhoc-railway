@@ -134,6 +134,11 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
     }
 
+    @Override
+    public TurnoutState getStateFromDevice(Turnout turnout) {
+        return TurnoutState.UNDEF;
+    }
+
     private String getGreenPort(final boolean inverted) {
         return inverted ? "r" : "g";
     }

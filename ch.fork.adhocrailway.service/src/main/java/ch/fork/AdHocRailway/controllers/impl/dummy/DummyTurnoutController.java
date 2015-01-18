@@ -54,4 +54,9 @@ public class DummyTurnoutController extends TurnoutController {
     public void reloadConfiguration() {
     }
 
+    @Override
+    public TurnoutState getStateFromDevice(Turnout turnout) {
+        return TurnoutState.UNDEF;
+    }
+
 }

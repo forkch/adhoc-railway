@@ -117,4 +117,5 @@ public abstract class TurnoutController {
     }
 
 
+    public abstract TurnoutState getStateFromDevice(Turnout turnout);
 }

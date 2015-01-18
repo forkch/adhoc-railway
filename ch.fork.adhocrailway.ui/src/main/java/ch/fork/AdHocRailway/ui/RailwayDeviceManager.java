@@ -35,9 +35,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 
     private static final Logger LOGGER = Logger
             .getLogger(RailwayDeviceManager.class);
-    private static final String SRCP_SERVER_TCP_LOCAL = "_srcpd._tcp.local.";
     private final RailwayDeviceManagerContext appContext;
-    private JmDNS adhocServermDNS;
     private boolean connected = false;
 
     public RailwayDeviceManager(final RailwayDeviceManagerContext appContext) {
@@ -162,8 +160,8 @@ public class RailwayDeviceManager implements CommandDataListener,
 
             final SRCPRouteControlAdapter srcpRouteControlAdapter = (SRCPRouteControlAdapter) appContext
                     .getRouteControl();
-            //srcpRouteControlAdapter.registerRoutes(appContext.getRouteManager()
-            //        .getAllRoutes());
+            srcpRouteControlAdapter.registerRoutes(appContext.getRouteManager()
+                    .getAllRoutes());
 
             final SRCPLocomotiveControlAdapter srcpLocomotiveControlAdapter = (SRCPLocomotiveControlAdapter) appContext
                     .getLocomotiveControl();

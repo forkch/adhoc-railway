@@ -124,6 +124,14 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
     }
 
     @Override
+    public TurnoutState getStateFromDevice(Turnout turnout) {
+        final SRCPTurnout sTurnout = getOrCreateSRCPTurnout(turnout);
+        SRCPTurnoutState srcpTurnoutState = turnoutControl.getTurnoutState(sTurnout);
+        return getTurnoutStateFromSRCPTurnoutState(srcpTurnoutState);
+
+    }
+
+    @Override
     public void turnoutChanged(final SRCPTurnout changedTurnout,
                                final SRCPTurnoutState newState) {
         informListeners(changedTurnout);
