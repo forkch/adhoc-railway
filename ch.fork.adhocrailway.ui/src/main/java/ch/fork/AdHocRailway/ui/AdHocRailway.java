@@ -157,15 +157,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             LOGGER.info("****************************************");
 
 
-
             preferences = Preferences.getInstance();
             preferences.loadPreferences(parsedCommandLine.hasOption("c"));
             appContext.setPreferences(preferences);
 
-
-            persistenceManager = new PersistenceManager(appContext);
-            railwayDeviceManager = new RailwayDeviceManager(appContext);
-            appContext.setRailwayDeviceManager(railwayDeviceManager);
 
             initProceeded("Creating GUI ...");
 
@@ -173,13 +168,19 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             disableEnableMenuItems();
 
             updateGUI();
+
+            persistenceManager = new PersistenceManager(appContext);
+            railwayDeviceManager = new RailwayDeviceManager(appContext);
+            appContext.setRailwayDeviceManager(railwayDeviceManager);
+
+            persistenceManager.createNewFile();
+
             try {
                 persistenceManager
                         .loadLastFileOrLoadDataFromAdHocServerIfRequested();
             } catch (AdHocRailwayException x) {
                 handleException(x);
             }
-
 
 
             initProceeded("AdHoc-Railway started");
@@ -337,6 +338,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             handleException(x);
         }
     }
+
     @Subscribe
     public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
         final boolean connected = event.isConnected();
@@ -750,28 +752,28 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
         @Override
         public void actionPerformed(final ActionEvent arg0) {
-                if (isFileMode()) {
+            if (isFileMode()) {
 
-                    final int result = JOptionPane.showConfirmDialog(
-                            AdHocRailway.this,
-                            "Do you want to save the actual configuration?",
-                            "New file...", JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,
-                            createImageIconFromIconSet("dialog-warning.png"));
-                    if (result == JOptionPane.YES_OPTION) {
-                        saveOrSaveAsIfNoCurrentFile();
-                    }
+                final int result = JOptionPane.showConfirmDialog(
+                        AdHocRailway.this,
+                        "Do you want to save the actual configuration?",
+                        "New file...", JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        createImageIconFromIconSet("dialog-warning.png"));
+                if (result == JOptionPane.YES_OPTION) {
+                    saveOrSaveAsIfNoCurrentFile();
                 }
-                persistenceManager.createNewFile();
+            }
+            persistenceManager.createNewFile();
 
-                disableEnableMenuItems();
+            disableEnableMenuItems();
 
-                setRailwayDeviceLabelText();
+            setRailwayDeviceLabelText();
 
-                setTitle(AdHocRailway.TITLE + " []");
-                appContext.setActualFile(null);
-                updateGUI();
-                updateCommandHistory("Empty AdHoc-Railway Configuration created");
+            setTitle(AdHocRailway.TITLE + " []");
+            appContext.setActualFile(null);
+            updateGUI();
+            updateCommandHistory("Empty AdHoc-Railway Configuration created");
         }
     }
 
@@ -801,18 +803,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                 @Override
                 public void run() {
 
-                    try {
+                    railwayDeviceManager.disconnect();
+                    progressBar.setIndeterminate(true);
+                    disableEnableMenuItems();
 
-                        railwayDeviceManager.disconnect();
-                        progressBar.setIndeterminate(true);
-                        disableEnableMenuItems();
+                    persistenceManager.openFile(file);
 
-                        persistenceManager.openFile(file);
-
-                        progressBar.setIndeterminate(false);
-                    } catch (final IOException e) {
-                        handleException(e);
-                    }
+                    progressBar.setIndeterminate(false);
 
                 }
 
@@ -1094,12 +1091,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             if (appContext.getActualFile() != null) {
                 preferences.setStringValue(PreferencesKeys.LAST_OPENED_FILE,
                         appContext.getActualFile().getAbsolutePath());
-                try {
-                    preferences.save();
-                } catch (final IOException e1) {
-                    throw new AdHocRailwayException(
-                            "could not save preferences");
-                }
+                preferences.save();
             }
             persistenceManager.disconnectFromCurrentPersistence();
             System.exit(0);

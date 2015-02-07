@@ -36,12 +36,10 @@ public class PersistenceManager {
 
     public PersistenceManager(final PersistenceManagerContext ctx) {
         this.appContext = ctx;
-        createNewFile();
     }
 
 
-    public void loadLastFileOrLoadDataFromAdHocServerIfRequested()
-            throws IOException {
+    public void loadLastFileOrLoadDataFromAdHocServerIfRequested() {
         final Preferences preferences = appContext.getPreferences();
 
         final boolean useAdHocServer = preferences
@@ -65,7 +63,7 @@ public class PersistenceManager {
         }
     }
 
-    public void openFile(final File file) throws IOException {
+    public void openFile(final File file) {
         disconnectFromCurrentPersistence();
 
         switchToFileMode();
@@ -136,12 +134,7 @@ public class PersistenceManager {
                 );
                 appContext.getPreferences().setBooleanValue(
                         PreferencesKeys.USE_ADHOC_SERVER, false);
-                try {
-                    appContext.getPreferences().save();
-                } catch (final IOException e) {
-                    throw new AdHocRailwayException(
-                            "could not save preferences");
-                }
+                appContext.getPreferences().save();
                 throw ex;
             }
 
@@ -242,11 +235,7 @@ public class PersistenceManager {
     private void switchToFileMode() {
         final Preferences preferences = appContext.getPreferences();
         preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, false);
-        try {
-            preferences.save();
-        } catch (IOException e) {
-            throw new AdHocRailwayException("failed to save preferences");
-        }
+        preferences.save();
     }
 
     private void switchToServerMode() throws FileNotFoundException, IOException {

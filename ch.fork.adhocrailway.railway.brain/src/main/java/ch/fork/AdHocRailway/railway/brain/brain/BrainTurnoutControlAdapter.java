@@ -117,7 +117,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
     @Override
     public void toggleTest(final Turnout turnout) {
-        // TODO Auto-generated method stub
+        toggle(turnout);
     }
 
     @Override

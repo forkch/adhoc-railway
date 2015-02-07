@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.technical.configuration;
 
+import ch.fork.AdHocRailway.model.AdHocRailwayException;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -181,7 +182,8 @@ public class Preferences {
         return layout;
     }
 
-    public void save() throws FileNotFoundException, IOException {
+    public void save()  {
+        try {
         if (props == null) {
             props = new Properties();
         }
@@ -190,7 +192,9 @@ public class Preferences {
                 props.setProperty(key, get(key));
             }
         }
-        props.store(new FileOutputStream(configFile), "");
+            props.store(new FileOutputStream(configFile), "");
+        } catch (IOException e) {throw new AdHocRailwayException("failed to save preferences",e);
+        }
         LOGGER.info("Preferences saved to: " + configFile.getAbsolutePath());
     }
 
