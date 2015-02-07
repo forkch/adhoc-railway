@@ -1,15 +1,12 @@
 package ch.fork.AdHocRailway.railway.brain.brain;
 
-import gnu.io.*;
+import jssc.*;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
 
 public class BrainController {
@@ -18,11 +15,10 @@ public class BrainController {
             .getLogger(BrainController.class);
     private static final BrainController INSTANCE = new BrainController();
     private final List<BrainListener> listeners = new ArrayList<BrainListener>();
-    private OutputStream out;
-    private CommPort commPort;
-    private InputStream in;
+
 
     private boolean connected = false;
+    private SerialPort serialPort;
 
     private BrainController() {
         super();
@@ -35,35 +31,28 @@ public class BrainController {
     public static void main(final String[] args) throws IOException {
         final BrainController instance2 = BrainController.getInstance();
 
+        List<String> availableSerialPortsAsString = instance2.getAvailableSerialPortsAsString();
+        instance2.connect(availableSerialPortsAsString.get(0));
+        System.in.read();
+        instance2.write("XSTOP");
+        System.in.read();
         instance2.write("XGO");
+        System.in.read();
+        instance2.disconnect();
     }
 
     public void connect(final String portName) {
-        CommPortIdentifier portIdentifier;
         try {
-            portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+            serialPort = new SerialPort(portName);
+            serialPort.openPort();//Open serial port
+            serialPort.setParams(230400,
+                    SerialPort.DATABITS_8,
+                    SerialPort.STOPBITS_1,
+                    SerialPort.PARITY_NONE);
 
-            if (portIdentifier.isCurrentlyOwned()) {
-                LOGGER.error("Port " + portName + " is currently in use");
-            } else {
-                commPort = portIdentifier.open(this.getClass().getName(), 2000);
 
-                if (commPort instanceof SerialPort) {
-                    final SerialPort serialPort = (SerialPort) commPort;
-                    serialPort.setSerialPortParams(230400,
-                            SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-                            SerialPort.PARITY_NONE);
-
-                    in = serialPort.getInputStream();
-                    out = serialPort.getOutputStream();
-
-                    serialPort.addEventListener(new SerialReader(in));
-                    serialPort.notifyOnDataAvailable(true);
-                    connected = true;
-                } else {
-                    LOGGER.error("Only serial ports are allowed");
-                }
-            }
+            serialPort.addEventListener(new SerialReader());
+            connected = true;
         } catch (final Exception e) {
             throw new BrainException("error connection to the brain on port "
                     + portName, e);
@@ -76,10 +65,8 @@ public class BrainController {
             return;
         }
         try {
-            in.close();
-            out.close();
-            commPort.close();
-        } catch (final IOException e) {
+            serialPort.closePort();
+        } catch (final Exception e) {
             throw new BrainException(
                     "error while closing the connection to the brain");
         } finally {
@@ -88,57 +75,35 @@ public class BrainController {
     }
 
     public void write(final String str) throws BrainException {
-        if (out == null) {
-            throw new BrainException("not connected to the Brain");
-        }
+
         LOGGER.info(str);
         try {
             final byte[] bytes = str.getBytes(Charset.forName("US-ASCII"));
-            for (final byte b : bytes) {
-                out.write(b);
-            }
-            this.out.write(0x0d);
-        } catch (IOException e) {
+            serialPort.writeBytes(bytes);
+            serialPort.writeInt(0x0d);
+        } catch (SerialPortException e) {
             throw new BrainException("error writing " + str + " to the brain", e);
         }
-    }
-
-    /**
-     * @return A HashSet containing the CommPortIdentifier for all serial ports
-     * that are not currently being used.
-     */
-    @SuppressWarnings("rawtypes")
-    private HashSet<CommPortIdentifier> getAvailableSerialPorts() throws PortInUseException {
-        final HashSet<CommPortIdentifier> h = new HashSet<CommPortIdentifier>();
-        final Enumeration thePorts = CommPortIdentifier.getPortIdentifiers();
-        while (thePorts.hasMoreElements()) {
-            final CommPortIdentifier com = (CommPortIdentifier) thePorts
-                    .nextElement();
-            switch (com.getPortType()) {
-                case CommPortIdentifier.PORT_SERIAL:
-                    final CommPort thePort = com.open("CommUtil", 50);
-                    thePort.close();
-                    h.add(com);
-            }
-        }
-        return h;
     }
 
     public List<String> getAvailableSerialPortsAsString() {
 
         final List<String> ports = new ArrayList<String>();
-        try {
-            final HashSet<CommPortIdentifier> availableSerialPorts = getAvailableSerialPorts();
-            for (final CommPortIdentifier i : availableSerialPorts) {
-                ports.add(i.getName());
-            }
-        } catch (UnsatisfiedLinkError e) {
-            throw new BrainException("RXTX library not on library path", e);
-        } catch (NoClassDefFoundError e) {
-            throw new BrainException("RXTX library not on library path", e);
-        } catch (Exception e) {
-            throw new BrainException("error enumerating ports", e);
+//        try {
+
+        String[] portNames = SerialPortList.getPortNames();
+        for (int i = 0; i < portNames.length; i++) {
+            System.out.println(portNames[i]);
+            ports.add(portNames[i]);
         }
+
+//        } catch (UnsatisfiedLinkError e) {
+//            throw new BrainException("RXTX library not on library path", e);
+//        } catch (NoClassDefFoundError e) {
+//            throw new BrainException("RXTX library not on library path", e);
+//        } catch (Exception e) {
+//            throw new BrainException("error enumerating ports", e);
+//        }
         return ports;
     }
 
@@ -155,33 +120,39 @@ public class BrainController {
      * treated as the end of a block in this example.
      */
     public class SerialReader implements SerialPortEventListener {
-        private final InputStream in;
-        private final byte[] buffer = new byte[1024];
-
-        public SerialReader(final InputStream in) {
-            this.in = in;
-        }
+        private StringBuilder receivedString = new StringBuilder();
 
         @Override
-        public void serialEvent(final SerialPortEvent arg0) {
+        public void serialEvent(SerialPortEvent serialPortEvent) {
             int data;
+            if(serialPortEvent.isRXCHAR()){//If data is available
+                int bytesToRead = serialPortEvent.getEventValue();
+                if(bytesToRead > 0){//Check bytes count in the input buffer
+                    try {
+                        byte buffer[] = serialPort.readBytes(serialPortEvent.getEventValue());
 
-            try {
-                int len = 0;
-                while ((data = in.read()) > -1) {
-                    if (data == 0x0d) {
-                        break;
+                        receivedString.append(new String(buffer, "US-ASCII"));
+
+                        if (buffer[buffer.length-1] == 0x0d) {
+
+                            final String completeString =receivedString.toString();
+                            receivedString = new StringBuilder();
+
+                            for (final BrainListener listener : listeners) {
+                                listener.receivedMessage(completeString);
+                            }
+                            LOGGER.debug(completeString);
+                        }
+
                     }
-                    buffer[len++] = (byte) data;
+                    catch (SerialPortException ex) {
+                        LOGGER.error("error receiving data from serialport", ex);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
-                final String receivedString = new String(buffer, 0, len);
-                for (final BrainListener listener : listeners) {
-                    listener.receivedMessage(receivedString);
-                }
-                LOGGER.debug(receivedString);
-            } catch (final IOException e) {
-                LOGGER.error("error receiving data from serialport", e);
             }
+
         }
     }
 
