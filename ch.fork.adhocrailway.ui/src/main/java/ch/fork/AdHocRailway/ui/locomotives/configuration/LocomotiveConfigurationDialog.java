@@ -277,6 +277,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
     @Override
     public void locomotiveGroupAdded(final LocomotiveGroup group) {
         locomotiveGroups.add(group);
+        locomotiveGroupModel.setSelection(group);
 
     }
 

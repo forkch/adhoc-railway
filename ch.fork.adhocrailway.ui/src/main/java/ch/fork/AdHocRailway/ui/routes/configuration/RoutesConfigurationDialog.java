@@ -229,6 +229,7 @@ public class RoutesConfigurationDialog extends JDialog implements
     @Override
     public void routeGroupAdded(final RouteGroup routeGroup) {
         routeGroups.add(routeGroup);
+        routeGroupModel.setSelection(routeGroup);
     }
 
     @Override
