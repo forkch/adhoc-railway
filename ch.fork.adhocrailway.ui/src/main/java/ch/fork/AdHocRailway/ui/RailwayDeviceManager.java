@@ -8,6 +8,7 @@ import ch.fork.AdHocRailway.controllers.impl.dummy.DummyTurnoutController;
 import ch.fork.AdHocRailway.model.AdHocRailwayException;
 import ch.fork.AdHocRailway.model.power.PowerSupply;
 import ch.fork.AdHocRailway.railway.brain.brain.BrainController;
+import ch.fork.AdHocRailway.railway.brain.brain.BrainListener;
 import ch.fork.AdHocRailway.railway.srcp.SRCPLocomotiveControlAdapter;
 import ch.fork.AdHocRailway.railway.srcp.SRCPPowerControlAdapter;
 import ch.fork.AdHocRailway.railway.srcp.SRCPRouteControlAdapter;
@@ -26,7 +27,7 @@ import de.dermoba.srcp.model.locking.SRCPLockControl;
 import org.apache.log4j.Logger;
 
 public class RailwayDeviceManager implements CommandDataListener,
-        InfoDataListener, PreferencesKeys {
+        InfoDataListener, PreferencesKeys, BrainListener {
 
     private static final Logger LOGGER = Logger
             .getLogger(RailwayDeviceManager.class);
@@ -127,7 +128,9 @@ public class RailwayDeviceManager implements CommandDataListener,
 
     private void connectToBrain(final String stringValue) {
         final BrainController brainController = BrainController.getInstance();
+        brainController.addBrainListener(this);
         brainController.connect(stringValue);
+
     }
 
     private void disconnectFromBrain() {
@@ -323,4 +326,13 @@ public class RailwayDeviceManager implements CommandDataListener,
     }
 
 
+    @Override
+    public void receivedMessage(String receivedString) {
+        final Preferences preferences = appContext.getPreferences();
+        if (preferences.getBooleanValue(LOGGING)) {
+            appContext.getMainBus().post(
+                    new CommandLogEvent("Brain: " + receivedString));
+        }
+        LOGGER.info("Brain: " + receivedString.trim());
+    }
 }
