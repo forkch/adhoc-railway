@@ -750,7 +750,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
         @Override
         public void actionPerformed(final ActionEvent arg0) {
-            try {
                 if (isFileMode()) {
 
                     final int result = JOptionPane.showConfirmDialog(
@@ -773,9 +772,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                 appContext.setActualFile(null);
                 updateGUI();
                 updateCommandHistory("Empty AdHoc-Railway Configuration created");
-            } catch (final IOException e) {
-                handleException(e);
-            }
         }
     }
 

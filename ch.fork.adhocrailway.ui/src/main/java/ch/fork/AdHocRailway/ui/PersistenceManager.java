@@ -36,6 +36,7 @@ public class PersistenceManager {
 
     public PersistenceManager(final PersistenceManagerContext ctx) {
         this.appContext = ctx;
+        createNewFile();
     }
 
 
@@ -102,7 +103,7 @@ public class PersistenceManager {
                     false);
             appContext.getPreferences().save();
             throw new AdHocRailwayException(
-                    "error while loading previous AdHoc-Railway configuration.");
+                    "error while loading previous AdHoc-Railway configuration.", x);
         }
 
     }
@@ -172,7 +173,7 @@ public class PersistenceManager {
         }
     }
 
-    public void createNewFile() throws IOException {
+    public void createNewFile() {
         disconnectFromCurrentPersistence();
         switchToFileMode();
         loadPersistenceLayer();
@@ -238,10 +239,14 @@ public class PersistenceManager {
         locomotiveManager.initialize();
     }
 
-    private void switchToFileMode() throws FileNotFoundException, IOException {
+    private void switchToFileMode() {
         final Preferences preferences = appContext.getPreferences();
         preferences.setBooleanValue(PreferencesKeys.USE_ADHOC_SERVER, false);
-        preferences.save();
+        try {
+            preferences.save();
+        } catch (IOException e) {
+            throw new AdHocRailwayException("failed to save preferences");
+        }
     }
 
     private void switchToServerMode() throws FileNotFoundException, IOException {
