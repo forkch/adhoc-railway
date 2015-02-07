@@ -318,7 +318,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         splash.nextStep(message);
     }
 
-    public void saveActualFile() {
+    public void saveCurrentFile() {
         if (isFileMode()) {
             saveFile(appContext.getActualFile());
         }
@@ -759,7 +759,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
                             JOptionPane.QUESTION_MESSAGE,
                             createImageIconFromIconSet("dialog-warning.png"));
                     if (result == JOptionPane.YES_OPTION) {
-                        saveActualFile();
+                        saveOrSaveAsIfNoCurrentFile();
                     }
                 }
                 persistenceManager.createNewFile();
@@ -906,11 +906,15 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            if (appContext.getActualFile() == null) {
-                new SaveAsAction().actionPerformed(null);
-            } else {
-                saveActualFile();
-            }
+            saveOrSaveAsIfNoCurrentFile();
+        }
+    }
+
+    private void saveOrSaveAsIfNoCurrentFile() {
+        if (appContext.getActualFile() == null) {
+            saveFileWithFileChooser();
+        } else {
+            saveCurrentFile();
         }
     }
 
@@ -923,15 +927,19 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         @Override
         public void actionPerformed(final ActionEvent e) {
 
-            final JFileChooser fileChooser = new JFileChooser(new File("."));
-            final int returnVal = fileChooser.showSaveDialog(AdHocRailway.this);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                final File saveFile = fileChooser.getSelectedFile();
-                saveFile(saveFile);
-            } else {
-                updateCommandHistory("Save command cancelled by user");
-            }
+            saveFileWithFileChooser();
 
+        }
+    }
+
+    private void saveFileWithFileChooser() {
+        final JFileChooser fileChooser = new JFileChooser(new File("."));
+        final int returnVal = fileChooser.showSaveDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            final File saveFile = fileChooser.getSelectedFile();
+            saveFile(saveFile);
+        } else {
+            updateCommandHistory("Save command cancelled by user");
         }
     }
 
