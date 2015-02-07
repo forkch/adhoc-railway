@@ -908,8 +908,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         public void actionPerformed(final ActionEvent e) {
             if (appContext.getActualFile() == null) {
                 new SaveAsAction().actionPerformed(null);
+            } else {
+                saveActualFile();
             }
-            saveActualFile();
         }
     }
 

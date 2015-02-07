@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.model.turnouts;
 
 import java.beans.PropertyChangeListener;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.UUID;
@@ -66,7 +67,7 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
 
     public SortedSet<Turnout> getTurnouts() {
         if(turnouts== null) {
-            return Sets.newTreeSet();
+            turnouts = Sets.newHashSet();
         }
         return Sets.newTreeSet(this.turnouts);
     }

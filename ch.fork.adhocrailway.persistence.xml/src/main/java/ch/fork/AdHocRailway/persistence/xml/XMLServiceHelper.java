@@ -88,7 +88,7 @@ public class XMLServiceHelper {
         final XStream xstream = getXStream();
 
         final String xml = xstream.toXML(data);
-        FileUtils.writeStringToFile(xmlFile, xml);
+            FileUtils.writeStringToFile(xmlFile, xml);
 
         LOGGER.info("finished saving locomotives, turnout and routes  to file: "
                 + xmlFile);

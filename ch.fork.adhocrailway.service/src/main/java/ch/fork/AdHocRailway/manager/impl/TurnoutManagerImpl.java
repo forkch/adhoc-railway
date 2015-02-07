@@ -95,7 +95,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
         if (group == null) {
             throw new ManagerException("Turnout has no associated Group");
         }
-        group.getTurnouts().add(turnout);
+        group.addTurnout(turnout);
         turnout.setTurnoutGroup(group);
         turnoutService.addTurnout(turnout);
         if (turnout.getType().equals(TurnoutType.THREEWAY)) {
