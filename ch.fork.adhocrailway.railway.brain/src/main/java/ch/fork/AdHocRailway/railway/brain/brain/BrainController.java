@@ -42,10 +42,10 @@ public class BrainController {
     }
 
     public void connect(final String portName) {
-        try {
             serialPort = new SerialPort(portName);
+        try {
             serialPort.openPort();//Open serial port
-            serialPort.setParams(230400,
+        serialPort.setParams(230400,
                     SerialPort.DATABITS_8,
                     SerialPort.STOPBITS_1,
                     SerialPort.PARITY_NONE);
@@ -53,10 +53,11 @@ public class BrainController {
 
             serialPort.addEventListener(new SerialReader());
             connected = true;
-        } catch (final Exception e) {
-            throw new BrainException("error connection to the brain on port "
+        } catch (SerialPortException e) {
+            throw new BrainException(e.getExceptionType() + ": "
                     + portName, e);
         }
+
     }
 
     public void disconnect() {
