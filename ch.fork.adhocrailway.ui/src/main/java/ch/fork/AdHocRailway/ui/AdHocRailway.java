@@ -139,6 +139,12 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         }
         try {
 
+            splash = new SplashWindow(createImageIconFromCustom("splash.png"),
+                    this, 500, 12);
+            setIconImage(createImageIconFromCustom("2-Hot-Train-icon 128.png")
+                    .getImage());
+
+            initProceeded("Loading preferences");
             appContext = new ApplicationContext();
             appContext.getMainBus().register(appContext);
             appContext.getMainBus().register(this);
@@ -151,27 +157,20 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             LOGGER.info("****************************************");
 
 
-            splash = new SplashWindow(createImageIconFromCustom("splash.png"),
-                    this, 500, 12);
-            setIconImage(createImageIconFromCustom("2-Hot-Train-icon 128.png")
-                    .getImage());
-
-            initProceeded("Loading Persistence Layer (Preferences)");
 
             preferences = Preferences.getInstance();
             preferences.loadPreferences(parsedCommandLine.hasOption("c"));
             appContext.setPreferences(preferences);
 
-            initProceeded("Creating GUI ...");
 
             persistenceManager = new PersistenceManager(appContext);
             railwayDeviceManager = new RailwayDeviceManager(appContext);
             appContext.setRailwayDeviceManager(railwayDeviceManager);
 
+            initProceeded("Creating GUI ...");
+
             initGUI();
             disableEnableMenuItems();
-            LOGGER.info("Finished Creating GUI");
-            splash.setVisible(false);
 
             updateGUI();
             try {
@@ -185,6 +184,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
             initProceeded("AdHoc-Railway started");
             updateCommandHistory("AdHoc-Railway started");
+
+            splash.setVisible(false);
             Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
                 @Override
                 public void uncaughtException(final Thread t, final Throwable e) {
@@ -313,6 +314,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     @Override
     public void initProceeded(final String message) {
+        System.out.println("initProceeded()");
         splash.nextStep(message);
     }
 
