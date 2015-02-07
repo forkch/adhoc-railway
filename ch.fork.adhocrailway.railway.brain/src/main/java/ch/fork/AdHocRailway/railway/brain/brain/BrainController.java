@@ -94,9 +94,10 @@ public class BrainController {
 
         String[] portNames = SerialPortList.getPortNames();
         for (int i = 0; i < portNames.length; i++) {
-            System.out.println(portNames[i]);
             ports.add(portNames[i]);
         }
+
+        LOGGER.info("serialport names: " + ports);
 
 //        } catch (UnsatisfiedLinkError e) {
 //            throw new BrainException("RXTX library not on library path", e);
