@@ -52,6 +52,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
     @Override
     public void addTurnoutManagerListener(final TurnoutManagerListener listener) {
         this.listeners.add(listener);
+        listener.turnoutsUpdated(getAllTurnoutGroups());
     }
 
     @Override

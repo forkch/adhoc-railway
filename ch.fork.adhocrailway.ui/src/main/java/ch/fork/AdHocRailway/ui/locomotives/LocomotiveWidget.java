@@ -114,6 +114,7 @@ public class LocomotiveWidget extends JPanel implements
     @Subscribe
     public void endImport(final EndImportEvent event) {
         disableListener = false;
+        locomotiveSelectionPanel.updateLocomotiveGroups();
     }
 
 

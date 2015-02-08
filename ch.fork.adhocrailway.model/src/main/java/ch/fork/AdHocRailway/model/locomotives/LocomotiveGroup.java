@@ -45,7 +45,7 @@ public class LocomotiveGroup extends AbstractItem implements
     @Expose
     private String name;
     @Expose
-    private Set<Locomotive> locomotives = Sets.newHashSet();
+    private SortedSet<Locomotive> locomotives = Sets.newTreeSet();
 
     public LocomotiveGroup() {
         super();
@@ -79,15 +79,16 @@ public class LocomotiveGroup extends AbstractItem implements
 
     public SortedSet<Locomotive> getLocomotives() {
 
-        if (locomotives == null) {
-            locomotives = Sets.newHashSet();
-        }
-        return Sets.newTreeSet(this.locomotives);
+        //if (locomotives == null) {
+        //    locomotives = Sets.newHashSet();
+       // }
+        //return Sets.newTreeSet(this.locomotives);
+        return this.locomotives;
     }
 
     public void setLocomotives(final SortedSet<Locomotive> locomotives) {
         final Set<Locomotive> old = this.locomotives;
-        this.locomotives = Sets.newHashSet(locomotives);
+        this.locomotives = locomotives;
         changeSupport.firePropertyChange(PROPERTYNAME_LOCOMOTIVES, old,
                 this.locomotives);
 

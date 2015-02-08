@@ -14,7 +14,7 @@ public class LocomotiveGroupComboboxModel extends AbstractListModel<LocomotiveGr
     public void clearAndAddAll(List<LocomotiveGroup> locomotiveGroups) {
         locomotiveGroupList.clear();
         locomotiveGroupList.addAll(locomotiveGroups);
-        fireContentsChanged(this, 0, locomotiveGroupList.size() - 1);
+        fireContentsChanged(this, 0, Math.max(locomotiveGroupList.size() - 1,0));
     }
 
     @Override

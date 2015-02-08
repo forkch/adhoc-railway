@@ -61,6 +61,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
     @Subscribe
     public void connectedToPersistence(final ConnectedToPersistenceEvent event) {
         ctx.getTurnoutManager().addTurnoutManagerListener(this);
+        updateTurnouts(ctx.getTurnoutManager().getAllTurnoutGroups());
     }
 
     @Subscribe

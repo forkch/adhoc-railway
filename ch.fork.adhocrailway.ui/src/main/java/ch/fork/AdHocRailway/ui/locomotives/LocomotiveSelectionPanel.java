@@ -43,16 +43,6 @@ public class LocomotiveSelectionPanel extends JPanel {
         updateLocomotiveGroups();
     }
 
-    @Subscribe
-    public void endImport(final EndImportEvent event) {
-        updateLocomotiveGroups();
-    }
-
-    @Subscribe
-    public void onConnectedToPersistenceEvent(ConnectedToPersistenceEvent e) {
-        updateLocomotiveGroups();
-    }
-
     public void updateLocomotiveGroups() {
         if (ctx.getLocomotiveManager() == null) {
             return;

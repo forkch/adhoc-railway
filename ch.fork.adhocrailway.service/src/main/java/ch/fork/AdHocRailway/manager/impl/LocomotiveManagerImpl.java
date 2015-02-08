@@ -162,6 +162,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     public void addLocomotiveManagerListener(
             final LocomotiveManagerListener listener) {
         this.listeners.add(listener);
+        listener.locomotivesUpdated(getAllLocomotiveGroups());
     }
 
     @Override

@@ -54,6 +54,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     @Override
     public void addRouteManagerListener(final RouteManagerListener listener) {
         this.listeners.add(listener);
+        listener.routesUpdated(getAllRouteGroups());
     }
 
     @Override

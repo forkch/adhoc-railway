@@ -14,7 +14,8 @@ public class LocomotiveComboboxModel extends AbstractListModel<Locomotive> imple
     public void clearAndAddAll(SortedSet<Locomotive> locomotives) {
         this.locomotives.clear();
         this.locomotives.addAll(locomotives);
-        fireContentsChanged(this, 0, this.locomotives.size() - 1);
+
+        fireContentsChanged(this, 0, Math.max(this.locomotives.size() - 1, 0));
     }
 
 
