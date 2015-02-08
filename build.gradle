@@ -47,12 +47,12 @@ subprojects {
 
     repositories {
         maven {
-            url '/home/fork/Code/forkch-mvn-repo'
-        }
-        maven {
             url 'https://raw.githubusercontent.com/forkch/forkch-mvn-repo/master'
         }
         mavenCentral()
+        maven {
+            url '/home/fork/Code/forkch-mvn-repo'
+        }
 
     }
 
