@@ -303,7 +303,6 @@ public class RailwayDeviceManager implements CommandDataListener,
     @Override
     public void infoDataSent(final String infoData) {
         logIfLoggingEnabled("Info sent: " + infoData);
-        LOGGER.info("Info sent: " + infoData.trim());
     }
 
     @Override

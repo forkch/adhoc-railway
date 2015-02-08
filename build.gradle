@@ -4,26 +4,26 @@
  * http://ryanharter.com/blog/2013/07/30/automatic-versioning-with-git-and-gradle/
  */
 def getVersionName = { ->
-  def stdout = new ByteArrayOutputStream()
+    def stdout = new ByteArrayOutputStream()
     exec {
-      commandLine 'git', 'describe', '--tags', '--always'
+        commandLine 'git', 'describe', '--tags', '--always'
         standardOutput = stdout
     }
-  return stdout.toString().trim()
+    return stdout.toString().trim()
 }
 
 buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath 'edu.sc.seis.gradle:macappbundle:2.0.0'
-  }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'edu.sc.seis.gradle:macappbundle:2.0.0'
+    }
 }
 
 subprojects {
 
-  apply plugin: 'java'
+    apply plugin: 'java'
     apply plugin: 'eclipse'
     apply plugin: 'maven'
     apply plugin: 'idea'
@@ -35,100 +35,104 @@ subprojects {
     targetCompatibility = 1.7
 
     configurations {
-      compileOnly
+        compileOnly
+    }
+    configurations.all {
+        // check for updates every build
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
 
-  dependencies {
-  }
-
-  repositories {
-    maven {
-      url '/home/fork/Code/forkch-mvn-repo'
+    dependencies {
     }
-      maven {
-          url 'https://raw.githubusercontent.com/forkch/forkch-mvn-repo/master'
-      }
-      mavenCentral()
 
-  }
+    repositories {
+        maven {
+            url '/home/fork/Code/forkch-mvn-repo'
+        }
+        maven {
+            url 'https://raw.githubusercontent.com/forkch/forkch-mvn-repo/master'
+        }
+        mavenCentral()
 
-  //Include compileOnly for compilation
-  sourceSets.main.compileClasspath += configurations.compileOnly
+    }
+
+    //Include compileOnly for compilation
+    sourceSets.main.compileClasspath += configurations.compileOnly
 
     // optional: if using 'eclipse' plugin
     eclipse {
-      classpath {
-        plusConfigurations += configurations.compileOnly
-      }
+        classpath {
+            plusConfigurations += configurations.compileOnly
+        }
     }
 
-  task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
-  }
-
-  publishing {
-    publications {
-      mavenJava(MavenPublication) {
-        from components.java
-
-          artifact sourceJar {
-            classifier "sources"
-          }
-      }
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
     }
-    repositories {
-      maven { url '/home/fork/Code/forkch-mvn-repo' }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+
+                artifact sourceJar {
+                    classifier "sources"
+                }
+            }
+        }
+        repositories {
+            maven { url '/home/fork/Code/forkch-mvn-repo' }
+        }
     }
-  }
 }
 
 project(':ch.fork.adhocrailway.ui') {
-  dependencies {
-    compile project(':ch.fork.adhocrailway.persistence.xml')
-      compile project(':ch.fork.adhocrailway.persistence.adhocserver')
-      compile project(':ch.fork.adhocrailway.railway.srcp')
-      compile project(':ch.fork.adhocrailway.railway.brain')
-  }
+    dependencies {
+        compile project(':ch.fork.adhocrailway.persistence.xml')
+        compile project(':ch.fork.adhocrailway.persistence.adhocserver')
+        compile project(':ch.fork.adhocrailway.railway.srcp')
+        compile project(':ch.fork.adhocrailway.railway.brain')
+    }
 }
 
 project(':ch.fork.adhocrailway.service') {
-  dependencies {
-    compile project(':ch.fork.adhocrailway.persistence')
-  }
+    dependencies {
+        compile project(':ch.fork.adhocrailway.persistence')
+    }
 }
 project(':ch.fork.adhocrailway.model') {
 
 }
 project(':ch.fork.adhocrailway.persistence') {
-  dependencies {
-    compile project(':ch.fork.adhocrailway.model')
-  }
+    dependencies {
+        compile project(':ch.fork.adhocrailway.model')
+    }
 }
 
 project(':ch.fork.adhocrailway.persistence.xml') {
-  dependencies {
-    compile project(':ch.fork.adhocrailway.persistence')
-      compile project(':ch.fork.adhocrailway.service')
-  }
+    dependencies {
+        compile project(':ch.fork.adhocrailway.persistence')
+        compile project(':ch.fork.adhocrailway.service')
+    }
 }
 
 project(':ch.fork.adhocrailway.persistence.adhocserver') {
-  dependencies {
-    compile project(':ch.fork.adhocrailway.persistence')
-  }
+    dependencies {
+        compile project(':ch.fork.adhocrailway.persistence')
+    }
 }
 
 project(':ch.fork.adhocrailway.railway.brain') {
-  dependencies {
-    compile project(':ch.fork.adhocrailway.service')
-  }
+    dependencies {
+        compile project(':ch.fork.adhocrailway.service')
+    }
 }
 
 project(':ch.fork.adhocrailway.railway.srcp') {
-  dependencies {
-    compile project(':ch.fork.adhocrailway.service')
-      compile project(':ch.fork.adhocrailway.persistence')
-  }
+    dependencies {
+        compile project(':ch.fork.adhocrailway.service')
+        compile project(':ch.fork.adhocrailway.persistence')
+    }
 }
 
 task wrapper(type: Wrapper) {
