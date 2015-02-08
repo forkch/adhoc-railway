@@ -49,6 +49,8 @@ public class RailwayDeviceManager implements CommandDataListener,
 
 
     public void connect() {
+        if (connected)
+            disconnect();
 
         loadControlLayer(getRailwayDevice());
 

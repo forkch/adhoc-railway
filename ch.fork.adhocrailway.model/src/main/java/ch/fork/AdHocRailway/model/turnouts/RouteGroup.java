@@ -65,6 +65,9 @@ public class RouteGroup extends AbstractItem implements java.io.Serializable,
     }
 
     public SortedSet<Route> getRoutes() {
+        if (routes == null) {
+            routes = Sets.newTreeSet();
+        }
         return this.routes;
 
     }

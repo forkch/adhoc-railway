@@ -66,6 +66,9 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
     }
 
     public SortedSet<Turnout> getTurnouts() {
+        if (turnouts == null) {
+            turnouts = Sets.newTreeSet();
+        }
         return this.turnouts;
     }
 

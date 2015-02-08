@@ -114,6 +114,9 @@ public class Route extends AbstractItem implements java.io.Serializable,
     }
 
     public SortedSet<RouteItem> getRoutedTurnouts() {
+        if (routedTurnouts == null) {
+            routedTurnouts = Sets.newTreeSet();
+        }
         return this.routedTurnouts;
     }
 
