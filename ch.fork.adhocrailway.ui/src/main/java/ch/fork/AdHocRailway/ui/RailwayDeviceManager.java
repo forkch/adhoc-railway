@@ -6,6 +6,7 @@ import ch.fork.AdHocRailway.controllers.impl.dummy.DummyPowerController;
 import ch.fork.AdHocRailway.controllers.impl.dummy.DummyRouteController;
 import ch.fork.AdHocRailway.controllers.impl.dummy.DummyTurnoutController;
 import ch.fork.AdHocRailway.model.AdHocRailwayException;
+import ch.fork.AdHocRailway.model.Constants;
 import ch.fork.AdHocRailway.model.power.PowerSupply;
 import ch.fork.AdHocRailway.railway.brain.brain.BrainController;
 import ch.fork.AdHocRailway.railway.brain.brain.BrainListener;
@@ -237,7 +238,7 @@ public class RailwayDeviceManager implements CommandDataListener,
         final RouteController routeControl = RailwayDeviceFactory
                 .createRouteController(railwayDevive, turnoutControl, appContext.getTurnoutManager());
         routeControl.setRoutingDelay(Preferences.getInstance().getIntValue(
-                PreferencesKeys.ROUTING_DELAY));
+                PreferencesKeys.ROUTING_DELAY, 250));
         appContext.setRouteControl(routeControl);
     }
 
@@ -247,6 +248,8 @@ public class RailwayDeviceManager implements CommandDataListener,
                 new InitProceededEvent("Loading Control Layer (Turnouts)"));
         final TurnoutController turnoutControl = RailwayDeviceFactory
                 .createTurnoutController(railwayDevive, taskExecutor);
+        turnoutControl.setCutterSleepTime(Preferences.getInstance().getIntValue(
+                PreferencesKeys.CUTTER_SLEEP_TIME,500));
         appContext.setTurnoutControl(turnoutControl);
         return turnoutControl;
     }

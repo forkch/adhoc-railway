@@ -64,4 +64,9 @@ public class DummyTurnoutController extends TurnoutController {
         return TurnoutState.UNDEF;
     }
 
+    @Override
+    public void setCutterSleepTime(int intValue) {
+
+    }
+
 }

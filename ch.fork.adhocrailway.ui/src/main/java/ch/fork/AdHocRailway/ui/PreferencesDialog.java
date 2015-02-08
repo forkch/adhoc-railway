@@ -72,6 +72,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
     private JCheckBox autoDiscoverServers;
     private JComboBox<RailwayDevice> adhocDeviceComboBox;
     private JComboBox<String> adHocBrainPort;
+    private SpinnerNumberModel defaultCutterRepetitionSleepModel;
+    private JSpinner defaultCutterRepetitionSleep;
 
     public PreferencesDialog(final JFrame owner, final ApplicationContext ctx) {
         super(owner, "Preferences", true);
@@ -211,6 +213,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
         defaultRoutingDelayModel = new SpinnerNumberModel(250, 10, 10000000, 10);
         defaultRoutingDelay = new JSpinner(defaultRoutingDelayModel);
+        defaultCutterRepetitionSleepModel = new SpinnerNumberModel(250, 10, 10000000, 10);
+        defaultCutterRepetitionSleep = new JSpinner(defaultCutterRepetitionSleepModel);
 
         defaultTurnoutBusModel = new SpinnerNumberModel(0, 0, 60, 1);
         defaultTurnoutBus = new JSpinner(defaultTurnoutBusModel);
@@ -229,6 +233,9 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
         p.add(new JLabel("Routing delay [ms]"));
         p.add(defaultRoutingDelay);
+
+        p.add(new JLabel("Cutter repetition delay [ms]"));
+        p.add(defaultCutterRepetitionSleep);
 
         return p;
     }
@@ -309,6 +316,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
                 .getIntValue(DEFAULT_LOCOMOTIVE_BUS));
         defaultActivationTimeModel.setValue(p.getIntValue(ACTIVATION_TIME));
         defaultRoutingDelayModel.setValue(p.getIntValue(ROUTING_DELAY));
+        defaultCutterRepetitionSleepModel.setValue(p.getIntValue(CUTTER_SLEEP_TIME));
 
         srcpHostnameTextField.setText(p.getStringValue(SRCP_HOSTNAME));
         srcpPortnumberTextField.setText(Integer.toString(p
@@ -355,6 +363,8 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
         p.setIntValue(ACTIVATION_TIME, defaultActivationTimeModel.getNumber()
                 .intValue());
         p.setIntValue(ROUTING_DELAY, defaultRoutingDelayModel.getNumber()
+                .intValue());
+        p.setIntValue(CUTTER_SLEEP_TIME, defaultCutterRepetitionSleepModel.getNumber()
                 .intValue());
 
         p.setStringValue(SRCP_HOSTNAME, srcpHostnameTextField.getText());

@@ -35,6 +35,7 @@ public interface PreferencesKeys {
     // Digital Data
     public static final String ACTIVATION_TIME = "DefaultActivationTime";
     public static final String ROUTING_DELAY = "DefaultRoutingDelay";
+    public static final String CUTTER_SLEEP_TIME = "CutterSleepTime";
     public static final String INTERFACE_6051 = "Interface6051";
     public static final String LOGGING = "WriteLog";
     public static final String DEFAULT_TURNOUT_BUS = "DefaultTurnoutBus";
@@ -57,5 +58,6 @@ public interface PreferencesKeys {
     public static final String ADHOC_SERVER_HOSTNAME = "AdHocServerHostname";
     public static final String ADHOC_SERVER_PORT = "AdHocServerPort";
     public static final String ADHOC_SERVER_COLLECTION = "AdHocServerCollection";
+
 
 }

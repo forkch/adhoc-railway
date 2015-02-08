@@ -9,6 +9,7 @@ import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
 public class BrainTurnoutControlAdapter extends TurnoutController {
 
     private final BrainController brain;
+    private long cutterSleepTime = 500;
 
     public BrainTurnoutControlAdapter(TaskExecutor taskExecutor, final BrainController brain) {
         super(taskExecutor);
@@ -67,10 +68,27 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
                 brain.write("XT " + turnout.getAddress2() + " "
                         + getGreenPort(turnout.isAddress2Switched()));
             } else {
-                brain.write("XT " + turnout.getAddress1() + " "
-                        + getGreenPort(turnout.isAddress1Switched()));
+                int reps = 1;
+                if (turnout.isCutter()) {
+                    reps = 5;
+                }
+                for (int i = 0; i < reps; i++) {
+                    brain.write("XT " + turnout.getAddress1() + " "
+                            + getGreenPort(turnout.isAddress1Switched()));
+                    try {
+                        Thread.sleep(cutterSleepTime);
+                    } catch (InterruptedException e) {
+                        throw new IllegalStateException("failed to sleep");
+                    }
+                }
+
+                if (turnout.isCutter()) {
+                    turnout.setActualState(TurnoutState.LEFT);
+                } else {
+                    turnout.setActualState(TurnoutState.STRAIGHT);
+                }
+
             }
-            turnout.setActualState(TurnoutState.STRAIGHT);
             informListeners(turnout);
         } catch (final BrainException e) {
             throw new ControllerException("failed to set turnout straight", e);
@@ -141,6 +159,11 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
         return TurnoutState.UNDEF;
     }
 
+    @Override
+    public void setCutterSleepTime(int cutterSleepTime) {
+        this.cutterSleepTime = cutterSleepTime;
+    }
+
     private String getGreenPort(final boolean inverted) {
         return inverted ? "r" : "g";
     }
@@ -149,4 +172,11 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
         return getGreenPort(!inverted);
     }
 
+    public void setCutterSleepTime(long cutterSleepTime) {
+        this.cutterSleepTime = cutterSleepTime;
+    }
+
+    public long getCutterSleepTime() {
+        return cutterSleepTime;
+    }
 }

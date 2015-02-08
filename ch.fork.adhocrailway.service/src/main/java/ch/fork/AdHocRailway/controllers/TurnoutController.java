@@ -134,4 +134,6 @@ public abstract class TurnoutController {
 
 
     public abstract TurnoutState getStateFromDevice(Turnout turnout);
+
+    public abstract void setCutterSleepTime(int intValue);
 }

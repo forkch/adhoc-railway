@@ -160,6 +160,11 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
     }
 
     @Override
+    public void setCutterSleepTime(int cutterSleepTime) {
+        turnoutControl.setCutterSleepTime(cutterSleepTime);
+    }
+
+    @Override
     public void turnoutChanged(final SRCPTurnout changedTurnout,
                                final SRCPTurnoutState newState) {
         informListeners(changedTurnout);

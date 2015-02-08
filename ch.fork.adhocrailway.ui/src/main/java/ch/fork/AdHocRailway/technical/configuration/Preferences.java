@@ -63,6 +63,7 @@ public class Preferences {
         setIntValue(ADHOC_SERVER_PORT, 3000);
         setIntValue(ACTIVATION_TIME, 50);
         setIntValue(ROUTING_DELAY, 250);
+        setIntValue(CUTTER_SLEEP_TIME, 500);
         setIntValue(LOCOMOTIVE_CONTROLES, 4);
         setStringValue(KEYBOARD_LAYOUT, "Swiss German");
         setStringValue(KEYBOARD_LAYOUT + ".de_ch", "Swiss German" // Display
@@ -218,6 +219,13 @@ public class Preferences {
             return Integer.parseInt(get(key));
         }
         return 0;
+    }
+
+    public int getIntValue(final String key, int defaultValue) {
+        if (preferences.containsKey(key)) {
+            return Integer.parseInt(get(key));
+        }
+        return defaultValue;
     }
 
     private String get(final String key) {
