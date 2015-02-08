@@ -145,7 +145,7 @@ public class RouteConfig extends JDialog {
                 routeItemModel.getSelectionIndexHolder()));
 
         SortedSet<RouteItem> routedTurnouts = presentationModel
-                .getBean().getRoutedTurnoutsSorted();
+                .getBean().getRoutedTurnouts();
 
         routeItemModel.setList(new ArrayList<RouteItem>(routedTurnouts));
 
@@ -469,7 +469,7 @@ public class RouteConfig extends JDialog {
                         i.setId(UUID.randomUUID().toString()); //just a dummy id
                         routeManager.addRouteItemToGroup(i, route);
                         final List<RouteItem> routeItems = new ArrayList<RouteItem>(
-                                route.getRoutedTurnoutsSorted());
+                                route.getRoutedTurnouts());
                         routeItemModel.setList(routeItems);
                     } catch (final ManagerException e1) {
                         e1.printStackTrace();
@@ -554,7 +554,7 @@ public class RouteConfig extends JDialog {
             }
             routeManager.removeRouteItem(routeItem);
             final List<RouteItem> routeItems = new ArrayList<RouteItem>(
-                    selectedRoute.getRoutedTurnoutsSorted());
+                    selectedRoute.getRoutedTurnouts());
             routeItemModel.setList(routeItems);
         }
     }
