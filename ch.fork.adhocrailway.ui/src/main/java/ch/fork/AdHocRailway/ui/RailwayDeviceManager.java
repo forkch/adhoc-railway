@@ -292,52 +292,42 @@ public class RailwayDeviceManager implements CommandDataListener,
 
     @Override
     public void commandDataSent(final String commandData) {
-        final Preferences preferences = appContext.getPreferences();
-        if (preferences.getBooleanValue(LOGGING)) {
-            appContext.getMainBus().post(
-                    new CommandLogEvent("Command sent: " + commandData));
-        }
-        LOGGER.info("Command sent: " + commandData.trim());
+        logIfLoggingEnabled("Command sent: " + commandData);
     }
 
     @Override
     public void commandDataReceived(final String response) {
-        final Preferences preferences = appContext.getPreferences();
-        if (preferences.getBooleanValue(LOGGING)) {
-            appContext.getMainBus().post(
-                    new CommandLogEvent("Command received: " + response));
-        }
-        LOGGER.info("Command received: " + response.trim());
+        logIfLoggingEnabled("Command received: " + response);
     }
 
     @Override
     public void infoDataSent(final String infoData) {
-        final Preferences preferences = appContext.getPreferences();
-        if (preferences.getBooleanValue(LOGGING)) {
-            appContext.getMainBus().post(
-                    new CommandLogEvent("Info sent: " + infoData));
-        }
+        logIfLoggingEnabled("Info sent: " + infoData);
         LOGGER.info("Info sent: " + infoData.trim());
     }
 
     @Override
     public void infoDataReceived(final String infoData) {
-        final Preferences preferences = appContext.getPreferences();
-        if (preferences.getBooleanValue(LOGGING)) {
-            appContext.getMainBus().post(
-                    new CommandLogEvent("Info received: " + infoData));
-        }
-        LOGGER.info("Info received " + infoData.trim());
+        logIfLoggingEnabled("Info received: " + infoData);
+    }
+
+    @Override
+    public void sentMessage(String sentMessage) {
+        logIfLoggingEnabled("Sent to brain: " + sentMessage);
     }
 
 
     @Override
     public void receivedMessage(String receivedString) {
+        logIfLoggingEnabled("receive from brain: " + receivedString);
+    }
+
+    private void logIfLoggingEnabled(String response) {
         final Preferences preferences = appContext.getPreferences();
         if (preferences.getBooleanValue(LOGGING)) {
             appContext.getMainBus().post(
-                    new CommandLogEvent("Brain: " + receivedString));
+                    new CommandLogEvent(response));
         }
-        LOGGER.info("Brain: " + receivedString.trim());
+        LOGGER.info(response);
     }
 }

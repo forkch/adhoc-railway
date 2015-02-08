@@ -82,6 +82,9 @@ public class BrainController {
             final byte[] bytes = str.getBytes(Charset.forName("US-ASCII"));
             serialPort.writeBytes(bytes);
             serialPort.writeInt(0x0d);
+            for (final BrainListener listener : listeners) {
+                listener.sentMessage(str);
+            }
         } catch (SerialPortException e) {
             throw new BrainException("error writing " + str + " to the brain", e);
         }
@@ -90,7 +93,6 @@ public class BrainController {
     public List<String> getAvailableSerialPortsAsString() {
 
         final List<String> ports = new ArrayList<String>();
-//        try {
 
         String[] portNames = SerialPortList.getPortNames();
         for (int i = 0; i < portNames.length; i++) {
@@ -98,14 +100,6 @@ public class BrainController {
         }
 
         LOGGER.info("serialport names: " + ports);
-
-//        } catch (UnsatisfiedLinkError e) {
-//            throw new BrainException("RXTX library not on library path", e);
-//        } catch (NoClassDefFoundError e) {
-//            throw new BrainException("RXTX library not on library path", e);
-//        } catch (Exception e) {
-//            throw new BrainException("error enumerating ports", e);
-//        }
         return ports;
     }
 

@@ -90,6 +90,11 @@ public class BrainPowerControlAdapter extends PowerController implements
     }
 
     @Override
+    public void sentMessage(String sentMessage) {
+
+    }
+
+    @Override
     public void receivedMessage(final String receivedString) {
         LOGGER.info("received power message from brain: " + receivedString);
 
