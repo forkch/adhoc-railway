@@ -53,10 +53,11 @@ public class LocomotiveControlPanel extends JPanel {
     private void initGUI() {
         setLayout(new BorderLayout());
         controlPanel = new JPanel(new MigLayout("insets 0"));
+        JScrollPane controlPanelScrollPane = new JScrollPane(controlPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         final SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame(
                 "Trains");
-        locomotivesFrame.add(controlPanel, BorderLayout.CENTER);
+        locomotivesFrame.add(controlPanelScrollPane, BorderLayout.CENTER);
         add(locomotivesFrame, BorderLayout.NORTH);
 
         ctx.getMainApp().registerSpaceKey(new LocomotiveStopAction());
