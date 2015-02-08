@@ -18,6 +18,8 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
     @Override
     public void toggle(final Turnout turnout) {
+
+
         switch (turnout.getActualState()) {
             case LEFT:
                 if (turnout.isThreeWay()) {
@@ -38,10 +40,14 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
             default:
                 break;
         }
+
     }
+
+
 
     @Override
     public void setDefaultState(final Turnout turnout) {
+
         final TurnoutState defaultState = turnout.getDefaultState();
         switch (defaultState) {
             case LEFT:
@@ -61,108 +67,124 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
     @Override
     public void setStraight(final Turnout turnout) {
-        try {
-            if (turnout.isThreeWay()) {
-                brain.write("XT " + turnout.getAddress1() + " "
-                        + getGreenPort(turnout.isAddress1Switched()));
-                brain.write("XT " + turnout.getAddress2() + " "
-                        + getGreenPort(turnout.isAddress2Switched()));
-            } else {
-                int reps = 1;
-                if (turnout.isCutter()) {
-                    reps = 5;
-                }
-                for (int i = 0; i < reps; i++) {
-                    brain.write("XT " + turnout.getAddress1() + " "
-                            + getGreenPort(turnout.isAddress1Switched()));
-                    try {
-                        Thread.sleep(cutterSleepTime);
-                    } catch (InterruptedException e) {
-                        throw new IllegalStateException("failed to sleep");
+        enqueueTask(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (turnout.isThreeWay()) {
+                        brain.write("XT " + turnout.getAddress1() + " "
+                                + getGreenPort(turnout.isAddress1Switched()));
+                        brain.write("XT " + turnout.getAddress2() + " "
+                                + getGreenPort(turnout.isAddress2Switched()));
+                    } else {
+                        int reps = 1;
+                        if (turnout.isCutter()) {
+                            reps = 5;
+                        }
+                        for (int i = 0; i < reps; i++) {
+                            brain.write("XT " + turnout.getAddress1() + " "
+                                    + getGreenPort(turnout.isAddress1Switched()));
+                            try {
+                                Thread.sleep(cutterSleepTime);
+                            } catch (InterruptedException e) {
+                                throw new IllegalStateException("failed to sleep");
+                            }
+                        }
+
+                        if (turnout.isCutter()) {
+                            turnout.setActualState(TurnoutState.LEFT);
+                        } else {
+                            turnout.setActualState(TurnoutState.STRAIGHT);
+                        }
+
                     }
+                    informListeners(turnout);
+                } catch (final BrainException e) {
+                    throw new ControllerException("failed to set turnout straight", e);
                 }
-
-                if (turnout.isCutter()) {
-                    turnout.setActualState(TurnoutState.LEFT);
-                } else {
-                    turnout.setActualState(TurnoutState.STRAIGHT);
-                }
-
             }
-            informListeners(turnout);
-        } catch (final BrainException e) {
-            throw new ControllerException("failed to set turnout straight", e);
-        }
+        });
     }
 
     @Override
     public void setCurvedLeft(final Turnout turnout) {
-        try {
-            if (turnout.isThreeWay()) {
-                brain.write("XT " + turnout.getAddress1() + " "
-                        + getRedPort(turnout.isAddress1Switched()));
-                brain.write("XT " + turnout.getAddress2() + " "
-                        + getGreenPort(turnout.isAddress2Switched()));
-            } else {
-                brain.write("XT " + turnout.getAddress1() + " "
-                        + getRedPort(turnout.isAddress1Switched()));
+        enqueueTask(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (turnout.isThreeWay()) {
+                        brain.write("XT " + turnout.getAddress1() + " "
+                                + getRedPort(turnout.isAddress1Switched()));
+                        brain.write("XT " + turnout.getAddress2() + " "
+                                + getGreenPort(turnout.isAddress2Switched()));
+                    } else {
+                        brain.write("XT " + turnout.getAddress1() + " "
+                                + getRedPort(turnout.isAddress1Switched()));
+                    }
+                    turnout.setActualState(TurnoutState.LEFT);
+                    informListeners(turnout);
+                } catch (final BrainException e) {
+                    throw new ControllerException("failed to set turnout curved left", e);
+                }
             }
-            turnout.setActualState(TurnoutState.LEFT);
-            informListeners(turnout);
-        } catch (final BrainException e) {
-            throw new ControllerException("failed to set turnout curved left", e);
-        }
+        });
     }
 
-    @Override
-    public void setCurvedRight(final Turnout turnout) {
-        try {
-            if (turnout.isThreeWay()) {
-                brain.write("XT " + turnout.getAddress1() + " "
-                        + getGreenPort(turnout.isAddress1Switched()));
-                brain.write("XT " + turnout.getAddress2() + " "
-                        + getRedPort(turnout.isAddress2Switched()));
+        @Override
+        public void setCurvedRight(final Turnout turnout){
+            enqueueTask(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (turnout.isThreeWay()) {
+                            brain.write("XT " + turnout.getAddress1() + " "
+                                    + getGreenPort(turnout.isAddress1Switched()));
+                            brain.write("XT " + turnout.getAddress2() + " "
+                                    + getRedPort(turnout.isAddress2Switched()));
+                        } else {
+                            brain.write("XT " + turnout.getAddress1() + " "
+                                    + getRedPort(turnout.isAddress1Switched()));
+                        }
+                        turnout.setActualState(TurnoutState.RIGHT);
+                        informListeners(turnout);
+                    } catch (final BrainException e) {
+                        throw new ControllerException("failed to set turnout curved right", e);
+                    }
+                }
+
+            });
+        }
+
+        @Override
+        public void toggleTest ( final Turnout turnout){
+            toggle(turnout);
+        }
+
+        @Override
+        public void setTurnoutWithAddress ( final int address,
+        final TurnoutState straight){
+            if (TurnoutState.STRAIGHT == straight) {
+                brain.write("XT " + address + " " + "g");
             } else {
-                brain.write("XT " + turnout.getAddress1() + " "
-                        + getRedPort(turnout.isAddress1Switched()));
+                brain.write("XT " + address + " " + "r");
+
             }
-            turnout.setActualState(TurnoutState.RIGHT);
-            informListeners(turnout);
-        } catch (final BrainException e) {
-            throw new ControllerException("failed to set turnout curved right", e);
         }
-    }
 
-    @Override
-    public void toggleTest(final Turnout turnout) {
-        toggle(turnout);
-    }
-
-    @Override
-    public void setTurnoutWithAddress(final int address,
-                                      final TurnoutState straight) {
-        if (TurnoutState.STRAIGHT == straight) {
-            brain.write("XT " + address + " " + "g");
-        } else {
-            brain.write("XT " + address + " " + "r");
+        @Override
+        public void reloadConfiguration () {
 
         }
-    }
 
-    @Override
-    public void reloadConfiguration() {
+        @Override
+        public TurnoutState getStateFromDevice (Turnout turnout){
+            return TurnoutState.UNDEF;
+        }
 
-    }
-
-    @Override
-    public TurnoutState getStateFromDevice(Turnout turnout) {
-        return TurnoutState.UNDEF;
-    }
-
-    @Override
-    public void setCutterSleepTime(int cutterSleepTime) {
-        this.cutterSleepTime = cutterSleepTime;
-    }
+        @Override
+        public void setCutterSleepTime ( int cutterSleepTime){
+            this.cutterSleepTime = cutterSleepTime;
+        }
 
     private String getGreenPort(final boolean inverted) {
         return inverted ? "r" : "g";
