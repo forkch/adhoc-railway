@@ -89,7 +89,7 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
                 for (int i = 0; i < reps; i++) {
                     brain.write("XT " + turnout.getAddress1() + " "
                             + getGreenPort(turnout.isAddress1Switched()));
-                    if(reps > 1) {
+                    if (reps > 1) {
                         try {
                             Thread.sleep(cutterSleepTime);
                         } catch (InterruptedException e) {
@@ -98,12 +98,12 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
                     }
                 }
 
-                if (turnout.isCutter()) {
-                    turnout.setActualState(TurnoutState.LEFT);
-                } else {
-                    turnout.setActualState(TurnoutState.STRAIGHT);
-                }
 
+            }
+            if (turnout.isCutter()) {
+                turnout.setActualState(TurnoutState.LEFT);
+            } else {
+                turnout.setActualState(TurnoutState.STRAIGHT);
             }
             informListeners(turnout);
         } catch (final BrainException e) {
