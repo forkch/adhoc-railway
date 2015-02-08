@@ -89,7 +89,6 @@ public class LocomotiveConfigurationDialog extends JDialog implements
         initEventHandling();
         initShortcuts();
         locomotiveManager.addLocomotiveManagerListener(this);
-        locomotivesUpdated(locomotiveManager.getAllLocomotiveGroups());
         pack();
         SwingUtils.addEscapeListener(this);
         setLocationRelativeTo(getParent());
