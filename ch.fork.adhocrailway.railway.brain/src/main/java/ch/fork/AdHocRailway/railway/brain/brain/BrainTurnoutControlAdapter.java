@@ -89,10 +89,12 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
                 for (int i = 0; i < reps; i++) {
                     brain.write("XT " + turnout.getAddress1() + " "
                             + getGreenPort(turnout.isAddress1Switched()));
-                    try {
-                        Thread.sleep(cutterSleepTime);
-                    } catch (InterruptedException e) {
-                        throw new IllegalStateException("failed to sleep");
+                    if(reps > 1) {
+                        try {
+                            Thread.sleep(cutterSleepTime);
+                        } catch (InterruptedException e) {
+                            throw new IllegalStateException("failed to sleep");
+                        }
                     }
                 }
 
