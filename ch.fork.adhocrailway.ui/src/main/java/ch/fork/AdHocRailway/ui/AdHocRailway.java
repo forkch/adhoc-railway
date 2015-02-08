@@ -315,7 +315,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     @Override
     public void initProceeded(final String message) {
-        System.out.println("initProceeded()");
         splash.nextStep(message);
     }
 
