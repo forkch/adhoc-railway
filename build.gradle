@@ -45,10 +45,11 @@ subprojects {
     maven {
       url '/home/fork/Code/forkch-mvn-repo'
     }
-    mavenCentral()
-//      maven {
-//        url 'https://raw.githubusercontent.com/forkch/forkch-mvn-repo/master'
-//      }
+      maven {
+          url 'https://raw.githubusercontent.com/forkch/forkch-mvn-repo/master'
+      }
+      mavenCentral()
+
   }
 
   //Include compileOnly for compilation
