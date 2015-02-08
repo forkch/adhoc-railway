@@ -223,15 +223,15 @@ public class BrainTurnoutControlAdapterTest {
     }
 
     private void whenSetTurnoutStraight(final Turnout t) {
-        testee.setStraight(t);
+        testee.setStraightSync(t);
     }
 
     private void whenSetTurnoutCurvedLeft(final Turnout t) {
-        testee.setCurvedLeft(t);
+        testee.setCurvedLeftSync(t);
     }
 
     private void whenSetTurnoutCurvedRight(final Turnout t) {
-        testee.setCurvedRight(t);
+        testee.setCurvedRightSync(t);
     }
 
     private void assertBrainCalled(final Turnout t, final String port) {
