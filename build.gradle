@@ -46,6 +46,7 @@ subprojects {
     }
 
     repositories {
+
         maven {
             url 'https://raw.githubusercontent.com/forkch/forkch-mvn-repo/master'
         }

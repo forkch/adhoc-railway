@@ -8,7 +8,7 @@ macAppBundle {
     javaProperties.put("com.apple.mrj.application.apple.menu.about.name", "AdHoc-Railway")
     //}arguments = "-Xdock:name=", "AdHoc-Railway")
     appName = "AdHoc-Railway"
-    dmgName = "AdHoc-Railway"
+    dmgName = "AdHoc-Railway-" + project.version
 
 }
 
