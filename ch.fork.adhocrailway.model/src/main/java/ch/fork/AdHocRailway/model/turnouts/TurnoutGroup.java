@@ -42,7 +42,7 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
     @Expose
     private String name;
     @Expose
-    private Set<Turnout> turnouts = Sets.newHashSet();
+    private SortedSet<Turnout> turnouts = Sets.newTreeSet();
 
     public TurnoutGroup() {
     }
@@ -66,14 +66,11 @@ public class TurnoutGroup extends AbstractItem implements java.io.Serializable,
     }
 
     public SortedSet<Turnout> getTurnouts() {
-        if(turnouts== null) {
-            turnouts = Sets.newHashSet();
-        }
-        return Sets.newTreeSet(this.turnouts);
+        return this.turnouts;
     }
 
     public void setTurnouts(final SortedSet<Turnout> turnouts) {
-        this.turnouts = Sets.newHashSet(turnouts);
+        this.turnouts = turnouts;
     }
 
     public void addTurnout(final Turnout turnout) {

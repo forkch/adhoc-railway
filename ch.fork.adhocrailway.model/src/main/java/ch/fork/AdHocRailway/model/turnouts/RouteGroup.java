@@ -41,7 +41,7 @@ public class RouteGroup extends AbstractItem implements java.io.Serializable,
     @Expose
     private String name;
     @Expose
-    private Set<Route> routes = Sets.newHashSet();
+    private SortedSet<Route> routes = Sets.newTreeSet();
 
     public RouteGroup() {
     }
@@ -65,14 +65,12 @@ public class RouteGroup extends AbstractItem implements java.io.Serializable,
     }
 
     public SortedSet<Route> getRoutes() {
-        if(routes == null) {
-            routes =  Sets.newHashSet();
-        }
-        return Sets.newTreeSet(this.routes);
+        return this.routes;
+
     }
 
     public void setRoutes(final SortedSet<Route> routes) {
-        this.routes = Sets.newHashSet(routes);
+        this.routes = routes;
     }
 
     public void addRoute(final Route route) {

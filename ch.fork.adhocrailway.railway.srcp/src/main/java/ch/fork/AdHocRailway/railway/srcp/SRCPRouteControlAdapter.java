@@ -156,7 +156,7 @@ public class SRCPRouteControlAdapter extends RouteController implements
 
     private void applyNewSettings(final SRCPRoute sRoute, final Route route) {
         sRoute.getRouteItems().clear();
-        for (final RouteItem routeItem : route.getRoutedTurnoutsSorted()) {
+        for (final RouteItem routeItem : route.getRoutedTurnouts()) {
 
             final SRCPRouteItem sRouteItem = new SRCPRouteItem();
             final SRCPTurnout sTurnout = turnoutControl

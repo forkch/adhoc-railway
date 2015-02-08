@@ -50,14 +50,13 @@ public class Route extends AbstractItem implements java.io.Serializable,
     @Expose
     private String orientation;
     @Expose
-    private Set<RouteItem> routedTurnouts = new HashSet<RouteItem>();
+    private SortedSet<RouteItem> routedTurnouts = Sets.newTreeSet();
     @Expose
     private String groupId;
 
     private transient boolean enabled = false;
     private transient boolean routing = false;
     private transient RouteGroup routeGroup;
-    private transient Set<RouteItem> routedTurnoutsSorted = Sets.newHashSet();
 
     public Route() {
     }
@@ -115,31 +114,19 @@ public class Route extends AbstractItem implements java.io.Serializable,
     }
 
     public SortedSet<RouteItem> getRoutedTurnouts() {
-        if(this.routedTurnouts == null) {
-            routedTurnouts = Sets.newHashSet();
-        }
-        return Sets.newTreeSet(this.routedTurnouts);
+        return this.routedTurnouts;
     }
 
     public void setRoutedTurnouts(final SortedSet<RouteItem> routedTurnouts) {
-        final Set<RouteItem> old = this.routedTurnouts;
+        final SortedSet<RouteItem> old = this.routedTurnouts;
         this.routedTurnouts = routedTurnouts;
-        if (routedTurnoutsSorted == null) {
-            routedTurnoutsSorted = new TreeSet<RouteItem>();
-        }
-        routedTurnoutsSorted.clear();
-        routedTurnoutsSorted.addAll(routedTurnouts);
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_ITEMS, old,
                 this.routedTurnouts);
     }
 
-    public SortedSet<RouteItem> getRoutedTurnoutsSorted() {
-        return Sets.newTreeSet(routedTurnoutsSorted);
-    }
 
     public void addRouteItem(final RouteItem routeItem) {
         routedTurnouts.add(routeItem);
-        routedTurnoutsSorted.add(routeItem);
     }
 
     public RouteGroup getRouteGroup() {
@@ -213,6 +200,5 @@ public class Route extends AbstractItem implements java.io.Serializable,
 
     public void removeRouteItem(RouteItem item) {
         routedTurnouts.remove(item);
-        routedTurnoutsSorted.remove(item);
     }
 }

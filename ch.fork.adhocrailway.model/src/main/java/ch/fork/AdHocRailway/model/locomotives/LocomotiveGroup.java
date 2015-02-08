@@ -78,11 +78,6 @@ public class LocomotiveGroup extends AbstractItem implements
     }
 
     public SortedSet<Locomotive> getLocomotives() {
-
-        //if (locomotives == null) {
-        //    locomotives = Sets.newHashSet();
-       // }
-        //return Sets.newTreeSet(this.locomotives);
         return this.locomotives;
     }
 
