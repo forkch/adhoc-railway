@@ -13,7 +13,7 @@ public class ThreadUtils {
 
 
     public static ThreadPoolExecutor createExecutorService() {
-        return new ThreadPoolExecutor(2, 2, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        return new ThreadPoolExecutor(2, 60, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     public static RateLimiter createRateLimiter() {

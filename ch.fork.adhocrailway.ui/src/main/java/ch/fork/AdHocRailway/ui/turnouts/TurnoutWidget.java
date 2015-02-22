@@ -198,11 +198,9 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
     private class MouseAction extends MouseAdapter {
         @Override
         public void mouseClicked(final MouseEvent e) {
-
-            if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
+            if (e.getButton() == MouseEvent.BUTTON1) {
                 handleLeftClick();
-            } else if (e.getClickCount() == 1
-                    && e.getButton() == MouseEvent.BUTTON3) {
+            } else if (e.getButton() == MouseEvent.BUTTON3) {
 
                 handleRightClick();
             }
