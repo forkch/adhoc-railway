@@ -39,10 +39,7 @@ jar {
 }
 
 startScripts {
-    doLast {
-        unixScript.text = unixScript.text.replace('DEFAULT_JVM_OPTS=""', 'DEFAULT_JVM_OPTS="-Djava.library.path=/usr/lib/jni/"')
-        windowsScript.text = windowsScript.text.replace('DEFAULT_JVM_OPTS=', 'DEFAULT_JVM_OPTS=')
-    }
+
 }
 
 task createSamples {
