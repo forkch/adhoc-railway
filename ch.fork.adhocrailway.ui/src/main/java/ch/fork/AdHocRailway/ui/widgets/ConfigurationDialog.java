@@ -38,6 +38,13 @@ public abstract class ConfigurationDialog extends JDialog {
 
     }
 
+    public ConfigurationDialog(JFrame owner, String title, boolean modal) {
+        super(owner, title, modal);
+
+        initBasicGUI();
+
+    }
+
     public ConfigurationDialog(JDialog owner, String title) {
         super(owner, title, true);
 

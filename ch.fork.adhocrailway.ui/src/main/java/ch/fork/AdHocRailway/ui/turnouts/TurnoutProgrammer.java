@@ -28,37 +28,31 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.*;
+import java.util.List;
 
 public class TurnoutProgrammer extends ConfigurationDialog {
     private final TurnoutContext ctx;
+    private List<TurnoutState> turnoutStates = new ArrayList<>();
 
     public TurnoutProgrammer(final JFrame owner, final TurnoutContext ctx) {
-        super(owner, "Turnout Programmer");
+        super(owner, "Turnout Programmer", false);
         this.ctx = ctx;
         initGUI();
     }
 
     private void initGUI() {
         final JPanel mainPanel = new JPanel(new BorderLayout());
-        final JPanel buttonPanel = new JPanel(new GridLayout(4, 4));
-        for (int i = 1; i <= 252; i = i + 4) {
-            final JButton button = new JButton("" + i);
-            buttonPanel.add(button);
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(final ActionEvent e) {
-
-                    final TurnoutController turnoutControl = ctx
-                            .getTurnoutControl();
-                    final int address = Integer.parseInt(e.getActionCommand());
-                    turnoutControl.setTurnoutWithAddress(address,
-                            TurnoutState.STRAIGHT);
-
-                }
-            });
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        final JPanel buttonPanel = new JPanel(new GridLayout(320/20,20,5,5));
+        for (int i = 0; i < 320; i++) {
+            final JButton addressButton = new JButton("" + (i + 1));
+            addressButton.setFont(new Font("Dialog", Font.BOLD, 14));
+            addressButton.setMargin(new Insets(5,5,5,5));
+            buttonPanel.add(addressButton);
+            turnoutStates.add(TurnoutState.LEFT);
+            addressButton.addActionListener(new SwitchAddressAction(i + 1));
         }
-        final JLabel titleLabel = new JLabel("Enter first address of decoder");
-        mainPanel.add(titleLabel, BorderLayout.NORTH);
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
         addMainComponent(mainPanel);
@@ -67,4 +61,33 @@ public class TurnoutProgrammer extends ConfigurationDialog {
         setLocationRelativeTo(getParent());
         setVisible(true);
     }
+
+    private class SwitchAddressAction implements ActionListener {
+        private int address;
+
+        public SwitchAddressAction(int address) {
+            this.address = address;
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+
+            final TurnoutController turnoutControl = ctx
+                    .getTurnoutControl();
+
+            TurnoutState nextState;
+            if (TurnoutState.LEFT.equals(turnoutStates.get(address - 1))) {
+                turnoutControl.setTurnoutWithAddress(address,
+                        TurnoutState.LEFT);
+                nextState = TurnoutState.STRAIGHT;
+            } else {
+                turnoutControl.setTurnoutWithAddress(address,
+                        TurnoutState.STRAIGHT);
+                nextState = TurnoutState.LEFT;
+            }
+            turnoutStates.set(address - 1, nextState);
+
+        }
+    }
+
 }
