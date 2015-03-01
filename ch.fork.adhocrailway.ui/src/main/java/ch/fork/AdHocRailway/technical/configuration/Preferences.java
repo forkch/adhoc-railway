@@ -183,18 +183,19 @@ public class Preferences {
         return layout;
     }
 
-    public void save()  {
+    public void save() {
         try {
-        if (props == null) {
-            props = new Properties();
-        }
-        for (final String key : preferences.keySet()) {
-            if (get(key) != null) {
-                props.setProperty(key, get(key));
+            if (props == null) {
+                props = new Properties();
             }
-        }
+            for (final String key : preferences.keySet()) {
+                if (get(key) != null) {
+                    props.setProperty(key, get(key));
+                }
+            }
             props.store(new FileOutputStream(configFile), "");
-        } catch (IOException e) {throw new AdHocRailwayException("failed to save preferences",e);
+        } catch (IOException e) {
+            throw new AdHocRailwayException("failed to save preferences", e);
         }
         LOGGER.info("Preferences saved to: " + configFile.getAbsolutePath());
     }
@@ -242,6 +243,13 @@ public class Preferences {
             return Boolean.parseBoolean(get(key));
         }
         return false;
+    }
+
+    public boolean getBooleanValue(final String key, boolean defaultValue) {
+        if (preferences.containsKey(key)) {
+            return Boolean.parseBoolean(get(key));
+        }
+        return defaultValue;
     }
 
     public List<String> getHostnames() {

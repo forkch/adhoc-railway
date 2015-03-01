@@ -1,7 +1,6 @@
 package ch.fork.AdHocRailway.ui.turnouts;
 
 import ch.fork.AdHocRailway.controllers.TurnoutController;
-import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.manager.TurnoutManagerListener;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutGroup;
@@ -19,8 +18,6 @@ import ch.fork.AdHocRailway.ui.widgets.SmallToolbarButton;
 import com.google.common.eventbus.Subscribe;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -126,7 +123,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
         final JMenuItem turnoutsStraightItem = new JMenuItem(
                 new TurnoutsStraightAction());
         final JMenuItem turnoutsWarmerItem = new JMenuItem(
-                new TurnoutWarmerAction());
+                new TurnoutTesterAction());
         turnoutsProgrammerItem = new JMenuItem(new TurnoutProgrammerAction());
 
         toolsMenu.add(turnoutsStraightItem);
@@ -366,16 +363,16 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
         }
     }
 
-    private class TurnoutWarmerAction extends AbstractAction {
+    private class TurnoutTesterAction extends AbstractAction {
 
 
-        public TurnoutWarmerAction() {
-            super("Turnout Warmer\u2026");
+        public TurnoutTesterAction() {
+            super("Turnout tester\u2026");
         }
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            new TurnoutWarmer(ctx.getMainFrame(), ctx);
+            new TurnoutTester(ctx.getMainFrame(), ctx);
         }
     }
 

@@ -60,4 +60,5 @@ public interface PreferencesKeys {
     public static final String ADHOC_SERVER_COLLECTION = "AdHocServerCollection";
 
 
+    public static final String TURNOUT_TESTER_BY_NUMBER = "TurnoutTesterByNumber";
 }
