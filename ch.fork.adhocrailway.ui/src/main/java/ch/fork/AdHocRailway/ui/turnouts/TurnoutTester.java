@@ -25,6 +25,7 @@ import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
+import ch.fork.AdHocRailway.ui.utils.SwingUtils;
 import ch.fork.AdHocRailway.ui.widgets.ConfigurationDialog;
 import net.miginfocom.swing.MigLayout;
 
@@ -68,7 +69,7 @@ public class TurnoutTester extends ConfigurationDialog {
         turnoutNumberButton = new JRadioButton("Turnout number");
         turnoutNumberField = new JSpinner(turnoutNumberSpinnerModel);
         turnoutAddressButton = new JRadioButton("Turnout address");
-        turnoutAddressField = new JSpinner(turnoutNumberSpinnerModel);
+        turnoutAddressField = new JSpinner(turnoutAddressSpinnerModel);
 
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(turnoutNumberButton);
@@ -84,6 +85,7 @@ public class TurnoutTester extends ConfigurationDialog {
         addMainComponent(mainPanel);
 
         setSelectedButtonBasedOnPreferences();
+        setInitialValues();
 
         turnoutNumberButton.addActionListener(new ActionListener() {
             @Override
@@ -129,9 +131,15 @@ public class TurnoutTester extends ConfigurationDialog {
 
         });
 
+        SwingUtils.addEscapeListener(this);
         pack();
         setLocationRelativeTo(getParent());
         setVisible(true);
+    }
+
+    private void setInitialValues() {
+        turnoutNumberSpinnerModel.setValue(preferences.getIntValue(PreferencesKeys.LAST_TESTED_NUMBER, 1));
+        turnoutAddressSpinnerModel.setValue(preferences.getIntValue(PreferencesKeys.LAST_TESTED_ADDRESS, 1));
     }
 
     private void setSelectedButtonBasedOnPreferences() {
@@ -190,8 +198,10 @@ public class TurnoutTester extends ConfigurationDialog {
 
         private void testTurnoutByAddress() throws InterruptedException {
             TurnoutState nextTurnoutState = TurnoutState.LEFT;
+            int address = turnoutAddressSpinnerModel.getNumber().intValue();
+            preferences.setIntValue(PreferencesKeys.LAST_TESTED_ADDRESS, address);
             while (enabled) {
-                turnoutControl.setTurnoutWithAddress(turnoutAddressSpinnerModel.getNumber().intValue(), nextTurnoutState);
+                turnoutControl.setTurnoutWithAddress(address, nextTurnoutState);
                 if (TurnoutState.LEFT.equals(nextTurnoutState)) {
                     nextTurnoutState = TurnoutState.STRAIGHT;
                 } else {
@@ -202,12 +212,16 @@ public class TurnoutTester extends ConfigurationDialog {
         }
 
         private void testTurnoutByNumber() throws InterruptedException {
+            int number = turnoutNumberSpinnerModel.getNumber().intValue();
             final Turnout turnout = turnoutPersistence
-                    .getTurnoutByNumber(turnoutNumberSpinnerModel.getNumber().intValue());
+                    .getTurnoutByNumber(number);
+
             if (turnout == null) {
                 ctx.getMainApp().displayMessage("no valid turnout selected");
                 return;
             }
+
+            preferences.setIntValue(PreferencesKeys.LAST_TESTED_NUMBER, number);
             while (enabled) {
                 turnoutControl.toggle(turnout);
                 waitTime();

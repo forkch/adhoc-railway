@@ -61,4 +61,6 @@ public interface PreferencesKeys {
 
 
     public static final String TURNOUT_TESTER_BY_NUMBER = "TurnoutTesterByNumber";
+    public static final String LAST_TESTED_ADDRESS = "LastTestedAddress";
+    public static final String LAST_TESTED_NUMBER = "LastTestedNumber";
 }
