@@ -49,7 +49,7 @@ public class LocomotiveComboBoxRenderer extends JPanel implements
         // Set the icon and text. If icon was null, say so.
         textLabel.setText(locomotive.getName());
         if (index != -1) {
-            iconLabel.setIcon(LocomotiveImageHelper.getLocomotiveIconScaledToWidth(locomotive, 150));
+            iconLabel.setIcon(LocomotiveImageHelper.getLocomotiveIconScaledToWidth(locomotive, 100));
         }
 
         return this;
