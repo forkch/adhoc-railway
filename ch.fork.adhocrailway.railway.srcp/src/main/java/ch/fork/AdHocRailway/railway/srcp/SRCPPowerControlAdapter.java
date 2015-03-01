@@ -113,7 +113,7 @@ public class SRCPPowerControlAdapter extends PowerController implements
     }
 
     @Override
-    public void powerSupplyChanged(final SRCPPowerSupply powerSupply,
+    public void powerSupplyChanged(final SRCPPowerSupply srcpPowerSupply,
                                    final String freeText) {
         if (freeText == null || freeText.isEmpty()) {
             return;
@@ -152,7 +152,7 @@ public class SRCPPowerControlAdapter extends PowerController implements
         }
 
         final PowerSupply supply = srcpPowerSupplyToPowerSupply
-                .get(powerSupply);
+                .get(srcpPowerSupply);
 
         for (final Entry<Integer, BoosterState> boosterState : boosterStates
                 .entrySet()) {
@@ -162,10 +162,7 @@ public class SRCPPowerControlAdapter extends PowerController implements
 
         LOGGER.info("new booster state: " + boosterStates);
         LOGGER.info("all booster states: " + supply.getBoosters());
-
-        for (final PowerChangeListener l : listeners) {
-            l.powerChanged(supply);
-        }
+        informListeners(supply);
 
     }
 

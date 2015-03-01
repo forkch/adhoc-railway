@@ -4,13 +4,18 @@ import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.controllers.TaskExecutor;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 
+import java.util.Arrays;
+
 /**
  * Created by bmu on 24.03.2014.
  */
 public class DummyLocomotiveController extends LocomotiveController {
 
-    public DummyLocomotiveController() {
+    private DummyRailwayController dummyRailwayController;
+
+    public DummyLocomotiveController(DummyRailwayController dummyRailwayController) {
         super(null);
+        this.dummyRailwayController = dummyRailwayController;
     }
 
     @Override
@@ -37,6 +42,7 @@ public class DummyLocomotiveController extends LocomotiveController {
     public void toggleDirection(final Locomotive locomotive) {
         locomotive.setCurrentDirection(locomotive.getToggledDirection());
         informListeners(locomotive);
+        dummyRailwayController.informDummyListeners("toggeled direction of locomotive " + locomotive.getName() + " to " + locomotive.getCurrentDirection());
     }
 
     @Override
@@ -46,6 +52,7 @@ public class DummyLocomotiveController extends LocomotiveController {
         locomotive.setCurrentFunctions(functions);
         informListeners(locomotive);
 
+        dummyRailwayController.informDummyListeners("set speed of locomotive " + locomotive.getName() + " to " + speed);
     }
 
     @Override
@@ -56,6 +63,7 @@ public class DummyLocomotiveController extends LocomotiveController {
         currentFunctions[functionNumber] = state;
         locomotive.setCurrentFunctions(currentFunctions);
         informListeners(locomotive);
+        dummyRailwayController.informDummyListeners("set function " + functionNumber + " of locomotive " + locomotive.getName() + " to " + (state ? "ON" : "OFF") + " (" + Arrays.toString(locomotive.getCurrentFunctions()) + ")");
     }
 
     @Override
@@ -63,5 +71,6 @@ public class DummyLocomotiveController extends LocomotiveController {
         setFunction(locomotive, locomotive.getEmergencyStopFunctionNumber(), true, 0);
         setSpeed(locomotive, 0, locomotive.getCurrentFunctions());
         informListeners(locomotive);
+        dummyRailwayController.informDummyListeners("emergeny stop of locomotive " + locomotive.getName());
     }
 }

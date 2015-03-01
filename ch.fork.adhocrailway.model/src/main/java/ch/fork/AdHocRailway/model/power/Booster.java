@@ -1,6 +1,8 @@
 package ch.fork.AdHocRailway.model.power;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.omg.PortableInterceptor.ACTIVE;
+import org.omg.PortableInterceptor.INACTIVE;
 
 public class Booster {
 
@@ -34,5 +36,18 @@ public class Booster {
     @Override
     public String toString() {
         return new ToStringBuilder(this).append("boosterNumber").append("state").build();
+    }
+
+    public BoosterState getToggeledState() {
+        switch (this.state) {
+
+            case ACTIVE:
+                return BoosterState.INACTIVE;
+            case SHORTCUT:
+                return BoosterState.ACTIVE;
+            case INACTIVE:
+            default:
+                return BoosterState.ACTIVE;
+        }
     }
 }

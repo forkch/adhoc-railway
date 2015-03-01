@@ -1,10 +1,7 @@
 package ch.fork.AdHocRailway.ui;
 
 import ch.fork.AdHocRailway.controllers.*;
-import ch.fork.AdHocRailway.controllers.impl.dummy.DummyLocomotiveController;
-import ch.fork.AdHocRailway.controllers.impl.dummy.DummyPowerController;
-import ch.fork.AdHocRailway.controllers.impl.dummy.DummyRouteController;
-import ch.fork.AdHocRailway.controllers.impl.dummy.DummyTurnoutController;
+import ch.fork.AdHocRailway.controllers.impl.dummy.*;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.railway.brain.brain.*;
 import ch.fork.AdHocRailway.railway.srcp.SRCPLocomotiveControlAdapter;
@@ -17,7 +14,7 @@ public class RailwayDeviceFactory {
     public static LocomotiveController createLocomotiveController(
             final RailwayDevice railwayDevice, TaskExecutor taskExecutor) {
         if (railwayDevice == null) {
-            return new DummyLocomotiveController();
+            return new DummyLocomotiveController(DummyRailwayController.getInstance());
         }
         switch (railwayDevice) {
             case ADHOC_BRAIN:
@@ -26,7 +23,7 @@ public class RailwayDeviceFactory {
             case SRCP:
                 return new SRCPLocomotiveControlAdapter(taskExecutor);
             default:
-                return new DummyLocomotiveController();
+                return new DummyLocomotiveController(DummyRailwayController.getInstance());
 
         }
     }
@@ -35,7 +32,7 @@ public class RailwayDeviceFactory {
             final RailwayDevice railwayDevice, TaskExecutor taskExecutor) {
 
         if (railwayDevice == null) {
-            return new DummyTurnoutController();
+            return new DummyTurnoutController(DummyRailwayController.getInstance());
         }
         switch (railwayDevice) {
             case ADHOC_BRAIN:
@@ -43,7 +40,7 @@ public class RailwayDeviceFactory {
             case SRCP:
                 return new SRCPTurnoutControlAdapter(taskExecutor);
             default:
-                return new DummyTurnoutController();
+                return new DummyTurnoutController(DummyRailwayController.getInstance());
         }
 
     }
@@ -69,7 +66,7 @@ public class RailwayDeviceFactory {
     public static PowerController createPowerController(
             final RailwayDevice railwayDevice) {
         if (railwayDevice == null) {
-            return new DummyPowerController();
+            return new DummyPowerController(DummyRailwayController.getInstance());
         }
         switch (railwayDevice) {
             case ADHOC_BRAIN:
@@ -77,7 +74,7 @@ public class RailwayDeviceFactory {
             case SRCP:
                 return new SRCPPowerControlAdapter();
             default:
-                return new DummyPowerController();
+                return new DummyPowerController(DummyRailwayController.getInstance());
 
         }
 

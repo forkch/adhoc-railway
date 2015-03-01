@@ -124,10 +124,9 @@ public class BrainPowerControlAdapter extends PowerController implements
             }
         }
 
-        for (final PowerChangeListener l : listeners) {
-            l.powerChanged(supply);
-        }
+        informListeners(supply);
         scanner.close();
     }
+
 
 }

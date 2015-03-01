@@ -18,8 +18,6 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
     @Override
     public void toggle(final Turnout turnout) {
-
-
         switch (turnout.getActualState()) {
             case LEFT:
                 if (turnout.isThreeWay()) {

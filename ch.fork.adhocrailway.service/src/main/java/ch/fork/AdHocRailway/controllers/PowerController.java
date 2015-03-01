@@ -23,6 +23,12 @@ public abstract class PowerController {
         listeners.clear();
     }
 
+    protected void informListeners(PowerSupply supply) {
+        for (final PowerChangeListener l : listeners) {
+            l.powerChanged(supply);
+        }
+    }
+
     public abstract void addOrUpdatePowerSupply(final PowerSupply supply);
 
     public abstract void boosterOn(final Booster booster);

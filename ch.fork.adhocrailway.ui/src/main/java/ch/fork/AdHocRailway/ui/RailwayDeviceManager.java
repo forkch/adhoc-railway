@@ -1,12 +1,8 @@
 package ch.fork.AdHocRailway.ui;
 
 import ch.fork.AdHocRailway.controllers.*;
-import ch.fork.AdHocRailway.controllers.impl.dummy.DummyLocomotiveController;
-import ch.fork.AdHocRailway.controllers.impl.dummy.DummyPowerController;
-import ch.fork.AdHocRailway.controllers.impl.dummy.DummyRouteController;
-import ch.fork.AdHocRailway.controllers.impl.dummy.DummyTurnoutController;
+import ch.fork.AdHocRailway.controllers.impl.dummy.*;
 import ch.fork.AdHocRailway.model.AdHocRailwayException;
-import ch.fork.AdHocRailway.model.Constants;
 import ch.fork.AdHocRailway.model.power.PowerSupply;
 import ch.fork.AdHocRailway.railway.brain.brain.BrainController;
 import ch.fork.AdHocRailway.railway.brain.brain.BrainListener;
@@ -28,12 +24,13 @@ import de.dermoba.srcp.model.locking.SRCPLockControl;
 import org.apache.log4j.Logger;
 
 public class RailwayDeviceManager implements CommandDataListener,
-        InfoDataListener, PreferencesKeys, BrainListener {
+        InfoDataListener, PreferencesKeys, BrainListener, DummyListener {
 
     private static final Logger LOGGER = Logger
             .getLogger(RailwayDeviceManager.class);
     private final RailwayDeviceManagerContext appContext;
     private boolean connected = false;
+
 
     public RailwayDeviceManager(final RailwayDeviceManagerContext appContext) {
         this.appContext = appContext;
@@ -82,10 +79,10 @@ public class RailwayDeviceManager implements CommandDataListener,
             disconnectFromBrain();
         }
 
-        appContext.setLocomotiveControl(new DummyLocomotiveController());
-        appContext.setTurnoutControl(new DummyTurnoutController());
+        appContext.setLocomotiveControl(new DummyLocomotiveController(DummyRailwayController.getInstance()));
+        appContext.setTurnoutControl(new DummyTurnoutController(DummyRailwayController.getInstance()));
         appContext.setRouteControl(new DummyRouteController(appContext.getTurnoutControl(), appContext.getTurnoutManager()));
-        appContext.setPowerController(new DummyPowerController());
+        appContext.setPowerController(new DummyPowerController(DummyRailwayController.getInstance()));
 
         connected = false;
 
@@ -126,7 +123,8 @@ public class RailwayDeviceManager implements CommandDataListener,
     }
 
     private void connectToNullDevice() {
-
+        DummyRailwayController.getInstance().removeDummyListener(this);
+        DummyRailwayController.getInstance().addDummyListener(this);
     }
 
     private void connectToBrain(final String stringValue) {
@@ -186,7 +184,7 @@ public class RailwayDeviceManager implements CommandDataListener,
 
             //appContext.getLocomotiveControl().emergencyStopActiveLocos();
             SRCPSession session = appContext.getSession();
-            if(session!= null) {
+            if (session != null) {
                 session.disconnect();
                 session = null;
                 setSessionOnControllers(session);
@@ -251,7 +249,7 @@ public class RailwayDeviceManager implements CommandDataListener,
         final TurnoutController turnoutControl = RailwayDeviceFactory
                 .createTurnoutController(railwayDevive, taskExecutor);
         turnoutControl.setCutterSleepTime(Preferences.getInstance().getIntValue(
-                PreferencesKeys.CUTTER_SLEEP_TIME,500));
+                PreferencesKeys.CUTTER_SLEEP_TIME, 500));
         appContext.setTurnoutControl(turnoutControl);
         return turnoutControl;
     }
@@ -313,6 +311,11 @@ public class RailwayDeviceManager implements CommandDataListener,
     @Override
     public void sentMessage(String sentMessage) {
         logIfLoggingEnabled("Sent to brain: " + sentMessage);
+    }
+
+    @Override
+    public void sentDummyMessage(String sentMessage) {
+        logIfLoggingEnabled("Dummy: " + sentMessage);
     }
 
 
