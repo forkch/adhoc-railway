@@ -40,7 +40,10 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+import de.dermoba.srcp.model.turnouts.MMTurnout;
 
+import javax.naming.CompositeName;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -162,7 +165,7 @@ public class TurnoutConfig extends JDialog {
         address1TextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
                 address1Model, 1, // defaultValue
                 0, // minValue
-                324, // maxValue
+                Constants.MAX_TURNOUT_ADDRESS, // maxValue
                 1)); // step
 
         bus2TextField = new JSpinner();

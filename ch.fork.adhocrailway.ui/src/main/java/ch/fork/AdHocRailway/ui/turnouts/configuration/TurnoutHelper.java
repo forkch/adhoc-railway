@@ -1,6 +1,7 @@
 package ch.fork.AdHocRailway.ui.turnouts.configuration;
 
 import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.model.Constants;
 import ch.fork.AdHocRailway.model.turnouts.*;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
@@ -87,7 +88,7 @@ public class TurnoutHelper {
     }
 
     public static boolean isAddressValid(final int address) {
-        return address != 0 || address > MMTurnout.MAX_MM_TURNOUT_ADDRESS;
+        return address != 0 || address > Constants.MAX_TURNOUT_ADDRESS;
     }
 
     public static boolean isBusValid(final int bus) {

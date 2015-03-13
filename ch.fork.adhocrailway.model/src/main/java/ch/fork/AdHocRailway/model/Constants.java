@@ -25,4 +25,5 @@ package ch.fork.AdHocRailway.model;
  */
 public interface Constants {
     public static final int DEFAULT_BUS = 1;
+    public static final int MAX_TURNOUT_ADDRESS = 968;
 }
