@@ -51,6 +51,7 @@ public class DummyLocomotiveController extends LocomotiveController {
         locomotive.setCurrentSpeed(speed);
         locomotive.setCurrentFunctions(functions);
         informListeners(locomotive);
+        locomotive.setTargetSpeed(-1);
 
         dummyRailwayController.informDummyListeners("set speed of locomotive " + locomotive.getName() + " to " + speed);
     }
@@ -71,6 +72,7 @@ public class DummyLocomotiveController extends LocomotiveController {
         locomotive.setTargetSpeed(-1);
         setFunction(locomotive, locomotive.getEmergencyStopFunctionNumber(), true, 0);
         setSpeed(locomotive, 0, locomotive.getCurrentFunctions());
+        locomotive.setTargetSpeed(-1);
         informListeners(locomotive);
         dummyRailwayController.informDummyListeners("emergeny stop of locomotive " + locomotive.getName());
     }
