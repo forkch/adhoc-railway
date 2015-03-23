@@ -30,6 +30,7 @@ import ch.fork.AdHocRailway.ui.widgets.ConfigurationDialog;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -50,7 +51,7 @@ public class TurnoutTester extends ConfigurationDialog {
     private SpinnerNumberModel turnoutNumberSpinnerModel;
 
     public TurnoutTester(final JFrame owner, final TurnoutContext ctx) {
-        super(owner, "Turnout Programmer");
+        super(owner, "Turnout Programmer", false);
         this.ctx = ctx;
 
         preferences = ctx.getPreferences();
@@ -131,6 +132,8 @@ public class TurnoutTester extends ConfigurationDialog {
 
         });
 
+        Font biggerFont = turnoutAddressButton.getFont().deriveFont(30);
+        setFontOnComponents(new Font("Dialog", Font.PLAIN, 25), turnoutAddressButton, turnoutNumberButton, testButton, turnoutAddressField, turnoutNumberField);
         SwingUtils.addEscapeListener(this);
         pack();
         setLocationRelativeTo(getParent());
@@ -172,6 +175,12 @@ public class TurnoutTester extends ConfigurationDialog {
                 t.stopTesting();
                 testButton.setText("Start");
             }
+        }
+    }
+
+    private static void setFontOnComponents(Font font, JComponent... components) {
+        for (JComponent component : components) {
+            component.setFont(font);
         }
     }
 
