@@ -123,8 +123,11 @@ public class TurnoutManagerImpl implements TurnoutManager,
     }
 
     @Override
-    public void updateTurnout(final Turnout turnout) {
+    public void updateTurnout(int numberOfTrnoutBeforePotentialAlteration, final Turnout turnout) {
         LOGGER.debug("updateTurnout()");
+        if(numberOfTrnoutBeforePotentialAlteration != turnout.getNumber()) {
+            numberToTurnoutCache.remove(numberOfTrnoutBeforePotentialAlteration);
+        }
         turnoutService.updateTurnout(turnout);
     }
 

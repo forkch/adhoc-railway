@@ -1,18 +1,15 @@
 package ch.fork.AdHocRailway.controllers;
 
 public enum RailwayDevice {
-    SRCP("srcp"), ADHOC_BRAIN("adhoc_brain"), NULL_DEVICE("null device");
+    SRCP, ADHOC_BRAIN, NULL_DEVICE;
 
-    private final String key;
-
-    private RailwayDevice(final String key) {
-        this.key = key;
+    private RailwayDevice() {
 
     }
 
     public static RailwayDevice fromString(final String railwayDevice) {
         for (final RailwayDevice device : values()) {
-            if (device.key.equalsIgnoreCase(railwayDevice)) {
+            if (device.name().equalsIgnoreCase(railwayDevice)) {
                 return device;
             }
         }

@@ -219,15 +219,20 @@ public class KeyControl extends JPanel {
                 }
                 final TurnoutController turnoutControl = ctx
                         .getTurnoutControl();
+                final RouteController routeControl = ctx
+                        .getRouteControl();
                 final Object obj = historyStack.removeFirst();
                 if (obj instanceof Turnout) {
+
                     final Turnout t = (Turnout) obj;
-                    turnoutControl.setDefaultState(t);
+                    if(t.isLinkedToRoute()) {
+                        routeControl.disableRoute(ctx.getRouteForNumber(t.getLinkedRouteNumber()));
+                    }else {
+                        turnoutControl.setDefaultState(t);
+                    }
                 } else if (obj instanceof Route) {
                     final Route r = (Route) obj;
 
-                    final RouteController routeControl = ctx
-                            .getRouteControl();
                     routeControl.disableRoute(r);
                 } else {
                     return;
@@ -259,17 +264,27 @@ public class KeyControl extends JPanel {
             }
 
             updateHistory(searchedTurnout);
-            final TurnoutController turnoutControl = ctx.getTurnoutControl();
-            if (this instanceof CurvedLeftAction) {
-                turnoutControl.setCurvedLeft(searchedTurnout);
-            } else if (this instanceof StraightAction) {
-                turnoutControl.setStraight(searchedTurnout);
-            } else if (this instanceof CurvedRightAction) {
-                turnoutControl.setCurvedRight(searchedTurnout);
-            } else if (this instanceof EnableRouteAction) {
-                turnoutControl.setNonDefaultState(searchedTurnout);
+            if (searchedTurnout.isLinkedToRoute()) {
+                RouteController routeControl = ctx.getRouteControl();
+                Route routeForNumber = ctx.getRouteForNumber(searchedTurnout.getLinkedRouteNumber());
+                if (this instanceof EnableRouteAction) {
+                    routeControl.enableRoute(routeForNumber);
+                } else {
+                    routeControl.disableRoute(routeForNumber);
+                }
             } else {
-                turnoutControl.setDefaultState(searchedTurnout);
+                final TurnoutController turnoutControl = ctx.getTurnoutControl();
+                if (this instanceof CurvedLeftAction) {
+                    turnoutControl.setCurvedLeft(searchedTurnout);
+                } else if (this instanceof StraightAction) {
+                    turnoutControl.setStraight(searchedTurnout);
+                } else if (this instanceof CurvedRightAction) {
+                    turnoutControl.setCurvedRight(searchedTurnout);
+                } else if (this instanceof EnableRouteAction) {
+                    turnoutControl.setNonDefaultState(searchedTurnout);
+                } else {
+                    turnoutControl.setDefaultState(searchedTurnout);
+                }
             }
         }
 

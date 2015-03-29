@@ -309,11 +309,16 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                 try {
                     final TurnoutController turnoutControl = ctx
                             .getTurnoutControl();
-                    final int delay = Preferences.getInstance().getIntValue(
+                    int delay = Preferences.getInstance().getIntValue(
                             PreferencesKeys.ROUTING_DELAY);
+                    if(delay < 500) {
+                        delay = 500;
+                    }
                     for (final Turnout t : ctx.getTurnoutManager().getAllTurnouts()) {
-                        turnoutControl.setDefaultState(t);
-                        Thread.sleep(2 * delay);
+                        if(!t.isLinkedToRoute()) {
+                            turnoutControl.setDefaultState(t);
+                        }
+                        Thread.sleep(delay);
                     }
                 } catch (final InterruptedException e1) {
                     ctx.getMainApp().handleException(e1);

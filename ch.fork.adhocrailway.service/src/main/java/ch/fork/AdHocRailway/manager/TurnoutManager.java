@@ -41,7 +41,7 @@ public interface TurnoutManager {
 
     void removeTurnout(final Turnout turnout);
 
-    void updateTurnout(final Turnout turnout);
+    void updateTurnout(int numberOfTrnoutBeforePotentialAlteration, final Turnout turnout);
 
     SortedSet<TurnoutGroup> getAllTurnoutGroups();
 

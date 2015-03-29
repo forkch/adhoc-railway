@@ -337,8 +337,7 @@ public class PreferencesDialog extends JDialog implements PreferencesKeys {
 
     public void savePreferences() {
         final Preferences p = Preferences.getInstance();
-        p.setStringValue(RAILWAY_DEVICE, adhocDeviceComboBox.getSelectedItem()
-                .toString());
+        p.setStringValue(RAILWAY_DEVICE, ((RailwayDevice)adhocDeviceComboBox.getSelectedItem()).name());
 
         p.setStringValue(ADHOC_BRAIN_PORT,
                 (String) adHocBrainPort.getSelectedItem());

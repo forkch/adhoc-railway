@@ -90,6 +90,7 @@ public class TurnoutConfig extends JDialog {
     private BufferedValueModel linkedRouteModel;
     private JComboBox<Route> routeJComboBox;
     private BufferedValueModel linkedRouteNumberModel;
+    private int numberOfTrnoutBeforePotentialAlteration;
 
     public TurnoutConfig(final JDialog owner, final TurnoutContext ctx,
                          final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup, boolean createTurnout) {
@@ -107,6 +108,9 @@ public class TurnoutConfig extends JDialog {
     private void init(final TurnoutContext ctx, final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup, boolean createTurnout) {
         this.ctx = ctx;
         this.createTurnout = createTurnout;
+        if(!createTurnout) {
+            numberOfTrnoutBeforePotentialAlteration = myTurnout.getNumber();
+        }
         turnoutManager = ctx.getTurnoutManager();
         if(myTurnout.isLinkedToRoute()) {
             myTurnout.setLinkedRoute(ctx.getRouteForNumber(myTurnout.getLinkedRouteNumber()));
@@ -533,7 +537,7 @@ public class TurnoutConfig extends JDialog {
             if (createTurnout) {
                 turnoutManager.addTurnoutToGroup(turnout, selectedTurnoutGroup);
             } else {
-                turnoutManager.updateTurnout(turnout);
+                turnoutManager.updateTurnout(numberOfTrnoutBeforePotentialAlteration, turnout);
             }
 
         }
