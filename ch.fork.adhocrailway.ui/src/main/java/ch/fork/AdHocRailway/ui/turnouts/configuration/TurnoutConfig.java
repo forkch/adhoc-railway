@@ -107,8 +107,10 @@ public class TurnoutConfig extends JDialog {
     private void init(final TurnoutContext ctx, final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup, boolean createTurnout) {
         this.ctx = ctx;
         this.createTurnout = createTurnout;
-
         turnoutManager = ctx.getTurnoutManager();
+        if(myTurnout.isLinkedToRoute()) {
+            myTurnout.setLinkedRoute(ctx.getRouteForNumber(myTurnout.getLinkedRouteNumber()));
+        }
         testTurnout = TurnoutHelper.copyTurnout(myTurnout);
         this.presentationModel = new PresentationModel<Turnout>(myTurnout,
                 trigger);

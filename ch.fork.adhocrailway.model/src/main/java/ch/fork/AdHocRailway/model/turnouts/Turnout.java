@@ -103,6 +103,7 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
         address2 = old.getAddress2();
         address2Switched = old.isAddress2Switched();
         groupId = old.getGroupId();
+        linkedRouteNumber = old.getLinkedRouteNumber();
     }
 
     @Override
