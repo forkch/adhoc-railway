@@ -68,7 +68,8 @@ public class PersistenceManager {
 
         switchToFileMode();
 
-        loadPersistenceLayer();
+        loadPersistenceLayer(appContext.getPreferences()
+                .getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER));
 
         try {
             new XMLServiceHelper()
@@ -142,7 +143,7 @@ public class PersistenceManager {
             public void connected() {
                 appContext.setSIOService(sioService);
 
-                loadPersistenceLayer();
+                loadPersistenceLayer(true);
 
                 appContext.getMainBus().post(
                         new UpdateMainTitleEvent(AdHocRailway.TITLE + " ["
@@ -166,10 +167,15 @@ public class PersistenceManager {
         }
     }
 
+    public void initializeEmpty() {
+        disconnectFromCurrentPersistence();
+        loadPersistenceLayer(false);
+    }
     public void createNewFile() {
         disconnectFromCurrentPersistence();
         switchToFileMode();
-        loadPersistenceLayer();
+        loadPersistenceLayer(appContext.getPreferences()
+                .getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER));
     }
 
     private String getAdHocServerURL() {
@@ -185,10 +191,8 @@ public class PersistenceManager {
         return url;
     }
 
-    private void loadPersistenceLayer() {
+    private void loadPersistenceLayer(boolean useAdHocServer) {
 
-        final boolean useAdHocServer = appContext.getPreferences()
-                .getBooleanValue(PreferencesKeys.USE_ADHOC_SERVER);
 
         createLocomotiveManagerOnContext(useAdHocServer);
         createTurnoutManagerOnContext(useAdHocServer);

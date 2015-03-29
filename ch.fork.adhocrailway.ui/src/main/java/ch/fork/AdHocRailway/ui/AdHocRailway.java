@@ -173,7 +173,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             railwayDeviceManager = new RailwayDeviceManager(appContext);
             appContext.setRailwayDeviceManager(railwayDeviceManager);
 
-            persistenceManager.createNewFile();
+            persistenceManager.initializeEmpty();
 
             try {
                 persistenceManager
