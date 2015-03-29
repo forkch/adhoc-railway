@@ -60,8 +60,11 @@ public class TurnoutCanvas extends JPanel {
             paintThreeway(g);
         } else if (turnout.isCutter()) {
             paintCutter(g);
+        } else if(turnout.isLinkedToRoute()) {
+            paintLinkedRoute(g);
         }
     }
+
 
     private void rotate(final Graphics g, final BufferedImage img) {
         final Graphics2D g2 = (Graphics2D) g;
@@ -175,6 +178,19 @@ public class TurnoutCanvas extends JPanel {
         g3.drawImage(
                 createImageIconFromCustom("cutter.png").getImage(), 0, 0,
                 this);
+
+        rotate(g, img);
+    }
+
+    private void paintLinkedRoute(final Graphics g) {
+        final BufferedImage img = new BufferedImage(56, 35,
+                BufferedImage.TYPE_4BYTE_ABGR);
+        final Graphics2D g3 = img.createGraphics();
+//        g3.drawImage(
+//                createImageIconFromCustom("cutter.png").getImage(), 0, 0,
+//                this);
+
+        g3.drawString("Route " + Integer.toString(turnout.getLinkedRouteNumber()), 0,0);
 
         rotate(g, img);
     }

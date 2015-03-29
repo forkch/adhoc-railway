@@ -18,9 +18,11 @@
 
 package ch.fork.AdHocRailway.ui.turnouts;
 
+import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.controllers.TurnoutChangeListener;
 import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectedToRailwayEvent;
@@ -201,7 +203,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
             if (e.getButton() == MouseEvent.BUTTON1) {
                 handleLeftClick();
             } else if (e.getButton() == MouseEvent.BUTTON3) {
-
                 handleRightClick();
             }
         }
@@ -216,12 +217,23 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener {
             if (!ctx.getRailwayDeviceManager().isConnected()) {
                 return;
             }
-            final TurnoutController turnoutControl = ctx
-                    .getTurnoutControl();
-            if (!testMode) {
-                turnoutControl.toggle(turnout);
+
+            if(turnout.isLinkedToRoute()) {
+                RouteController routeControl = ctx.getRouteControl();
+                Route routeForNumber = ctx.getRouteForNumber(turnout.getLinkedRouteNumber());
+                if (!testMode) {
+                    routeControl.toggle(routeForNumber);
+                } else {
+                    routeControl.toggleTest(routeForNumber);
+                }
             } else {
-                turnoutControl.toggleTest(turnout);
+                final TurnoutController turnoutControl = ctx
+                        .getTurnoutControl();
+                if (!testMode) {
+                    turnoutControl.toggle(turnout);
+                } else {
+                    turnoutControl.toggleTest(turnout);
+                }
             }
         }
 

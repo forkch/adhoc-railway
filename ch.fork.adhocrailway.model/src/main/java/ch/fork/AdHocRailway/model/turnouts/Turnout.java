@@ -48,6 +48,7 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
     public static final String PROPERTYNAME_TURNOUT_GROUP = "turnoutGroup";
     public static final String PROPERTYNAME_LINKED_ROUTE_NUMBER = "linkedRouteNumber";
+    public static final String PROPERTYNAME_LINKED_ROUTE = "linkedRoute";
     @Expose
     private String id = UUID.randomUUID().toString();
     @Expose
@@ -346,7 +347,7 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     }
 
     public boolean isLinkedToRoute() {
-        return (linkedRouteNumber > 0 && linkedRoute != null);
+        return (linkedRouteNumber > 0);
     }
 
     @Override

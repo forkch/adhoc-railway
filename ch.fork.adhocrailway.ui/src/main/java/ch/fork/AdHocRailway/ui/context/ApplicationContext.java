@@ -7,6 +7,7 @@ import ch.fork.AdHocRailway.controllers.TurnoutController;
 import ch.fork.AdHocRailway.manager.LocomotiveManager;
 import ch.fork.AdHocRailway.manager.RouteManager;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
+import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.ui.RailwayDeviceManager;
@@ -17,6 +18,7 @@ import de.dermoba.srcp.model.locking.SRCPLockControl;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 public class ApplicationContext implements TurnoutContext, RouteContext,
@@ -79,6 +81,11 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
     }
 
     @Override
+    public List<Route> getAllRoutes() {
+        return routeManager.getAllRoutes();
+    }
+
+    @Override
     public void setTurnoutManager(final TurnoutManager turnoutPersistence) {
         this.turnoutManager = turnoutPersistence;
     }
@@ -86,6 +93,11 @@ public class ApplicationContext implements TurnoutContext, RouteContext,
     @Override
     public RouteController getRouteControl() {
         return routeControl;
+    }
+
+    @Override
+    public Route getRouteForNumber(int routeNumber) {
+        return routeManager.getRouteByNumber(routeNumber);
     }
 
     @Override

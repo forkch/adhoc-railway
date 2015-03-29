@@ -88,8 +88,8 @@ public class TurnoutConfig extends JDialog {
     private BufferedValueModel defaultStateModel;
     private BufferedValueModel orientationModel;
     private BufferedValueModel linkedRouteModel;
-    private JSpinner linkedRouteSpinner;
-    private JButton selectLinkedRouteButton;
+    private JComboBox<Route> routeJComboBox;
+    private BufferedValueModel linkedRouteNumberModel;
 
     public TurnoutConfig(final JDialog owner, final TurnoutContext ctx,
                          final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup, boolean createTurnout) {
@@ -143,7 +143,9 @@ public class TurnoutConfig extends JDialog {
         turnoutTypeModel = getBufferedModel(Turnout.PROPERTYNAME_TURNOUT_TYPE);
         defaultStateModel = getBufferedModel(Turnout.PROPERTYNAME_DEFAULT_STATE);
         orientationModel = getBufferedModel(Turnout.PROPERTYNAME_ORIENTATION);
-        linkedRouteModel = getBufferedModel(Turnout.PROPERTYNAME_LINKED_ROUTE_NUMBER);
+        linkedRouteNumberModel = getBufferedModel(Turnout.PROPERTYNAME_LINKED_ROUTE_NUMBER);
+
+        linkedRouteModel = getBufferedModel(Turnout.PROPERTYNAME_LINKED_ROUTE);
 
         numberTextField = new JSpinner();
         numberTextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
@@ -189,13 +191,10 @@ public class TurnoutConfig extends JDialog {
         switched2Checkbox = BasicComponentFactory.createCheckBox(
                 switched2Model, "Inverted");
 
+        routeJComboBox = BasicComponentFactory.createComboBox(new SelectionInList<Route>(ctx.getAllRoutes(), linkedRouteModel));
+        routeJComboBox.addActionListener(new LinkedRouteSelectionListener());
+        routeJComboBox.setRenderer(new RouteComboboxRenderer());
 
-        linkedRouteSpinner = new JSpinner();
-        linkedRouteSpinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
-                linkedRouteModel, 0, 0, Integer.MAX_VALUE,1
-        ));
-        selectLinkedRouteButton = new JButton("Select");
-        selectLinkedRouteButton.setAction(new SelectLinkedRouteAction(presentationModel));
 
 
         final List<TurnoutType> turnoutTypes = Arrays.asList(TurnoutType
@@ -295,8 +294,7 @@ public class TurnoutConfig extends JDialog {
         builder.add(switched2Checkbox, cc.xy(9, 9));
 
         builder.addLabel("Linked Route", cc.xy(5, 11));
-        builder.add(linkedRouteSpinner, cc.xy(7,11));
-        builder.add(selectLinkedRouteButton, cc.xy(9, 11));
+        builder.add(routeJComboBox, cc.xy(7,11));
 
         builder.addSeparator("Test", cc.xy(11, 1));
         builder.add(testTurnoutWidget, cc.xywh(11, 3, 1, 9));
@@ -444,13 +442,18 @@ public class TurnoutConfig extends JDialog {
             case CUTTER:
                 enableDisableSpinners(true, bus1TextField, address1TextField);
                 enableDisableSpinners(false, bus2TextField, address2TextField);
+                linkedRouteModel.setValue(null);
+                routeJComboBox.setEnabled(false);
                 break;
             case THREEWAY:
                 bus2TextField.setValue(Constants.DEFAULT_BUS);
-                enableDisableSpinners(true, bus1TextField, address1TextField,bus2TextField, address2TextField);
+                enableDisableSpinners(true, bus1TextField, address1TextField, bus2TextField, address2TextField);
+                linkedRouteModel.setValue(null);
+                routeJComboBox.setEnabled(false);
                 break;
             case LINKED_ROUTE:
                 enableDisableSpinners(false, bus1TextField, address1TextField, bus2TextField, address2TextField);
+                routeJComboBox.setEnabled(true);
                 break;
             default:
                 break;
@@ -549,16 +552,17 @@ public class TurnoutConfig extends JDialog {
         }
     }
 
-    private class SelectLinkedRouteAction extends AbstractAction {
-        private PresentationModel<Turnout> presentationModel;
-
-        public SelectLinkedRouteAction(PresentationModel<Turnout> presentationModel) {
-            this.presentationModel = presentationModel;
-        }
-
+    private class LinkedRouteSelectionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            final Route selectedRoute= (Route) routeJComboBox
+                    .getSelectedItem();
+            if(selectedRoute != null) {
+                linkedRouteNumberModel.setValue(selectedRoute.getNumber());
+            } else {
 
+                linkedRouteNumberModel.setValue(-1);
+            }
         }
     }
 }
