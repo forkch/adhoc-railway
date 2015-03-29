@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ssh -t baehnle@adhocserver 'sudo killall node'
+ssh baehnle@adhocserver 'mkdir ~/AdHoc-Railway/'
 ssh baehnle@adhocserver 'rm -rf ~/AdHoc-Railway/AdHoc-Railway-Server'
 
 mkdir build
