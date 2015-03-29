@@ -277,6 +277,9 @@ public class RailwayDeviceManager implements CommandDataListener,
     }
 
     private void setSessionOnControllers(final SRCPSession session) {
+        if(!(appContext.getPowerControl() instanceof  SRCPPowerControlAdapter)) {
+            return;
+        }
         ((SRCPPowerControlAdapter) appContext.getPowerControl())
                 .setSession(session);
         ((SRCPTurnoutControlAdapter) appContext.getTurnoutControl())
