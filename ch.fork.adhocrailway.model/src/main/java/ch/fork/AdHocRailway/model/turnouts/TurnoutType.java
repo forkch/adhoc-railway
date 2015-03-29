@@ -6,7 +6,8 @@ public enum TurnoutType {
     DEFAULT_RIGHT("Default Right"),
     DOUBLECROSS("Doublecross"),
     THREEWAY("Threeway"),
-    CUTTER("Cutter");
+    CUTTER("Cutter"),
+    LINKED_ROUTE("LinkedRoute");
 
     private final String humanName;
 

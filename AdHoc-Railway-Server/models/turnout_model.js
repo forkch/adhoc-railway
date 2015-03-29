@@ -13,7 +13,8 @@ exports.TurnoutSchema = new Schema({
     defaultState: String,
     orientation: String,
     description: String,
-    groupId: ObjectId
+    groupId: ObjectId,
+    linkedRouteNumber: Number
 });
 
 exports.TurnoutGroupSchema = new Schema({

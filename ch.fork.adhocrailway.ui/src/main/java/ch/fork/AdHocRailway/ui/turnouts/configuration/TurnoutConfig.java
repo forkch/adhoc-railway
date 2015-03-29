@@ -40,10 +40,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-import de.dermoba.srcp.model.turnouts.MMTurnout;
 
-import javax.naming.CompositeName;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -90,6 +87,9 @@ public class TurnoutConfig extends JDialog {
     private BufferedValueModel turnoutTypeModel;
     private BufferedValueModel defaultStateModel;
     private BufferedValueModel orientationModel;
+    private BufferedValueModel linkedRouteModel;
+    private JSpinner linkedRouteSpinner;
+    private JButton selectLinkedRouteButton;
 
     public TurnoutConfig(final JDialog owner, final TurnoutContext ctx,
                          final Turnout myTurnout, final TurnoutGroup selectedTurnoutGroup, boolean createTurnout) {
@@ -143,6 +143,7 @@ public class TurnoutConfig extends JDialog {
         turnoutTypeModel = getBufferedModel(Turnout.PROPERTYNAME_TURNOUT_TYPE);
         defaultStateModel = getBufferedModel(Turnout.PROPERTYNAME_DEFAULT_STATE);
         orientationModel = getBufferedModel(Turnout.PROPERTYNAME_ORIENTATION);
+        linkedRouteModel = getBufferedModel(Turnout.PROPERTYNAME_LINKED_ROUTE_NUMBER);
 
         numberTextField = new JSpinner();
         numberTextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
@@ -179,7 +180,7 @@ public class TurnoutConfig extends JDialog {
         address2TextField.setModel(SpinnerAdapterFactory.createNumberAdapter(
                 address2Model, 0, // defaultValue
                 0, // minValue
-                324, // maxValue
+                Constants.MAX_TURNOUT_ADDRESS, // maxValue
                 1)); // step
 
         switched1Checkbox = BasicComponentFactory.createCheckBox(swiched1Model,
@@ -187,6 +188,15 @@ public class TurnoutConfig extends JDialog {
 
         switched2Checkbox = BasicComponentFactory.createCheckBox(
                 switched2Model, "Inverted");
+
+
+        linkedRouteSpinner = new JSpinner();
+        linkedRouteSpinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
+                linkedRouteModel, 0, 0, Integer.MAX_VALUE,1
+        ));
+        selectLinkedRouteButton = new JButton("Select");
+        selectLinkedRouteButton.setAction(new SelectLinkedRouteAction(presentationModel));
+
 
         final List<TurnoutType> turnoutTypes = Arrays.asList(TurnoutType
                 .values());
@@ -198,22 +208,7 @@ public class TurnoutConfig extends JDialog {
         turnoutTypeComboBox
                 .addActionListener(new TurnoutTypeSelectionListener());
 
-        switch (presentationModel.getBean().getType()) {
-            case DEFAULT_LEFT:
-            case DOUBLECROSS:
-            case CUTTER:
-                bus2TextField.setValue(0);
-                bus2TextField.setEnabled(false);
-                address2TextField.setValue(0);
-                address2TextField.setEnabled(false);
-                break;
-            case THREEWAY:
-                bus2TextField.setEnabled(true);
-                address2TextField.setEnabled(true);
-                break;
-            default:
-                break;
-        }
+        updateUIBasedOnTurnoutType(presentationModel.getBean().getType());
 
         turnoutDefaultStateComboBox = BasicComponentFactory
                 .createComboBox(new SelectionInList<TurnoutState>(
@@ -240,6 +235,15 @@ public class TurnoutConfig extends JDialog {
         okButton = new JButton(new ApplyChangesAction());
         cancelButton = new JButton(new CancelAction());
         validate(presentationModel.getBean());
+    }
+
+    private void enableDisableSpinners(boolean enable, JSpinner... fields) {
+        for (JSpinner field : fields) {
+            if(!enable) {
+                field.setValue(0);
+            }
+            field.setEnabled(enable);
+        }
     }
 
     private void buildPanel() {
@@ -279,15 +283,20 @@ public class TurnoutConfig extends JDialog {
         builder.addLabel("Address 1", cc.xy(5, 5));
         builder.add(address1TextField, cc.xy(7, 5));
 
+        builder.add(switched1Checkbox, cc.xy(9, 5));
+        
         builder.addLabel("Bus 2", cc.xy(5, 7));
         builder.add(bus2TextField, cc.xy(7, 7));
 
         builder.addLabel("Address 2", cc.xy(5, 9));
         builder.add(address2TextField, cc.xy(7, 9));
 
-        builder.add(switched1Checkbox, cc.xy(9, 5));
 
         builder.add(switched2Checkbox, cc.xy(9, 9));
+
+        builder.addLabel("Linked Route", cc.xy(5, 11));
+        builder.add(linkedRouteSpinner, cc.xy(7,11));
+        builder.add(selectLinkedRouteButton, cc.xy(9, 11));
 
         builder.addSeparator("Test", cc.xy(11, 1));
         builder.add(testTurnoutWidget, cc.xywh(11, 3, 1, 9));
@@ -423,26 +432,29 @@ public class TurnoutConfig extends JDialog {
         public void actionPerformed(final ActionEvent e) {
             final TurnoutType selectedTurnoutType = (TurnoutType) turnoutTypeComboBox
                     .getSelectedItem();
-            switch (selectedTurnoutType) {
-                case DEFAULT_LEFT:
-                case DOUBLECROSS:
-                    bus2TextField.setValue(0);
-                    bus2TextField.setEnabled(false);
-                    address2TextField.setValue(0);
-                    address2TextField.setEnabled(false);
-                    break;
-                case THREEWAY:
-                    bus2TextField.setValue(Constants.DEFAULT_BUS);
-                    bus2TextField.setEnabled(true);
-                    address2TextField.setEnabled(true);
-                    break;
-                case CUTTER:
-                    break;
-                default:
-                    break;
-            }
+            updateUIBasedOnTurnoutType(selectedTurnoutType);
         }
 
+    }
+
+    private void updateUIBasedOnTurnoutType(TurnoutType selectedTurnoutType) {
+        switch (selectedTurnoutType) {
+            case DEFAULT_LEFT:
+            case DOUBLECROSS:
+            case CUTTER:
+                enableDisableSpinners(true, bus1TextField, address1TextField);
+                enableDisableSpinners(false, bus2TextField, address2TextField);
+                break;
+            case THREEWAY:
+                bus2TextField.setValue(Constants.DEFAULT_BUS);
+                enableDisableSpinners(true, bus1TextField, address1TextField,bus2TextField, address2TextField);
+                break;
+            case LINKED_ROUTE:
+                enableDisableSpinners(false, bus1TextField, address1TextField, bus2TextField, address2TextField);
+                break;
+            default:
+                break;
+        }
     }
 
     class TurnoutChangeListener implements PropertyChangeListener {
@@ -537,4 +549,16 @@ public class TurnoutConfig extends JDialog {
         }
     }
 
+    private class SelectLinkedRouteAction extends AbstractAction {
+        private PresentationModel<Turnout> presentationModel;
+
+        public SelectLinkedRouteAction(PresentationModel<Turnout> presentationModel) {
+            this.presentationModel = presentationModel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
 }

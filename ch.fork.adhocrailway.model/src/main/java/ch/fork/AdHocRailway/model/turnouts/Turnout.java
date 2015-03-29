@@ -47,6 +47,7 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     public static final String PROPERTYNAME_ADDRESS2_SWITCHED = "address2Switched";
     public static final String PROPERTYNAME_ROUTE_ITEMS = "routeItems";
     public static final String PROPERTYNAME_TURNOUT_GROUP = "turnoutGroup";
+    public static final String PROPERTYNAME_LINKED_ROUTE_NUMBER = "linkedRouteNumber";
     @Expose
     private String id = UUID.randomUUID().toString();
     @Expose
@@ -74,10 +75,14 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     @XStreamAsAttribute
     @Expose
     private String groupId;
+
+    @Expose
+    private int linkedRouteNumber;
+
     private transient Set<RouteItem> routeItems = new HashSet<RouteItem>();
     private transient TurnoutGroup turnoutGroup;
     private transient TurnoutState actualState = TurnoutState.UNDEF;
-
+    private transient Route linkedRoute;
 
     public Turnout() {
 
@@ -231,6 +236,22 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
                 this.address2Switched);
     }
 
+    public int getLinkedRouteNumber() {
+        return linkedRouteNumber;
+    }
+
+    public void setLinkedRouteNumber(int linkedRouteNumber) {
+        this.linkedRouteNumber = linkedRouteNumber;
+    }
+
+    public void setLinkedRoute(Route linkedRoute) {
+        this.linkedRoute = linkedRoute;
+    }
+
+    public Route getLinkedRoute() {
+        return linkedRoute;
+    }
+
     public boolean isDefaultLeft() {
         return getType() == TurnoutType.DEFAULT_LEFT;
     }
@@ -322,6 +343,10 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+
+    public boolean isLinkedToRoute() {
+        return (linkedRouteNumber > 0 && linkedRoute != null);
     }
 
     @Override

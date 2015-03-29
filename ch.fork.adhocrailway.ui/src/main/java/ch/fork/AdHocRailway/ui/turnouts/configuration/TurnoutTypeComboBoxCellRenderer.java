@@ -56,6 +56,9 @@ public class TurnoutTypeComboBoxCellRenderer extends DefaultListCellRenderer {
             case CUTTER:
                 iconLabel.setIcon(ImageTools
                         .createImageIconFromCustom("cutter_small.png"));
+            case LINKED_ROUTE:
+                iconLabel.setIcon(ImageTools
+                        .createImageIconFromCustom("cutter_small.png"));
         }
         return iconLabel;
     }
