@@ -428,6 +428,16 @@ public class RouteConfig extends JDialog {
                                     ImageTools
                                             .createImageIconFromIconSet("dialog-error.png")
                             );
+                } else if (turnout.isLinkedToRoute()) {
+                    JOptionPane
+                            .showMessageDialog(
+                                    RouteConfig.this,
+                                    "Turnout " + enteredNumber
+                                            + " is linked to a route",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE,
+                                    ImageTools
+                                            .createImageIconFromIconSet("dialog-error.png"));
                 } else {
                     RouteItemState routedState = null;
                     if (this instanceof CurvedLeftAction) {
