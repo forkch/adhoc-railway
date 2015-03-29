@@ -24,13 +24,12 @@ import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.utils.SwingUtils;
 import ch.fork.AdHocRailway.ui.widgets.ConfigurationDialog;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TurnoutProgrammer extends ConfigurationDialog {
