@@ -7,7 +7,6 @@ import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
 import ch.fork.AdHocRailway.ui.context.TurnoutContext;
 import ch.fork.AdHocRailway.ui.utils.UIConstants;
-import de.dermoba.srcp.model.turnouts.MMTurnout;
 import org.apache.commons.beanutils.BeanUtils;
 
 import javax.swing.*;
@@ -48,6 +47,11 @@ public class TurnoutHelper {
 
     public static void validateTurnout(final TurnoutManager turnoutPersistence,
                                        final Turnout turnout, final JPanel panel) {
+
+        if(turnout.isLinkedToRoute()) {
+            return;
+        }
+
         if (isBusValid(turnout.getBus1())) {
             panel.setBackground(UIConstants.DEFAULT_PANEL_COLOR);
         } else {

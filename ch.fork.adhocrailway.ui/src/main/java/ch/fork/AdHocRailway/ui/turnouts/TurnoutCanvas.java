@@ -30,6 +30,7 @@ import java.awt.image.BufferedImage;
 import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromCustom;
 
 public class TurnoutCanvas extends JPanel {
+    public static final String LINKED_ROUTE = "canvas/linked_route.png";
     public static final String DEFAULT_SWITCH_RIGHT = "canvas/default_switch_right.png";
     public static final String LED_MIDDLE_WHITE = "canvas/LED_middle_white.png";
     public static final String LED_MIDDLE_YELLOW = "canvas/LED_middle_yellow.png";
@@ -183,14 +184,50 @@ public class TurnoutCanvas extends JPanel {
     }
 
     private void paintLinkedRoute(final Graphics g) {
-        final BufferedImage img = new BufferedImage(56, 35,
+        final BufferedImage img = new BufferedImage(112, 42,
                 BufferedImage.TYPE_4BYTE_ABGR);
         final Graphics2D g3 = img.createGraphics();
-//        g3.drawImage(
-//                createImageIconFromCustom("cutter.png").getImage(), 0, 0,
-//                this);
+        g3.drawImage(
+                createImageIconFromCustom(LINKED_ROUTE)
+                        .getImage(), 0, 0, this
+        );
 
-        g3.drawString("Route " + Integer.toString(turnout.getLinkedRouteNumber()), 0,0);
+        if(turnout.getLinkedRoute()!=null) {
+            if (turnout.getLinkedRoute().isEnabled()) {
+                g3.drawImage(createImageIconFromCustom(LED_UP_YELLOW)
+                        .getImage(), 28, 21, this);
+                g3.drawImage(createImageIconFromCustom(LED_UP_YELLOW)
+                        .getImage(), 55, 3, this);
+                g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
+                        .getImage(), 55, -14, this);
+                g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
+                        .getImage(), 28, 21, this);
+            } else {
+                g3.drawImage(createImageIconFromCustom(LED_UP_WHITE)
+                        .getImage(), 28, 21, this);
+                g3.drawImage(createImageIconFromCustom(LED_UP_WHITE)
+                        .getImage(), 55, 3, this);
+                g3.drawImage(createImageIconFromCustom(LED_MIDDLE_YELLOW)
+                        .getImage(), 55, -14, this);
+                g3.drawImage(createImageIconFromCustom(LED_MIDDLE_YELLOW)
+                        .getImage(), 28, 21, this);
+            }
+        }
+
+        g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
+                .getImage(), 0, -14, this);
+        g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
+                .getImage(), 28, -14, this);
+        g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
+                .getImage(), 83, -14, this);
+
+        g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
+                .getImage(), 0, 21, this);
+        g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
+                .getImage(), 55, 21, this);
+        g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
+                .getImage(), 83, 21, this);
+
 
         rotate(g, img);
     }
@@ -330,7 +367,12 @@ public class TurnoutCanvas extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(56, 56);
+        if(turnout.isLinkedToRoute()) {
+
+            return new Dimension(112, 56);
+        }else {
+            return new Dimension(56, 56);
+        }
     }
 
     @Override
@@ -344,6 +386,8 @@ public class TurnoutCanvas extends JPanel {
     }
 
     public void setTurnoutState(final TurnoutState turnoutState) {
-        this.turnoutState = turnoutState;
+            this.turnoutState = turnoutState;
+            revalidate();
+            repaint();
     }
 }
