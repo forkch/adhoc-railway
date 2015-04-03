@@ -49,6 +49,8 @@ public class TurnoutTester extends ConfigurationDialog {
     private JRadioButton turnoutAddressButton;
     private SpinnerNumberModel turnoutAddressSpinnerModel;
     private SpinnerNumberModel turnoutNumberSpinnerModel;
+    private JToggleButton testCycleButton;
+    private TurnoutCycleTestThread turnoutCycleTestThread;
 
     public TurnoutTester(final JFrame owner, final TurnoutContext ctx) {
         super(owner, "Turnout Programmer", false);
@@ -76,12 +78,14 @@ public class TurnoutTester extends ConfigurationDialog {
         buttonGroup.add(turnoutNumberButton);
         buttonGroup.add(turnoutAddressButton);
         testButton = new JToggleButton(new WarmupAction());
+        testCycleButton = new JToggleButton(new TestCycleAction());
 
         mainPanel.add(turnoutNumberButton);
         mainPanel.add(turnoutNumberField, "wrap");
         mainPanel.add(turnoutAddressButton);
         mainPanel.add(turnoutAddressField, "wrap");
-        mainPanel.add(testButton, "span 2, grow");
+        mainPanel.add(testButton, "span 2, grow,wrap");
+        mainPanel.add(testCycleButton, "span 2, grow");
 
         addMainComponent(mainPanel);
 
@@ -133,7 +137,7 @@ public class TurnoutTester extends ConfigurationDialog {
         });
 
         Font biggerFont = turnoutAddressButton.getFont().deriveFont(30);
-        setFontOnComponents(new Font("Dialog", Font.PLAIN, 25), turnoutAddressButton, turnoutNumberButton, testButton, turnoutAddressField, turnoutNumberField);
+        setFontOnComponents(new Font("Dialog", Font.PLAIN, 25), turnoutAddressButton, turnoutNumberButton, testButton, testButton,turnoutAddressField, turnoutNumberField);
         SwingUtils.addEscapeListener(this);
         pack();
         setLocationRelativeTo(getParent());
@@ -240,6 +244,55 @@ public class TurnoutTester extends ConfigurationDialog {
         private void waitTime() throws InterruptedException {
             Thread.sleep(4 * Preferences.getInstance().getIntValue(
                     PreferencesKeys.ROUTING_DELAY));
+        }
+    }
+
+    private class TestCycleAction extends AbstractAction {
+
+        public TestCycleAction() {
+            super("Cycle through all turnouts");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (testCycleButton.isSelected()) {
+                testCycleButton.setText("Stop");
+                turnoutCycleTestThread = new TurnoutCycleTestThread();
+                turnoutCycleTestThread.start();
+
+            } else {
+                turnoutCycleTestThread.stopTesting();
+                testCycleButton.setText("Cycle through all turnouts");
+            }
+        }
+
+    }
+
+    class TurnoutCycleTestThread extends Thread {
+        boolean enabled = true;
+
+        public void stopTesting() {
+            enabled = false;
+        }
+
+        @Override
+        public void run() {
+            try {
+                java.util.List<Turnout> allTurnouts = ctx.getTurnoutManager().getAllTurnouts();
+
+                while (enabled) {
+                    for (Turnout turnout : allTurnouts) {
+                        if(turnout.isLinkedToRoute()) {
+                            continue;
+                        }
+                        ctx.getTurnoutControl().toggle(turnout);
+                        Thread.sleep(500);
+
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
