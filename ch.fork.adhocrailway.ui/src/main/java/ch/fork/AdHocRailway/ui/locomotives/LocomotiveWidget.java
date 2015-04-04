@@ -172,6 +172,17 @@ public class LocomotiveWidget extends JPanel implements
 
     private JPanel initFunctionsControl() {
         functionsPanel = new JPanel();
+        functionsPanel.setLayout(new MigLayout("insets 0, wrap, fill"));
+        if(myLocomotive == null) {
+            for (int i = 0; i < 5; i++) {
+                final FunctionToggleButton functionButton = new FunctionToggleButton(
+                        "Fn" + i);
+                functionToggleButtons.add(functionButton);
+                functionButton.setFocusable(false);
+                functionsPanel.add(functionButton, getFunctionButtonParams());
+                functionButton.setEnabled(false);
+            }
+        }
 
         return functionsPanel;
     }
@@ -208,10 +219,7 @@ public class LocomotiveWidget extends JPanel implements
         directionButton.setFocusable(false);
         lockButton.setFocusable(false);
 
-        String params = "height 30, growx";
-        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.TABLET_MODE)) {
-            params = "height " + UIConstants.SIZE_TABLET + ", growx";
-        }
+        String params = getFunctionButtonParams();
         speedControlPanel.add(increaseSpeed, params);
         speedControlPanel.add(decreaseSpeed, params);
         speedControlPanel.add(stopButton, params);
@@ -245,10 +253,8 @@ public class LocomotiveWidget extends JPanel implements
         }
 
 
-        String params = "height 30, growx";
-        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.TABLET_MODE)) {
-            params = "height " + UIConstants.SIZE_TABLET + ", growx";
-        }
+        String params = getFunctionButtonParams();
+
         for (final LocomotiveFunction fn : myLocomotive.getFunctions()) {
             final FunctionToggleButton functionButton = new FunctionToggleButton(
                     fn.getShortDescription());
@@ -261,6 +267,15 @@ public class LocomotiveWidget extends JPanel implements
             functionsPanel.add(functionButton, params);
         }
         revalidate();
+        repaint();
+    }
+
+    private String getFunctionButtonParams() {
+        String params = "height 30, growx";
+        if (Preferences.getInstance().getBooleanValue(PreferencesKeys.TABLET_MODE)) {
+            params = "height " + UIConstants.SIZE_TABLET + ", growx";
+        }
+        return params;
     }
 
     private void updateWidget() {

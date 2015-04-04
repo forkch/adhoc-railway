@@ -110,7 +110,7 @@ public class LocomotiveSelectionPanel extends JPanel {
 
         add(locomotiveGroupComboBox, "grow, width 80");
         add(locomotiveComboBox, "grow, width 120, wrap");
-        add(locomotiveImage, "span 2, grow");
+        add(locomotiveImage, "span 2, height 60, grow");
 
     }
 
