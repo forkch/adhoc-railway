@@ -136,8 +136,7 @@ public class TurnoutTester extends ConfigurationDialog {
 
         });
 
-        Font biggerFont = turnoutAddressButton.getFont().deriveFont(30);
-        setFontOnComponents(new Font("Dialog", Font.PLAIN, 25), turnoutAddressButton, turnoutNumberButton, testButton, testButton,turnoutAddressField, turnoutNumberField);
+        //setFontOnComponents(new Font("Dialog", Font.PLAIN, 25), turnoutAddressButton, turnoutNumberButton, testButton, testButton,turnoutAddressField, turnoutNumberField);
         SwingUtils.addEscapeListener(this);
         pack();
         setLocationRelativeTo(getParent());
