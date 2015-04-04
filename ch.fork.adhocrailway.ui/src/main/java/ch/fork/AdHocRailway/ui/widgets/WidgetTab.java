@@ -18,6 +18,8 @@
 
 package ch.fork.AdHocRailway.ui.widgets;
 
+import com.jgoodies.common.base.SystemUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseListener;
@@ -29,7 +31,11 @@ public class WidgetTab extends JPanel {
 
         widgets = new JPanel();
         //widgets.setLayout(new BetterFlowLayout(FlowLayout.LEADING, 5,5));
-        widgets.setLayout(new WrapLayout(FlowLayout.LEADING));
+        if(SystemUtils.IS_OS_MAC)
+        widgets.setLayout(new WrapLayout(FlowLayout.LEADING, 0,0)); // huge border on macs
+        else
+            widgets.setLayout(new WrapLayout(FlowLayout.LEADING, 2,2));
+
 
         final JScrollPane groupScrollPane = new JScrollPane(widgets,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,

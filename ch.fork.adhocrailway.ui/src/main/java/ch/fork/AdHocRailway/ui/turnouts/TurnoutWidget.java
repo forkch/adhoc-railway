@@ -114,7 +114,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
         numberLabel.setFont(new Font("Dialog", Font.BOLD, 25));
         statePanel = new JPanel();
 
-        setLayout(new MigLayout("insets 5, gap 5"));
+        setLayout(new MigLayout("debug, insets 2, gap 5"));
 
         if (forHistory) {
             add(numberLabel);

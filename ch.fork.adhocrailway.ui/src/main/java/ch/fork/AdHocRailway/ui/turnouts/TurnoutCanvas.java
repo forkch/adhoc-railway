@@ -369,9 +369,9 @@ public class TurnoutCanvas extends JPanel {
     public Dimension getPreferredSize() {
         if(turnout.isLinkedToRoute()) {
 
-            return new Dimension(112, 56);
+            return new Dimension(112, 42);
         }else {
-            return new Dimension(56, 56);
+            return new Dimension(56, 42);
         }
     }
 
