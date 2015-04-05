@@ -51,8 +51,8 @@ public class LocomotiveControlPanel extends JPanel {
     }
 
     private void initGUI() {
-        setLayout(new MigLayout("debug, fill, insets 0"));
-        controlPanel = new JPanel(new MigLayout("debug, insets 0"));
+        setLayout(new MigLayout("fill, insets 0"));
+        controlPanel = new JPanel(new MigLayout("insets 0"));
         JScrollPane controlPanelScrollPane = new JScrollPane(controlPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         final SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame(

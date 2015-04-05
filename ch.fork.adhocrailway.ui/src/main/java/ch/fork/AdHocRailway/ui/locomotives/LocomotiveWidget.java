@@ -124,7 +124,7 @@ public class LocomotiveWidget extends JPanel implements
 
     private void initGUI() {
 
-        setLayout(new MigLayout("debug, wrap 3, insets 5, gap 5"));
+        setLayout(new MigLayout("wrap 3, insets 5, gap 5"));
 
         locomotiveSelectionPanel = new LocomotiveSelectionPanel(this, ctx);
 

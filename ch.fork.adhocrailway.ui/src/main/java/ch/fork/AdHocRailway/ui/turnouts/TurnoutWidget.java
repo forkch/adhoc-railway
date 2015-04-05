@@ -112,9 +112,9 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
 
 
         if (SystemUtils.IS_OS_MAC) {
-            setLayout(new MigLayout("debug, insets 2, gap 5"));
+            setLayout(new MigLayout("insets 2, gap 5"));
         } else {
-            setLayout(new MigLayout("debug, insets 5, gap 2"));
+            setLayout(new MigLayout("insets 5, gap 2"));
         }
 
         if (forHistory) {

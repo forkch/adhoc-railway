@@ -373,7 +373,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     private void initGUI() {
 
         setFont(new Font("Verdana", Font.PLAIN, 19));
-        setLayout(new BorderLayout(0, 0));
+        setLayout(new BorderLayout(5, 5));
         initMenu();
         initToolbar();
         statusBarPanel = initStatusBar();
@@ -388,10 +388,10 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         trackAndKeyControl.add(segmentPanel, BorderLayout.WEST);
         trackAndKeyControl.add(trackControlPanel, BorderLayout.CENTER);
 
-        JPanel southPanel = new JPanel(new MigLayout("debug, insets 0, gap 2, fill"));
-        southPanel.add(powerControlPanel, "growy");
-        southPanel.add(locomotiveControlPanel, "grow, wrap");
-        southPanel.add(statusBarPanel, "span 2, grow");
+        JPanel southPanel = new JPanel(new BorderLayout(5, 5));
+        southPanel.add(powerControlPanel, BorderLayout.WEST);
+        southPanel.add(locomotiveControlPanel, BorderLayout.CENTER);
+        southPanel.add(statusBarPanel, BorderLayout.SOUTH);
 
         add(trackAndKeyControl, BorderLayout.CENTER);
         add(southPanel, BorderLayout.SOUTH);
