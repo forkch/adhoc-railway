@@ -48,6 +48,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
             @Override
             public void run() {
                 try {
+                    aquireRateLock();
                     turnoutControl.setCurvedLeft(sTurnout);
                 } catch (final SRCPModelException e) {
                     throw new ControllerException("could not set turnout to curved left",
@@ -65,6 +66,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
             @Override
             public void run() {
                 try {
+                    aquireRateLock();
                     turnoutControl.setCurvedRight(sTurnout);
                 } catch (final SRCPModelException e) {
                     throw new ControllerException("could not set turnout to curved right",
@@ -83,6 +85,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
             public void run() {
                 try {
 
+                    aquireRateLock();
                     turnoutControl.setDefaultState(sTurnout);
                 } catch (final SRCPModelException e) {
                     throw new ControllerException(
@@ -100,6 +103,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
             @Override
             public void run() {
                 try {
+                    aquireRateLock();
                     turnoutControl.setStraight(sTurnout);
                 } catch (final SRCPModelException e) {
                     throw new ControllerException("could not set turnout to straight", e);
@@ -138,6 +142,7 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
             @Override
             public void run() {
                 try {
+                    aquireRateLock();
                     turnoutControl.toggle(sTurnout);
                 } catch (final SRCPModelException e) {
                     throw new ControllerException("could not toggle turnout", e);
