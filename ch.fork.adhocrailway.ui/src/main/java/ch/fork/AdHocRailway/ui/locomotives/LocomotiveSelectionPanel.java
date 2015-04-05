@@ -10,6 +10,7 @@ import ch.fork.AdHocRailway.utils.LocomotiveHelper;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ import java.util.SortedSet;
 
 public class LocomotiveSelectionPanel extends JPanel {
 
+    private static final Logger LOGGER = Logger.getLogger(LocomotiveSelectionPanel.class.getSimpleName());
     public static final int LOCOMOTIVE_IMAGE_HEIGHT = 40;
 
     private OnLocomotiveSelectionListener selectionListener;
@@ -44,6 +46,7 @@ public class LocomotiveSelectionPanel extends JPanel {
     }
 
     public void updateLocomotiveGroups() {
+        LOGGER.info(">>>updateLocomotiveGroups");
         if (ctx.getLocomotiveManager() == null) {
             return;
         }
@@ -64,6 +67,7 @@ public class LocomotiveSelectionPanel extends JPanel {
         locomotiveGroupComboBoxModel.clearAndAddAll(listForModel);
         locomotiveComboBoxModel.clearAndAddAll(allLocomotivesGroup.getLocomotives());
         locomotiveGroupComboBox.setSelectedIndex(0);
+        LOGGER.info("<<<updateLocomotiveGroups");
 
     }
 

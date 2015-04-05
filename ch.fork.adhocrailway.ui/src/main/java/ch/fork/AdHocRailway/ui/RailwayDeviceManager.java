@@ -335,6 +335,6 @@ public class RailwayDeviceManager implements CommandDataListener,
             appContext.getMainBus().post(
                     new CommandLogEvent(response));
         }
-        LOGGER.info(response);
+        //LOGGER.info(response);
     }
 }

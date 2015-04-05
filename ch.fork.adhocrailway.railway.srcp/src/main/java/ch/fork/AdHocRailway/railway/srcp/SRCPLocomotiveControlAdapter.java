@@ -17,10 +17,9 @@ import de.dermoba.srcp.model.locking.SRCPLockingException;
 import de.dermoba.srcp.model.locomotives.*;
 import org.apache.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedSet;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author fork
@@ -81,9 +80,12 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     @Override
     public void setSpeed(final Locomotive locomotive, final int speed,
                          final boolean[] functions) {
-        if (emergencyStopState == EmergencyStopState.EXECUTED || emergencyStopState == EmergencyStopState.NONE) {
+
+        LOGGER.debug("pending speed commands: " + pendingTasksCount());
+        if (pendingTasksCount() == 0 && emergencyStopState == EmergencyStopState.PENDING) {
             emergencyStopState = EmergencyStopState.NONE;
-        } else {
+        }
+        if (emergencyStopState != EmergencyStopState.NONE) {
             LOGGER.warn("emergency stop is not yet executed therefore ignoring this command");
             return;
         }
@@ -92,56 +94,61 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         enqueueTask(new Runnable() {
             @Override
             public void run() {
-                synchronized (emergencyStopState) {
-                    if (emergencyStopState == EmergencyStopState.NONE) {
-                        LOGGER.info("cancelling speed command: " + speed);
-                    }
-                }
                 try {
-                    LOGGER.info("waiting to execute speed command");
+                    if (emergencyStopState != EmergencyStopState.NONE) {
+                        LOGGER.debug("cancelling speed command: " + speed);
+                    }
+
+                    LOGGER.debug("waiting to execute speed command");
                     aquireRateLock();
                     synchronized (emergencyStopState) {
                         if (emergencyStopState == EmergencyStopState.NONE) {
-                            LOGGER.info("executing speed command: " + speed);
+                            LOGGER.debug("executing speed command: " + speed);
                             locomotiveControl.setSpeed(sLocomotive, speed,
                                     SimulatedMFXLocomotivesHelper.convertToMultipartFunctions(
                                             locomotive.getType(), functions)
+
                             );
+                            locomotive.setCurrentSpeed(speed);
+                            locomotive.setCurrentFunctions(functions);
                         } else {
-                            LOGGER.info("cancelling speed command: " + speed);
+                            LOGGER.debug("cancelling speed command: " + speed);
                         }
                     }
+
                 } catch (SRCPModelException e) {
                     e.printStackTrace();
                 }
 
             }
         });
-        locomotive.setCurrentSpeed(speed);
-        locomotive.setCurrentFunctions(functions);
+        LOGGER.debug("scheduled speed command " + speed);
     }
 
     @Override
     public void emergencyStop(final Locomotive locomotive) {
-        final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
-        emergencyStopState = EmergencyStopState.PENDING;
-        final int emergencyStopFunction = locomotive
-                .getEmergencyStopFunctionNumber();
-        final int srcpEmergencyStopFunction = SimulatedMFXLocomotivesHelper
-                .computeMultipartFunctionNumber(locomotive.getType(),
-                        emergencyStopFunction);
-        locomotive.setCurrentSpeed(0);
-        locomotive.setTargetSpeed(-1);
+
         enqueueEmergencyTask(new Runnable() {
             @Override
             public void run() {
                 try {
-                    LOGGER.info(">>>>>EMERGENCY STOP<<<<<");
+                    synchronized (emergencyStopState) {
+                        LOGGER.info(">>>>>EMERGENCY STOP<<<<<");
+                        cancelTasks();
+                        final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
+                        emergencyStopState = EmergencyStopState.PENDING;
+                        final int emergencyStopFunction = locomotive
+                                .getEmergencyStopFunctionNumber();
+                        final int srcpEmergencyStopFunction = SimulatedMFXLocomotivesHelper
+                                .computeMultipartFunctionNumber(locomotive.getType(),
+                                        emergencyStopFunction);
+                        locomotive.setCurrentSpeed(0);
+                        locomotive.setTargetSpeed(-1);
 
-                    locomotiveControl.emergencyStop(sLocomotive,
-                            srcpEmergencyStopFunction);
-                    locomotive.setCurrentFunctions(locomotive.getCurrentFunctions());
-                    emergencyStopState = EmergencyStopState.EXECUTED;
+                        locomotiveControl.emergencyStop(sLocomotive,
+                                srcpEmergencyStopFunction);
+                        locomotive.setCurrentFunctions(locomotive.getCurrentFunctions());
+                    }
                 } catch (SRCPModelException e) {
                     e.printStackTrace();
                 }
@@ -247,11 +254,18 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
                 .convertFromMultipartFunctions(locomotive.getType(),
                         newFunctions);
         locomotive.setCurrentFunctions(currentFunctions);
-        if (locomotive.getTargetSpeed() == -1 || locomotive.getCurrentSpeed() == locomotive.getTargetSpeed()) {
+
+        if ((emergencyStopState == EmergencyStopState.PENDING && changedSRCPLocomotive.getCurrentSpeed() != 0)) {
+            locomotive.setCurrentSpeed(0);
             informListeners(locomotive);
-            locomotive.setTargetSpeed(-1);
+        } else {
+            if (locomotive.getTargetSpeed() == -1 || locomotive.getCurrentSpeed() == locomotive.getTargetSpeed()) {
+                informListeners(locomotive);
+                locomotive.setTargetSpeed(-1);
+            }
         }
     }
+
 
     @Override
     public void lockChanged(final Object changedLock, final boolean locked) {

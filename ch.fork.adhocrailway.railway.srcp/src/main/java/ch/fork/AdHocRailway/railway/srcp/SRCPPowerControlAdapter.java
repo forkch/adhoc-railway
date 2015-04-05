@@ -122,7 +122,7 @@ public class SRCPPowerControlAdapter extends PowerController implements
             return;
         }
 
-        LOGGER.info("received new boosterstate: " + freeText);
+        //LOGGER.info("received new boosterstate: " + freeText);
 
         final Map<Integer, BoosterState> boosterStates = new HashMap<Integer, BoosterState>();
         final StringTokenizer tokenizer = new StringTokenizer(freeText);

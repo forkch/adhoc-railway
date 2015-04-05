@@ -47,6 +47,16 @@ public abstract class LocomotiveController implements
         taskExecutor.enqueueEmergencyTask(runnable);
     }
 
+    protected void cancelTasks() {
+        taskExecutor.cancelTasks();
+    }
+
+    protected int pendingTasksCount() {
+        return taskExecutor.pendingTaskCount();
+    }
+
+
+
     protected void aquireRateLock() {
         taskExecutor.aquireRateLock();
     }
@@ -134,7 +144,7 @@ public abstract class LocomotiveController implements
     }
 
     protected void informListeners(final Locomotive changedLocomotive) {
-        LOGGER.debug("locomotiveChanged(" + changedLocomotive + ")");
+        LOGGER.debug("locomotiveChanged(" + changedLocomotive.getName() + ")");
         final List<LocomotiveChangeListener> ll = getListenersForLocomotive(changedLocomotive);
 
         for (final LocomotiveChangeListener scl : ll) {
