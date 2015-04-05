@@ -21,6 +21,7 @@ package ch.fork.AdHocRailway.ui.turnouts;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.utils.ImageTools;
+import javafx.scene.transform.Affine;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,8 +43,27 @@ public class TurnoutCanvas extends JPanel {
     public static final String THREE_WAY_SWITCH = "canvas/three_way_switch.png";
     public static final String DEFAULT_SWITCH_LEFT_PNG = "canvas/default_switch_left.png";
 
+
     private Turnout turnout;
     private TurnoutState turnoutState = TurnoutState.UNDEF;
+    private static final AffineTransform northTransform;
+    private static final AffineTransform eastTransform;
+    private static final AffineTransform southTransform;
+    private static final AffineTransform westTransform;
+
+    static {
+        northTransform = AffineTransform.getRotateInstance(Math.PI / 2 * 3,
+                (56 + 1) / 2, (56 + 1) / 2);
+        northTransform.concatenate(AffineTransform.getTranslateInstance(0, 10));
+        eastTransform = AffineTransform.getRotateInstance(0, 0, 0);
+        eastTransform.concatenate(AffineTransform.getTranslateInstance(0, 14));
+        southTransform = AffineTransform.getRotateInstance(Math.PI / 2, (56 + 1) / 2,
+                (56 + 1) / 2);
+        southTransform.concatenate(AffineTransform.getTranslateInstance(0, 10));
+        westTransform = AffineTransform.getRotateInstance(Math.PI, (56 + 1) / 2,
+                (56 + 1) / 2);
+        westTransform.concatenate(AffineTransform.getTranslateInstance(0, 14));
+    }
 
     public TurnoutCanvas(final Turnout turnout) {
         this.turnout = turnout;
@@ -64,34 +84,6 @@ public class TurnoutCanvas extends JPanel {
         } else if (turnout.isLinkedToRoute()) {
             paintLinkedRoute(g);
         }
-    }
-
-
-    private void rotate(final Graphics g, final BufferedImage img) {
-        final Graphics2D g2 = (Graphics2D) g;
-        AffineTransform at = null;
-        switch (turnout.getOrientation()) {
-            case NORTH:
-                at = AffineTransform.getRotateInstance(Math.PI / 2 * 3,
-                        (56 + 1) / 2, (56 + 1) / 2);
-                at.concatenate(AffineTransform.getTranslateInstance(0, 10));
-                break;
-            case EAST:
-                at = AffineTransform.getRotateInstance(0, 0, 0);
-                at.concatenate(AffineTransform.getTranslateInstance(0, 14));
-                break;
-            case SOUTH:
-                at = AffineTransform.getRotateInstance(Math.PI / 2, (56 + 1) / 2,
-                        (56 + 1) / 2);
-                at.concatenate(AffineTransform.getTranslateInstance(0, 10));
-                break;
-            case WEST:
-                at = AffineTransform.getRotateInstance(Math.PI, (56 + 1) / 2,
-                        (56 + 1) / 2);
-                at.concatenate(AffineTransform.getTranslateInstance(0, 14));
-                break;
-        }
-        g2.drawImage(img, at, this);
     }
 
     private void paintDefaultLeft(final Graphics g) {
@@ -374,6 +366,26 @@ public class TurnoutCanvas extends JPanel {
         rotate(g, img);
     }
 
+    private void rotate(final Graphics g, final BufferedImage img) {
+        final Graphics2D g2 = (Graphics2D) g;
+        AffineTransform at = null;
+
+        switch (turnout.getOrientation()) {
+            case NORTH:
+                at = northTransform;
+                break;
+            case EAST:
+                at = eastTransform;
+                break;
+            case SOUTH:
+                at = southTransform;
+                break;
+            case WEST:
+                at = westTransform;
+                break;
+        }
+        g2.drawImage(img, at, this);
+    }
     @Override
     public Dimension getPreferredSize() {
         if (turnout.isLinkedToRoute()) {
