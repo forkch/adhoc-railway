@@ -56,8 +56,7 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
     }
 
     private void initGUI() {
-        final MigLayout layout = new MigLayout("insets 5, wrap 2, fillx");
-        powerControlPanel = new JPanel(layout);
+        powerControlPanel = new JPanel(new MigLayout("debug, insets 5, wrap 2"));
 
         initKeyboardActions();
         update();
@@ -180,7 +179,7 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
             params = "height " + UIConstants.SIZE_TABLET + ", growx";
         }
         powerControlPanel.add(allBoostersOn, params);
-        powerControlPanel.add(allBoostersOff, params + ", wrap 15");
+        powerControlPanel.add(allBoostersOff, params + ", wrap");
 
         for (int i = 0; i < numberOfBoosters; i++) {
 

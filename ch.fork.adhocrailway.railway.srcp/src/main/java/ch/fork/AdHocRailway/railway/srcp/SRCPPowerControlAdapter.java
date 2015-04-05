@@ -160,8 +160,8 @@ public class SRCPPowerControlAdapter extends PowerController implements
             booster.setState(boosterState.getValue());
         }
 
-        LOGGER.info("new booster state: " + boosterStates);
-        LOGGER.info("all booster states: " + supply.getBoosters());
+//        LOGGER.info("new booster state: " + boosterStates);
+//        LOGGER.info("all booster states: " + supply.getBoosters());
         informListeners(supply);
 
     }

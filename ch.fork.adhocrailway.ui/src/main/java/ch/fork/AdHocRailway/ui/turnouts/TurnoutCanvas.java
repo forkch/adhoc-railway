@@ -95,7 +95,7 @@ public class TurnoutCanvas extends JPanel {
     }
 
     private void paintDefaultLeft(final Graphics g) {
-        final BufferedImage img = new BufferedImage(56, 35,
+        final BufferedImage img = new BufferedImage(56, 56,
                 BufferedImage.TYPE_4BYTE_ABGR);
         final Graphics2D g3 = img.createGraphics();
         g3.drawImage(createImageIconFromCustom(DEFAULT_SWITCH_LEFT_PNG)
@@ -133,7 +133,7 @@ public class TurnoutCanvas extends JPanel {
     }
 
     private void paintDefaultRight(final Graphics g) {
-        final BufferedImage img = new BufferedImage(56, 35,
+        final BufferedImage img = new BufferedImage(56, 56,
                 BufferedImage.TYPE_4BYTE_ABGR);
         final Graphics2D g3 = img.createGraphics();
         g3.drawImage(
@@ -173,7 +173,7 @@ public class TurnoutCanvas extends JPanel {
     }
 
     private void paintCutter(final Graphics g) {
-        final BufferedImage img = new BufferedImage(56, 35,
+        final BufferedImage img = new BufferedImage(56, 56,
                 BufferedImage.TYPE_4BYTE_ABGR);
         final Graphics2D g3 = img.createGraphics();
         g3.drawImage(
@@ -212,6 +212,15 @@ public class TurnoutCanvas extends JPanel {
                 g3.drawImage(createImageIconFromCustom(LED_MIDDLE_YELLOW)
                         .getImage(), 28, 21, this);
             }
+        } else {
+            g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
+                    .getImage(), 55, -14, this);
+            g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
+                    .getImage(), 28, 21, this);
+            g3.drawImage(createImageIconFromCustom(LED_UP_WHITE)
+                    .getImage(), 28, 21, this);
+            g3.drawImage(createImageIconFromCustom(LED_UP_WHITE)
+                    .getImage(), 55, 3, this);
         }
 
         g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
@@ -228,12 +237,12 @@ public class TurnoutCanvas extends JPanel {
         g3.drawImage(createImageIconFromCustom(LED_MIDDLE_WHITE)
                 .getImage(), 83, 21, this);
 
+        ((Graphics2D) g).drawImage(img, AffineTransform.getTranslateInstance(0, 7), this);
 
-        rotate(g, img);
     }
 
     private void paintDoubleCross(final Graphics g) {
-        final BufferedImage img = new BufferedImage(56, 35,
+        final BufferedImage img = new BufferedImage(56, 56,
                 BufferedImage.TYPE_4BYTE_ABGR);
         final Graphics2D g3 = img.createGraphics();
         g3.drawImage(ImageTools
@@ -369,9 +378,9 @@ public class TurnoutCanvas extends JPanel {
     public Dimension getPreferredSize() {
         if(turnout.isLinkedToRoute()) {
 
-            return new Dimension(112, 42);
+            return new Dimension(112, 56);
         }else {
-            return new Dimension(56, 42);
+            return new Dimension(56, 56);
         }
     }
 

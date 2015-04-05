@@ -65,10 +65,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
         this.forHistory = forHistory;
         this.testMode = testMode;
 
-        if(turnout.isLinkedToRoute()) {
-            turnout.setLinkedRoute(ctx.getRouteForNumber(turnout.getLinkedRouteNumber()));
-        }
-
         turnoutManager = ctx.getTurnoutManager();
 
         ctx.getMainBus().register(this);
@@ -86,14 +82,14 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
     public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
         if (event.isConnected()) {
             ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
-            if(turnout.isLinkedToRoute()) {
-                ctx.getRouteControl().addRouteChangeListener(turnout.getLinkedRoute(), this);
-            }
            TurnoutState turnoutState =  ctx.getTurnoutControl().getStateFromDevice(turnout);
             turnout.setActualState(turnoutState);
             turnoutChanged(turnout);
         } else {
             ctx.getTurnoutControl().removeTurnoutChangeListener(turnout, this);
+            if (turnout.isLinkedToRoute() && turnout.getLinkedRoute() != null) {
+                ctx.getRouteControl().removeRouteChangeListener(turnout.getLinkedRoute(), this);
+            }
         }
     }
 
@@ -114,7 +110,12 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
         numberLabel.setFont(new Font("Dialog", Font.BOLD, 25));
         statePanel = new JPanel();
 
-        setLayout(new MigLayout("debug, insets 2, gap 5"));
+
+        if (SystemUtils.IS_OS_MAC) {
+            setLayout(new MigLayout("debug, insets 2, gap 5"));
+        } else {
+            setLayout(new MigLayout("debug, insets 5, gap 2"));
+        }
 
         if (forHistory) {
             add(numberLabel);
@@ -135,8 +136,9 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
         setToolTipText(turnoutDescription);
         turnoutCanvas.setToolTipText(turnoutDescription);
 
-        if(turnout.isLinkedToRoute()) {
+        if (turnout.isLinkedToRoute() && turnout.getLinkedRoute() == null) {
             turnout.setLinkedRoute(ctx.getRouteForNumber(turnout.getLinkedRouteNumber()));
+            ctx.getRouteControl().addRouteChangeListener(turnout.getLinkedRoute(), this);
         }
 
     }
@@ -154,7 +156,10 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
     public void turnoutChanged(final Turnout changedTurnout) {
 
         if (turnout.equals(changedTurnout)) {
-            turnout.setLinkedRoute(ctx.getRouteForNumber(turnout.getLinkedRouteNumber()));
+            if (turnout.isLinkedToRoute() && turnout.getLinkedRoute() == null) {
+                turnout.setLinkedRoute(ctx.getRouteForNumber(turnout.getLinkedRouteNumber()));
+                ctx.getRouteControl().addRouteChangeListener(turnout.getLinkedRoute(), this);
+            }
             actualTurnoutState = changedTurnout.getActualState();
             SwingUtilities.invokeLater(new Runnable() {
                 @Override

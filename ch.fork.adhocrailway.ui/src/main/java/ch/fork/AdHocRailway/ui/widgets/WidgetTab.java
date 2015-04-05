@@ -30,11 +30,10 @@ public class WidgetTab extends JPanel {
     public WidgetTab() {
 
         widgets = new JPanel();
-        //widgets.setLayout(new BetterFlowLayout(FlowLayout.LEADING, 5,5));
-        if(SystemUtils.IS_OS_MAC)
-        widgets.setLayout(new WrapLayout(FlowLayout.LEADING, 0,0)); // huge border on macs
+        if (SystemUtils.IS_OS_MAC)
+            widgets.setLayout(new WrapLayout(FlowLayout.LEADING, 0, 0)); // huge border on macs
         else
-            widgets.setLayout(new WrapLayout(FlowLayout.LEADING, 2,2));
+            widgets.setLayout(new WrapLayout(FlowLayout.LEADING, 5, 5));
 
 
         final JScrollPane groupScrollPane = new JScrollPane(widgets,
@@ -43,7 +42,8 @@ public class WidgetTab extends JPanel {
         groupScrollPane.setBorder(BorderFactory.createEmptyBorder());
         groupScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         groupScrollPane.getVerticalScrollBar().setBlockIncrement(10);
-        setLayout(new BorderLayout(0,0));
+
+        setLayout(new BorderLayout(0, 0));
         add(groupScrollPane, BorderLayout.CENTER);
     }
 
@@ -53,6 +53,10 @@ public class WidgetTab extends JPanel {
 
     public void remove(final JPanel widget) {
         widgets.remove(widget);
+    }
+
+    public void removeAll() {
+        widgets.removeAll();
     }
 
     @Override

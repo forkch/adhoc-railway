@@ -100,7 +100,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private SplashWindow splash;
 
-    private JPanel mainPanel;
     private JPanel toolbarPanel;
     private JProgressBar progressBar;
     private PowerControlPanel powerControlPanel;
@@ -378,9 +377,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         initMenu();
         initToolbar();
         statusBarPanel = initStatusBar();
-        mainPanel = new JPanel();
-
-        mainPanel = new JPanel(new MigLayout("insets 5, gap 5, fill", "[][grow]", "[grow][]"));
 
         final JPanel segmentPanel = new KeyControl(appContext);
 
@@ -391,12 +387,14 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         SimpleInternalFrame trackAndKeyControl = new SimpleInternalFrame("Track control");
         trackAndKeyControl.add(segmentPanel, BorderLayout.WEST);
         trackAndKeyControl.add(trackControlPanel, BorderLayout.CENTER);
-        mainPanel.add(trackAndKeyControl, "grow, span 2, wrap");
-        mainPanel.add(powerControlPanel, "grow");
-        mainPanel.add(locomotiveControlPanel, "grow, wrap");
 
-        add(mainPanel, BorderLayout.CENTER);
-        add(statusBarPanel, BorderLayout.PAGE_END);
+        JPanel southPanel = new JPanel(new MigLayout("debug, insets 0, gap 2, fill"));
+        southPanel.add(powerControlPanel, "growy");
+        southPanel.add(locomotiveControlPanel, "grow, wrap");
+        southPanel.add(statusBarPanel, "span 2, grow");
+
+        add(trackAndKeyControl, BorderLayout.CENTER);
+        add(southPanel, BorderLayout.SOUTH);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -415,8 +413,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     }
 
     private void updateGUI() {
-        disableNavigationKeys(mainPanel);
-        mainPanel.requestFocus();
+        disableNavigationKeys(getContentPane());
+        getContentPane().requestFocus();
     }
 
     private void disableNavigationKeys(final Component comp) {

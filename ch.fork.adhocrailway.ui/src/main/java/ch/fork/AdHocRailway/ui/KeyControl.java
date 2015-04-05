@@ -62,19 +62,14 @@ public class KeyControl extends JPanel {
     private void initGUI() {
         setLayout(new BorderLayout());
         final JPanel segmentPanelNorth = initSegmentPanel();
-        turnoutsHistory = new JPanel();
-        final JPanel sh1 = new JPanel(new BorderLayout());
-
-        turnoutsHistory.setLayout(new MigLayout("insets 5"));
+        turnoutsHistory = new JPanel(new MigLayout("debug, insets 5"));
 
         historyPane = new JScrollPane(turnoutsHistory,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        historyPane.setBorder(BorderFactory.createEmptyBorder());
-        sh1.add(historyPane, BorderLayout.CENTER);
 
         add(segmentPanelNorth, BorderLayout.NORTH);
-        add(sh1, BorderLayout.CENTER);
+        add(historyPane, BorderLayout.CENTER);
     }
 
     private JPanel initSegmentPanel() {
