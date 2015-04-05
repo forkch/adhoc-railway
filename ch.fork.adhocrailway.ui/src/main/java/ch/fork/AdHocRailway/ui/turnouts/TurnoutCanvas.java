@@ -61,7 +61,7 @@ public class TurnoutCanvas extends JPanel {
             paintThreeway(g);
         } else if (turnout.isCutter()) {
             paintCutter(g);
-        } else if(turnout.isLinkedToRoute()) {
+        } else if (turnout.isLinkedToRoute()) {
             paintLinkedRoute(g);
         }
     }
@@ -192,7 +192,7 @@ public class TurnoutCanvas extends JPanel {
                         .getImage(), 0, 0, this
         );
 
-        if(turnout.getLinkedRoute()!=null) {
+        if (turnout.getLinkedRoute() != null) {
             if (turnout.getLinkedRoute().isEnabled()) {
                 g3.drawImage(createImageIconFromCustom(LED_UP_YELLOW)
                         .getImage(), 28, 21, this);
@@ -376,10 +376,9 @@ public class TurnoutCanvas extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        if(turnout.isLinkedToRoute()) {
-
+        if (turnout.isLinkedToRoute()) {
             return new Dimension(112, 56);
-        }else {
+        } else {
             return new Dimension(56, 56);
         }
     }
@@ -395,8 +394,8 @@ public class TurnoutCanvas extends JPanel {
     }
 
     public void setTurnoutState(final TurnoutState turnoutState) {
-            this.turnoutState = turnoutState;
-            revalidate();
-            repaint();
+        this.turnoutState = turnoutState;
+        revalidate();
+        repaint();
     }
 }

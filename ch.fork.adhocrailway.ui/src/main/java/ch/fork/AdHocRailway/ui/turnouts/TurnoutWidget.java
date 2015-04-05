@@ -230,6 +230,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
     public void routeChanged(Route changedRoute) {
 
         if(turnout.isLinkedToRoute() && changedRoute.equals(turnout.getLinkedRoute())) {
+            turnout.setActualState(changedRoute.isEnabled() ? TurnoutState.LEFT : TurnoutState.STRAIGHT);
             turnoutChanged(turnout);
         }
     }
