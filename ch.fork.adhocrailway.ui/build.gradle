@@ -29,6 +29,7 @@ dependencies {
     compile 'commons-cli:commons-cli:1.2'
     compile 'commons-codec:commons-codec:1.9'
     compile 'commons-io:commons-io:2.4'
+
     testCompile 'junit:junit:4.+'
 }
 

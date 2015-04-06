@@ -62,7 +62,7 @@ public class SIORouteCallbackEventHandler {
                                           final RouteServiceListener listener) throws JSONException {
         final Route route = deserializeRoute(routeJSON);
         final RouteGroup routeGroup = sioIdToRouteGroupMap.get(route.getGroupId());
-        routeGroup.removeRoute(route);
+        route.setRouteGroup(routeGroup);
         listener.routeRemoved(route);
     }
 

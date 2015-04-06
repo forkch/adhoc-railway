@@ -163,9 +163,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                 final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
                         .get(turnout.getTurnoutGroup());
                 turnoutGroupTab.updateTurnout(turnout);
-                revalidateAllTurnouts();
-
-
             }
 
         });
@@ -184,9 +181,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                 final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
                         .get(turnout.getTurnoutGroup());
                 turnoutGroupTab.removeTurnout(turnout);
-
-                revalidateAllTurnouts();
-
             }
         });
 
@@ -204,10 +198,6 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                 final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
                         .get(turnout.getTurnoutGroup());
                 turnoutGroupTab.addTurnout(turnout);
-
-                revalidateAllTurnouts();
-
-
             }
         });
 

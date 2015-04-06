@@ -53,15 +53,24 @@ public class TurnoutGroupTab extends WidgetTab {
                 false);
         //turnoutWidget.connectedToRailwayDevice(new ConnectedToRailwayEvent(ctx.getRailwayDeviceManager().isConnected()));
         addWidget(turnoutWidget);
+        revalidateTurnouts();
         turnoutToTurnoutWidget.put(turnout, turnoutWidget);
+        revalidate();
+        repaint();
     }
 
     public void removeTurnout(final Turnout turnout) {
         remove(turnoutToTurnoutWidget.get(turnout));
+        revalidateTurnouts();
+        revalidate();
+        repaint();
     }
 
     public void updateTurnout(final Turnout turnout) {
         turnoutToTurnoutWidget.get(turnout).setTurnout(turnout);
+        revalidateTurnouts();
+        revalidate();
+        repaint();
 
     }
 

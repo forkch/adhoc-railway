@@ -110,6 +110,11 @@ public class PersistenceManager {
     public void openDatabase() throws IOException {
         disconnectFromCurrentPersistence();
 
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         switchToServerMode();
         connectToAdHocServer(getAdHocServerURL());
     }
@@ -164,6 +169,8 @@ public class PersistenceManager {
     public void disconnectFromCurrentPersistence() {
         if (appContext.getSioService() != null) {
             appContext.getSioService().disconnect();
+
+
         }
     }
 

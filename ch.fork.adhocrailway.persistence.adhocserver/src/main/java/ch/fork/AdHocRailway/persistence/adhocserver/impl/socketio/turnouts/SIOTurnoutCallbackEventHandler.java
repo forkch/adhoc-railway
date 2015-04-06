@@ -70,7 +70,8 @@ public class SIOTurnoutCallbackEventHandler {
 
         final TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap
                 .get(turnout.getGroupId());
-        turnoutGroup.removeTurnout(turnout);
+        turnout.setTurnoutGroup(turnoutGroup);
+        //turnoutGroup.removeTurnout(turnout);
         listener.turnoutRemoved(turnout);
 
     }

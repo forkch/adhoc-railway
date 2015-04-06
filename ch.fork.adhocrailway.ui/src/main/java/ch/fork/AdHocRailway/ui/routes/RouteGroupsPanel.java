@@ -42,6 +42,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
         routePersistence = ctx.getRouteManager();
         initShortcuts();
     }
+
     @Subscribe
     public void connectedToPersistence(final ConnectedToPersistenceEvent event) {
         ctx.getRouteManager().addRouteManagerListener(this);
@@ -97,8 +98,6 @@ public class RouteGroupsPanel extends JTabbedPane implements
                 updateRoutes(routeGroups);
             }
         });
-        revalidate();
-        repaint();
     }
 
     @Override
@@ -114,8 +113,6 @@ public class RouteGroupsPanel extends JTabbedPane implements
                 final RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
                         .get(route.getRouteGroup());
                 routeGroupTab.updateRoute(route);
-                revalidate();
-                repaint();
 
             }
         });
@@ -134,9 +131,6 @@ public class RouteGroupsPanel extends JTabbedPane implements
                 final RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
                         .get(route.getRouteGroup());
                 routeGroupTab.removeRoute(route);
-
-                revalidate();
-                repaint();
             }
         });
     }
@@ -153,8 +147,6 @@ public class RouteGroupsPanel extends JTabbedPane implements
                 final RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
                         .get(route.getRouteGroup());
                 routeGroupTab.addRoute(route);
-
-
             }
         });
 

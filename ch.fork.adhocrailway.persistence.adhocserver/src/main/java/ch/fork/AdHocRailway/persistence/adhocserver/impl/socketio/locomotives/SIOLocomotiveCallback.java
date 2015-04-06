@@ -1,11 +1,10 @@
 package ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.locomotives;
 
+import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.IOCallback;
 import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.SIOService;
+import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.turnouts.SIOTurnoutCallbackEvent;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
-import io.socket.IOAcknowledge;
-import io.socket.IOCallback;
-import io.socket.SocketIOException;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +25,9 @@ public class SIOLocomotiveCallback implements IOCallback {
 
     public void init(final LocomotiveServiceListener listener) {
         this.listener = listener;
-        sioService.addIOCallback(this);
+        for (SIOLocomotiveCallbackEvent sioLocomotiveCallbackEvent : SIOLocomotiveCallbackEvent.values()) {
+            sioService.addIOCallback(sioLocomotiveCallbackEvent.getEvent(), this);
+        }
     }
 
     public void disconnect() {
@@ -34,7 +35,7 @@ public class SIOLocomotiveCallback implements IOCallback {
     }
 
     @Override
-    public synchronized void on(final String event, final IOAcknowledge arg1,
+    public synchronized void on(final String event,
                                 final Object... jsonData) {
 
         final SIOLocomotiveCallbackEvent serviceEvent = SIOLocomotiveCallbackEvent
@@ -86,27 +87,18 @@ public class SIOLocomotiveCallback implements IOCallback {
     }
 
     @Override
-    public void onConnect() {
-    }
-
-    @Override
-    public void onDisconnect() {
-
-    }
-
-    @Override
-    public void onError(final SocketIOException arg0) {
+    public void onError(final Exception arg0) {
         listener.failure(new AdHocServiceException(
                 "failure in communication with adhoc-server", arg0));
     }
 
     @Override
-    public void onMessage(final String arg0, final IOAcknowledge arg1) {
+    public void onMessage(final String arg0) {
         LOGGER.info("onMessage(" + arg0 + ")");
     }
 
     @Override
-    public void onMessage(final JSONObject arg0, final IOAcknowledge arg1) {
+    public void onMessage(final JSONObject arg0) {
         LOGGER.info("onMessage(" + arg0 + ")");
 
     }

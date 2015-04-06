@@ -52,14 +52,20 @@ public class RouteGroupTab extends WidgetTab {
 
         addWidget(routeWidget);
         routeToRouteWidget.put(route, routeWidget);
+        revalidate();
+        repaint();
     }
 
     public void removeRoute(final Route route) {
         remove(routeToRouteWidget.get(route));
+        revalidate();
+        repaint();
     }
 
     public void updateRoute(final Route route) {
         routeToRouteWidget.get(route).setRoute(route);
+        revalidate();
+        repaint();
 
     }
 

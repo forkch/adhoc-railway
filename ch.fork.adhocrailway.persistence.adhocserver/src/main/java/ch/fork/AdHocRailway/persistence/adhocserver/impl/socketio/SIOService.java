@@ -1,14 +1,12 @@
 package ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio;
 
 import ch.fork.AdHocRailway.services.AdHocServiceException;
-import io.socket.IOAcknowledge;
-import io.socket.IOCallback;
-import io.socket.SocketIO;
-import io.socket.SocketIOException;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,8 +14,8 @@ public class SIOService {
 
     private static final Logger LOGGER = Logger.getLogger(SIOService.class);
     private static String uuid;
-    private final Set<IOCallback> otherCallbacks = new HashSet<IOCallback>();
-    private SocketIO socket;
+    private final Set<IOCallback> otherCallbacks = new HashSet<>();
+    private Socket socket;
 
     public SIOService(String uuid) {
         this.uuid = uuid;
@@ -25,94 +23,63 @@ public class SIOService {
 
     public void connect(final String url, final ServiceListener mainCallback) {
         try {
-            if (socket == null) {
-                socket = new SocketIO(url);
-                socket.connect(new IOCallback() {
+            socket = IO.socket(url);
 
-                    @Override
-                    public void on(final String arg0, final IOAcknowledge arg1,
-                                   final Object... arg2) {
-                        for (final IOCallback cb : otherCallbacks) {
-                            cb.on(arg0, arg1, arg2);
+            socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            LOGGER.info("successfully connected to AdHoc-Server at "
+                                    + url);
+                            socket.emit("register", uuid);
+                            mainCallback.connected();
                         }
                     }
-
-                    @Override
-                    public void onConnect() {
-                        LOGGER.info("successfully connected to AdHoc-Server at "
-                                + url);
-                        socket.emit("register", uuid);
-                        mainCallback.connected();
-                    }
-
-                    @Override
-                    public void onDisconnect() {
-                        LOGGER.info("successfully disconnected from AdHoc-Server at "
-                                + url);
-                        mainCallback.disconnected();
-                    }
-
-                    @Override
-                    public void onError(final SocketIOException arg0) {
-                        LOGGER.error("failed to connect to AdHoc-Server at "
-                                + url, arg0);
-                        mainCallback.connectionError(new AdHocServiceException(
-                                "failed to connect to AdHoc-Server at " + url,
-                                arg0));
-                        for (final IOCallback cb : otherCallbacks) {
-                            cb.onError(arg0);
+            ).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            LOGGER.info("successfully disconnected from AdHoc-Server at "
+                                    + url);
+                            mainCallback.disconnected();
+                            socket.off();
                         }
                     }
-
-                    @Override
-                    public void onMessage(final String arg0,
-                                          final IOAcknowledge arg1) {
-                        for (final IOCallback cb : otherCallbacks) {
-                            cb.onMessage(arg0, arg1);
-                        }
-
+            ).on(Socket.EVENT_ERROR, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    LOGGER.error("failed to connect to AdHoc-Server at "
+                            + url);
+                    mainCallback.connectionError(new AdHocServiceException(
+                            "failed to connect to AdHoc-Server at " + url));
+                    for (final IOCallback cb : otherCallbacks) {
+                        cb.onError((Exception) args[0]);
                     }
+                }
+            });
 
-                    @Override
-                    public void onMessage(final JSONObject arg0,
-                                          final IOAcknowledge arg1) {
-                        for (final IOCallback cb : otherCallbacks) {
-                            cb.onMessage(arg0, arg1);
-                        }
-                    }
-                });
-            }
-        } catch (final MalformedURLException e) {
+            socket.connect();
+        } catch (URISyntaxException e) {
             throw new AdHocServiceException(
                     "failed to initialize socket.io on " + url, e);
         }
     }
 
-    public void checkSocket() {
-        if (!socket.isConnected()) {
-            throw new AdHocServiceException(
-                    "not connected to socket.io server");
-        }
-    }
-
-    public void addIOCallback(final IOCallback callback) {
+    public void addIOCallback(final String event, final IOCallback callback) {
         otherCallbacks.add(callback);
+        socket.on(event, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                callback.on(event, args);
+            }
+        });
     }
 
     public void removeIOCallback(final IOCallback callback) {
         otherCallbacks.remove(callback);
-
-    }
-
-    public SocketIO getSocket() {
-        return socket;
     }
 
     public void disconnect() {
         if (socket != null) {
             socket.disconnect();
-            socket = null;
         }
     }
-
 }

@@ -87,7 +87,7 @@ public class SIOLocomotiveCallbackEventHandler {
 
         final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
                 .get(locomotive.getGroupId());
-        locomotiveGroup.removeLocomotive(locomotive);
+        locomotive.setGroup(locomotiveGroup);
         listener.locomotiveRemoved(locomotive);
 
         return locomotive;

@@ -2,9 +2,11 @@ apply plugin: 'maven-publish'
 
 dependencies {
 
-    compile fileTree(dir: 'lib', includes: ['*.jar'])
+    //compile fileTree(dir: 'lib', includes: ['*.jar'])
     compile 'org.json:json:20090211'
     compile 'com.squareup.retrofit:retrofit:1.5.0'
     compile 'log4j:log4j:1.2.17'
+    compile 'com.github.nkzawa:socket.io-client:0.4.2'
+
 
 }
