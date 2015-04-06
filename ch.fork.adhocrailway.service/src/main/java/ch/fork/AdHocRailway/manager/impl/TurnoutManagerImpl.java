@@ -349,4 +349,14 @@ public class TurnoutManagerImpl implements TurnoutManager,
         }
         return null;
     }
+
+    @Override
+    public void setupLinkedRoutes(Route route) {
+        for (Turnout turnout : numberToTurnoutCache.values()) {
+            if (turnout.isLinkedToRoute() && turnout.getLinkedRouteNumber() == route.getNumber()) {
+                turnout.setLinkedRoute(route);
+                turnoutUpdated(turnout);
+            }
+        }
+    }
 }

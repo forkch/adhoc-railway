@@ -294,6 +294,8 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
                 LOGGER.warn("turnout with number " + routeItem.getTurnoutNumber() + " not found ");
             }
         }
+
+        turnoutManager.setupLinkedRoutes(route);
         TreeSet<RouteItem> routeItems = new TreeSet<RouteItem>();
         routeItems.addAll(route.getRoutedTurnouts());
         route.setRoutedTurnouts(routeItems);

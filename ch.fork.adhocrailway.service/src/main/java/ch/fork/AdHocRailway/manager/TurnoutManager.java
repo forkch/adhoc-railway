@@ -18,6 +18,7 @@
 
 package ch.fork.AdHocRailway.manager;
 
+import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.services.TurnoutService;
@@ -71,4 +72,6 @@ public interface TurnoutManager {
     TurnoutService getService();
 
     Turnout getTurnoutById(String turnoutId);
+
+    void setupLinkedRoutes(Route route);
 }

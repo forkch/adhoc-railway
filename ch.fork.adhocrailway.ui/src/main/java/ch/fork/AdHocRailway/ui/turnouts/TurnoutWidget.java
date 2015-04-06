@@ -82,7 +82,10 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
     public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
         if (event.isConnected()) {
             ctx.getTurnoutControl().addTurnoutChangeListener(turnout, this);
-           TurnoutState turnoutState =  ctx.getTurnoutControl().getStateFromDevice(turnout);
+
+            linkRouteAndAddListener();
+
+            TurnoutState turnoutState = ctx.getTurnoutControl().getStateFromDevice(turnout);
             turnout.setActualState(turnoutState);
             turnoutChanged(turnout);
         } else {
@@ -136,11 +139,19 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
         setToolTipText(turnoutDescription);
         turnoutCanvas.setToolTipText(turnoutDescription);
 
-        if (turnout.isLinkedToRoute() && turnout.getLinkedRoute() == null) {
-            turnout.setLinkedRoute(ctx.getRouteForNumber(turnout.getLinkedRouteNumber()));
-            ctx.getRouteControl().addRouteChangeListener(turnout.getLinkedRoute(), this);
-        }
+        linkRouteAndAddListener();
 
+    }
+
+    private void linkRouteAndAddListener() {
+        ctx.getRouteControl().removeRouteChangeListener(turnout.getLinkedRoute(), this);
+        if (turnout.isLinkedToRoute() && turnout.getLinkedRoute() == null) {
+            final Route routeForNumber = ctx.getRouteForNumber(turnout.getLinkedRouteNumber());
+            if (routeForNumber != null) {
+                turnout.setLinkedRoute(routeForNumber);
+            }
+        }
+        ctx.getRouteControl().addRouteChangeListener(turnout.getLinkedRoute(), this);
     }
 
     public Turnout getTurnout() {
@@ -156,10 +167,6 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
     public void turnoutChanged(final Turnout changedTurnout) {
 
         if (turnout.equals(changedTurnout)) {
-            if (turnout.isLinkedToRoute() && turnout.getLinkedRoute() == null) {
-                turnout.setLinkedRoute(ctx.getRouteForNumber(turnout.getLinkedRouteNumber()));
-                ctx.getRouteControl().addRouteChangeListener(turnout.getLinkedRoute(), this);
-            }
             actualTurnoutState = changedTurnout.getActualState();
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
@@ -228,7 +235,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
     @Override
     public void routeChanged(Route changedRoute) {
 
-        if(turnout.isLinkedToRoute() && changedRoute.equals(turnout.getLinkedRoute())) {
+        if (turnout.isLinkedToRoute() && changedRoute.equals(turnout.getLinkedRoute())) {
             turnout.setActualState(changedRoute.isEnabled() ? TurnoutState.LEFT : TurnoutState.STRAIGHT);
             turnoutChanged(turnout);
         }
@@ -237,6 +244,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
     private class MouseAction extends MouseAdapter {
         @Override
         public void mouseClicked(final MouseEvent e) {
+            linkRouteAndAddListener();
             if (e.getButton() == MouseEvent.BUTTON1) {
                 handleLeftClick();
             } else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -255,7 +263,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
                 return;
             }
 
-            if(turnout.isLinkedToRoute()) {
+            if (turnout.isLinkedToRoute()) {
                 RouteController routeControl = ctx.getRouteControl();
                 Route routeForNumber = ctx.getRouteForNumber(turnout.getLinkedRouteNumber());
                 if (!testMode) {
