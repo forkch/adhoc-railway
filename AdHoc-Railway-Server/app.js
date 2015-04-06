@@ -53,7 +53,10 @@ server.use(restify.requestLogger({
 
 var clients = {};
 
-var io = require('socket.io').listen(server, {origins: '*:*'});
+var io = require('socket.io').listen(server, {
+    allowUpgrades: true,
+    transports: ['websocket', 'flashsocket', 'polling']
+});
 
 io.sockets.on('connection', function (client) {
 
