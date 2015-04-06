@@ -48,8 +48,9 @@ public class SIOService {
                 public void call(Object... args) {
                     LOGGER.error("failed to connect to AdHoc-Server at "
                             + url);
+                    Exception e = (Exception) args[0];
                     mainCallback.connectionError(new AdHocServiceException(
-                            "failed to connect to AdHoc-Server at " + url));
+                            "failed to connect to AdHoc-Server at " + url, e));
                     for (final IOCallback cb : otherCallbacks) {
                         cb.onError((Exception) args[0]);
                     }

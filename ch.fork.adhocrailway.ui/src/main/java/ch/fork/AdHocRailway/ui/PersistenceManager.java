@@ -138,9 +138,6 @@ public class PersistenceManager {
                         new CommandLogEvent("Connection error: "
                                 + ex.getMessage())
                 );
-                appContext.getPreferences().setBooleanValue(
-                        PreferencesKeys.USE_ADHOC_SERVER, false);
-                appContext.getPreferences().save();
                 throw ex;
             }
 
