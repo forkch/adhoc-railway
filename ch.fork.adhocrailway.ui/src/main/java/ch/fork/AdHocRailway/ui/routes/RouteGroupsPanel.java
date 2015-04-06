@@ -153,8 +153,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
                 final RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
                         .get(route.getRouteGroup());
                 routeGroupTab.addRoute(route);
-                revalidate();
-                repaint();
+
 
             }
         });
@@ -201,8 +200,7 @@ public class RouteGroupsPanel extends JTabbedPane implements
                 final RouteGroupTab routeGroupTab = routeGroupToRouteGroupTab
                         .get(group);
                 routeGroupTab.updateRouteGroup(group);
-                revalidate();
-                repaint();
+
             }
         });
     }

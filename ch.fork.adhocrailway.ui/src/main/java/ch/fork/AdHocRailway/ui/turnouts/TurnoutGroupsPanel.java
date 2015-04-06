@@ -145,8 +145,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
             @Override
             public void run() {
                 updateTurnouts(turnoutGroups);
-                revalidate();
-                repaint();
+
             }
         });
     }
@@ -165,8 +164,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                         .get(turnout.getTurnoutGroup());
                 turnoutGroupTab.updateTurnout(turnout);
                 revalidateAllTurnouts();
-                revalidate();
-                repaint();
+
 
             }
 
@@ -188,8 +186,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                 turnoutGroupTab.removeTurnout(turnout);
 
                 revalidateAllTurnouts();
-                revalidate();
-                repaint();
+
             }
         });
 
@@ -209,8 +206,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                 turnoutGroupTab.addTurnout(turnout);
 
                 revalidateAllTurnouts();
-                revalidate();
-                repaint();
+
 
             }
         });
@@ -259,8 +255,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
                 final TurnoutGroupTab turnoutGroupTab = turnoutGroupToTurnoutGroupTab
                         .get(group);
                 turnoutGroupTab.updateTurnoutGroup(group);
-                revalidate();
-                repaint();
+
             }
         });
     }

@@ -108,8 +108,7 @@ public class ErrorPanel extends JPanel {
         errorTextArea.setText(text);
         errorTextArea.setOpaque(false);
         panel.setBackground(COLOR);
-        revalidate();
-        repaint();
+
 
         final Thread errorPanelCloser = new Thread(waitRunner,
                 "ErrorPanelCloserThread");

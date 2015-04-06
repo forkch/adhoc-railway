@@ -77,8 +77,6 @@ public class LocomotiveControlPanel extends JPanel {
             controlPanel.add(w);
             locomotiveWidgets.add(w);
         }
-        revalidate();
-        repaint();
     }
 
     private class LocomotiveStopAction extends AbstractAction implements

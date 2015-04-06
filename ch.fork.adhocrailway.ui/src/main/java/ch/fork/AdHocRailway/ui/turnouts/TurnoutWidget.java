@@ -195,8 +195,7 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
                             break;
 
                     }
-                    TurnoutWidget.this.revalidate();
-                    TurnoutWidget.this.repaint();
+
                 }
             });
         }
