@@ -18,25 +18,29 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
 
     @Override
     public void toggle(final Turnout turnout) {
-        switch (turnout.getActualState()) {
-            case LEFT:
-                if (turnout.isThreeWay()) {
-                    setCurvedRight(turnout);
-                } else {
+        if (turnout.isCutter()) {
+            enableCutter(turnout);
+        } else {
+            switch (turnout.getActualState()) {
+                case LEFT:
+                    if (turnout.isThreeWay()) {
+                        setCurvedRight(turnout);
+                    } else {
+                        setStraight(turnout);
+                    }
+                    break;
+                case RIGHT:
                     setStraight(turnout);
-                }
-                break;
-            case RIGHT:
-                setStraight(turnout);
-                break;
-            case STRAIGHT:
-                setCurvedLeft(turnout);
-                break;
-            case UNDEF:
-                setStraight(turnout);
-                break;
-            default:
-                break;
+                    break;
+                case STRAIGHT:
+                    setCurvedLeft(turnout);
+                    break;
+                case UNDEF:
+                    setStraight(turnout);
+                    break;
+                default:
+                    break;
+            }
         }
 
     }
@@ -45,6 +49,9 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
     @Override
     public void setDefaultState(final Turnout turnout) {
 
+        if (turnout.isCutter()) {
+            return;
+        }
         final TurnoutState defaultState = turnout.getDefaultState();
         switch (defaultState) {
             case LEFT:
@@ -72,6 +79,28 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
         });
     }
 
+    public void enableCutter(Turnout turnout) {
+        try {
+            int reps = 5;
+            for (int i = 0; i < reps; i++) {
+                brain.write("XT " + turnout.getAddress1() + " "
+                        + getRedPort(turnout.isAddress1Switched()));
+                if (reps > 1) {
+                    try {
+                        Thread.sleep(cutterSleepTime);
+                    } catch (InterruptedException e) {
+                        throw new IllegalStateException("failed to sleep");
+                    }
+                }
+            }
+
+            turnout.setActualState(TurnoutState.STRAIGHT);
+            informListeners(turnout);
+        } catch (final BrainException e) {
+            throw new ControllerException("failed to set turnout straight", e);
+        }
+    }
+
     public void setStraightSync(Turnout turnout) {
         try {
             if (turnout.isThreeWay()) {
@@ -80,29 +109,10 @@ public class BrainTurnoutControlAdapter extends TurnoutController {
                 brain.write("XT " + turnout.getAddress2() + " "
                         + getGreenPort(turnout.isAddress2Switched()));
             } else {
-                int reps = 1;
-                if (turnout.isCutter()) {
-                    reps = 5;
-                }
-                for (int i = 0; i < reps; i++) {
-                    brain.write("XT " + turnout.getAddress1() + " "
-                            + getGreenPort(turnout.isAddress1Switched()));
-                    if (reps > 1) {
-                        try {
-                            Thread.sleep(cutterSleepTime);
-                        } catch (InterruptedException e) {
-                            throw new IllegalStateException("failed to sleep");
-                        }
-                    }
-                }
-
-
+                brain.write("XT " + turnout.getAddress1() + " "
+                        + getGreenPort(turnout.isAddress1Switched()));
             }
-            if (turnout.isCutter()) {
-                turnout.setActualState(TurnoutState.LEFT);
-            } else {
-                turnout.setActualState(TurnoutState.STRAIGHT);
-            }
+            turnout.setActualState(TurnoutState.STRAIGHT);
             informListeners(turnout);
         } catch (final BrainException e) {
             throw new ControllerException("failed to set turnout straight", e);
