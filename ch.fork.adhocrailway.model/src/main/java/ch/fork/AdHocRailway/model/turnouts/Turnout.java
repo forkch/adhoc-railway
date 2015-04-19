@@ -86,6 +86,7 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     private transient Route linkedRoute;
 
     public Turnout() {
+        routeItems = new HashSet<>();
 
     }
 
@@ -373,5 +374,11 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public void addRouteItem(RouteItem routeItem) {
+        if(routeItems==null)
+            routeItems = new HashSet<>();
+        routeItems.add(routeItem);
     }
 }

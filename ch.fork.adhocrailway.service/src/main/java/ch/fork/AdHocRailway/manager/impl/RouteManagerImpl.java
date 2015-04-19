@@ -29,7 +29,6 @@ import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.RouteService;
 import ch.fork.AdHocRailway.services.RouteServiceListener;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -289,6 +288,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
             Turnout turnoutByNumber = turnoutManager.getTurnoutByNumber(routeItem.getTurnoutNumber());
             if (turnoutByNumber != null) {
                 routeItem.setTurnout(turnoutByNumber);
+                turnoutByNumber.addRouteItem(routeItem);
                 routeItem.setRoute(route);
             } else {
                 LOGGER.warn("turnout with number " + routeItem.getTurnoutNumber() + " not found ");
