@@ -21,7 +21,6 @@ package ch.fork.AdHocRailway.ui.turnouts;
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
 import ch.fork.AdHocRailway.ui.utils.ImageTools;
-import javafx.scene.transform.Affine;
 
 import javax.swing.*;
 import java.awt.*;

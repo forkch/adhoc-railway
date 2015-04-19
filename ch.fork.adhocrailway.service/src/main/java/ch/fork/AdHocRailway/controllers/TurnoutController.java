@@ -111,19 +111,22 @@ public abstract class TurnoutController {
 
     public void setNonDefaultState(final Turnout turnout) {
         if (turnout.isThreeWay()) {
-            return;
-        }
-        switch (turnout.getDefaultState()) {
-            case LEFT:
-            case RIGHT:
-                setStraight(turnout);
-                break;
-            case STRAIGHT:
-                setCurvedLeft(turnout);
-                break;
-            default:
-                break;
+            // noop
+        } else  if(turnout.isCutter()) {
+            toggle(turnout);
+        } else {
+            switch (turnout.getDefaultState()) {
+                case LEFT:
+                case RIGHT:
+                    setStraight(turnout);
+                    break;
+                case STRAIGHT:
+                    setCurvedLeft(turnout);
+                    break;
+                default:
+                    break;
 
+            }
         }
     }
 
