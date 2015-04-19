@@ -18,24 +18,19 @@
 
 package ch.fork.AdHocRailway.model.locomotives;
 
-import static ch.fork.AdHocRailway.model.locomotives.LocomotiveDirection.FORWARD;
-import static ch.fork.AdHocRailway.model.locomotives.LocomotiveDirection.REVERSE;
-
-import java.beans.PropertyChangeListener;
-import java.io.Serializable;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import ch.fork.AdHocRailway.model.AbstractItem;
-
 import com.google.common.collect.Sets;
 import com.google.gson.annotations.Expose;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.beans.PropertyChangeListener;
+import java.io.Serializable;
+import java.util.*;
+
+import static ch.fork.AdHocRailway.model.locomotives.LocomotiveDirection.FORWARD;
+import static ch.fork.AdHocRailway.model.locomotives.LocomotiveDirection.REVERSE;
 
 public class Locomotive extends AbstractItem implements Serializable,
         Comparable<Locomotive> {
@@ -331,8 +326,22 @@ public class Locomotive extends AbstractItem implements Serializable,
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this,
-                ToStringStyle.SHORT_PREFIX_STYLE);
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append(
+                "id" , id)
+                .append("name",name)
+                .append("groupId",groupId)
+                .append("desc",desc)
+                .append("type",type)
+                .append("bus",bus)
+                .append("address1",address1)
+                .append("address2",address2)
+                .append("functions",functions)
+                .append("group",group)
+                .append("currentSpeed",currentSpeed)
+                .append("targetSpeed",targetSpeed)
+                .append("currentDirection",currentDirection)
+                .append("currentFunctions",Arrays.toString(currentFunctions)).build();
     }
 
 }

@@ -2,19 +2,16 @@ package ch.fork.AdHocRailway.ui.locomotives;
 
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.ui.bus.events.ConnectedToPersistenceEvent;
-import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveGroupListCellRenderer;
 import ch.fork.AdHocRailway.utils.LocomotiveHelper;
 import com.google.common.collect.Lists;
-import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -46,7 +43,6 @@ public class LocomotiveSelectionPanel extends JPanel {
     }
 
     public void updateLocomotiveGroups() {
-        LOGGER.info(">>>updateLocomotiveGroups");
         if (ctx.getLocomotiveManager() == null) {
             return;
         }
@@ -67,7 +63,6 @@ public class LocomotiveSelectionPanel extends JPanel {
         locomotiveGroupComboBoxModel.clearAndAddAll(listForModel);
         locomotiveComboBoxModel.clearAndAddAll(allLocomotivesGroup.getLocomotives());
         locomotiveGroupComboBox.setSelectedIndex(0);
-        LOGGER.info("<<<updateLocomotiveGroups");
 
     }
 
