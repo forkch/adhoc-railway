@@ -2,6 +2,7 @@ package ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio;
 
 import ch.fork.AdHocRailway.services.AdHocServiceException;
 import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.engineio.client.transports.WebSocket;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import org.apache.log4j.Logger;
@@ -23,7 +24,10 @@ public class SIOService {
 
     public void connect(final String url, final ServiceListener mainCallback) {
         try {
-            socket = IO.socket(url);
+            IO.Options options = new IO.Options();
+            options.transports = new String[] {WebSocket.NAME};
+
+            socket = IO.socket(url, options);
 
             socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
                         @Override
