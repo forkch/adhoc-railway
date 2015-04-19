@@ -29,7 +29,7 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'maven-publish'
     group = 'ch.fork.adhocrailway'
-    version = '2.5.1'
+    version = '2.5.2'
 
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
