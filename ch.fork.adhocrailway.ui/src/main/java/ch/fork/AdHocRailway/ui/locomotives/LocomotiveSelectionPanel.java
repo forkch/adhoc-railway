@@ -63,6 +63,7 @@ public class LocomotiveSelectionPanel extends JPanel {
         locomotiveGroupComboBoxModel.clearAndAddAll(listForModel);
         locomotiveComboBoxModel.clearAndAddAll(allLocomotivesGroup.getLocomotives());
         locomotiveGroupComboBox.setSelectedIndex(0);
+        locomotiveComboBox.setSelectedIndex(-1);
 
     }
 
@@ -107,8 +108,9 @@ public class LocomotiveSelectionPanel extends JPanel {
         locomotiveImage.setHorizontalAlignment(SwingConstants.CENTER);
         locomotiveImage.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        add(locomotiveGroupComboBox, "grow, width 80");
-        add(locomotiveComboBox, "grow, width 120, wrap");
+        add(locomotiveGroupComboBox, "growy, width 120");
+        add(locomotiveComboBox, "growy" +
+                ", width 120, wrap");
         add(locomotiveImage, "span 2, height 60, grow");
 
     }
@@ -130,6 +132,7 @@ public class LocomotiveSelectionPanel extends JPanel {
 
             locomotiveImage.setIcon(LocomotiveImageHelper.getEmptyLocoIconScaledToHeight(LOCOMOTIVE_IMAGE_HEIGHT));
             selectionListener.onLocomotiveGroupSelected(selectedLocomotiveGroup);
+            locomotiveComboBox.setSelectedIndex(-1);
 
         }
     }

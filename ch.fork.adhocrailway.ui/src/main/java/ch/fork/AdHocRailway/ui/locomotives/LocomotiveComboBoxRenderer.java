@@ -21,8 +21,6 @@ public class LocomotiveComboBoxRenderer extends JPanel implements
         iconLabel.setHorizontalAlignment(JLabel.CENTER);
         iconLabel.setVerticalAlignment(JLabel.CENTER);
 
-        add(textLabel, BorderLayout.NORTH);
-        add(iconLabel, BorderLayout.CENTER);
 
     }
 
@@ -31,7 +29,7 @@ public class LocomotiveComboBoxRenderer extends JPanel implements
             final JList<? extends Locomotive> list,
             final Locomotive locomotive, final int index,
             final boolean isSelected, final boolean cellHasFocus) {
-
+        removeAll();
         textLabel.setText("");
         iconLabel.setIcon(null);
         if (locomotive == null) {
@@ -46,10 +44,16 @@ public class LocomotiveComboBoxRenderer extends JPanel implements
             setForeground(list.getForeground());
         }
 
-        // Set the icon and text. If icon was null, say so.
         textLabel.setText(locomotive.getName());
+
         if (index != -1) {
             iconLabel.setIcon(LocomotiveImageHelper.getLocomotiveIconScaledToWidth(locomotive, 100));
+
+            add(textLabel, BorderLayout.NORTH);
+            add(iconLabel, BorderLayout.CENTER);
+        } else {
+
+            add(textLabel, BorderLayout.CENTER);
         }
 
         return this;
