@@ -31,7 +31,6 @@ import ch.fork.AdHocRailway.ui.context.ApplicationContext;
 import ch.fork.AdHocRailway.ui.routes.RouteWidget;
 import ch.fork.AdHocRailway.ui.turnouts.TurnoutWidget;
 import ch.fork.AdHocRailway.ui.utils.ThreeDigitDisplay;
-import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -41,14 +40,14 @@ import java.util.LinkedList;
 
 public class KeyControl extends JPanel {
 
-    private final LinkedList<Object> historyStack = new LinkedList<Object>();
+    private final LinkedList<Object> historyObjectsStack = new LinkedList<Object>();
 
-    private final LinkedList<JPanel> historyWidgets = new LinkedList<JPanel>();
+    private final LinkedList<JPanel> historyWidgetsStack = new LinkedList<JPanel>();
     private final ApplicationContext ctx;
     private KeyControlMode mode = KeyControlMode.TURNOUT_MODE;
     private int locomotiveNumber = -1;
     private StringBuffer enteredNumberKeys;
-    private JPanel turnoutsHistory;
+    private JPanel turnoutsHistoryPanel;
     private JScrollPane historyPane;
     private ThreeDigitDisplay digitDisplay;
 
@@ -62,9 +61,9 @@ public class KeyControl extends JPanel {
     private void initGUI() {
         setLayout(new BorderLayout());
         final JPanel segmentPanelNorth = initSegmentPanel();
-        turnoutsHistory = new JPanel(new MigLayout("insets 5"));
+        turnoutsHistoryPanel = new JPanel(new MigLayout("insets 5"));
 
-        historyPane = new JScrollPane(turnoutsHistory,
+        historyPane = new JScrollPane(turnoutsHistoryPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -109,15 +108,8 @@ public class KeyControl extends JPanel {
     }
 
     private void updateHistory(final Object obj) {
-        if (historyStack.size() == UIConstants.HISTORY_LENGTH) {
-            historyStack.removeFirst();
-            historyWidgets.removeFirst();
-        }
-        if (!historyStack.isEmpty() && historyStack.getFirst().equals(obj)) {
-            historyStack.removeLast();
-            historyWidgets.removeLast();
-        }
-        historyStack.addLast(obj);
+
+        historyObjectsStack.addLast(obj);
         JPanel w = null;
 
         if (obj instanceof Turnout) {
@@ -129,15 +121,15 @@ public class KeyControl extends JPanel {
         } else {
             return;
         }
-        historyWidgets.addLast(w);
-        updateHistory();
+        historyWidgetsStack.addLast(w);
+        updateHistoryPanel();
     }
 
-    private void updateHistory() {
-        turnoutsHistory.removeAll();
+    private void updateHistoryPanel() {
+        turnoutsHistoryPanel.removeAll();
 
-        for (final JPanel p : historyWidgets) {
-            turnoutsHistory.add(p, "wrap");
+        for (final JPanel p : historyWidgetsStack) {
+            turnoutsHistoryPanel.add(p, "wrap");
         }
         revalidate();
         repaint();
@@ -209,14 +201,14 @@ public class KeyControl extends JPanel {
             final String enteredNumberAsString = enteredNumberKeys
                     .toString();
             if (enteredNumberKeys.toString().equals("")) {
-                if (historyStack.size() == 0) {
+                if (historyObjectsStack.size() == 0) {
                     return;
                 }
                 final TurnoutController turnoutControl = ctx
                         .getTurnoutControl();
                 final RouteController routeControl = ctx
                         .getRouteControl();
-                final Object obj = historyStack.removeFirst();
+                final Object obj = historyObjectsStack.removeFirst();
                 if (obj instanceof Turnout) {
 
                     final Turnout t = (Turnout) obj;
@@ -232,8 +224,8 @@ public class KeyControl extends JPanel {
                 } else {
                     return;
                 }
-                historyWidgets.removeFirst();
-                updateHistory();
+                historyWidgetsStack.removeFirst();
+                updateHistoryPanel();
             } else {
                 final int enteredNumber = Integer
                         .parseInt(enteredNumberAsString);
