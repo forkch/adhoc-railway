@@ -1,6 +1,6 @@
 <AdHocRailwayData>
   <locomotiveGroups class="sorted-set">
-    <locomotiveGroup id="27717b87-31c3-4412-b851-85deae064e34" name="Ae 6/6">
+    <locomotiveGroup id="27717b87-31c3-4412-b851-85deae064e34" name="Ae &amp; Re 6/6, 6xx">
       <locomotive id="2abe03c5-dbfc-445a-af88-18f4bc9190eb" name="Ae 6/6 Altdorf rot (Fridu)" groupId="27717b87-31c3-4412-b851-85deae064e34" desc="Ae 6/6 Altdorf rot (Fridu)" image="Ae 6-6 rot.png" type="digital" bus="1" address1="61" address2="0">
         <imageBase64>
                     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
@@ -291,6 +291,43 @@
             <number>0</number>
             <description>Licht</description>
             <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+        </functions>
+      </locomotive>
+      <locomotive id="371c416c-bae3-46c2-bd8d-3ec094fbfbc8" name="Re 6/6 SBB Amsteg gruen" groupId="f96bdbea-4dac-433b-a526-491479c9789e" desc="Re 6/6 SBB Amsteg gruen" image="Re 6-6 gruen.png" type="digital" bus="1" address1="48" address2="0">
+        <imageBase64>
+          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
+        </imageBase64>
+        <functions>
+          <locomotiveFunction>
+            <number>1</number>
+            <description>F1</description>
+            <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>3</number>
+            <description>F3</description>
+            <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>0</number>
+            <description>Licht</description>
+            <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>2</number>
+            <description>F2</description>
+            <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>4</number>
+            <description>F4</description>
+            <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
         </functions>
@@ -1716,45 +1753,6 @@
           <locomotiveFunction>
             <number>4</number>
             <description>ABV</description>
-            <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-        </functions>
-      </locomotive>
-    </locomotiveGroup>
-    <locomotiveGroup id="f96bdbea-4dac-433b-a526-491479c9789e" name="Re 6/6">
-      <locomotive id="371c416c-bae3-46c2-bd8d-3ec094fbfbc8" name="Re 6/6 SBB Amsteg gruen" groupId="f96bdbea-4dac-433b-a526-491479c9789e" desc="Re 6/6 SBB Amsteg gruen" image="Re 6-6 gruen.png" type="digital" bus="1" address1="48" address2="0">
-        <imageBase64>
-                    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
-                </imageBase64>
-        <functions>
-          <locomotiveFunction>
-            <number>1</number>
-            <description>F1</description>
-            <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>3</number>
-            <description>F3</description>
-            <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>0</number>
-            <description>Licht</description>
-            <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>2</number>
-            <description>F2</description>
-            <isEmergencyBrakeFunction>false</isEmergencyBrakeFunction>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>4</number>
-            <description>F4</description>
             <isEmergencyBrakeFunction>true</isEmergencyBrakeFunction>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
