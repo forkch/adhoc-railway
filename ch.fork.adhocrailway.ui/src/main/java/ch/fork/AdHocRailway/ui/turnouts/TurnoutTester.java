@@ -240,10 +240,6 @@ public class TurnoutTester extends ConfigurationDialog {
             }
         }
 
-        private void waitTime() throws InterruptedException {
-            Thread.sleep(4 * Preferences.getInstance().getIntValue(
-                    PreferencesKeys.ROUTING_DELAY));
-        }
     }
 
     private class TestCycleAction extends AbstractAction {
@@ -285,13 +281,17 @@ public class TurnoutTester extends ConfigurationDialog {
                             continue;
                         }
                         ctx.getTurnoutControl().toggle(turnout);
-                        Thread.sleep(500);
-
+                        waitTime();
                     }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void waitTime() throws InterruptedException {
+        Thread.sleep(4 * Preferences.getInstance().getIntValue(
+                PreferencesKeys.ROUTING_DELAY));
     }
 }
