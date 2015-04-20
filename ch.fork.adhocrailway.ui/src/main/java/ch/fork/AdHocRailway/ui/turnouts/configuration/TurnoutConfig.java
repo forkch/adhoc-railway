@@ -252,8 +252,6 @@ public class TurnoutConfig extends JDialog {
     }
 
     private void buildPanel() {
-        initComponents();
-
         final FormLayout layout = new FormLayout(
                 "right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow, 3dlu,pref:grow, 30dlu, pref",
                 "p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu, p:grow, 3dlu, p:grow, 10dlu,p:grow");

@@ -124,9 +124,9 @@ public class SRCPTurnoutControlAdapter extends TurnoutController implements
             // just create a temporary SRCPTurnout
             sTurnoutTemp = new MMTurnout();
         } else {
-            applyNewSettings(sTurnoutTemp, turnout);
             sTurnoutTemp.setInitialized(false);
         }
+        applyNewSettings(sTurnoutTemp, turnout);
         turnoutControl.addTurnout(sTurnoutTemp);
         try {
             turnoutControl.toggle(sTurnoutTemp);

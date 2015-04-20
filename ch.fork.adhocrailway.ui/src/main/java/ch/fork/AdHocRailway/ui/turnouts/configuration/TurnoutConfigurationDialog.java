@@ -414,10 +414,8 @@ public class TurnoutConfigurationDialog extends JDialog implements
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            int nextNumber = 0;
-            nextNumber = turnoutManager.getNextFreeTurnoutNumber();
             final Turnout newTurnout = TurnoutHelper.createDefaultTurnout(
-                    turnoutManager, nextNumber);
+                    turnoutManager);
 
             new TurnoutConfig(TurnoutConfigurationDialog.this, ctx, newTurnout,
                     selectedTurnoutGroup, true);

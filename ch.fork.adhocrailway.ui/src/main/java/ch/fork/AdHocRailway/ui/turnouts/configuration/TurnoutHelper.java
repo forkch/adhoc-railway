@@ -16,19 +16,18 @@ public class TurnoutHelper {
 
     public static void addNewTurnoutDialog(final TurnoutContext ctx,
                                            final TurnoutGroup selectedTurnoutGroup) {
-        int nextNumber = 0;
-        final TurnoutManager turnoutManager = ctx.getTurnoutManager();
-        nextNumber = turnoutManager.getNextFreeTurnoutNumber();
+
 
         final Turnout newTurnout = TurnoutHelper.createDefaultTurnout(
-                turnoutManager, nextNumber);
+                ctx.getTurnoutManager());
 
         new TurnoutConfig(ctx.getMainFrame(), ctx, newTurnout,
                 selectedTurnoutGroup, true);
     }
 
     public static Turnout createDefaultTurnout(
-            final TurnoutManager turnoutPersistence, final int nextNumber) {
+            final TurnoutManager turnoutManager) {
+        int nextNumber = turnoutManager.getNextFreeTurnoutNumber();
         final Turnout newTurnout = new Turnout();
         newTurnout.setNumber(nextNumber);
 
@@ -38,7 +37,7 @@ public class TurnoutHelper {
                 PreferencesKeys.DEFAULT_TURNOUT_BUS));
 
         newTurnout
-                .setAddress1(turnoutPersistence.getLastProgrammedAddress() + 1);
+                .setAddress1(turnoutManager.getLastProgrammedAddress() + 1);
         newTurnout.setDefaultState(TurnoutState.STRAIGHT);
         newTurnout.setOrientation(TurnoutOrientation.EAST);
         newTurnout.setType(TurnoutType.DEFAULT_LEFT);
