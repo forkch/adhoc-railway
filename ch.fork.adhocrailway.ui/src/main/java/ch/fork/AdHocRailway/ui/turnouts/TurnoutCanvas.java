@@ -70,6 +70,7 @@ public class TurnoutCanvas extends JPanel {
 
     @Override
     public void paintComponent(final Graphics g) {
+        super.paintComponent(g);
         if (turnout.isDoubleCross()) {
             paintDoubleCross(g);
         } else if (turnout.isDefaultLeft()) {
