@@ -113,7 +113,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         add(iconLabel, "span 1 2, align right, wrap");
         add(nameLabel, "wrap");
 
-        add(routingProgress, "span 3, h 5!, w 125!");
+        add(routingProgress, "span 3, w 125!");
 
     }
 
