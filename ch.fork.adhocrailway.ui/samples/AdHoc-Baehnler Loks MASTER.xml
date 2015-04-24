@@ -1488,7 +1488,7 @@
           </locomotiveFunction>
         </functions>
       </locomotive>
-      <locomotive id="eba74408-fff8-469d-a986-9516578cc385" name="Re 460 SBB (Pädu)" groupId="9356162e-d5a5-41ce-a573-f876ef407284" desc="Re 460 SBB (Pädu)" type="digital" bus="1" address1="0" address2="0">
+      <locomotive id="eba74408-fff8-469d-a986-9516578cc385" name="Re 460 SBB (Pädu)" groupId="9356162e-d5a5-41ce-a573-f876ef407284" desc="Re 460 SBB (Pädu)" type="digital" bus="1" address1="90" address2="0">
         <functions class="sorted-set">
           <locomotiveFunction>
             <number>0</number>
