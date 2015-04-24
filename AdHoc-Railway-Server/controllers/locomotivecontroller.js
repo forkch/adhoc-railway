@@ -247,22 +247,22 @@ validateLocomotive = function (locomotive, fn) {
         return false;
     }
 
-    if (!locomotive.bus || locomotive.bus < 1) {
-        fn(true, {msg: 'bus must be greater 0'});
-        return false;
-    }
+    //if (!locomotive.bus || locomotive.bus < 1) {
+    //    fn(true, {msg: 'bus must be greater 0'});
+    //    return false;
+   // }
 
-    if (!locomotive.address1 || locomotive.address1 < 1) {
-        fn(true, {msg: 'address 1 must be greater 0'});
-        return false;
-    }
+    //if (!locomotive.address1 || locomotive.address1 < 1) {
+    //    fn(true, {msg: 'address 1 must be greater 0'});
+    //    return false;
+    //}
 
     if (locomotive.type.toUpperCase() === "SIMULATED-MFX") {
 
-        if (!locomotive.address2 || locomotive.address2 < 1) {
-            fn(true, {msg: 'address 2 must be greater 0'});
-            return false;
-        }
+        //if (!locomotive.address2 || locomotive.address2 < 1) {
+        //    fn(true, {msg: 'address 2 must be greater 0'});
+        //    return false;
+        //}
     }
     return true;
 }
