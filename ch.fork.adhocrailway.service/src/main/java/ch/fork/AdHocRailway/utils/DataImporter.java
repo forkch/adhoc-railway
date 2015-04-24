@@ -7,6 +7,7 @@ import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.model.turnouts.*;
 
+import java.util.HashSet;
 import java.util.SortedSet;
 
 public class DataImporter {
@@ -16,12 +17,12 @@ public class DataImporter {
             final SortedSet<LocomotiveGroup> groups) {
 
         locomotiveManager.clearToService();
-
+        HashSet<LocomotiveGroup> copyLocomotiveGroup = new HashSet<>(groups);
         for (final LocomotiveGroup group : groups) {
             locomotiveManager.addLocomotiveGroup(group);
         }
 
-        for (final LocomotiveGroup group : groups) {
+        for (final LocomotiveGroup group : copyLocomotiveGroup) {
             for (final Locomotive locomotive : group.getLocomotives()) {
                 locomotiveManager.addLocomotiveToGroup(locomotive, group);
             }
@@ -31,12 +32,13 @@ public class DataImporter {
     public void importTurnouts(TurnoutManager turnoutManager, SortedSet<TurnoutGroup> turnoutGroups) {
         turnoutManager.clearToService();
 
+        HashSet<TurnoutGroup> copyTurnoutGroups = new HashSet<>(turnoutGroups);
         for (final TurnoutGroup group : turnoutGroups) {
             turnoutManager.addTurnoutGroup(group);
         }
 
-        for (final TurnoutGroup group : turnoutGroups) {
-            for (Turnout turnout : group.getTurnouts()) {
+        for (final TurnoutGroup group : copyTurnoutGroups) {
+            for (Turnout turnout : new HashSet<>(group.getTurnouts())) {
                 turnoutManager.addTurnoutToGroup(turnout, group);
             }
         }
@@ -44,15 +46,17 @@ public class DataImporter {
 
     public void importRoutes(RouteManager routeManager, SortedSet<RouteGroup> routeGroups) {
         routeManager.clearToService();
-        for (final RouteGroup group : routeGroups) {
+        HashSet<RouteGroup> copyRouteGroups = new HashSet<>(routeGroups);
+        for (final RouteGroup group : copyRouteGroups) {
             routeManager.addRouteGroup(group);
         }
 
-        for (final RouteGroup group : routeGroups) {
-            for (Route route : group.getRoutes()) {
+        for (final RouteGroup group : copyRouteGroups) {
+
+            for (Route route : new HashSet<>(group.getRoutes())) {
                 routeManager.addRouteToGroup(route, group);
-                for (RouteItem routeItem : route.getRoutedTurnouts()) {
-                    if(routeItem.getTurnout()!= null) {
+                for (RouteItem routeItem :  new HashSet<>(route.getRoutedTurnouts())) {
+                    if (routeItem.getTurnout() != null) {
                         routeManager.addRouteItemToGroup(routeItem, route);
                     }
                 }
