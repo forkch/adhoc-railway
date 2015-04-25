@@ -3,7 +3,6 @@ package ch.fork.AdHocRailway.controllers;
 import com.google.common.util.concurrent.RateLimiter;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +17,7 @@ public class ThreadUtils {
     }
 
     public static RateLimiter createRateLimiter() {
-        return RateLimiter.create(5);
+        return RateLimiter.create(2);
     }
 
 }
