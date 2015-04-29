@@ -4693,38 +4693,38 @@
         <name>A 6</name>
         <orientation>Gang</orientation>
         <routeItem>
-          <id>55378d3718c6c2d808781066</id>
-          <turnoutNumber>24</turnoutNumber>
+          <id>55381251942845d708079e8d</id>
+          <turnoutNumber>18</turnoutNumber>
           <state>NON_DEFAULT</state>
         </routeItem>
         <routeItem>
-          <id>55378d3718c6c2d808781067</id>
-          <turnoutNumber>23</turnoutNumber>
-          <state>DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>55378d3718c6c2d808781068</id>
-          <turnoutNumber>22</turnoutNumber>
-          <state>DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>55378d3718c6c2d808781069</id>
-          <turnoutNumber>21</turnoutNumber>
-          <state>DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>55378d3718c6c2d80878106a</id>
-          <turnoutNumber>20</turnoutNumber>
-          <state>NON_DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>55378d3718c6c2d80878106b</id>
+          <id>55381251942845d708079e8e</id>
           <turnoutNumber>19</turnoutNumber>
           <state>DEFAULT</state>
         </routeItem>
         <routeItem>
-          <id>55378d3718c6c2d80878106c</id>
-          <turnoutNumber>18</turnoutNumber>
+          <id>55381251942845d708079e8f</id>
+          <turnoutNumber>20</turnoutNumber>
+          <state>NON_DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>55381251942845d708079e90</id>
+          <turnoutNumber>21</turnoutNumber>
+          <state>DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>55381251942845d708079e91</id>
+          <turnoutNumber>22</turnoutNumber>
+          <state>DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>55381251942845d708079e92</id>
+          <turnoutNumber>23</turnoutNumber>
+          <state>DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>55381251942845d708079e93</id>
+          <turnoutNumber>24</turnoutNumber>
           <state>NON_DEFAULT</state>
         </routeItem>
         <groupId>55378d3718c6c2d80878103f</groupId>
@@ -5620,39 +5620,39 @@
         <name>L 5</name>
         <orientation>fenster</orientation>
         <routeItem>
-          <id>55378d3918c6c2d808781115</id>
-          <turnoutNumber>143</turnoutNumber>
-          <state>NON_DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>55378d3918c6c2d808781116</id>
-          <turnoutNumber>144</turnoutNumber>
+          <id>553897b5fa6a8adc0877f811</id>
+          <turnoutNumber>149</turnoutNumber>
           <state>DEFAULT</state>
         </routeItem>
         <routeItem>
-          <id>55378d3918c6c2d808781117</id>
-          <turnoutNumber>145</turnoutNumber>
-          <state>NON_DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>55378d3918c6c2d808781118</id>
-          <turnoutNumber>146</turnoutNumber>
-          <state>DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>55378d3918c6c2d808781119</id>
-          <turnoutNumber>147</turnoutNumber>
-          <state>DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>55378d3918c6c2d80878111a</id>
+          <id>553897b5fa6a8adc0877f812</id>
           <turnoutNumber>148</turnoutNumber>
           <state>DEFAULT</state>
         </routeItem>
         <routeItem>
-          <id>55378d3918c6c2d80878111b</id>
-          <turnoutNumber>149</turnoutNumber>
+          <id>553897b5fa6a8adc0877f813</id>
+          <turnoutNumber>147</turnoutNumber>
           <state>DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>553897b5fa6a8adc0877f814</id>
+          <turnoutNumber>146</turnoutNumber>
+          <state>DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>553897b5fa6a8adc0877f815</id>
+          <turnoutNumber>145</turnoutNumber>
+          <state>NON_DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>553897b5fa6a8adc0877f816</id>
+          <turnoutNumber>144</turnoutNumber>
+          <state>DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>553897b5fa6a8adc0877f817</id>
+          <turnoutNumber>143</turnoutNumber>
+          <state>NON_DEFAULT</state>
         </routeItem>
         <groupId>55378d3718c6c2d80878103f</groupId>
       </route>
