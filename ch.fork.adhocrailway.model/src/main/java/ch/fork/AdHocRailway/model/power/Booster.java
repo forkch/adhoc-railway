@@ -1,8 +1,6 @@
 package ch.fork.AdHocRailway.model.power;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.omg.PortableInterceptor.ACTIVE;
-import org.omg.PortableInterceptor.INACTIVE;
 
 public class Booster {
 
