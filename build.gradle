@@ -28,7 +28,7 @@ subprojects {
     apply plugin: 'maven'
     apply plugin: 'idea'
     apply plugin: 'maven-publish'
-    group = 'ch.fork.adhocrailway'
+    group = 'com.github.fork'
     version = '2.5.3'
 
     sourceCompatibility = 1.7
