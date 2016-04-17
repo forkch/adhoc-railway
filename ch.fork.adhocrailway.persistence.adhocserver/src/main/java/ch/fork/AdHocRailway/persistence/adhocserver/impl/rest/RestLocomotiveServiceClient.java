@@ -2,7 +2,8 @@ package ch.fork.AdHocRailway.persistence.adhocserver.impl.rest;
 
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
-import retrofit.http.*;
+import retrofit2.Call;
+import retrofit2.http.*;
 
 import java.util.SortedSet;
 
@@ -12,32 +13,32 @@ import java.util.SortedSet;
 public interface RestLocomotiveServiceClient {
 
     @GET("/locomotiveGroup")
-    SortedSet<LocomotiveGroup> getAllLocomotivesGroups();
+    Call<SortedSet<LocomotiveGroup>> getAllLocomotivesGroups();
 
     @DELETE("/locomotiveGroup")
-    SortedSet<LocomotiveGroup> deleteAllLocomotiveGroups();
+    Call<SortedSet<LocomotiveGroup>> deleteAllLocomotiveGroups();
 
     @GET("/locomotiveGroup/{id}")
-    LocomotiveGroup getLocomotiveGroupById(@Path("id") String id);
+    Call<LocomotiveGroup> getLocomotiveGroupById(@Path("id") String id);
 
     @POST("/locomotiveGroup")
-    LocomotiveGroup addLocomotiveGroup(@Body LocomotiveGroup group);
+    Call<LocomotiveGroup> addLocomotiveGroup(@Body LocomotiveGroup group);
 
     @PUT("/locomotiveGroup")
-    LocomotiveGroup updateLocomotiveGroup(@Body LocomotiveGroup group);
+    Call<LocomotiveGroup> updateLocomotiveGroup(@Body LocomotiveGroup group);
 
     @DELETE("/locomotiveGroup/{id}")
-    LocomotiveGroup deleteLocomotiveGroup(@Path("id") String id);
+    Call<LocomotiveGroup> deleteLocomotiveGroup(@Path("id") String id);
 
     @GET("/locomotive/{id}")
-    Locomotive getLocomotiveById(@Path("id") String id);
+    Call<Locomotive> getLocomotiveById(@Path("id") String id);
 
     @POST("/locomotive")
-    Locomotive addLocomotive(@Body Locomotive locomotive);
+    Call<Locomotive> addLocomotive(@Body Locomotive locomotive);
 
     @PUT("/locomotive")
-    Locomotive updateLocomotive(@Body Locomotive locomotive);
+    Call<Locomotive> updateLocomotive(@Body Locomotive locomotive);
 
     @DELETE("/locomotive/{id}")
-    Locomotive deleteLocomotive(@Path("id") String id);
+    Call<Locomotive> deleteLocomotive(@Path("id") String id);
 }

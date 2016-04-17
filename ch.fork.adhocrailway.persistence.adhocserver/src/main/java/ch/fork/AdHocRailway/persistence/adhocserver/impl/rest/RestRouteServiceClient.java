@@ -2,7 +2,8 @@ package ch.fork.AdHocRailway.persistence.adhocserver.impl.rest;
 
 import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.model.turnouts.RouteGroup;
-import retrofit.http.*;
+import retrofit2.Call;
+import retrofit2.http.*;
 
 import java.util.SortedSet;
 
@@ -12,32 +13,32 @@ import java.util.SortedSet;
 public interface RestRouteServiceClient {
 
     @GET("/routeGroup")
-    SortedSet<RouteGroup> getAllRouteGroups();
+    Call<SortedSet<RouteGroup>> getAllRouteGroups();
 
     @DELETE("/routeGroup")
-    SortedSet<RouteGroup> deleteAllRouteGroups();
+    Call<SortedSet<RouteGroup>> deleteAllRouteGroups();
 
     @GET("/routeGroup/{id}")
-    RouteGroup getRouteGroupById(@Path("id") String id);
+    Call<RouteGroup> getRouteGroupById(@Path("id") String id);
 
     @POST("/routeGroup")
-    RouteGroup addRouteGroup(@Body RouteGroup group);
+    Call<RouteGroup> addRouteGroup(@Body RouteGroup group);
 
     @PUT("/routeGroup")
-    RouteGroup updateRouteGroup(@Body RouteGroup group);
+    Call<RouteGroup> updateRouteGroup(@Body RouteGroup group);
 
     @DELETE("/routeGroup/{id}")
-    RouteGroup deleteRouteGroup(@Path("id") String id);
+    Call<RouteGroup> deleteRouteGroup(@Path("id") String id);
 
     @GET("/route/{id}")
-    Route getRouteById(@Path("id") String id);
+    Call<Route> getRouteById(@Path("id") String id);
 
     @POST("/route")
-    Route addRoute(@Body Route route);
+    Call<Route> addRoute(@Body Route route);
 
     @PUT("/route")
-    Route updateRoute(@Body Route route);
+    Call<Route> updateRoute(@Body Route route);
 
     @DELETE("/route/{id}")
-    Route deleteRoute(@Path("id") String id);
+    Call<Route> deleteRoute(@Path("id") String id);
 }

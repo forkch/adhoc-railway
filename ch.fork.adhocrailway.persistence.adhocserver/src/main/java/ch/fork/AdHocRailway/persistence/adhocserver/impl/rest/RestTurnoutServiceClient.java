@@ -2,8 +2,8 @@ package ch.fork.AdHocRailway.persistence.adhocserver.impl.rest;
 
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutGroup;
-import retrofit.Callback;
-import retrofit.http.*;
+import retrofit2.Call;
+import retrofit2.http.*;
 
 import java.util.SortedSet;
 
@@ -13,32 +13,32 @@ import java.util.SortedSet;
 public interface RestTurnoutServiceClient {
 
     @GET("/turnoutGroup")
-    SortedSet<TurnoutGroup> getAllTurnoutGroups();
+    Call<SortedSet<TurnoutGroup>> getAllTurnoutGroups();
 
     @DELETE("/turnoutGroup")
-    SortedSet<TurnoutGroup> deleteAllTurnoutGroups();
+    Call<SortedSet<TurnoutGroup>> deleteAllTurnoutGroups();
 
     @GET("/turnoutGroup/{id}")
-    TurnoutGroup getTurnoutGroupById(@Path("id") String id);
+    Call<TurnoutGroup> getTurnoutGroupById(@Path("id") String id);
 
     @POST("/turnoutGroup")
-    TurnoutGroup addTurnoutGroup(@Body TurnoutGroup group);
+    Call<TurnoutGroup> addTurnoutGroup(@Body TurnoutGroup group);
 
     @PUT("/turnoutGroup")
-    TurnoutGroup updateTurnoutGroup(@Body TurnoutGroup group);
+    Call<TurnoutGroup> updateTurnoutGroup(@Body TurnoutGroup group);
 
     @DELETE("/turnoutGroup/{id}")
-    TurnoutGroup deleteTurnoutGroup(@Path("id") String id);
+    Call<TurnoutGroup> deleteTurnoutGroup(@Path("id") String id);
 
     @GET("/turnout/{id}")
-    Turnout getTurnoutById(@Path("id") String id);
+    Call<Turnout> getTurnoutById(@Path("id") String id);
 
     @POST("/turnout")
-    Turnout addTurnout(@Body Turnout turnout);
+    Call<Turnout> addTurnout(@Body Turnout turnout);
 
     @PUT("/turnout")
-    Turnout updateTurnout(@Body Turnout turnout);
+    Call<Turnout> updateTurnout(@Body Turnout turnout);
 
     @DELETE("/turnout/{id}")
-    Turnout deleteTurnout(@Path("id") String id);
+    Call<Turnout> deleteTurnout(@Path("id") String id);
 }

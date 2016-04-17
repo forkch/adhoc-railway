@@ -8,8 +8,9 @@ import ch.fork.AdHocRailway.persistence.adhocserver.util.RestAdapterFactory;
 import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
 import org.apache.log4j.Logger;
-import retrofit.RestAdapter;
+import retrofit2.Retrofit;
 
+import java.io.IOException;
 import java.util.SortedSet;
 
 /**
@@ -24,14 +25,21 @@ public class RestLocomotiveService implements LocomotiveService {
     private LocomotiveServiceListener listener;
 
     public RestLocomotiveService(String endpointURL,SIOService sioService, String uuid) {
-        RestAdapter restAdapter = RestAdapterFactory.createRestAdapter(endpointURL, uuid);
-        locomotiveServiceClient = restAdapter.create(RestLocomotiveServiceClient.class);
+
+
+        final Retrofit retrofit = RestAdapterFactory.createRestAdapter(endpointURL, uuid);
+        locomotiveServiceClient = retrofit.create(RestLocomotiveServiceClient.class);
         sioLocomotiveService = new SIOLocomotiveCallback(sioService);
     }
 
     @Override
     public void addLocomotive(Locomotive locomotive) {
-        Locomotive addLocomotive = locomotiveServiceClient.addLocomotive(locomotive);
+        Locomotive addLocomotive = null;
+        try {
+            addLocomotive = locomotiveServiceClient.addLocomotive(locomotive).execute().body();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
         locomotive.setId(addLocomotive.getId());
         LOGGER.debug("addLocomotive(): " + locomotive);
 
@@ -42,7 +50,11 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void removeLocomotive(Locomotive locomotive) {
-        locomotiveServiceClient.deleteLocomotive(locomotive.getId());
+        try {
+            locomotiveServiceClient.deleteLocomotive(locomotive.getId()).execute();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
         LOGGER.debug("removeLocomotive(): " + locomotive);
 
         if (listenerOk()) {
@@ -53,7 +65,11 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void updateLocomotive(Locomotive locomotive) {
-        locomotiveServiceClient.updateLocomotive(locomotive);
+        try {
+            locomotiveServiceClient.updateLocomotive(locomotive).execute();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
         LOGGER.debug("updateLocomotive(): " + locomotive);
         if (listenerOk()) {
             listener.locomotiveUpdated(locomotive);
@@ -62,14 +78,24 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public SortedSet<LocomotiveGroup> getAllLocomotiveGroups() {
-        SortedSet<LocomotiveGroup> allLocomotivesGroups = locomotiveServiceClient.getAllLocomotivesGroups();
+        SortedSet<LocomotiveGroup> allLocomotivesGroups = null;
+        try {
+            allLocomotivesGroups = locomotiveServiceClient.getAllLocomotivesGroups().execute().body();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
         LOGGER.debug("getAllLocomotiveGroups(): " + allLocomotivesGroups);
         return allLocomotivesGroups;
     }
 
     @Override
     public void addLocomotiveGroup(LocomotiveGroup group) {
-        LocomotiveGroup addLocomotiveGroup = locomotiveServiceClient.addLocomotiveGroup(group);
+        LocomotiveGroup addLocomotiveGroup = null;
+        try {
+            addLocomotiveGroup = locomotiveServiceClient.addLocomotiveGroup(group).execute().body();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
         LOGGER.debug("addLocomotiveGroup(): " + addLocomotiveGroup);
         group.setId(addLocomotiveGroup.getId());
 
@@ -80,7 +106,12 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void removeLocomotiveGroup(LocomotiveGroup group) {
-        LocomotiveGroup deleteLocomotiveGroup = locomotiveServiceClient.deleteLocomotiveGroup(group.getId());
+        LocomotiveGroup deleteLocomotiveGroup = null;
+        try {
+            deleteLocomotiveGroup = locomotiveServiceClient.deleteLocomotiveGroup(group.getId()).execute().body();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
         LOGGER.debug("removeLocomotiveGroup(): " + deleteLocomotiveGroup);
 
         if (listenerOk()) {
@@ -90,7 +121,13 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void updateLocomotiveGroup(LocomotiveGroup group) {
-        LocomotiveGroup updateLocomotiveGroup = locomotiveServiceClient.updateLocomotiveGroup(group);
+        LocomotiveGroup updateLocomotiveGroup = null;
+        try {
+            updateLocomotiveGroup = locomotiveServiceClient.updateLocomotiveGroup(group).execute().body();
+        } catch (IOException e) {
+
+            throw new IllegalStateException(e);
+        }
         LOGGER.debug("updateLocomotiveGroup(): " + updateLocomotiveGroup);
         if (listenerOk()) {
             listener.locomotiveGroupUpdated(group);
@@ -99,7 +136,13 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void clear() {
-        SortedSet<LocomotiveGroup> locomotiveGroups = locomotiveServiceClient.deleteAllLocomotiveGroups();
+        SortedSet<LocomotiveGroup> locomotiveGroups = null;
+        try {
+            locomotiveGroups = locomotiveServiceClient.deleteAllLocomotiveGroups().execute().body();
+        } catch (IOException e) {
+
+            throw new IllegalStateException(e);
+        }
         if (listenerOk()) {
             listener.locomotivesUpdated(locomotiveGroups);
         }
