@@ -12,6 +12,9 @@ See also https://github.com/forkch/jsrcpc for the Java API to SRCP which is used
 | master        | [![Build Status](https://travis-ci.org/forkch/adhoc-railway.svg?branch=master)](https://travis-ci.org/forkch/adhoc-railway) |
 | develop       | [![Build Status](https://travis-ci.org/forkch/adhoc-railway.svg?branch=develop)](https://travis-ci.org/forkch/adhoc-railway) |
 
+[![Release](https://jitpack.io/v/forkch/adhoc-railway.svg)](https://jitpack.io/forkch/adhoc-railway)
+
+
 
 
 
