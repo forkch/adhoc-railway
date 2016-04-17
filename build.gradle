@@ -47,12 +47,11 @@ subprojects {
 
     repositories {
 
+      maven { url "https://jitpack.io" }
+
+      mavenCentral()
         maven {
-            url 'https://raw.githubusercontent.com/forkch/forkch-mvn-repo/master'
-        }
-        mavenCentral()
-        maven {
-            url '/home/fork/Code/forkch-mvn-repo'
+          url '/home/fork/Code/forkch-mvn-repo'
         }
 
     }
