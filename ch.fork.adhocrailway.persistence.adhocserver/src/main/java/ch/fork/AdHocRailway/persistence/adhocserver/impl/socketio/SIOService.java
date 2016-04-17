@@ -1,10 +1,10 @@
 package ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio;
 
 import ch.fork.AdHocRailway.services.AdHocServiceException;
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.engineio.client.transports.WebSocket;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+import io.socket.engineio.client.transports.WebSocket;
 import org.apache.log4j.Logger;
 
 import java.net.URISyntaxException;
