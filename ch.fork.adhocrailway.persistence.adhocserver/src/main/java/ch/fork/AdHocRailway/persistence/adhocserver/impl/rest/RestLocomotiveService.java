@@ -5,9 +5,15 @@ import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.locomotives.SIOLocomotiveCallback;
 import ch.fork.AdHocRailway.persistence.adhocserver.util.RestAdapterFactory;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import org.apache.log4j.Logger;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import java.io.IOException;
@@ -24,127 +30,161 @@ public class RestLocomotiveService implements LocomotiveService {
     private final RestLocomotiveServiceClient locomotiveServiceClient;
     private LocomotiveServiceListener listener;
 
-    public RestLocomotiveService(String endpointURL,SIOService sioService, String uuid) {
-
-
+    public RestLocomotiveService(String endpointURL, SIOService sioService, String uuid) {
         final Retrofit retrofit = RestAdapterFactory.createRestAdapter(endpointURL, uuid);
         locomotiveServiceClient = retrofit.create(RestLocomotiveServiceClient.class);
         sioLocomotiveService = new SIOLocomotiveCallback(sioService);
     }
 
     @Override
-    public void addLocomotive(Locomotive locomotive) {
-        Locomotive addLocomotive = null;
-        try {
-            addLocomotive = locomotiveServiceClient.addLocomotive(locomotive).execute().body();
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        locomotive.setId(addLocomotive.getId());
-        LOGGER.debug("addLocomotive(): " + locomotive);
+    public void addLocomotive(final Locomotive locomotive) {
+        locomotiveServiceClient.addLocomotive(locomotive).enqueue(new LocomotiveServiceCallback<Locomotive>(listener, "Failed to add locomotive") {
 
-        if (listenerOk()) {
-            listener.locomotiveAdded(locomotive);
-        }
+            @Override
+            protected void handleSuccessfulResponse(Response<Locomotive> response, LocomotiveServiceListener listener) {
+                locomotive.setId(response.body().getId());
+                LOGGER.debug("addLocomotive(): " + locomotive);
+
+                if (listenerOk()) {
+                    listener.locomotiveAdded(locomotive);
+                }
+            }
+        });
     }
 
     @Override
-    public void removeLocomotive(Locomotive locomotive) {
-        try {
-            locomotiveServiceClient.deleteLocomotive(locomotive.getId()).execute();
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        LOGGER.debug("removeLocomotive(): " + locomotive);
+    public void removeLocomotive(final Locomotive locomotive) {
+        locomotiveServiceClient.deleteLocomotive(locomotive.getId()).enqueue(new LocomotiveServiceCallback<Locomotive>(listener, "Failed to remove locomotive") {
 
-        if (listenerOk()) {
-            listener.locomotiveRemoved(locomotive);
-        }
+            @Override
+            protected void handleSuccessfulResponse(Response<Locomotive> response, LocomotiveServiceListener listener) {
+                LOGGER.debug("removeLocomotive(): " + locomotive);
 
+                if (listenerOk()) {
+                    listener.locomotiveRemoved(locomotive);
+                }
+            }
+        });
+    }
+
+
+    @Override
+    public void updateLocomotive(final Locomotive locomotive) {
+        locomotiveServiceClient.updateLocomotive(locomotive).enqueue(new LocomotiveServiceCallback<Locomotive>(listener, "Failed to update locomotive") {
+            @Override
+            protected void handleSuccessfulResponse(Response<Locomotive> response, LocomotiveServiceListener listener) {
+                LOGGER.debug("updateLocomotive(): " + locomotive);
+                if (listenerOk()) {
+                    listener.locomotiveUpdated(locomotive);
+                }
+            }
+        });
     }
 
     @Override
-    public void updateLocomotive(Locomotive locomotive) {
-        try {
-            locomotiveServiceClient.updateLocomotive(locomotive).execute();
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        LOGGER.debug("updateLocomotive(): " + locomotive);
-        if (listenerOk()) {
-            listener.locomotiveUpdated(locomotive);
-        }
+    public void getAllLocomotiveGroups() {
+        locomotiveServiceClient.getAllLocomotivesGroups().enqueue(new LocomotiveServiceCallback<SortedSet<LocomotiveGroup>>(listener, "Failed to load all locomotive groups") {
+
+            @Override
+            protected void handleSuccessfulResponse(Response<SortedSet<LocomotiveGroup>> response, LocomotiveServiceListener listener) {
+                final SortedSet<LocomotiveGroup> body = response.body();
+                LOGGER.debug("getAllLocomotiveGroups(): " + body);
+                listener.locomotivesUpdated(body);
+            }
+        });
     }
 
     @Override
-    public SortedSet<LocomotiveGroup> getAllLocomotiveGroups() {
-        SortedSet<LocomotiveGroup> allLocomotivesGroups = null;
-        try {
-            allLocomotivesGroups = locomotiveServiceClient.getAllLocomotivesGroups().execute().body();
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        LOGGER.debug("getAllLocomotiveGroups(): " + allLocomotivesGroups);
-        return allLocomotivesGroups;
+    public void addLocomotiveGroup(final LocomotiveGroup group) {
+        locomotiveServiceClient.addLocomotiveGroup(group).enqueue(new LocomotiveServiceCallback<LocomotiveGroup>(listener, "Failed to add locomotive group") {
+            @Override
+            protected void handleSuccessfulResponse(Response<LocomotiveGroup> response, LocomotiveServiceListener listener) {
+                final LocomotiveGroup addedLocomotiveGroup = response.body();
+                LOGGER.debug("addLocomotiveGroup(): " + addedLocomotiveGroup);
+                group.setId(addedLocomotiveGroup.getId());
+
+                if (listenerOk()) {
+                    listener.locomotiveGroupAdded(group);
+                }
+            }
+        });
     }
 
     @Override
-    public void addLocomotiveGroup(LocomotiveGroup group) {
-        LocomotiveGroup addLocomotiveGroup = null;
-        try {
-            addLocomotiveGroup = locomotiveServiceClient.addLocomotiveGroup(group).execute().body();
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        LOGGER.debug("addLocomotiveGroup(): " + addLocomotiveGroup);
-        group.setId(addLocomotiveGroup.getId());
-
-        if (listenerOk()) {
-            listener.locomotiveGroupAdded(group);
-        }
+    public void removeLocomotiveGroup(final LocomotiveGroup group) {
+        locomotiveServiceClient.deleteLocomotiveGroup(group.getId()).enqueue(new LocomotiveServiceCallback<LocomotiveGroup>(listener, "Failed to remove locomotive group") {
+            @Override
+            protected void handleSuccessfulResponse(Response<LocomotiveGroup> response, LocomotiveServiceListener listener) {
+                LOGGER.debug("removeLocomotiveGroup(): " + response.body());
+                if (listenerOk()) {
+                    listener.locomotiveGroupRemoved(group);
+                }
+            }
+        });
     }
 
     @Override
-    public void removeLocomotiveGroup(LocomotiveGroup group) {
-        LocomotiveGroup deleteLocomotiveGroup = null;
-        try {
-            deleteLocomotiveGroup = locomotiveServiceClient.deleteLocomotiveGroup(group.getId()).execute().body();
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        LOGGER.debug("removeLocomotiveGroup(): " + deleteLocomotiveGroup);
-
-        if (listenerOk()) {
-            listener.locomotiveGroupRemoved(group);
-        }
-    }
-
-    @Override
-    public void updateLocomotiveGroup(LocomotiveGroup group) {
-        LocomotiveGroup updateLocomotiveGroup = null;
-        try {
-            updateLocomotiveGroup = locomotiveServiceClient.updateLocomotiveGroup(group).execute().body();
-        } catch (IOException e) {
-
-            throw new IllegalStateException(e);
-        }
-        LOGGER.debug("updateLocomotiveGroup(): " + updateLocomotiveGroup);
-        if (listenerOk()) {
-            listener.locomotiveGroupUpdated(group);
-        }
+    public void updateLocomotiveGroup(final LocomotiveGroup group) {
+        locomotiveServiceClient.updateLocomotiveGroup(group).enqueue(new LocomotiveServiceCallback<LocomotiveGroup>(listener, "Failed to update locomotive group") {
+            @Override
+            protected void handleSuccessfulResponse(Response<LocomotiveGroup> response, LocomotiveServiceListener listener) {
+                LOGGER.debug("updateLocomotiveGroup(): " + response.body());
+                if (listenerOk()) {
+                    listener.locomotiveGroupUpdated(group);
+                }
+            }
+        });
     }
 
     @Override
     public void clear() {
-        SortedSet<LocomotiveGroup> locomotiveGroups = null;
-        try {
-            locomotiveGroups = locomotiveServiceClient.deleteAllLocomotiveGroups().execute().body();
-        } catch (IOException e) {
+        locomotiveServiceClient.deleteAllLocomotiveGroups().enqueue(new LocomotiveServiceCallback<SortedSet<LocomotiveGroup>>(listener, "Failed to clear locomotives") {
+            @Override
+            protected void handleSuccessfulResponse(Response<SortedSet<LocomotiveGroup>> response, LocomotiveServiceListener listener) {
+                if (listenerOk()) {
+                    listener.locomotivesUpdated(response.body());
+                }
 
-            throw new IllegalStateException(e);
+            }
+        });
+
+    }
+
+
+    static abstract class LocomotiveServiceCallback<T> implements Callback<T> {
+
+        private final LocomotiveServiceListener listener;
+        private final String failureMessage;
+
+        LocomotiveServiceCallback(LocomotiveServiceListener listener, String failureMessage) {
+            this.listener = listener;
+            this.failureMessage = failureMessage;
         }
-        if (listenerOk()) {
-            listener.locomotivesUpdated(locomotiveGroups);
+
+        @Override
+        public void onResponse(Call<T> call, Response<T> response) {
+            if (response.isSuccessful()) {
+                handleSuccessfulResponse(response, listener);
+            } else {
+                handleUnsuccesfulResponse(response, failureMessage);
+            }
+        }
+
+        protected abstract void handleSuccessfulResponse(Response<T> response, LocomotiveServiceListener listener);
+
+        private void handleUnsuccesfulResponse(Response response, String message) {
+            try {
+                final JsonElement parse = new JsonParser().parse(response.errorBody().string());
+                String messageFromServer = parse.getAsJsonObject().get("msg").getAsString();
+                listener.failure(new AdHocServiceException(String.format("%s: %s", message, messageFromServer)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onFailure(Call<T> call, Throwable t) {
+            listener.failure(new AdHocServiceException(t));
         }
     }
 
@@ -158,6 +198,22 @@ public class RestLocomotiveService implements LocomotiveService {
     public void disconnect() {
         sioLocomotiveService.disconnect();
 
+    }
+
+    @Override
+    public void addLocomotiveGroups(SortedSet<LocomotiveGroup> groups) {
+        for (LocomotiveGroup group : groups) {
+            try {
+                final Response<LocomotiveGroup> response = locomotiveServiceClient.addLocomotiveGroup(group).execute();
+                if (response.isSuccessful()) {
+                    group.setId(response.body().getId());
+                } else {
+                    throw new AdHocServiceException("Failed to add locomotive groups: " + response.errorBody().string());
+                }
+            } catch (IOException e) {
+                listener.failure(new AdHocServiceException(e));
+            }
+        }
     }
 
     private boolean listenerOk() {

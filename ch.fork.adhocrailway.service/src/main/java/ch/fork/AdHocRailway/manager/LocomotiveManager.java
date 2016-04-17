@@ -67,4 +67,5 @@ public interface LocomotiveManager {
 
     LocomotiveService getService();
 
+    void addLocomotiveGroups(SortedSet<LocomotiveGroup> groups);
 }

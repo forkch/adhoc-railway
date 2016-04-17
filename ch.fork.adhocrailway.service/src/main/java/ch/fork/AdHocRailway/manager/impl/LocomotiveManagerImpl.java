@@ -26,6 +26,7 @@ import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.LocomotiveService;
 import ch.fork.AdHocRailway.services.LocomotiveServiceListener;
+import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -83,12 +84,6 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     @Override
     public void addLocomotiveToGroup(final Locomotive locomotive,
                                      final LocomotiveGroup group) {
-        if (locomotive == null) {
-            throw new IllegalArgumentException("locomotive must not be null");
-        }
-        if (group == null) {
-            throw new IllegalArgumentException("group must not be null");
-        }
         group.addLocomotive(locomotive);
         locomotive.setGroup(group);
         locomotiveService.addLocomotive(locomotive);
@@ -97,12 +92,8 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     @Override
     public void removeLocomotiveFromGroup(final Locomotive locomotive,
                                           final LocomotiveGroup group) {
-        if (locomotive == null) {
-            throw new IllegalArgumentException("locomotive must not be null");
-        }
-        if (group == null) {
-            throw new IllegalArgumentException("group must not be null");
-        }
+        Preconditions.checkNotNull(locomotive);
+        Preconditions.checkNotNull(group);
         if (!group.getLocomotives().contains(locomotive)) {
             throw new IllegalArgumentException("locomotive " + locomotive
                     + " does not belong to group " + group);
@@ -149,6 +140,11 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     @Override
     public LocomotiveService getService() {
         return locomotiveService;
+    }
+
+    @Override
+    public void addLocomotiveGroups(SortedSet<LocomotiveGroup> groups) {
+        locomotiveService.addLocomotiveGroups(groups);
     }
 
     @Override

@@ -298,7 +298,7 @@ public class LocomotiveConfigurationDialog extends JDialog implements
     @Override
     public void failure(
             final AdHocServiceException serviceException) {
-
+        JOptionPane.showMessageDialog(this, serviceException.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     /**

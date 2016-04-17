@@ -30,7 +30,7 @@ public interface LocomotiveService {
 
     void updateLocomotive(Locomotive locomotive);
 
-    SortedSet<LocomotiveGroup> getAllLocomotiveGroups();
+    void getAllLocomotiveGroups();
 
     void addLocomotiveGroup(LocomotiveGroup group);
 
@@ -43,5 +43,7 @@ public interface LocomotiveService {
     void init(LocomotiveServiceListener listener);
 
     void disconnect();
+
+    void addLocomotiveGroups(SortedSet<LocomotiveGroup> groups);
 
 }

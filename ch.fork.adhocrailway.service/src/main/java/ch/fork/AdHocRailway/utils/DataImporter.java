@@ -18,9 +18,7 @@ public class DataImporter {
 
         locomotiveManager.clearToService();
         HashSet<LocomotiveGroup> copyLocomotiveGroup = new HashSet<>(groups);
-        for (final LocomotiveGroup group : groups) {
-            locomotiveManager.addLocomotiveGroup(group);
-        }
+        locomotiveManager.addLocomotiveGroups(groups);
 
         for (final LocomotiveGroup group : copyLocomotiveGroup) {
             for (final Locomotive locomotive : group.getLocomotives()) {

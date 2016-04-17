@@ -72,8 +72,8 @@ public class XMLLocomotiveService implements LocomotiveService {
     }
 
     @Override
-    public SortedSet<LocomotiveGroup> getAllLocomotiveGroups() {
-        return locomotiveGroups;
+    public void getAllLocomotiveGroups() {
+        listener.locomotivesUpdated(locomotiveGroups);
     }
 
     @Override
@@ -105,6 +105,13 @@ public class XMLLocomotiveService implements LocomotiveService {
     @Override
     public void disconnect() {
 
+    }
+
+    @Override
+    public void addLocomotiveGroups(SortedSet<LocomotiveGroup> groups) {
+        for (LocomotiveGroup group : groups) {
+            addLocomotiveGroup(group);
+        }
     }
 
     public void loadLocomotiveGroupsFromXML(
