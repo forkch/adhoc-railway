@@ -11,13 +11,13 @@ import com.google.common.collect.Sets;
 
 public class AdHocRailwayData {
 
-    private Set<LocomotiveGroup> locomotiveGroups;
-    private Set<TurnoutGroup> turnoutGroups;
-    private Set<RouteGroup> routeGroups;
+    private Set<LocomotiveGroup> locomotiveGroups = Sets.newHashSet();
+    private Set<TurnoutGroup> turnoutGroups = Sets.newHashSet();
+    private Set<RouteGroup> routeGroups = Sets.newHashSet();
 
     public AdHocRailwayData() {
-
     }
+
     public AdHocRailwayData(final Set<LocomotiveGroup> locomotiveGroups,
                             final Set<TurnoutGroup> turnoutGroups,
                             final Set<RouteGroup> routeGroups) {
@@ -25,6 +25,16 @@ public class AdHocRailwayData {
         this.locomotiveGroups = locomotiveGroups;
         this.turnoutGroups = turnoutGroups;
         this.routeGroups = routeGroups;
+        if (locomotiveGroups == null) {
+            this.locomotiveGroups = Sets.newTreeSet();
+        }
+        if (turnoutGroups == null) {
+            this.turnoutGroups = Sets.newTreeSet();
+        }
+        if (routeGroups == null) {
+            this.routeGroups = Sets.newTreeSet();
+        }
+
     }
 
     public SortedSet<LocomotiveGroup> getLocomotiveGroups() {
@@ -37,5 +47,17 @@ public class AdHocRailwayData {
 
     public SortedSet<RouteGroup> getRouteGroups() {
         return Sets.newTreeSet(routeGroups);
+    }
+
+    public void cleanup() {
+        if (locomotiveGroups == null) {
+            this.locomotiveGroups = Sets.newTreeSet();
+        }
+        if (turnoutGroups == null) {
+            this.turnoutGroups = Sets.newTreeSet();
+        }
+        if (routeGroups == null) {
+            this.routeGroups = Sets.newTreeSet();
+        }
     }
 }

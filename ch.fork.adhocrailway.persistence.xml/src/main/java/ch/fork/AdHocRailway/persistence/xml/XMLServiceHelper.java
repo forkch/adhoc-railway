@@ -12,6 +12,7 @@ import ch.fork.AdHocRailway.persistence.xml.impl.XMLLocomotiveService;
 import ch.fork.AdHocRailway.persistence.xml.impl.XMLRouteService;
 import ch.fork.AdHocRailway.persistence.xml.impl.XMLTurnoutService;
 import ch.fork.AdHocRailway.utils.DataImporter;
+import com.google.common.collect.Sets;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +57,7 @@ public class XMLServiceHelper {
         data = (AdHocRailwayData) xstream.fromXML(xmlFile);
 
         addFunctionsIfNeccesaray(data);
+        data.cleanup();
 
         locomotiveService.loadLocomotiveGroupsFromXML(data
                 .getLocomotiveGroups());
@@ -88,7 +90,7 @@ public class XMLServiceHelper {
         final XStream xstream = getXStream();
 
         final String xml = xstream.toXML(data);
-            FileUtils.writeStringToFile(xmlFile, xml);
+        FileUtils.writeStringToFile(xmlFile, xml);
 
         LOGGER.info("finished saving locomotives, turnout and routes  to file: "
                 + xmlFile);
@@ -99,7 +101,7 @@ public class XMLServiceHelper {
         LOGGER.info("start exporting locomotives to file: " + fileToExport);
 
         final AdHocRailwayData data = new AdHocRailwayData(
-                locomotivePersistence.getAllLocomotiveGroups(), null, null);
+                locomotivePersistence.getAllLocomotiveGroups(), Sets.<TurnoutGroup>newHashSet(), Sets.<RouteGroup>newHashSet());
         final XStream xstream = getXStream();
         final String xml = xstream.toXML(data);
         FileUtils.writeStringToFile(fileToExport, xml);
@@ -222,7 +224,7 @@ public class XMLServiceHelper {
 
     private Turnout getTurnoutById(AdHocRailwayData data, String turnoutId) {
 
-        for(TurnoutGroup turnoutGroup : data.getTurnoutGroups()) {
+        for (TurnoutGroup turnoutGroup : data.getTurnoutGroups()) {
             for (Turnout turnout : turnoutGroup.getTurnouts()) {
                 if (turnout.getId().equals(turnoutId))
                     return turnout;

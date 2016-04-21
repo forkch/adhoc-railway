@@ -94,7 +94,6 @@ public class RestTurnoutService implements TurnoutService {
         try {
             addTurnout = restTurnoutServiceClient.addTurnout(turnout).execute().body();
         } catch (IOException e) {
-
             throw new IllegalStateException(e);
         }
         turnout.setId(addTurnout.getId());
@@ -108,7 +107,6 @@ public class RestTurnoutService implements TurnoutService {
         try {
             Turnout deleteTurnout = restTurnoutServiceClient.deleteTurnout(turnout.getId()).execute().body();
         } catch (IOException e) {
-
             throw new IllegalStateException(e);
         }
         if (listenerOk()) {

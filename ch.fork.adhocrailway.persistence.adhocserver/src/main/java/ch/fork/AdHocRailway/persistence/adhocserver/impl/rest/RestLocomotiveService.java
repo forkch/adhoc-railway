@@ -38,18 +38,31 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void addLocomotive(final Locomotive locomotive) {
-        locomotiveServiceClient.addLocomotive(locomotive).enqueue(new LocomotiveServiceCallback<Locomotive>(listener, "Failed to add locomotive") {
 
-            @Override
-            protected void handleSuccessfulResponse(Response<Locomotive> response, LocomotiveServiceListener listener) {
+        try {
+            final Response<Locomotive> response = locomotiveServiceClient.addLocomotive(locomotive).execute();
+            if (response.isSuccessful()) {
                 locomotive.setId(response.body().getId());
-                LOGGER.debug("addLocomotive(): " + locomotive);
-
-                if (listenerOk()) {
-                    listener.locomotiveAdded(locomotive);
-                }
+            } else {
+                throw new AdHocServiceException("Failed to add locomotive: " + response.errorBody().string());
             }
-        });
+        } catch (IOException e) {
+            listener.failure(new AdHocServiceException(e));
+        }
+
+//        locomotiveServiceClient.addLocomotive(locomotive).enqueue(new LocomotiveServiceCallback<Locomotive>(listener, "Failed to add locomotive") {
+//
+//            @Override
+//            protected void handleSuccessfulResponse(Response<Locomotive> response, LocomotiveServiceListener listener) {
+//                locomotive.setId(response.body().getId());
+//                LOGGER.debug("addLocomotive(): " + locomotive);
+//
+//                if (listenerOk()) {
+//                    listener.locomotiveAdded(locomotive);
+//                }
+//            }
+//        });
+
     }
 
     @Override
@@ -96,18 +109,32 @@ public class RestLocomotiveService implements LocomotiveService {
 
     @Override
     public void addLocomotiveGroup(final LocomotiveGroup group) {
-        locomotiveServiceClient.addLocomotiveGroup(group).enqueue(new LocomotiveServiceCallback<LocomotiveGroup>(listener, "Failed to add locomotive group") {
-            @Override
-            protected void handleSuccessfulResponse(Response<LocomotiveGroup> response, LocomotiveServiceListener listener) {
-                final LocomotiveGroup addedLocomotiveGroup = response.body();
-                LOGGER.debug("addLocomotiveGroup(): " + addedLocomotiveGroup);
-                group.setId(addedLocomotiveGroup.getId());
 
-                if (listenerOk()) {
-                    listener.locomotiveGroupAdded(group);
-                }
+        try {
+            final Response<LocomotiveGroup> response = locomotiveServiceClient.addLocomotiveGroup(group).execute();
+            if (response.isSuccessful()) {
+                group.setId(response.body().getId());
+            } else {
+                throw new AdHocServiceException("Failed to add locomotive group: " + response.errorBody().string());
             }
-        });
+        } catch (IOException e) {
+            listener.failure(new AdHocServiceException(e));
+        }
+
+//        locomotiveServiceClient.addLocomotiveGroup(group).enqueue(new LocomotiveServiceCallback<LocomotiveGroup>(listener, "Failed to add locomotive group") {
+//            @Override
+//            protected void handleSuccessfulResponse(Response<LocomotiveGroup> response, LocomotiveServiceListener listener) {
+//                final LocomotiveGroup addedLocomotiveGroup = response.body();
+//                LOGGER.debug("addLocomotiveGroup(): " + addedLocomotiveGroup);
+//                group.setId(addedLocomotiveGroup.getId());
+//
+//                if (listenerOk()) {
+//                    listener.locomotiveGroupAdded(group);
+//                }
+//            }
+//        });
+
+
     }
 
     @Override
