@@ -17,7 +17,6 @@ public class DataImporter {
             final SortedSet<LocomotiveGroup> groups) {
 
         locomotiveManager.clearToService();
-        HashSet<LocomotiveGroup> copyLocomotiveGroup = new HashSet<>(groups);
 
         for (final LocomotiveGroup group : groups) {
             locomotiveManager.addLocomotiveGroup(group);
@@ -29,7 +28,7 @@ public class DataImporter {
             e.printStackTrace();
         }
 
-        for (final LocomotiveGroup group : copyLocomotiveGroup) {
+        for (final LocomotiveGroup group : groups) {
             for (final Locomotive locomotive : group.getLocomotives()) {
                 try {
                     Thread.sleep(100);
