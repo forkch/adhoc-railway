@@ -66,6 +66,8 @@ public abstract class LocomotiveController implements
     public abstract void setSpeed(final Locomotive locomotive, final int speed,
                                   final boolean[] functions);
 
+    public abstract void terminateAllLocomotives();
+
     public abstract void terminateLocomotive(Locomotive locomotive);
 
     public abstract void setFunction(final Locomotive locomotive,

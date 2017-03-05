@@ -8,7 +8,6 @@ import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.utils.LocomotiveHelper;
-import com.google.common.util.concurrent.RateLimiter;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
@@ -18,9 +17,9 @@ import de.dermoba.srcp.model.locomotives.*;
 import org.apache.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedSet;
 
 /**
  * @author fork
@@ -124,6 +123,11 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
             }
         });
         LOGGER.debug("scheduled speed command " + speed);
+    }
+
+    @Override
+    public void terminateAllLocomotives() {
+        throw new NotImplementedException();
     }
 
     @Override

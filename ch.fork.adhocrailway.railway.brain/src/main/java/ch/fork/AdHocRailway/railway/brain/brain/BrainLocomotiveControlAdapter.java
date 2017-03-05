@@ -52,6 +52,11 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
     }
 
     @Override
+    public void terminateAllLocomotives() {
+        brain.write("XLOCOCLEAR");
+    }
+
+    @Override
     public void terminateLocomotive(final Locomotive locomotive) {
         try {
             if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
