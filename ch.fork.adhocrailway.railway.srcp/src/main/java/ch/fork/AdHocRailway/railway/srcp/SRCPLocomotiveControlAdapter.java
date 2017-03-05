@@ -16,6 +16,7 @@ import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
 import de.dermoba.srcp.model.locomotives.*;
 import org.apache.log4j.Logger;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -123,6 +124,11 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
             }
         });
         LOGGER.debug("scheduled speed command " + speed);
+    }
+
+    @Override
+    public void terminateLocomotive(Locomotive locomotive) {
+        throw new NotImplementedException();
     }
 
     @Override

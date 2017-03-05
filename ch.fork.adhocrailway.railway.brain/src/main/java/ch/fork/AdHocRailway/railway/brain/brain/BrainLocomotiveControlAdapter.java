@@ -51,6 +51,31 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
     }
 
+    @Override
+    public void terminateLocomotive(final Locomotive locomotive) {
+        try {
+            if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {
+                final String termCommand1 = getTermCommand(locomotive,
+                        locomotive.getAddress1());
+                final String termCommand2 = getTermCommand(locomotive,
+                        locomotive.getAddress2());
+                brain.write(termCommand1);
+                brain.write(termCommand2);
+            } else {
+                final String termCommand = getTermCommand(locomotive,
+                        locomotive.getAddress1());
+                brain.write(termCommand);
+            }
+            activeLocomotives.add(locomotive);
+        } catch (final BrainException e) {
+            throw new ControllerException("error initializing locomotive", e);
+        }
+    }
+
+    private String getTermCommand(Locomotive locomotive, int address) {
+        return String.format("XLOCOREMOVE %d", address);
+    }
+
     private void initLocomotive(final Locomotive locomotive) {
         try {
             if (!activeLocomotives.contains(locomotive)) {
@@ -151,10 +176,16 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
         stringBuilder.append("XLS ");
         stringBuilder.append(address);
         stringBuilder.append(" ");
-        if (locomotive.getType().equals(LocomotiveType.DELTA)) {
+        if (locomotive.getType() == LocomotiveType.DELTA) {
             stringBuilder.append("mm");
-        } else {
+        } else if (locomotive.getType() == LocomotiveType.DIGITAL) {
             stringBuilder.append("mm2");
+        } else if (locomotive.getType() == LocomotiveType.MFX) {
+            stringBuilder.append("mfx");
+            stringBuilder.append(" ");
+            stringBuilder.append(locomotive.getMfxUUID());
+        } else if (locomotive.getType() == LocomotiveType.DCC) {
+            stringBuilder.append("dcc");
         }
 
         final String initCommand = stringBuilder.toString().trim();
