@@ -31,22 +31,8 @@ public abstract class ConfigurationDialog extends JDialog {
     protected boolean okPressed;
     protected boolean cancelPressed;
 
-    public ConfigurationDialog(JFrame owner, String title) {
-        super(owner, title, true);
-
-        initBasicGUI();
-
-    }
-
     public ConfigurationDialog(JFrame owner, String title, boolean modal) {
         super(owner, title, modal);
-
-        initBasicGUI();
-
-    }
-
-    public ConfigurationDialog(JDialog owner, String title) {
-        super(owner, title, true);
 
         initBasicGUI();
 

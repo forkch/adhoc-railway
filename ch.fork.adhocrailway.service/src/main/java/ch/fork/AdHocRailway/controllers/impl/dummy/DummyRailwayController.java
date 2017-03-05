@@ -8,8 +8,8 @@ import java.util.List;
  */
 public class DummyRailwayController {
 
-    private List<DummyListener> dummyListeners = new ArrayList<DummyListener>();
     private static final DummyRailwayController INSTANCE = new DummyRailwayController();
+    private List<DummyListener> dummyListeners = new ArrayList<DummyListener>();
 
     private DummyRailwayController() {
 
@@ -33,4 +33,7 @@ public class DummyRailwayController {
         }
     }
 
+    public void send(String command) {
+        informDummyListeners(command);
+    }
 }

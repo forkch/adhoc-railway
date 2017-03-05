@@ -95,11 +95,11 @@ public class BrainPowerControlAdapter extends PowerController implements
     }
 
     @Override
-    public void receivedMessage(final String receivedString) {
-        LOGGER.info("received power message from brain: " + receivedString);
+    public void receivedMessage(final String receivedMessage) {
+        LOGGER.info("received power message from brain: " + receivedMessage);
 
-        final String receivedStringXBS = StringUtils.substring(receivedString,
-                StringUtils.indexOf(receivedString, "XBS"));
+        final String receivedStringXBS = StringUtils.substring(receivedMessage,
+                StringUtils.indexOf(receivedMessage, "XBS"));
         if (!StringUtils.startsWithIgnoreCase(receivedStringXBS, "XBS")) {
             return;
         }

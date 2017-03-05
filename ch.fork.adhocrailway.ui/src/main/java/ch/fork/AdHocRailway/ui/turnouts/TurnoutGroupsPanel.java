@@ -7,6 +7,7 @@ import ch.fork.AdHocRailway.model.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
 import ch.fork.AdHocRailway.technical.configuration.PreferencesKeys;
+import ch.fork.AdHocRailway.ui.BrainTerminal;
 import ch.fork.AdHocRailway.ui.bus.events.ConnectedToPersistenceEvent;
 import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
@@ -352,6 +353,7 @@ public class TurnoutGroupsPanel extends JTabbedPane implements
             new TurnoutProgrammer(ctx.getMainFrame(), ctx);
         }
     }
+
 
     private class TurnoutTesterAction extends AbstractAction {
 

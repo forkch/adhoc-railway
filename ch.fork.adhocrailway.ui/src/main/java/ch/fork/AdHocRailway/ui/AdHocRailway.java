@@ -34,12 +34,12 @@ import ch.fork.AdHocRailway.ui.power.PowerControlPanel;
 import ch.fork.AdHocRailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.AdHocRailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
 import ch.fork.AdHocRailway.ui.utils.GlobalKeyShortcutHelper;
+import ch.fork.AdHocRailway.ui.utils.ImageTools;
 import ch.fork.AdHocRailway.ui.widgets.*;
 import com.google.common.eventbus.Subscribe;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
-import net.miginfocom.swing.MigLayout;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
@@ -79,6 +79,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     private JButton connectToolBarButton;
 
     private JButton disconnectToolBarButton;
+    private JButton brainTerminalToolBarButton;
 
     private JComboBox<String> commandHistory;
 
@@ -130,6 +131,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     private PersistenceManager persistenceManager;
     private RailwayDeviceManager railwayDeviceManager;
+    private JMenuItem brainTerminalItem;
 
     public AdHocRailway(org.apache.commons.cli.CommandLine parsedCommandLine) {
 
@@ -341,11 +343,13 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     public void connectedToRailwayDevice(final ConnectedToRailwayEvent event) {
         final boolean connected = event.isConnected();
         daemonConnectItem.setEnabled(!connected);
-        daemonDisconnectItem.setEnabled(connected);
         connectToolBarButton.setEnabled(!connected);
+        daemonDisconnectItem.setEnabled(connected);
+        disconnectToolBarButton.setEnabled(connected);
+        brainTerminalToolBarButton.setEnabled(connected);
+        brainTerminalItem.setEnabled(connected);
         preferencesItem.setEnabled(!connected);
         preferencesToolBarButton.setEnabled(!connected);
-        disconnectToolBarButton.setEnabled(connected);
     }
 
     private void setUpLogging() {
@@ -553,18 +557,24 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         daemonDisconnectItem = new JMenuItem(new DisconnectAction());
         daemonDisconnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        brainTerminalItem = new JMenuItem(new BrainTerminalAction());
+        brainTerminalItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         daemonPowerOnItem = new JMenuItem(new PowerOnAction());
         assignAccelerator(daemonPowerOnItem, "PowerOn");
         daemonPowerOnItem.setEnabled(true);
         daemonPowerOffItem = new JMenuItem(new PowerOffAction());
         assignAccelerator(daemonPowerOffItem, "PowerOff");
+
+
         daemonPowerOffItem.setEnabled(true);
         daemonDisconnectItem.setEnabled(false);
+        brainTerminalItem.setEnabled(false);
         daemonMenu.add(daemonConnectItem);
         daemonMenu.add(daemonDisconnectItem);
         daemonMenu.add(new JSeparator());
         daemonMenu.add(daemonPowerOnItem);
         daemonMenu.add(daemonPowerOffItem);
+        daemonMenu.add(brainTerminalItem);
 
 		/* VIEW */
         final JMenu viewMenu = new JMenu("View");
@@ -636,12 +646,14 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         setRailwayDeviceLabelText();
         connectToolBarButton = new SmallToolbarButton(new ConnectAction());
         disconnectToolBarButton = new SmallToolbarButton(new DisconnectAction());
+        brainTerminalToolBarButton = new SmallToolbarButton(new BrainTerminalAction());
         disconnectToolBarButton.setEnabled(false);
-
+        brainTerminalToolBarButton.setEnabled(false);
         daemonToolBar.add(railwayDeviceLabelLabel);
         daemonToolBar.addSeparator();
         daemonToolBar.add(connectToolBarButton);
         daemonToolBar.add(disconnectToolBarButton);
+        daemonToolBar.add(brainTerminalToolBarButton);
 
 		/* VIEWS */
         final JToolBar viewToolBar = new JToolBar();
@@ -720,6 +732,25 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     @Subscribe
     public void updateMainTitle(final UpdateMainTitleEvent event) {
         setTitle(event.getTitle());
+    }
+
+    private void saveOrSaveAsIfNoCurrentFile() {
+        if (appContext.getActualFile() == null) {
+            saveFileWithFileChooser();
+        } else {
+            saveCurrentFile();
+        }
+    }
+
+    private void saveFileWithFileChooser() {
+        final JFileChooser fileChooser = new JFileChooser(new File("."));
+        final int returnVal = fileChooser.showSaveDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            final File saveFile = fileChooser.getSelectedFile();
+            saveFile(saveFile);
+        } else {
+            updateCommandHistory("Save command cancelled by user");
+        }
     }
 
     private class CommandHistoryUpdater implements Runnable {
@@ -903,14 +934,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         }
     }
 
-    private void saveOrSaveAsIfNoCurrentFile() {
-        if (appContext.getActualFile() == null) {
-            saveFileWithFileChooser();
-        } else {
-            saveCurrentFile();
-        }
-    }
-
     private class SaveAsAction extends AbstractAction {
         public SaveAsAction() {
             super("Save as\u2026",
@@ -922,17 +945,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
             saveFileWithFileChooser();
 
-        }
-    }
-
-    private void saveFileWithFileChooser() {
-        final JFileChooser fileChooser = new JFileChooser(new File("."));
-        final int returnVal = fileChooser.showSaveDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            final File saveFile = fileChooser.getSelectedFile();
-            saveFile(saveFile);
-        } else {
-            updateCommandHistory("Save command cancelled by user");
         }
     }
 
@@ -1258,6 +1270,22 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             final boolean editingMode = enableEditing.isSelected();
             appContext.getMainBus().post(new EditingModeEvent(editingMode));
 
+        }
+    }
+
+    private class BrainTerminalAction extends AbstractAction {
+
+
+        public BrainTerminalAction() {
+            super("AdHoc-Brain Terminal",
+                    ImageTools
+                            .createImageIconFromIconSet("App-terminal-icon_22.png")
+            );
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            new BrainTerminal(appContext.getMainFrame(), appContext);
         }
     }
 }

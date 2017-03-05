@@ -317,14 +317,14 @@ public class RailwayDeviceManager implements CommandDataListener,
     }
 
     @Override
-    public void sentDummyMessage(String sentMessage) {
-        logIfLoggingEnabled("Dummy: " + sentMessage);
+    public void sentDummyMessage(String receivedMessage) {
+        logIfLoggingEnabled("Dummy: " + receivedMessage);
     }
 
 
     @Override
-    public void receivedMessage(String receivedString) {
-        logIfLoggingEnabled("receive from brain: " + receivedString);
+    public void receivedMessage(String receivedMessage) {
+        logIfLoggingEnabled("receive from brain: " + receivedMessage);
     }
 
     private void logIfLoggingEnabled(String response) {
@@ -338,27 +338,5 @@ public class RailwayDeviceManager implements CommandDataListener,
         //LOGGER.info(response);
     }
 
-    public void sendCommand(String command) {
 
-        final Preferences preferences = appContext.getPreferences();
-        final String railwayDeviceString = preferences
-                .getStringValue(RAILWAY_DEVICE);
-        final RailwayDevice railwayDevive = RailwayDevice
-                .fromString(railwayDeviceString);
-        if (isConnected()) {
-            throw new AdHocRailwayException("not connected");
-        }
-        if (RailwayDevice.SRCP == railwayDevive) {
-            try {
-                appContext.getSession().getCommandChannel().send(String.format("SET 0 GM 0 0 BRAINCMD %s", command));
-            } catch (SRCPException e) {
-                throw new AdHocRailwayException("failed to send command to brain", e);
-            }
-        } else if (RailwayDevice.ADHOC_BRAIN == railwayDevive) {
-            BrainController.getInstance().write(command);
-        } else {
-            LOGGER.info(String.format("NULL device: received command %s", command));
-        }
-
-    }
 }
