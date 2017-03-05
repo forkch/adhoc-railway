@@ -8,7 +8,9 @@ public enum LocomotiveType {
 
     SIMULATED_MFX("simulated-mfx", "Simulated MFX (2x Märklin Digital)", 9, 14, 1),
 
-    MFX("mfx", "Märklin mfx", 9, 28, 1);
+    MFX("mfx", "Märklin mfx", 19, 127, 1),
+
+    DCC("dcc", "DCC", 13, 27, 1);
 
     private final int functionCount;
     private final int drivingSteps;
