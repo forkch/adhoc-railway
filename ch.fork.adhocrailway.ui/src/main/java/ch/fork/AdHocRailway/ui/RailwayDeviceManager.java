@@ -56,11 +56,11 @@ public class RailwayDeviceManager implements CommandDataListener,
                 .getStringValue(RAILWAY_DEVICE);
         final RailwayDevice railwayDevive = RailwayDevice
                 .fromString(railwayDeviceString);
-        if (RailwayDevice.SRCP.equals(railwayDevive)) {
+        if (RailwayDevice.SRCP == railwayDevive) {
             final String host = preferences.getStringValue(SRCP_HOSTNAME);
             final int port = preferences.getIntValue(SRCP_PORT);
             connectToSRCPServer(host, port);
-        } else if (RailwayDevice.ADHOC_BRAIN.equals(railwayDevive)) {
+        } else if (RailwayDevice.ADHOC_BRAIN == railwayDevive) {
             connectToBrain(preferences.getStringValue(ADHOC_BRAIN_PORT));
         } else {
             connectToNullDevice();
@@ -277,7 +277,7 @@ public class RailwayDeviceManager implements CommandDataListener,
     }
 
     private void setSessionOnControllers(final SRCPSession session) {
-        if(!(appContext.getPowerControl() instanceof  SRCPPowerControlAdapter)) {
+        if (!(appContext.getPowerControl() instanceof SRCPPowerControlAdapter)) {
             return;
         }
         ((SRCPPowerControlAdapter) appContext.getPowerControl())
@@ -328,7 +328,7 @@ public class RailwayDeviceManager implements CommandDataListener,
     }
 
     private void logIfLoggingEnabled(String response) {
-        if(response.contains("POWER"))
+        if (response.contains("POWER"))
             return;
         final Preferences preferences = appContext.getPreferences();
         if (preferences.getBooleanValue(LOGGING)) {
@@ -336,5 +336,29 @@ public class RailwayDeviceManager implements CommandDataListener,
                     new CommandLogEvent(response));
         }
         //LOGGER.info(response);
+    }
+
+    public void sendCommand(String command) {
+
+        final Preferences preferences = appContext.getPreferences();
+        final String railwayDeviceString = preferences
+                .getStringValue(RAILWAY_DEVICE);
+        final RailwayDevice railwayDevive = RailwayDevice
+                .fromString(railwayDeviceString);
+        if (isConnected()) {
+            throw new AdHocRailwayException("not connected");
+        }
+        if (RailwayDevice.SRCP == railwayDevive) {
+            try {
+                appContext.getSession().getCommandChannel().send(String.format("SET 0 GM 0 0 BRAINCMD %s", command));
+            } catch (SRCPException e) {
+                throw new AdHocRailwayException("failed to send command to brain", e);
+            }
+        } else if (RailwayDevice.ADHOC_BRAIN == railwayDevive) {
+            BrainController.getInstance().write(command);
+        } else {
+            LOGGER.info(String.format("NULL device: received command %s", command));
+        }
+
     }
 }
