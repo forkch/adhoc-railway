@@ -57,6 +57,16 @@ public class DummyLocomotiveController extends LocomotiveController {
     }
 
     @Override
+    public void terminateAllLocomotives() {
+
+    }
+
+    @Override
+    public void terminateLocomotive(Locomotive locomotive) {
+
+    }
+
+    @Override
     public void setFunction(final Locomotive locomotive,
                             final int functionNumber, final boolean state,
                             final int deactivationDelay) {
