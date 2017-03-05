@@ -376,16 +376,20 @@ public class LocomotiveWidget extends JPanel implements
     @Override
     public void locomotivesUpdated(
             final SortedSet<LocomotiveGroup> locomotiveGroups) {
-        if (disableListener) {
+        if (disableListener || isCurrentlyInUse()) {
             return;
         }
         locomotiveSelectionPanel.updateLocomotiveGroups();
 
     }
 
+    private boolean isCurrentlyInUse() {
+        return !isFree() && myLocomotive != null;
+    }
+
     @Override
     public void locomotiveAdded(final Locomotive locomotive) {
-        if (disableListener) {
+        if (disableListener || isCurrentlyInUse()) {
             return;
         }
         locomotiveSelectionPanel.updateLocomotiveGroups();
@@ -393,7 +397,7 @@ public class LocomotiveWidget extends JPanel implements
 
     @Override
     public void locomotiveUpdated(final Locomotive locomotive) {
-        if (disableListener) {
+        if (disableListener || isCurrentlyInUse()) {
             return;
         }
         locomotiveSelectionPanel.updateLocomotiveGroups();
@@ -402,7 +406,7 @@ public class LocomotiveWidget extends JPanel implements
 
     @Override
     public void locomotiveGroupAdded(final LocomotiveGroup group) {
-        if (disableListener) {
+        if (disableListener || isCurrentlyInUse()) {
             return;
         }
         locomotiveSelectionPanel.updateLocomotiveGroups();
@@ -411,7 +415,7 @@ public class LocomotiveWidget extends JPanel implements
 
     @Override
     public void locomotiveRemoved(final Locomotive locomotive) {
-        if (disableListener) {
+        if (disableListener || isCurrentlyInUse()) {
             return;
         }
         locomotiveSelectionPanel.updateLocomotiveGroups();
@@ -419,7 +423,7 @@ public class LocomotiveWidget extends JPanel implements
 
     @Override
     public void locomotiveGroupRemoved(final LocomotiveGroup group) {
-        if (disableListener) {
+        if (disableListener || isCurrentlyInUse()) {
             return;
         }
         locomotiveSelectionPanel.updateLocomotiveGroups();
@@ -428,7 +432,7 @@ public class LocomotiveWidget extends JPanel implements
 
     @Override
     public void locomotiveGroupUpdated(final LocomotiveGroup group) {
-        if (disableListener) {
+        if (disableListener || isCurrentlyInUse()) {
             return;
         }
         locomotiveSelectionPanel.updateLocomotiveGroups();
