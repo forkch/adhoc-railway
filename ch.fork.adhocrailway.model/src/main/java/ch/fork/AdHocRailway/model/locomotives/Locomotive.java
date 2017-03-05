@@ -42,6 +42,7 @@ public class Locomotive extends AbstractItem implements Serializable,
     public static final String PROPERTYNAME_LOCOMOTIVE_TYPE = "type";
     public static final String PROPERTYNAME_ADDRESS1 = "address1";
     public static final String PROPERTYNAME_ADDRESS2 = "address2";
+    public static final String PROPERTYNAME_MFX_UUID = "mfxUUID";
     public static final String PROPERTYNAME_BUS = "bus";
     public static final String PROPERTYNAME_FUNCTIONS = "functions";
     public static final String PROPERTYNAME_LOCOMOTIVE_GROUP = "group";
@@ -75,6 +76,8 @@ public class Locomotive extends AbstractItem implements Serializable,
     @Expose
     private int address2;
     @Expose
+    private int mfxUUID;
+    @Expose
     private Set<LocomotiveFunction> functions = Sets.newHashSet();
 
     private transient LocomotiveGroup group;
@@ -85,8 +88,6 @@ public class Locomotive extends AbstractItem implements Serializable,
     private transient LocomotiveDirection currentDirection = FORWARD;
 
     private transient boolean[] currentFunctions;
-    @Expose
-    private String mfxUUID;
 
     public Locomotive() {
     }
@@ -346,11 +347,11 @@ public class Locomotive extends AbstractItem implements Serializable,
                 .append("currentFunctions",Arrays.toString(currentFunctions)).build();
     }
 
-    public String getMfxUUID() {
+    public int getMfxUUID() {
         return mfxUUID;
     }
 
-    public void setMfxUUID(String mfxUUID) {
+    public void setMfxUUID(int mfxUUID) {
         this.mfxUUID = mfxUUID;
     }
 }

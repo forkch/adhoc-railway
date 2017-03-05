@@ -20,4 +20,15 @@ public class SwingUtils {
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
 
     }
+
+
+    public static void enableDisableSpinners(boolean enable, JSpinner... fields) {
+        for (JSpinner field : fields) {
+            if(!enable) {
+                field.setValue(0);
+            }
+            field.setEnabled(enable);
+        }
+    }
+
 }

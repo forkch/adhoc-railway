@@ -32,6 +32,7 @@ import ch.fork.AdHocRailway.ui.utils.SwingUtils;
 import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import ch.fork.AdHocRailway.ui.widgets.ErrorPanel;
 import ch.fork.AdHocRailway.ui.widgets.ImagePreviewPanel;
+import com.google.common.collect.Lists;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.SpinnerAdapterFactory;
@@ -59,6 +60,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.SortedSet;
 
 public class LocomotiveConfig extends JDialog implements PropertyChangeListener {
 
@@ -85,6 +87,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
     private ArrayListModel<LocomotiveFunction> functions;
     private ErrorPanel errorPanel;
     private SelectionInList<LocomotiveFunction> functionsModel;
+    private JSpinner mfxUuidSpinner;
 
     public LocomotiveConfig(final LocomotiveContext ctx, final Frame owner,
                             final Locomotive myLocomotive,
@@ -187,15 +190,30 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
                 1
         )); // step
 
+
+        mfxUuidSpinner = new JSpinner();
+        mfxUuidSpinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
+                presentationModel
+                        .getBufferedModel(Locomotive.PROPERTYNAME_MFX_UUID), 1, // defaultValue
+                0, // minValue
+                Integer.MAX_VALUE, // maxValue
+                1
+        )); // step
+
         final List<LocomotiveType> locomotiveTypes = Arrays
                 .asList(LocomotiveType.values());
 
         final ValueModel locomotiveTypeModel = presentationModel
                 .getBufferedModel(Locomotive.PROPERTYNAME_LOCOMOTIVE_TYPE);
+
         locomotiveTypeComboBox = BasicComponentFactory
                 .createComboBox(new SelectionInList<LocomotiveType>(
                         locomotiveTypes, locomotiveTypeModel));
+        updateUIBasedOnLocomotiveType(presentationModel.getBean().getType());
 
+
+        locomotiveTypeComboBox
+                .addActionListener(new LocomotiveTypeSelectionListener());
         functions = new ArrayListModel<LocomotiveFunction>(presentationModel
                 .getBean().getFunctions());
         functionsTable = new JTable();
@@ -215,55 +233,32 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
         cancelButton = new JButton(new CancelAction());
     }
 
+    private void updateUIBasedOnLocomotiveType(LocomotiveType type) {
+        switch (type) {
+            case DELTA:
+                SwingUtils.enableDisableSpinners(false, mfxUuidSpinner);
+                break;
+            case DIGITAL:
+                SwingUtils.enableDisableSpinners(false, mfxUuidSpinner);
+                break;
+            case SIMULATED_MFX:
+                SwingUtils.enableDisableSpinners(false, mfxUuidSpinner);
+                break;
+            case MFX:
+                SwingUtils.enableDisableSpinners(true, mfxUuidSpinner);
+                break;
+            case DCC:
+                SwingUtils.enableDisableSpinners(false, mfxUuidSpinner);
+                break;
+
+        }
+    }
+
     private void buildPanel() {
         initComponents();
 
-        final FormLayout layout = new FormLayout(
-                "right:pref, 3dlu, pref:grow, 30dlu, right:pref, 3dlu, pref:grow",
-                "p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow, 3dlu,p:grow");
-        layout.setColumnGroups(new int[][]{{1, 5}, {3, 7}});
-        layout.setRowGroups(new int[][]{{3, 5, 7, 9}});
-
-        final PanelBuilder builder = new PanelBuilder(layout);
-        builder.setDefaultDialogBorder();
-        final CellConstraints cc = new CellConstraints();
-
-        builder.addSeparator("General", cc.xyw(1, 1, 3));
-
-        builder.addLabel("Name", cc.xy(1, 3));
-        builder.add(nameTextField, cc.xy(3, 3));
-
-        builder.addLabel("Description", cc.xy(1, 5));
-        builder.add(descTextField, cc.xy(3, 5));
-
-        builder.addLabel("Type", cc.xy(1, 7));
-        builder.add(locomotiveTypeComboBox, cc.xy(3, 7));
-
-        builder.addLabel("Image", cc.xy(1, 9));
-        builder.add(chooseImageButton, cc.xy(3, 9));
-
-        builder.add(imageLabel, cc.xyw(1, 11, 3));
-
-        builder.addSeparator("Interface", cc.xyw(5, 1, 3));
-
-        builder.addLabel("Bus", cc.xy(5, 3));
-        builder.add(busSpinner, cc.xy(7, 3));
-
-        builder.addLabel("Address 1", cc.xy(5, 5));
-        builder.add(address1Spinner, cc.xy(7, 5));
-
-        builder.addLabel("Address 2", cc.xy(5, 7));
-        builder.add(address2Spinner, cc.xy(7, 7));
-
-        builder.add(functionsTable, cc.xywh(5, 9, 3, 3));
-
-        builder.add(errorPanel, cc.xyw(1, 13, 3));
-
-        builder.add(buildButtonBar(), cc.xyw(5, 13, 3));
-
-        // add(builder.getPanel());
-
-        setLayout(new MigLayout());
+        MigLayout manager = new MigLayout("debug");
+        setLayout(manager);
 
         add(new JLabel("Name"));
         add(nameTextField, "w 300!");
@@ -286,10 +281,13 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
         add(new JLabel("Image"));
         add(chooseImageButton, "w 150!");
 
-        add(new JLabel("Functions"), "gap unrelated");
-        add(new JScrollPane(functionsTable), "h 200!, w 300!, span 1 2, wrap");
+        add(new JLabel("mfx Uuid"));
+        add(mfxUuidSpinner, "w 150!, wrap");
 
-        add(imageLabel, "align center, span 2, wrap");
+        add(imageLabel, "align center, span 2");
+
+        add(new JLabel("Functions"), "gap unrelated");
+        add(new JScrollPane(functionsTable), "h 200!, w 300!, wrap");
 
         add(buildButtonBar(), "span 4, align right");
 
@@ -326,6 +324,12 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
             case SIMULATED_MFX:
                 locomotive.setFunctions(LocomotiveFunction
                         .getSimulatedMfxFunctions());
+                break;
+            case MFX:
+                locomotive.setFunctions(LocomotiveFunction.getMfxFunctions());
+                break;
+            case DCC:
+                locomotive.setFunctions(LocomotiveFunction.getDccFunctions());
                 break;
             default:
                 break;
@@ -526,6 +530,17 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
         public void actionPerformed(final ActionEvent e) {
             trigger.triggerFlush();
             LocomotiveConfig.this.setVisible(false);
+        }
+    }
+
+
+    private class LocomotiveTypeSelectionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            final LocomotiveType selectedLocomotiveType = (LocomotiveType) locomotiveTypeComboBox
+                    .getSelectedItem();
+            updateUIBasedOnLocomotiveType(selectedLocomotiveType);
         }
     }
 }

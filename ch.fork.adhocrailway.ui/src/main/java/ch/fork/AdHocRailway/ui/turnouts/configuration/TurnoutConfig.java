@@ -51,6 +51,8 @@ import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.List;
 
+import static ch.fork.AdHocRailway.ui.utils.SwingUtils.enableDisableSpinners;
+
 public class TurnoutConfig extends JDialog {
     private final Trigger trigger = new Trigger();
     private TurnoutGroup selectedTurnoutGroup;
@@ -242,14 +244,6 @@ public class TurnoutConfig extends JDialog {
         validate(presentationModel.getBean());
     }
 
-    private void enableDisableSpinners(boolean enable, JSpinner... fields) {
-        for (JSpinner field : fields) {
-            if(!enable) {
-                field.setValue(0);
-            }
-            field.setEnabled(enable);
-        }
-    }
 
     private void buildPanel() {
         final FormLayout layout = new FormLayout(
