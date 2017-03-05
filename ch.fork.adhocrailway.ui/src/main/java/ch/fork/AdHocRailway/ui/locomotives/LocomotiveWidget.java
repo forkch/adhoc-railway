@@ -35,7 +35,6 @@ import ch.fork.AdHocRailway.ui.bus.events.EndImportEvent;
 import ch.fork.AdHocRailway.ui.bus.events.StartImportEvent;
 import ch.fork.AdHocRailway.ui.context.LocomotiveContext;
 import ch.fork.AdHocRailway.ui.locomotives.configuration.LocomotiveConfig;
-import ch.fork.AdHocRailway.ui.utils.ImageTools;
 import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
@@ -173,8 +172,8 @@ public class LocomotiveWidget extends JPanel implements
     private JPanel initFunctionsControl() {
         functionsPanel = new JPanel();
         functionsPanel.setLayout(new MigLayout("insets 0, wrap, fill"));
-        if(myLocomotive == null) {
-            for (int i = 0; i < 5; i++) {
+        if (myLocomotive == null) {
+            for (int i = 0; i < 6; i++) {
                 final FunctionToggleButton functionButton = new FunctionToggleButton(
                         "Fn" + i);
                 functionToggleButtons.add(functionButton);
@@ -246,10 +245,12 @@ public class LocomotiveWidget extends JPanel implements
     private void updateFunctionButtons() {
         functionToggleButtons.clear();
         functionsPanel.removeAll();
-        if (myLocomotive.getFunctions().size() > 5) {
-            functionsPanel.setLayout(new MigLayout("insets 0, wrap 2, fill"));
+        if (myLocomotive.getFunctions().size() <= 5) {
+            functionsPanel.setLayout(new MigLayout("insets 0, wrap, fill")); // wrap after each function button
+        } else if (myLocomotive.getFunctions().size() <= 10) {
+            functionsPanel.setLayout(new MigLayout("insets 0, wrap 2, fill")); // wrap after every second function button
         } else {
-            functionsPanel.setLayout(new MigLayout("insets 0, wrap, fill"));
+            functionsPanel.setLayout(new MigLayout("insets 0, wrap 3, fill")); // wrap after every third function button
         }
 
 

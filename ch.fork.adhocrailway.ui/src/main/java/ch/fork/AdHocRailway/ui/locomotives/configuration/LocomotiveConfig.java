@@ -257,7 +257,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
     private void buildPanel() {
         initComponents();
 
-        MigLayout manager = new MigLayout("debug");
+        MigLayout manager = new MigLayout();
         setLayout(manager);
 
         add(new JLabel("Name"));

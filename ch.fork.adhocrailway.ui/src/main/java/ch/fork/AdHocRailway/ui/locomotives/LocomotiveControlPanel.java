@@ -46,14 +46,14 @@ public class LocomotiveControlPanel extends JPanel {
         this.ctx = ctx;
         ctx.getMainBus().register(this);
 
-        locomotiveWidgets = new ArrayList<LocomotiveWidget>();
+        locomotiveWidgets = new ArrayList<>();
         initGUI();
     }
 
     private void initGUI() {
         setLayout(new MigLayout("fill, insets 0"));
         controlPanel = new JPanel(new MigLayout("insets 0"));
-        JScrollPane controlPanelScrollPane = new JScrollPane(controlPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JScrollPane controlPanelScrollPane = new JScrollPane(controlPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         final SimpleInternalFrame locomotivesFrame = new SimpleInternalFrame(
                 "Trains");
