@@ -85,6 +85,8 @@ public class Locomotive extends AbstractItem implements Serializable,
     private transient LocomotiveDirection currentDirection = FORWARD;
 
     private transient boolean[] currentFunctions;
+    @Expose
+    private String mfxUUID;
 
     public Locomotive() {
     }
@@ -344,4 +346,11 @@ public class Locomotive extends AbstractItem implements Serializable,
                 .append("currentFunctions",Arrays.toString(currentFunctions)).build();
     }
 
+    public String getMfxUUID() {
+        return mfxUUID;
+    }
+
+    public void setMfxUUID(String mfxUUID) {
+        this.mfxUUID = mfxUUID;
+    }
 }
