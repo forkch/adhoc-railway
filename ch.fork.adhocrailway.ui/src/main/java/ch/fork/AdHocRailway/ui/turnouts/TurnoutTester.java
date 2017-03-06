@@ -113,6 +113,9 @@ public class TurnoutTester extends ConfigurationDialog {
                 if (t != null) {
                     t.stopTesting();
                 }
+                if (turnoutCycleTestThread != null) {
+                    turnoutCycleTestThread.stopTesting();
+                }
             }
 
         });
@@ -123,6 +126,9 @@ public class TurnoutTester extends ConfigurationDialog {
                 if (t != null) {
                     t.stopTesting();
                 }
+                if (turnoutCycleTestThread != null) {
+                    turnoutCycleTestThread.stopTesting();
+                }
             }
 
         });
@@ -131,6 +137,9 @@ public class TurnoutTester extends ConfigurationDialog {
             public void windowClosing(final WindowEvent arg0) {
                 if (t != null) {
                     t.stopTesting();
+                }
+                if (turnoutCycleTestThread != null) {
+                    turnoutCycleTestThread.stopTesting();
                 }
             }
 

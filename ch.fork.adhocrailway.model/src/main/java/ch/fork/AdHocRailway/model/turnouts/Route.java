@@ -204,4 +204,16 @@ public class Route extends AbstractItem implements java.io.Serializable,
     public void removeRouteItem(RouteItem item) {
         routedTurnouts.remove(item);
     }
+
+    public SortedSet<RouteItem> getRoutedTurnoutsSortedByTournouNumber() {
+        TreeSet<RouteItem> sorted = new TreeSet<RouteItem>(new Comparator<RouteItem>() {
+            @Override
+            public int compare(RouteItem o1, RouteItem o2) {
+                return Integer.compare(o1.getTurnoutNumber(), o2.getTurnoutNumber());
+            }
+        });
+        sorted.addAll(routedTurnouts);
+        return Collections.unmodifiableSortedSet(sorted);
+    }
+
 }
