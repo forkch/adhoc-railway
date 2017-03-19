@@ -2,9 +2,9 @@ package ch.fork.AdHocRailway.railway.brain.brain.brain;
 
 import ch.fork.AdHocRailway.controllers.LocomotiveChangeListener;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
+import ch.fork.AdHocRailway.model.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.railway.brain.brain.BrainController;
 import ch.fork.AdHocRailway.railway.brain.brain.BrainLocomotiveControlAdapter;
-import ch.fork.AdHocRailway.railway.brain.brain.BrainTestSupport;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -39,7 +39,35 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
                 false, false, false});
 
         assertBrainInitLocoCall(locomotive);
-        assertBrainSetSpeedCalled(locomotive, speed, "1", "0", "0 0 0 0");
+        assertBrainSetSpeedCalled(locomotive, speed, "1", "");
+    }
+
+    @Test
+    public void toggle_direction_digital_locomotive() throws
+            IOException {
+        final Locomotive locomotive = createDigitalLocomotive();
+        locomotive.setCurrentDirection(LocomotiveDirection.FORWARD);
+        locomotive.setCurrentSpeed(10);
+        givenTestee();
+
+        whenChangingDirection(locomotive);
+
+        assertBrainInitLocoCall(locomotive);
+        assertBrainSetSpeedCalled(locomotive, 10, "0", "");
+    }
+
+    @Test
+    public void toggle_direction_to_forward_digital_locomotive() throws
+            IOException {
+        final Locomotive locomotive = createDigitalLocomotive();
+        locomotive.setCurrentDirection(LocomotiveDirection.REVERSE);
+        locomotive.setCurrentSpeed(10);
+        givenTestee();
+
+        whenChangingDirection(locomotive);
+
+        assertBrainInitLocoCall(locomotive);
+        assertBrainSetSpeedCalled(locomotive, 10, "1", "");
     }
 
     @Test
@@ -54,7 +82,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
         whenIncreasingSpeed(locomotive);
 
         assertBrainInitLocoCall(locomotive);
-        assertBrainSetSpeedCalled(locomotive, speed, "1", "0", "0 0 0 0");
+        assertBrainSetSpeedCalled(locomotive, speed, "1", "");
     }
 
     @Test
@@ -81,7 +109,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
         whenDecreasingSpeed(locomotive);
 
         assertBrainInitLocoCall(locomotive);
-        assertBrainSetSpeedCalled(locomotive, speed, "1", "0", "0 0 0 0");
+        assertBrainSetSpeedCalled(locomotive, speed, "1", "");
     }
 
     @Test
@@ -105,11 +133,11 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
         givenTestee();
         whenSettingFunction(locomotive, 0, true);
 
-        assertBrainSetSpeedCalled(locomotive, 0, "1", "1", "0 0 0 0");
+        assertBrainSetSpeedCalled(locomotive, 0, "1", "1 0 0 0 0");
     }
 
     @Test
-    public void set_function_1_digital_locomotive()
+    public void set_function_4_digital_locomotive()
             throws IOException {
         final Locomotive locomotive = createDigitalLocomotive();
         locomotive.setCurrentSpeed(0);
@@ -117,7 +145,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
         givenTestee();
         whenSettingFunction(locomotive, 4, true);
 
-        assertBrainSetSpeedCalled(locomotive, 0, "1", "0", "0 0 0 1");
+        assertBrainSetSpeedCalled(locomotive, 0, "1", "0 0 0 0 1");
     }
 
     private void whenSettingFunction(Locomotive locomotive, int i, boolean state) {
@@ -132,14 +160,18 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
         testee.increaseSpeed(locomotive);
     }
 
+    private void whenChangingDirection(final Locomotive locomotive) {
+        testee.toggleDirection(locomotive);
+    }
+
     private void whenDecreasingSpeed(final Locomotive locomotive) {
         testee.decreaseSpeed(locomotive);
     }
 
     private void assertBrainSetSpeedCalled(final Locomotive locomotive,
-                                           final int speed, final String direction, final String light,
+                                           final int speed, final String direction,
                                            final String functions) throws IOException {
-        String brainLocomotiveCommand = createBrainLocomotiveCommand(locomotive, speed, direction, light, functions);
+        String brainLocomotiveCommand = createBrainLocomotiveCommand(locomotive, speed, direction, functions);
         Mockito.verify(brainController).write(brainLocomotiveCommand);
     }
 

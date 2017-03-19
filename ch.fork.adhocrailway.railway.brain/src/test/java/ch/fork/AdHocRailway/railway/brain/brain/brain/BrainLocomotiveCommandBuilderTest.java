@@ -3,7 +3,6 @@ package ch.fork.AdHocRailway.railway.brain.brain.brain;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.railway.brain.brain.BrainLocomotiveCommandBuilder;
-import ch.fork.AdHocRailway.railway.brain.brain.BrainTestSupport;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,9 +41,9 @@ public class BrainLocomotiveCommandBuilderTest extends BrainTestSupport {
         Locomotive digitalLocomotive = createDigitalLocomotive();
         digitalLocomotive.setCurrentDirection(LocomotiveDirection.FORWARD);
 
-        String locomotiveCommand = testee.getLocomotiveCommand(digitalLocomotive, 2, digitalLocomotive.getCurrentFunctions());
+        String locomotiveCommand = testee.getLocomotiveCommand(digitalLocomotive, 2, digitalLocomotive.getCurrentFunctions(), false);
 
-        assertEquals("XL 1 2 0 1 0 0 0 0", locomotiveCommand);
+        assertEquals("XL 1 2 1", locomotiveCommand);
     }
 
     @Test
@@ -52,9 +51,9 @@ public class BrainLocomotiveCommandBuilderTest extends BrainTestSupport {
         Locomotive digitalLocomotive = createDigitalLocomotive();
         digitalLocomotive.setCurrentDirection(LocomotiveDirection.REVERSE);
 
-        String locomotiveCommand = testee.getLocomotiveCommand(digitalLocomotive, 2, digitalLocomotive.getCurrentFunctions());
+        String locomotiveCommand = testee.getLocomotiveCommand(digitalLocomotive, 2, digitalLocomotive.getCurrentFunctions(), false);
 
-        assertEquals("XL 1 2 0 0 0 0 0 0", locomotiveCommand);
+        assertEquals("XL 1 2 0", locomotiveCommand);
     }
 
     @Test
@@ -70,21 +69,25 @@ public class BrainLocomotiveCommandBuilderTest extends BrainTestSupport {
     public void get_functions_command_digital_locomotive_functions() throws IOException {
         Locomotive digitalLocomotive = createDigitalLocomotive();
 
-        List<String> locomotiveCommands = testee.getFunctionsCommands(digitalLocomotive, 1, true);
+        List<String> locomotiveCommands = testee.getFunctionsCommands(digitalLocomotive, 0, true);
         assertEquals(1, locomotiveCommands.size());
-        assertEquals("XL 1 0 0 1 1 0 0 0", locomotiveCommands.get(0));
+        assertEquals("XL 1 0 1 1 0 0 0 0", locomotiveCommands.get(0));
+
+        locomotiveCommands = testee.getFunctionsCommands(digitalLocomotive, 1, true);
+        assertEquals(1, locomotiveCommands.size());
+        assertEquals("XL 1 0 1 0 1 0 0 0", locomotiveCommands.get(0));
 
         locomotiveCommands = testee.getFunctionsCommands(digitalLocomotive, 2, true);
         assertEquals(1, locomotiveCommands.size());
-        assertEquals("XL 1 0 0 1 0 1 0 0", locomotiveCommands.get(0));
+        assertEquals("XL 1 0 1 0 0 1 0 0", locomotiveCommands.get(0));
 
         locomotiveCommands = testee.getFunctionsCommands(digitalLocomotive, 3, true);
         assertEquals(1, locomotiveCommands.size());
-        assertEquals("XL 1 0 0 1 0 0 1 0", locomotiveCommands.get(0));
+        assertEquals("XL 1 0 1 0 0 0 1 0", locomotiveCommands.get(0));
 
         locomotiveCommands = testee.getFunctionsCommands(digitalLocomotive, 4, true);
         assertEquals(1, locomotiveCommands.size());
-        assertEquals("XL 1 0 0 1 0 0 0 1", locomotiveCommands.get(0));
+        assertEquals("XL 1 0 1 0 0 0 0 1", locomotiveCommands.get(0));
 
     }
 
@@ -95,51 +98,56 @@ public class BrainLocomotiveCommandBuilderTest extends BrainTestSupport {
         List<String> locomotiveCommands = testee.getFunctionsCommands(simulatedMfxLocomotive, 0, true);
         assertEquals(2, locomotiveCommands.size());
         assertEquals("XL 1 0 1 1 0 0 0 0", locomotiveCommands.get(0));
-        assertEquals("XL 2 0 0 1 0 0 0 0", locomotiveCommands.get(1));
+        assertEquals("XL 2 0 1 0 0 0 0 0", locomotiveCommands.get(1));
     }
 
     @Test
     public void get_functions_command_simulated_mfx_functions() throws IOException {
         Locomotive simulatedMfxLocomotive = createSimulatedMfxLocomotive();
 
-        List<String> locomotiveCommands = testee.getFunctionsCommands(simulatedMfxLocomotive, 1, true);
+        List<String> locomotiveCommands = testee.getFunctionsCommands(simulatedMfxLocomotive, 0, true);
         assertEquals(2, locomotiveCommands.size());
-        assertEquals("XL 1 0 0 1 1 0 0 0", locomotiveCommands.get(0));
-        assertEquals("XL 2 0 0 1 0 0 0 0", locomotiveCommands.get(1));
+        assertEquals("XL 1 0 1 1 0 0 0 0", locomotiveCommands.get(0));
+        assertEquals("XL 2 0 1 0 0 0 0 0", locomotiveCommands.get(1));
+
+        locomotiveCommands = testee.getFunctionsCommands(simulatedMfxLocomotive, 1, true);
+        assertEquals(2, locomotiveCommands.size());
+        assertEquals("XL 1 0 1 0 1 0 0 0", locomotiveCommands.get(0));
+        assertEquals("XL 2 0 1 0 0 0 0 0", locomotiveCommands.get(1));
 
         locomotiveCommands = testee.getFunctionsCommands(simulatedMfxLocomotive, 2, true);
         assertEquals(2, locomotiveCommands.size());
-        assertEquals("XL 1 0 0 1 0 1 0 0", locomotiveCommands.get(0));
-        assertEquals("XL 2 0 0 1 0 0 0 0", locomotiveCommands.get(1));
+        assertEquals("XL 1 0 1 0 0 1 0 0", locomotiveCommands.get(0));
+        assertEquals("XL 2 0 1 0 0 0 0 0", locomotiveCommands.get(1));
 
         locomotiveCommands = testee.getFunctionsCommands(simulatedMfxLocomotive, 3, true);
         assertEquals(2, locomotiveCommands.size());
-        assertEquals("XL 1 0 0 1 0 0 1 0", locomotiveCommands.get(0));
-        assertEquals("XL 2 0 0 1 0 0 0 0", locomotiveCommands.get(1));
+        assertEquals("XL 1 0 1 0 0 0 1 0", locomotiveCommands.get(0));
+        assertEquals("XL 2 0 1 0 0 0 0 0", locomotiveCommands.get(1));
 
         locomotiveCommands = testee.getFunctionsCommands(simulatedMfxLocomotive, 4, true);
         assertEquals(2, locomotiveCommands.size());
-        assertEquals("XL 1 0 0 1 0 0 0 1", locomotiveCommands.get(0));
-        assertEquals("XL 2 0 0 1 0 0 0 0", locomotiveCommands.get(1));
+        assertEquals("XL 1 0 1 0 0 0 0 1", locomotiveCommands.get(0));
+        assertEquals("XL 2 0 1 0 0 0 0 0", locomotiveCommands.get(1));
 
         locomotiveCommands = testee.getFunctionsCommands(simulatedMfxLocomotive, 5, true);
         assertEquals(2, locomotiveCommands.size());
-        assertEquals("XL 1 0 0 1 0 0 0 0", locomotiveCommands.get(0));
-        assertEquals("XL 2 0 0 1 1 0 0 0", locomotiveCommands.get(1));
+        assertEquals("XL 1 0 1 0 0 0 0 0", locomotiveCommands.get(0));
+        assertEquals("XL 2 0 1 0 1 0 0 0", locomotiveCommands.get(1));
 
         locomotiveCommands = testee.getFunctionsCommands(simulatedMfxLocomotive, 6, true);
         assertEquals(2, locomotiveCommands.size());
-        assertEquals("XL 1 0 0 1 0 0 0 0", locomotiveCommands.get(0));
-        assertEquals("XL 2 0 0 1 0 1 0 0", locomotiveCommands.get(1));
+        assertEquals("XL 1 0 1 0 0 0 0 0", locomotiveCommands.get(0));
+        assertEquals("XL 2 0 1 0 0 1 0 0", locomotiveCommands.get(1));
 
         locomotiveCommands = testee.getFunctionsCommands(simulatedMfxLocomotive, 7, true);
         assertEquals(2, locomotiveCommands.size());
-        assertEquals("XL 1 0 0 1 0 0 0 0", locomotiveCommands.get(0));
-        assertEquals("XL 2 0 0 1 0 0 1 0", locomotiveCommands.get(1));
+        assertEquals("XL 1 0 1 0 0 0 0 0", locomotiveCommands.get(0));
+        assertEquals("XL 2 0 1 0 0 0 1 0", locomotiveCommands.get(1));
 
         locomotiveCommands = testee.getFunctionsCommands(simulatedMfxLocomotive, 8, true);
         assertEquals(2, locomotiveCommands.size());
-        assertEquals("XL 1 0 0 1 0 0 0 0", locomotiveCommands.get(0));
-        assertEquals("XL 2 0 0 1 0 0 0 1", locomotiveCommands.get(1));
+        assertEquals("XL 2 0 1 0 0 0 0 1", locomotiveCommands.get(1));
+        assertEquals("XL 1 0 1 0 0 0 0 0", locomotiveCommands.get(0));
     }
 }

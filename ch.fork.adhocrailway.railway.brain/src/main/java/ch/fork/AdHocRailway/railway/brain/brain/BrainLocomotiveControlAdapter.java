@@ -39,7 +39,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
         initLocomotive(locomotive);
 
         try {
-            final String command = brainLocomotiveCommandBuilder.getLocomotiveCommand(locomotive, speed, functions);
+            final String command = brainLocomotiveCommandBuilder.getLocomotiveCommand(locomotive, speed, functions, false);
 
             brain.write(command);
             locomotive.setCurrentSpeed(speed);

@@ -1,4 +1,4 @@
-package ch.fork.AdHocRailway.railway.brain.brain;
+package ch.fork.AdHocRailway.railway.brain.brain.brain;
 
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveFunction;
@@ -15,16 +15,16 @@ public class BrainTestSupport {
 
 
     protected String createBrainLocomotiveCommand(final Locomotive locomotive,
-                                                  final int speed, final String direction, final String light,
+                                                  final int speed, final String direction,
                                                   final String functions) throws IOException {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("XL ");
         stringBuilder.append(locomotive.getAddress1());
         stringBuilder.append(" ");
         stringBuilder.append(speed);
-        stringBuilder.append(" " + light);
         stringBuilder.append(" " + direction);
-        stringBuilder.append(" " + functions);
+        if (!functions.isEmpty())
+            stringBuilder.append(" " + functions);
         return stringBuilder.toString();
 
     }

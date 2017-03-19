@@ -15,12 +15,12 @@ import java.util.List;
 public class BrainLocomotiveCommandBuilder {
 
     public String getLocomotiveCommand(final Locomotive locomotive,
-                                       final int speed, final boolean[] functions) {
-        return getLocomotiveCommand(locomotive, locomotive.getAddress1(), speed, functions);
+                                       final int speed, final boolean[] functions, boolean withFunctions) {
+        return getLocomotiveCommand(locomotive, locomotive.getAddress1(), speed, functions, withFunctions);
     }
 
     private String getLocomotiveCommand(final Locomotive locomotive,
-                                        final int address, final int speed, final boolean[] functions) {
+                                        final int address, final int speed, final boolean[] functions, boolean withFunctions) {
         if (LocomotiveType.DIGITAL == locomotive.getType() && functions == null && functions.length != 5) {
             throw new ControllerException("invalid function count of locomotive " + locomotive.getName());
         }
@@ -30,21 +30,21 @@ public class BrainLocomotiveCommandBuilder {
         stringBuilder.append(" ");
         stringBuilder.append(speed);
         stringBuilder.append(" ");
-        stringBuilder.append(functions[0] ? "1" : "0");
-        stringBuilder.append(" ");
-        stringBuilder
-                .append(locomotive.getCurrentDirection() == LocomotiveDirection.FORWARD ? "1"
+        stringBuilder.append(locomotive.getCurrentDirection() == LocomotiveDirection.FORWARD ? "1"
                         : "0");
-        stringBuilder.append(" ");
-        int functionCount;
-        if(locomotive.getType() == LocomotiveType.SIMULATED_MFX) {
-            functionCount = 5;
-        } else {
-            functionCount = locomotive.getFunctions().size();
-        }
-        for (int i = 1; i < functionCount; i++) {
-            stringBuilder.append(functions[i] ? "1" : "0");
+
+        if (withFunctions) {
             stringBuilder.append(" ");
+            int functionCount;
+            if (locomotive.getType() == LocomotiveType.SIMULATED_MFX) {
+                functionCount = 5;
+            } else {
+                functionCount = locomotive.getFunctions().size();
+            }
+            for (int i = 0; i < functionCount; i++) {
+                stringBuilder.append(functions[i] ? "1" : "0");
+                stringBuilder.append(" ");
+            }
         }
         return stringBuilder.toString().trim();
     }
@@ -66,15 +66,15 @@ public class BrainLocomotiveCommandBuilder {
             final boolean[] functions2 = Arrays.copyOfRange(multipartFunctions, 5, 11);
             final String speedCommand1 = getLocomotiveCommand(locomotive,
                     locomotive.getAddress1(), locomotive.getCurrentSpeed(),
-                    functions1);
+                    functions1, true);
             final String speedCommand2 = getLocomotiveCommand(locomotive,
                     locomotive.getAddress2(), locomotive.getCurrentSpeed(),
-                    functions2);
+                    functions2, true);
 
             return Arrays.asList(speedCommand1, speedCommand2);
         } else {
             return Arrays.asList(getLocomotiveCommand(locomotive, locomotive.getAddress1(),
-                    locomotive.getCurrentSpeed(), multipartFunctions));
+                    locomotive.getCurrentSpeed(), multipartFunctions, true));
         }
     }
 
