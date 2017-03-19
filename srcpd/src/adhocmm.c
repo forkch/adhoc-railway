@@ -142,50 +142,45 @@ static int init_lineADHOCMM(bus_t bus) {
 /**
  * init_gl_ADHOCMM: modifies the gl data used to initialize the device
  **/
-int init_gl_ADHOCMM(gl_state_t *gl) {
-    switch (gl->protocol) {
-        case 'F': //mfx
-        case 'N': //dcc
-            if (gl->n_fs == 127) {
-                return SRCP_OK;
-            } else {
-                return SRCP_WRONGVALUE;
-            }
-            break;
-        case 'M':
-            switch (gl->protocolversion) {
-                case 1:
-                    if (gl->n_fs == 14 || (gl->n_fs == 127)) {
-                        return SRCP_OK;
-                    } else {
-                        return SRCP_WRONGVALUE;
-                    }
-                    break;
-                case 2:
-                    if ((gl->n_fs == 14) || (gl->n_fs == 27) || (gl->n_fs == 28) || (gl->n_fs == 127)) {
-                        return SRCP_OK;
-                    } else {
-                        return SRCP_WRONGVALUE;
-                    }
-                    break;
-            }
-            return SRCP_WRONGVALUE;
-        case 'L':
-        case 'S':
-        case 'P':
-        default:
-            return SRCP_UNSUPPORTEDDEVICEPROTOCOL;
-    }
-    return SRCP_UNSUPPORTEDDEVICEPROTOCOL;
+int init_gl_ADHOCMM(gl_state_t * gl) {
+	switch (gl->protocol) {
+	case 'L':
+	case 'S':
+	case 'N':
+		break;
+	case 'P':
+		return SRCP_OK;
+		break;
+	case 'M':
+		switch (gl->protocolversion) {
+		case 1:
+			if (gl->n_fs == 14) {
+				return SRCP_OK;
+			} else {
+				return SRCP_WRONGVALUE;
+			}
+			break;
+		case 2:
+			if ((gl->n_fs == 14) || (gl->n_fs == 27) || (gl->n_fs == 28)) {
+				return SRCP_OK;
+			} else {
+				return SRCP_WRONGVALUE;
+			}
+			break;
+		}
+		return SRCP_WRONGVALUE;
+		break;
+	}
+	return SRCP_UNSUPPORTEDDEVICEPROTOCOL;
 }
 
 /**
  * initGA: modifies the ga data used to initialize the device
  **/
-int init_ga_ADHOCMM(ga_state_t *ga) {
-    if ((ga->protocol == 'M') || (ga->protocol == 'P'))
-        return SRCP_OK;
-    return SRCP_UNSUPPORTEDDEVICEPROTOCOL;
+int init_ga_ADHOCMM(ga_state_t * ga) {
+	if ((ga->protocol == 'M') || (ga->protocol == 'P'))
+		return SRCP_OK;
+	return SRCP_UNSUPPORTEDDEVICEPROTOCOL;
 }
 
 /* Initialisiere den Bus, signalisiere Fehler
