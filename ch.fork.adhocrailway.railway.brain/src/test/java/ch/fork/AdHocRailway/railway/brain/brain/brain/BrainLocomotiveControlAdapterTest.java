@@ -71,6 +71,24 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
     }
 
     @Test
+    public void emergency_stop_digital_locomotive() throws
+            IOException {
+        final Locomotive locomotive = createDigitalLocomotive();
+        locomotive.setCurrentDirection(LocomotiveDirection.FORWARD);
+        locomotive.setCurrentSpeed(10);
+        givenTestee();
+
+        whenPerformingEmergencyStop(locomotive);
+
+        assertBrainInitLocoCall(locomotive);
+        assertBrainSetSpeedCalled(locomotive, 0, "2", "");
+    }
+
+    private void whenPerformingEmergencyStop(Locomotive locomotive) {
+        testee.emergencyStop(locomotive);
+    }
+
+    @Test
     public void increase_speed_digital_locomotive() throws
             IOException {
         final Locomotive locomotive = createDigitalLocomotive();

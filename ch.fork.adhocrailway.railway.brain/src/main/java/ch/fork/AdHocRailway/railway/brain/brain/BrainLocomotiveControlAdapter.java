@@ -4,6 +4,7 @@ import ch.fork.AdHocRailway.controllers.ControllerException;
 import ch.fork.AdHocRailway.controllers.LocomotiveController;
 import ch.fork.AdHocRailway.controllers.TaskExecutor;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
+import ch.fork.AdHocRailway.model.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.utils.LocomotiveHelper;
 import com.google.common.collect.Sets;
@@ -39,7 +40,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
         initLocomotive(locomotive);
 
         try {
-            final String command = brainLocomotiveCommandBuilder.getLocomotiveCommand(locomotive, speed, functions, false);
+            final String command = brainLocomotiveCommandBuilder.getLocomotiveCommand(locomotive, speed, locomotive.getCurrentDirection(), functions, false);
 
             brain.write(command);
             locomotive.setCurrentSpeed(speed);
@@ -136,12 +137,17 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
     @Override
     public void emergencyStop(final Locomotive locomotive) {
 
+        initLocomotive(locomotive);
         locomotive.setTargetSpeed(-1);
-        if(locomotive.getEmergencyStopFunctionNumber() >=0) {
-            setFunction(locomotive, locomotive.getEmergencyStopFunctionNumber(),
-                    true, 0);
+
+        try {
+            final String command = brainLocomotiveCommandBuilder.getLocomotiveCommand(locomotive, 0, LocomotiveDirection.EMERGENCY_STOP, new boolean[0], false);
+            brain.write(command);
+            locomotive.setCurrentSpeed(0);
+            informListeners(locomotive);
+        } catch (final BrainException e) {
+            throw new ControllerException("error setting speed", e);
         }
-        setSpeed(locomotive, 0, locomotive.getCurrentFunctions());
 
     }
 

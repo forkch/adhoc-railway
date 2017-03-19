@@ -34,11 +34,23 @@ public class BrainController {
         List<String> availableSerialPortsAsString = instance2.getAvailableSerialPortsAsString();
         System.out.println(availableSerialPortsAsString);
         instance2.connect(availableSerialPortsAsString.get(0));
-        System.in.read();
-        instance2.write("XSTOP");
-        System.in.read();
-        instance2.write("XGO");
-        System.in.read();
+        instance2.addBrainListener(new BrainListener() {
+            @Override
+            public void sentMessage(String sentMessage) {
+                System.out.println("sent: " + sentMessage);
+            }
+
+            @Override
+            public void receivedMessage(String receivedMessage) {
+                System.out.println("received: " + receivedMessage);
+
+            }
+        });
+
+        for (int i = 0; i < 1000; i++) {
+            instance2.write("XSTOP");
+            instance2.write("XGO");
+        }
         instance2.disconnect();
     }
 

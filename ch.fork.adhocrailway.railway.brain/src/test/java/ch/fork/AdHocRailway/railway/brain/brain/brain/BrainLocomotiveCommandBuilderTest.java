@@ -41,7 +41,7 @@ public class BrainLocomotiveCommandBuilderTest extends BrainTestSupport {
         Locomotive digitalLocomotive = createDigitalLocomotive();
         digitalLocomotive.setCurrentDirection(LocomotiveDirection.FORWARD);
 
-        String locomotiveCommand = testee.getLocomotiveCommand(digitalLocomotive, 2, digitalLocomotive.getCurrentFunctions(), false);
+        String locomotiveCommand = testee.getLocomotiveCommand(digitalLocomotive, 2, digitalLocomotive.getCurrentDirection(), digitalLocomotive.getCurrentFunctions(), false);
 
         assertEquals("XL 1 2 1", locomotiveCommand);
     }
@@ -51,7 +51,7 @@ public class BrainLocomotiveCommandBuilderTest extends BrainTestSupport {
         Locomotive digitalLocomotive = createDigitalLocomotive();
         digitalLocomotive.setCurrentDirection(LocomotiveDirection.REVERSE);
 
-        String locomotiveCommand = testee.getLocomotiveCommand(digitalLocomotive, 2, digitalLocomotive.getCurrentFunctions(), false);
+        String locomotiveCommand = testee.getLocomotiveCommand(digitalLocomotive, 2, digitalLocomotive.getCurrentDirection(), digitalLocomotive.getCurrentFunctions(), false);
 
         assertEquals("XL 1 2 0", locomotiveCommand);
     }

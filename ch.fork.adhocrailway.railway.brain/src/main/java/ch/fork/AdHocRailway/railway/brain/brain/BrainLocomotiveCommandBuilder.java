@@ -15,12 +15,12 @@ import java.util.List;
 public class BrainLocomotiveCommandBuilder {
 
     public String getLocomotiveCommand(final Locomotive locomotive,
-                                       final int speed, final boolean[] functions, boolean withFunctions) {
-        return getLocomotiveCommand(locomotive, locomotive.getAddress1(), speed, functions, withFunctions);
+                                       final int speed, LocomotiveDirection newDirection, final boolean[] functions, boolean withFunctions) {
+        return getLocomotiveCommand(locomotive, locomotive.getAddress1(), speed, newDirection, functions, withFunctions);
     }
 
     private String getLocomotiveCommand(final Locomotive locomotive,
-                                        final int address, final int speed, final boolean[] functions, boolean withFunctions) {
+                                        final int address, final int speed, LocomotiveDirection newDirection, final boolean[] functions, boolean withFunctions) {
         if (LocomotiveType.DIGITAL == locomotive.getType() && functions == null && functions.length != 5) {
             throw new ControllerException("invalid function count of locomotive " + locomotive.getName());
         }
@@ -30,8 +30,7 @@ public class BrainLocomotiveCommandBuilder {
         stringBuilder.append(" ");
         stringBuilder.append(speed);
         stringBuilder.append(" ");
-        stringBuilder.append(locomotive.getCurrentDirection() == LocomotiveDirection.FORWARD ? "1"
-                        : "0");
+        stringBuilder.append(newDirection.code);
 
         if (withFunctions) {
             stringBuilder.append(" ");
@@ -65,16 +64,16 @@ public class BrainLocomotiveCommandBuilder {
             final boolean[] functions1 = Arrays.copyOfRange(multipartFunctions, 0, 5);
             final boolean[] functions2 = Arrays.copyOfRange(multipartFunctions, 5, 11);
             final String speedCommand1 = getLocomotiveCommand(locomotive,
-                    locomotive.getAddress1(), locomotive.getCurrentSpeed(),
+                    locomotive.getAddress1(), locomotive.getCurrentSpeed(), locomotive.getCurrentDirection(),
                     functions1, true);
             final String speedCommand2 = getLocomotiveCommand(locomotive,
-                    locomotive.getAddress2(), locomotive.getCurrentSpeed(),
+                    locomotive.getAddress2(), locomotive.getCurrentSpeed(), locomotive.getCurrentDirection(),
                     functions2, true);
 
             return Arrays.asList(speedCommand1, speedCommand2);
         } else {
             return Arrays.asList(getLocomotiveCommand(locomotive, locomotive.getAddress1(),
-                    locomotive.getCurrentSpeed(), multipartFunctions, true));
+                    locomotive.getCurrentSpeed(),  locomotive.getCurrentDirection(), multipartFunctions, true));
         }
     }
 
