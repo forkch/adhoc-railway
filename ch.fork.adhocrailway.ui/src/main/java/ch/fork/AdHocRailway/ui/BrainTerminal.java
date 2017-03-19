@@ -37,6 +37,7 @@ import de.dermoba.srcp.common.exception.SRCPWrongValueException;
 import de.dermoba.srcp.devices.listener.GMInfoListener;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -80,6 +81,10 @@ public class BrainTerminal extends ConfigurationDialog implements GMInfoListener
         brainResponses = new JTextArea(24, 80);
         brainResponses.setFocusable(false);
         brainResponses.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+
+        DefaultCaret caret = (DefaultCaret)brainResponses.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
         final JScrollPane historyScrollPane = new JScrollPane(brainResponses, VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_NEVER);
 
         final JTextField commandTextField = new JTextField();
