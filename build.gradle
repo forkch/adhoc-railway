@@ -46,14 +46,9 @@ subprojects {
     }
 
     repositories {
-
-      maven { url "https://jitpack.io" }
-
-      mavenCentral()
-        maven {
-          url '/home/fork/Code/forkch-mvn-repo'
-        }
-
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+        mavenLocal()
     }
 
     //Include compileOnly for compilation
@@ -92,6 +87,7 @@ project(':ch.fork.adhocrailway.ui') {
         compile project(':ch.fork.adhocrailway.persistence.adhocserver')
         compile project(':ch.fork.adhocrailway.railway.srcp')
         compile project(':ch.fork.adhocrailway.railway.brain')
+        compile project(':ch.fork.adhocrailway.model')
     }
 }
 

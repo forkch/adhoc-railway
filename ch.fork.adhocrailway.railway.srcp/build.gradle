@@ -2,5 +2,7 @@
 dependencies {
     testCompile 'junit:junit:4.+'
     testCompile 'org.mockito:mockito-all:1.9.5'
-    compile 'com.github.forkch:jsrcpc:develop-SNAPSHOT'
+
+//    compile 'com.github.forkch:jsrcpc:develop-SNAPSHOT'
+    compile 'de.dermoba:jsrcpc:2.6.0-SNAPSHOT'
 }

@@ -86,38 +86,38 @@ public class SRCPRouteControlAdapter extends RouteController implements
         }
     }
 
-    private SRCPRoute createSRCPRoute(
-            final SRCPTurnoutControlAdapter turnoutControl, SRCPRoute sRoute, final Route route) {
-        for (final RouteItem routeItem : route.getRoutedTurnouts()) {
-
-            final SRCPRouteItem sRouteItem = new SRCPRouteItem();
-            final SRCPTurnout sTurnout = turnoutControl
-                    .getOrCreateSRCPTurnout(routeItem.getTurnout());
-            sRouteItem.setTurnout(sTurnout);
-            switch (routeItem.getState()) {
-                case LEFT:
-                    sRouteItem.setRoutedState(SRCPRouteItemState.LEFT);
-                    break;
-                case RIGHT:
-
-                    sRouteItem.setRoutedState(SRCPRouteItemState.RIGHT);
-                    break;
-                case STRAIGHT:
-                    sRouteItem.setRoutedState(SRCPRouteItemState.STRAIGHT);
-                    break;
-                case DEFAULT:
-                    sRouteItem.setRoutedState(SRCPRouteItemState.DEFAULT);
-                    break;
-                case NON_DEFAULT:
-
-                    sRouteItem.setRoutedState(SRCPRouteItemState.NON_DEFAULT);
-                    break;
-                default:
-            }
-            sRoute.addRouteItem(sRouteItem);
-        }
-        return sRoute;
-    }
+//    private SRCPRoute createSRCPRoute(
+//            final SRCPTurnoutControlAdapter turnoutControl, SRCPRoute sRoute, final Route route) {
+//        for (final RouteItem routeItem : route.getRoutedTurnouts()) {
+//
+//            final SRCPRouteItem sRouteItem = new SRCPRouteItem();
+//            final SRCPTurnout sTurnout = turnoutControl
+//                    .getOrCreateSRCPTurnout(routeItem.getTurnout());
+//            sRouteItem.setTurnout(sTurnout);
+//            switch (routeItem.getState()) {
+//                case LEFT:
+//                    sRouteItem.setRoutedState(SRCPRouteItemState.LEFT);
+//                    break;
+//                case RIGHT:
+//
+//                    sRouteItem.setRoutedState(SRCPRouteItemState.RIGHT);
+//                    break;
+//                case STRAIGHT:
+//                    sRouteItem.setRoutedState(SRCPRouteItemState.STRAIGHT);
+//                    break;
+//                case DEFAULT:
+//                    sRouteItem.setRoutedState(SRCPRouteItemState.DEFAULT);
+//                    break;
+//                case NON_DEFAULT:
+//
+//                    sRouteItem.setRoutedState(SRCPRouteItemState.NON_DEFAULT);
+//                    break;
+//                default:
+//            }
+//            sRoute.addRouteItem(sRouteItem);
+//        }
+//        return sRoute;
+//    }
 
     @Override
     public void setRoutingDelay(final int routingDelay) {

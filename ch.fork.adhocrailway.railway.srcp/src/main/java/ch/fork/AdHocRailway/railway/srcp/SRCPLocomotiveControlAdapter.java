@@ -31,10 +31,11 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
     private static final Map<LocomotiveType, SRCPLocomotiveCreateStrategy> TYPE_TO_CREATE_STRATEGY_MAP = new HashMap<LocomotiveType, SRCPLocomotiveCreateStrategy>();
 
     static {
-        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.DELTA, new DeltaLocomotiveCreateStrategy());
-        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.DIGITAL, new DigitalLocomotiveCreateStrategy());
-        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.SIMULATED_MFX, new SimulatedMFXLocomotiveCreateStrategy());
-        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.MFX, new SimulatedMFXLocomotiveCreateStrategy());
+        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.DELTA, new SRCPLocomotiveCreateStrategy.DeltaLocomotiveCreateStrategy());
+        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.DIGITAL, new SRCPLocomotiveCreateStrategy.DigitalLocomotiveCreateStrategy());
+        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.SIMULATED_MFX, new SRCPLocomotiveCreateStrategy.SimulatedMFXLocomotiveCreateStrategy());
+        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.MFX, new SRCPLocomotiveCreateStrategy.MFXLocomotiveCreateStrategy());
+        TYPE_TO_CREATE_STRATEGY_MAP.put(LocomotiveType.DCC, new SRCPLocomotiveCreateStrategy.DCCLocomotiveCreateStrategy());
     }
 
     private final Map<Locomotive, SRCPLocomotive> locomotiveSRCPLocomotiveMap = new HashMap<Locomotive, SRCPLocomotive>();
@@ -90,7 +91,6 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
             return;
         }
         final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
-
         enqueueTask(new Runnable() {
             @Override
             public void run() {
@@ -301,6 +301,8 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
             }
             srcpLocomotive = TYPE_TO_CREATE_STRATEGY_MAP.get(type).updateSRCPLocomotive(srcpLocomotive, locomotive);
         }
+
+        LOGGER.info(srcpLocomotive);
         return srcpLocomotive;
     }
 

@@ -2,15 +2,15 @@ package ch.fork.AdHocRailway.model.locomotives;
 
 public enum LocomotiveType {
 
-    DELTA("delta", "Märklin Delta", 0, 14, 1),
+    DELTA("delta", "Märklin Delta", 0, 127, 1),
 
-    DIGITAL("digital", "Märklin Digital", 5, 14, 1),
+    DIGITAL("digital", "Märklin Digital", 5, 127, 1),
 
-    SIMULATED_MFX("simulated-mfx", "Simulated MFX (2x Märklin Digital)", 9, 14, 1),
+    SIMULATED_MFX("simulated-mfx", "Simulated MFX (2x Märklin Digital)", 9, 127, 1),
 
     MFX("mfx", "Märklin mfx", 16, 127, 1),
 
-    DCC("dcc", "DCC", 13, 27, 1);
+    DCC("dcc", "DCC", 13, 127, 1);
 
     private final int functionCount;
     private final int drivingSteps;
