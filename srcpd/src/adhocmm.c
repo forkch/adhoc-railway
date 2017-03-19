@@ -124,7 +124,7 @@ static int init_lineADHOCMM(bus_t bus) {
 	interface.c_cflag |= CSTOPB;
 	interface.c_cflag &= ~CSIZE;
 	interface.c_cflag |= CS8;
-	interface.c_cflag &= ~CRTSCTS;
+	interface.c_cflag |= CRTSCTS;
 
 	interface.c_iflag &= ~(IXON | IXOFF | IXANY);
 	interface.c_oflag &= ~OPOST;
