@@ -20,10 +20,21 @@ public class SimulatedMFXLocomotivesHelper {
                 return multipartFunctionNumber + 1;
             }
         }
-        if (functionNumber > 4) {
+
+        if (type == LocomotiveType.DIGITAL && functionNumber > 4) {
             throw new IllegalArgumentException(
-                    "function number must not be higher than 8 for NON SIMULATED_MFX locomotives");
+                    "function number must not be higher than 4 for DIGITAL locomotives");
         }
+
+        if (type == LocomotiveType.MFX && functionNumber > 16) {
+            throw new IllegalArgumentException(
+                    "function number must not be higher than 16 for MFX locomotives");
+        }
+        if (type == LocomotiveType.DCC && functionNumber > 13) {
+            throw new IllegalArgumentException(
+                    "function number must not be higher than 13 for DCC locomotives");
+        }
+
         return multipartFunctionNumber;
     }
 

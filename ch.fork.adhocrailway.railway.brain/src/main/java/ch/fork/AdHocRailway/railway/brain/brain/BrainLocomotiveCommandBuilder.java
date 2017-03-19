@@ -36,7 +36,13 @@ public class BrainLocomotiveCommandBuilder {
                 .append(locomotive.getCurrentDirection() == LocomotiveDirection.FORWARD ? "1"
                         : "0");
         stringBuilder.append(" ");
-        for (int i = 1; i <= 4; i++) {
+        int functionCount;
+        if(locomotive.getType() == LocomotiveType.SIMULATED_MFX) {
+            functionCount = 5;
+        } else {
+            functionCount = locomotive.getFunctions().size();
+        }
+        for (int i = 1; i < functionCount; i++) {
             stringBuilder.append(functions[i] ? "1" : "0");
             stringBuilder.append(" ");
         }
@@ -49,6 +55,9 @@ public class BrainLocomotiveCommandBuilder {
             throw new IllegalArgumentException("locomotive must not be null");
         }
 
+        if (functionNumber < 0) {
+            throw new IllegalArgumentException("function number must be >= 0");
+        }
         boolean[] multipartFunctions = getExpandedFunctionArray(locomotive, functionNumber, state);
 
         if (locomotive.getType().equals(LocomotiveType.SIMULATED_MFX)) {

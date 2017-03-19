@@ -1,7 +1,10 @@
 package ch.fork.AdHocRailway.railway.brain.brain;
 
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
+import ch.fork.AdHocRailway.model.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveType;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import java.io.IOException;
 
@@ -38,6 +41,11 @@ public class BrainTestSupport {
         final Locomotive locomotive = new Locomotive();
         locomotive.setType(LocomotiveType.DIGITAL);
         locomotive.setAddress1(1);
+        locomotive.setFunctions(Sets.newTreeSet(Lists.newArrayList(new LocomotiveFunction(0, "0", false, 0),
+                new LocomotiveFunction(1, "1", false, 0),
+                new LocomotiveFunction(2, "2", false, 0),
+                new LocomotiveFunction(3, "3", false, 0),
+                new LocomotiveFunction(4, "4", false, 0))));
         locomotive.setCurrentFunctions(new boolean[5]);
         return locomotive;
     }

@@ -24,6 +24,36 @@ public class SimulatedMFXLocomotivesHelperTest {
     }
 
     @Test
+    public void normal_mfx_locomotive_convert_to_multipart() {
+        // given
+        final boolean[] functions = new boolean[]{false, true, false, true,
+                false, true, false, true, false,true, false, true, false, true, false, true};
+
+        // when
+        final boolean[] convertedFunctions = SimulatedMFXLocomotivesHelper
+                .convertToMultipartFunctions(LocomotiveType.MFX, functions);
+
+        // then
+        assertArrayEquals(functions, convertedFunctions);
+
+    }
+
+    @Test
+    public void normal_dcc_locomotive_convert_to_multipart() {
+        // given
+        final boolean[] functions = new boolean[]{false, true, false, true,
+                false, true, false, true, false,true, false, true, false};
+
+        // when
+        final boolean[] convertedFunctions = SimulatedMFXLocomotivesHelper
+                .convertToMultipartFunctions(LocomotiveType.DCC, functions);
+
+        // then
+        assertArrayEquals(functions, convertedFunctions);
+
+    }
+
+    @Test
     public void normal_delta_locomotive_convert_to_multipart() {
         // given
         final boolean[] functions = new boolean[]{false};
@@ -51,6 +81,36 @@ public class SimulatedMFXLocomotivesHelperTest {
         // then
         assertArrayEquals(new boolean[]{false, true, true, true, true, false,
                 true, true, true, true}, convertedFunctions);
+
+    }
+
+    @Test
+    public void normal_mfx_locomotive_convert_from_multipart() {
+        // given
+        final boolean[] functions = new boolean[]{false, true, false, true,
+                false, true, false, true, false,true, false, true, false, true, false, true};
+
+        // when
+        final boolean[] convertedFunctions = SimulatedMFXLocomotivesHelper
+                .convertToMultipartFunctions(LocomotiveType.MFX, functions);
+
+        // then
+        assertArrayEquals(functions, convertedFunctions);
+
+    }
+
+    @Test
+    public void normal_dcc_locomotive_convert_from_multipart() {
+        // given
+        final boolean[] functions = new boolean[]{false, true, false, true,
+                false, true, false, true, false,true, false, true, false};
+
+        // when
+        final boolean[] convertedFunctions = SimulatedMFXLocomotivesHelper
+                .convertToMultipartFunctions(LocomotiveType.DCC, functions);
+
+        // then
+        assertArrayEquals(functions, convertedFunctions);
 
     }
 
