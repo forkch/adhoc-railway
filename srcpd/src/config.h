@@ -2,7 +2,7 @@
 /* src/config.h.in.  Generated from configure.in by autoheader.  */
 
 /* Activate IP V6 */
-/* #undef ENABLE_IPV6 */
+#define ENABLE_IPV6 1
 
 /* Define to 1 if you have the <dev/ppbus/ppi.h> header file. */
 /* #undef HAVE_DEV_PPBUS_PPI_H */
