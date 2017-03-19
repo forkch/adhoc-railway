@@ -156,7 +156,7 @@ public class BrainTerminal extends ConfigurationDialog implements GMInfoListener
     public void sendCommand(String command) {
 
         final RailwayDevice railwayDevive = getRailwayDevice();
-        if (ctx.getRailwayDeviceManager().isConnected() && railwayDevive != RailwayDevice.NULL_DEVICE) {
+        if (!ctx.getRailwayDeviceManager().isConnected() && railwayDevive != RailwayDevice.NULL_DEVICE) {
             throw new AdHocRailwayException("not connected");
         }
         if (RailwayDevice.SRCP == railwayDevive) {
