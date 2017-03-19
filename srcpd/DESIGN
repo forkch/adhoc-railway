@@ -1,0 +1,32 @@
+Design des srcpd -*- wip -*- ;=)
+
+Folgend stehen ein paar Splitter, warum der srcpd so ist,
+wie er ist. Irgendwann wird daraus eine nahezu komplette
+Doku ;=)
+
+Gedacht ist dieser Text auch als Gedankenstütze, um einige
+Ideen zwar aufzunehmen, aber noch nicht umzusetzen.
+
+---------------------------
+
+Berücksichtigung von LOCKS
+
+LOCKS zu beachten, ist Sache des Netzwerkcodes. Grund: Möglichst
+geringe Wechselwirkungen zwischen zwei Gerätegruppen. Außerdem
+entfällt die Notwendigkeit der Sonderbehandlung bei Notstops der
+GL. queueGL führt den Befehl einfach nur aus, egal woher und warum.
+
+
+DESCRIPTIONS
+
+Die für die Busse stehen im busses[] Array. Die für die Geräte
+werden dynamisch generiert.
+
+
+SNMP
+
+Zukünftig kann man die Betriebsparameter des srcpd auch via
+SNMP beobachten. Angedacht sind solche Zahlen wie: bytes an
+den Schnittstellen, Queuelänge(n), Anzahl Sessions etc. Eine
+MIB wird's dann natürlich auch geben. Termin? Nach Version 
+2.1

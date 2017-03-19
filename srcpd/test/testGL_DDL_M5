@@ -1,0 +1,23 @@
+#!/usr/bin/expect
+
+set BUS 2
+set ADDR 10
+
+spawn telnet localhost 4303
+expect "srcpd"
+send "SET CONNECTIONMODE SRCP COMMAND\n"
+expect "202 OK CONNECTIONMODE"
+send "GO\n"
+expect "200 OK GO"
+send "INIT $BUS GL $ADDR M 5 28 4\n"
+expect "200 OK"
+send "GET $BUS GL $ADDR\n"
+expect "100 INFO"
+send "SET $BUS GL $ADDR 0 0 128 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+expect "200 OK"
+send "GET $BUS GL $ADDR\n"
+expect "100 INFO"
+send "TERM $BUS GL $ADDR\n"
+expect "200 OK"
+send "TERM 0 SESSION\n"
+exit

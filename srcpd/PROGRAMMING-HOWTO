@@ -1,0 +1,187 @@
+-*- text -*-
+
+Programming of modules for the srcpd
+
+Last update: 2005-10-29
+
+0. Overview
+
+All modules can be used multiple and in parallel. 
+
+All modules are included at compile time. An option to select them
+(e.g. via configure) is not available at this time.
+
+All configuration is done with the srcpd configuration file
+»srcpd.conf«. The XML based format needs some discipline, e.g. with
+respect to spaces within bus names (developer task) and file/device
+names (user task).
+
+1. Start up
+
+During start up _the_ configuration file (compile time build in name
+or configurable with the -f option) is read. In the file config-srcpd.c
+the function register_bus() calls the hard coded functions from the
+respective buses with their DOM sub tree and their effective bus number.
+
+This parsing routine must initialize all data fields of the respecive
+global buses array entry and analyse the XML DOM sub tree. The routine 
+should also provide useful default values.
+
+The framework expects the following call back function pointers to be
+set:
+
+- init_bus: called as "SRCP INIT <bus>"
+- term_bus: called as "SRCP TERM <bus>"
+- send_rec: called as separate thread. That thread works as endless
+  loop to communicate with the real hardware (if any).
+- string DESCRIPTION with all supported device groups.
+
+In addition all specific data such as device names etc. must be
+available.
+
+2. init_bus
+
+This function is called _before_ the (send_rec)() thread starts. It
+opens the hardware communication line, if neccessary.
+
+3. term_bus
+
+This function is called _after_ canceling the (send_rec)() thread to
+cleanup. It closes a used communication line.
+
+4. send_rec
+
+This funtion runs an endless loop to process the device queries to
+communicate with hardware and read back information. The function gets
+a single parameter: the bus number. The return type should be void*, it
+will be ignored by now.
+
+Example:
+void* thr_sendrec_LOOPBACK (void *v)
+{
+  bus_t bus = (bus_t) v;
+  ...
+}
+
+This thread can be supervised by a watchdog to detect blocks. In this
+case the thread is canceled and restarted. Note that the init_bus/term_bus
+functions are _not_ called.
+
+5. Watchdog
+
+Not every module may need it. If active, the master process checks the
+variable watchdog in the »buses«-array and sets it to 0 (zero). If the
+value found _is_ already 0 (zero) the rend_rec thread is restarted. A
+syslog message is generated.
+
+The send_rec thread has to set this watchdog variable constantly to
+a value greater than 0.
+
+6. Debugging
+
+Debugging within the srcpd may be tricky due the potentially many
+threads and the lack of a console. To assist _please_ do not use
+even temporarily such constructs. Use the function DBG() instead.
+
+This function provides the following user selectable verbosity levels
+
+#define DGB_NONE 0
+#define DBG_FATAL 1
+#define DBG_ERROR 2
+#define DBG_WARN 3
+#define DBG_INFO 4
+#define DBG_DEBUG 5
+
+A value greater than 5 can be used to disable communication with the
+hardware.
+
+7. Sample code
+
+The module loopback (loopback.[hc]) can be used as a starting point
+(template) to develop a new module.
+
+8. Queues
+
+Every device group provides it's own queue for every bus. These
+queues are filled from the srcp network code. The queues are simple
+first-in-first-out queues.
+
+if(!queue_GA_isempty(bus)) {
+    unqueueNextGA(&ga);
+    process_single_ga(ga);
+    setGA(ga)
+}
+
+The function unqueueNext<devicegroup>() unqueues the next command.
+
+The function getNext<devicegroup> can be used to read the next command
+without removing it from the queue.
+
+The function set<devicegroup> updates the internal data and and sends
+the updated information to all INFORMATION sessions.
+
+9. Naming Convention
+
+9.0 code style
+
+The code is formatted using the indent tool. Its settings
+should read as follows
+
+ -kr -br -nce -nut -cbi4 -cli4
+
+
+9.1 Function Names
+
+The thread functions have names prefixed with thr_. Functions related to
+SRCP have the command name and the device group in their names (GA,
+TERM). Functions used internally by a module have to be declared
+»static«. Exported functions (those in the header file) have to contain
+the module name in uppercase (e.g. readconfig_LOOPBACK for the loopback
+module).
+
+9.2 Bus parameter
+
+All functions are called with the current bus number. Any remaining
+data can be found in the array »buses«.
+
+9.3 buses-Array
+
+The array »buses« contains all configuration and working data for the
+configured buses. It is currently declared as a static array with 20
+entries (0..19).
+
+The data structure reflects the XML configuration structure. Commonly
+used data such as pointers to functions, watchdog, description string
+etc. and the bus type are provided. Module specific data (such as
+data from the XML sub tree) is provided as the (void*) pointer
+»driverdata«. This pointer _can_ be NULL.
+
+10. SRCP Hacking
+
+Any changes to the SRCP MUST be covered by the SRCP specification. No
+extensions are allowed.
+
+11. Other Operating Systems
+
+Currently the srcpd is very Linux specific, but the most modules can
+also be used on other UNIX like systems (FreeBSD and Cygwin are known
+to work). 
+
+Operating systems which are very different from UNIX can be supported,
+but this will need the respective developer(s).
+
+12. Use of CVS
+
+Every one is permitted to read (updates of the public cvs server may
+have a delay of some hours!). The instructions about how to access can
+be found at http://sourceforge.net/projects/srcpd, topic »CVS«.
+
+After CVS checkout the first to do is a 
+
+ autoreconf -i
+
+After that the usual ./configure && make && make install should do
+the work.
+
+Who wants to get write access (and immediate read without the delay)
+should contact the project admins. 
