@@ -32,6 +32,7 @@ public class BrainController {
         final BrainController instance2 = BrainController.getInstance();
 
         List<String> availableSerialPortsAsString = instance2.getAvailableSerialPortsAsString();
+        System.out.println(availableSerialPortsAsString);
         instance2.connect(availableSerialPortsAsString.get(0));
         System.in.read();
         instance2.write("XSTOP");
@@ -42,14 +43,14 @@ public class BrainController {
     }
 
     public void connect(final String portName) {
-            serialPort = new SerialPort(portName);
+        serialPort = new SerialPort(portName);
         try {
             serialPort.openPort();//Open serial port
-        serialPort.setParams(230400,
+            serialPort.setParams(230400,
                     SerialPort.DATABITS_8,
                     SerialPort.STOPBITS_1,
                     SerialPort.PARITY_NONE);
-
+            serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN|SerialPort.FLOWCONTROL_RTSCTS_OUT);
 
             serialPort.addEventListener(new SerialReader());
             connected = true;
@@ -121,17 +122,17 @@ public class BrainController {
         @Override
         public void serialEvent(SerialPortEvent serialPortEvent) {
             int data;
-            if(serialPortEvent.isRXCHAR()){//If data is available
+            if (serialPortEvent.isRXCHAR()) {//If data is available
                 int bytesToRead = serialPortEvent.getEventValue();
-                if(bytesToRead > 0){//Check bytes count in the input buffer
+                if (bytesToRead > 0) {//Check bytes count in the input buffer
                     try {
                         byte buffer[] = serialPort.readBytes(serialPortEvent.getEventValue());
 
                         receivedString.append(new String(buffer, "US-ASCII"));
 
-                        if (buffer[buffer.length-1] == 0x0d) {
+                        if (buffer[buffer.length - 1] == 0x0d) {
 
-                            final String completeString =receivedString.toString();
+                            final String completeString = receivedString.toString();
                             receivedString = new StringBuilder();
 
                             for (final BrainListener listener : listeners) {
@@ -140,8 +141,7 @@ public class BrainController {
                             LOGGER.debug(completeString);
                         }
 
-                    }
-                    catch (SerialPortException ex) {
+                    } catch (SerialPortException ex) {
                         LOGGER.error("error receiving data from serialport", ex);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
