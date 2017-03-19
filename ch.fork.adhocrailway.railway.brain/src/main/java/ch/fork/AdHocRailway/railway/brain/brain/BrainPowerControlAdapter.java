@@ -96,24 +96,32 @@ public class BrainPowerControlAdapter extends PowerController implements
 
     @Override
     public void receivedMessage(final String receivedMessage) {
-        LOGGER.info("received power message from brain: " + receivedMessage);
-
         final String receivedStringXBS = StringUtils.substring(receivedMessage,
                 StringUtils.indexOf(receivedMessage, "XBS"));
         if (!StringUtils.startsWithIgnoreCase(receivedStringXBS, "XBS")) {
             return;
         }
+        LOGGER.info("received power message from brain: " + receivedMessage);
         final Scanner scanner = new Scanner(receivedStringXBS);
         scanner.useDelimiter(" ");
         final String xbs = scanner.next();
         if (!StringUtils.equalsIgnoreCase("XBS", xbs)) {
             scanner.close();
+            LOGGER.warn("received an invalid XBS command from the brain: " + receivedMessage);
             return;
         }
 
         final PowerSupply supply = supplies.get(1);
+        if(!scanner.hasNext()) {
+            LOGGER.warn("received an invalid XBS command from the brain: " + receivedMessage);
+            return;
+        }
 
         for (int i = 0; i < 8; i++) {
+            if(!scanner.hasNext()) {
+                LOGGER.warn("received an invalid XBS command from the brain: " + receivedMessage);
+                return;
+            }
             final String boosterState = scanner.next();
             if (StringUtils.equalsIgnoreCase("A", boosterState)) {
                 supply.getBooster(i).setState(BoosterState.ACTIVE);

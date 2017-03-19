@@ -50,7 +50,7 @@ public class BrainController {
                     SerialPort.DATABITS_8,
                     SerialPort.STOPBITS_1,
                     SerialPort.PARITY_NONE);
-            serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN|SerialPort.FLOWCONTROL_RTSCTS_OUT);
+            serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 
             serialPort.addEventListener(new SerialReader());
             connected = true;
@@ -135,10 +135,15 @@ public class BrainController {
                             final String completeString = receivedString.toString();
                             receivedString = new StringBuilder();
 
-                            for (final BrainListener listener : listeners) {
-                                listener.receivedMessage(completeString);
+                            String[] completeStringLines = completeString.split("\\r?\\n");
+                            for (String completeStringLine : completeStringLines) {
+
+                                for (final BrainListener listener : listeners) {
+                                    listener.receivedMessage(completeStringLine.trim());
+                                }
                             }
                             LOGGER.debug(completeString);
+
                         }
 
                     } catch (SerialPortException ex) {
