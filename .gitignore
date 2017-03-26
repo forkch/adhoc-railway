@@ -9,3 +9,8 @@ logs
 *.swp
 
 *.iml
+srcpd/debian/
+
+srcpd/cmake-build-debug/
+
+srcpd/CMakeLists\.txt
