@@ -1,0 +1,1014 @@
+/*
+ * main.c
+ *
+ *  Created on: 2012
+ *      Author: fork
+ *
+ *  Multiprotcol-Version (MM/MM2/MFX/DCC)
+ *    Added on: 06.06.2016
+ *      Author: m2
+ *
+ */
+
+#include "main.h"
+#include "booster.h"
+#include "pwm.h"
+#include "spi.h"
+#include "debug.h"
+#include "uart_interrupt.h"
+#include "fifo.h"
+#include "ib_parser.h"
+
+//Logging ist grundsätzlich ausgeschaltet
+//unsigned char logLevel = LOG_OFF;
+unsigned char logLevel = LOG_DEBUG;
+
+int solenoidQueueIdxEnter;
+int booster_report_counter = 0;
+unsigned char cmdAvail = 0;
+
+//State pointer
+void (*stateMain)() = idleSolenoidDoLoco;
+void (*stateLoco)() = refreshMM2Loco;
+
+int main() {
+
+	init();
+
+#ifdef DEBUG_IOS
+	debug_init();
+#endif
+
+	// start UART (USB-Schnittstelle)
+	uart_init();
+
+	PRR1 |= (1 << PRTIM3);
+
+
+	// serial Input/Output Booster-Steuerung / -Anzeige (GO, SHORT, LED-STATUS)
+	SPI_MasterInitOutput();
+	SPI_MasterTransmitDebug(0x00);
+
+	// Enable Interrupts
+	sei();
+
+
+	init_boosters();
+
+	cli();
+
+	initLocoData();
+	initPortData();
+
+	//Initialize PWM Channel 1
+	initPWM();
+
+	//Loco FREQUENCY
+	pwm_mode[0] = MODE_MM2_LOCO;
+	pwm_mode[1] = MODE_MM2_LOCO;
+
+	//PWM
+	OCR1AH = (uint8_t) (MM2_LOCO_TOP >> 8);
+	OCR1AL = (uint8_t) MM2_LOCO_TOP;
+
+	setPWMWait();
+
+	TIMSK1 |= (1 << OCIE1B);
+	TCCR1A |= (1 << COM1B1); // ACTIVATE PWM
+
+
+	//init Timer0
+	TIMSK0 |= (1 << TOIE0); // interrupt enable - here overflow
+	TCCR0B |= TIMER0_PRESCALER; // use defined prescaler value
+
+	sei();
+
+	replys("XRS\r");  //bm?
+
+
+	//Do this forever
+	while (1) {
+
+
+//		go_booster(3);
+
+
+		//log_debug("Hello world!");
+		cmdAvail = checkForNewCommand();
+
+		if (cmdAvail == 1) {
+			processASCIIData(receivedCmdString);
+		}
+
+//		if (timer0_interrupt > 5) {
+//			booster_report_counter++;
+//			if (booster_report_counter > 50) {
+//				report_boosterstate();
+//				booster_report_counter = 0;
+//			}
+//		}
+
+
+
+/*
+		if (prepareNextData == 1) {
+			prepareDataForPWM();
+		}
+*/
+
+		//check shorts
+		check_shorts();
+
+	}
+	cli();
+	return 0;
+}
+
+
+
+
+void processASCIIData() {
+
+#ifdef LOGGING
+	log_debug("Command received");
+	log_debug(receivedCmdString);
+#endif
+
+	uint8_t ret = parse_ib_cmd(receivedCmdString);
+
+	if (!ret) {
+#ifdef LOGGING
+		log_error("Command not recognized\n");
+#endif
+		return;
+	}
+}
+
+
+void prepareDataForPWM() {
+
+	// Index der commandQueue auf das "leere" Array ändern
+	prepareQueueIdx = (pwmQueueIdx + 1) % 2;
+
+	// Aufruf State-Machine (bis die Daten vorbereitet sind)
+	while (prepareNextData)
+		(*stateMain)();
+
+}
+
+//===========================
+// Interrupt Service Routines
+//===========================
+
+// Timer0 overflow interrupt handler (13ms 20MHz / Timer0Prescaler 1024)
+ISR( TIMER0_OVF_vect) {
+	timer0_interrupt++;
+}
+
+// PWM
+ISR( TIMER1_COMPB_vect) {
+
+	if (prepareNextData == 1 && pwmOutputIdx == 0) {
+		setPWMWait();
+		return;
+	}
+
+	if (pwmOutputIdx == 0) {
+		pwmQueueIdx = (pwmQueueIdx + 1) % 2;
+		prepareNextData = 1;
+
+		switch (pwm_mode[pwmQueueIdx]) {
+		case MODE_MM2_SOLENOID:
+			OCR1AH = (uint8_t) (MM2_SOLENOID_TOP >> 8);
+			OCR1AL = (uint8_t) (MM2_SOLENOID_TOP);
+			break;
+		case MODE_MM2_LOCO:
+			OCR1AH = (uint8_t) (MM2_LOCO_TOP >> 8);
+			OCR1AL = (uint8_t) (MM2_LOCO_TOP);
+			break;
+		// weil die Perioden-Dauer des PWM-Signals bei MFX & DCC variert, geschieht hier nix
+//		case MODE_MFX:
+//		case MODE_DCC:
+		}
+		pwmOutputCmdLength = pwmCmdLength[pwmQueueIdx];
+	}
+
+	unsigned char b = pwmCmdQueue[pwmQueueIdx][pwmOutputIdx];
+
+	switch  (pwm_mode[pwmQueueIdx]) {
+	case MODE_MM2_SOLENOID:
+		switch (b) {
+		case 0: setMM2Solenoid0(); break;
+		case 1: setMM2Solenoid1(); break;
+		case 9: setPWMWait(); break;
+		}
+		break;
+	case MODE_MM2_LOCO:
+		switch (b) {
+		case 0: setMM2Loco0(); break;
+		case 1: setMM2Loco1(); break;
+		case 9: setPWMWait(); break;
+		}
+		break;
+	case MODE_MFX:
+		switch (b) {
+		case 1:
+			MFX_TOP = 2 * MFX_BASE;
+			OCR1AH = (uint8_t) (MFX_TOP >> 8);
+			OCR1AL = (uint8_t) (MFX_TOP);
+			setMFX1();
+			break;
+		case 2:
+			MFX_TOP = 3 * MFX_BASE;
+			OCR1AH = (uint8_t) (MFX_TOP >> 8);
+			OCR1AL = (uint8_t) (MFX_TOP);
+			setMFX2();
+			break;
+		case 3:
+			MFX_TOP = 3 * MFX_BASE;
+			OCR1AH = (uint8_t) (MFX_TOP >> 8);
+			OCR1AL = (uint8_t) (MFX_TOP);
+			setMFX3();
+			break;
+		case 4:
+			MFX_TOP = 4 * MFX_BASE;
+			OCR1AH = (uint8_t) (MFX_TOP >> 8);
+			OCR1AL = (uint8_t) (MFX_TOP);
+			setMFX4();
+			break;
+		case 9: setPWMWait(); break;
+		}
+		break;
+	case MODE_DCC:
+		switch (b) {
+		case 0:
+			DCC_TOP = 4  * DCC_BASE;
+			OCR1AH = (uint8_t) (MFX_TOP >> 8);
+			OCR1AL = (uint8_t) (MFX_TOP);
+			setMFX1();
+			break;
+		case 1:
+			DCC_TOP = 2 * DCC_BASE;
+			OCR1AH = (uint8_t) (MFX_TOP >> 8);
+			OCR1AL = (uint8_t) (MFX_TOP);
+			setMFX2();
+			break;
+		case 9: setPWMWait(); break;
+		}
+		break;
+	}
+	pwmOutputIdx = (pwmOutputIdx + 1) % pwmOutputCmdLength;
+}
+
+
+
+
+void enqueue_solenoid() {
+	solenoidQueueIdxEnter++;
+	solenoidQueueIdxEnter = solenoidQueueIdxEnter % MAX_SOLENOID_QUEUE;
+}
+
+void enqueue_loco_hiprio(unsigned char protocol, uint8_t bufferIdx, uint8_t encCmdIdx) {
+	newLocoCmdHiPrio[newLocoCmdHiPrioIdxEnter].protocol = protocol;
+	newLocoCmdHiPrio[newLocoCmdHiPrioIdxEnter].bufferIdx = bufferIdx;
+	newLocoCmdHiPrio[newLocoCmdHiPrioIdxEnter].encCmdIdx = encCmdIdx;
+	newLocoCmdHiPrioIdxEnter++;
+	newLocoCmdHiPrioIdxEnter = newLocoCmdHiPrioIdxEnter % MAX_NEW_LOCO_QUEUES;
+}
+
+void enqueue_loco_loprio(unsigned char protocol, uint8_t bufferIdx, uint8_t encCmdIdx) {
+	newLocoCmdLoPrio[newLocoCmdLoPrioIdxEnter].protocol = protocol;
+	newLocoCmdLoPrio[newLocoCmdLoPrioIdxEnter].bufferIdx = bufferIdx;
+	newLocoCmdLoPrio[newLocoCmdLoPrioIdxEnter].encCmdIdx = encCmdIdx;
+	newLocoCmdLoPrioIdxEnter++;
+	newLocoCmdLoPrioIdxEnter = newLocoCmdLoPrioIdxEnter % MAX_NEW_LOCO_QUEUES;
+}
+
+uint8_t solenoidQueueEmpty() {
+	return solenoidQueueIdxEnter == solenoidQueueIdxFront;
+}
+
+void solenoidQueuePop() {
+	solenoidQueueIdxFront++;
+	solenoidQueueIdxFront = solenoidQueueIdxFront % MAX_SOLENOID_QUEUE;
+
+}
+
+uint8_t newLocoHiPrioQueueEmpty() {
+	return newLocoCmdHiPrioIdxEnter == newLocoCmdHiPrioIdxFront;
+}
+
+uint8_t newLocoLoPrioQueueEmpty() {
+	return newLocoCmdLoPrioIdxEnter == newLocoCmdLoPrioIdxFront;
+}
+
+void newLocoHiPrioQueuePop() {
+	newLocoCmdHiPrioIdxFront++;
+	newLocoCmdHiPrioIdxFront = newLocoCmdHiPrioIdxFront % MAX_NEW_LOCO_QUEUES;
+}
+
+void newLocoLoPrioQueuePop() {
+	newLocoCmdLoPrioIdxFront++;
+	newLocoCmdLoPrioIdxFront = newLocoCmdLoPrioIdxFront % MAX_NEW_LOCO_QUEUES;
+}
+
+/******* INIT DATA *********/
+inline void init() {
+
+	actualData = 0;
+
+	timer0_interrupt = 0;
+
+	solenoidQueueIdxEnter = 0; 		// new Solenoid inserted
+	solenoidQueueIdxFront = 0; 		// Solenoid to activate
+
+
+
+	pwmQueueIdx = 0;
+	pwmOutputIdx = 0;
+	pwmOutputCmdLength = 0;
+	prepareNextData = 1;
+
+//	mmChangeDirection = 192;			//im alten Märklin-Format wird Geschwindigkeit 1 als Richtungswechsel interpretiert. Als Trit codiert 1 -> 192
+
+
+	//INIT MM2-Buffer mit Dummy-Idle-Lok
+	//----------------------------------
+	uint16_t number = 80;
+	uint8_t trit1 = 0;
+	uint8_t trit2 = 0;
+	uint8_t trit3 = 0;
+	uint8_t trit4 = 0;
+	locoProtocolIdx[0].address = number;
+
+	locoDataMM[0].address = number;
+	locoDataMM[0].speed = 0;
+	locoDataMM[0].direction = 0;
+	locoDataMM[0].fn = 0;
+	locoDataMM[0].f1 = 0;
+	locoDataMM[0].f2 = 0;
+	locoDataMM[0].f3 = 0;
+	locoDataMM[0].f4 = 0;
+
+	// 4-Trits Lokadresse berechnen
+	// Low = 0 (0x00), High = 1 (0x01), Open = 2 (0x10)
+	trit1 = number  % 3;
+	trit2 = (number / 3) % 3;
+	trit3 = (number / 9) % 3;
+	trit4 = (number / 27) % 3;
+
+	// Motorola High-Trit Korrektur (für Adressen-Berechnung)
+	// High = 3 (0x11)
+	if (trit1 == 1)
+		trit1 = 3;
+	if (trit2 == 1)
+		trit2 = 3;
+	if (trit3 == 1)
+		trit3 = 3;
+	if (trit4 == 1)
+		trit4 = 3;
+
+	unsigned char address = ((64 * trit1) + (16 * trit2) + (4 * trit3) + trit4);
+
+	//Adresse
+	for (uint8_t k = 0; k < 10; k++)
+		locoDataMM[0].encCmdAdrFn[k] = (address >> (9 - k)) & 1;
+
+	//Fn
+	locoDataMM[0].encCmdAdrFn[8] = 0;
+	locoDataMM[0].encCmdAdrFn[9] = 0;
+
+	//Data Idle-State
+	locoDataMM[0].encCmdData[0][0] = 1;
+	locoDataMM[0].encCmdData[0][1] = 0;
+	locoDataMM[0].encCmdData[0][2] = 1;
+	locoDataMM[0].encCmdData[0][3] = 0;
+	locoDataMM[0].encCmdData[0][4] = 1;
+	locoDataMM[0].encCmdData[0][5] = 0;
+	locoDataMM[0].encCmdData[0][6] = 1;
+	locoDataMM[0].encCmdData[0][7] = 0;
+
+
+	//encF1 bis encF4 enthalten gleiche Daten wie encSpeedFn
+	for (uint8_t k = 0; k < 8; k++){
+		locoDataMM[0].encCmdData[1][k] = locoDataMM[0].encCmdData[2][k] = locoDataMM[0].encCmdData[3][k] = locoDataMM[0].encCmdData[4][k] = locoDataMM[0].encCmdData[0][k];
+	}
+	mm2IdleModeActive = 1;
+
+	mfxSIDCommandToExecute = 0;
+
+}
+
+void initPortData() {
+
+	// MM Lookup-Table Solenoid Decoder Port Adresses
+	// ----------------------------------------------
+	portData[0] = 0;
+	portData[1] = 48;
+	portData[2] = 12;
+	portData[3] = 60;
+	portData[4] = 3;
+	portData[5] = 51;
+	portData[6] = 15;
+	portData[7] = 63;
+
+}
+
+void initLocoData() {
+
+	// MM Lookup-Table Speed
+	// ---------------------
+	mmSpeedData[0] = 0; 		// STOP
+	//			 = 192;			//	  / old Protocol-Format: 01 => Reverse
+	mmChangeDirection = 192;	//im alten Märklin-Format wird Geschwindigkeit 1 als Richtungswechsel interpretiert. Als Trit codiert 1 -> 192
+	mmSpeedData[1] = 48; 		// 1  / old Protocol-Format: 02 => Fahrstufe 1
+	mmSpeedData[2] = 240; 		// 2  / old Protocol-Format: 03 => Fahrstufe 2
+	mmSpeedData[3] = 12;		// 3  / old Protocol-Format: 04 => Fahrstufe 3
+	mmSpeedData[4] = 204;		// ....
+	mmSpeedData[5] = 60;
+	mmSpeedData[6] = 252;
+	mmSpeedData[7] = 3;
+	mmSpeedData[8] = 195;
+	mmSpeedData[9] = 51;
+	mmSpeedData[10] = 243;
+	mmSpeedData[11] = 15;
+	mmSpeedData[12] = 207;		// ...
+	mmSpeedData[13] = 63;		// 13  / old Protocol-Format:  14 => Fahrstufe 13
+	mmSpeedData[14] = 255; 		// 14  / old Protocol-Format:  15 => Fahrstufe 14
+	mmSpeedData[15] = 1; //DEBUG //bm?
+
+
+	// DCC Lookup-Table 28 Step Speed Configuration
+	// --------------------------------------------
+	dccSpeed28Data[0] = 0;
+	dccSpeed28Data[1] = 2;
+	dccSpeed28Data[2] = 18;
+	dccSpeed28Data[3] = 3;
+	dccSpeed28Data[4] = 19;
+	dccSpeed28Data[5] = 4;
+	dccSpeed28Data[6] = 20;
+	dccSpeed28Data[7] = 5;
+	dccSpeed28Data[8] = 21;
+	dccSpeed28Data[9] = 6;
+	dccSpeed28Data[10] = 22;
+	dccSpeed28Data[11] = 7;
+	dccSpeed28Data[12] = 23;
+	dccSpeed28Data[13] = 8;
+	dccSpeed28Data[14] = 24;
+	dccSpeed28Data[15] = 9;
+	dccSpeed28Data[16] = 25;
+	dccSpeed28Data[17] = 10;
+	dccSpeed28Data[18] = 26;
+	dccSpeed28Data[19] = 11;
+	dccSpeed28Data[20] = 27;
+	dccSpeed28Data[21] = 12;
+	dccSpeed28Data[22] = 28;
+	dccSpeed28Data[23] = 13;
+	dccSpeed28Data[24] = 29;
+	dccSpeed28Data[25] = 14;
+	dccSpeed28Data[26] = 30;
+	dccSpeed28Data[27] = 15;
+	dccSpeed28Data[28] = 31;
+
+}
+
+
+//===================
+//States Main-Machine
+//===================
+void idleSolenoidDoLoco() {
+	if (!solenoidQueueEmpty()) {
+		stateMain = activateSolenoid;
+	} else {
+		(*stateLoco)();
+	}
+}
+
+void activateSolenoid() {
+	prepareSolenoidPacket(1);
+	stateMain = waitSolenoidAfterActivation;
+	timer0_interrupt = 0;
+}
+
+void waitSolenoidAfterActivation() {
+	if (timer0_interrupt > SOLENOID_WAIT_TIMERCYCLES) {  // timer0_interupt wird alle 13ms hochgezählt
+		stateMain = deactivateSolenoid;
+	} else {
+		(*stateLoco)();
+	}
+}
+
+void deactivateSolenoid() {
+	prepareSolenoidPacket(0);
+	solenoidQueuePop();
+	stateMain = waitSolenoidAfterDeactivation;
+	timer0_interrupt = 0;
+}
+
+void waitSolenoidAfterDeactivation() {
+	if (timer0_interrupt > SOLENOID_WAIT_TIMERCYCLES) {  // timer0_interupt wird alle 13ms hochgezählt
+		stateMain = idleSolenoidDoLoco;
+	} else {
+		(*stateLoco)();
+	}
+}
+
+//===================
+//States Loco-Machine
+//===================
+void refreshMM2Loco() {
+	if (!newLocoHiPrioQueueEmpty()) {
+		newLocoHiPrioQueue = 1;
+		switch (newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].protocol) {
+		case (MM || MM2):
+			stateLoco = newMM2sendMM2;
+			break;
+		case MFX:
+			stateLoco = newMFXsendMFX;
+			break;
+		case DCC:
+			stateLoco = newDCCsendMFX;
+			break;
+		}
+	} else if (mfxSIDCommandToExecute == 1) {
+		mfxSIDRepetitionCmdCounter = 0;
+		stateLoco = newMFXSIDsendMFX;
+	} else if (!newLocoLoPrioQueueEmpty()) {
+		newLocoHiPrioQueue = 0;
+		switch (newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].protocol) {
+		case (MM || MM2):
+			stateLoco = newMM2sendMM2;
+			break;
+		case MFX:
+			stateLoco = newMFXsendMFX;
+			break;
+		case DCC:
+			stateLoco = newDCCsendMFX;
+			break;
+		}
+	} else {
+		mmLocoCmdCounter++;
+		if (mmLocoCmdCounter >= REFRESH_MAXNUMBER_MM_CMD) {
+			mmLocoCmdCounter = 0;
+			stateLoco = refreshMFXLoco;
+		}
+		prepareRefreshLocoPacket(MM2);
+	}
+}
+
+void refreshMFXLoco() {
+	if (!newLocoHiPrioQueueEmpty()) {
+		newLocoHiPrioQueue = 1;
+		switch (newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].protocol) {
+		case (MM || MM2):
+			stateLoco = newMM2sendDCC;
+			break;
+		case MFX:
+			stateLoco = newMFXsendMFX;
+			break;
+		case DCC:
+			stateLoco = newDCCsendDCC;
+			break;
+		}
+	} else if (!newLocoLoPrioQueueEmpty()) {
+		newLocoHiPrioQueue = 0;
+		switch (newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].protocol) {
+		case (MM || MM2):
+			stateLoco = newMM2sendDCC;
+			break;
+		case MFX:
+			stateLoco = newMFXsendMFX;
+			break;
+		case DCC:
+			stateLoco = newDCCsendDCC;
+			break;
+		}
+	} else {
+		mfxLocoCmdCounter++;
+		if (mfxLocoCmdCounter >= REFRESH_MAXNUMBER_MFX_CMD) {
+			mfxLocoCmdCounter = 0;
+			stateLoco = refreshDCCLoco;
+			transitionToDCC = 1;
+		}
+		prepareRefreshLocoPacket(MFX);
+	}
+}
+
+void refreshDCCLoco() {
+	if (!newLocoHiPrioQueueEmpty()) {
+		newLocoHiPrioQueue = 1;
+		switch (newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].protocol) {
+		case (MM || MM2):
+			stateLoco = newMM2sendMM2;
+			break;
+		case MFX:
+			stateLoco = newMFXsendMM2;
+			break;
+		case DCC:
+			stateLoco = newDCCsendDCC;
+			break;
+		}
+	} else if (!newLocoLoPrioQueueEmpty()) {
+		newLocoHiPrioQueue = 0;
+		switch (newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].protocol) {
+		case (MM || MM2):
+			stateLoco = newMM2sendMM2;
+			break;
+		case MFX:
+			stateLoco = newMFXsendMFX;
+			break;
+		case DCC:
+			stateLoco = newDCCsendDCC;
+			break;
+		}
+	} else {
+		transitionToDCC = 1;		// bewirkt, dass zwischen 2 DCC-Befehlen keine Pause ist
+		dccLocoCmdCounter++;
+		if (dccLocoCmdCounter >= REFRESH_MAXNUMBER_DCC_CMD) {
+			dccLocoCmdCounter = 0;
+			stateLoco = refreshMM2Loco;
+			transitionToDCC = 0;
+		}
+		prepareRefreshLocoPacket(DCC);
+	}
+}
+
+void newMM2sendMM2() {
+
+	mmLocoCmdCounter++;
+	mmLocoRepetitionCmdCounter++;
+	if (mmLocoRepetitionCmdCounter < NEW_MM_LOCOCMD_REPETITIONS && mmLocoCmdCounter >= REFRESH_MAXNUMBER_MM_CMD) {
+		mmLocoCmdCounter = 0;
+		stateLoco = newMM2sendMFX;
+	} else if (mmLocoRepetitionCmdCounter >= NEW_MM_LOCOCMD_REPETITIONS) {
+		if (mmLocoCmdCounter < REFRESH_MAXNUMBER_MM_CMD) {
+			stateLoco = refreshMM2Loco;
+		} else {
+			mmLocoCmdCounter = 0;
+			stateLoco = refreshMFXLoco;
+		}
+	}
+
+	if (newLocoHiPrioQueue)
+		prepareNewLocoPacket(MM2, newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].bufferIdx, newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].encCmdIdx);
+	else
+		prepareNewLocoPacket(MM2, newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].bufferIdx, newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].encCmdIdx);
+
+	if (mmLocoRepetitionCmdCounter >= NEW_MM_LOCOCMD_REPETITIONS) {
+		mmLocoRepetitionCmdCounter = 0;
+		if (newLocoHiPrioQueue)
+			newLocoHiPrioQueuePop();
+		else
+			newLocoLoPrioQueuePop();
+	}
+
+}
+
+void newMM2sendMFX() {
+	prepareRefreshLocoPacket(MFX);
+	stateLoco = newMM2sendDCC;
+}
+
+void newMM2sendDCC() {
+	prepareRefreshLocoPacket(DCC);
+	stateLoco = newMM2sendMM2;
+}
+
+void newMFXsendMM2() {
+	prepareRefreshLocoPacket(MM2);
+	stateLoco = newMFXsendMFX;
+}
+
+void newMFXsendMFX() {
+
+	mfxLocoCmdCounter++;
+	mfxLocoRepetitionCmdCounter++;
+	if (mfxLocoRepetitionCmdCounter < NEW_MFX_LOCOCMD_REPETITIONS && mfxLocoCmdCounter >= REFRESH_MAXNUMBER_MFX_CMD) {
+		mfxLocoCmdCounter = 0;
+		stateLoco = newMFXsendDCC;
+		transitionToDCC = 1;
+	} else if (mfxLocoRepetitionCmdCounter >= NEW_MFX_LOCOCMD_REPETITIONS) {
+		if (mfxLocoCmdCounter < REFRESH_MAXNUMBER_MFX_CMD) {
+			stateLoco = refreshMFXLoco;
+		} else {
+			mfxLocoCmdCounter = 0;
+			stateLoco = refreshDCCLoco;
+			transitionToDCC = 1;
+		}
+	}
+
+	if (newLocoHiPrioQueue)
+		prepareNewLocoPacket(MFX, newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].bufferIdx, newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].encCmdIdx);
+	else
+		prepareNewLocoPacket(MFX, newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].bufferIdx, newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].encCmdIdx);
+
+	if (mfxLocoRepetitionCmdCounter >= NEW_MFX_LOCOCMD_REPETITIONS) {
+			mfxLocoRepetitionCmdCounter = 0;
+			if (newLocoHiPrioQueue)
+				newLocoHiPrioQueuePop();
+			else
+				newLocoLoPrioQueuePop();
+	}
+}
+
+void newMFXsendDCC() {
+	prepareRefreshLocoPacket(DCC);
+	stateLoco = newMFXsendMM2;
+}
+
+void newDCCsendMM2() {
+	prepareRefreshLocoPacket(MM2);
+	stateLoco = newDCCsendMFX;
+}
+
+void newDCCsendMFX() {
+	prepareRefreshLocoPacket(MFX);
+	stateLoco = newDCCsendDCC;
+}
+
+void newDCCsendDCC() {
+
+	dccLocoCmdCounter++;
+	dccLocoRepetitionCmdCounter++;
+	transitionToDCC = 1;
+	if (dccLocoRepetitionCmdCounter < NEW_DCC_LOCOCMD_REPETITIONS && dccLocoCmdCounter >= REFRESH_MAXNUMBER_DCC_CMD) {
+		dccLocoCmdCounter = 0;
+		stateLoco = newDCCsendMM2;
+		transitionToDCC = 0;
+	} else if (dccLocoRepetitionCmdCounter >= NEW_DCC_LOCOCMD_REPETITIONS) {
+		if (dccLocoCmdCounter < REFRESH_MAXNUMBER_DCC_CMD) {
+			stateLoco = refreshDCCLoco;
+		} else {
+			dccLocoCmdCounter = 0;
+			stateLoco = refreshMM2Loco;
+			transitionToDCC = 0;
+		}
+	}
+
+	if (newLocoHiPrioQueue)
+		prepareNewLocoPacket(DCC, newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].bufferIdx, newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].encCmdIdx);
+	else
+		prepareNewLocoPacket(DCC, newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].bufferIdx, newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].encCmdIdx);
+
+	if (dccLocoRepetitionCmdCounter >= NEW_DCC_LOCOCMD_REPETITIONS) {
+			dccLocoRepetitionCmdCounter = 0;
+			if (newLocoHiPrioQueue)
+				newLocoHiPrioQueuePop();
+			else
+				newLocoLoPrioQueuePop();
+	}
+}
+
+void newMFXSIDsendMM2() {
+	prepareRefreshLocoPacket(MM2);
+	stateLoco = newMFXSIDsendMFX;
+}
+
+void newMFXSIDsendMFX() {
+
+	mfxSIDRepetitionCmdCounter++;
+	if (mfxSIDRepetitionCmdCounter >= NEW_MFX_SIDCMD_REPETITIONS) {
+		mfxSIDRepetitionCmdCounter = 0;
+		stateLoco = refreshMM2Loco;
+		mfxSIDCommandToExecute = 0;
+	} else {
+		stateLoco = newMFXSIDsendDCC;
+	}
+	prepareSIDLocoPacket();
+
+}
+
+void newMFXSIDsendDCC() {
+	prepareRefreshLocoPacket(DCC);
+	stateLoco = newMFXSIDsendMM2;
+
+}
+
+
+void prepareRefreshLocoPacket(uint8_t protocol) {
+
+	if (protocol == MM2) {
+		locoDataMMRefreshLocoIdx++;
+		if (locoDataMM[locoDataMMRefreshLocoIdx].address == 0) {
+			locoDataMMRefreshLocoIdx = 0;
+		}
+		pwm_mode[prepareQueueIdx] = MM2;	//beim pwm_Mode ist Delta und neues Märklin-Format gleich
+
+		// Adresse und Fn kopieren
+		for (uint8_t i = 0; i < MM_PACKET_ADRESS_FN_LENGTH; i++)
+			pwmCmdQueue[prepareQueueIdx][i] = locoDataMM[locoDataMMRefreshLocoIdx].encCmdAdrFn[i];
+		// Daten kopieren
+		if (locoDataMM[locoDataMMRefreshLocoIdx].isDelta) {
+			//immer nur Speed
+			for (uint8_t i = 0; i < MM_PACKET_DATA_LENGTH; i++)
+				pwmCmdQueue[prepareQueueIdx][MM_PACKET_ADRESS_FN_LENGTH + i] = locoDataMM[locoDataMMRefreshLocoIdx].encCmdData[0][i];
+		} else {
+			locoDataMMRefreshEncCmdIdx = (locoDataMMRefreshEncCmdIdx + 1) % 5;
+			for (uint8_t i = 0; i < MM_PACKET_DATA_LENGTH; i++)
+				pwmCmdQueue[prepareQueueIdx][MM_PACKET_ADRESS_FN_LENGTH + i] = locoDataMM[locoDataMMRefreshLocoIdx].encCmdData[locoDataMMRefreshEncCmdIdx][i];
+		}
+
+		//Pause vor der "Motorola"-Wiederholung einfügen
+		for (uint8_t k = 0; k < MM_INTER_PACKET_PAUSE_LOCO; k++)
+			pwmCmdQueue[prepareQueueIdx][MM_PACKET_LENGTH + k] = 9;
+		//"Motorola"-Wiederholung einfügen
+		for (uint8_t k = 0; k < MM_PACKET_LENGTH; k++)
+			pwmCmdQueue[prepareQueueIdx][MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE_LOCO + k] = pwmCmdQueue[prepareQueueIdx][k];
+		//Pause hinzufügen
+		for (uint8_t i = 0; i < MM_AFTER_COMMAND_PAUSE; i++)
+			pwmCmdQueue[prepareQueueIdx][MM_COMMAND_LENGTH_LOCO + i] = 9;
+
+		//Befehlslänge speichern
+		pwmCmdLength[prepareQueueIdx] = MM_COMMAND_LENGTH_LOCO + MM_AFTER_COMMAND_PAUSE;
+
+	} else if (protocol == MFX) {
+		uint8_t i = 0;
+
+		locoDataMFXRefreshLocoIdx++;
+		if (locoDataMFX[locoDataMFXRefreshLocoIdx].address == 0) {
+			locoDataMFXRefreshLocoIdx = 0;
+		}
+		pwm_mode[prepareQueueIdx] = MFX;
+		for (; locoDataMFX[locoDataMFXRefreshLocoIdx].encCmd[i] != 5; i++)
+			pwmCmdQueue[prepareQueueIdx][i] = locoDataMFX[locoDataMFXRefreshLocoIdx].encCmd[i];
+		//Pause hinzufügen
+		if (transitionToDCC) {
+			for (uint8_t j = 0; j < MFX_TO_DCC_AFTER_CMD_PAUSE; i++, j++)
+				pwmCmdQueue[prepareQueueIdx][i] = 9;
+			transitionToDCC = 0;
+		} else {
+			for (uint8_t j = 0; j < MFX_TO_MM2_AFTER_CMD_PAUSE; i++, j++)
+				pwmCmdQueue[prepareQueueIdx][i] = 9;
+		}
+		//Befehlslänge speichern
+		pwmCmdLength[prepareQueueIdx] = i;
+
+	} else if (protocol == DCC) {
+		locoDataDCCRefreshLocoIdx++;
+		if (locoDataDCC[locoDataDCCRefreshLocoIdx].address == 0) {
+			locoDataDCCRefreshLocoIdx = 0;
+		}
+		pwm_mode[prepareQueueIdx] = DCC;
+		locoDataDCCRefreshEncCmdIdx = (locoDataDCCRefreshEncCmdIdx + 1) % 5;
+		for (uint8_t i = 0; i < DCC_COMMAND_LENGTH; i++)
+			pwmCmdQueue[prepareQueueIdx][i] = locoDataDCC[locoDataDCCRefreshLocoIdx].encCmd[locoDataDCCRefreshEncCmdIdx][i];
+		//Pause hinzufügen
+		if (transitionToDCC) {
+			pwmCmdLength[prepareQueueIdx] = DCC_COMMAND_LENGTH;
+			transitionToDCC = 0;
+		} else {
+			for (uint8_t i = 0; i < DCC_TO_MM2_AFTER_CMD_PAUSE; i++)
+				pwmCmdQueue[prepareQueueIdx][DCC_COMMAND_LENGTH + i] = 9;
+			//Befehlslänge speichern
+			pwmCmdLength[prepareQueueIdx] = DCC_COMMAND_LENGTH + DCC_TO_MM2_AFTER_CMD_PAUSE;
+		}
+
+	}
+	prepareNextData = 0;
+
+}
+
+void prepareNewLocoPacket(unsigned char newProtocol, unsigned char newBufferIdx, unsigned char NewEncCmdIdx) {
+
+	if (newProtocol == MM2) {
+		pwm_mode[prepareQueueIdx] = MM2;	//beim pwm_Mode ist Delta und neues Märklin-Format gleich
+
+		// Adresse und Fn kopieren
+		for (uint8_t i = 0; i < MM_PACKET_ADRESS_FN_LENGTH; i++)
+			pwmCmdQueue[prepareQueueIdx][i] = locoDataMM[newBufferIdx].encCmdAdrFn[i];
+		// Daten kopieren
+		for (uint8_t i = 0; i < MM_PACKET_DATA_LENGTH; i++)
+			pwmCmdQueue[prepareQueueIdx][MM_PACKET_ADRESS_FN_LENGTH + i] = locoDataMM[newBufferIdx].encCmdData[NewEncCmdIdx][i];
+		//Pause vor der "Motorola"-Wiederholung einfügen
+		for (uint8_t k = 0; k < MM_INTER_PACKET_PAUSE_LOCO; k++)
+			pwmCmdQueue[prepareQueueIdx][MM_PACKET_LENGTH + k] = 9;
+		//"Motorola"-Wiederholung einfügen
+		for (uint8_t k = 0; k < MM_PACKET_LENGTH; k++)
+			pwmCmdQueue[prepareQueueIdx][MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE_LOCO + k] = pwmCmdQueue[prepareQueueIdx][k];
+		//Pause hinzufügen
+		for (uint8_t i = 0; i < MM_AFTER_COMMAND_PAUSE; i++)
+			pwmCmdQueue[prepareQueueIdx][MM_COMMAND_LENGTH_LOCO + i] = 9;
+
+		//Befehlslänge speichern
+		pwmCmdLength[prepareQueueIdx] = MM_COMMAND_LENGTH_LOCO + MM_AFTER_COMMAND_PAUSE;
+
+	} else if (newProtocol == MFX) {
+		uint8_t i = 0;
+
+		pwm_mode[prepareQueueIdx] = MFX;
+		for (; locoDataMFX[newBufferIdx].encCmd[i] != 5; i++)
+			pwmCmdQueue[prepareQueueIdx][i] = locoDataMFX[newBufferIdx].encCmd[i];
+		//Pause hinzufügen
+		if (transitionToDCC) {
+			for (uint8_t j = 0; j < MFX_TO_DCC_AFTER_CMD_PAUSE; i++, j++)
+				pwmCmdQueue[prepareQueueIdx][i] = 9;
+			transitionToDCC = 0;
+		} else {
+			for (uint8_t j = 0; j < MFX_TO_MM2_AFTER_CMD_PAUSE; i++, j++)
+				pwmCmdQueue[prepareQueueIdx][i] = 9;
+		}
+		//Befehlslänge speichern
+		pwmCmdLength[prepareQueueIdx] = i;
+
+	} else if (newProtocol == DCC) {
+		pwm_mode[prepareQueueIdx] = DCC;
+		for (uint8_t i = 0; i < DCC_COMMAND_LENGTH; i++)
+			pwmCmdQueue[prepareQueueIdx][i] = locoDataDCC[newBufferIdx].encCmd[NewEncCmdIdx][i];
+		//Pause hinzufügen
+		if (transitionToDCC) {
+			pwmCmdLength[prepareQueueIdx] = DCC_COMMAND_LENGTH;
+			transitionToDCC = 0;
+		} else {
+			for (uint8_t i = 0; i < DCC_TO_MM2_AFTER_CMD_PAUSE; i++)
+				pwmCmdQueue[prepareQueueIdx][DCC_COMMAND_LENGTH + i] = 9;
+			//Befehlslänge speichern
+			pwmCmdLength[prepareQueueIdx] = DCC_COMMAND_LENGTH + DCC_TO_MM2_AFTER_CMD_PAUSE;
+		}
+
+	}
+
+	prepareNextData = 0;
+}
+
+
+void prepareSIDLocoPacket() {
+
+	uint8_t i = 0;
+
+	pwm_mode[prepareQueueIdx] = MFX;
+	for (;mfxSIDEncCmd[i] != 5; i++)
+		pwmCmdQueue[prepareQueueIdx][i] = mfxSIDEncCmd[i];
+	//Pause hinzufügen
+	for (uint8_t j = 0; j < MFX_TO_DCC_AFTER_CMD_PAUSE; i++, j++)
+		pwmCmdQueue[prepareQueueIdx][i] = 9;
+	//Befehlslänge speichern
+	pwmCmdLength[prepareQueueIdx] = i;
+
+	prepareNextData = 0;
+}
+
+
+void prepareSolenoidPacket(unsigned char activate) {
+
+	unsigned int address = solenoidQueue[solenoidQueueIdxFront].address;
+	unsigned char port = solenoidQueue[solenoidQueueIdxFront].port;
+
+	// pause
+	for (uint8_t i = 0; i < MM_START_PAUSE_SOLENOID; i++) {
+		pwmCmdQueue[prepareQueueIdx][i] = 9;
+	}
+
+	// address
+	for (uint8_t i = 0; i < 10; i++)
+		pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + i] = (address >> (9 - i)) & 1;
+
+	// port
+	for (uint8_t i = 0; i < 6; i++)
+		pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + 10 + i] = (port >> (5 - i)) & 1;
+
+	if (activate) {
+		// new command --> activate port
+#ifdef LOGGING
+		log_debug3("activating decoder ", address);
+#endif
+		pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + 16] = 1;
+		pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + 17] = 1;
+	} else {
+		// active solenoid --> deactivate port
+#ifdef LOGGING
+		log_debug3("deactivating decoder ", address);
+#endif
+		pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + 16] = 0;
+		pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + 17] = 0;
+	}
+
+	// pause
+	for (uint8_t i = 0; i < MM_INTER_PACKET_PAUSE_SOLENOID; i++) {
+		pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + MM_PACKET_LENGTH + i] = 9;
+	}
+
+	// copy packet
+	for (uint8_t i = 0; i < MM_PACKET_LENGTH; i++)
+		pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + MM_PACKET_LENGTH + MM_INTER_PACKET_PAUSE_SOLENOID + i] = pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + i];
+
+	// add intra double packet pause
+	for (uint8_t i = 0; i < MM_INTER_DOUBLE_PACKET_PAUSE_SOLENOID; i++)
+		pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + MM_DOUBLE_PACKET_LENGTH_SOLENOID + i] = 9;
+
+	// Doppelpacket-Repetitionen erstellen
+	for (uint8_t i = 1; i < MM_SOLENOIDCMD_REPETITIONS; i++) {
+		for (uint8_t j = 0; j < MM_COMMAND_LENGTH_SOLENOID; j++) {
+			pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + (i * MM_COMMAND_LENGTH_SOLENOID) + j] = pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + j];
+		}
+	}
+
+	// End-Pause erstellen
+	for (uint8_t i = 0; i < MM_END_PAUSE_SOLENOID; i++) {
+		pwmCmdQueue[prepareQueueIdx][MM_START_PAUSE_SOLENOID + (MM_COMMAND_LENGTH_SOLENOID * MM_SOLENOIDCMD_REPETITIONS) + i] = 9;
+	}
+	pwmCmdLength[prepareQueueIdx] = MM_START_PAUSE_SOLENOID + (MM_COMMAND_LENGTH_SOLENOID * MM_SOLENOIDCMD_REPETITIONS) + MM_END_PAUSE_SOLENOID;
+
+	prepareNextData = 0;
+}
+
+
