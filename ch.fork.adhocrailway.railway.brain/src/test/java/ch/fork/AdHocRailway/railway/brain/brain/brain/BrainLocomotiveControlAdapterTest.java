@@ -112,7 +112,8 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
         givenTestee();
 
         whenIncreasingSpeed(locomotive);
-        assertNoBrainCall();
+
+        assertBrainSetSpeedCalled(locomotive, 127, "1", "");
     }
 
     @Test
@@ -139,7 +140,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
         givenTestee();
         whenDecreasingSpeed(locomotive);
 
-        assertNoBrainCall();
+        assertBrainSetSpeedCalled(locomotive, 0, "1", "");
     }
 
     @Test
