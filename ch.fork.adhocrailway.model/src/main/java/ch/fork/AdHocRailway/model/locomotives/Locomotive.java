@@ -77,7 +77,7 @@ public class Locomotive extends AbstractItem implements Serializable,
     private int address2;
     @XStreamAsAttribute
     @Expose
-    private int mfxUUID;
+    private long mfxUUID;
     @Expose
     private Set<LocomotiveFunction> functions = Sets.newHashSet();
 
@@ -348,11 +348,11 @@ public class Locomotive extends AbstractItem implements Serializable,
                 .append("currentFunctions",Arrays.toString(currentFunctions)).build();
     }
 
-    public int getMfxUUID() {
+    public long getMfxUUID() {
         return mfxUUID;
     }
 
-    public void setMfxUUID(int mfxUUID) {
+    public void setMfxUUID(long mfxUUID) {
         this.mfxUUID = mfxUUID;
     }
 }

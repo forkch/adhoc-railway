@@ -190,14 +190,13 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
                 1
         )); // step
 
-
-        mfxUuidSpinner = new JSpinner();
+        mfxUuidSpinner = new JSpinner(new SpinnerNumberModel(new Long(0L), (Long) Long.MIN_VALUE, (Long) Long.MAX_VALUE, new Long(1L)));
         mfxUuidSpinner.setModel(SpinnerAdapterFactory.createNumberAdapter(
                 presentationModel
-                        .getBufferedModel(Locomotive.PROPERTYNAME_MFX_UUID), 1, // defaultValue
-                0, // minValue
-                Integer.MAX_VALUE, // maxValue
-                1
+                        .getBufferedModel(Locomotive.PROPERTYNAME_MFX_UUID), 1L, // defaultValue
+                Long.MIN_VALUE, // minValue
+                Long.MAX_VALUE, // maxValue
+                1L
         )); // step
 
         final List<LocomotiveType> locomotiveTypes = Arrays
