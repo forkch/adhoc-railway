@@ -72,7 +72,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
                         locomotive.getAddress1());
                 brain.write(termCommand);
             }
-            activeLocomotives.add(locomotive);
+            activeLocomotives.remove(locomotive);
         } catch (final BrainException e) {
             throw new ControllerException("error initializing locomotive", e);
         }
