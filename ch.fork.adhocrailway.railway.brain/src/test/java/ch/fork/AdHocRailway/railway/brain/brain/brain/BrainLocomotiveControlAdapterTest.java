@@ -104,10 +104,10 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
     }
 
     @Test
-    public void increase_speed_digital_locomotive_speed_14()
+    public void increase_speed_digital_locomotive_speed_127()
             throws IOException {
         final Locomotive locomotive = createDigitalLocomotive();
-        locomotive.setCurrentSpeed(14);
+        locomotive.setCurrentSpeed(127);
 
         givenTestee();
 
