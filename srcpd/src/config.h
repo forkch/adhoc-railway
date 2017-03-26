@@ -71,7 +71,7 @@
 /* #undef HAVE_SYS_FILEO_H */
 
 /* Define to 1 if you have the <sys/io.h> header file. */
-#define HAVE_SYS_IO_H 1
+/* #undef HAVE_SYS_IO_H */
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #define HAVE_SYS_STAT_H 1
@@ -126,22 +126,22 @@
 #define USE_ADHOCMM 1
 
 /* define to 1 if you want ddl support */
-#define USE_DDL 1
+/* #undef USE_DDL */
 
 /* define to 1 if you want ddl-s88 support */
-#define USE_DDLS88 1
+/* #undef USE_DDLS88 */
 
 /* define to 1 if you want hsi-88 support */
-#define USE_HSI88 1
+/* #undef USE_HSI88 */
 
 /* define to 1 if you want i2c-dev support */
-#define USE_I2C 1
+/* #undef USE_I2C */
 
 /* define to 1 if you want intellibox support */
-#define USE_IB 1
+/* #undef USE_IB */
 
 /* define to 1 if you want li100 (RS232 + USB) support */
-#define USE_LI100 1
+/* #undef USE_LI100 */
 
 /* define to 1 if you want loconet support */
 #define USE_LOCONET 1
@@ -150,13 +150,13 @@
 #define USE_LOOPBACK 1
 
 /* define to 1 if you want m605x support */
-#define USE_M605X 1
+/* #undef USE_M605X */
 
 /* define to 1 if you want selectrix support */
-#define USE_SELECTRIX 1
+/* #undef USE_SELECTRIX */
 
 /* define to 1 if you want zimo support */
-#define USE_ZIMO 1
+/* #undef USE_ZIMO */
 
 /* Version number of package */
 #define VERSION "2.1.1"
