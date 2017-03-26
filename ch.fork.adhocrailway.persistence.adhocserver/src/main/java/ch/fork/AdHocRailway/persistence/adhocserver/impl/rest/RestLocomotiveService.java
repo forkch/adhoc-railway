@@ -43,6 +43,10 @@ public class RestLocomotiveService implements LocomotiveService {
             final Response<Locomotive> response = locomotiveServiceClient.addLocomotive(locomotive).execute();
             if (response.isSuccessful()) {
                 locomotive.setId(response.body().getId());
+
+                if (listenerOk()) {
+                    listener.locomotiveAdded(locomotive);
+                }
             } else {
                 throw new AdHocServiceException("Failed to add locomotive: " + response.errorBody().string());
             }
