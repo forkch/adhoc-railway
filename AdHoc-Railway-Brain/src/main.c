@@ -7,7 +7,7 @@
  *  Multiprotcol-Version (MM/MM2/MFX/DCC)
  *    Added on: 06.06.2016
  *      Author: m2
- *     Version: 19. März 2017
+ *     Version: 26. März 2017
  *
  */
 
@@ -60,6 +60,81 @@ int main() {
 	//disable JTAG Interface
 	MCUCR = (1 << JTD);
 	MCUCR = (1 << JTD);
+
+	//unused Pins as Inputs configured
+//	DDRA &= ~(1<<DDA0);		// used as PortInterrupt
+//	DDRA &= ~(1<<DDA1);		// used as PortInterrupt
+//	DDRA &= ~(1<<DDA2);		// used as PortInterrupt
+//	DDRA &= ~(1<<DDA3);		// used as PortInterrupt
+//	DDRA &= ~(1<<DDA4);		// used as PortInterrupt
+//	DDRA &= ~(1<<DDA5);		// used as PortInterrupt
+//	DDRA &= ~(1<<DDA6);		// used as PortInterrupt
+//	DDRA &= ~(1<<DDA7);		// used as PortInterrupt
+
+	DDRB &= ~(1<<DDB0);
+	DDRB &= ~(1<<DDB1);
+//	DDRB &= ~(1<<DDB2);		// used as Interrupt 2
+	DDRB &= ~(1<<DDB3);
+	DDRB &= ~(1<<DDB4);
+//	DDRB &= ~(1<<DDB5);		// used as MOSI
+//	DDRB &= ~(1<<DDB6);		// used as MISO
+//	DDRB &= ~(1<<DDB7);		// used as SCK
+
+//	DDRC &= ~(1<<DDC0);		// PWM Help Output
+//	DDRC &= ~(1<<DDC1);		// Go: Write Booster On/Off
+//	DDRC &= ~(1<<DDC2);		// Short: Read Short-Booster-States
+//	DDRC &= ~(1<<DDC3);		// Debug-LED: Write LED-Output
+	DDRC &= ~(1<<DDC4);
+	DDRC &= ~(1<<DDC5);
+	DDRC &= ~(1<<DDC6);
+	DDRC &= ~(1<<DDC7);
+
+//	DDRD &= ~(1<<DDD0);		// UART RX
+//	DDRD &= ~(1<<DDD1);		// UART TX
+//	DDRD &= ~(1<<DDD2);		// UART RTS
+//	DDRD &= ~(1<<DDD3);		// UART CTS
+//	DDRD &= ~(1<<DDD4);		// PWM Output
+//	DDRD &= ~(1<<DDD5);		// OC1A??
+	DDRD &= ~(1<<DDD6);
+	DDRD &= ~(1<<DDD7);
+
+	//unused Pins Pullup activated
+//	PORTA |= 1<<PORTA0;
+//	PORTA |= 1<<PORTA1;
+//	PORTA |= 1<<PORTA2;
+//	PORTA |= 1<<PORTA3;
+//	PORTA |= 1<<PORTA4;
+//	PORTA |= 1<<PORTA5;
+//	PORTA |= 1<<PORTA6;
+//	PORTA |= 1<<PORTA7;
+
+	PORTB |= 1<<PORTB0;
+	PORTB |= 1<<PORTB1;
+//	PORTB |= 1<<PORTB2;
+	PORTB |= 1<<PORTB3;
+	PORTB |= 1<<PORTB4;
+//	PORTB |= 1<<PORTB5;
+//	PORTB |= 1<<PORTB6;
+//	PORTB |= 1<<PORTB7;
+
+//	PORTC |= 1<<PORTC0;
+//	PORTC |= 1<<PORTC1;
+//	PORTC |= 1<<PORTC2;
+//	PORTC |= 1<<PORTC3;
+	PORTC |= 1<<PORTC4;
+	PORTC |= 1<<PORTC5;
+	PORTC |= 1<<PORTC6;
+	PORTC |= 1<<PORTC7;
+
+//	PORTD |= 1<<PORTD0;
+//	PORTD |= 1<<PORTD1;
+//	PORTD |= 1<<PORTD2;
+//	PORTD |= 1<<PORTD3;
+//	PORTD |= 1<<PORTD4;
+//	PORTD |= 1<<PORTD5;
+	PORTD |= 1<<PORTD6;
+	PORTD |= 1<<PORTD7;
+
 
 /*
 	//Pull-up enabled
@@ -137,20 +212,12 @@ int main() {
 	PORTA &= ~(1<<PORTA6);
 	PORTA &= ~(1<<PORTA7);
 
-	//PA0 - PA7: enable  pull-up resistor
-/*	PORTA |= 1<<PORTA0;
-	PORTA |= 1<<PORTA1;
-	PORTA |= 1<<PORTA2;
-	PORTA |= 1<<PORTA3;
-	PORTA |= 1<<PORTA4;
-	PORTA |= 1<<PORTA5;
-	PORTA |= 1<<PORTA6;
-	PORTA |= 1<<PORTA7;
-*/
 
 	//Init PCINT0 => Short-Detection
 	PCICR |= 1<<PCIE0;				//Pin Change Interrupt Enable 0
+//	PCICR &= ~(1<<PCIE0);			//Pin Change Interrupt Disable 0
 	PCMSK0 |= 1<<PCINT0 | 1<<PCINT1 | 1<<PCINT2 | 1<<PCINT3 | 1<<PCINT4 | 1<<PCINT5 | 1<<PCINT6 | 1<<PCINT7; 	//Pin Change Enable
+
 
 
 	sei();
@@ -232,7 +299,27 @@ ISR(PCINT0_vect)
 // Timer0 overflow interrupt handler (13ms 20MHz / Timer0Prescaler 1024 / 8Bit Counter)
 // 20MHZ/1024*255 = 13ms
 ISR( TIMER0_OVF_vect) {
-	timer0_interrupt++;
+	solenoidTimer++;
+	mfxBrainTimer++;
+	if (cutterTimer > 0) {
+		cutterTimer++;
+		if (cutterTimer > CUTTER_WAIT_TIMERCYCLES){
+			int y = 0;
+			while (y < MM_SOLENOID_DATA_BUFFER_SIZE) {
+				if (solenoidDataMM[y].cutterState == 1) {
+					solenoidQueue[solenoidQueueIdxEnter].cutterState = 2;
+					solenoidDataMM[y].cutterState = 0;
+					solenoidQueue[solenoidQueueIdxEnter].solenoidType = solenoidDataMM[y].solenoidType;
+					solenoidQueue[solenoidQueueIdxEnter].port = portData[solenoidDataMM[y].port];
+					solenoidQueue[solenoidQueueIdxEnter].tritAddress = solenoidDataMM[y].tritAddress;
+					enqueue_solenoid();
+					break;
+				}
+				y++;
+			}
+
+		}
+	}
 
 	// Short detected?
 	if (short_detected == 1){
@@ -255,7 +342,7 @@ ISR( TIMER1_COMPB_vect) {
 		return;
 	}
 
-	if (pwmOutputIdx == 0) {
+	if (prepareNextData == 0 && pwmOutputIdx == 0) {
 		pwmQueueIdx = (pwmQueueIdx + 1) % 2;
 		prepareNextData = 1;
 
@@ -1698,7 +1785,9 @@ inline void init() {
 
 	actualData = 0;
 
-	timer0_interrupt = 0;
+	solenoidTimer = 0;
+	cutterTimer = 0;
+	mfxBrainTimer = 0;
 
 	mmLocoCmdCounter = 0;
 	mfxLocoCmdCounter = 0;
@@ -1725,6 +1814,7 @@ inline void init() {
 
 	initIdleLocoData();
 
+	initBrainMFXData();
 
 }
 
@@ -2052,13 +2142,229 @@ void initLocoData() {
 
 }
 
+void initBrainMFXData(){
+
+	uint16_t crc;
+	uint8_t mfxCommandLength;
+	int cidx;
+	int tidx;
+	int EinsHalbiert;
+	int stfngCnt;
+
+	//Broadcast-Address 0
+	tmpMFXcmd[0] = 1;
+	tmpMFXcmd[1] = 0;
+	tmpMFXcmd[2] = 0;
+	tmpMFXcmd[3] = 0;
+	tmpMFXcmd[4] = 0;
+	tmpMFXcmd[5] = 0;
+	tmpMFXcmd[6] = 0;
+	tmpMFXcmd[7] = 0;
+	tmpMFXcmd[8] = 0;
+
+	//Command Central
+	tmpMFXcmd[9] = 1;
+	tmpMFXcmd[10] = 1;
+	tmpMFXcmd[11] = 1;
+	tmpMFXcmd[12] = 1;
+	tmpMFXcmd[13] = 0;
+	tmpMFXcmd[14] = 1;
+
+	//UID-Brain (fiktiv)
+	tmpMFXcmd[15] = 1;
+	tmpMFXcmd[16] = 1;
+	tmpMFXcmd[17] = 1;
+	tmpMFXcmd[18] = 1;
+	tmpMFXcmd[19] = 1;
+	tmpMFXcmd[20] = 1;
+	tmpMFXcmd[21] = 1;
+	tmpMFXcmd[22] = 1;
+	tmpMFXcmd[23] = 1;
+	tmpMFXcmd[24] = 1;
+	tmpMFXcmd[25] = 1;
+	tmpMFXcmd[26] = 1;
+	tmpMFXcmd[27] = 1;
+	tmpMFXcmd[28] = 1;
+	tmpMFXcmd[29] = 1;
+	tmpMFXcmd[30] = 1;
+	tmpMFXcmd[31] = 1;
+	tmpMFXcmd[32] = 1;
+	tmpMFXcmd[33] = 1;
+	tmpMFXcmd[34] = 1;
+	tmpMFXcmd[35] = 1;
+	tmpMFXcmd[36] = 1;
+	tmpMFXcmd[37] = 1;
+	tmpMFXcmd[38] = 1;
+	tmpMFXcmd[39] = 1;
+	tmpMFXcmd[40] = 1;
+	tmpMFXcmd[41] = 1;
+	tmpMFXcmd[42] = 1;
+	tmpMFXcmd[43] = 1;
+	tmpMFXcmd[44] = 1;
+	tmpMFXcmd[45] = 1;
+	tmpMFXcmd[46] = 1;
+
+	//Neuanmeldezähler (fiktive Zahl)
+	tmpMFXcmd[47] = 1;
+	tmpMFXcmd[48] = 1;
+	tmpMFXcmd[49] = 1;
+	tmpMFXcmd[50] = 1;
+	tmpMFXcmd[51] = 1;
+	tmpMFXcmd[52] = 1;
+	tmpMFXcmd[53] = 1;
+	tmpMFXcmd[54] = 1;
+	tmpMFXcmd[55] = 1;
+	tmpMFXcmd[56] = 1;
+	tmpMFXcmd[57] = 1;
+	tmpMFXcmd[58] = 1;
+	tmpMFXcmd[59] = 1;
+	tmpMFXcmd[60] = 1;
+	tmpMFXcmd[61] = 1;
+	tmpMFXcmd[62] = 1;
+
+		//CRC Init
+	tmpMFXcmd[63] = 0;
+	tmpMFXcmd[64] = 0;
+	tmpMFXcmd[65] = 0;
+	tmpMFXcmd[66] = 0;
+	tmpMFXcmd[67] = 0;
+	tmpMFXcmd[68] = 0;
+	tmpMFXcmd[69] = 0;
+	tmpMFXcmd[70] = 0;
+
+	//CRC Berechnung
+	mfxCommandLength = 71;
+	crc = 0x007f;
+
+	 for (int k = 0; k < mfxCommandLength; k++)
+	  {
+	    crc = (crc << 1) + tmpMFXcmd[k];
+	    if ((crc & 0x0100) > 0)
+	      crc = (crc & 0x00FF) ^ 0x07;
+	  }
+
+	//CRC Schreiben
+	tmpMFXcmd[63] = (crc / 128) % 2;
+	tmpMFXcmd[64] = (crc / 64) % 2;
+	tmpMFXcmd[65] = (crc / 32) % 2;
+	tmpMFXcmd[66] = (crc / 16) % 2;
+	tmpMFXcmd[67] = (crc / 8) % 2;
+	tmpMFXcmd[68] = (crc / 4) % 2;
+	tmpMFXcmd[69] = (crc / 2) % 2;
+	tmpMFXcmd[70] = crc % 2;
+
+	//Stuffing (nach 8x "1" wird ein "0" eingefügt)
+	stfngCnt = 0;
+
+	for (int k = 0; k < mfxCommandLength; k++){
+		if (tmpMFXcmd[k] == 1) {
+			stfngCnt++;
+		} else {
+			stfngCnt = 0;
+		}
+		if (stfngCnt == 8){
+			for (int l = mfxCommandLength-1; l > k; l--){
+				tmpMFXcmd[l+1] = tmpMFXcmd[l];
+			}
+			tmpMFXcmd[k+1] = 0;
+			mfxCommandLength++;
+			stfngCnt = 0;
+		}
+	}
+
+	//2x Sync am Ende
+	tmpMFXcmd[mfxCommandLength] = 0;
+	tmpMFXcmd[mfxCommandLength+1] = 2;	// 2 = Abweichung von bi-phase-mark-Regel
+	tmpMFXcmd[mfxCommandLength+2] = 0;
+	tmpMFXcmd[mfxCommandLength+3] = 0;
+	tmpMFXcmd[mfxCommandLength+4] = 2;	// 2 = Abweichung von bi-phase-mark-Regel
+	tmpMFXcmd[mfxCommandLength+5] = 0;
+	tmpMFXcmd[mfxCommandLength+6] = 0;
+	tmpMFXcmd[mfxCommandLength+7] = 2;	// 2 = Abweichung von bi-phase-mark-Regel
+	tmpMFXcmd[mfxCommandLength+8] = 0;
+	tmpMFXcmd[mfxCommandLength+9] = 0;
+	tmpMFXcmd[mfxCommandLength+10] = 2;	// 2 = Abweichung von bi-phase-mark-Regel
+	tmpMFXcmd[mfxCommandLength+11] = 0;
+
+	//Befehl encodieren
+	//
+	// mfx "0" => __ oder ––
+	// mfx "1" => _– oder –_
+	//
+	// für die Signalgenerierung wird ein PWM verwendet
+	// die mfx-Informationseinheiten werden dabei teilweise "aufgeteilt"
+	// –_   => enc"1" entspricht mfx "1"
+	// –__  => enc"2" entspricht mfx 'halbes' "1" + "0"
+	// ––_  => enc"3" entspricht mfx "0" + 'halbes' "1"
+	// ––__ => enc"4" entspricht mfx "0" + "0"
+
+	cidx = 6;			//encoded MFX-Command Index
+	tidx = 0;			//temporary MFX-Command Index
+	EinsHalbiert = 0;
+
+	//fix 2x Sync
+	brainEncCmd[0] = 3;
+	brainEncCmd[1] = 4;
+	brainEncCmd[2] = 2;
+	brainEncCmd[3] = 3;
+	brainEncCmd[4] = 4;
+	brainEncCmd[5] = 2;
+
+	for (tidx = 0; tidx < (mfxCommandLength + 12); tidx++){	// 12 => 2x Sync am Ende.
+		if (tidx == (mfxCommandLength + 11)) {
+			brainEncCmd[cidx] = 4;
+			brainEncCmd[cidx+1] = 6;	// 6 => Ende des MFX-Befehls
+			break;
+		} else if (tmpMFXcmd[tidx] == 1 && EinsHalbiert == 0) {
+			brainEncCmd[cidx] = 1;
+			cidx++;
+		} else if (tmpMFXcmd[tidx] == 0  && tmpMFXcmd[tidx + 1] == 0) {
+			brainEncCmd[cidx] = 4;
+			tidx++;
+			cidx++;
+		} else  if (tmpMFXcmd[tidx] == 0 && tmpMFXcmd[tidx + 1] == 1) {
+			brainEncCmd[cidx] = 3;
+			cidx++;
+			EinsHalbiert = 1;
+		} else if (tmpMFXcmd[tidx] == 1 && tmpMFXcmd[tidx + 1] == 0 && EinsHalbiert == 1) {
+			brainEncCmd[cidx] = 2;
+			tidx++;
+			cidx++;
+			EinsHalbiert = 0;
+		} else if (tmpMFXcmd[tidx] == 1 && tmpMFXcmd[tidx + 1] == 1 && EinsHalbiert == 1) {
+			brainEncCmd[cidx] = 1;
+			cidx++;
+		} else if (tmpMFXcmd[tidx] == 0 && tmpMFXcmd[tidx + 1] == 2) {
+			brainEncCmd[cidx] = 3;
+			tidx++;
+			cidx++;
+		} else if (tmpMFXcmd[tidx] == 2 && tmpMFXcmd[tidx + 1] == 0) {
+			brainEncCmd[cidx] = 2;
+			tidx++;
+			cidx++;
+			if (tidx == (mfxCommandLength + 11)) {
+				brainEncCmd[cidx] = 6;	// 6 => Ende des MFX-Befehls
+				break;
+			}
+		}
+	}
+
+
+
+}
+
+
 
 //===================
 //States Main-Machine
 //===================
 
 void idleSolenoidDoLoco() {
-	if (!solenoidQueueEmpty()) {
+	//Brain MFX Command "Zentrale"
+	if (mfxBrainTimer > BRAIN_MFX_WAIT_TIMERCYCLES){
+	mfxBrainTimer = 0;
+	prepareMFXBrainCmd();
+	} else if (!solenoidQueueEmpty()) {
 		stateMain = activateSolenoid;
 	} else {
 		(*stateLoco)();
@@ -2066,13 +2372,27 @@ void idleSolenoidDoLoco() {
 }
 
 void activateSolenoid() {
-	prepareSolenoidPacket(1);
-	stateMain = waitSolenoidAfterActivation;
-	timer0_interrupt = 0;
+	if (solenoidQueue[solenoidQueueIdxFront].solenoidType == TURNOUT){
+		prepareSolenoidPacket(1);
+		stateMain = waitSolenoidAfterActivation;
+		solenoidTimer = 0;
+		//no immediate Deactivation for a cutter
+	} else if (solenoidQueue[solenoidQueueIdxFront].solenoidType == CUTTER){
+		if (solenoidQueue[solenoidQueueIdxFront].cutterState == 1){
+			prepareSolenoidPacket(1);
+			cutterTimer = 1;	//start counter
+		} else if (solenoidQueue[solenoidQueueIdxFront].cutterState == 2) {
+			prepareSolenoidPacket(0);
+			cutterTimer = 0;	//stop counter
+		}
+		solenoidQueuePop();
+		stateMain = waitSolenoidAfterDeactivation;
+		solenoidTimer = 0;
+	}
 }
 
 void waitSolenoidAfterActivation() {
-	if (timer0_interrupt > SOLENOID_WAIT_TIMERCYCLES) {  // timer0_interupt wird alle 13ms hochgezählt
+	if (solenoidTimer > SOLENOID_WAIT_TIMERCYCLES) {  // timer0_interupt wird alle 13ms hochgezählt
 		stateMain = deactivateSolenoid;
 	} else {
 		(*stateLoco)();
@@ -2083,11 +2403,11 @@ void deactivateSolenoid() {
 	prepareSolenoidPacket(0);
 	solenoidQueuePop();
 	stateMain = waitSolenoidAfterDeactivation;
-	timer0_interrupt = 0;
+	solenoidTimer = 0;
 }
 
 void waitSolenoidAfterDeactivation() {
-	if (timer0_interrupt > SOLENOID_WAIT_TIMERCYCLES) {  // timer0_interupt wird alle 13ms hochgezählt
+	if (solenoidTimer > SOLENOID_WAIT_TIMERCYCLES) {  // timer0_interupt wird alle 13ms hochgezählt
 		stateMain = idleSolenoidDoLoco;
 	} else {
 		(*stateLoco)();
@@ -2173,6 +2493,10 @@ void refreshMFXLoco() {
 				stateLoco = newDCCsendDCC;
 				break;
 			}
+/*		} else if (mfxBrainTimer > BRAIN_MFX_WAIT_TIMERCYCLES){
+			mfxBrainTimer = 0;
+			prepareMFXBrainCmd();
+			stateLoco = refreshDCCLoco;*/
 		} else {
 			mfxLocoCmdCounter++;
 			if (mfxLocoCmdCounter >= REFRESH_MAXNUMBER_MFX_CMD) {
@@ -2185,6 +2509,10 @@ void refreshMFXLoco() {
 			}
 			prepareRefreshLocoPacket(MFX);
 		}
+/*	} else if (mfxBrainTimer > BRAIN_MFX_WAIT_TIMERCYCLES){
+		mfxBrainTimer = 0;
+		prepareMFXBrainCmd();
+		stateLoco = refreshDCCLoco;*/
 	} else {
 		stateLoco = refreshDCCLoco;
 	}
@@ -2358,10 +2686,23 @@ void newDCCsendDCC() {
 		}
 	}
 
-	if (newLocoHiPrioQueue)
-		prepareNewLocoPacket(DCC, newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].bufferIdx, newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].encCmdIdx);
-	else
-		prepareNewLocoPacket(DCC, newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].bufferIdx, newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].encCmdIdx);
+	if (newLocoHiPrioQueue){
+		//Funktionsbefehle zeigen keine Wirkung, wenn sie nicht "zeitnah" mit einem Speed-Befehl geschickt werden.
+		//Darum im Wechsel der Speed-Befehl (fix) mit dem neuen Befehl.
+		if (dccLocoRepetitionCmdCounter % 2 == 0) {
+			prepareNewLocoPacket(DCC, newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].bufferIdx, 0);
+		} else {
+			prepareNewLocoPacket(DCC, newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].bufferIdx, newLocoCmdHiPrio[newLocoCmdHiPrioIdxFront].encCmdIdx);
+		}
+	} else {
+		//Funktionsbefehle zeigen keine Wirkung, wenn sie nicht "zeitnah" mit einem Speed-Befehl geschickt werden.
+		//Darum im Wechsel der Speed-Befehl (fix) mit dem neuen Befehl.
+		if (dccLocoRepetitionCmdCounter % 2 == 0) {
+			prepareNewLocoPacket(DCC, newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].bufferIdx, 0);
+		} else {
+			prepareNewLocoPacket(DCC, newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].bufferIdx, newLocoCmdLoPrio[newLocoCmdLoPrioIdxFront].encCmdIdx);
+		}
+	}
 
 	if (dccLocoRepetitionCmdCounter >= NEW_DCC_LOCOCMD_REPETITIONS) {
 			dccLocoRepetitionCmdCounter = 0;
@@ -2466,6 +2807,9 @@ void prepareRefreshLocoPacket(uint8_t protocol) {
 		for (uint8_t k = 0; k < MM_PACKET_LENGTH; i++, k++)
 			pwmCmdQueue[prepareQueueIdx][i] = pwmCmdQueue[prepareQueueIdx][cmdStart + k];
 
+//		log_debug3("pwmMM2Loc: ", locoDataMMRefreshLocoIdx);
+//		log_debug3("pwmMM2Cmd: ", locoDataMMRefreshEncCmdIdx);
+
 		//Befehlslänge speichern
 		pwmCmdLength[prepareQueueIdx] = i;
 		pwm_mode[prepareQueueIdx] = MODE_MM2_LOCO;
@@ -2505,7 +2849,9 @@ void prepareRefreshLocoPacket(uint8_t protocol) {
 		if (locoDataDCC[locoDataDCCRefreshLocoIdx].address == 0) {
 			locoDataDCCRefreshLocoIdx = 0;
 		}
-		locoDataDCCRefreshEncCmdIdx = (locoDataDCCRefreshEncCmdIdx + 1) % 4;
+
+		locoDataDCC[locoDataDCCRefreshLocoIdx].refreshEncCmdIdx = (locoDataDCC[locoDataDCCRefreshLocoIdx].refreshEncCmdIdx + 1) % 4;
+		locoDataDCCRefreshEncCmdIdx = locoDataDCC[locoDataDCCRefreshLocoIdx].refreshEncCmdIdx;
 
 		uint16_t i = 0;
 		//Pause auf Grund des vorgängigen Befehls bestimmen
@@ -2530,6 +2876,9 @@ void prepareRefreshLocoPacket(uint8_t protocol) {
 			for (uint8_t k = 0; k < DCC_COMMAND_LENGTH_EXT; i++, k++)
 				pwmCmdQueue[prepareQueueIdx][i] = locoDataDCC[locoDataDCCRefreshLocoIdx].encCmd[locoDataDCCRefreshEncCmdIdx][k];
 		}
+
+		//		log_debug3("pwmDCCLoc: ", locoDataDCCRefreshLocoIdx);
+		//		log_debug3("pwmDCCCmd: ", locoDataDCCRefreshEncCmdIdx);
 
 		pwmCmdLength[prepareQueueIdx] = i;
 		pwm_mode[prepareQueueIdx] = MODE_DCC;
@@ -2621,6 +2970,7 @@ void prepareNewLocoPacket(unsigned char newProtocol, unsigned char newBufferIdx,
 		if (locoDataDCC[newBufferIdx].longAddress == 0){
 			for (uint8_t k = 0; k < DCC_COMMAND_LENGTH_STD; i++, k++)
 				pwmCmdQueue[prepareQueueIdx][i] = locoDataDCC[newBufferIdx].encCmd[NewEncCmdIdx][k];
+//			log_info3("fn ", locoDataDCC[newBufferIdx].encCmd[NewEncCmdIdx][31]);
 		} else {
 			for (uint8_t k = 0; k < DCC_COMMAND_LENGTH_EXT; i++, k++)
 				pwmCmdQueue[prepareQueueIdx][i] = locoDataDCC[newBufferIdx].encCmd[NewEncCmdIdx][k];
@@ -2663,10 +3013,41 @@ void prepareSIDLocoPacket() {
 
 }
 
+void prepareMFXBrainCmd() {
+
+	uint16_t i = 0;
+	//Pause auf Grund des vorgängigen Befehls bestimmen
+	if (pwm_mode[pwmQueueIdx] == MODE_MM2_LOCO || pwm_mode[pwmQueueIdx] == MODE_MM2_SOLENOID) {
+		//Pause hinzufügen
+		for (; i < MM_TO_MFX_INTER_CMD_PAUSE; i++)
+			pwmCmdQueue[prepareQueueIdx][i] = 9;
+	} else if (pwm_mode[pwmQueueIdx] == MODE_MFX) {
+		//Pause hinzufügen
+		for (; i < MFX_INTER_CMD_PAUSE; i++)
+			pwmCmdQueue[prepareQueueIdx][i] = 9;
+	} else if (pwm_mode[pwmQueueIdx] == MODE_DCC) {
+		//Pause hinzufügen
+		for (; i < DCC_TO_MFX_INTER_CMD_PAUSE; i++)
+			pwmCmdQueue[prepareQueueIdx][i] = 9;
+	}
+
+	for (uint8_t k = 0; brainEncCmd[k] != 6; i++, k++)
+		pwmCmdQueue[prepareQueueIdx][i] = brainEncCmd[k];
+
+//	log_debug("Brain MFX ID");
+
+	//Befehlslänge speichern
+	pwmCmdLength[prepareQueueIdx] = i;
+	pwm_mode[prepareQueueIdx] = MODE_MFX;
+
+	nextDataPrepared = 1;
+
+}
+
 
 void prepareSolenoidPacket(unsigned char activate) {
 
-	unsigned int address = solenoidQueue[solenoidQueueIdxFront].address;
+	unsigned int address = solenoidQueue[solenoidQueueIdxFront].tritAddress;
 	unsigned char port = solenoidQueue[solenoidQueueIdxFront].port;
 
 	uint16_t i = 0;

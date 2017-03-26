@@ -58,6 +58,8 @@ uint8_t parse_ib_cmd(char* receivedCmdString) {
 		ret = ib_booster_state_cmd(tokens, j);
 	} else if (strcasecmp(tokens[0], "XT") == 0) {
 		ret = ib_solenoid_cmd(tokens, j);
+	} else if (strcasecmp(tokens[0], "XTS") == 0) {
+		ret = ib_solenoid_config_cmd(tokens, j);
 	} else if (strcasecmp(tokens[0], "XL") == 0) {
 		ret = ib_loco_set_cmd(tokens, j);
 	} else if (strcasecmp(tokens[0], "XLS") == 0) {
@@ -90,7 +92,7 @@ uint8_t ib_go_cmd(char** tokens, uint8_t nTokens) {
 	uint8_t number = 0;
 
 	if (nTokens != 1 && nTokens != 2) {
-		log_error("Command format: XGO [boosternumber]");
+		log_error("Command format: XGO {boosternumber}");
 		return 0;
 	}
 #ifdef LOGGING
@@ -113,6 +115,17 @@ uint8_t ib_go_cmd(char** tokens, uint8_t nTokens) {
 		go_booster(number);
 	}
 
+
+
+	//QUICK-FIX: Neuanmeldung MFX-Loks
+/*	for (uint8_t j = 0; (locoDataMFX[j].address != 0 && j < MFX_LOCO_DATA_BUFFER_SIZE); j++){
+		locoDataMFX[j].sidAssigned = 0;
+		mfxSIDCmdCounter++;
+	}
+*/
+	//damit mšglichst bald das Brain sich als MFX-Centrale  meldet
+	mfxBrainTimer = BRAIN_MFX_WAIT_TIMERCYCLES;
+
 	return 1;
 
 }
@@ -122,7 +135,7 @@ uint8_t ib_stop_cmd(char** tokens, uint8_t nTokens) {
 	uint8_t number = 0;
 
 	if (nTokens != 1 && nTokens != 2) {
-		log_error("Command format: XSTOP [boosternumber]");
+		log_error("Command format: XSTOP {boosternumber}");
 		return 0;
 	}
 #ifdef LOGGING
@@ -166,7 +179,73 @@ uint8_t ib_booster_state_cmd(char** tokens, uint8_t nTokens) {
 
 
 //================================================================================
-// Weichen-Befehl
+// Solenoid Configuration
+//================================================================================
+uint8_t ib_solenoid_config_cmd(char** tokens, uint8_t nTokens) {
+
+	uint16_t solenoidAdr = 0;
+	uint8_t solenoidType = 0;
+
+	if (nTokens != 3) {
+		log_error("Command format: XTS {turnoutnumber TURNOUT|CUTTER|TURNTABLE}");
+		return 0;
+	}
+#ifdef LOGGING
+	log_debug("New Solenoid Configuration");
+#endif
+
+	solenoidAdr = atol(tokens[1]);
+
+	if (strcasecmp(tokens[2], "TURNOUT") == 0) {
+		solenoidType = TURNOUT;
+	} else if (strcasecmp(tokens[2], "CUTTER") == 0) {
+		solenoidType = CUTTER;
+	} else if (strcasecmp(tokens[2], "TURNTABLE") == 0) {
+		solenoidType = TURNTABLE;
+	} else {
+		return 0;
+	}
+
+#ifdef LOGGING
+	log_debug3("Decoder-Address: ", solenoidAdr);
+	log_debug3("Decoder-Type: ", solenoidType);
+
+#endif
+
+	uint8_t i = 0;
+	//Solenoid already configured?
+	while (i < MM_SOLENOID_DATA_BUFFER_SIZE) {
+		if (solenoidDataMM[i].numAddress == solenoidAdr) {
+			log_error("Solenoid already initialized");
+			return 0;
+		}
+		i++;
+	}
+
+	// Searching empty place in Solenoid-Buffer
+	i = 0;
+	while (solenoidDataMM[i].numAddress != 0) {
+		i++;
+		if (i >= MM_SOLENOID_DATA_BUFFER_SIZE) {
+			log_error("Buffer Solenoid full");
+			return 0;
+		}
+	}
+
+	solenoidDataMM[i].numAddress = solenoidAdr;
+	solenoidDataMM[i].solenoidType = solenoidType;
+	solenoidDataMM[i].boosterNr = 0;
+	solenoidDataMM[i].cutterState = 0;
+
+
+
+	return 1;
+
+}
+
+
+//================================================================================
+// Solenoid Command
 //================================================================================
 uint8_t ib_solenoid_cmd(char** tokens, uint8_t nTokens) {
 
@@ -180,7 +259,7 @@ uint8_t ib_solenoid_cmd(char** tokens, uint8_t nTokens) {
 	uint8_t trit5 = 0;
 
 	if (nTokens != 3) {
-		log_error("Command format: XT [turnoutnumber] r|g|0|1");
+		log_error("Command format: XT {turnoutnumber r|g|0|1}");
 		//SPI_MasterTransmitDebug();
 		return 0;
 	}
@@ -188,7 +267,7 @@ uint8_t ib_solenoid_cmd(char** tokens, uint8_t nTokens) {
 	log_debug("New Solenoid Command");
 #endif
 
-	solenoidAdr = atoi(tokens[1]);
+	solenoidAdr = atol(tokens[1]);
 	//Adresse des Decoders berechnen: number 1-4 => address 1, number 5-8 => address 2, ...
 	address = (unsigned char) ceilf(solenoidAdr / 4.f);
 
@@ -236,12 +315,26 @@ uint8_t ib_solenoid_cmd(char** tokens, uint8_t nTokens) {
 		trit5 = 3;
 
 
-	solenoidQueue[solenoidQueueIdxEnter].address = ((256 * trit1) + (64 * trit2) + (16 * trit3) + (4 * trit4) + trit5);
+	solenoidQueue[solenoidQueueIdxEnter].tritAddress = ((256 * trit1) + (64 * trit2) + (16 * trit3) + (4 * trit4) + trit5);
+	solenoidQueue[solenoidQueueIdxEnter].solenoidType = TURNOUT;
+
+	int i = 0;
+	//Solenoid already configured?
+	while (i < MM_SOLENOID_DATA_BUFFER_SIZE) {
+		if (solenoidDataMM[i].numAddress == solenoidAdr) {
+			solenoidDataMM[i].tritAddress = solenoidQueue[solenoidQueueIdxEnter].tritAddress;
+			solenoidDataMM[i].port = port;
+			solenoidQueue[solenoidQueueIdxEnter].solenoidType = solenoidDataMM[i].solenoidType;
+			solenoidQueue[solenoidQueueIdxEnter].cutterState = solenoidDataMM[i].cutterState = 1;
+			break;
+		}
+		i++;
+	}
 
 #ifdef LOGGING
 	log_debug3("Address: ", address);
 	char convStr [6];
-	log_debug2("Trit-Calc: ", utoa(solenoidQueue[solenoidQueueIdxEnter].address, convStr, 10));
+	log_debug2("Trit-Calc: ", utoa(solenoidQueue[solenoidQueueIdxEnter].tritAddress, convStr, 10));
 #endif
 
 	solenoidQueue[solenoidQueueIdxEnter].port = portData[port];
@@ -278,7 +371,7 @@ uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
 
 
 	if (nTokens < 3) {
-		log_error("Command format: XLS [loconumber] MM|MM2|MFX|DCC {mfxUID}");
+		log_error("Command format: XLS {loconumber MM|MM2|MFX|DCC [mfxUID]}");
 		return 0;
 	}
 
@@ -287,7 +380,7 @@ uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
 
 	if (strcasecmp(protocol, "MFX") == 0)  {
 		if (nTokens != 4) {
-			log_error("Command format: XLS [loconumber] MM|MM2|MFX|DCC [mfxUID]");
+			log_error("Command format: XLS {loconumber MM|MM2|MFX|DCC mfxUID}");
 			return 0;
 		}
 		decoderUID = atol(tokens[3]);
@@ -537,6 +630,7 @@ uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
 			locoDataDCC[j].longAddress = 1;
 		}
 
+		locoDataDCC[j].refreshEncCmdIdx = 0;
 
 		//DCC-Befehle Adressbereich encodieren
 		//------------------------------------
@@ -778,7 +872,7 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 
 	if (nTokens < 4) {
 		log_error(
-				"Command format: XL [loconumber speed direction] {fn F1 F2 F3 F4 F5 ... F16}");
+				"Command format: XL {loconumber speed direction} [fn F1 F2 F3 F4 F5 ... F16]");
 		return 0;
 	}
 
@@ -897,12 +991,11 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 			locoDataMM[j].direction = direction;
 			newSpeedFnCmd = 1;
 
-		// Neuer Speed wenn Richtung gleich oder wenn Speed 0 ist (Halt)
-		} else if ((direction == locoDataMM[j].direction) || (speed == 0)){
-
+		// Neuer Speed wenn Richtung gleich
+		} else if (direction == locoDataMM[j].direction){
 			if (locoDataMM[j].speed < speed){
 				enqueue_loco_loprio(MM2, j, 0);
-			} else if (locoDataMM[j].speed > speed || speed == 0){
+			} else if (locoDataMM[j].speed > speed){
 				enqueue_loco_hiprio(MM2, j, 0);
 			}
 			locoDataMM[j].speed = speed;
@@ -1048,11 +1141,11 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 			enqueue_loco_hiprio(MFX, j, 0);
 			locoDataMFX[j].direction = direction;
 
-		// Neuer Speed wenn Richtung gleich oder wenn Speed 0 ist (Nothalt)
-		} else if ((direction == locoDataMFX[j].direction) || (speed == 0)){
+		// Neuer Speed wenn Richtung gleich
+		} else if (direction == locoDataMFX[j].direction){
 			if (locoDataMFX[j].speed < speed){
 				enqueue_loco_loprio(MFX, j, 0);
-			} else if (locoDataMFX[j].speed > speed || speed == 0){
+			} else if (locoDataMFX[j].speed > speed){
 				enqueue_loco_hiprio(MFX, j, 0);
 			}
 			locoDataMFX[j].speed = speed;
@@ -1197,11 +1290,11 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 			enqueue_loco_hiprio(DCC, j, 0);
 			locoDataDCC[j].direction = direction;
 
-		// Neuer Speed wenn Richtung gleich oder wenn Speed 0 ist (Nothalt)
-		} else if ((direction == locoDataDCC[j].direction) || (speed == 0)){
+		// Neuer Speed wenn Richtung gleich
+		} else if (direction == locoDataDCC[j].direction){
 			if (locoDataDCC[j].speed < speed){
 				enqueue_loco_loprio(DCC, j, 0);
-			} else if (locoDataDCC[j].speed > speed || speed == 0){
+			} else if (locoDataDCC[j].speed > speed){
 				enqueue_loco_hiprio(DCC, j, 0);
 			}
 			locoDataDCC[j].speed = speed;
@@ -1216,7 +1309,6 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 			if (locoDataDCC[j].fn != fn) {
 				enqueue_loco_loprio(DCC, j, 1);
 				locoDataDCC[j].fn = fn;
-//				log_debug3("LocoDCCFn: ", locoDataDCC[j].fn);
 			}
 
 			//DCC Befehl "F1"
@@ -1445,7 +1537,7 @@ uint8_t ib_remove_loc_cmd(char** tokens, uint8_t nTokens) {
 	uint16_t locoAdr;
 
 	if (nTokens != 2) {
-		log_error("Command format: XLOCREMOVE [loconumber]");
+		log_error("Command format: XLOCREMOVE {loconumber}");
 		return 0;
 	}
 
@@ -1539,7 +1631,6 @@ uint8_t ib_remove_loc_cmd(char** tokens, uint8_t nTokens) {
 
 	} else {
 		log_error("Unkown protocol");
-
 	}
 
 	//Lok-Adresse im LocoProtocolIdx lšschen
@@ -1554,13 +1645,13 @@ uint8_t ib_remove_loc_cmd(char** tokens, uint8_t nTokens) {
 	uart_puts("XLOCREMOVE ");
 	send_number_dec(locoAdr);
 	uart_puts(" STATUS REMOVED");
-	send_nl();
+//	send_nl();
+	send_cr();
 
 	//wenn keine Lok angemeldet IdleLok aktivieren
 	if (locoProtocolIdx[0].address == 0) {
 		initIdleLocoData();
 	}
-
 
 	return 1;
 }
@@ -1693,7 +1784,7 @@ uint8_t ib_loc_halt_cmd(char** tokens, uint8_t nTokens) {
 uint8_t ib_debug_level_cmd(char** tokens, uint8_t nTokens) {
 
 	if (nTokens != 2) {
-		log_error("Command format: XDB [level] (level = 0-4)");
+		log_error("Command format: XDB {level} (level = 0-4)");
 		return 0;
 	}
 
@@ -1712,7 +1803,7 @@ uint8_t ib_get_uid_cmd(char** tokens, uint8_t nTokens) {
 	char cmd[5];
 
 	if (nTokens != 2) {
-		log_error("Command format: XGETUID {START | STOP}");
+		log_error("Command format: XGETUID {START|STOP}");
 		return 0;
 	}
 

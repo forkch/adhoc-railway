@@ -77,25 +77,29 @@ void green_led_off() {
 
 void logit(char* msg) {
 	uart_puts(msg);
-	send_nl();
+//	send_nl();
+	send_cr();
 }
 
 void logit2(char* msg, char* msg2) {
 	uart_puts(msg);
 	uart_puts(msg2);
-	send_nl();
+//	send_nl();
+	send_cr();
 }
 
 void logit3(char* msg, uint8_t number) {
 	uart_puts(msg);
 	send_number(number);
-	send_nl();
+//	send_nl();
+	send_cr();
 }
 
 void logit4(char* msg, uint32_t number) {
 	uart_puts(msg);
 	send_number(number);
-	send_nl();
+//	send_nl();
+	send_cr();
 }
 
 void logit_binary(char* msg, unsigned char number) {
@@ -110,7 +114,8 @@ void logit_binary(char* msg, unsigned char number) {
 		}
 	}
 
-	send_nl();
+//	send_nl();
+	send_cr();
 }
 
 void log_error(char* msg) {
@@ -201,8 +206,14 @@ void log_debug3(char* msg, uint8_t number) {
 }
 
 
+
 void send_nl() {
 	uart_putc('\n');
+}
+
+
+void send_cr() {
+	uart_putc('\r');
 }
 
 void send_number(unsigned long int my_val) {

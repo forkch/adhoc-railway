@@ -19,6 +19,7 @@ uint8_t ib_go_cmd(char** tokens, uint8_t nTokens);
 uint8_t ib_stop_cmd(char** tokens, uint8_t nTokens);
 uint8_t ib_booster_state_cmd(char** tokens, uint8_t nTokens);
 uint8_t ib_solenoid_cmd(char** tokens, uint8_t nTokens);
+uint8_t ib_solenoid_config_cmd(char** tokens, uint8_t nTokens);
 uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens);
 uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens);
 uint8_t ib_debug_level_cmd(char** tokens, uint8_t nTokens);

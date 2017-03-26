@@ -20,7 +20,12 @@ volatile uint16_t actualData;
 
 typedef enum PWM_MODE {
 	MODE_MM2_SOLENOID, MODE_MM2_LOCO, MODE_MFX, MODE_DCC
-} PM;
+};
+
+
+typedef enum SOLENOID_TYPE {
+	TURNOUT, CUTTER, TURNTABLE		// Turntable noch nicht implementiert
+};
 
 //#define SOLENOID_WAIT 10
 
@@ -28,7 +33,9 @@ typedef enum PWM_MODE {
 //clk/1024 => 20MHz/1024 => 51µs
 #define TIMER0_PRESCALER      (1 << CS02) | (1 << CS00)
 
-volatile unsigned char timer0_interrupt;
+volatile unsigned char solenoidTimer;
+volatile uint16_t cutterTimer;
+volatile unsigned char mfxBrainTimer;
 volatile unsigned char short_detected;
 
 
@@ -72,8 +79,13 @@ struct LocoDataMM locoDataMM[MM_LOCO_DATA_BUFFER_SIZE];
 struct LocoDataMFX locoDataMFX[MFX_LOCO_DATA_BUFFER_SIZE];
 struct LocoDataDCC locoDataDCC[DCC_LOCO_DATA_BUFFER_SIZE];
 
+unsigned char brainEncCmd[MFX_SID_COMMAND_LENGTH];
+
 // Indexliste um zu einer Adresse den richtigen Buffer (MM, MFX oder DCC) zu finden
 struct LocoProtocolIdx locoProtocolIdx[LOCO_PROTOCOL_INDEX_BUFFER_SIZE];
+
+// angemeldete Weichen
+struct SolenoidDataMM solenoidDataMM[MM_SOLENOID_DATA_BUFFER_SIZE];
 
 
 // MFX Spezial
@@ -149,6 +161,7 @@ void init();
 void initPortData();
 void initLocoData();
 void initIdleLocoData();
+void initBrainMFXData();
 
 void processASCIIData();
 void enqueue_solenoid();
@@ -166,6 +179,7 @@ void prepareDataForPWM();
 void prepareRefreshLocoPacket(uint8_t protocol);
 void prepareNewLocoPacket(unsigned char newProtocol, unsigned char newBufferIdx, unsigned char NewEncCmdIdx);
 void prepareSIDLocoPacket();
+void prepareMFXBrainCmd();
 void prepareSolenoidPacket(unsigned char activate);
 
 

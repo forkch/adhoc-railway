@@ -66,6 +66,7 @@ void log_error_binary(char*,uint8_t);
 void log_info_binary(char*,uint8_t);
 
 void send_nl();
+void send_cr();
 void send_number(unsigned long int);
 void send_number_dec(unsigned long int);
 void send_number_hex(unsigned long int);

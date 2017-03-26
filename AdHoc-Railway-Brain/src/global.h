@@ -47,6 +47,8 @@ extern unsigned char logLevel;
 // --------------
 // Main
 #define SOLENOID_WAIT_TIMERCYCLES 10	// 10 x 13ms => 130ms (timer0 Interrupt)
+#define CUTTER_WAIT_TIMERCYCLES 230		// 230 x 13ms => 2.99s
+#define BRAIN_MFX_WAIT_TIMERCYCLES 160	// 160 x 13ms => 2.08s
 
 // Loco
 // während Refresh: Max Anzahl Befehle mit dem gleichen Protokoll
@@ -118,7 +120,7 @@ extern unsigned char logLevel;
 
 //Grösse eines SID-Befehls - Vergabe der Schienenadresse (ohne Sync)
 //Länge = 69 Bit (ohne Stuffing)
-#define MFX_SID_PACKET_LENGTH 78			// SID-Befehl (Adress-Zuweisung)
+#define MFX_SID_PACKET_LENGTH 90 //vorher 78			// SID-Befehl (Adress-Zuweisung)
 #define MFX_SID_COMMAND_LENGTH (MFX_START_SYNC_REPETITIONS*MFX_SYNC_LENGTH + MFX_SID_PACKET_LENGTH + MFX_END_SYNC_REPETITIONS*MFX_SYNC_LENGTH)
 
 
@@ -159,18 +161,24 @@ extern unsigned char logLevel;
 
 // Loco-Buffers
 // ------------
-#define MM_LOCO_DATA_BUFFER_SIZE 20
-#define MFX_LOCO_DATA_BUFFER_SIZE 20
-#define DCC_LOCO_DATA_BUFFER_SIZE 20
+#define MM_LOCO_DATA_BUFFER_SIZE 25
+#define MFX_LOCO_DATA_BUFFER_SIZE 25
+#define DCC_LOCO_DATA_BUFFER_SIZE 25
 
-#define LOCO_PROTOCOL_INDEX_BUFFER_SIZE 60
+#define LOCO_PROTOCOL_INDEX_BUFFER_SIZE 50
 
-
+// Loco-Queues
+// -----------
 #define MAX_NEW_LOCO_QUEUES 50
 
 
 // Solenoid-Buffer
 // ---------------
+#define MM_SOLENOID_DATA_BUFFER_SIZE 40
+
+
+// Solenoid-Queue
+// --------------
 #define MAX_SOLENOID_QUEUE 100
 
 
@@ -195,7 +203,7 @@ typedef struct LocoDataMM {
 	unsigned char changingDirectionDelta :1;
 	unsigned char encCmdAdrFn[MM_PACKET_ADRESS_FN_LENGTH];
 	unsigned char encCmdData[5][MM_PACKET_DATA_LENGTH];
-} LDMM;
+};
 
 
 // MFX-Loco-Buffer
@@ -223,7 +231,7 @@ typedef struct LocoDataMFX {
 	unsigned char f16 :1;
 	unsigned char sidAssigned :1;
 	unsigned char encCmd[MFX_COMMAND_LENGTH];
-} LDMFX;
+};
 
 
 // DCC-Loco-Buffer
@@ -251,37 +259,52 @@ typedef struct LocoDataDCC {
 	unsigned char f12 :1;
 	unsigned char speed14Mode :1;
 	unsigned char longAddress :1;
+	unsigned char refreshEncCmdIdx;
 	unsigned char encCmd[4][DCC_COMMAND_LENGTH_EXT];
-} LDDCC;
+};
 
 
-// MM-Solenoid-Queue
-// -----------------
-typedef struct SolenoidQueue {
-	unsigned int address;		// Trit-Adresse (Motorola-Format)
-	unsigned char port;			// Ausgangs-Port (1-8) des Decoders
-	unsigned char boosterNr;	// an welchem Booster-Kreis die Weiche liegt
-} SD;
-
-
-// Index-Queues
+// Loco-Queues
 // ------------
 typedef struct LocoProtocolIdx {
 	unsigned int address;
 	unsigned char protocol;
-} LBI;
+};
 
 typedef struct NewLocoCmdHiPrio {
 	unsigned char protocol;
 	unsigned char bufferIdx;
 	unsigned char encCmdIdx;
-} NLCHP;
+};
 
 typedef struct NewLocoCmdLoPrio {
 	unsigned char protocol;
 	unsigned char bufferIdx;
 	unsigned char encCmdIdx;
-} NLCLP;
+};
+
+
+
+// MM-Solenoid-Buffer
+// ------------------
+typedef struct SolenoidDataMM {
+	unsigned int numAddress;		// numerische Adresse
+	unsigned int tritAddress;		// Trit-Adresse (Motorola-Format)
+	unsigned char port;				// Ausgangs-Port (1-8) des Decoders
+	unsigned char solenoidType;
+	unsigned char boosterNr;
+	unsigned char cutterState;		// 0=nop, 1=to be activated, 2=to be deactivated
+};
+
+// MM-Solenoid-Queue
+// -----------------
+typedef struct SolenoidQueue {
+	unsigned int tritAddress;		// Trit-Adresse (Motorola-Format)
+	unsigned char port;				// Ausgangs-Port (1-8) des Decoders
+	unsigned char solenoidType;		// Turnout, Cutter oder Turntable (Turntable noch nicht implementiert)
+	unsigned char boosterNr;		// an welchem Booster-Kreis die Weiche liegt
+	unsigned char cutterState;
+};
 
 
 #endif /* GLOBAL_H_ */
