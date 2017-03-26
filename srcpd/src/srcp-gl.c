@@ -125,6 +125,10 @@ int enqueueGL(bus_t busnumber, int addr, int dir, int speed, int maxspeed,
         }
 
         /* Protokollbezeichner und sonstige INIT Werte in die Queue kopieren! */
+
+        queue[busnumber][in[busnumber]].state =
+                gl[busnumber].glstate[addr].state;
+
         queue[busnumber][in[busnumber]].protocol =
             gl[busnumber].glstate[addr].protocol;
         queue[busnumber][in[busnumber]].protocolversion =
@@ -261,8 +265,10 @@ int cacheInitGL(bus_t busnumber, int addr, const char protocol,
         tgl.protocol = protocol;
         tgl.id = addr;
         if (buses[busnumber].init_gl_func)
-            rc = (*buses[busnumber].init_gl_func) (&tgl);
+            rc = (*buses[busnumber].init_gl_func) (busnumber, &tgl);
         if (rc == SRCP_OK) {
+
+            syslog_bus(busnumber, DBG_INFO, "init ok");
             gl[busnumber].glstate[addr] = tgl;
             gl[busnumber].glstate[addr].state = 1;
             cacheDescribeGL(busnumber, addr, msg);
@@ -279,6 +285,8 @@ int cacheInitGL(bus_t busnumber, int addr, const char protocol,
 
 int cacheTermGL(bus_t busnumber, int addr)
 {
+
+    syslog_bus(busnumber, DBG_INFO, "cacheTermGL");
     if (isInitializedGL(busnumber, addr)) {
         gl[busnumber].glstate[addr].state = 2;
         enqueueGL(busnumber, addr, 0, 0, 1, 0);
