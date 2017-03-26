@@ -279,7 +279,7 @@ int init_ga_ADHOCMM(ga_state_t *ga) {
  * return code wird ignoriert (vorerst)
  */
 int init_bus_ADHOCMM(bus_t busnumber) {
-    static char *protocols = "MXN";
+    static char *protocols = "MNX";
 
     buses[busnumber].protocols = protocols;
 
@@ -298,7 +298,7 @@ int init_bus_ADHOCMM(bus_t busnumber) {
     }
 
     int i = 0;
-    for (i = 0; i < 80; i++) {
+    for (i = 0; i < 1024; i++) {
         locoState[i] = LOCO_DEAD;
     }
     for (i = 0; i < 8; i++) {

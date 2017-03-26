@@ -31,8 +31,7 @@
  */
 
 static int handle_setcheck(sessionid_t sessionid, bus_t bus, char *device,
-                           char *parameter, char *reply, int setorcheck)
-{
+                           char *parameter, char *reply, int setorcheck) {
     struct timeval time;
     int rc = SRCP_UNSUPPORTEDDEVICEGROUP;
     *reply = 0x00;
@@ -45,9 +44,9 @@ static int handle_setcheck(sessionid_t sessionid, bus_t bus, char *device,
         /* We could provide a maximum of 32 on/off functions,
            but for now 28+1 will be good enough */
         anzparms = sscanf(parameter, "%ld %ld %ld %ld %ld %ld %ld %ld "
-                          "%ld %ld %ld %ld %ld %ld %ld %ld %ld "
-                          "%ld %ld %ld %ld %ld %ld %ld %ld "
-                          "%ld %ld %ld %ld %ld %ld %ld %ld",
+                                  "%ld %ld %ld %ld %ld %ld %ld %ld %ld "
+                                  "%ld %ld %ld %ld %ld %ld %ld %ld "
+                                  "%ld %ld %ld %ld %ld %ld %ld %ld",
                           &laddr, &direction, &speed, &maxspeed, &f[0],
                           &f[1], &f[2], &f[3], &f[4], &f[5], &f[6], &f[7],
                           &f[8], &f[9], &f[10], &f[11], &f[12], &f[13],
@@ -66,24 +65,20 @@ static int handle_setcheck(sessionid_t sessionid, bus_t bus, char *device,
                 if (setorcheck == 1)
                     rc = enqueueGL(bus, laddr, direction, speed, maxspeed,
                                    func);
-            }
-            else {
+            } else {
                 rc = SRCP_DEVICELOCKED;
             }
-        }
-        else {
+        } else {
             rc = SRCP_LISTTOOSHORT;
         }
-    }
-
-    else if (bus_has_devicegroup(bus, DG_GA)
-             && strncasecmp(device, "GA", 2) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_GA)
+               && strncasecmp(device, "GA", 2) == 0) {
         long gaddr, port, aktion, delay;
         sessionid_t lockid;
         int anzparms;
         anzparms =
-            sscanf(parameter, "%ld %ld %ld %ld", &gaddr, &port, &aktion,
-                   &delay);
+                sscanf(parameter, "%ld %ld %ld %ld", &gaddr, &port, &aktion,
+                       &delay);
         if (anzparms >= 4) {
             /* Port 0,1; Action 0,1 */
             /* Only if not locked!! */
@@ -92,18 +87,14 @@ static int handle_setcheck(sessionid_t sessionid, bus_t bus, char *device,
                 rc = SRCP_OK;
                 if (setorcheck == 1)
                     rc = enqueueGA(bus, gaddr, port, aktion, delay);
-            }
-            else {
+            } else {
                 rc = SRCP_DEVICELOCKED;
             }
-        }
-        else {
+        } else {
             rc = SRCP_LISTTOOSHORT;
         }
-    }
-
-    else if (bus_has_devicegroup(bus, DG_FB)
-             && strncasecmp(device, "FB", 2) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_FB)
+               && strncasecmp(device, "FB", 2) == 0) {
         long fbport, value;
         int anzparms;
         anzparms = sscanf(parameter, "%ld %ld", &fbport, &value);
@@ -113,7 +104,7 @@ static int handle_setcheck(sessionid_t sessionid, bus_t bus, char *device,
         }
     }
 
-    /* SET 0 GM "<send_to_id> <reply_to_id> <message_type> <message>" */
+        /* SET 0 GM "<send_to_id> <reply_to_id> <message_type> <message>" */
     else if (bus_has_devicegroup(bus, DG_GM)
              && strncasecmp(device, "GM", 2) == 0) {
         sessionid_t sendto, replyto;
@@ -123,14 +114,14 @@ static int handle_setcheck(sessionid_t sessionid, bus_t bus, char *device,
         memset(msg, 0, sizeof(msg));
         /*TODO: scan also message type */
         result =
-            sscanf(parameter, "%lu %lu %990c", &sendto, &replyto, msg);
+                sscanf(parameter, "%lu %lu %990c", &sendto, &replyto, msg);
         if (result < 3)
             rc = SRCP_LISTTOOSHORT;
         else
             rc = setGM(sendto, replyto, msg);
     }
 
-    /* SET <bus> SM "<decoderaddress> <type> <1 or more values>" */
+        /* SET <bus> SM "<decoderaddress> <type> <1 or more values>" */
     else if (bus_has_devicegroup(bus, DG_SM)
              && strncasecmp(device, "SM", 2) == 0) {
         long addr, value1, value2, value3;
@@ -167,29 +158,24 @@ static int handle_setcheck(sessionid_t sessionid, bus_t bus, char *device,
                                 value2, reply);
             }
         }
-    }
-
-    else if (bus_has_devicegroup(bus, DG_TIME)
-             && strncasecmp(device, "TIME", 4) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_TIME)
+               && strncasecmp(device, "TIME", 4) == 0) {
         long d, h, m, s, nelem;
         nelem = sscanf(parameter, "%ld %ld %ld %ld", &d, &h, &m, &s);
         if (nelem >= 4) {
             rc = SRCP_OK;
             if (setorcheck == 1)
                 rc = setTIME(d, h, m, s);
-        }
-        else
+        } else
             rc = SRCP_LISTTOOSHORT;
-    }
-
-    else if (bus_has_devicegroup(bus, DG_LOCK)
-             && strncasecmp(device, "LOCK", 4) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_LOCK)
+               && strncasecmp(device, "LOCK", 4) == 0) {
         long int addr, duration;
         char devgrp[MAXSRCPLINELEN];
         int nelem = -1;
         if (strlen(parameter) > 0) {
             nelem =
-                sscanf(parameter, "%s %ld %ld", devgrp, &addr, &duration);
+                    sscanf(parameter, "%s %ld %ld", devgrp, &addr, &duration);
             syslog_bus(bus, DBG_INFO, "LOCK: %s", parameter);
         }
         if (nelem >= 3) {
@@ -198,20 +184,16 @@ static int handle_setcheck(sessionid_t sessionid, bus_t bus, char *device,
                 rc = SRCP_OK;
                 if (setorcheck == 1)
                     rc = cacheLockGL(bus, addr, duration, sessionid);
-            }
-            else if (strncmp(devgrp, "GA", 2) == 0) {
+            } else if (strncmp(devgrp, "GA", 2) == 0) {
                 rc = SRCP_OK;
                 if (setorcheck == 1)
                     rc = lockGA(bus, addr, duration, sessionid);
             }
-        }
-        else {
+        } else {
             rc = SRCP_LISTTOOSHORT;
         }
-    }
-
-    else if (bus_has_devicegroup(bus, DG_POWER)
-             && strncasecmp(device, "POWER", 5) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_POWER)
+               && strncasecmp(device, "POWER", 5) == 0) {
         int nelem;
         char state[5], msg[256];
         memset(msg, 0, sizeof(msg));
@@ -222,14 +204,12 @@ static int handle_setcheck(sessionid_t sessionid, bus_t bus, char *device,
                 rc = SRCP_OK;
                 if (setorcheck == 1)
                     rc = setPower(bus, 0, msg);
-            }
-            else if (strncasecmp(state, "ON", 2) == 0) {
+            } else if (strncasecmp(state, "ON", 2) == 0) {
                 rc = SRCP_OK;
                 if (setorcheck == 1)
                     rc = setPower(bus, 1, msg);
             }
-        }
-        else {
+        } else {
             rc = SRCP_LISTTOOSHORT;
         }
     }
@@ -243,8 +223,7 @@ static int handle_setcheck(sessionid_t sessionid, bus_t bus, char *device,
  * SET
  */
 int handleSET(sessionid_t sessionid, bus_t bus, char *device,
-              char *parameter, char *reply)
-{
+              char *parameter, char *reply) {
     return handle_setcheck(sessionid, bus, device, parameter, reply, 1);
 }
 
@@ -252,8 +231,7 @@ int handleSET(sessionid_t sessionid, bus_t bus, char *device,
  * CHECK -- like SET but no command must be sent
  */
 int handleCHECK(sessionid_t sessionid, bus_t bus, char *device,
-                char *parameter, char *reply)
-{
+                char *parameter, char *reply) {
     return handle_setcheck(sessionid, bus, device, parameter, reply, 0);
 }
 
@@ -261,8 +239,7 @@ int handleCHECK(sessionid_t sessionid, bus_t bus, char *device,
  * GET
  */
 int handleGET(sessionid_t sessionid, bus_t bus, char *device,
-              char *parameter, char *reply, size_t length)
-{
+              char *parameter, char *reply, size_t length) {
     struct timeval akt_time;
     int rc = SRCP_UNSUPPORTEDDEVICEGROUP;
     *reply = 0x00;
@@ -276,20 +253,16 @@ int handleGET(sessionid_t sessionid, bus_t bus, char *device,
             rc = infoFB(bus, port, reply, length);
         else
             rc = srcp_fmt_msg(SRCP_LISTTOOSHORT, reply, akt_time);
-    }
-
-    else if (bus_has_devicegroup(bus, DG_GL)
-             && strncasecmp(device, "GL", 2) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_GL)
+               && strncasecmp(device, "GL", 2) == 0) {
         long nelem, addr;
         nelem = sscanf(parameter, "%ld", &addr);
         if (nelem >= 1)
             rc = cacheInfoGL(bus, addr, reply);
         else
             rc = srcp_fmt_msg(SRCP_LISTTOOSHORT, reply, akt_time);
-    }
-
-    else if (bus_has_devicegroup(bus, DG_GA)
-             && strncasecmp(device, "GA", 2) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_GA)
+               && strncasecmp(device, "GA", 2) == 0) {
         long addr, port, nelem;
         nelem = sscanf(parameter, "%ld %ld", &addr, &port);
         switch (nelem) {
@@ -303,10 +276,8 @@ int handleGET(sessionid_t sessionid, bus_t bus, char *device,
             default:
                 rc = srcp_fmt_msg(SRCP_LISTTOOLONG, reply, akt_time);;
         }
-    }
-
-    else if (bus_has_devicegroup(bus, DG_SM)
-             && strncasecmp(device, "SM", 2) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_SM)
+               && strncasecmp(device, "SM", 2) == 0) {
         long addr, value1, value2;
         int nelem;
         int type;
@@ -316,8 +287,7 @@ int handleGET(sessionid_t sessionid, bus_t bus, char *device,
                        &value2);
         if (nelem < 3) {
             rc = SRCP_LISTTOOSHORT;
-        }
-        else {
+        } else {
             type = -1;
 
             if (strcasecmp(ctype, "REG") == 0)
@@ -331,40 +301,30 @@ int handleGET(sessionid_t sessionid, bus_t bus, char *device,
 
             if (type == -1) {
                 rc = SRCP_WRONGVALUE;
-            }
-            else {
+            } else {
                 if (type != CV_BIT)
                     value2 = 0;
                 if (type == CV_BIT && nelem < 4) {
                     rc = SRCP_LISTTOOSHORT;
-                }
-                else {
+                } else {
                     rc = infoSM(bus, GET, type, addr, value1, value2, 0,
                                 reply);
                 }
             }
         }
-    }
-
-    else if (bus_has_devicegroup(bus, DG_POWER)
-             && strncasecmp(device, "POWER", 5) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_POWER)
+               && strncasecmp(device, "POWER", 5) == 0) {
         rc = infoPower(bus, reply);
-    }
-
-    else if (bus_has_devicegroup(bus, DG_SERVER)
-             && strncasecmp(device, "SERVER", 6) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_SERVER)
+               && strncasecmp(device, "SERVER", 6) == 0) {
         rc = infoSERVER(reply);
-    }
-
-    else if (bus_has_devicegroup(bus, DG_TIME)
-             && strncasecmp(device, "TIME", 4) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_TIME)
+               && strncasecmp(device, "TIME", 4) == 0) {
         rc = infoTIME(reply);
         if (rc != SRCP_INFO) {
             rc = srcp_fmt_msg(SRCP_NODATA, reply, akt_time);
         }
-    }
-
-    else if (strncasecmp(device, "DESCRIPTION", 11) == 0) {
+    } else if (strncasecmp(device, "DESCRIPTION", 11) == 0) {
 
         /* there are two descriptions */
         long int addr;
@@ -374,8 +334,7 @@ int handleGET(sessionid_t sessionid, bus_t bus, char *device,
             nelem = sscanf(parameter, "%10s %ld", devgrp, &addr);
         if (nelem <= 0) {
             rc = describeBus(bus, reply);
-        }
-        else {
+        } else {
             if (bus_has_devicegroup(bus, DG_DESCRIPTION)) {
                 syslog_bus(bus, DBG_INFO,
                            "DESCRIPTION: devgrp=%s addr=%ld", devgrp,
@@ -392,16 +351,13 @@ int handleGET(sessionid_t sessionid, bus_t bus, char *device,
                     rc = describeTIME(reply);
                 else if (strncmp(devgrp, "SERVER", 6) == 0)
                     rc = describeSERVER(bus, addr, reply);
-            }
-            else {
+            } else {
                 rc = srcp_fmt_msg(SRCP_UNSUPPORTEDDEVICEGROUP, reply,
                                   akt_time);
             }
         }
-    }
-
-    else if (bus_has_devicegroup(bus, DG_LOCK)
-             && (strncasecmp(device, "LOCK", 4) == 0)) {
+    } else if (bus_has_devicegroup(bus, DG_LOCK)
+               && (strncasecmp(device, "LOCK", 4) == 0)) {
         long int addr;
         char devgrp[10];
         int nelem = -1;
@@ -410,8 +366,7 @@ int handleGET(sessionid_t sessionid, bus_t bus, char *device,
             nelem = sscanf(parameter, "%s %ld", devgrp, &addr);
         if (nelem <= 1) {
             rc = srcp_fmt_msg(SRCP_LISTTOOSHORT, reply, akt_time);
-        }
-        else {
+        } else {
             rc = SRCP_UNSUPPORTEDDEVICEGROUP;
             if (strncmp(devgrp, "GL", 2) == 0)
                 rc = describeLOCKGL(bus, addr, reply);
@@ -430,8 +385,7 @@ int handleGET(sessionid_t sessionid, bus_t bus, char *device,
  * WAIT
  */
 int handleWAIT(sessionid_t sessionid, bus_t bus, char *device,
-               char *parameter, char *reply, size_t length)
-{
+               char *parameter, char *reply, size_t length) {
     struct timeval time;
     int rc = SRCP_UNSUPPORTEDDEVICEGROUP;
     *reply = 0x00;
@@ -443,15 +397,14 @@ int handleWAIT(sessionid_t sessionid, bus_t bus, char *device,
         long int port, timeout, nelem;
         int value, waitvalue;
         nelem =
-            sscanf(parameter, "%ld %d %ld", &port, &waitvalue, &timeout);
+                sscanf(parameter, "%ld %d %ld", &port, &waitvalue, &timeout);
         syslog_bus(bus, DBG_INFO, "wait: %d %d %d", port, waitvalue,
                    timeout);
         if (nelem >= 3) {
             if (getFB(bus, port, &time, &value) == SRCP_OK
                 && value == waitvalue) {
                 rc = infoFB(bus, port, reply, length);
-            }
-            else {
+            } else {
                 /* we exactly wait for 1/20 seconds */
                 timeout *= 20;
                 do {
@@ -462,25 +415,20 @@ int handleWAIT(sessionid_t sessionid, bus_t bus, char *device,
                     }
                     getFB(bus, port, &time, &value);
                     timeout--;
-                }
-                while ((timeout >= 0) && (value != waitvalue));
+                } while ((timeout >= 0) && (value != waitvalue));
 
                 if (timeout < 0) {
                     gettimeofday(&time, NULL);
                     rc = srcp_fmt_msg(SRCP_TIMEOUT, reply, time);
-                }
-                else {
+                } else {
                     rc = infoFB(bus, port, reply, length);
                 }
             }
-        }
-        else {
+        } else {
             rc = srcp_fmt_msg(SRCP_LISTTOOSHORT, reply, time);
         }
-    }
-
-    else if (bus_has_devicegroup(bus, DG_TIME)
-             && strncasecmp(device, "TIME", 4) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_TIME)
+               && strncasecmp(device, "TIME", 4) == 0) {
         long d, h, m, s;
         int nelem;
         nelem = sscanf(parameter, "%ld %ld %ld %ld", &d, &h, &m, &s);
@@ -492,8 +440,8 @@ int handleWAIT(sessionid_t sessionid, bus_t bus, char *device,
                 getTIME(&vt);
                 do {
                     mustwait = (((d * 24 + h) * 60 + m) * 60 + s) >=
-                        (((vt.day * 24 + vt.hour) * 60 +
-                          vt.min) * 60 + vt.sec);
+                               (((vt.day * 24 + vt.hour) * 60 +
+                                 vt.min) * 60 + vt.sec);
 
                     /* wait 10ms real time.. */
                     if (mustwait) {
@@ -504,15 +452,12 @@ int handleWAIT(sessionid_t sessionid, bus_t bus, char *device,
                         }
                         getTIME(&vt);
                     }
-                }
-                while (mustwait);
+                } while (mustwait);
                 rc = infoTIME(reply);
-            }
-            else {
+            } else {
                 rc = srcp_fmt_msg(SRCP_NODATA, reply, time);
             }
-        }
-        else {
+        } else {
             rc = srcp_fmt_msg(SRCP_LISTTOOSHORT, reply, time);
         }
     }
@@ -523,8 +468,7 @@ int handleWAIT(sessionid_t sessionid, bus_t bus, char *device,
  * VERIFY
  */
 int handleVERIFY(sessionid_t sessionid, bus_t bus, char *device,
-                 char *parameter, char *reply)
-{
+                 char *parameter, char *reply) {
     int rc = SRCP_UNSUPPORTEDOPERATION;
     struct timeval time;
     gettimeofday(&time, NULL);
@@ -558,13 +502,11 @@ int handleVERIFY(sessionid_t sessionid, bus_t bus, char *device,
                 if (type == CV_BIT) {
                     if (result < 5) {
                         rc = SRCP_LISTTOOSHORT;
-                    }
-                    else {
+                    } else {
                         rc = infoSM(bus, VERIFY, type, addr, value1,
                                     value2, value3, reply);
                     }
-                }
-                else
+                } else
                     rc = infoSM(bus, VERIFY, type, addr, value1, 0,
                                 value2, reply);
             }
@@ -578,8 +520,7 @@ int handleVERIFY(sessionid_t sessionid, bus_t bus, char *device,
  * TERM
  * negative return code (rc) will terminate current session! */
 int handleTERM(sessionid_t sessionid, bus_t bus, char *device,
-               char *parameter, char *reply)
-{
+               char *parameter, char *reply) {
     struct timeval akt_time;
     int rc = SRCP_UNSUPPORTEDDEVICEGROUP;
     *reply = 0x00;
@@ -596,14 +537,12 @@ int handleTERM(sessionid_t sessionid, bus_t bus, char *device,
             if (lockid == 0 || lockid == sessionid) {
                 rc = cacheUnlockGL(bus, addr, sessionid);
                 rc = cacheTermGL(bus, addr);
-            }
-            else {
+            } else {
                 rc = SRCP_DEVICELOCKED;
             }
         }
-    }
-    else if (bus_has_devicegroup(bus, DG_GA)
-        && strncasecmp(device, "GA", 2) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_GA)
+               && strncasecmp(device, "GA", 2) == 0) {
         long int addr = 0;
         int nelem = 0;
         if (strlen(parameter) > 0)
@@ -614,14 +553,12 @@ int handleTERM(sessionid_t sessionid, bus_t bus, char *device,
             if (lockid == 0 || lockid == sessionid) {
                 rc = unlockGA(bus, addr, sessionid);
                 rc = termGA(bus, addr);
-            }
-            else {
+            } else {
                 rc = SRCP_DEVICELOCKED;
             }
         }
-    }
-    else if (bus_has_devicegroup(bus, DG_LOCK)
-             && strncasecmp(device, "LOCK", 4) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_LOCK)
+               && strncasecmp(device, "LOCK", 4) == 0) {
         long int addr;
         char devgrp[10];
         int nelem = -1;
@@ -630,31 +567,23 @@ int handleTERM(sessionid_t sessionid, bus_t bus, char *device,
 
         if (nelem <= 1) {
             rc = SRCP_LISTTOOSHORT;
-        }
-        else {
+        } else {
             rc = SRCP_UNSUPPORTEDDEVICE;
             if (strncmp(devgrp, "GL", 2) == 0) {
                 rc = cacheUnlockGL(bus, addr, sessionid);
-            }
-            else if (strncmp(devgrp, "GA", 2) == 0) {
+            } else if (strncmp(devgrp, "GA", 2) == 0) {
                 rc = unlockGA(bus, addr, sessionid);
             }
         }
-    }
-
-    else if (bus_has_devicegroup(bus, DG_POWER)
-             && strncasecmp(device, "POWER", 5) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_POWER)
+               && strncasecmp(device, "POWER", 5) == 0) {
         rc = termPower(bus);
-    }
-
-    else if (bus_has_devicegroup(bus, DG_SERVER)
-             && strncasecmp(device, "SERVER", 6) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_SERVER)
+               && strncasecmp(device, "SERVER", 6) == 0) {
         rc = SRCP_OK;
         server_shutdown();
-    }
-
-    else if (bus_has_devicegroup(bus, DG_SESSION)
-             && strncasecmp(device, "SESSION", 7) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_SESSION)
+               && strncasecmp(device, "SESSION", 7) == 0) {
         sessionid_t termsession = 0;
         int nelem = 0;
         if (strlen(parameter) > 0)
@@ -662,15 +591,11 @@ int handleTERM(sessionid_t sessionid, bus_t bus, char *device,
         if (nelem <= 0)
             termsession = sessionid;
         rc = termSESSION(bus, sessionid, termsession, reply);
-    }
-
-    else if (bus_has_devicegroup(bus, DG_SM)
-             && strncasecmp(device, "SM", 2) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_SM)
+               && strncasecmp(device, "SM", 2) == 0) {
         rc = infoSM(bus, TERM, 0, -1, 0, 0, 0, reply);
-    }
-
-    else if (bus_has_devicegroup(bus, DG_TIME)
-             && strncasecmp(device, "TIME", 4) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_TIME)
+               && strncasecmp(device, "TIME", 4) == 0) {
         rc = termTIME();
     }
 
@@ -683,77 +608,63 @@ int handleTERM(sessionid_t sessionid, bus_t bus, char *device,
  * INIT
  */
 int handleINIT(sessionid_t sessionid, bus_t bus, char *device,
-               char *parameter, char *reply)
-{
+               char *parameter, char *reply) {
     struct timeval time;
     int rc = SRCP_UNSUPPORTEDDEVICEGROUP;
 
     /*INIT <bus> GL "<addr> <protocol> <optional further parameters>" */
     if (bus_has_devicegroup(bus, DG_GL)
         && strncasecmp(device, "GL", 2) == 0) {
+        syslog_session(sessionid, DBG_INFO, parameter);
         long addr, protversion, n_fs, n_func, nelem;
         unsigned long int uuid;
         char prot;
-        syslog_session(sessionid, DBG_INFO, parameter);
         nelem =
-            sscanf(parameter, "%ld %c %ld %ld %ld %lu", &addr, &prot,
-                   &protversion, &n_fs, &n_func, &uuid);
+                sscanf(parameter, "%ld %c %ld %ld %ld %lu", &addr, &prot,
+                       &protversion, &n_fs, &n_func, &uuid);
 
-        syslog_session(sessionid, DBG_INFO, "%llu", uuid);
         if (nelem >= 5) {
             rc = cacheInitGL(bus, addr, prot, protversion, n_fs, n_func, uuid);
-        }
-        else {
+        } else {
             rc = SRCP_LISTTOOSHORT;
         }
-    }
-
-    else if (bus_has_devicegroup(bus, DG_GA)
-             && strncasecmp(device, "GA", 2) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_GA)
+               && strncasecmp(device, "GA", 2) == 0) {
         long addr, nelem;
         char prot;
         long type; // 2= CUTTER, 1 = TURNOUT, 3 = DREHSCHEIBE
         nelem = sscanf(parameter, "%ld %c %ld", &addr, &prot, &type);
         if (nelem >= 2) {
             rc = initGA(bus, addr, prot, type);
-        }
-        else {
+        } else {
             rc = SRCP_LISTTOOSHORT;
         }
-    }
-
-    else if (bus_has_devicegroup(bus, DG_FB)
-             && strncasecmp(device, "FB", 2) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_FB)
+               && strncasecmp(device, "FB", 2) == 0) {
         long addr, index, nelem;
         char prot;
         nelem = sscanf(parameter, "%ld %c %ld", &addr, &prot, &index);
         if (nelem >= 3) {
             rc = initFB(bus, addr, prot, index);
-        }
-        else {
+        } else {
             rc = SRCP_LISTTOOSHORT;
         }
-    }
-
-    else if (bus_has_devicegroup(bus, DG_POWER)
-             && strncasecmp(device, "POWER", 5) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_POWER)
+               && strncasecmp(device, "POWER", 5) == 0) {
         rc = initPower(bus);
-    }
-
-    else if (bus_has_devicegroup(bus, DG_TIME)
-             && strncasecmp(device, "TIME", 4) == 0) {
+    } else if (bus_has_devicegroup(bus, DG_TIME)
+               && strncasecmp(device, "TIME", 4) == 0) {
         int nelem;
         long rx, ry;
         nelem = sscanf(parameter, "%ld %ld", &rx, &ry);
         if (nelem >= 2) {
             rc = initTIME(rx, ry);      /* checks also values! */
-        }
-        else {
+        } else {
             rc = SRCP_LISTTOOSHORT;
         }
     }
 
-    /* INIT <bus> SM "<protocol>" */
+        /* INIT <bus> SM "<protocol>" */
     else if (bus_has_devicegroup(bus, DG_SM)
              && strncasecmp(device, "SM", 2) == 0) {
         int result;
@@ -777,8 +688,7 @@ int handleINIT(sessionid_t sessionid, bus_t bus, char *device,
  * RESET
  */
 int handleRESET(sessionid_t sessionid, bus_t bus, char *device,
-                char *parameter, char *reply)
-{
+                char *parameter, char *reply) {
     struct timeval time;
     int rc = SRCP_UNSUPPORTEDOPERATION;
 
@@ -790,8 +700,7 @@ int handleRESET(sessionid_t sessionid, bus_t bus, char *device,
 /*
  * Command mode network thread routine
  */
-int doCmdClient(session_node_t * sn)
-{
+int doCmdClient(session_node_t *sn) {
     /*TODO: Optimize memory usage; these buffers occupy 6 kB stack
      *      memory.
      */
@@ -848,20 +757,16 @@ int doCmdClient(session_node_t * sn)
                 if (strncasecmp(command, "SET", 3) == 0) {
                     rc = handleSET(sn->session, bus, devicegroup,
                                    parameter, reply);
-                }
-                else if (strncasecmp(command, "GET", 3) == 0) {
+                } else if (strncasecmp(command, "GET", 3) == 0) {
                     rc = handleGET(sn->session, bus, devicegroup,
                                    parameter, reply, sizeof(reply));
-                }
-                else if (strncasecmp(command, "WAIT", 4) == 0) {
+                } else if (strncasecmp(command, "WAIT", 4) == 0) {
                     rc = handleWAIT(sn->session, bus, devicegroup,
                                     parameter, reply, sizeof(reply));
-                }
-                else if (strncasecmp(command, "INIT", 4) == 0) {
+                } else if (strncasecmp(command, "INIT", 4) == 0) {
                     rc = handleINIT(sn->session, bus, devicegroup,
                                     parameter, reply);
-                }
-                else if (strncasecmp(command, "TERM", 4) == 0) {
+                } else if (strncasecmp(command, "TERM", 4) == 0) {
                     rc = handleTERM(sn->session, bus, devicegroup,
                                     parameter, reply);
                     /*special option for session termination (?) */
@@ -875,24 +780,22 @@ int doCmdClient(session_node_t * sn)
                         break;
                     }
                     rc = abs(rc);
-                }
-                else if (strncasecmp(command, "VERIFY", 6) == 0) {
+                } else if (strncasecmp(command, "VERIFY", 6) == 0) {
                     rc = handleVERIFY(sn->session, bus, devicegroup,
                                       parameter, reply);
-                }
-                else if (strncasecmp(command, "RESET", 5) == 0) {
+                } else if (strncasecmp(command, "RESET", 5) == 0) {
                     rc = handleRESET(sn->session, bus, devicegroup,
                                      parameter, reply);
                 }
             }
-            /* bus > num_buses */
+                /* bus > num_buses */
             else {
                 rc = SRCP_WRONGVALUE;
                 gettimeofday(&akt_time, NULL);
                 srcp_fmt_msg(rc, reply, akt_time);
             }
         }
-        /* nelem < 3 */
+            /* nelem < 3 */
         else {
             syslog_session(sn->session, DBG_DEBUG, "List too short: %d",
                            nelem);
