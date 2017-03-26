@@ -12,5 +12,5 @@ rm srcpd.tar.gz
 
 ssh baehnle@adhocserver 'cd ~/AdHoc-Railway-srcpd && tar xvf srcpd.tar.gz'
 
-ssh -t baehnle@adhocserver 'cd ~/AdHoc-Railway-srcpd/srcpd && ./configure && make &&  src/srcpd -f mysrcpd.conf'
+ssh -t baehnle@adhocserver 'cd ~/AdHoc-Railway-srcpd/srcpd && ./configure  --disable-ddl --disable-intellibox --disable-li100 --disable-zimo --disable-selectrix  --disable-m605x --disable-ddls88 --disable-i2cdev --disable-hsi88 && make &&  src/srcpd -f mysrcpd.conf'
 
