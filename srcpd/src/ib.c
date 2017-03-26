@@ -1720,7 +1720,7 @@ static void check_status_gl_IB(bus_t busnumber)
             syslog_bus(busnumber, DBG_INFO,
                        "IB reported uninitialized GL. "
                        "Performing default init for %d", gltmp.id);
-            cacheInitGL(busnumber, gltmp.id, 'P', 1, SPEED_STEPS, 5);
+            cacheInitGL(busnumber, gltmp.id, 'P', 1, SPEED_STEPS, 5, 0);
         }
         /* get old data, to know which FS the user wants to have... */
         cacheGetGL(busnumber, gltmp.id, &glakt);

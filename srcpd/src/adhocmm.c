@@ -151,6 +151,14 @@ int init_gl_ADHOCMM(bus_t bus, gl_state_t *gl) {
 
     switch (gl->protocol) {
         case 'X': //mfx
+            if (gl->n_fs == 127) {
+                syslog_bus(bus, DBG_DEBUG, "new dcc loco %dl", gl->uuid);
+                break;
+                //return SRCP_OK;
+            } else {
+                return SRCP_WRONGVALUE;
+            }
+            break;
         case 'N': //dcc
             if (gl->n_fs == 127) {
                 syslog_bus(bus, DBG_DEBUG, "new dcc loco");
@@ -209,7 +217,7 @@ void initLocomotiveOnBrain(bus_t bus, const gl_state_t *gl) {
     switch (gl->protocol) {
         case 'X': //mfx
             syslog_bus(bus, DBG_INFO, "initializing mfx locomotive");
-            sprintf(mfxUid_buf, "%d", gl->protocolversion);
+            sprintf(mfxUid_buf, "%lu", gl->uuid);
             syslog_bus(bus, DBG_INFO, mfxUid_buf);
             writeString(bus, "MFX", UART_DELAY);
             writeByte(bus, ' ', UART_DELAY);
@@ -240,8 +248,29 @@ void initLocomotiveOnBrain(bus_t bus, const gl_state_t *gl) {
  * initGA: modifies the ga data used to initialize the device
  **/
 int init_ga_ADHOCMM(ga_state_t *ga) {
-    if ((ga->protocol == 'M') || (ga->protocol == 'P'))
+    if ((ga->protocol == 'M') || (ga->protocol == 'P')) {
+        char addr_buf[4];
+        sprintf(addr_buf, "%d", ga->id);
+
+        writeString(1, "XTS ", UART_DELAY);
+        writeString(1, addr_buf, UART_DELAY);
+        writeByte(1, ' ', UART_DELAY);
+        if (ga->type == 1) {
+            // turnoout
+            writeString(1, "TURNOUT", UART_DELAY);
+
+        } else if (ga->type == 2) {
+            // cutter
+            writeString(1, "CUTTER", UART_DELAY);
+        } else if (ga->type == 3) {
+            // turntable
+            writeString(1, "TURNTABLE", UART_DELAY);
+        } else {
+
+        }
+        writeByte(1, END_CMD, UART_DELAY);
         return SRCP_OK;
+    }
     return SRCP_UNSUPPORTEDDEVICEPROTOCOL;
 }
 
@@ -493,23 +522,23 @@ void sendNewLocomotiveValuesToBrain(bus_t busnumber, gl_state_t *gltmp) {
     //send direction
     if ((*gltmp).direction == 0) {
         writeByte(busnumber, '0', UART_DELAY);
-    } else  if ((*gltmp).direction == 1) {
+    } else if ((*gltmp).direction == 1) {
         writeByte(busnumber, '1', UART_DELAY);
-    } else  if ((*gltmp).direction == 2) {
+    } else if ((*gltmp).direction == 2) {
         writeByte(busnumber, '2', UART_DELAY);
     }
 
     writeByte(busnumber, ' ', UART_DELAY);
     int fn = 0;
     for (fn = 0; fn < (*gltmp).n_func; fn++) {
-                //send function
-                if (((*gltmp).funcs & (1 << fn)) == 0) {
-                    writeByte(busnumber, '0', UART_DELAY);
-                } else {
-                    writeByte(busnumber, '1', UART_DELAY);
-                }
-                writeByte(busnumber, ' ', UART_DELAY);
-            }
+        //send function
+        if (((*gltmp).funcs & (1 << fn)) == 0) {
+            writeByte(busnumber, '0', UART_DELAY);
+        } else {
+            writeByte(busnumber, '1', UART_DELAY);
+        }
+        writeByte(busnumber, ' ', UART_DELAY);
+    }
 
     writeByte(busnumber, END_CMD, UART_DELAY);
 }

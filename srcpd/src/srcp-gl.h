@@ -21,6 +21,7 @@ typedef struct _GLSTATE {
     int speed;                  /* Sollgeschwindigkeit skal. auf 0..14 */
     int direction;              /* 0/1/2                               */
     unsigned int funcs;         /* Fx..F1, F                           */
+    unsigned long int  uuid;
     struct timeval tv;          /* Last time of change                 */
     struct timeval inittime;
     struct timeval locktime;
@@ -47,7 +48,7 @@ int cacheSetGL(bus_t busnumber, int addr, gl_state_t l);
 int cacheInfoGL(bus_t busnumber, int addr, char *info);
 int cacheDescribeGL(bus_t busnumber, int addr, char *msg);
 int cacheInitGL(bus_t busnumber, int addr, const char protocol,
-                int protoversion, int n_fs, int n_func);
+                int protoversion, int n_fs, int n_func, unsigned long int uuid);
 int cacheTermGL(bus_t busnumber, int addr);
 int cacheLockGL(bus_t busnumber, int addr, long int duration,
                 sessionid_t sessionid);

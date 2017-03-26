@@ -15,6 +15,7 @@
 typedef struct _GASTATE {
     int state;                  /* 0==dead, 1==living, 2==terminating */
     char protocol;              /* Protocol Id */
+    long type;
     int id;                     /* Identification */
     int port;                   /* Port number     */
     int action;                 /* 0, 1, 2, 3...  */
@@ -45,7 +46,7 @@ int queue_GA_isempty(bus_t busnumber);
 
 int getGA(bus_t busnumber, int addr, ga_state_t *a);
 int setGA(bus_t busnumber, int addr, ga_state_t a);
-int initGA(bus_t busnumber, int addr, const char protocol);
+int initGA(bus_t busnumber, long addr, char protocol, long i);
 int termGA(bus_t busnumber, int addr);
 int describeGA(bus_t busnumber, int addr, char *msg);
 int infoGA(bus_t busnumber, int addr, int port, char *msg);

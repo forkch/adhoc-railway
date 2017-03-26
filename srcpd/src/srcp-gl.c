@@ -108,7 +108,7 @@ int enqueueGL(bus_t busnumber, int addr, int dir, int speed, int maxspeed,
 
     if (isValidGL(busnumber, addr)) {
         if (!isInitializedGL(busnumber, addr)) {
-            cacheInitGL(busnumber, addr, 'P', 1, 14, 1);
+            cacheInitGL(busnumber, addr, 'P', 1, 14, 1, 0);
             syslog_bus(busnumber, DBG_WARN, "GL default init for %d-%d",
                        busnumber, addr);
         }
@@ -148,6 +148,8 @@ int enqueueGL(bus_t busnumber, int addr, int dir, int speed, int maxspeed,
         gettimeofday(&akt_time, NULL);
         queue[busnumber][in[busnumber]].tv = akt_time;
         queue[busnumber][in[busnumber]].id = addr;
+
+        queue[busnumber][in[busnumber]].uuid = gl[busnumber].glstate[addr].uuid;
         in[busnumber]++;
         if (in[busnumber] == QUEUELEN)
             in[busnumber] = 0;
@@ -246,7 +248,7 @@ int cacheSetGL(bus_t busnumber, int addr, gl_state_t l)
 }
 
 int cacheInitGL(bus_t busnumber, int addr, const char protocol,
-                int protoversion, int n_fs, int n_func)
+                int protoversion, int n_fs, int n_func, unsigned long int uuid)
 {
     int rc = SRCP_WRONGVALUE;
     if (isValidGL(busnumber, addr)) {
@@ -264,6 +266,7 @@ int cacheInitGL(bus_t busnumber, int addr, const char protocol,
         tgl.protocolversion = protoversion;
         tgl.protocol = protocol;
         tgl.id = addr;
+        tgl.uuid = uuid;
         if (buses[busnumber].init_gl_func)
             rc = (*buses[busnumber].init_gl_func) (busnumber, &tgl);
         if (rc == SRCP_OK) {

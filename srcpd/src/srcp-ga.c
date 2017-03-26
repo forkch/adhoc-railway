@@ -57,13 +57,16 @@ int enqueueGA(bus_t busnumber, int addr, int port, int action,
         }
 
         queue[busnumber][in[busnumber]].protocol =
-            ga[busnumber].gastate[addr].protocol;
+                ga[busnumber].gastate[addr].protocol;
+        queue[busnumber][in[busnumber]].type =
+                ga[busnumber].gastate[addr].type;
         queue[busnumber][in[busnumber]].action = action;
         queue[busnumber][in[busnumber]].port = port;
         queue[busnumber][in[busnumber]].activetime = activetime;
         gettimeofday(&akt_time, NULL);
         queue[busnumber][in[busnumber]].tv[port] = akt_time;
         queue[busnumber][in[busnumber]].id = addr;
+
         in[busnumber]++;
         if (in[busnumber] == QUEUELEN)
             in[busnumber] = 0;
@@ -143,7 +146,7 @@ int setGA(bus_t busnumber, int addr, ga_state_t a)
     if ((addr > 0) && (addr <= number_ga)) {
         char msg[1000];
         if (!isInitializedGA(busnumber, addr))
-            initGA(busnumber, addr, 'P');
+            initGA(busnumber, addr, 'P', 0);
         ga[busnumber].gastate[addr].id = a.id;
         ga[busnumber].gastate[addr].action = a.action;
         ga[busnumber].gastate[addr].port = a.port;
@@ -213,9 +216,9 @@ int infoGA(bus_t busnumber, int addr, int port, char *msg)
     return SRCP_INFO;
 }
 
-int initGA(bus_t busnumber, int addr, const char protocol)
+int initGA(bus_t busnumber, long addr, char protocol, long type)
 {
-    int i;
+    int i = 0;
     int rc = SRCP_OK;
     int number_ga = get_number_ga(busnumber);
     syslog_bus(busnumber, DBG_INFO, "init GA: %d %c", addr, protocol);
@@ -229,6 +232,8 @@ int initGA(bus_t busnumber, int addr, const char protocol)
         gettimeofday(&ga[busnumber].gastate[addr].inittime, NULL);
         ga[busnumber].gastate[addr].activetime = 0;
         ga[busnumber].gastate[addr].action = 0;
+        ga[busnumber].gastate[addr].type = type;
+        ga[busnumber].gastate[addr].id = addr;
         for (i = 0; i < MAXGAPORT; i++) {
             ga[busnumber].gastate[addr].tv[i].tv_sec = 0;
             ga[busnumber].gastate[addr].tv[i].tv_usec = 0;

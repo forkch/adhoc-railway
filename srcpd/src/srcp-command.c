@@ -692,12 +692,16 @@ int handleINIT(sessionid_t sessionid, bus_t bus, char *device,
     if (bus_has_devicegroup(bus, DG_GL)
         && strncasecmp(device, "GL", 2) == 0) {
         long addr, protversion, n_fs, n_func, nelem;
+        unsigned long int uuid;
         char prot;
+        syslog_session(sessionid, DBG_INFO, parameter);
         nelem =
-            sscanf(parameter, "%ld %c %ld %ld %ld", &addr, &prot,
-                   &protversion, &n_fs, &n_func);
+            sscanf(parameter, "%ld %c %ld %ld %ld %lu", &addr, &prot,
+                   &protversion, &n_fs, &n_func, &uuid);
+
+        syslog_session(sessionid, DBG_INFO, "%llu", uuid);
         if (nelem >= 5) {
-            rc = cacheInitGL(bus, addr, prot, protversion, n_fs, n_func);
+            rc = cacheInitGL(bus, addr, prot, protversion, n_fs, n_func, uuid);
         }
         else {
             rc = SRCP_LISTTOOSHORT;
@@ -708,9 +712,10 @@ int handleINIT(sessionid_t sessionid, bus_t bus, char *device,
              && strncasecmp(device, "GA", 2) == 0) {
         long addr, nelem;
         char prot;
-        nelem = sscanf(parameter, "%ld %c", &addr, &prot);
+        long type; // 2= CUTTER, 1 = TURNOUT, 3 = DREHSCHEIBE
+        nelem = sscanf(parameter, "%ld %c %ld", &addr, &prot, &type);
         if (nelem >= 2) {
-            rc = initGA(bus, addr, prot);
+            rc = initGA(bus, addr, prot, type);
         }
         else {
             rc = SRCP_LISTTOOSHORT;

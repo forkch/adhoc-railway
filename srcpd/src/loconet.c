@@ -853,7 +853,7 @@ void *thr_sendrec_LOCONET(void *v)
                             __loconett->slotmap[ln_packet[2]] = addr;
                             if (!isInitializedGL(btd->bus, addr)) {
                                 cacheInitGL(btd->bus, addr, 'L', 1, 128,
-                                            9);
+                                            9,0);
                             }
                             cacheGetGL(btd->bus, addr, &gltmp);
                             gltmp.speed = ln_packet[5];
