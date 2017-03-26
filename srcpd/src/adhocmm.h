@@ -15,7 +15,7 @@ typedef struct _ADHOCMM_DATA {
 int readconfig_ADHOCMM(xmlDocPtr doc, xmlNodePtr node, bus_t busnumber);
 int init_bus_ADHOCMM(bus_t );
 int init_bus_ADHOCMM(bus_t i);
-int init_gl_ADHOCMM(gl_state_t *);
+int init_gl_ADHOCMM(bus_t bus, gl_state_t *);
 int init_ga_ADHOCMM(ga_state_t *);
 int getDescription_ADHOCMM(char *reply);
 void* thr_sendrec_ADHOCMM(void *);

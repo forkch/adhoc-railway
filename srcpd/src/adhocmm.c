@@ -38,11 +38,17 @@
 #define POWER_OFF 0
 #define POWER_ON  1
 
-int locoState[80];
+int locoState[1024];
 unsigned char booster_state[8];
 
 static const int END_CMD = 0x0D;
 static const char *TURNOUT_CMD = "XT ";
+
+void initLocomotiveOnBrain(bus_t bus, const gl_state_t *gl);
+
+void terminateLocomotiveOnBrain(bus_t busnumber, gl_state_t *gltmp);
+
+void sendNewLocomotiveValuesToBrain(bus_t busnumber, gl_state_t *gltmp);
 
 int readconfig_ADHOCMM(xmlDocPtr doc, xmlNodePtr node, bus_t busnumber) {
     buses[busnumber].driverdata = malloc(sizeof(struct _ADHOCMM_DATA));
@@ -140,12 +146,16 @@ static int init_lineADHOCMM(bus_t bus) {
 /**
  * init_gl_ADHOCMM: modifies the gl data used to initialize the device
  **/
-int init_gl_ADHOCMM(gl_state_t *gl) {
+int init_gl_ADHOCMM(bus_t bus, gl_state_t *gl) {
+    syslog_bus(bus, DBG_INFO, "new loco");
+
     switch (gl->protocol) {
         case 'X': //mfx
         case 'N': //dcc
             if (gl->n_fs == 127) {
-                return SRCP_OK;
+                syslog_bus(bus, DBG_DEBUG, "new dcc loco");
+                break;
+                //return SRCP_OK;
             } else {
                 return SRCP_WRONGVALUE;
             }
@@ -154,27 +164,76 @@ int init_gl_ADHOCMM(gl_state_t *gl) {
             switch (gl->protocolversion) {
                 case 1:
                     if (gl->n_fs == 14 || (gl->n_fs == 127)) {
-                        return SRCP_OK;
+//                        return SRCP_OK;
+                        syslog_bus(bus, DBG_DEBUG, "new m1 loco");
+                        break;
                     } else {
                         return SRCP_WRONGVALUE;
                     }
                     break;
                 case 2:
                     if ((gl->n_fs == 14) || (gl->n_fs == 27) || (gl->n_fs == 28) || (gl->n_fs == 127)) {
-                        return SRCP_OK;
+//                        return SRCP_OK;
+                        syslog_bus(bus, DBG_DEBUG, "new m2 loco");
+                        break;
                     } else {
                         return SRCP_WRONGVALUE;
                     }
-                    break;
             }
-            return SRCP_WRONGVALUE;
+            break;
         case 'L':
         case 'S':
         case 'P':
         default:
             return SRCP_UNSUPPORTEDDEVICEPROTOCOL;
     }
-    return SRCP_UNSUPPORTEDDEVICEPROTOCOL;
+
+    return SRCP_OK;
+}
+
+void initLocomotiveOnBrain(bus_t bus, const gl_state_t *gl) {
+    char addr_buf[4];
+    char speed_buf[4];
+    sprintf(addr_buf, "%d", gl->id);
+
+    syslog_bus(bus, DBG_INFO, "configuring new loco: %c", gl->protocol);
+    // send loco config command
+    writeString(bus, "XLS ", UART_DELAY);
+
+    //send loco address
+    writeString(bus, addr_buf, UART_DELAY);
+    writeByte(bus, ' ', UART_DELAY);
+
+    char mfxUid_buf[16];
+    //send protocol
+    switch (gl->protocol) {
+        case 'X': //mfx
+            syslog_bus(bus, DBG_INFO, "initializing mfx locomotive");
+            sprintf(mfxUid_buf, "%d", gl->protocolversion);
+            syslog_bus(bus, DBG_INFO, mfxUid_buf);
+            writeString(bus, "MFX", UART_DELAY);
+            writeByte(bus, ' ', UART_DELAY);
+            writeString(bus, mfxUid_buf, UART_DELAY);
+            break;
+        case 'N': //dcc
+            writeString(bus, "DCC", UART_DELAY);
+            break;
+        case 'M': // motorola
+            switch (gl->protocolversion) {
+                case 1:
+                    writeString(bus, "MM", UART_DELAY);
+                    break;
+                case 2:
+                    writeString(bus, "MM2", UART_DELAY);
+                    break;
+            }
+            break;
+
+    }
+
+    writeByte(bus, END_CMD, UART_DELAY);
+
+    locoState[gl->id] = LOCO_ALIVE;
 }
 
 /**
@@ -389,128 +448,86 @@ static void handle_gl_command(bus_t busnumber) {
         addr = gltmp.id;
         int changeDirection = 0;
         cacheGetGL(busnumber, addr, &glakt);
-        if ((gltmp.direction != glakt.direction) || (gltmp.speed != glakt.speed)
-            || (gltmp.funcs != glakt.funcs)) {
-            char addr_buf[4];
-            char speed_buf[4];
-            sprintf(addr_buf, "%d", gltmp.id);
-            sprintf(speed_buf, "%d", gltmp.speed);
 
-            if (locoState[gltmp.id] == LOCO_DEAD) {
-                syslog_bus(busnumber, DBG_INFO, "configuring new loco");
-                // send loco config command
-                writeString(busnumber, "XLS ", UART_DELAY);
+        syslog_bus(busnumber, DBG_INFO, "new GL command loco state: %d", gltmp.state);
+        if (locoState[gltmp.id] == LOCO_DEAD) {
+            syslog_bus(busnumber, DBG_INFO, "initLocomotiveOnBrain");
+            initLocomotiveOnBrain(busnumber, &gltmp);
+            locoState[gltmp.id] = LOCO_ALIVE;
+        }
 
-                //send loco address
-                writeString(busnumber, addr_buf, UART_DELAY);
-                writeByte(busnumber, ' ', UART_DELAY);
+        bool changeDetected = (gltmp.direction != glakt.direction) || (gltmp.speed != glakt.speed)
+                              || (gltmp.funcs != glakt.funcs);
+        if (gltmp.state == 1 && changeDetected) {
+            syslog_bus(busnumber, DBG_INFO, "set new values");
+            sendNewLocomotiveValuesToBrain(busnumber, &gltmp);
 
-                char mfxUid_buf[16];
-                //send protocol
-                switch (gltmp.protocol) {
-                    case 'X': //mfx
-                        syslog_bus(busnumber, DBG_INFO, "initializing mfx locomotive");
-                        sprintf(mfxUid_buf, "%d", gltmp.protocolversion);
-                        syslog_bus(busnumber, DBG_INFO, mfxUid_buf);
-                        writeString(busnumber, "MFX", UART_DELAY);
-                        writeByte(busnumber,  ' ', UART_DELAY);
-                        writeString(busnumber,mfxUid_buf, UART_DELAY);
-                        break;
-                    case 'N': //dcc
-                        writeString(busnumber, "DCC", UART_DELAY);
-                        break;
-                    case 'M': // motorola
-                        switch (gltmp.protocolversion) {
-                            case 1:
-                                writeString(busnumber, "MM", UART_DELAY);
-                                break;
-                            case 2:
-                                writeString(busnumber, "MM2", UART_DELAY);
-                                break;
-                        }
-                        break;
+        } else if (gltmp.state == 2) {
+            syslog_bus(busnumber, DBG_INFO, "terminating locomotive");
+            terminateLocomotiveOnBrain(busnumber, &gltmp);
 
-                }
+        }
+        cacheSetGL(busnumber, addr, gltmp);
+        buses[busnumber].watchdog++;
 
-                writeByte(busnumber, END_CMD, UART_DELAY);
+    }
+}
 
-                locoState[gltmp.id] = LOCO_ALIVE;
-            }
+void sendNewLocomotiveValuesToBrain(bus_t busnumber, gl_state_t *gltmp) {
+    char addr_buf[4];
+    char speed_buf[4];
+    sprintf(addr_buf, "%d", (*gltmp).id);
+    sprintf(speed_buf, "%d", (*gltmp).speed);
 
-            // send loco command
-            writeString(busnumber, "XL ", UART_DELAY);
+    // send loco command
+    writeString(busnumber, "XL ", UART_DELAY);
 
-            //send loco address
-            writeString(busnumber, addr_buf, UART_DELAY);
-            writeByte(busnumber, ' ', 0);
+    //send loco address
+    writeString(busnumber, addr_buf, UART_DELAY);
+    writeByte(busnumber, ' ', 0);
 
-            //send speed
-            writeString(busnumber, speed_buf, UART_DELAY);
-            writeByte(busnumber, ' ', 0);
-//
-//            //send function (front light)
-//            if ((gltmp.funcs & (1 << 0)) == 0) {
-//                writeByte(busnumber, '0', UART_DELAY);
-//            } else {
-//                writeByte(busnumber, '1', UART_DELAY);
-//            }
-//            writeByte(busnumber, ' ', UART_DELAY);
-            //send direction
-            if (gltmp.direction == 0) {
-                writeByte(busnumber, '0', UART_DELAY);
-            } else {
-                writeByte(busnumber, '1', UART_DELAY);
-            }
-            writeByte(busnumber, ' ', UART_DELAY);
+    //send speed
+    writeString(busnumber, speed_buf, UART_DELAY);
+    writeByte(busnumber, ' ', 0);
 
-            for (int fn = 0; fn < gltmp.n_func; fn++) {
+    //send direction
+    if ((*gltmp).direction == 0) {
+        writeByte(busnumber, '0', UART_DELAY);
+    } else  if ((*gltmp).direction == 1) {
+        writeByte(busnumber, '1', UART_DELAY);
+    } else  if ((*gltmp).direction == 2) {
+        writeByte(busnumber, '2', UART_DELAY);
+    }
+
+    writeByte(busnumber, ' ', UART_DELAY);
+    int fn = 0;
+    for (fn = 0; fn < (*gltmp).n_func; fn++) {
                 //send function
-                if ((gltmp.funcs & (1 << fn)) == 0) {
+                if (((*gltmp).funcs & (1 << fn)) == 0) {
                     writeByte(busnumber, '0', UART_DELAY);
                 } else {
                     writeByte(busnumber, '1', UART_DELAY);
                 }
                 writeByte(busnumber, ' ', UART_DELAY);
             }
-//
-//
-//            //send f1
-//            if ((gltmp.funcs & (1 << 1)) == 0) {
-//                writeByte(busnumber, '0', UART_DELAY);
-//            } else {
-//                writeByte(busnumber, '1', UART_DELAY);
-//            }
-//            writeByte(busnumber, ' ', 0);
-//            //send f2
-//            if ((gltmp.funcs & (1 << 2)) == 0) {
-//                writeByte(busnumber, '0', UART_DELAY);
-//            } else {
-//                writeByte(busnumber, '1', UART_DELAY);
-//            }
-//            writeByte(busnumber, ' ', 0);
-//            //send f3
-//            if ((gltmp.funcs & (1 << 3)) == 0) {
-//                writeByte(busnumber, '0', UART_DELAY);
-//            } else {
-//                writeByte(busnumber, '1', UART_DELAY);
-//            }
-//            writeByte(busnumber, ' ', 0);
-//            //send f4
-//            if ((gltmp.funcs & (1 << 4)) == 0) {
-//                writeByte(busnumber, '0', UART_DELAY);
-//            } else {
-//                writeByte(busnumber, '1', UART_DELAY);
-//            }
-//            writeByte(busnumber, ' ', UART_DELAY);
 
-            writeByte(busnumber, END_CMD, UART_DELAY);
-        }
-        //usleep(50000);
+    writeByte(busnumber, END_CMD, UART_DELAY);
+}
 
-        cacheSetGL(busnumber, addr, gltmp);
-        buses[busnumber].watchdog++;
+void terminateLocomotiveOnBrain(bus_t busnumber, gl_state_t *gltmp) {
+    char addr_buf[4];
+    char speed_buf[4];
+    sprintf(addr_buf, "%d", (*gltmp).id);
 
-    }
+    syslog_bus(busnumber, DBG_INFO, "removing loco");
+    // send loco remove command
+    writeString(busnumber, "XLOCREMOVE ", UART_DELAY);
+
+    //send loco address
+    writeString(busnumber, addr_buf, UART_DELAY);
+
+    writeByte(busnumber, END_CMD, UART_DELAY);
+    locoState[(*gltmp).id] = LOCO_DEAD;
 }
 
 static void handle_ga_command(bus_t busnumber) {
@@ -603,7 +620,6 @@ void *thr_sendrec_ADHOCMM(void *v) {
 
                 buses[btd->bus].watchdog = 1;
 
-                check_status(btd->bus);
                 /*POWER action arrived */
                 if (buses[btd->bus].power_changed == 1)
                     handle_power_command(btd->bus);
@@ -638,12 +654,13 @@ void *thr_sendrec_ADHOCMM(void *v) {
                 buses[btd->bus].watchdog++;
 
                 /* busy wait and continue loop */
-                /* wait 50 ms */
+                /* wait 5 ms */
                 if (usleep(5000) == -1) {
                     syslog_bus(btd->bus, DBG_ERROR,
                                "usleep() failed: %s (errno = %d)\n",
                                strerror(errno), errno);
                 }
+                check_status(btd->bus);
             }
 
             /*run the cleanup routine */
