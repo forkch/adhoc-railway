@@ -142,8 +142,7 @@ public class BrainController {
 
                         receivedString.append(new String(buffer, "US-ASCII"));
 
-                        LOGGER.debug(receivedString.toString());
-                        byte lastChar = buffer[buffer.length - 1];
+                        byte lastChar =  buffer[buffer.length - 1];
                         if (lastChar == 0x0d || lastChar == 0x0a) {
 
                             final String completeString = receivedString.toString();
