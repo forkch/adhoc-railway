@@ -98,6 +98,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
         }
         group.addTurnout(turnout);
         turnout.setTurnoutGroup(group);
+        turnout.setGroupId(group.getId());
         turnoutService.addTurnout(turnout);
         if (turnout.getType().equals(TurnoutType.THREEWAY)) {
             lastProgrammedAddress = turnout.getAddress2();

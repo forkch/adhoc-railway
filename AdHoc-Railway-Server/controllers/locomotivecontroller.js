@@ -48,6 +48,8 @@ exports.addLocomotiveGroup = function (locomotiveGroup, fn) {
     var group = new LocomotiveGroupModel(locomotiveGroup);
     group.save(function (err, addedlocomotiveGroup) {
         if (!err) {
+            addedlocomotiveGroup.id = addedlocomotiveGroup._id;
+            console.log('adding new locomotive group: ' + addedlocomotiveGroup.name + " with id: " + addedlocomotiveGroup.id);
             addedlocomotiveGroup.locomotives = [];
             fn(err, addedlocomotiveGroup.toJSON());
         } else {
@@ -125,7 +127,7 @@ exports.addLocomotive = function (locomotive, fn) {
         if (!err) {
             console.log(addedLocomotive.groupId);
             LocomotiveGroupModel.findById({_id: addedLocomotive.groupId}, function (err, locomotiveGroup) {
-                if (!err) {
+                if (!err && locomotiveGroup) {
                     console.log(locomotiveGroup);
                     locomotiveGroup.locomotives.push(addedLocomotive.id);
                     locomotiveGroup.save();

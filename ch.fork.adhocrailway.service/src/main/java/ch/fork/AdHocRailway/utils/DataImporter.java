@@ -6,8 +6,10 @@ import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
 import ch.fork.AdHocRailway.model.turnouts.*;
+import com.google.common.collect.Maps;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.SortedSet;
 
 public class DataImporter {
@@ -18,23 +20,16 @@ public class DataImporter {
 
         locomotiveManager.clearToService();
 
+        Map<LocomotiveGroup, String> groupToId = Maps.newHashMap();
         for (final LocomotiveGroup group : groups) {
-            locomotiveManager.addLocomotiveGroup(group);
-        }
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            LocomotiveGroup copy = new LocomotiveGroup();
+            copy.setName(group.getName());
+            locomotiveManager.addLocomotiveGroup(copy);
+            group.setId(copy.getId());
         }
 
         for (final LocomotiveGroup group : groups) {
             for (final Locomotive locomotive : group.getLocomotives()) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 locomotiveManager.addLocomotiveToGroup(locomotive, group);
             }
         }
@@ -66,7 +61,7 @@ public class DataImporter {
 
             for (Route route : new HashSet<>(group.getRoutes())) {
                 routeManager.addRouteToGroup(route, group);
-                for (RouteItem routeItem :  new HashSet<>(route.getRoutedTurnouts())) {
+                for (RouteItem routeItem : new HashSet<>(route.getRoutedTurnouts())) {
                     if (routeItem.getTurnout() != null) {
                         routeManager.addRouteItemToGroup(routeItem, route);
                     }

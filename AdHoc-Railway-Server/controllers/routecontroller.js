@@ -50,6 +50,9 @@ exports.addRouteGroup = function (routeGroup, fn) {
     var group = new RouteGroupModel(routeGroup);
     group.save(function (err, addedRouteGroup) {
         if (!err) {
+
+            addedRouteGroup.id = addedRouteGroup._id;
+            console.log('adding new routegroup: ' + addedRouteGroup.name + " with id: " + addedRouteGroup.id);
             addedRouteGroup.routes = [];
             fn(err, addedRouteGroup.toJSON());
         } else {

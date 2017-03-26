@@ -103,6 +103,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
 
         group.addRoute(route);
         route.setRouteGroup(group);
+        route.setGroupId(group.getId());
         this.routeService.addRoute(route);
         lastProgrammedNumber = route.getNumber();
     }

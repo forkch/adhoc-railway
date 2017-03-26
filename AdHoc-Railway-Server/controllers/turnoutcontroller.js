@@ -49,6 +49,9 @@ exports.addTurnoutGroup = function (turnoutGroup, fn) {
     console.log('adding new turnoutgroup group: ' + turnoutGroup.name);
     group.save(function (err, addedTurnoutGroup) {
         if (!err) {
+
+            addedTurnoutGroup.id = addedTurnoutGroup._id;
+            console.log('adding new turnout group: ' + addedTurnoutGroup.name + " with id: " + addedTurnoutGroup.id);
             addedTurnoutGroup.turnouts = [];
             fn(err, addedTurnoutGroup.toJSON());
         } else {
