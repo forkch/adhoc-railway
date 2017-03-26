@@ -3,6 +3,11 @@
  *
  *  Created on: 03.02.2012
  *      Author: fork
+ *
+ *  Multiprotcol-Version (MM/MM2/MFX/DCC)
+ *    Added on: 06.06.2016
+ *      Author: m2
+ *
  */
 
 #include "global.h"

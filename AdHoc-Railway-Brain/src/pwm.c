@@ -3,6 +3,11 @@
  *
  *  Created on: 03.02.2012
  *      Author: fork
+ *
+ *  Multiprotcol-Version (MM/MM2/MFX/DCC)
+ *    Added on: 06.06.2016
+ *      Author: m2
+ *
  */
 
 #include "global.h"
@@ -43,17 +48,18 @@ void initPWM() {
 
 
 // nicht benutzt
+/*
 void setPWMOutput(uint16_t duty) {
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
 
 	OCR1B = duty;
 }
+*/
 
 
 
 void setMM2Solenoid0() {
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
-
 	OCR1BH = (uint8_t) (MM2_SOLENOID_0 >> 8);
 	OCR1BL = (uint8_t) (MM2_SOLENOID_0);
 }
@@ -70,7 +76,6 @@ void setMM2Solenoid1() {
 
 void setMM2Loco0() {
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
-
 	OCR1BH = (uint8_t) (MM2_LOCO_0 >> 8);
 	OCR1BL = (uint8_t) (MM2_LOCO_0);
 }
@@ -79,14 +84,23 @@ void setMM2Loco0() {
 
 void setMM2Loco1() {
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
-
 	OCR1BH = (uint8_t) (MM2_LOCO_1 >> 8);
 	OCR1BL = (uint8_t) (MM2_LOCO_1);
 }
 
 
+void setMM2PWMWait() {
+	PWM_HELP_OUTPUT_PORT &= ~(1 << PWM_HELP_OUTPUT);
+	OCR1BH = 0;
+	OCR1BL = 0;
+}
+
 
 void setMFX1() {
+	MFX_TOP = 2 * MFX_BASE;
+	OCR1AH = (uint8_t) (MFX_TOP >> 8);
+	OCR1AL = (uint8_t) (MFX_TOP);
+
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
 	OCR1BH = (uint8_t) (MFX_1 >> 8);
 	OCR1BL = (uint8_t) (MFX_1);
@@ -95,6 +109,10 @@ void setMFX1() {
 
 
 void setMFX2() {
+	MFX_TOP = 3 * MFX_BASE;
+	OCR1AH = (uint8_t) (MFX_TOP >> 8);
+	OCR1AL = (uint8_t) (MFX_TOP);
+
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
 	OCR1BH = (uint8_t) (MFX_2 >> 8);
 	OCR1BL = (uint8_t) (MFX_2);
@@ -103,6 +121,10 @@ void setMFX2() {
 
 
 void setMFX3() {
+	MFX_TOP = 3 * MFX_BASE;
+	OCR1AH = (uint8_t) (MFX_TOP >> 8);
+	OCR1AL = (uint8_t) (MFX_TOP);
+
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
 	OCR1BH = (uint8_t) (MFX_3 >> 8);
 	OCR1BL = (uint8_t) (MFX_3);
@@ -111,14 +133,32 @@ void setMFX3() {
 
 
 void setMFX4() {
+	MFX_TOP = 4 * MFX_BASE;
+	OCR1AH = (uint8_t) (MFX_TOP >> 8);
+	OCR1AL = (uint8_t) (MFX_TOP);
+
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
 	OCR1BH = (uint8_t) (MFX_4 >> 8);
 	OCR1BL = (uint8_t) (MFX_4);
 }
 
 
+void setMFXPWMWait() {
+	MFX_TOP = 4 * MFX_BASE;
+	OCR1AH = (uint8_t) (MFX_TOP >> 8);
+	OCR1AL = (uint8_t) (MFX_TOP);
+
+	PWM_HELP_OUTPUT_PORT &= ~(1 << PWM_HELP_OUTPUT);
+	OCR1BH = 0;
+	OCR1BL = 0;
+}
+
 
 void setDCC0() {
+	DCC_TOP = 4  * DCC_BASE;
+	OCR1AH = (uint8_t) (DCC_TOP >> 8);
+	OCR1AL = (uint8_t) (DCC_TOP);
+
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
 	OCR1BH = (uint8_t) (DCC_0 >> 8);
 	OCR1BL = (uint8_t) (DCC_0);
@@ -127,6 +167,10 @@ void setDCC0() {
 
 
 void setDCC1() {
+	DCC_TOP = 2 * DCC_BASE;
+	OCR1AH = (uint8_t) (DCC_TOP >> 8);
+	OCR1AL = (uint8_t) (DCC_TOP);
+
 	PWM_HELP_OUTPUT_PORT |= (1 << PWM_HELP_OUTPUT);
 	OCR1BH = (uint8_t) (DCC_1 >> 8);
 	OCR1BL = (uint8_t) (DCC_1);
@@ -134,9 +178,12 @@ void setDCC1() {
 
 
 
-void setPWMWait() {
-	PWM_HELP_OUTPUT_PORT &= ~(1 << PWM_HELP_OUTPUT);
+void setDCCPWMWait() {
+	DCC_TOP = 4  * DCC_BASE;
+	OCR1AH = (uint8_t) (DCC_TOP >> 8);
+	OCR1AL = (uint8_t) (DCC_TOP);
 
+	PWM_HELP_OUTPUT_PORT &= ~(1 << PWM_HELP_OUTPUT);
 	OCR1BH = 0;
 	OCR1BL = 0;
 }

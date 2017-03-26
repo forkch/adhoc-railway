@@ -3,6 +3,11 @@
  *
  *  Created on: 18.02.2012
  *      Author: fork
+ *
+ *  Multiprotcol-Version (MM/MM2/MFX/DCC)
+ *    Added on: 06.06.2016
+ *      Author: m2
+ *
  */
 
 #include <avr/io.h>
@@ -269,12 +274,7 @@ uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
 	uint8_t trit3;
 	uint8_t trit4;
 	char protocol[4];
-//	uint16_t crc;
-//	uint8_t mfxCommandLength;
-//	int cidx;
-//	int tidx;
-//	int EinsHalbiert;
-//	int stfngCnt;
+	unsigned char address = 0;
 
 
 	if (nTokens < 3) {
@@ -292,7 +292,6 @@ uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
 		}
 		decoderUID = atol(tokens[3]);
 	}
-//	decoderUID = atol(tokens[3]);
 
 
 #ifdef LOGGING
@@ -361,25 +360,32 @@ uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
 
 		//Märklin-Motorola Befehl "Fahren/Fn" encodieren
 		//----------------------------------------------
-		// 4-Trits Lokadresse berechnen
-		// Low = 0 (0x00), High = 1 (0x01), Open = 2 (0x10)
-		trit1 = locoAdr  % 3;
-		trit2 = (locoAdr / 3) % 3;
-		trit3 = (locoAdr / 9) % 3;
-		trit4 = (locoAdr / 27) % 3;
 
-		// Motorola High-Trit Korrektur (für Adressen-Berechnung)
-		// High = 3 (0x11)
-		if (trit1 == 1)
-			trit1 = 3;
-		if (trit2 == 1)
-			trit2 = 3;
-		if (trit3 == 1)
-			trit3 = 3;
-		if (trit4 == 1)
-			trit4 = 3;
+		if (locoAdr < 80) {
+			// 4-Trits Lokadresse berechnen
+			// Low = 0 (0x00), High = 1 (0x01), Open = 2 (0x10)
+			trit1 = locoAdr  % 3;
+			trit2 = (locoAdr / 3) % 3;
+			trit3 = (locoAdr / 9) % 3;
+			trit4 = (locoAdr / 27) % 3;
 
-		unsigned char address = ((64 * trit1) + (16 * trit2) + (4 * trit3) + trit4);
+			// Motorola High-Trit Korrektur (für Adressen-Berechnung)
+			// High = 3 (0x11)
+			if (trit1 == 1)
+				trit1 = 3;
+			if (trit2 == 1)
+				trit2 = 3;
+			if (trit3 == 1)
+				trit3 = 3;
+			if (trit4 == 1)
+				trit4 = 3;
+
+			address = ((64 * trit1) + (16 * trit2) + (4 * trit3) + trit4);
+		}
+		else {
+			//Adressen grösser 79 aus Lookup-Tabelle
+			address = mmAddressExt[locoAdr - 80];
+		}
 
 		//Adresse
 		for (uint8_t k = 0; k < 8; k++)
@@ -492,12 +498,6 @@ uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
 
 		mfxSIDCmdCounter++;
 
-/*		//Kollision bei gleichzeitig mehreren SID-Zuweisungen verhindern
-		if (mfxSIDCommandToExecute == 0) {
-			encodeMFXSIDCmd(j);
-		}*/
-
-
 
 	} else if (strcasecmp(protocol, "DCC") == 0) {
 
@@ -531,195 +531,192 @@ uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
 		locoDataDCC[j].f12 = 0;
 		locoDataDCC[j].speed14Mode = 0;
 
-		//DCC-Befehl Fahren encodieren
-		//----------------------------
+		if (locoAdr >= 1 && locoAdr <= 127) {
+			locoDataDCC[j].longAddress = 0;
+		} else {
+			locoDataDCC[j].longAddress = 1;
+		}
+
+
+		//DCC-Befehle Adressbereich encodieren
+		//------------------------------------
+
+		uint8_t k = 0;
 		//fix 18x Sync
-		for (uint8_t k = 0; k < 18; k++)
-			locoDataDCC[j].encCmd[0][k] = 1;
+		for (; k < 18; k++)
+			locoDataDCC[j].encCmd[0][k] = locoDataDCC[j].encCmd[1][k] = locoDataDCC[j].encCmd[2][k] = locoDataDCC[j].encCmd[3][k] = 1;
 
 		//Packet-Start-Bit "0"
-		locoDataDCC[j].encCmd[0][18] = 0;
+		locoDataDCC[j].encCmd[0][k] = locoDataDCC[j].encCmd[1][k] = locoDataDCC[j].encCmd[2][k] = locoDataDCC[j].encCmd[3][k] = 0;
+		k++;	//Beginn Adresse
 
-		//Address-Byte 1
-		locoDataDCC[j].encCmd[0][19] = 1;
-		locoDataDCC[j].encCmd[0][20] = 1;
-		for (uint8_t k = 0; k < 6; k++)
-			locoDataDCC[j].encCmd[0][21 + k]= (locoAdr >> (13 - k)) & 1;
+		if (locoDataDCC[j].longAddress == 0) {			// kurze Adresse
+			//Address-Byte
+			locoDataDCC[j].encCmd[0][k] = locoDataDCC[j].encCmd[1][k] = locoDataDCC[j].encCmd[2][k] = locoDataDCC[j].encCmd[3][k] = 0;
+			k++;
+			for (uint8_t n = 0; n < 7; n++, k++)
+				locoDataDCC[j].encCmd[0][k] = locoDataDCC[j].encCmd[1][k] = locoDataDCC[j].encCmd[2][k] = locoDataDCC[j].encCmd[3][k] = (locoAdr >> (6 - n)) & 1;
 
-		//Inter-Address-Bytes-Bit "0"
-		locoDataDCC[j].encCmd[0][27] = 0;
+		} else {										// lange Adresse
+			//Address-Byte 1
+			locoDataDCC[j].encCmd[0][k] = locoDataDCC[j].encCmd[1][k] = locoDataDCC[j].encCmd[2][k] = locoDataDCC[j].encCmd[3][k] = 1;
+			locoDataDCC[j].encCmd[0][k+1] = locoDataDCC[j].encCmd[1][k+1] = locoDataDCC[j].encCmd[2][k+1] = locoDataDCC[j].encCmd[3][k+1] = 1;
+			k += 2;
+			for (uint8_t n = 0; n < 6; n++, k++)
+				locoDataDCC[j].encCmd[0][k] = locoDataDCC[j].encCmd[1][k] = locoDataDCC[j].encCmd[2][k] = locoDataDCC[j].encCmd[3][k] = (locoAdr >> (13 - n)) & 1;
 
-		//Address-Byte 2
-		for (uint8_t k = 0; k < 8; k++)
-			locoDataDCC[j].encCmd[0][28 + k]= (locoAdr >> (7 - k)) & 1;
+			//Inter-Address-Bytes-Bit "0"
+			locoDataDCC[j].encCmd[0][k] = locoDataDCC[j].encCmd[1][k] = locoDataDCC[j].encCmd[2][k] = locoDataDCC[j].encCmd[3][k] = 0;
+			k++;	// Beginn Adresse
+
+			//Address-Byte 2
+			for (uint8_t n = 0; n < 8; n++, k++)
+				locoDataDCC[j].encCmd[0][k] = locoDataDCC[j].encCmd[1][k] = locoDataDCC[j].encCmd[2][k] = locoDataDCC[j].encCmd[3][k] = (locoAdr >> (7 - n)) & 1;
+		}
 
 		//Data-Byte-Start-Bit "0"
-		locoDataDCC[j].encCmd[0][36] = 0;
+		locoDataDCC[j].encCmd[0][k] = locoDataDCC[j].encCmd[1][k] = locoDataDCC[j].encCmd[2][k] = locoDataDCC[j].encCmd[3][k] = 0;
+
+		uint8_t m = k;		//aktueller k-Index speichern
+
+
+		//DCC-Befehl Fahren encodieren
+		//----------------------------
 
 		//Speed/Direction (vorwärts)
-		locoDataDCC[j].encCmd[0][37] = 0;
-		locoDataDCC[j].encCmd[0][38] = 1;
-		locoDataDCC[j].encCmd[0][39] = 1;
+		locoDataDCC[j].encCmd[0][k+1] = 0;
+		locoDataDCC[j].encCmd[0][k+2] = 1;
+		locoDataDCC[j].encCmd[0][k+3] = 1;
+		k +=4;		//Beginn Speed Daten
 
-		for (uint8_t k = 0; k < 5; k++)
-			locoDataDCC[j].encCmd[0][40 + k] = 0;
+		for (uint8_t n = 0; n < 5; n++, k++)
+			locoDataDCC[j].encCmd[0][k] = 0;
 
 		//Data-Byte-Start-Bit "0"
-		locoDataDCC[j].encCmd[0][45] = 0;
+		locoDataDCC[j].encCmd[0][k] = 0;
+		k++; 		//Beginn Error Detection Data Byte
 
 		//Error Detection Data Byte (Address-Byte xor Data-Byte)
-		for (uint8_t k = 0; k < 8; k++)
-			locoDataDCC[j].encCmd[0][46 + k] = locoDataDCC[j].encCmd[0][19 + k] ^ locoDataDCC[j].encCmd[0][28 + k] ^ locoDataDCC[j].encCmd[0][37 + k];
+		if  (locoDataDCC[j].longAddress == 0) {			// kurze Adresse
+			for (uint8_t n = 0; n < 8; n++, k++)
+				locoDataDCC[j].encCmd[0][k] = locoDataDCC[j].encCmd[0][19 + n] ^ locoDataDCC[j].encCmd[0][28 + n];
+
+		} else {										// lange Adresse
+			for (uint8_t n = 0; n < 8; n++, k++)
+				locoDataDCC[j].encCmd[0][k] = locoDataDCC[j].encCmd[0][19 + n] ^ locoDataDCC[j].encCmd[0][28 + n] ^ locoDataDCC[j].encCmd[0][37 + n];
+		}
 
 		//Packet-End-Bit "1"
-		locoDataDCC[j].encCmd[0][54] = 1;
+		locoDataDCC[j].encCmd[0][k] = 1;
 
 		//fix 1x Sync
-		locoDataDCC[j].encCmd[0][55] = 1;
+		locoDataDCC[j].encCmd[0][k+1] = 1;
+
 
 
 		//DCC-Befehl FktGrp1 encodieren (Fn, F1 - F4)
 		//-----------------------------
-		//fix 18x Sync
-		for (uint8_t k = 0; k < 18; k++)
-			locoDataDCC[j].encCmd[1][k] = 1;
-
-		//Packet-Start-Bit "0"
-		locoDataDCC[j].encCmd[1][18] = 0;
-
-		//Address-Byte 1
-		locoDataDCC[j].encCmd[1][19] = 1;
-		locoDataDCC[j].encCmd[1][20] = 1;
-		for (uint8_t k = 0; k < 6; k++)
-			locoDataDCC[j].encCmd[1][21 + k]= (locoAdr >> (13 - k)) & 1;
-
-		//Inter-Address-Bytes-Bit "0"
-		locoDataDCC[j].encCmd[1][27] = 0;
-
-		//Address-Byte 2
-		for (uint8_t k = 0; k < 8; k++)
-			locoDataDCC[j].encCmd[1][28 + k]= (locoAdr >> (7 - k)) & 1;
-
-		//Data-Byte-Start-Bit "0"
-		locoDataDCC[j].encCmd[1][36] = 0;
+		k = m;
 
 		//FktGrp1
-		locoDataDCC[j].encCmd[1][37] = 1;
-		locoDataDCC[j].encCmd[1][38] = 0;
-		locoDataDCC[j].encCmd[1][39] = 0;
+		locoDataDCC[j].encCmd[1][k+1] = 1;
+		locoDataDCC[j].encCmd[1][k+2] = 0;
+		locoDataDCC[j].encCmd[1][k+3] = 0;
+		k += 4; 	//Beginn FktGrp1 Daten
 
-		for (uint8_t k = 0; k < 5; k++)
-			locoDataDCC[j].encCmd[1][40 + k] = 0;
+		for (uint8_t n = 0; n < 5; n++, k++)
+			locoDataDCC[j].encCmd[1][k] = 0;
 
 		//Data-Byte-Start-Bit "0"
-		locoDataDCC[j].encCmd[1][45] = 0;
+		locoDataDCC[j].encCmd[1][k] = 0;
+		k++;			//Beginn Error Detetction Data Byte
 
 		//Error Detection Data Byte (Address-Byte xor Data-Byte)
-		for (uint8_t k = 0; k < 8; k++)
-			locoDataDCC[j].encCmd[1][46 + k] = locoDataDCC[j].encCmd[1][19 + k] ^ locoDataDCC[j].encCmd[1][28 + k] ^ locoDataDCC[j].encCmd[1][37 + k];
+		if  (locoDataDCC[j].longAddress == 0) {			// kurze Adresse
+			for (uint8_t n = 0; n < 8; n++, k++)
+				locoDataDCC[j].encCmd[1][k] = locoDataDCC[j].encCmd[1][19 + n] ^ locoDataDCC[j].encCmd[1][28 + n];
+
+		} else {										// lange Adresse
+			for (uint8_t n = 0; n < 8; n++, k++)
+				locoDataDCC[j].encCmd[1][k] = locoDataDCC[j].encCmd[1][19 + n] ^ locoDataDCC[j].encCmd[1][28 + n] ^ locoDataDCC[j].encCmd[1][37 + n];
+		}
 
 		//Packet-End-Bit "1"
-		locoDataDCC[j].encCmd[1][54] = 1;
+		locoDataDCC[j].encCmd[1][k] = 1;
 
 		//fix 1x Sync
-		locoDataDCC[j].encCmd[1][55] = 1;
+		locoDataDCC[j].encCmd[1][k+1] = 1;
 
 
 
 		//DCC-Befehl FktGrp2.1 encodieren (F5 - F8)
 		//-------------------------------
-		//fix 18x Sync
-		for (uint8_t k = 0; k < 18; k++)
-			locoDataDCC[j].encCmd[2][k] = 1;
-
-		//Packet-Start-Bit "0"
-		locoDataDCC[j].encCmd[2][18] = 0;
-
-		//Address-Byte 1
-		locoDataDCC[j].encCmd[2][19] = 1;
-		locoDataDCC[j].encCmd[2][20] = 1;
-		for (uint8_t k = 0; k < 6; k++)
-			locoDataDCC[j].encCmd[2][21 + k]= (locoAdr >> (13 - k)) & 1;
-
-		//Inter-Address-Bytes-Bit "0"
-		locoDataDCC[j].encCmd[2][27] = 0;
-
-		//Address-Byte 2
-		for (uint8_t k = 0; k < 8; k++)
-			locoDataDCC[j].encCmd[2][28 + k]= (locoAdr >> (7 - k)) & 1;
-
-		//Data-Byte-Start-Bit "0"
-		locoDataDCC[j].encCmd[2][36] = 0;
+		k = m;
 
 		//FktGrp2.1
-		locoDataDCC[j].encCmd[2][37] = 1;
-		locoDataDCC[j].encCmd[2][38] = 0;
-		locoDataDCC[j].encCmd[2][39] = 1;
-		locoDataDCC[j].encCmd[2][40] = 1;
+		locoDataDCC[j].encCmd[2][k+1] = 1;
+		locoDataDCC[j].encCmd[2][k+2] = 0;
+		locoDataDCC[j].encCmd[2][k+3] = 1;
+		locoDataDCC[j].encCmd[2][k+4] = 1;
+		k += 5; 	//Beginn FktGrp2.1 Daten
 
-		for (uint8_t k = 0; k < 4; k++)
-			locoDataDCC[j].encCmd[2][41 + k] = 0;
+		for (uint8_t n = 0; n < 4; n++, k++)
+			locoDataDCC[j].encCmd[2][k] = 0;
 
 		//Data-Byte-Start-Bit "0"
-		locoDataDCC[j].encCmd[2][45] = 0;
+		locoDataDCC[j].encCmd[2][k] = 0;
+		k++;			//Beginn Error Detetction Data Byte
 
 		//Error Detection Data Byte (Address-Byte xor Data-Byte)
-		for (uint8_t k = 0; k < 8; k++)
-			locoDataDCC[j].encCmd[2][46 + k] = locoDataDCC[j].encCmd[2][19 + k] ^ locoDataDCC[j].encCmd[2][28 + k] ^ locoDataDCC[j].encCmd[2][37 + k];
+		if  (locoDataDCC[j].longAddress == 0) {			// kurze Adresse
+			for (uint8_t n = 0; n < 8; n++, k++)
+				locoDataDCC[j].encCmd[2][k] = locoDataDCC[j].encCmd[2][19 + n] ^ locoDataDCC[j].encCmd[2][28 + n];
+
+		} else {										// lange Adresse
+			for (uint8_t n = 0; n < 8; n++, k++)
+				locoDataDCC[j].encCmd[2][k] = locoDataDCC[j].encCmd[2][19 + n] ^ locoDataDCC[j].encCmd[2][28 + n] ^ locoDataDCC[j].encCmd[2][37 + n];
+		}
 
 		//Packet-End-Bit "1"
-		locoDataDCC[j].encCmd[2][54] = 1;
+		locoDataDCC[j].encCmd[2][k] = 1;
 
 		//fix 1x Sync
-		locoDataDCC[j].encCmd[2][55] = 1;
+		locoDataDCC[j].encCmd[2][k+1] = 1;
 
 
 		//DCC-Befehl FktGrp2.2 encodieren (F9 - F12)
 		//-------------------------------
-		//fix 18x Sync
-		for (uint8_t k = 0; k < 18; k++)
-			locoDataDCC[j].encCmd[3][k] = 1;
-
-		//Packet-Start-Bit "0"
-		locoDataDCC[j].	encCmd[3][18] = 0;
-
-		//Address-Byte 1
-		locoDataDCC[j].encCmd[3][19] = 1;
-		locoDataDCC[j].encCmd[3][20] = 1;
-		for (uint8_t k = 0; k < 6; k++)
-			locoDataDCC[j].encCmd[3][21 + k]= (locoAdr >> (13 - k)) & 1;
-
-		//Inter-Address-Bytes-Bit "0"
-		locoDataDCC[j].encCmd[3][27] = 0;
-
-		//Address-Byte 2
-		for (uint8_t k = 0; k < 8; k++)
-			locoDataDCC[j].encCmd[3][28 + k]= (locoAdr >> (7 - k)) & 1;
-
-		//Data-Byte-Start-Bit "0"
-		locoDataDCC[j].encCmd[3][36] = 0;
+		k = m;
 
 		//FktGrp2.2
-		locoDataDCC[j].encCmd[3][37] = 1;
-		locoDataDCC[j].encCmd[3][38] = 0;
-		locoDataDCC[j].encCmd[3][39] = 1;
-		locoDataDCC[j].encCmd[3][40] = 0;
+		locoDataDCC[j].encCmd[3][k+1] = 1;
+		locoDataDCC[j].encCmd[3][k+2] = 0;
+		locoDataDCC[j].encCmd[3][k+3] = 1;
+		locoDataDCC[j].encCmd[3][k+4] = 0;
+		k += 5;		//Beginn FktGrp2.2 Daten
 
-		for (uint8_t k = 0; k < 4; k++)
-			locoDataDCC[j].encCmd[3][41 + k] = 0;
+		for (uint8_t n = 0; n < 4; n++, k++)
+			locoDataDCC[j].encCmd[3][k] = 0;
 
 		//Data-Byte-Start-Bit "0"
-		locoDataDCC[j].encCmd[3][45] = 0;
+		locoDataDCC[j].encCmd[3][k] = 0;
+		k++;			//Beginn Error Detetction Data Byte
 
 		//Error Detection Data Byte (Address-Byte xor Data-Byte)
-		for (uint8_t k = 0; k < 8; k++)
-			locoDataDCC[j].encCmd[3][46 + k] = locoDataDCC[j].encCmd[3][19 + k] ^ locoDataDCC[j].encCmd[3][28 + k] ^ locoDataDCC[j].encCmd[3][37 + k];
+		if  (locoDataDCC[j].longAddress == 0) {			// kurze Adresse
+			for (uint8_t n = 0; n < 8; n++, k++)
+				locoDataDCC[j].encCmd[3][k] = locoDataDCC[j].encCmd[3][19 + n] ^ locoDataDCC[j].encCmd[3][28 + n];
+
+		} else {										// lange Adresse
+			for (uint8_t n = 0; n < 8; n++, k++)
+				locoDataDCC[j].encCmd[3][k] = locoDataDCC[j].encCmd[3][19 + n] ^ locoDataDCC[j].encCmd[3][28 + n] ^ locoDataDCC[j].encCmd[3][37 + n];
+		}
 
 		//Packet-End-Bit "1"
-		locoDataDCC[j].encCmd[3][54] = 1;
+		locoDataDCC[j].encCmd[3][k] = 1;
 
 		//fix 1x Sync
-		locoDataDCC[j].encCmd[3][55] = 1;
+		locoDataDCC[j].encCmd[3][k+1] = 1;
 
 	} else {
 		return 0;
@@ -777,12 +774,7 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 	unsigned char newSpeedFnCmd = 0;
 	unsigned char encSpeed = 0;
 	unsigned char encSpeedTemp = 0;
-//	uint16_t crc;
-//	uint8_t mfxCommandLength;
-//	int cidx;
-//	int tidx;
-//	int EinsHalbiert;
-//	int stfngCnt;
+
 
 	if (nTokens < 4) {
 		log_error(
@@ -1224,6 +1216,7 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 			if (locoDataDCC[j].fn != fn) {
 				enqueue_loco_loprio(DCC, j, 1);
 				locoDataDCC[j].fn = fn;
+//				log_debug3("LocoDCCFn: ", locoDataDCC[j].fn);
 			}
 
 			//DCC Befehl "F1"
@@ -1299,71 +1292,109 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 			}
 		}
 
+
+		//Offset für Index bei langen Adressen setzen
+		uint8_t q = 0;
+		if  (locoDataDCC[j].longAddress == 0) {			// kurze Adresse
+			q = 0;
+		} else {										// lange Adresse
+			q = 9;
+		}
+
+
 		//DCC-Befehl Fahren encodieren
 		//----------------------------
+		uint8_t dummySpeed = 0;
 
 		//Speed/Direction
-		locoDataDCC[j].encCmd[0][37] = 0;
-		locoDataDCC[j].encCmd[0][38] = 1;
-		locoDataDCC[j].encCmd[0][39] = locoDataDCC[j].direction;
+		locoDataDCC[j].encCmd[0][28+q] = 0;
+		locoDataDCC[j].encCmd[0][29+q] = 1;
+		locoDataDCC[j].encCmd[0][30+q] = locoDataDCC[j].direction;
 
 		if (direction == 2) {
 			//Nothalt: E-Stop
-			locoDataDCC[j].encCmd[0][40] = 0;
-			locoDataDCC[j].encCmd[0][41] = 0;
-			locoDataDCC[j].encCmd[0][42] = 0;
-			locoDataDCC[j].encCmd[0][43] = 0;
-			locoDataDCC[j].encCmd[0][44] = 1;
+			locoDataDCC[j].encCmd[0][31+q] = 0;
+			locoDataDCC[j].encCmd[0][32+q] = 0;
+			locoDataDCC[j].encCmd[0][33+q] = 0;
+			locoDataDCC[j].encCmd[0][34+q] = 0;
+			locoDataDCC[j].encCmd[0][35+q] = 1;
 		} else {
-			uint8_t dummySpeed = dccSpeed28Data[speed];
-			for (uint8_t k = 0; k < 5; k++)
-				locoDataDCC[j].encCmd[0][40 + k] =  (dummySpeed >> (4 - k)) & 1;;
+			dummySpeed = dccSpeed28Data[speed];
+			for (uint8_t n = 0; n < 5; n++)
+				locoDataDCC[j].encCmd[0][31+n+q] =  (dummySpeed >> (4 - n)) & 1;
 		}
 
 		//Error Detection Data Byte (Address-Byte xor Data-Byte)
-		for (uint8_t k = 0; k < 8; k++)
-			locoDataDCC[j].encCmd[0][46 + k] = locoDataDCC[j].encCmd[0][19 + k] ^ locoDataDCC[j].encCmd[0][28 + k]  ^ locoDataDCC[j].encCmd[0][37 + k];
+		if  (locoDataDCC[j].longAddress == 0) {			// kurze Adresse
+			for (uint8_t n = 0; n < 8; n++)
+				locoDataDCC[j].encCmd[0][37 + n] = locoDataDCC[j].encCmd[0][19 + n] ^ locoDataDCC[j].encCmd[0][28 + n];
+
+		} else {										// lange Adresse
+			for (uint8_t n = 0; n < 8; n++)
+				locoDataDCC[j].encCmd[0][46 + n] = locoDataDCC[j].encCmd[0][19 + n] ^ locoDataDCC[j].encCmd[0][28 + n] ^ locoDataDCC[j].encCmd[0][37 + n];
+		}
+
 
 		//Funktionen wurden gesendet
 		if (nTokens > 4) {
 			//DCC-Befehl FktGrp1 encodieren (Fn, F1 - F4)
 			//-----------------------------
 
-			locoDataDCC[j].encCmd[1][40] = locoDataDCC[j].fn;
-			locoDataDCC[j].encCmd[1][41] = locoDataDCC[j].f4;
-			locoDataDCC[j].encCmd[1][42] = locoDataDCC[j].f3;
-			locoDataDCC[j].encCmd[1][43] = locoDataDCC[j].f2;
-			locoDataDCC[j].encCmd[1][44] = locoDataDCC[j].f1;
+			locoDataDCC[j].encCmd[1][31+q] = locoDataDCC[j].fn;
+			locoDataDCC[j].encCmd[1][32+q] = locoDataDCC[j].f4;
+			locoDataDCC[j].encCmd[1][33+q] = locoDataDCC[j].f3;
+			locoDataDCC[j].encCmd[1][34+q] = locoDataDCC[j].f2;
+			locoDataDCC[j].encCmd[1][35+q] = locoDataDCC[j].f1;
+
+//			log_debug3("LocoEncDCCFn: ", locoDataDCC[j].encCmd[1][31+q]);
 
 			//Error Detection Data Byte (Address-Byte xor Data-Byte)
-			for (uint8_t k = 0; k < 8; k++)
-				locoDataDCC[j].encCmd[1][46 + k] = locoDataDCC[j].encCmd[1][19 + k] ^ locoDataDCC[j].encCmd[1][28 + k] ^ locoDataDCC[j].encCmd[1][37 + k];
+			if  (locoDataDCC[j].longAddress == 0) {			// kurze Adresse
+				for (uint8_t n = 0; n < 8; n++)
+					locoDataDCC[j].encCmd[1][37 + n] = locoDataDCC[j].encCmd[1][19 + n] ^ locoDataDCC[j].encCmd[1][28 + n];
+
+			} else {										// lange Adresse
+				for (uint8_t n = 0; n < 8; n++)
+					locoDataDCC[j].encCmd[1][46 + n] = locoDataDCC[j].encCmd[1][19 + n] ^ locoDataDCC[j].encCmd[1][28 + n] ^ locoDataDCC[j].encCmd[1][37 + n];
+			}
 
 
 			//DCC-Befehl FktGrp2.1 encodieren (F5 - F8)
 			//-------------------------------
 
-			locoDataDCC[j].encCmd[2][41] = locoDataDCC[j].f8;
-			locoDataDCC[j].encCmd[2][42] = locoDataDCC[j].f7;
-			locoDataDCC[j].encCmd[2][43] = locoDataDCC[j].f6;
-			locoDataDCC[j].encCmd[2][44] = locoDataDCC[j].f5;
+			locoDataDCC[j].encCmd[2][32+q] = locoDataDCC[j].f8;
+			locoDataDCC[j].encCmd[2][33+q] = locoDataDCC[j].f7;
+			locoDataDCC[j].encCmd[2][34+q] = locoDataDCC[j].f6;
+			locoDataDCC[j].encCmd[2][35+q] = locoDataDCC[j].f5;
 
 			//Error Detection Data Byte (Address-Byte xor Data-Byte)
-			for (uint8_t k = 0; k < 8; k++)
-				locoDataDCC[j].encCmd[2][46 + k] = locoDataDCC[j].encCmd[2][19 + k] ^ locoDataDCC[j].encCmd[2][28 + k] ^ locoDataDCC[j].encCmd[2][37 + k];
+			if  (locoDataDCC[j].longAddress == 0) {			// kurze Adresse
+				for (uint8_t n = 0; n < 8; n++)
+					locoDataDCC[j].encCmd[2][37 + n] = locoDataDCC[j].encCmd[2][19 + n] ^ locoDataDCC[j].encCmd[2][28 + n];
+
+			} else {										// lange Adresse
+				for (uint8_t n = 0; n < 8; n++)
+					locoDataDCC[j].encCmd[2][46 + n] = locoDataDCC[j].encCmd[2][19 + n] ^ locoDataDCC[j].encCmd[2][28 + n] ^ locoDataDCC[j].encCmd[2][37 + n];
+			}
 
 
 			//DCC-Befehl FktGrp2.2 encodieren (F9 - F12)
 			//-------------------------------
 
-			locoDataDCC[j].encCmd[3][41] = locoDataDCC[j].f12;
-			locoDataDCC[j].encCmd[3][42] = locoDataDCC[j].f11;
-			locoDataDCC[j].encCmd[3][43] = locoDataDCC[j].f10;
-			locoDataDCC[j].encCmd[3][44] = locoDataDCC[j].f9;
+			locoDataDCC[j].encCmd[3][32+q] = locoDataDCC[j].f12;
+			locoDataDCC[j].encCmd[3][33+q] = locoDataDCC[j].f11;
+			locoDataDCC[j].encCmd[3][34+q] = locoDataDCC[j].f10;
+			locoDataDCC[j].encCmd[3][35+q] = locoDataDCC[j].f9;
 
 			//Error Detection Data Byte (Address-Byte xor Data-Byte)
-			for (uint8_t k = 0; k < 8; k++)
-				locoDataDCC[j].encCmd[3][46 + k] = locoDataDCC[j].encCmd[3][19 + k] ^ locoDataDCC[j].encCmd[3][28 + k] ^ locoDataDCC[j].encCmd[3][37 + k];
+			if  (locoDataDCC[j].longAddress == 0) {			// kurze Adresse
+				for (uint8_t n = 0; n < 8; n++)
+					locoDataDCC[j].encCmd[3][37 + n] = locoDataDCC[j].encCmd[3][19 + n] ^ locoDataDCC[j].encCmd[3][28 + n];
+
+			} else {										// lange Adresse
+				for (uint8_t n = 0; n < 8; n++)
+					locoDataDCC[j].encCmd[3][46 + n] = locoDataDCC[j].encCmd[3][19 + n] ^ locoDataDCC[j].encCmd[3][28 + n] ^ locoDataDCC[j].encCmd[3][37 + n];
+			}
 		}
 
 	} else {
@@ -2183,9 +2214,6 @@ uint8_t encodeMFXSIDCmd(uint8_t mfxIdx) {
 		}
 	}
 
-	//mfx
-	locoDataMFX[mfxIdx].sidAssigned = 1;
-
 	return 1;
 
 }
@@ -2193,6 +2221,9 @@ uint8_t encodeMFXSIDCmd(uint8_t mfxIdx) {
 
 
 uint8_t ib_buffer_info_cmd(char** tokens, uint8_t nTokens) {
+
+	char value[6];
+
 
 	// Füllstand LocoProtocolIdx-Buffer
 	uint8_t i = 0;
@@ -2202,11 +2233,13 @@ uint8_t ib_buffer_info_cmd(char** tokens, uint8_t nTokens) {
 		i++;
 		if (i >= LOCO_PROTOCOL_INDEX_BUFFER_SIZE){
 			log_info("ProtocolIndex Buffer FULL");
+			break;
 		}
 	}
 	log_info3("Protocol Buffer: ", i);
 
 
+	strcpy(value, tokens[1]);
 
 
 	// Füllstand MM/MM2-LocoData-Buffer
@@ -2215,6 +2248,11 @@ uint8_t ib_buffer_info_cmd(char** tokens, uint8_t nTokens) {
 		i++;
 		if (i >= MM_LOCO_DATA_BUFFER_SIZE){
 			log_info("Buffer LocoMM FULL");
+			break;
+		}
+		if (strcasecmp(value, "SPEED") == 0)  {
+			log_info3("LocoMM: ", locoDataMM[i-1].address);
+			log_info3("Speed: ", locoDataMM[i-1].speed);
 		}
 	}
 	log_info3("Buffer LocoMM: ", i);
@@ -2226,6 +2264,11 @@ uint8_t ib_buffer_info_cmd(char** tokens, uint8_t nTokens) {
 		i++;
 		if (i >= MFX_LOCO_DATA_BUFFER_SIZE){
 			log_info("Buffer LocoMFX FULL");
+			break;
+		}
+		if (strcasecmp(value, "SPEED") == 0)  {
+			log_info3("LocoMFX: ", locoDataMFX[i-1].address);
+			log_info3("Speed: ", locoDataMFX[i-1].speed);
 		}
 	}
 	log_info3("Buffer LocoMFX: ", i);
@@ -2237,6 +2280,11 @@ uint8_t ib_buffer_info_cmd(char** tokens, uint8_t nTokens) {
 		i++;
 		if (i >= DCC_LOCO_DATA_BUFFER_SIZE){
 			log_info("Buffer LocoDCC FULL");
+			break;
+		}
+		if (strcasecmp(value, "SPEED") == 0)  {
+			log_info3("LocoDCC: ", locoDataDCC[i-1].address);
+			log_info3("Speed: ", locoDataDCC[i-1].speed);
 		}
 	}
 	log_info3("Buffer LocoDCC: ", i);

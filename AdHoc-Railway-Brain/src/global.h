@@ -130,11 +130,13 @@ extern unsigned char logLevel;
 // - Funktionsgruppe 1 (100) => Fn, F1 - F4
 // - Funktionsgruppe 2.1 (1011) => F5 - F8
 // - Funktionsgruppe 2.2 (1010) => F9 - F12
-#define DCC_PACKET_LENGTH 37			// Standard-Befehl (Fahren oder Funktion) mit einer 2-Byte Adresse
+#define DCC_PACKET_LENGTH_STD 28			// Standard-Packet (Fahren oder Funktion) mit einer 1-Byte Adresse
+#define DCC_PACKET_LENGTH_EXT 37			// Extended-Packet (Fahren oder Funktion) mit einer 2-Byte Adresse
 #define DCC_SYNC_LENGTH 1
 #define DCC_START_SYNC_REPETITIONS 18
 #define DCC_END_SYNC_REPETITIONS 1
-#define DCC_COMMAND_LENGTH (DCC_START_SYNC_REPETITIONS*DCC_SYNC_LENGTH + DCC_PACKET_LENGTH + DCC_END_SYNC_REPETITIONS*DCC_SYNC_LENGTH)
+#define DCC_COMMAND_LENGTH_STD (DCC_START_SYNC_REPETITIONS*DCC_SYNC_LENGTH + DCC_PACKET_LENGTH_STD + DCC_END_SYNC_REPETITIONS*DCC_SYNC_LENGTH)
+#define DCC_COMMAND_LENGTH_EXT (DCC_START_SYNC_REPETITIONS*DCC_SYNC_LENGTH + DCC_PACKET_LENGTH_EXT + DCC_END_SYNC_REPETITIONS*DCC_SYNC_LENGTH)
 //#define DCC_TO_MM2_AFTER_CMD_PAUSE 17	// 17 Packets @4*DCC_BASE (4x58µs) => 3.9ms
 #define DCC_INTER_CMD_PAUSE 0
 #define MM_TO_DCC_INTER_CMD_PAUSE 17	// 17 Packets @4*DCC_BASE (4x58µs) => 3.9ms
@@ -144,11 +146,11 @@ extern unsigned char logLevel;
 // ACHTUNG: LŠnge der CommandQueue
 // Die LŠnge der Queue wird in der main.h  bestimmt. Je nach Definition der Packet-Parameter muss die Definition geŠndert werden.
 //
-// benštigte Gršsse der Queue (Stand 2016-06-05):
+// benštigte Gršsse der Queue (Stand 2017-03-15):
 // - MM2-Loco		=> 62 = MM_COMMAND_LENGTH_LOCO + MM_INTER_COMMAND_PAUSE
 // - MM2-Solenoid	=> 266 = MM_START_PAUSE_SOLENOID + (MM_COMMAND_LENGTH_SOLENOID * MM_SOLENOIDCMD_REPETITIONS) + MM_END_PAUSE_SOLENOID
 // - MFX-Loco		=> max 115 = MFX_COMMAND_LENGTH + MFX_TO_MM2_AFTER_CMD_PAUSE  (nicht fix wegen Stuffing-Bits)
-// - DCC-Loco		=> 81 => DCC_COMMAND_LENGTH + DCC_TO_MM2_AFTER_CMD_PAUSE
+// - DCC-Loco		=> max 81 => DCC_COMMAND_LENGTH_EXT + DCC_TO_SOLENOID_INTER_CMD_PAUSE (je nach Adresse unterschiedlich lang)
 //
 // die Gršsse der CommandQueue wird durch MM2-Solenoid bestimmt
 
@@ -171,15 +173,6 @@ extern unsigned char logLevel;
 // ---------------
 #define MAX_SOLENOID_QUEUE 100
 
-
-
-/*
-extern struct SolenoidData solenoidQueue[MAX_SOLENOID_QUEUE];
-extern int solenoidQueueIdxEnter;
-
-extern unsigned char portData[8];
-extern unsigned char deltaSpeedData[16];
-*/
 
 // MM-Loco-Buffer
 // --------------
@@ -257,7 +250,8 @@ typedef struct LocoDataDCC {
 	unsigned char f11 :1;
 	unsigned char f12 :1;
 	unsigned char speed14Mode :1;
-	unsigned char encCmd[4][DCC_COMMAND_LENGTH];
+	unsigned char longAddress :1;
+	unsigned char encCmd[4][DCC_COMMAND_LENGTH_EXT];
 } LDDCC;
 
 

@@ -7,6 +7,7 @@
  *  Multiprotcol-Version (MM/MM2/MFX/DCC)
  *    Added on: 06.06.2016
  *      Author: m2
+ *     Version: 19. M둹z 2017
  *
  */
 
@@ -93,7 +94,7 @@ int main() {
 	OCR1AH = (uint8_t) (MM2_LOCO_TOP >> 8);
 	OCR1AL = (uint8_t) MM2_LOCO_TOP;
 
-	setPWMWait();
+	setMM2PWMWait();
 
 	TIMSK1 |= (1 << OCIE1B);		// Timer 1 Output Compare B Match Interrupt enabled
 	TCCR1A |= (1 << COM1B1); 		// ACTIVATE PWM
@@ -116,6 +117,40 @@ int main() {
 	EICRA |= 0<<ISC21 | 1<<ISC20;	//Trigger INT2 on any edge
 	//MFX UID SNIFFER
 
+	//PA0 - PA7: set as input (using for Short-Detection)
+	DDRA &= ~(1<<DDA0);
+	DDRA &= ~(1<<DDA1);
+	DDRA &= ~(1<<DDA2);
+	DDRA &= ~(1<<DDA3);
+	DDRA &= ~(1<<DDA4);
+	DDRA &= ~(1<<DDA5);
+	DDRA &= ~(1<<DDA6);
+	DDRA &= ~(1<<DDA7);
+
+	//PA0 - PA7: disable  pull-up resistor
+	PORTA &= ~(1<<PORTA0);
+	PORTA &= ~(1<<PORTA1);
+	PORTA &= ~(1<<PORTA2);
+	PORTA &= ~(1<<PORTA3);
+	PORTA &= ~(1<<PORTA4);
+	PORTA &= ~(1<<PORTA5);
+	PORTA &= ~(1<<PORTA6);
+	PORTA &= ~(1<<PORTA7);
+
+	//PA0 - PA7: enable  pull-up resistor
+/*	PORTA |= 1<<PORTA0;
+	PORTA |= 1<<PORTA1;
+	PORTA |= 1<<PORTA2;
+	PORTA |= 1<<PORTA3;
+	PORTA |= 1<<PORTA4;
+	PORTA |= 1<<PORTA5;
+	PORTA |= 1<<PORTA6;
+	PORTA |= 1<<PORTA7;
+*/
+
+	//Init PCINT0 => Short-Detection
+	PCICR |= 1<<PCIE0;				//Pin Change Interrupt Enable 0
+	PCMSK0 |= 1<<PCINT0 | 1<<PCINT1 | 1<<PCINT2 | 1<<PCINT3 | 1<<PCINT4 | 1<<PCINT5 | 1<<PCINT6 | 1<<PCINT7; 	//Pin Change Enable
 
 
 	sei();
@@ -126,39 +161,15 @@ int main() {
 
 	//Do this forever
 	while (1) {
-
-
-/*
-		SPI_MasterTransmitGO(0xFF);
-		SPI_MasterTransmitDebug(0xFF);
-		_delay_ms(1000);
-		SPI_MasterTransmitGO(0x00);
-		SPI_MasterTransmitDebug(0x00);
-		_delay_ms(1000);
-*/
-
-
 		cmdAvail = checkForNewCommand();
 
 		if (cmdAvail == 1) {
 			processASCIIData(receivedCmdString);
 		}
 
-//		if (timer0_interrupt > 5) {
-//			booster_report_counter++;
-//			if (booster_report_counter > 50) {
-//				report_boosterstate();
-//				booster_report_counter = 0;
-//			}
-//		}
-
-
 		if (prepareNextData == 1) {
 			prepareDataForPWM();
 		}
-
-		//check shorts
-		//check_shorts();
 
 	}
 	cli();
@@ -179,7 +190,7 @@ void processASCIIData() {
 
 	if (!ret) {
 #ifdef LOGGING
-		log_error("Command not recognized\n");
+		log_error("Unable to comply\n");
 #endif
 		return;
 	}
@@ -190,7 +201,6 @@ void prepareDataForPWM() {
 
 	// Index der commandQueue auf das "leere" Array 둵dern
 	prepareQueueIdx = (pwmQueueIdx + 1) % 2;
-//	log_debug("Idx switch");
 
 	// Aufruf State-Machine (bis die Daten vorbereitet sind)
 	while (!nextDataPrepared)
@@ -198,26 +208,126 @@ void prepareDataForPWM() {
 
 	prepareNextData = 0;
 	nextDataPrepared = 0;
-/*	switch (pwm_mode[prepareQueueIdx]) {
-	case MODE_MM2_SOLENOID:
-		log_debug("nextDataPrepared: Solenoid");
-		break;
-	case MODE_MM2_LOCO:
-		log_debug("nextDataPrepared: Loco");
-		break;
-	case MODE_MFX:
-		log_debug("nextDataPrepared: MFX");
-		break;
-	case MODE_DCC:
-		log_debug("nextDataPrepared: DCC");
-		break;
-	}*/
-
 }
+
+
 
 //===========================
 // Interrupt Service Routines
 //===========================
+
+//Interrupt ausgel쉝t durch Booster-Short (PCINT0 - PCINT7)
+ISR(PCINT0_vect)
+{
+	//Interrupt deaktivieren damit nicht zuviele ausgel쉝t werden
+	//Reaktivierung erfolgt mit Interrupt Timer0
+	PCICR &= ~(1<<PCIE0);				//Pin Change Interrupt Disable 0
+	short_detected = 1;
+	check_shorts();
+
+}
+
+
+// Verz쉍erung f웦 Deaktivierung Solenoid und Short-Detection
+// Timer0 overflow interrupt handler (13ms 20MHz / Timer0Prescaler 1024 / 8Bit Counter)
+// 20MHZ/1024*255 = 13ms
+ISR( TIMER0_OVF_vect) {
+	timer0_interrupt++;
+
+	// Short detected?
+	if (short_detected == 1){
+		short_detected = 0;
+	} else {
+		//Interrupt f웦 Short-Detection wieder aktivieren, nach minimum 13 ms Wartezeit
+		PCICR |= 1<<PCIE0;				//Pin Change Interrupt Enable 0
+	}
+
+}
+
+// PWM
+ISR( TIMER1_COMPB_vect) {
+
+	if (prepareNextData == 1 && pwmOutputIdx == 0) {
+		//PWM in MM2-Lok-Modus setzen
+		OCR1AH = (uint8_t) (MM2_LOCO_TOP >> 8);
+		OCR1AL = (uint8_t) (MM2_LOCO_TOP);
+		setMM2PWMWait();
+		return;
+	}
+
+	if (pwmOutputIdx == 0) {
+		pwmQueueIdx = (pwmQueueIdx + 1) % 2;
+		prepareNextData = 1;
+
+		switch (pwm_mode[pwmQueueIdx]) {
+		case MODE_MM2_SOLENOID:
+			OCR1AH = (uint8_t) (MM2_SOLENOID_TOP >> 8);
+			OCR1AL = (uint8_t) (MM2_SOLENOID_TOP);
+			break;
+		case MODE_MM2_LOCO:
+			OCR1AH = (uint8_t) (MM2_LOCO_TOP >> 8);
+			OCR1AL = (uint8_t) (MM2_LOCO_TOP);
+			break;
+		// weil die Perioden-Dauer des PWM-Signals bei MFX & DCC variert, geschieht hier nix
+//		case MODE_MFX:
+//		case MODE_DCC:
+		}
+		pwmOutputCmdLength = pwmCmdLength[pwmQueueIdx];
+	}
+
+	unsigned char b = pwmCmdQueue[pwmQueueIdx][pwmOutputIdx];
+
+	switch  (pwm_mode[pwmQueueIdx]) {
+	case MODE_MM2_SOLENOID:
+		switch (b) {
+		case 0: setMM2Solenoid0(); break;
+		case 1: setMM2Solenoid1(); break;
+		case 9: setMM2PWMWait(); break;
+		}
+		break;
+	case MODE_MM2_LOCO:
+		switch (b) {
+		case 0: setMM2Loco0(); break;
+		case 1: setMM2Loco1(); break;
+		case 9: setMM2PWMWait(); break;
+		}
+		break;
+	case MODE_MFX:
+		switch (b) {
+		case 1:
+			setMFX1();
+			break;
+		case 2:
+			setMFX2();
+			break;
+		case 3:
+			setMFX3();
+			break;
+		case 4:
+			setMFX4();
+			break;
+		case 9:
+			setMFXPWMWait();
+			break;
+		}
+		break;
+	case MODE_DCC:
+		switch (b) {
+		case 0:
+			setDCC0();
+			break;
+		case 1:
+			setDCC1();
+			break;
+		case 9:
+			setDCCPWMWait();
+			break;
+		}
+		break;
+	}
+	pwmOutputIdx = (pwmOutputIdx + 1) % pwmOutputCmdLength;
+}
+
 
 //MFX UID SNIFFER
 // Interrupt 2 an sPin3
@@ -234,17 +344,8 @@ ISR( INT2_vect)
 		stuffingCounter = 0;
 		return;
 	}
-/*
-	if (i >= 14 && i <= 17) {
-		bit1 = 1;
-		stuffingCounter++;
-	} else 	if (i >= 29 && i <= 32) {
-		bit0 = 1;
-		stuffingCounter=0;
-	} else {
-		stuffingCounter=0;
-	}
-*/
+
+	//"0"- oder halbes "1"-Bit? (100탎 oder 50탎)
 	// 22*3.2탎 =  70.4탎
 	if ( i <= 22) {
 		bit1 = 1;
@@ -259,11 +360,6 @@ ISR( INT2_vect)
 	switch (mfxSnifferState) {
 	//Sync => 010010
 	case 1:
-/*		if (mfxSnifferStateExit > 27) {
-			log_info3("ExitPoint: ", mfxSnifferStateExit);
-			log_info3("et: ", mfxExitTime);
-			mfxSnifferStateExit = 0;
-		}*/
 		if (bit0 == 1) {
 			mfxSnifferState=2;
 		// wenn das erste Null nicht richtig erkannt wurde
@@ -315,7 +411,6 @@ ISR( INT2_vect)
 	case 6:
 		if (bit0 == 1) {
 			mfxSnifferState=7;
-//			log_info3("CRC: ", mfxSnifferState);
 		}
 		else {
 			mfxSnifferStateExit=mfxSnifferState;
@@ -419,8 +514,6 @@ ISR( INT2_vect)
 	case 16:
 		if (bit0 == 1) {
 			mfxSnifferState=17;
-//			log_info3("HELLO: ", mfxSnifferState);
-//			log_info3("AdrBroadcast: ", mfxSnifferState);
 		}
 		else {
 			mfxSnifferStateExit=mfxSnifferState;
@@ -435,7 +528,6 @@ ISR( INT2_vect)
 			mfxSnifferState=18;
 		}
 		else {
-//			log_info3("KmdSIDabort: ", mfxSnifferState);
 			mfxSnifferStateExit=mfxSnifferState;
 			mfxExitTime=i;
 			mfxSnifferState=1;
@@ -446,7 +538,6 @@ ISR( INT2_vect)
 			mfxSnifferState=19;
 		}
 		else {
-//			log_info3("KmdSIDabort: ", mfxSnifferState);
 			mfxSnifferStateExit=mfxSnifferState;
 			mfxExitTime=i;
 			mfxSnifferState=1;
@@ -457,7 +548,6 @@ ISR( INT2_vect)
 			mfxSnifferState=20;
 		}
 		else {
-//			log_info3("KmdSIDabort: ", mfxSnifferState);
 			mfxSnifferStateExit=mfxSnifferState;
 			mfxExitTime=i;
 			mfxSnifferState=1;
@@ -468,7 +558,6 @@ ISR( INT2_vect)
 			mfxSnifferState=21;
 		}
 		else {
-//			log_info3("KmdSIDabort: ", mfxSnifferState);
 			mfxSnifferStateExit=mfxSnifferState;
 			mfxExitTime=i;
 			mfxSnifferState=1;
@@ -479,7 +568,6 @@ ISR( INT2_vect)
 			mfxSnifferState=22;
 		}
 		else {
-//			log_info3("KmdSIDabort: ", mfxSnifferState);
 			mfxSnifferStateExit=mfxSnifferState;
 			mfxExitTime=i;
 			mfxSnifferState=1;
@@ -490,7 +578,6 @@ ISR( INT2_vect)
 			mfxSnifferState=23;
 		}
 		else {
-//			log_info3("KmdSIDabort: ", mfxSnifferState);
 			mfxSnifferStateExit=mfxSnifferState;
 			mfxExitTime=i;
 			mfxSnifferState=1;
@@ -501,8 +588,6 @@ ISR( INT2_vect)
 			mfxSnifferState=24;
 		}
 		else {
-//			log_info3("KmdSIDabort: ", mfxSnifferState);
-//			log_info3("i: ", i);
 			mfxSnifferStateExit=mfxSnifferState;
 			mfxExitTime=i;
 			mfxSnifferState=1;
@@ -513,7 +598,6 @@ ISR( INT2_vect)
 			mfxSnifferState=25;
 		}
 		else {
-//			log_info3("KmdSIDabort: ", mfxSnifferState);
 			mfxSnifferStateExit=mfxSnifferState;
 			mfxExitTime=i;
 			mfxSnifferState=1;
@@ -524,7 +608,6 @@ ISR( INT2_vect)
 			mfxSnifferState=26;
 		}
 		else {
-//			log_info3("KmdSIDabort: ", mfxSnifferState);
 			mfxSnifferStateExit=mfxSnifferState;
 			mfxExitTime=i;
 			mfxSnifferState=1;
@@ -535,7 +618,6 @@ ISR( INT2_vect)
 			mfxSnifferState=27;
 		}
 		else {
-//			log_info3("KmdSIDabort: ", mfxSnifferState);
 			mfxSnifferStateExit=mfxSnifferState;
 			mfxExitTime=i;
 			mfxSnifferState=1;
@@ -543,12 +625,9 @@ ISR( INT2_vect)
 		break;
 	case 27:
 		if (bit1 == 1) {
-//			log_info3("KmdSID: ", mfxSnifferState);
 			mfxSnifferState=28;
-//			log_info3("HELLO: ", mfxSnifferState);
 		}
 		else {
-//			log_info3("KmdSIDabort: ", mfxSnifferState);
 			mfxSnifferStateExit=mfxSnifferState;
 			mfxExitTime=i;
 			mfxSnifferState=1;
@@ -1556,125 +1635,7 @@ ISR( INT2_vect)
 		break;
 	}
 
-
 }
-
-
-// Timer0 overflow interrupt handler (13ms 20MHz / Timer0Prescaler 1024 / 8Bit Counter)
-// 20MHZ/1024*255 = 13ms
-ISR( TIMER0_OVF_vect) {
-	timer0_interrupt++;
-}
-
-// PWM
-ISR( TIMER1_COMPB_vect) {
-
-	if (prepareNextData == 1 && pwmOutputIdx == 0) {
-		setPWMWait();
-//		log_debug("ISR pwmWait");
-		return;
-	}
-
-	if (pwmOutputIdx == 0) {
-		pwmQueueIdx = (pwmQueueIdx + 1) % 2;
-		prepareNextData = 1;
-
-		switch (pwm_mode[pwmQueueIdx]) {
-		case MODE_MM2_SOLENOID:
-			OCR1AH = (uint8_t) (MM2_SOLENOID_TOP >> 8);
-			OCR1AL = (uint8_t) (MM2_SOLENOID_TOP);
-//			log_debug3("PWM MODE Solenoid 256 * ", (pwmCmdLength[pwmQueueIdx] / 256));
-//			log_debug3("PWM MODE Solenoid ", (pwmCmdLength[pwmQueueIdx] % 256));
-			break;
-		case MODE_MM2_LOCO:
-			OCR1AH = (uint8_t) (MM2_LOCO_TOP >> 8);
-			OCR1AL = (uint8_t) (MM2_LOCO_TOP);
-			break;
-		// weil die Perioden-Dauer des PWM-Signals bei MFX & DCC variert, geschieht hier nix
-//		case MODE_MFX:
-//		case MODE_DCC:
-		}
-		pwmOutputCmdLength = pwmCmdLength[pwmQueueIdx];
-	}
-
-	unsigned char b = pwmCmdQueue[pwmQueueIdx][pwmOutputIdx];
-
-	switch  (pwm_mode[pwmQueueIdx]) {
-	case MODE_MM2_SOLENOID:
-		switch (b) {
-		case 0: setMM2Solenoid0(); break;
-		case 1: setMM2Solenoid1(); break;
-		case 9: setPWMWait(); break;
-		}
-		break;
-	case MODE_MM2_LOCO:
-		switch (b) {
-		case 0: setMM2Loco0(); break;
-		case 1: setMM2Loco1(); break;
-		case 9: setPWMWait(); break;
-		}
-		break;
-	case MODE_MFX:
-		switch (b) {
-		case 1:
-			MFX_TOP = 2 * MFX_BASE;
-			OCR1AH = (uint8_t) (MFX_TOP >> 8);
-			OCR1AL = (uint8_t) (MFX_TOP);
-			setMFX1();
-			break;
-		case 2:
-			MFX_TOP = 3 * MFX_BASE;
-			OCR1AH = (uint8_t) (MFX_TOP >> 8);
-			OCR1AL = (uint8_t) (MFX_TOP);
-			setMFX2();
-			break;
-		case 3:
-			MFX_TOP = 3 * MFX_BASE;
-			OCR1AH = (uint8_t) (MFX_TOP >> 8);
-			OCR1AL = (uint8_t) (MFX_TOP);
-			setMFX3();
-			break;
-		case 4:
-			MFX_TOP = 4 * MFX_BASE;
-			OCR1AH = (uint8_t) (MFX_TOP >> 8);
-			OCR1AL = (uint8_t) (MFX_TOP);
-			setMFX4();
-			break;
-		case 9:
-			MFX_TOP = 4 * MFX_BASE;
-			OCR1AH = (uint8_t) (MFX_TOP >> 8);
-			OCR1AL = (uint8_t) (MFX_TOP);
-			setPWMWait();
-			break;
-		}
-		break;
-	case MODE_DCC:
-		switch (b) {
-		case 0:
-			DCC_TOP = 4  * DCC_BASE;
-			OCR1AH = (uint8_t) (DCC_TOP >> 8);
-			OCR1AL = (uint8_t) (DCC_TOP);
-			setDCC0();
-			break;
-		case 1:
-			DCC_TOP = 2 * DCC_BASE;
-			OCR1AH = (uint8_t) (DCC_TOP >> 8);
-			OCR1AL = (uint8_t) (DCC_TOP);
-			setDCC1();
-			break;
-		case 9:
-			DCC_TOP = 4  * DCC_BASE;
-			OCR1AH = (uint8_t) (DCC_TOP >> 8);
-			OCR1AL = (uint8_t) (DCC_TOP);
-			setPWMWait();
-			break;
-		}
-		break;
-	}
-	pwmOutputIdx = (pwmOutputIdx + 1) % pwmOutputCmdLength;
-}
-
-
 
 
 void enqueue_solenoid() {
@@ -1769,6 +1730,7 @@ inline void init() {
 
 
 void initIdleLocoData() {
+
 	//INIT MM2-Buffer mit Dummy-Idle-Lok
 	//----------------------------------
 	uint16_t number = 80;
@@ -1874,6 +1836,186 @@ void initLocoData() {
 	mmSpeedData[13] = 63;		// 13  / old Protocol-Format:  14 => Fahrstufe 13
 	mmSpeedData[14] = 255; 		// 14  / old Protocol-Format:  15 => Fahrstufe 14
 	mmSpeedData[15] = 1; //DEBUG //bm?
+
+	// MM Loopup-Table Addresses > 79 (80 bis 255)
+	// -------------------------------------------
+	// Adressen 1 bis 79 werden berechnet - darum immer Index + 80 ber웒ksichtigen!
+	mmAddressExt[0] = 0b00000000;	// Kodierung f웦 Adresse 80
+	mmAddressExt[1] = 0b01000000;	// Kodierung f웦 Adresse 81
+	mmAddressExt[2] = 0b01100000;	// Kodierung f웦 Adresse 82
+	mmAddressExt[3] = 0b10010111;	// ....
+	mmAddressExt[4] = 0b01110000;
+	mmAddressExt[5] = 0b01001000;
+	mmAddressExt[6] = 0b01101000;
+	mmAddressExt[7] = 0b01011000;
+	mmAddressExt[8] = 0b01111000;
+	mmAddressExt[9] = 0b01000100;
+	mmAddressExt[10] = 0b01100100;
+	mmAddressExt[11] = 0b01010100;
+	mmAddressExt[12] = 0b01110100;
+	mmAddressExt[13] = 0b01001100;
+	mmAddressExt[14] = 0b01101100;
+	mmAddressExt[15] = 0b01011100;
+	mmAddressExt[16] = 0b01111100;
+	mmAddressExt[17] = 0b01000010;
+	mmAddressExt[18] = 0b01100010;
+	mmAddressExt[19] = 0b01010010;
+	mmAddressExt[20] = 0b01110010;
+	mmAddressExt[21] = 0b01001010;
+	mmAddressExt[22] = 0b01101010;
+	mmAddressExt[23] = 0b01011010;
+	mmAddressExt[24] = 0b01111010;
+	mmAddressExt[25] = 0b01000110;
+	mmAddressExt[26] = 0b01100110;
+	mmAddressExt[27] = 0b01010110;
+	mmAddressExt[28] = 0b01110110;
+	mmAddressExt[29] = 0b01001110;
+	mmAddressExt[30] = 0b01101110;
+	mmAddressExt[31] = 0b01011110;
+	mmAddressExt[32] = 0b01111110;
+	mmAddressExt[33] = 0b01000001;
+	mmAddressExt[34] = 0b01100001;
+	mmAddressExt[35] = 0b01010001;
+	mmAddressExt[36] = 0b01110001;
+	mmAddressExt[37] = 0b01001001;
+	mmAddressExt[38] = 0b01101001;
+	mmAddressExt[39] = 0b01011001;
+	mmAddressExt[40] = 0b01111001;
+	mmAddressExt[41] = 0b01000101;
+	mmAddressExt[42] = 0b01100101;
+	mmAddressExt[43] = 0b10011111;
+	mmAddressExt[44] = 0b01110101;
+	mmAddressExt[45] = 0b01001101;
+	mmAddressExt[46] = 0b01101101;
+	mmAddressExt[47] = 0b01011101;
+	mmAddressExt[48] = 0b01111101;
+	mmAddressExt[49] = 0b01000011;
+	mmAddressExt[50] = 0b01100011;
+	mmAddressExt[51] = 0b01010011;
+	mmAddressExt[52] = 0b01110011;
+	mmAddressExt[53] = 0b01001011;
+	mmAddressExt[54] = 0b01101011;
+	mmAddressExt[55] = 0b01011011;
+	mmAddressExt[56] = 0b01111011;
+	mmAddressExt[57] = 0b01000111;
+	mmAddressExt[58] = 0b01100111;
+	mmAddressExt[59] = 0b01010111;
+	mmAddressExt[60] = 0b01110111;
+	mmAddressExt[61] = 0b01001111;
+	mmAddressExt[62] = 0b01101111;
+	mmAddressExt[63] = 0b01011111;
+	mmAddressExt[64] = 0b01111111;
+	mmAddressExt[65] = 0b00010000;
+	mmAddressExt[66] = 0b00011000;
+	mmAddressExt[67] = 0b00010100;
+	mmAddressExt[68] = 0b00011100;
+	mmAddressExt[69] = 0b00010010;
+	mmAddressExt[70] = 0b00011010;
+	mmAddressExt[71] = 0b00010110;
+	mmAddressExt[72] = 0b00011110;
+	mmAddressExt[73] = 0b00010001;
+	mmAddressExt[74] = 0b00011001;
+	mmAddressExt[75] = 0b00010101;
+	mmAddressExt[76] = 0b00011101;
+	mmAddressExt[77] = 0b00010011;
+	mmAddressExt[78] = 0b00011011;
+	mmAddressExt[79] = 0b00010111;
+	mmAddressExt[80] = 0b00011111;
+	mmAddressExt[81] = 0b11010000;
+	mmAddressExt[82] = 0b11011000;
+	mmAddressExt[83] = 0b11010100;
+	mmAddressExt[84] = 0b11011100;
+	mmAddressExt[85] = 0b11010010;
+	mmAddressExt[86] = 0b11011010;
+	mmAddressExt[87] = 0b11010110;
+	mmAddressExt[88] = 0b11011110;
+	mmAddressExt[89] = 0b11010001;
+	mmAddressExt[90] = 0b11011001;
+	mmAddressExt[91] = 0b11010101;
+	mmAddressExt[92] = 0b11011101;
+	mmAddressExt[93] = 0b11010011;
+	mmAddressExt[94] = 0b11011011;
+	mmAddressExt[95] = 0b11010111;
+	mmAddressExt[96] = 0b11011111;
+	mmAddressExt[97] = 0b10010000;
+	mmAddressExt[98] = 0b10011000;
+	mmAddressExt[99] = 0b10010100;
+	mmAddressExt[100] = 0b10011100;
+	mmAddressExt[101] = 0b10010010;
+	mmAddressExt[102] = 0b10011010;
+	mmAddressExt[103] = 0b10010110;
+	mmAddressExt[104] = 0b10011110;
+	mmAddressExt[105] = 0b10010001;
+	mmAddressExt[106] = 0b10011001;
+	mmAddressExt[107] = 0b10010101;
+	mmAddressExt[108] = 0b10011101;
+	mmAddressExt[109] = 0b10010011;
+	mmAddressExt[110] = 0b10011011;
+	mmAddressExt[111] = 0b01010000;
+	mmAddressExt[112] = 0b01010101;
+	mmAddressExt[113] = 0b00000100;
+	mmAddressExt[114] = 0b00000110;
+	mmAddressExt[115] = 0b00000101;
+	mmAddressExt[116] = 0b00000111;
+	mmAddressExt[117] = 0b11000100;
+	mmAddressExt[118] = 0b11000110;
+	mmAddressExt[119] = 0b11000101;
+	mmAddressExt[120] = 0b11000111;
+	mmAddressExt[121] = 0b10000100;
+	mmAddressExt[122] = 0b10000110;
+	mmAddressExt[123] = 0b10000101;
+	mmAddressExt[124] = 0b10000111;
+	mmAddressExt[125] = 0b00110100;
+	mmAddressExt[126] = 0b00110110;
+	mmAddressExt[127] = 0b00110101;
+	mmAddressExt[128] = 0b00110111;
+	mmAddressExt[129] = 0b11110100;
+	mmAddressExt[130] = 0b11110110;
+	mmAddressExt[131] = 0b11110101;
+	mmAddressExt[132] = 0b11110111;
+	mmAddressExt[133] = 0b10110100;
+	mmAddressExt[134] = 0b10110110;
+	mmAddressExt[135] = 0b10110101;
+	mmAddressExt[136] = 0b10110111;
+	mmAddressExt[137] = 0b00100100;
+	mmAddressExt[138] = 0b00100110;
+	mmAddressExt[139] = 0b00100101;
+	mmAddressExt[140] = 0b00100111;
+	mmAddressExt[141] = 0b11100100;
+	mmAddressExt[142] = 0b11100110;
+	mmAddressExt[143] = 0b11100101;
+	mmAddressExt[144] = 0b11100111;
+	mmAddressExt[145] = 0b10100100;
+	mmAddressExt[146] = 0b10100110;
+	mmAddressExt[147] = 0b10100101;
+	mmAddressExt[148] = 0b10100111;
+	mmAddressExt[149] = 0b00000001;
+	mmAddressExt[150] = 0b11000001;
+	mmAddressExt[151] = 0b10000001;
+	mmAddressExt[152] = 0b00110001;
+	mmAddressExt[153] = 0b11110001;
+	mmAddressExt[154] = 0b10110001;
+	mmAddressExt[155] = 0b00100001;
+	mmAddressExt[156] = 0b11100001;
+	mmAddressExt[157] = 0b10100001;
+	mmAddressExt[158] = 0b00001101;
+	mmAddressExt[159] = 0b11001101;
+	mmAddressExt[160] = 0b10001101;
+	mmAddressExt[161] = 0b00111101;
+	mmAddressExt[162] = 0b11111101;
+	mmAddressExt[163] = 0b10111101;
+	mmAddressExt[164] = 0b00101101;
+	mmAddressExt[165] = 0b11101101;
+	mmAddressExt[166] = 0b10101101;
+	mmAddressExt[167] = 0b00001001;
+	mmAddressExt[168] = 0b11001001;
+	mmAddressExt[169] = 0b10001001;
+	mmAddressExt[170] = 0b00111001;
+	mmAddressExt[171] = 0b11111001;
+	mmAddressExt[172] = 0b10111001;
+	mmAddressExt[173] = 0b00101001;
+	mmAddressExt[174] = 0b11101001;
+	mmAddressExt[175] = 0b10101001;
 
 
 	// DCC Lookup-Table 28 Step Speed Configuration
@@ -2242,7 +2384,10 @@ void newMFXSIDsendMFX() {
 	while (locoDataMFX[i].sidAssigned != 0) {
 		i++;
 		if (i >= MFX_LOCO_DATA_BUFFER_SIZE){
-			break;
+			mfxSIDCmdCounter = 0;
+			mfxSIDRepetitionCmdCounter = 0;
+			stateLoco = refreshMM2Loco;
+			return;
 		}
 	}
 	encodeMFXSIDCmd(i);
@@ -2254,6 +2399,7 @@ void newMFXSIDsendMFX() {
 		mfxSIDRepetitionCmdCounter = 0;
 		stateLoco = refreshMM2Loco;
 		mfxSIDCmdCounter--;
+		locoDataMFX[i].sidAssigned = 1;
 
 	} else {
 		stateLoco = newMFXSIDsendDCC;
@@ -2377,8 +2523,13 @@ void prepareRefreshLocoPacket(uint8_t protocol) {
 				pwmCmdQueue[prepareQueueIdx][i] = 9;
 		}
 
-		for (uint8_t k = 0; k < DCC_COMMAND_LENGTH; i++, k++)
-			pwmCmdQueue[prepareQueueIdx][i] = locoDataDCC[locoDataDCCRefreshLocoIdx].encCmd[locoDataDCCRefreshEncCmdIdx][k];
+		if (locoDataDCC[locoDataDCCRefreshLocoIdx].longAddress == 0){
+			for (uint8_t k = 0; k < DCC_COMMAND_LENGTH_STD; i++, k++)
+				pwmCmdQueue[prepareQueueIdx][i] = locoDataDCC[locoDataDCCRefreshLocoIdx].encCmd[locoDataDCCRefreshEncCmdIdx][k];
+		} else {
+			for (uint8_t k = 0; k < DCC_COMMAND_LENGTH_EXT; i++, k++)
+				pwmCmdQueue[prepareQueueIdx][i] = locoDataDCC[locoDataDCCRefreshLocoIdx].encCmd[locoDataDCCRefreshEncCmdIdx][k];
+		}
 
 		pwmCmdLength[prepareQueueIdx] = i;
 		pwm_mode[prepareQueueIdx] = MODE_DCC;
@@ -2467,8 +2618,13 @@ void prepareNewLocoPacket(unsigned char newProtocol, unsigned char newBufferIdx,
 				pwmCmdQueue[prepareQueueIdx][i] = 9;
 		}
 
-		for (uint8_t k = 0; k < DCC_COMMAND_LENGTH; i++, k++)
-			pwmCmdQueue[prepareQueueIdx][i] = locoDataDCC[newBufferIdx].encCmd[NewEncCmdIdx][k];
+		if (locoDataDCC[newBufferIdx].longAddress == 0){
+			for (uint8_t k = 0; k < DCC_COMMAND_LENGTH_STD; i++, k++)
+				pwmCmdQueue[prepareQueueIdx][i] = locoDataDCC[newBufferIdx].encCmd[NewEncCmdIdx][k];
+		} else {
+			for (uint8_t k = 0; k < DCC_COMMAND_LENGTH_EXT; i++, k++)
+				pwmCmdQueue[prepareQueueIdx][i] = locoDataDCC[newBufferIdx].encCmd[NewEncCmdIdx][k];
+		}
 
 		pwmCmdLength[prepareQueueIdx] = i;
 		pwm_mode[prepareQueueIdx] = MODE_DCC;
@@ -2504,6 +2660,7 @@ void prepareSIDLocoPacket() {
 	pwm_mode[prepareQueueIdx] = MODE_MFX;
 
 	nextDataPrepared = 1;
+
 }
 
 

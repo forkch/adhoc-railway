@@ -22,12 +22,15 @@ typedef enum PWM_MODE {
 	MODE_MM2_SOLENOID, MODE_MM2_LOCO, MODE_MFX, MODE_DCC
 } PM;
 
-#define SOLENOID_WAIT 10
+//#define SOLENOID_WAIT 10
+
 
 //clk/1024 => 20MHz/1024 => 51µs
 #define TIMER0_PRESCALER      (1 << CS02) | (1 << CS00)
 
 volatile unsigned char timer0_interrupt;
+volatile unsigned char short_detected;
+
 
 //MFX UID SNIFFER
 volatile uint8_t mfxSnifferState;
@@ -105,7 +108,9 @@ uint8_t solenoidQueueIdxFront;
 // -------------
 unsigned char portData[8];				// ternŠre Adressierung der Ports eines Weichen-Decoders
 unsigned char mmSpeedData[16];			// ternŠre Code der Geschwindigkeit im alten MŠrklin-Motorola-Format
+unsigned char mmAddressExt[180];		// Adressen gršsser 79 im Motorola-Format gemŠss IntelliBox Kodierung (Quelle Website Dr. Kšnig)
 unsigned char dccSpeed28Data[32];		// Code der Geschwindigkeit fŸr 28 Stufen im DCC-Protokoll
+
 
 // MM Spezial
 // ----------

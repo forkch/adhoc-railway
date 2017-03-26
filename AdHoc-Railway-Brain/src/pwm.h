@@ -3,6 +3,11 @@
  *
  *  Created on: 03.02.2012
  *      Author: fork
+ *
+ *  Multiprotcol-Version (MM/MM2/MFX/DCC)
+ *    Added on: 06.06.2016
+ *      Author: m2
+ *
  */
 
 #ifndef PWM_H_
@@ -54,21 +59,24 @@ uint16_t DCC_TOP;
 
 void initPWM();
 // nicht benutzt
-void setPWMOutput(uint16_t duty);
+//void setPWMOutput(uint16_t duty);
 void setMM2Solenoid0();
 void setMM2Solenoid1();
 void setMM2SolenoidWait();
 void setMM2Loco0();
 void setMM2Loco1();
+void setMM2PWMWait();
 
 void setMFX1();
 void setMFX2();
 void setMFX3();
 void setMFX4();
+void setMFXPWMWait();
 
 void setDCC0();
 void setDCC1();
+void setDCCPWMWait();
 
-void setPWMWait();
+
 
 #endif /* PWM_H_ */

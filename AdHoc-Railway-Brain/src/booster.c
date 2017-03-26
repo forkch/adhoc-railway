@@ -1,5 +1,5 @@
 /*
- * booser.c
+ * booster.c
  *
  *  Created on: 13.03.2012
  *      Author: fork
