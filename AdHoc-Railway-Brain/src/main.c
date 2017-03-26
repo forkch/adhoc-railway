@@ -108,8 +108,9 @@ int main() {
 	TCCR2B |= (1 << CS22);			//Prescaler = clk/64 => 3.2µs
 
 	//Init Interrupt 2
-//	DDRB = 1<<PB2;					//Set PB2 as input (Using for interrupt 2)
-	PORTB |= 1<<PB2;				//Enable PB2 pull-up resistor
+	DDRB &= ~(1<<DDB2);				//Set PB2 as input (Using for interrupt 2)
+//	PORTB &= ~(1<<PORTB2);			//Disable PB2 pull-up resistor
+	PORTB |= 1<<PORTB2;				//Enable PB2 pull-up resistor
 
 //	EIMSK |= 1<<INT2;				//Enable interrupt 2
 	EICRA |= 0<<ISC21 | 1<<ISC20;	//Trigger INT2 on any edge
@@ -233,11 +234,22 @@ ISR( INT2_vect)
 		stuffingCounter = 0;
 		return;
 	}
-
+/*
 	if (i >= 14 && i <= 17) {
 		bit1 = 1;
 		stuffingCounter++;
 	} else 	if (i >= 29 && i <= 32) {
+		bit0 = 1;
+		stuffingCounter=0;
+	} else {
+		stuffingCounter=0;
+	}
+*/
+	// 22*3.2µs =  70.4µs
+	if ( i <= 22) {
+		bit1 = 1;
+		stuffingCounter++;
+	} else 	if (i > 22 ) {
 		bit0 = 1;
 		stuffingCounter=0;
 	} else {
@@ -254,8 +266,11 @@ ISR( INT2_vect)
 		}*/
 		if (bit0 == 1) {
 			mfxSnifferState=2;
-			mfxUID = 0;
+		// wenn das erste Null nicht richtig erkannt wurde
+		} else if (bit1 == 1) {
+			mfxSnifferState=3;
 		}
+		mfxUID = 0;
 		break;
 	case 2:
 		if (bit1 == 1) {
@@ -1743,7 +1758,7 @@ inline void init() {
 	prepareNextData = 1;
 	nextDataPrepared = 0;
 
-	mfxSIDCommandToExecute = 0;
+	mfxSIDCmdCounter = 0;
 
 //	mmChangeDirection = 192;			//im alten MŠrklin-Format wird Geschwindigkeit 1 als Richtungswechsel interpretiert. Als Trit codiert 1 -> 192
 
@@ -1956,7 +1971,7 @@ void refreshMM2Loco() {
 				stateLoco = newDCCsendMFX;
 				break;
 			}
-		} else if (mfxSIDCommandToExecute == 1) {
+		} else if (mfxSIDCmdCounter > 0) {
 			mfxSIDRepetitionCmdCounter = 0;
 			stateLoco = newMFXSIDsendMFX;
 		} else if (!newLocoLoPrioQueueEmpty()) {
@@ -2000,7 +2015,7 @@ void refreshMFXLoco() {
 				stateLoco = newDCCsendDCC;
 				break;
 			}
-		} else if (mfxSIDCommandToExecute == 1) {
+		} else if (mfxSIDCmdCounter > 0) {
 			mfxSIDRepetitionCmdCounter = 0;
 			stateLoco = newMFXSIDsendMFX;
 		} else if (!newLocoLoPrioQueueEmpty()) {
@@ -2048,7 +2063,7 @@ void refreshDCCLoco() {
 				stateLoco = newDCCsendDCC;
 				break;
 			}
-		} else if (mfxSIDCommandToExecute == 1) {
+		} else if (mfxSIDCmdCounter > 0) {
 			mfxSIDRepetitionCmdCounter = 0;
 			stateLoco = newMFXSIDsendMFX;
 		} else if (!newLocoLoPrioQueueEmpty()) {
@@ -2222,15 +2237,27 @@ void newMFXSIDsendMM2() {
 
 void newMFXSIDsendMFX() {
 
+	//noch nicht gesendeter "SID zuweisen"-Befehl suchen
+	uint8_t i = 0;
+	while (locoDataMFX[i].sidAssigned != 0) {
+		i++;
+		if (i >= MFX_LOCO_DATA_BUFFER_SIZE){
+			break;
+		}
+	}
+	encodeMFXSIDCmd(i);
+
+	prepareSIDLocoPacket();
+
 	mfxSIDRepetitionCmdCounter++;
 	if (mfxSIDRepetitionCmdCounter >= NEW_MFX_SIDCMD_REPETITIONS) {
 		mfxSIDRepetitionCmdCounter = 0;
 		stateLoco = refreshMM2Loco;
-		mfxSIDCommandToExecute = 0;
+		mfxSIDCmdCounter--;
+
 	} else {
 		stateLoco = newMFXSIDsendDCC;
 	}
-	prepareSIDLocoPacket();
 
 }
 

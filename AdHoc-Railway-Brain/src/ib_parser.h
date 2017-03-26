@@ -24,6 +24,7 @@ uint8_t ib_buffer_info_cmd(char** tokens, uint8_t nTokens);
 uint8_t encodeMM2Function(uint8_t functionNr, unsigned char functionState, unsigned char deltaSpeed,
 		unsigned char speed);
 uint8_t encodeMFXCmd(uint8_t mfxIdx, uint8_t direction);
+uint8_t encodeMFXSIDCmd(uint8_t mfxIdx);
 
 typedef enum LOCO_PROTOCOL {
 	MM, MM2, MFX, DCC

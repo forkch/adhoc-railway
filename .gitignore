@@ -14,3 +14,5 @@ srcpd/debian/
 srcpd/cmake-build-debug/
 
 srcpd/CMakeLists\.txt
+
+AdHoc-Railway-Brain/\.settings/\.svn/

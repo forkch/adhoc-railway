@@ -75,11 +75,11 @@ struct LocoProtocolIdx locoProtocolIdx[LOCO_PROTOCOL_INDEX_BUFFER_SIZE];
 
 // MFX Spezial
 // -----------
-unsigned char mfxSIDEncCmd[MFX_SID_COMMAND_LENGTH];	// encodierter MFX-Befehl um eine SID zu vergeben
+unsigned char mfxSIDEncCmd[MFX_SID_COMMAND_LENGTH];		// encodierter MFX-Befehl um eine SID zu vergeben
 unsigned char tmpMFXcmd[MFX_SID_COMMAND_LENGTH];		// Hilfsarray Encodierung MFX
-unsigned char mfxSIDCommandToExecute;				// MFX-Befehl zum Vergeben einer SID ist ausführbereit
+unsigned int mfxSIDCmdCounter;							// MFX-Befehle "SID zuweisen" zum Ausführen bereit
 
-unsigned char mm2IdleModeActive;					// wenn noch keine Lok angemeldet ist. Wird gelöscht sobald eine MM/MM2-Lok angemeldet wird
+unsigned char mm2IdleModeActive;						// wenn noch keine Lok angemeldet ist. Wird gelöscht sobald eine MM/MM2-Lok angemeldet wird
 
 
 // Queues

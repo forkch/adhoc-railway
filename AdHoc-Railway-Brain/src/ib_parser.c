@@ -269,12 +269,12 @@ uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
 	uint8_t trit3;
 	uint8_t trit4;
 	char protocol[4];
-	uint16_t crc;
-	uint8_t mfxCommandLength;
-	int cidx;
-	int tidx;
-	int EinsHalbiert;
-	int stfngCnt;
+//	uint16_t crc;
+//	uint8_t mfxCommandLength;
+//	int cidx;
+//	int tidx;
+//	int EinsHalbiert;
+//	int stfngCnt;
 
 
 	if (nTokens < 3) {
@@ -484,357 +484,19 @@ uint8_t ib_loco_config_cmd(char** tokens, uint8_t nTokens) {
 		locoDataMFX[j].f14 = 0;
 		locoDataMFX[j].f15 = 0;
 		locoDataMFX[j].f16 = 0;
+		locoDataMFX[j].sidAssigned = 0;
 
 
-		//MärklinMFX-Befehl Fahren & Funktionen encodieren
-		//------------------------------------------------
-		//nur 9-Bit Adressen realisiert
+		//MärklinMFX-Befehl Fahren & Funktionen encodieren, direction = 1 (vorwärts)
+		encodeMFXCmd (j, 1);
 
-		//SID (9Bit Lok-Adresse)
-		tmpMFXcmd[0] = 1;
-		tmpMFXcmd[1] = 1;
-		tmpMFXcmd[2] = 0;
+		mfxSIDCmdCounter++;
 
-		//SID-Adresse (Lok-Adresse)
-		for (uint8_t k = 0; k < 9; k++)
-			tmpMFXcmd[3+k] = (locoAdr >> (8 - k)) & 1;
+/*		//Kollision bei gleichzeitig mehreren SID-Zuweisungen verhindern
+		if (mfxSIDCommandToExecute == 0) {
+			encodeMFXSIDCmd(j);
+		}*/
 
-		//Kommando Fahren
-		tmpMFXcmd[12] = 0;
-		tmpMFXcmd[13] = 0;
-		tmpMFXcmd[14] = 1;
-
-		//Richtung
-		tmpMFXcmd[15] = 0;
-
-		//Fahrstufe
-		tmpMFXcmd[16] = 0;
-		tmpMFXcmd[17] = 0;
-		tmpMFXcmd[18] = 0;
-		tmpMFXcmd[19] = 0;
-		tmpMFXcmd[20] = 0;
-		tmpMFXcmd[21] = 0;
-		tmpMFXcmd[22] = 0;
-
-		//Kommando Fkt
-		tmpMFXcmd[23] = 0;
-		tmpMFXcmd[24] = 1;
-		tmpMFXcmd[25] = 1;
-
-		//alle Fkt
-		tmpMFXcmd[26] = 1;
-
-		//Fkt 1 - 16
-		tmpMFXcmd[27] = 0;
-		tmpMFXcmd[28] = 0;
-		tmpMFXcmd[29] = 0;
-		tmpMFXcmd[30] = 0;
-		tmpMFXcmd[31] = 0;
-		tmpMFXcmd[32] = 0;
-		tmpMFXcmd[33] = 0;
-		tmpMFXcmd[34] = 0;
-		tmpMFXcmd[35] = 0;
-		tmpMFXcmd[36] = 0;
-		tmpMFXcmd[37] = 0;
-		tmpMFXcmd[38] = 0;
-		tmpMFXcmd[39] = 0;
-		tmpMFXcmd[40] = 0;
-		tmpMFXcmd[41] = 0;
-		tmpMFXcmd[42] = 0;
-
-		//CRC Init
-		tmpMFXcmd[43] = 0;
-		tmpMFXcmd[44] = 0;
-		tmpMFXcmd[45] = 0;
-		tmpMFXcmd[46] = 0;
-		tmpMFXcmd[47] = 0;
-		tmpMFXcmd[48] = 0;
-		tmpMFXcmd[49] = 0;
-		tmpMFXcmd[50] = 0;
-
-		//CRC Berechnung
-		mfxCommandLength = 51;
-		crc = 0x007f;
-
-		 for (int k = 0; k < mfxCommandLength; k++)
-		  {
-		    crc = (crc << 1) + tmpMFXcmd[k];
-		    if ((crc & 0x0100) > 0)
-		      crc = (crc & 0x00FF) ^ 0x07;
-		  }
-
-		//CRC Schreiben
-		tmpMFXcmd[43] = (crc / 128) % 2;
-		tmpMFXcmd[44] = (crc / 64) % 2;
-		tmpMFXcmd[45] = (crc / 32) % 2;
-		tmpMFXcmd[46] = (crc / 16) % 2;
-		tmpMFXcmd[47] = (crc / 8) % 2;
-		tmpMFXcmd[48] = (crc / 4) % 2;
-		tmpMFXcmd[49] = (crc / 2) % 2;
-		tmpMFXcmd[50] = crc % 2;
-
-		//Stuffing (nach 8x "1" wird eine "0" eingefügt)
-		stfngCnt = 0;
-
-		for (int k = 0; k < mfxCommandLength; k++){
-			if (tmpMFXcmd[k] == 1) {
-				stfngCnt++;
-			} else {
-				stfngCnt = 0;
-			}
-			if (stfngCnt == 8){
-				for (int l = mfxCommandLength-1; l > k; l--){
-					tmpMFXcmd[l+1] = tmpMFXcmd[l];
-				}
-				tmpMFXcmd[k+1] = 0;
-				mfxCommandLength++;
-				stfngCnt = 0;
-			}
-		}
-
-		//2x Sync am Ende
-		tmpMFXcmd[mfxCommandLength] = 0;
-		tmpMFXcmd[mfxCommandLength+1] = 2;	// Abweichung von bi-phase-mark-Regel
-		tmpMFXcmd[mfxCommandLength+2] = 0;
-		tmpMFXcmd[mfxCommandLength+3] = 0;
-		tmpMFXcmd[mfxCommandLength+4] = 2;	// Abweichung von bi-phase-mark-Regel
-		tmpMFXcmd[mfxCommandLength+5] = 0;
-		tmpMFXcmd[mfxCommandLength+6] = 0;
-		tmpMFXcmd[mfxCommandLength+7] = 2;	// Abweichung von bi-phase-mark-Regel
-		tmpMFXcmd[mfxCommandLength+8] = 0;
-		tmpMFXcmd[mfxCommandLength+9] = 0;
-		tmpMFXcmd[mfxCommandLength+10] = 2;	// Abweichung von bi-phase-mark-Regel
-		tmpMFXcmd[mfxCommandLength+11] = 0;
-
-
-
-		//Fahren/Funktionen in MFX encodieren
-		//
-		// mfx "0" => __ oder ––
-		// mfx "1" => _– oder –_
-		//
-		// für die Signalgenerierung wird ein PWM verwendet
-		// die mfx-Informationseinheiten werden dabei teilweise "aufgeteilt"
-		// –_   => enc"1" entspricht mfx "1"
-		// –__  => enc"2" entspricht mfx 'halbes' "1" + "0"
-		// ––_  => enc"3" entspricht mfx "0" + 'halbes' "1"
-		// ––__ => enc"4" entspricht mfx "0" + "0"
-
-		cidx = 6;			//encoded MFX-Command Index
-		tidx = 0;			//temporary MFX-Command Index
-		EinsHalbiert = 0;
-
-		//fix 2x Sync
-		locoDataMFX[j].encCmd[0] = 3;
-		locoDataMFX[j].encCmd[1] = 4;
-		locoDataMFX[j].encCmd[2] = 2;
-		locoDataMFX[j].encCmd[3] = 3;
-		locoDataMFX[j].encCmd[4] = 4;
-		locoDataMFX[j].encCmd[5] = 2;
-
-		for (tidx = 0; tidx < (mfxCommandLength + 12); tidx++){	// 12 => 2x Sync am Ende.
-			if (tidx == (mfxCommandLength + 11)) {
-				locoDataMFX[j].encCmd[cidx] = 4;
-				locoDataMFX[j].encCmd[cidx+1] = 6;	// 6 => Ende des MFX-Befehls
-				break;
-			} else if (tmpMFXcmd[tidx] == 1 && EinsHalbiert == 0) {
-				locoDataMFX[j].encCmd[cidx] = 1;
-				cidx++;
-			} else if (tmpMFXcmd[tidx] == 0  && tmpMFXcmd[tidx + 1] == 0) {
-				locoDataMFX[j].encCmd[cidx] = 4;
-				tidx++;
-				cidx++;
-			} else  if (tmpMFXcmd[tidx] == 0 && tmpMFXcmd[tidx + 1] == 1) {
-				locoDataMFX[j].encCmd[cidx] = 3;
-				cidx++;
-				EinsHalbiert = 1;
-			} else if (tmpMFXcmd[tidx] == 1 && tmpMFXcmd[tidx + 1] == 0 && EinsHalbiert == 1) {
-				locoDataMFX[j].encCmd[cidx] = 2;
-				tidx++;
-				cidx++;
-				EinsHalbiert = 0;
-			} else if (tmpMFXcmd[tidx] == 1 && tmpMFXcmd[tidx + 1] == 1 && EinsHalbiert == 1) {
-				locoDataMFX[j].encCmd[cidx] = 1;
-				cidx++;
-			} else if (tmpMFXcmd[tidx] == 0 && tmpMFXcmd[tidx + 1] == 2) {
-				locoDataMFX[j].encCmd[cidx] = 3;
-				tidx++;
-				cidx++;
-			} else if (tmpMFXcmd[tidx] == 2 && tmpMFXcmd[tidx + 1] == 0) {
-				locoDataMFX[j].encCmd[cidx] = 2;
-				tidx++;
-				cidx++;
-				if (tidx == (mfxCommandLength + 11)) {
-					locoDataMFX[j].encCmd[cidx] = 6;	// 6 => Ende des MFX-Befehls
-					break;
-				}
-			}
-		}
-
-
-		//Kollision bei gleichzeitig mehreren SID-Zuweisungen verhindern
-
-		//MärklinMFX-Befehl SID-Adresse zuweisen
-		//--------------------------------------
-		//Broadcast-Adresse
-		tmpMFXcmd[0] = 1;
-		tmpMFXcmd[1] = 0;
-		tmpMFXcmd[2] = 0;
-		tmpMFXcmd[3] = 0;
-		tmpMFXcmd[4] = 0;
-		tmpMFXcmd[5] = 0;
-		tmpMFXcmd[6] = 0;
-		tmpMFXcmd[7] = 0;
-		tmpMFXcmd[8] = 0;
-
-		//Kommando Zuweisung SID
-		tmpMFXcmd[9] = 1;
-		tmpMFXcmd[10] = 1;
-		tmpMFXcmd[11] = 1;
-		tmpMFXcmd[12] = 0;
-		tmpMFXcmd[13] = 1;
-		tmpMFXcmd[14] = 1;
-
-		//SID-Adresse (Lok-Adresse)
-		//bei SID-Zuweisung wird immer ein 14Bit-Adressen-Grösse verwendet!
-		for (uint8_t k = 0; k < 14; k++)
-			tmpMFXcmd[15+k] = (locoAdr >> (13 - k)) & 1;
-
-		//UID-Adresse des Decoders
-		for (uint8_t k = 0; k < 32; k++)
-			tmpMFXcmd[29+k] = (decoderUID >> (31 - k)) & 1;
-
-		//CRC Init
-		tmpMFXcmd[61] = 0;
-		tmpMFXcmd[62] = 0;
-		tmpMFXcmd[63] = 0;
-		tmpMFXcmd[64] = 0;
-		tmpMFXcmd[65] = 0;
-		tmpMFXcmd[66] = 0;
-		tmpMFXcmd[67] = 0;
-		tmpMFXcmd[68] = 0;
-
-		//CRC Berechnung
-		mfxCommandLength = 69;
-		crc = 0x007f;
-
-		 for (int k = 0; k < mfxCommandLength; k++)
-		  {
-		    crc = (crc << 1) + tmpMFXcmd[k];
-		    if ((crc & 0x0100) > 0)
-		      crc = (crc & 0x00FF) ^ 0x07;
-		  }
-
-		//CRC Schreiben
-		tmpMFXcmd[61] = (crc / 128) % 2;
-		tmpMFXcmd[62] = (crc / 64) % 2;
-		tmpMFXcmd[63] = (crc / 32) % 2;
-		tmpMFXcmd[64] = (crc / 16) % 2;
-		tmpMFXcmd[65] = (crc / 8) % 2;
-		tmpMFXcmd[66] = (crc / 4) % 2;
-		tmpMFXcmd[67] = (crc / 2) % 2;
-		tmpMFXcmd[68] = crc % 2;
-
-		//Stuffing (nach 8x "1" wird eine "0" eingefügt)
-		stfngCnt = 0;
-
-		for (int k = 0; k < mfxCommandLength; k++){
-			if (tmpMFXcmd[k] == 1) {
-				stfngCnt++;
-			} else {
-				stfngCnt = 0;
-			}
-			if (stfngCnt == 8){
-				for (int l = mfxCommandLength-1; l > k; l--){
-					tmpMFXcmd[l+1] = tmpMFXcmd[l];
-				}
-				tmpMFXcmd[k+1] = 0;
-				mfxCommandLength++;
-				stfngCnt = 0;
-			}
-		}
-
-		//2x Sync am Ende
-		tmpMFXcmd[mfxCommandLength] = 0;
-		tmpMFXcmd[mfxCommandLength+1] = 2;	// 2 = Abweichung von bi-phase-mark-Regel
-		tmpMFXcmd[mfxCommandLength+2] = 0;
-		tmpMFXcmd[mfxCommandLength+3] = 0;
-		tmpMFXcmd[mfxCommandLength+4] = 2;	// 2 = Abweichung von bi-phase-mark-Regel
-		tmpMFXcmd[mfxCommandLength+5] = 0;
-		tmpMFXcmd[mfxCommandLength+6] = 0;
-		tmpMFXcmd[mfxCommandLength+7] = 2;	// 2 = Abweichung von bi-phase-mark-Regel
-		tmpMFXcmd[mfxCommandLength+8] = 0;
-		tmpMFXcmd[mfxCommandLength+9] = 0;
-		tmpMFXcmd[mfxCommandLength+10] = 2;	// 2 = Abweichung von bi-phase-mark-Regel
-		tmpMFXcmd[mfxCommandLength+11] = 0;
-
-
-		//SID-Befehl in MFX encodieren
-		//
-		// mfx "0" => __ oder ––
-		// mfx "1" => _– oder –_
-		//
-		// für die Signalgenerierung wird ein PWM verwendet
-		// die mfx-Informationseinheiten werden dabei teilweise "aufgeteilt"
-		// –_   => enc"1" entspricht mfx "1"
-		// –__  => enc"2" entspricht mfx 'halbes' "1" + "0"
-		// ––_  => enc"3" entspricht mfx "0" + 'halbes' "1"
-		// ––__ => enc"4" entspricht mfx "0" + "0"
-
-		cidx = 6;			//encoded MFX-Command Index
-		tidx = 0;			//temporary MFX-Command Index
-		EinsHalbiert = 0;
-
-		//fix 2x Sync
-		mfxSIDEncCmd[0] = 3;
-		mfxSIDEncCmd[1] = 4;
-		mfxSIDEncCmd[2] = 2;
-		mfxSIDEncCmd[3] = 3;
-		mfxSIDEncCmd[4] = 4;
-		mfxSIDEncCmd[5] = 2;
-
-
-		for (tidx = 0; tidx < (mfxCommandLength + 12); tidx++){	// 12 => 2x Sync am Ende.
-			if (tidx == (mfxCommandLength + 11)) {
-				mfxSIDEncCmd[cidx] = 4;
-				mfxSIDEncCmd[cidx+1] = 6;	// 6 => Ende des MFX-Befehls
-				break;
-			} else if (tmpMFXcmd[tidx] == 1 && EinsHalbiert == 0) {
-				mfxSIDEncCmd[cidx] = 1;
-				cidx++;
-			} else if (tmpMFXcmd[tidx] == 0  && tmpMFXcmd[tidx + 1] == 0) {
-				mfxSIDEncCmd[cidx] = 4;
-				tidx++;
-				cidx++;
-			} else  if (tmpMFXcmd[tidx] == 0 && tmpMFXcmd[tidx + 1] == 1) {
-				mfxSIDEncCmd[cidx] = 3;
-				cidx++;
-				EinsHalbiert = 1;
-			} else if (tmpMFXcmd[tidx] == 1 && tmpMFXcmd[tidx + 1] == 0 && EinsHalbiert == 1) {
-				mfxSIDEncCmd[cidx] = 2;
-				tidx++;
-				cidx++;
-				EinsHalbiert = 0;
-			} else if (tmpMFXcmd[tidx] == 1 && tmpMFXcmd[tidx + 1] == 1 && EinsHalbiert == 1) {
-				mfxSIDEncCmd[cidx] = 1;
-				cidx++;
-			} else if (tmpMFXcmd[tidx] == 0 && tmpMFXcmd[tidx + 1] == 2) {
-				mfxSIDEncCmd[cidx] = 3;
-				tidx++;
-				cidx++;
-			} else if (tmpMFXcmd[tidx] == 2 && tmpMFXcmd[tidx + 1] == 0) {
-				mfxSIDEncCmd[cidx] = 2;
-				tidx++;
-				cidx++;
-				if (tidx == (mfxCommandLength + 11)) {
-					mfxSIDEncCmd[cidx] = 6;	// 6 => Ende des MFX-Befehls
-					break;
-				}
-			}
-		}
-
-		//Flag
-		mfxSIDCommandToExecute = 1;
 
 
 	} else if (strcasecmp(protocol, "DCC") == 0) {
@@ -1391,7 +1053,7 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 
 		// Richtungsänderung nur wenn letzter Speed == 0
 		} else if ((direction != locoDataMFX[j].direction) && (locoDataMFX[j].speed == 0)) {
-			enqueue_loco_loprio(MFX, j, 0);
+			enqueue_loco_hiprio(MFX, j, 0);
 			locoDataMFX[j].direction = direction;
 
 		// Neuer Speed wenn Richtung gleich oder wenn Speed 0 ist (Nothalt)
@@ -1540,7 +1202,7 @@ uint8_t ib_loco_set_cmd(char** tokens, uint8_t nTokens) {
 
 		// Richtungsänderung nur wenn letzter Speed == 0
 		} else if ((direction != locoDataDCC[j].direction) && (locoDataDCC[j].speed == 0)) {
-			enqueue_loco_loprio(DCC, j, 0);
+			enqueue_loco_hiprio(DCC, j, 0);
 			locoDataDCC[j].direction = direction;
 
 		// Neuer Speed wenn Richtung gleich oder wenn Speed 0 ist (Nothalt)
@@ -2026,10 +1688,11 @@ uint8_t ib_get_uid_cmd(char** tokens, uint8_t nTokens) {
 	strcpy(cmd, tokens[1]);
 
 	if (strcasecmp(cmd, "START") == 0){
-		stop_all_boosters();
+		//Booster stoppen und PWM deaktivieren
+//		stop_all_boosters();
+//		TIMSK1 &= ~(1 << OCIE1B);	// Timer 1 Output Compare B Match Interrupt disabled (PWM Timer)
+//		TCCR1A &= ~(1 << COM1B1); 	// DeACTIVATE PWM
 
-		TIMSK1 &= ~(1 << OCIE1B);	// Timer 1 Output Compare B Match Interrupt disabled (PWM Timer)
-		TCCR1A &= ~(1 << COM1B1); 	// DeACTIVATE PWM
 		EIMSK |= 1<<INT2;			// Enable interrupt 2 (MFX Signal Input)
 
 #ifdef LOGGING
@@ -2037,8 +1700,10 @@ uint8_t ib_get_uid_cmd(char** tokens, uint8_t nTokens) {
 #endif
 
 	} else if (strcasecmp(cmd, "STOP") == 0){
-		TIMSK1 |= (1 << OCIE1B);	// Timer 1 Output Compare B Match Interrupt enabled (PWM Timer)
-		TCCR1A |= (1 << COM1B1); 	// ACTIVATE PWM
+		//PWM aktivieren
+//		TIMSK1 |= (1 << OCIE1B);	// Timer 1 Output Compare B Match Interrupt enabled (PWM Timer)
+//		TCCR1A |= (1 << COM1B1); 	// ACTIVATE PWM
+
 		EIMSK &= ~(1<<INT2);		// Disable interrupt 2 (MFX Signal Input)
 
 #ifdef LOGGING
@@ -2344,6 +2009,187 @@ uint8_t encodeMFXCmd(uint8_t mfxIdx, uint8_t direction) {
 
 	return 1;
 }
+
+
+//---------------------------------------------------
+//MärklinMFX-Befehl "SID-Adresse zuweisen" encodieren
+//---------------------------------------------------
+uint8_t encodeMFXSIDCmd(uint8_t mfxIdx) {
+
+	uint16_t crc;
+	uint8_t mfxCommandLength;
+	int cidx;
+	int tidx;
+	int EinsHalbiert;
+	int stfngCnt;
+
+
+	//MärklinMFX-Befehl "SID-Adresse zuweisen"
+	//----------------------------------------
+	//Broadcast-Adresse
+	tmpMFXcmd[0] = 1;
+	tmpMFXcmd[1] = 0;
+	tmpMFXcmd[2] = 0;
+	tmpMFXcmd[3] = 0;
+	tmpMFXcmd[4] = 0;
+	tmpMFXcmd[5] = 0;
+	tmpMFXcmd[6] = 0;
+	tmpMFXcmd[7] = 0;
+	tmpMFXcmd[8] = 0;
+
+	//Kommando Zuweisung SID
+	tmpMFXcmd[9] = 1;
+	tmpMFXcmd[10] = 1;
+	tmpMFXcmd[11] = 1;
+	tmpMFXcmd[12] = 0;
+	tmpMFXcmd[13] = 1;
+	tmpMFXcmd[14] = 1;
+
+	//SID-Adresse (Lok-Adresse)
+	//bei SID-Zuweisung wird immer ein 14Bit-Adressen-Grösse verwendet!
+	for (uint8_t k = 0; k < 14; k++)
+		tmpMFXcmd[15+k] = (locoDataMFX[mfxIdx].address >> (13 - k)) & 1;
+
+	//UID-Adresse des Decoders
+	for (uint8_t k = 0; k < 32; k++)
+		tmpMFXcmd[29+k] = (locoDataMFX[mfxIdx].UID >> (31 - k)) & 1;
+
+	//CRC Init
+	tmpMFXcmd[61] = 0;
+	tmpMFXcmd[62] = 0;
+	tmpMFXcmd[63] = 0;
+	tmpMFXcmd[64] = 0;
+	tmpMFXcmd[65] = 0;
+	tmpMFXcmd[66] = 0;
+	tmpMFXcmd[67] = 0;
+	tmpMFXcmd[68] = 0;
+
+	//CRC Berechnung
+	mfxCommandLength = 69;
+	crc = 0x007f;
+
+	 for (int k = 0; k < mfxCommandLength; k++)
+	  {
+	    crc = (crc << 1) + tmpMFXcmd[k];
+	    if ((crc & 0x0100) > 0)
+	      crc = (crc & 0x00FF) ^ 0x07;
+	  }
+
+	//CRC Schreiben
+	tmpMFXcmd[61] = (crc / 128) % 2;
+	tmpMFXcmd[62] = (crc / 64) % 2;
+	tmpMFXcmd[63] = (crc / 32) % 2;
+	tmpMFXcmd[64] = (crc / 16) % 2;
+	tmpMFXcmd[65] = (crc / 8) % 2;
+	tmpMFXcmd[66] = (crc / 4) % 2;
+	tmpMFXcmd[67] = (crc / 2) % 2;
+	tmpMFXcmd[68] = crc % 2;
+
+	//Stuffing (nach 8x "1" wird eine "0" eingefügt)
+	stfngCnt = 0;
+
+	for (int k = 0; k < mfxCommandLength; k++){
+		if (tmpMFXcmd[k] == 1) {
+			stfngCnt++;
+		} else {
+			stfngCnt = 0;
+		}
+		if (stfngCnt == 8){
+			for (int l = mfxCommandLength-1; l > k; l--){
+				tmpMFXcmd[l+1] = tmpMFXcmd[l];
+			}
+			tmpMFXcmd[k+1] = 0;
+			mfxCommandLength++;
+			stfngCnt = 0;
+		}
+	}
+
+	//2x Sync am Ende
+	tmpMFXcmd[mfxCommandLength] = 0;
+	tmpMFXcmd[mfxCommandLength+1] = 2;	// 2 = Abweichung von bi-phase-mark-Regel
+	tmpMFXcmd[mfxCommandLength+2] = 0;
+	tmpMFXcmd[mfxCommandLength+3] = 0;
+	tmpMFXcmd[mfxCommandLength+4] = 2;	// 2 = Abweichung von bi-phase-mark-Regel
+	tmpMFXcmd[mfxCommandLength+5] = 0;
+	tmpMFXcmd[mfxCommandLength+6] = 0;
+	tmpMFXcmd[mfxCommandLength+7] = 2;	// 2 = Abweichung von bi-phase-mark-Regel
+	tmpMFXcmd[mfxCommandLength+8] = 0;
+	tmpMFXcmd[mfxCommandLength+9] = 0;
+	tmpMFXcmd[mfxCommandLength+10] = 2;	// 2 = Abweichung von bi-phase-mark-Regel
+	tmpMFXcmd[mfxCommandLength+11] = 0;
+
+
+	//SID-Befehl in MFX encodieren
+	//
+	// mfx "0" => __ oder ––
+	// mfx "1" => _– oder –_
+	//
+	// für die Signalgenerierung wird ein PWM verwendet
+	// die mfx-Informationseinheiten werden dabei teilweise "aufgeteilt"
+	// –_   => enc"1" entspricht mfx "1"
+	// –__  => enc"2" entspricht mfx 'halbes' "1" + "0"
+	// ––_  => enc"3" entspricht mfx "0" + 'halbes' "1"
+	// ––__ => enc"4" entspricht mfx "0" + "0"
+
+	cidx = 6;			//encoded MFX-Command Index
+	tidx = 0;			//temporary MFX-Command Index
+	EinsHalbiert = 0;
+
+	//fix 2x Sync
+	mfxSIDEncCmd[0] = 3;
+	mfxSIDEncCmd[1] = 4;
+	mfxSIDEncCmd[2] = 2;
+	mfxSIDEncCmd[3] = 3;
+	mfxSIDEncCmd[4] = 4;
+	mfxSIDEncCmd[5] = 2;
+
+
+	for (tidx = 0; tidx < (mfxCommandLength + 12); tidx++){	// 12 => 2x Sync am Ende.
+		if (tidx == (mfxCommandLength + 11)) {
+			mfxSIDEncCmd[cidx] = 4;
+			mfxSIDEncCmd[cidx+1] = 6;	// 6 => Ende des MFX-Befehls
+			break;
+		} else if (tmpMFXcmd[tidx] == 1 && EinsHalbiert == 0) {
+			mfxSIDEncCmd[cidx] = 1;
+			cidx++;
+		} else if (tmpMFXcmd[tidx] == 0  && tmpMFXcmd[tidx + 1] == 0) {
+			mfxSIDEncCmd[cidx] = 4;
+			tidx++;
+			cidx++;
+		} else  if (tmpMFXcmd[tidx] == 0 && tmpMFXcmd[tidx + 1] == 1) {
+			mfxSIDEncCmd[cidx] = 3;
+			cidx++;
+			EinsHalbiert = 1;
+		} else if (tmpMFXcmd[tidx] == 1 && tmpMFXcmd[tidx + 1] == 0 && EinsHalbiert == 1) {
+			mfxSIDEncCmd[cidx] = 2;
+			tidx++;
+			cidx++;
+			EinsHalbiert = 0;
+		} else if (tmpMFXcmd[tidx] == 1 && tmpMFXcmd[tidx + 1] == 1 && EinsHalbiert == 1) {
+			mfxSIDEncCmd[cidx] = 1;
+			cidx++;
+		} else if (tmpMFXcmd[tidx] == 0 && tmpMFXcmd[tidx + 1] == 2) {
+			mfxSIDEncCmd[cidx] = 3;
+			tidx++;
+			cidx++;
+		} else if (tmpMFXcmd[tidx] == 2 && tmpMFXcmd[tidx + 1] == 0) {
+			mfxSIDEncCmd[cidx] = 2;
+			tidx++;
+			cidx++;
+			if (tidx == (mfxCommandLength + 11)) {
+				mfxSIDEncCmd[cidx] = 6;	// 6 => Ende des MFX-Befehls
+				break;
+			}
+		}
+	}
+
+	//mfx
+	locoDataMFX[mfxIdx].sidAssigned = 1;
+
+	return 1;
+
+}
+
 
 
 uint8_t ib_buffer_info_cmd(char** tokens, uint8_t nTokens) {

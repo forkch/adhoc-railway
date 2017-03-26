@@ -208,8 +208,8 @@ typedef struct LocoDataMM {
 // MFX-Loco-Buffer
 // --------------
 typedef struct LocoDataMFX {
-	unsigned int UID;		// Decoder-spezifische ID
-	unsigned int address;	// wird auch SID genannt / 1 - 16383
+	unsigned long int UID;		// Decoder-spezifische ID
+	unsigned int address;		// wird für mfx auch SID genannt / 1 - 16383
 	unsigned char speed;
 	unsigned char direction :1;
 	unsigned char f1 :1;
@@ -228,6 +228,7 @@ typedef struct LocoDataMFX {
 	unsigned char f14 :1;
 	unsigned char f15 :1;
 	unsigned char f16 :1;
+	unsigned char sidAssigned :1;
 	unsigned char encCmd[MFX_COMMAND_LENGTH];
 } LDMFX;
 
