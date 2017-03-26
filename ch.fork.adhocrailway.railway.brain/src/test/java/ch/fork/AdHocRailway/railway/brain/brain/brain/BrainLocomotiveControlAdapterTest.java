@@ -175,7 +175,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
     }
 
     private void whenIncreasingSpeed(final Locomotive locomotive) {
-        testee.increaseSpeed(locomotive);
+        testee.increaseSpeed(locomotive, 1);
     }
 
     private void whenChangingDirection(final Locomotive locomotive) {
@@ -183,7 +183,7 @@ public class BrainLocomotiveControlAdapterTest extends BrainTestSupport {
     }
 
     private void whenDecreasingSpeed(final Locomotive locomotive) {
-        testee.decreaseSpeed(locomotive);
+        testee.decreaseSpeed(locomotive, 1);
     }
 
     private void assertBrainSetSpeedCalled(final Locomotive locomotive,

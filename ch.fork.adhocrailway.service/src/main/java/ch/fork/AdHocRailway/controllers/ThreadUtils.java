@@ -17,7 +17,7 @@ public class ThreadUtils {
     }
 
     public static RateLimiter createRateLimiter() {
-        return RateLimiter.create(4);
+        return RateLimiter.create(10);
     }
 
 }

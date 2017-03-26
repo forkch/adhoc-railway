@@ -54,8 +54,8 @@ import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromIconSe
 public class LocomotiveWidget extends JPanel implements
         LocomotiveChangeListener, LocomotiveManagerListener, LocomotiveSelectionPanel.OnLocomotiveSelectionListener {
 
+    public static final int INCREASE_STEPS_AFTER_MS = 500;
     private static final Logger LOGGER = Logger.getLogger(LocomotiveWidget.class);
-
     private final int number;
     private final List<FunctionToggleButton> functionToggleButtons = new ArrayList<FunctionToggleButton>();
     private final JFrame frame;
@@ -519,14 +519,10 @@ public class LocomotiveWidget extends JPanel implements
             }
             final LocomotiveController locomotiveControl = ctx
                     .getLocomotiveControl();
+
             doPerformAction(locomotiveControl, myLocomotive);
 
 
-            if (time == 0) {
-                time = System.currentTimeMillis();
-            } else {
-                time = 0;
-            }
             speedBar.requestFocus();
         }
 
@@ -563,12 +559,27 @@ public class LocomotiveWidget extends JPanel implements
 
     private class LocomotiveAccelerateAction extends LocomotiveControlAction {
 
+        private long lastReset = 0;
+        private long disableFastIn;
 
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
-            locomotiveControl.increaseSpeed(myLocomotive);
+
+            if (lastReset == 0 || System.currentTimeMillis() > disableFastIn) {
+                lastReset = System.currentTimeMillis();
+                disableFastIn = System.currentTimeMillis() + 2 * INCREASE_STEPS_AFTER_MS;
+            }
+
+            long sinceLastReset = System.currentTimeMillis() - lastReset;
+
+            if (sinceLastReset > INCREASE_STEPS_AFTER_MS) {
+                locomotiveControl.increaseSpeed(myLocomotive, 5);
+                disableFastIn = System.currentTimeMillis() + 2 * INCREASE_STEPS_AFTER_MS;
+            } else {
+                locomotiveControl.increaseSpeed(myLocomotive, 1);
+            }
             updateSpeed(myLocomotive.getCurrentOrTargetSpeed());
         }
     }
@@ -576,11 +587,28 @@ public class LocomotiveWidget extends JPanel implements
     private class LocomotiveDeccelerateAction extends LocomotiveControlAction {
 
 
+        private long lastReset = 0;
+        private long disableFastIn;
+
         @Override
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
-            locomotiveControl.decreaseSpeed(myLocomotive);
+
+            if (lastReset == 0 || System.currentTimeMillis() > disableFastIn) {
+                lastReset = System.currentTimeMillis();
+                disableFastIn = System.currentTimeMillis() + 2 * INCREASE_STEPS_AFTER_MS;
+            }
+
+            long sinceLastReset = System.currentTimeMillis() - lastReset;
+
+            if (sinceLastReset > INCREASE_STEPS_AFTER_MS) {
+                locomotiveControl.decreaseSpeed(myLocomotive, 5);
+                disableFastIn = System.currentTimeMillis() + 2 * INCREASE_STEPS_AFTER_MS;
+            } else {
+                locomotiveControl.decreaseSpeed(myLocomotive, 1);
+
+            }
             updateSpeed(myLocomotive.getCurrentOrTargetSpeed());
         }
     }

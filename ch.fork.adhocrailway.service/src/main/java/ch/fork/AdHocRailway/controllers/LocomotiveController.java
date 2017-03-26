@@ -19,11 +19,9 @@
 package ch.fork.AdHocRailway.controllers;
 
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
-import com.google.common.util.concurrent.RateLimiter;
 import org.apache.log4j.Logger;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 
 public abstract class LocomotiveController implements
         LockController<Locomotive> {
@@ -54,7 +52,6 @@ public abstract class LocomotiveController implements
     protected int pendingTasksCount() {
         return taskExecutor.pendingTaskCount();
     }
-
 
 
     protected void aquireRateLock() {
@@ -156,21 +153,27 @@ public abstract class LocomotiveController implements
         }
     }
 
-    public void increaseSpeed(final Locomotive locomotive) {
-        if (locomotive.getCurrentOrTargetSpeed() < locomotive.getType()
+    public void increaseSpeed(final Locomotive locomotive, int step) {
+        if (locomotive.getCurrentOrTargetSpeed() + step <= locomotive.getType()
                 .getDrivingSteps()) {
-            locomotive.setTargetSpeed(locomotive.getCurrentOrTargetSpeed() + 1);
-            setSpeed(locomotive, locomotive.getTargetSpeed(),
-                    locomotive.getCurrentFunctions());
+            locomotive.setTargetSpeed(locomotive.getCurrentOrTargetSpeed() + step);
+        } else {
+            locomotive.setTargetSpeed(locomotive.getType()
+                    .getDrivingSteps());
         }
+        setSpeed(locomotive, locomotive.getTargetSpeed(),
+                locomotive.getCurrentFunctions());
     }
 
-    public void decreaseSpeed(final Locomotive locomotive) {
-        if (locomotive.getCurrentOrTargetSpeed() > 0) {
-            locomotive.setTargetSpeed(locomotive.getCurrentOrTargetSpeed() - 1);
-            setSpeed(locomotive, locomotive.getTargetSpeed(),
-                    locomotive.getCurrentFunctions());
+    public void decreaseSpeed(final Locomotive locomotive, int step) {
+        if (locomotive.getCurrentOrTargetSpeed() - step > 0) {
+            locomotive.setTargetSpeed(locomotive.getCurrentOrTargetSpeed() - step);
+        } else {
+            locomotive.setTargetSpeed(0);
+
         }
+        setSpeed(locomotive, locomotive.getTargetSpeed(),
+                locomotive.getCurrentFunctions());
 
     }
 
