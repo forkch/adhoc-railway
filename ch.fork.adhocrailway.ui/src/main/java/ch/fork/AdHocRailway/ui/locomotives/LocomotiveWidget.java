@@ -482,7 +482,8 @@ public class LocomotiveWidget extends JPanel implements
                 return;
             }
 
-            if (myLocomotive != null && ctx.getSession() != null) {
+            if (myLocomotive != null && ctx.getRailwayDeviceManager().isConnected()
+                    ) {
                 resetLoco();
             }
 
