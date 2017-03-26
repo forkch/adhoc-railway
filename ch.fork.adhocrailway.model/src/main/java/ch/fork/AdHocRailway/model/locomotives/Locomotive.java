@@ -75,6 +75,7 @@ public class Locomotive extends AbstractItem implements Serializable,
     @XStreamAsAttribute
     @Expose
     private int address2;
+    @XStreamAsAttribute
     @Expose
     private int mfxUUID;
     @Expose
