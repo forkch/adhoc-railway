@@ -25,6 +25,7 @@ import ch.fork.AdHocRailway.manager.LocomotiveManagerListener;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveFunction;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
+import ch.fork.AdHocRailway.model.locomotives.LocomotiveType;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.technical.configuration.KeyBoardLayout;
 import ch.fork.AdHocRailway.technical.configuration.Preferences;
@@ -175,7 +176,7 @@ public class LocomotiveWidget extends JPanel implements
         if (myLocomotive == null) {
             for (int i = 0; i < 6; i++) {
                 final FunctionToggleButton functionButton = new FunctionToggleButton(
-                        "Fn" + i);
+                        "F" + i);
                 functionToggleButtons.add(functionButton);
                 functionButton.setFocusable(false);
                 functionsPanel.add(functionButton, getFunctionButtonParams());
@@ -258,7 +259,7 @@ public class LocomotiveWidget extends JPanel implements
 
         for (final LocomotiveFunction fn : myLocomotive.getFunctions()) {
             final FunctionToggleButton functionButton = new FunctionToggleButton(
-                    fn.getShortDescription());
+                    fn.getShortDescription(myLocomotive.getType() == LocomotiveType.DCC));
             functionToggleButtons.add(functionButton);
             final int i = functionToggleButtons.indexOf(functionButton);
             functionButton.addActionListener(new LocomotiveFunctionAction(i));

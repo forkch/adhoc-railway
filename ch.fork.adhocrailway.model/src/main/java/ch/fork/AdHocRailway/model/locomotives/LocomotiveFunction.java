@@ -64,10 +64,11 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
     }
 
     public static SortedSet<LocomotiveFunction> getMfxFunctions() {
+        final LocomotiveFunction f0 = new LocomotiveFunction(0, "-", false, -1);
         final LocomotiveFunction f1 = new LocomotiveFunction(1, "-", false, -1);
         final LocomotiveFunction f2 = new LocomotiveFunction(2, "-", false, -1);
         final LocomotiveFunction f3 = new LocomotiveFunction(3, "-", false, -1);
-        final LocomotiveFunction f4 = new LocomotiveFunction(4, "ABV", true, -1);
+        final LocomotiveFunction f4 = new LocomotiveFunction(4, "-", false, -1);
         final LocomotiveFunction f5 = new LocomotiveFunction(5, "-", false, -1);
         final LocomotiveFunction f6 = new LocomotiveFunction(6, "-", false, -1);
         final LocomotiveFunction f7 = new LocomotiveFunction(7, "-", false, -1);
@@ -79,15 +80,16 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
         final LocomotiveFunction f13 = new LocomotiveFunction(13, "-", false, -1);
         final LocomotiveFunction f14 = new LocomotiveFunction(14, "-", false, -1);
         final LocomotiveFunction f15 = new LocomotiveFunction(15, "-", false, -1);
-        final LocomotiveFunction f16 = new LocomotiveFunction(16, "-", false, -1);
-        return Sets.newTreeSet(Lists.newArrayList(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16));
+        final LocomotiveFunction f16 = new LocomotiveFunction(15, "-", false, -1);
+        return Sets.newTreeSet(Lists.newArrayList(f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16));
     }
 
     public static SortedSet<LocomotiveFunction> getDccFunctions() {
+        final LocomotiveFunction fn = new LocomotiveFunction(0, "-", false, -1);
         final LocomotiveFunction f1 = new LocomotiveFunction(1, "-", false, -1);
         final LocomotiveFunction f2 = new LocomotiveFunction(2, "-", false, -1);
         final LocomotiveFunction f3 = new LocomotiveFunction(3, "-", false, -1);
-        final LocomotiveFunction f4 = new LocomotiveFunction(4, "ABV", true, -1);
+        final LocomotiveFunction f4 = new LocomotiveFunction(4, "-", false, -1);
         final LocomotiveFunction f5 = new LocomotiveFunction(5, "-", false, -1);
         final LocomotiveFunction f6 = new LocomotiveFunction(6, "-", false, -1);
         final LocomotiveFunction f7 = new LocomotiveFunction(7, "-", false, -1);
@@ -96,8 +98,7 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
         final LocomotiveFunction f10 = new LocomotiveFunction(10, "-", false, -1);
         final LocomotiveFunction f11 = new LocomotiveFunction(11, "-", false, -1);
         final LocomotiveFunction f12 = new LocomotiveFunction(12, "-", false, -1);
-        final LocomotiveFunction f13 = new LocomotiveFunction(13, "-", false, -1);
-        return Sets.newTreeSet(Lists.newArrayList(f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13));
+        return Sets.newTreeSet(Lists.newArrayList(fn, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f12));
     }
 
     public static SortedSet<LocomotiveFunction> getFunctionsForType(LocomotiveType type) {
@@ -135,11 +136,8 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
         return number;
     }
 
-    public String getShortDescription() {
-        if (number == 0) {
-            return "Fn";
-        }
-        return "Fn" + (number);
+    public String getShortDescription(boolean f0ToFn) {
+        return "F" + (number);
     }
 
     @Override

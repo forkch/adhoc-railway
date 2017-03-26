@@ -3,6 +3,7 @@ package ch.fork.AdHocRailway.utils;
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveDirection;
 import ch.fork.AdHocRailway.model.locomotives.LocomotiveFunction;
+import ch.fork.AdHocRailway.model.locomotives.LocomotiveType;
 import org.apache.commons.lang3.StringUtils;
 
 public class LocomotiveHelper {
@@ -33,7 +34,7 @@ public class LocomotiveHelper {
         description.append("<table>");
         for (final LocomotiveFunction f : locomotive.getFunctions()) {
             description.append("<tr>");
-            description.append("<td>" + f.getShortDescription() + "</td>");
+            description.append("<td>" + f.getShortDescription(locomotive.getType() == LocomotiveType.DCC) + "</td>");
             description.append("<td>" + f.getDescription() + "</td>");
             description.append("</tr>");
         }
