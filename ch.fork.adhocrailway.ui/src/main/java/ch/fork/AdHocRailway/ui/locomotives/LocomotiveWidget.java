@@ -57,6 +57,7 @@ public class LocomotiveWidget extends JPanel implements
 
     public static final int INCREASE_STEPS_AFTER_MS = 500;
     private static final Logger LOGGER = Logger.getLogger(LocomotiveWidget.class);
+    private static final long DISABLE_STEPS_AFTER_MS = 600;
     private final int number;
     private final List<FunctionToggleButton> functionToggleButtons = new ArrayList<FunctionToggleButton>();
     private final JFrame frame;
@@ -570,14 +571,14 @@ public class LocomotiveWidget extends JPanel implements
 
             if (lastReset == 0 || System.currentTimeMillis() > disableFastIn) {
                 lastReset = System.currentTimeMillis();
-                disableFastIn = System.currentTimeMillis() + 2 * INCREASE_STEPS_AFTER_MS;
+                disableFastIn = (System.currentTimeMillis() + DISABLE_STEPS_AFTER_MS);
             }
 
             long sinceLastReset = System.currentTimeMillis() - lastReset;
 
-            if (sinceLastReset > INCREASE_STEPS_AFTER_MS) {
+            if (sinceLastReset > INCREASE_STEPS_AFTER_MS && System.currentTimeMillis() < disableFastIn) {
                 locomotiveControl.increaseSpeed(myLocomotive, 5);
-                disableFastIn = System.currentTimeMillis() + 2 * INCREASE_STEPS_AFTER_MS;
+                disableFastIn = (System.currentTimeMillis() + DISABLE_STEPS_AFTER_MS);
             } else {
                 locomotiveControl.increaseSpeed(myLocomotive, 1);
             }
@@ -598,14 +599,14 @@ public class LocomotiveWidget extends JPanel implements
 
             if (lastReset == 0 || System.currentTimeMillis() > disableFastIn) {
                 lastReset = System.currentTimeMillis();
-                disableFastIn = System.currentTimeMillis() + 2 * INCREASE_STEPS_AFTER_MS;
+                disableFastIn = (System.currentTimeMillis() + DISABLE_STEPS_AFTER_MS);
             }
 
             long sinceLastReset = System.currentTimeMillis() - lastReset;
 
-            if (sinceLastReset > INCREASE_STEPS_AFTER_MS) {
+            if (sinceLastReset > INCREASE_STEPS_AFTER_MS && System.currentTimeMillis() < disableFastIn) {
                 locomotiveControl.decreaseSpeed(myLocomotive, 5);
-                disableFastIn = System.currentTimeMillis() + 2 * INCREASE_STEPS_AFTER_MS;
+                disableFastIn = System.currentTimeMillis() + DISABLE_STEPS_AFTER_MS;
             } else {
                 locomotiveControl.decreaseSpeed(myLocomotive, 1);
 
