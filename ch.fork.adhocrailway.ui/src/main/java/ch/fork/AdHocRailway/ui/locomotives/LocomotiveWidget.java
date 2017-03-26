@@ -445,6 +445,7 @@ public class LocomotiveWidget extends JPanel implements
         }
         final LocomotiveController locomotiveControl = ctx
                 .getLocomotiveControl();
+        locomotiveControl.terminateLocomotive(myLocomotive);
         locomotiveControl.removeLocomotiveChangeListener(myLocomotive, this);
         myLocomotive = null;
 

@@ -132,7 +132,15 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
     @Override
     public void terminateLocomotive(Locomotive locomotive) {
-        throw new NotImplementedException();
+
+        LOGGER.info("terminating loco: " + locomotive.getAddress1() + " " + locomotive.getName());
+
+        final SRCPLocomotive sLocomotive = getOrCreateSrcpLocomotive(locomotive);
+        try {
+            locomotiveControl.terminate(sLocomotive);
+        } catch (SRCPModelException e) {
+            throw new ControllerException("Locomotive Error", e);
+        }
     }
 
     @Override
@@ -323,7 +331,9 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
             case SIMULATED_MFX:
                 return srcpLocomotive instanceof DoubleMMDigitalLocomotive;
             case MFX:
-                return srcpLocomotive instanceof MMDigitalLocomotive;
+                return srcpLocomotive instanceof MfxLocomotive;
+            case DCC:
+                return srcpLocomotive instanceof DCCLocomotive;
         }
         return false;
     }
