@@ -121,7 +121,7 @@ typedef struct _BUS
   void *thr_timer;             /* address of the timer thread */
   void (*sigio_reader)(bus_t); /* address of the SIGIO based device reader */
   int (*init_func)(bus_t);             /* address of init function */
-  int (*init_gl_func) (gl_state_t *);  /* called to check default init */
+  int (*init_gl_func) (bus_t bus, gl_state_t *);  /* called to check default init */
   int (*init_ga_func) (ga_state_t *);  /* called to check default init */
   int (*init_fb_func) (bus_t bus, int addr,
           const char protocolb, int index);  /* called to check default init */

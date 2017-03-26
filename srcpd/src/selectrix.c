@@ -292,7 +292,7 @@ int init_bus_Selectrix(bus_t busnumber)
 ********************************************************/
 /* Engines */
 /* INIT <bus> GL <adr> S 1 31 2 */
-int init_gl_Selectrix(gl_state_t * gl)
+int init_gl_Selectrix(bus_t bus, gl_state_t * gl)
 {
     if ((gl->protocol == 'S') || (gl->protocol == 's')) {
         return ((gl->n_fs == 31) && (gl->protocolversion == 1) &&

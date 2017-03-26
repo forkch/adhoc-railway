@@ -162,7 +162,7 @@ int readConfig_IB(xmlDocPtr doc, xmlNodePtr node, bus_t busnumber)
  * cacheInitGL: modifies the gl data used to initialize the device
  * this is called whenever a new loco comes in town...
  */
-int init_gl_IB(gl_state_t * gl)
+int init_gl_IB(bus_t bus, gl_state_t * gl)
 {
     gl->n_fs = SPEED_STEPS;
     if (gl->n_func > 29) {

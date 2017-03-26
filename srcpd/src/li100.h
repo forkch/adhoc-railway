@@ -60,7 +60,7 @@ void check_status_LI100_SERIAL( bus_t busnumber );
 int send_command_LI100_SERIAL(bus_t busnumber, const unsigned char*);
 void get_status_sm_LI100_SERIAL( bus_t busnumber );
 
-int init_gl_LI100( gl_state_t *gl );
+int init_gl_LI100(gl_state_t *gl );
 int init_ga_LI100( ga_state_t *ga );
 void* thr_sendrec_LI100_USB( void* );
 void* thr_sendrec_LI100_SERIAL( void* );

@@ -38,7 +38,7 @@
 #define __loconet ((LOCONET_DATA*)buses[busnumber].driverdata)
 #define __loconett ((LOCONET_DATA*)buses[btd->bus].driverdata)
 
-static int init_gl_LOCONET(gl_state_t *);
+static int init_gl_LOCONET(bus_t bus,gl_state_t *);
 static int init_ga_LOCONET(ga_state_t *);
 /**
  * Read and analyze the XML subtree for the <loconet> configuration.
@@ -342,7 +342,7 @@ static int init_lineLOCONET(bus_t busnumber)
 /**
  *
  */
-static int init_gl_LOCONET(gl_state_t * gl)
+static int init_gl_LOCONET(bus_t bus, gl_state_t * gl)
 {
     /* this is a complex transaction 
        1. send out a BF<hi><lo> Message. 

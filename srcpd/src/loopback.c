@@ -106,7 +106,7 @@ static int init_lineLoopback(bus_t bus) {
 /**
  * cacheInitGL: modifies the gl data used to initialize the device
  **/
-int init_gl_LOOPBACK(gl_state_t * gl) {
+int init_gl_LOOPBACK(bus_t bus,gl_state_t * gl) {
 	switch (gl->protocol) {
 	case 'L':
 	case 'S': /*TODO: implement range checks */

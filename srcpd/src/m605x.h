@@ -29,7 +29,7 @@ int readconfig_m605x(xmlDocPtr doc, xmlNodePtr node, bus_t busnumber);
 
 int init_line6051(bus_t bus);
 int init_bus_M6051(bus_t bus);
-int init_gl_M6051(gl_state_t *gl);
+int init_gl_M6051(bus_t bus, gl_state_t *gl);
 int init_ga_M6051(ga_state_t *ga);
 int getDescription_M6051(char *reply);
 void *thr_sendrec_M6051(void *);
