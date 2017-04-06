@@ -684,23 +684,23 @@ public class LocomotiveWidget extends JPanel implements
             try {
                 final LocomotiveController locomotiveControl = ctx
                         .getLocomotiveControl();
-                if (lockButtonState) {
-                    final boolean succeeded = locomotiveControl
-                            .acquireLock(myLocomotive);
-                    lockButton.setSelected(succeeded);
-                } else {
-                    if (locomotiveControl.isLockedByMe(myLocomotive)) {
-                        final boolean succeeded = !locomotiveControl
-                                .releaseLock(myLocomotive);
-                        lockButton.setSelected(succeeded);
-                    } else {
-                        lockButton.setSelected(true);
-                    }
-                }
+//                if (lockButtonState) {
+//                    final boolean succeeded = locomotiveControl
+//                            .acquireLock(myLocomotive);
+//                    lockButton.setSelected(succeeded);
+//                } else {
+//                    if (locomotiveControl.isLockedByMe(myLocomotive)) {
+//                        final boolean succeeded = !locomotiveControl
+//                                .releaseLock(myLocomotive);
+//                        lockButton.setSelected(succeeded);
+//                    } else {
+//                        lockButton.setSelected(true);
+//                    }
+//                }
                 speedBar.requestFocus();
             } catch (final ControllerException ex) {
                 ctx.getMainApp().handleException(ex);
-                lockButton.setSelected(lockButtonState);
+//                lockButton.setSelected(lockButtonState);
             }
             updateWidget();
         }
