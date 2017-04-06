@@ -8,6 +8,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
     });
     server.del('/turnoutGroup', function (req, res, next) {
         turnoutController.clear(function (err, turnoutGroups) {
+            sendDataToWebsocketClients(err, req, 'turnout:init', turnoutGroups);
             sendResponse(err, res, next, 200, 400, turnoutGroups);
         });
     });

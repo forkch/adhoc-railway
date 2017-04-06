@@ -8,6 +8,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
     });
     server.del('/routeGroup', function (req, res, next) {
         routeController.clear(function (err, routeGroups) {
+            sendDataToWebsocketClients(err, req, 'route:init', routeGroups);
             sendResponse(err, res, next, 200, 400, routeGroups);
         });
     });
