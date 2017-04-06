@@ -223,7 +223,7 @@ public class Locomotive extends AbstractItem implements Serializable,
     public void setGroup(final LocomotiveGroup locomotiveGroup) {
         final LocomotiveGroup old = this.group;
         this.group = locomotiveGroup;
-        setGroupId(locomotiveGroup.getId());
+//        setGroupId(locomotiveGroup.getId());
         changeSupport.firePropertyChange(PROPERTYNAME_LOCOMOTIVE_GROUP, old,
                 this.group);
     }

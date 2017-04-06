@@ -957,6 +957,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         @Override
         public void actionPerformed(final ActionEvent e) {
 
+            appContext.getMainBus().post(new StartImportEvent());
             progressBar.setIndeterminate(true);
             final JFileChooser fileChooser = new JFileChooser(new File("."));
             final int returnVal = fileChooser.showOpenDialog(AdHocRailway.this);
@@ -974,6 +975,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             }
 
             progressBar.setIndeterminate(false);
+            appContext.getMainBus().post(new EndImportEvent());
         }
     }
 
@@ -988,7 +990,6 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
             progressBar.setIndeterminate(true);
             appContext.getMainBus().post(new StartImportEvent());
-            progressBar.setIndeterminate(true);
             final JFileChooser fileChooser = new JFileChooser(new File("."));
             final int returnVal = fileChooser.showOpenDialog(AdHocRailway.this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {

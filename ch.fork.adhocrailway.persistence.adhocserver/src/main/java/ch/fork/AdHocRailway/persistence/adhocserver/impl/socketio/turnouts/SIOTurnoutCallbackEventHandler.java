@@ -47,10 +47,10 @@ public class SIOTurnoutCallbackEventHandler {
                                           final TurnoutServiceListener listener) throws JSONException {
         final Turnout turnout = deserializeTurnout(turnoutJSON);
         sioIdToTurnoutMap.put(turnout.getId(), turnout);
-        final TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap
-                .get(turnout.getGroupId());
-        turnout.setTurnoutGroup(turnoutGroup);
-        turnoutGroup.addTurnout(turnout);
+//        final TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap
+//                .get(turnout.getGroupId());
+//        turnoutGroup.addTurnout(turnout);
+        turnout.setTurnoutGroup(null);
         listener.turnoutAdded(turnout);
     }
 
@@ -58,10 +58,10 @@ public class SIOTurnoutCallbackEventHandler {
     public static void handleTurnoutUpdated(final JSONObject turnoutJSON,
                                             final TurnoutServiceListener listener) throws JSONException {
         final Turnout turnout = deserializeTurnout(turnoutJSON);
-        TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap.get(turnout.getGroupId());
-        turnout.setTurnoutGroup(turnoutGroup);
-        turnoutGroup.addTurnout(turnout);
+//        TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap.get(turnout.getGroupId());
+//        turnoutGroup.addTurnout(turnout);
 
+        turnout.setTurnoutGroup(null);
         listener.turnoutUpdated(turnout);
 
     }
@@ -71,10 +71,10 @@ public class SIOTurnoutCallbackEventHandler {
 
         final Turnout turnout = deserializeTurnout(turnoutJSON);
 
-        final TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap
-                .get(turnout.getGroupId());
-        turnout.setTurnoutGroup(turnoutGroup);
-        turnoutGroup.removeTurnout(turnout);
+//        final TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap
+//                .get(turnout.getGroupId());
+//        turnoutGroup.removeTurnout(turnout);
+        turnout.setTurnoutGroup(null);
         listener.turnoutRemoved(turnout);
 
     }

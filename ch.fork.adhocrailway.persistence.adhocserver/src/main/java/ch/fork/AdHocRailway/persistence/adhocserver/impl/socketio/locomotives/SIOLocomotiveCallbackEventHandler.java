@@ -56,13 +56,14 @@ public class SIOLocomotiveCallbackEventHandler {
             final LocomotiveServiceListener listener) throws JSONException {
         final Locomotive locomotive = deserializeLocomotive(locomotiveJSON);
         sioIdToLocomotiveMap.put(locomotive.getId(), locomotive);
-        final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
-                .get(locomotive.getGroupId());
-        locomotive.setGroup(locomotiveGroup);
-        locomotiveGroup.addLocomotive(locomotive);
+//        final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
+//                .get(locomotive.getGroupId());
+//        locomotive.setGroup(locomotiveGroup);
+//        locomotiveGroup.addLocomotive(locomotive);
         if (locomotive.getFunctions().size() == 0) {
             locomotive.setFunctions(LocomotiveFunction.getFunctionsForType(locomotive.getType()));
         }
+        locomotive.setGroup(null);
         listener.locomotiveAdded(locomotive);
         return locomotive;
     }
@@ -72,12 +73,13 @@ public class SIOLocomotiveCallbackEventHandler {
             final LocomotiveServiceListener listener) throws JSONException {
         final Locomotive locomotive = deserializeLocomotive(locomotiveJSON);
 
-        LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap.get(locomotive.getGroupId());
-        locomotive.setGroup(locomotiveGroup);
-        locomotiveGroup.addLocomotive(locomotive);
+//        LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap.get(locomotive.getGroupId());
+//        locomotive.setGroup(locomotiveGroup);
+//        locomotiveGroup.addLocomotive(locomotive);
         if (locomotive.getFunctions().size() == 0) {
             locomotive.setFunctions(LocomotiveFunction.getFunctionsForType(locomotive.getType()));
         }
+        locomotive.setGroup(null);
         listener.locomotiveUpdated(locomotive);
         return locomotive;
 
@@ -88,10 +90,10 @@ public class SIOLocomotiveCallbackEventHandler {
             final LocomotiveServiceListener listener) throws JSONException {
         final Locomotive locomotive = deserializeLocomotive(locomotiveJSON);
 
-        final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
-                .get(locomotive.getGroupId());
-        locomotive.setGroup(locomotiveGroup);
-        locomotiveGroup.removeLocomotive(locomotive);
+//        final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
+//                .get(locomotive.getGroupId());
+//        locomotive.setGroup(locomotiveGroup);
+//        locomotiveGroup.removeLocomotive(locomotive);
         listener.locomotiveRemoved(locomotive);
 
         return locomotive;

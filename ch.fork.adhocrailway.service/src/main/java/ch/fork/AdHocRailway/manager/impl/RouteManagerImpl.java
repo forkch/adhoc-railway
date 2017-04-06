@@ -29,6 +29,7 @@ import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.RouteService;
 import ch.fork.AdHocRailway.services.RouteServiceListener;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -77,6 +78,7 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     @Override
     public void clearToService() {
         LOGGER.debug("clearToService()");
+        clear();
         routeService.clear();
     }
 
@@ -265,6 +267,12 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     public void routeAdded(final Route route) {
         LOGGER.info("routeAdded: " + route);
         cleanupListeners();
+        for (RouteGroup routeGroup : routeGroups) {
+            if(StringUtils.equals(route.getGroupId(), routeGroup.getId())) {
+                routeGroup.addRoute(route);
+                route.setRouteGroup(routeGroup);
+            }
+        }
         putInCache(route);
         populateTransientFields(route);
         for (final RouteManagerListener l : listeners) {
@@ -276,6 +284,12 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     public void routeUpdated(final Route route) {
         LOGGER.info("routeUpdated: " + route);
         cleanupListeners();
+        for (RouteGroup routeGroup : routeGroups) {
+            if(StringUtils.equals(route.getGroupId(), routeGroup.getId())) {
+                routeGroup.addRoute(route);
+                route.setRouteGroup(routeGroup);
+            }
+        }
         putInCache(route);
         populateTransientFields(route);
         for (final RouteManagerListener l : listeners) {
@@ -306,6 +320,11 @@ public class RouteManagerImpl implements RouteManager, RouteServiceListener {
     public void routeRemoved(final Route route) {
         LOGGER.info("routeRemoved: " + route);
         cleanupListeners();
+        for (RouteGroup routeGroup : routeGroups) {
+            if(StringUtils.equals(route.getGroupId(), routeGroup.getId())) {
+                routeGroup.removeRoute(route);
+            }
+        }
         removeFromCache(route);
         for (final RouteManagerListener l : listeners) {
             l.routeRemoved(route);

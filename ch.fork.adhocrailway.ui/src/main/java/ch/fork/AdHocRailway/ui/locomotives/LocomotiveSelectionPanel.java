@@ -10,28 +10,31 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
 import java.util.SortedSet;
 
+import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIcon;
+
 public class LocomotiveSelectionPanel extends JPanel {
 
-    private static final Logger LOGGER = Logger.getLogger(LocomotiveSelectionPanel.class.getSimpleName());
     public static final int LOCOMOTIVE_IMAGE_HEIGHT = 40;
-
-    private OnLocomotiveSelectionListener selectionListener;
+    private static final Logger LOGGER = Logger.getLogger(LocomotiveSelectionPanel.class.getSimpleName());
     private final LocomotiveContext ctx;
+    private final LocomotiveGroup allLocomotivesGroup;
+    private OnLocomotiveSelectionListener selectionListener;
     private LocomotiveSelectAction locomotiveSelectAction;
     private LocomotiveGroupSelectAction groupSelectAction;
-
     private JComboBox<Locomotive> locomotiveComboBox;
     private JComboBox<LocomotiveGroup> locomotiveGroupComboBox;
     private LocomotiveGroupComboboxModel locomotiveGroupComboBoxModel;
     private LocomotiveComboboxModel locomotiveComboBoxModel;
-    private final LocomotiveGroup allLocomotivesGroup;
     private LocomotiveComboBoxRenderer locomotiveComboboxRendererWithLocoImage;
     private JLabel locomotiveImage;
+    private JButton reloadOrFreeLoco;
+    private boolean locomotiveInUse;
 
     public LocomotiveSelectionPanel(OnLocomotiveSelectionListener selectionListener, LocomotiveContext locomotiveContext) {
         this.selectionListener = selectionListener;
@@ -67,10 +70,18 @@ public class LocomotiveSelectionPanel extends JPanel {
 
     }
 
-    @Override
-    public void setEnabled(boolean enabled) {
-        locomotiveGroupComboBox.setEnabled(enabled);
-        locomotiveComboBox.setEnabled(enabled);
+    public void locomotiveInUse() {
+        this.locomotiveInUse = true;
+        locomotiveGroupComboBox.setEnabled(false);
+        locomotiveComboBox.setEnabled(false);
+        reloadOrFreeLoco.setEnabled(false);
+        reloadOrFreeLoco.setIcon(createImageIcon("crystal/list-remove.png"));
+    }
+
+    public void locomotiveFree() {
+        this.locomotiveInUse = false;
+        reloadOrFreeLoco.setEnabled(true);
+        reloadOrFreeLoco.setIcon(createImageIcon("crystal/list-remove.png"));
     }
 
     private void initGUI() {
@@ -103,15 +114,40 @@ public class LocomotiveSelectionPanel extends JPanel {
         locomotiveComboboxRendererWithLocoImage = new LocomotiveComboBoxRenderer();
         locomotiveComboBox.setRenderer(locomotiveComboboxRendererWithLocoImage);
 
+        reloadOrFreeLoco = new JButton(createImageIcon("crystal/reload.png"));
+        reloadOrFreeLoco.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!locomotiveInUse) {
+                    updateLocomotiveGroups();
+                    locomotiveImage.setIcon(null);
+                    selectionListener.onLocomotiveSelected(null);
+                    reloadOrFreeLoco.setIcon(createImageIcon("crystal/reload.png"));
+                    locomotiveGroupComboBox.setEnabled(true);
+                    locomotiveComboBox.setEnabled(true);
+                    reloadOrFreeLoco.setEnabled(true);
+                }
+            }
+        });
+
+
         locomotiveImage = new JLabel();
         locomotiveImage.setIcon(LocomotiveImageHelper.getEmptyLocoIconScaledToHeight(LOCOMOTIVE_IMAGE_HEIGHT));
         locomotiveImage.setHorizontalAlignment(SwingConstants.CENTER);
         locomotiveImage.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         add(locomotiveGroupComboBox, "growy, width 120");
-        add(locomotiveComboBox, "growy" +
-                ", width 120, wrap");
+        add(locomotiveComboBox, "growy, width 120");
+        add(reloadOrFreeLoco, "growy, wrap");
         add(locomotiveImage, "span 2, height 60, grow");
+
+    }
+
+    interface OnLocomotiveSelectionListener {
+
+        void onLocomotiveGroupSelected(LocomotiveGroup selectedLocomotiveGroup);
+
+        void onLocomotiveSelected(Locomotive selectedLocomotive);
 
     }
 
@@ -161,14 +197,6 @@ public class LocomotiveSelectionPanel extends JPanel {
             selectionListener.onLocomotiveSelected(selectedLocomotive);
 
         }
-    }
-
-    interface OnLocomotiveSelectionListener {
-
-        void onLocomotiveGroupSelected(LocomotiveGroup selectedLocomotiveGroup);
-
-        void onLocomotiveSelected(Locomotive selectedLocomotive);
-
     }
 
 }

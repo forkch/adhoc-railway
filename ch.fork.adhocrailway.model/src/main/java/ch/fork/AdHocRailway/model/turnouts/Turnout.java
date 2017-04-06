@@ -282,7 +282,7 @@ public class Turnout extends AbstractItem implements java.io.Serializable,
     public void setTurnoutGroup(final TurnoutGroup turnoutGroup) {
         final TurnoutGroup old = this.turnoutGroup;
         this.turnoutGroup = turnoutGroup;
-        setGroupId(turnoutGroup.getId());
+//        setGroupId(turnoutGroup.getId());
         changeSupport.firePropertyChange(PROPERTYNAME_TURNOUT_GROUP, old,
                 this.turnoutGroup);
     }

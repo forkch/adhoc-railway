@@ -139,7 +139,7 @@ public class Route extends AbstractItem implements java.io.Serializable,
     public void setRouteGroup(final RouteGroup routeGroup) {
         final RouteGroup old = this.routeGroup;
         this.routeGroup = routeGroup;
-        setGroupId(routeGroup.getId());
+//        setGroupId(routeGroup.getId());
         changeSupport.firePropertyChange(PROPERTYNAME_ROUTE_GROUP, old,
                 this.routeGroup);
     }

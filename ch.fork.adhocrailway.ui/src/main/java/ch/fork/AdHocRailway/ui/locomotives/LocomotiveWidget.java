@@ -198,6 +198,7 @@ public class LocomotiveWidget extends JPanel implements
         stopButton = new JButton("Stop");
         directionButton = new JButton(
                 createImageIcon("crystal/forward.png"));
+
         lockButton = new LockToggleButton("");
 
         lockButton.setVisible(false);
@@ -283,6 +284,7 @@ public class LocomotiveWidget extends JPanel implements
 
     private void updateWidget() {
         if (myLocomotive == null) {
+
             return;
         }
         final LocomotiveController locomotiveControl = ctx
@@ -301,11 +303,11 @@ public class LocomotiveWidget extends JPanel implements
         updateDirection();
 
         if (isFree()) {
-            locomotiveSelectionPanel.setEnabled(true);
+            locomotiveSelectionPanel.locomotiveFree();
         } else {
             UIManager.put("ComboBox.disabledForeground", new ColorUIResource(
                     Color.BLACK));
-            locomotiveSelectionPanel.setEnabled(false);
+            locomotiveSelectionPanel.locomotiveInUse();
         }
         speedBar.requestFocus();
 
@@ -386,7 +388,7 @@ public class LocomotiveWidget extends JPanel implements
     }
 
     private boolean isCurrentlyInUse() {
-        return !isFree() && myLocomotive != null;
+        return !isFree() || myLocomotive != null;
     }
 
     @Override
@@ -450,6 +452,7 @@ public class LocomotiveWidget extends JPanel implements
         locomotiveControl.terminateLocomotive(myLocomotive);
         locomotiveControl.removeLocomotiveChangeListener(myLocomotive, this);
         myLocomotive = null;
+        updateWidget();
 
     }
 

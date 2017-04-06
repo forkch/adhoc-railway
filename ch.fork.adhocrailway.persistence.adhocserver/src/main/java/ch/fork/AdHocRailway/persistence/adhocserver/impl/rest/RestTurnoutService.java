@@ -5,8 +5,10 @@ import ch.fork.AdHocRailway.model.turnouts.TurnoutGroup;
 import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.turnouts.SIOTurnoutCallback;
 import ch.fork.AdHocRailway.persistence.adhocserver.util.RestAdapterFactory;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.TurnoutService;
 import ch.fork.AdHocRailway.services.TurnoutServiceListener;
+import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
 import retrofit2.Retrofit;
 
@@ -42,23 +44,22 @@ public class RestTurnoutService implements TurnoutService {
         try {
             return restTurnoutServiceClient.getAllTurnoutGroups().execute().body();
         } catch (IOException e) {
-
-            throw new IllegalStateException(e);
+            listener.failure(new AdHocServiceException(e));
+            return Sets.newTreeSet();
         }
     }
 
     @Override
     public void addTurnoutGroup(TurnoutGroup group) {
-        TurnoutGroup addTurnoutGroup = null;
+        TurnoutGroup addTurnoutGroup;
         try {
             addTurnoutGroup = restTurnoutServiceClient.addTurnoutGroup(group).execute().body();
+            group.setId(addTurnoutGroup.getId());
+            if (listenerOk()) {
+                listener.turnoutGroupAdded(addTurnoutGroup);
+            }
         } catch (IOException e) {
-
-            throw new IllegalStateException(e);
-        }
-        group.setId(addTurnoutGroup.getId());
-        if (listenerOk()) {
-            listener.turnoutGroupAdded(group);
+            listener.failure(new AdHocServiceException(e));
         }
     }
 
@@ -66,25 +67,23 @@ public class RestTurnoutService implements TurnoutService {
     public void removeTurnoutGroup(TurnoutGroup group) {
         try {
             TurnoutGroup deleteTurnoutGroup = restTurnoutServiceClient.deleteTurnoutGroup(group.getId()).execute().body();
+            if (listenerOk()) {
+                listener.turnoutGroupRemoved(deleteTurnoutGroup);
+            }
         } catch (IOException e) {
-
-            throw new IllegalStateException(e);
-        }
-        if (listenerOk()) {
-            listener.turnoutGroupRemoved(group);
+            listener.failure(new AdHocServiceException(e));
         }
     }
 
     @Override
     public void updateTurnoutGroup(TurnoutGroup group) {
         try {
-            restTurnoutServiceClient.updateTurnoutGroup(group).execute().body();
+            TurnoutGroup updatedGroup = restTurnoutServiceClient.updateTurnoutGroup(group).execute().body();
+            if (listenerOk()) {
+                listener.turnoutGroupUpdated(updatedGroup);
+            }
         } catch (IOException e) {
-
-            throw new IllegalStateException(e);
-        }
-        if (listenerOk()) {
-            listener.turnoutGroupUpdated(group);
+            listener.failure(new AdHocServiceException(e));
         }
     }
 
@@ -93,12 +92,13 @@ public class RestTurnoutService implements TurnoutService {
         Turnout addTurnout = null;
         try {
             addTurnout = restTurnoutServiceClient.addTurnout(turnout).execute().body();
+            addTurnout.setTurnoutGroup(null);
+            turnout.setId(addTurnout.getId());
+            if (listenerOk()) {
+                listener.turnoutAdded(addTurnout);
+            }
         } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        turnout.setId(addTurnout.getId());
-        if (listenerOk()) {
-            listener.turnoutAdded(turnout);
+            listener.failure(new AdHocServiceException(e));
         }
     }
 
@@ -106,11 +106,13 @@ public class RestTurnoutService implements TurnoutService {
     public void removeTurnout(Turnout turnout) {
         try {
             Turnout deleteTurnout = restTurnoutServiceClient.deleteTurnout(turnout.getId()).execute().body();
+
+            deleteTurnout.setTurnoutGroup(null);
+            if (listenerOk()) {
+                listener.turnoutRemoved(deleteTurnout);
+            }
         } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        if (listenerOk()) {
-            listener.turnoutRemoved(turnout);
+            listener.failure(new AdHocServiceException(e));
         }
     }
 
@@ -118,11 +120,12 @@ public class RestTurnoutService implements TurnoutService {
     public void updateTurnout(Turnout turnout) {
         try {
             Turnout updateTurnout = restTurnoutServiceClient.updateTurnout(turnout).execute().body();
+            updateTurnout.setTurnoutGroup(null);
+            if (listenerOk()) {
+                listener.turnoutUpdated(updateTurnout);
+            }
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (listenerOk()) {
-            listener.turnoutUpdated(turnout);
+            listener.failure(new AdHocServiceException(e));
         }
     }
 
@@ -131,12 +134,11 @@ public class RestTurnoutService implements TurnoutService {
         SortedSet<TurnoutGroup> turnoutGroups = null;
         try {
             turnoutGroups = restTurnoutServiceClient.deleteAllTurnoutGroups().execute().body();
+            if (listenerOk()) {
+                listener.turnoutsUpdated(turnoutGroups);
+            }
         } catch (IOException e) {
-
-            throw new IllegalStateException(e);
-        }
-        if (listenerOk()) {
-            listener.turnoutsUpdated(turnoutGroups);
+            listener.failure(new AdHocServiceException(e));
         }
     }
 

@@ -76,6 +76,7 @@ public class TurnoutManagerImpl implements TurnoutManager,
     @Override
     public void clearToService() {
         LOGGER.debug("clearToService()");
+        clear();
         turnoutService.clear();
     }
 
@@ -236,6 +237,13 @@ public class TurnoutManagerImpl implements TurnoutManager,
     public void turnoutAdded(final Turnout turnout) {
         LOGGER.info("turnoutAdded: " + turnout);
         cleanupListeners();
+
+        for (TurnoutGroup turnoutGroup : turnoutGroups) {
+            if (StringUtils.equals(turnout.getGroupId(), turnoutGroup.getId())) {
+                turnoutGroup.addTurnout(turnout);
+                turnout.setTurnoutGroup(turnoutGroup);
+            }
+        }
         putInCache(turnout);
         for (final TurnoutManagerListener l : listeners) {
             l.turnoutAdded(turnout);
@@ -246,6 +254,13 @@ public class TurnoutManagerImpl implements TurnoutManager,
     public void turnoutUpdated(final Turnout turnout) {
         LOGGER.info("turnoutUpdated: " + turnout);
         cleanupListeners();
+
+        for (TurnoutGroup turnoutGroup : turnoutGroups) {
+            if (StringUtils.equals(turnout.getGroupId(), turnoutGroup.getId())) {
+                turnoutGroup.addTurnout(turnout);
+                turnout.setTurnoutGroup(turnoutGroup);
+            }
+        }
         putInCache(turnout);
         for (final TurnoutManagerListener l : listeners) {
             l.turnoutUpdated(turnout);
@@ -256,6 +271,13 @@ public class TurnoutManagerImpl implements TurnoutManager,
     public void turnoutRemoved(final Turnout turnout) {
         LOGGER.info("turnoutRemoved: " + turnout);
         cleanupListeners();
+
+        for (TurnoutGroup turnoutGroup : turnoutGroups) {
+            if (StringUtils.equals(turnout.getGroupId(), turnoutGroup.getId())) {
+                turnoutGroup.removeTurnout(turnout);
+                turnout.setTurnoutGroup(turnoutGroup);
+            }
+        }
         removeFromCache(turnout);
         for (final TurnoutManagerListener l : listeners) {
             l.turnoutRemoved(turnout);

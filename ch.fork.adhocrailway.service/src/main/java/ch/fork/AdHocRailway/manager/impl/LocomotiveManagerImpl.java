@@ -37,7 +37,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     private static final Logger LOGGER = Logger
             .getLogger(LocomotiveManager.class);
 
-    private final SortedSet<Locomotive> addressLocomotiveCache = new TreeSet<Locomotive>();
+    private final SortedSet<Locomotive> allLocomotivesCache = new TreeSet<Locomotive>();
     private final SortedSet<LocomotiveGroup> locomotiveGroups = new TreeSet<LocomotiveGroup>();
     private final Set<LocomotiveManagerListener> listeners = new HashSet<LocomotiveManagerListener>();
     private final Set<LocomotiveManagerListener> listenersToBeRemovedInNextEvent = new HashSet<LocomotiveManagerListener>();
@@ -119,7 +119,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
 
     @Override
     public SortedSet<Locomotive> getAllLocomotives() {
-        return addressLocomotiveCache;
+        return allLocomotivesCache;
     }
 
     @Override
@@ -177,6 +177,7 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     @Override
     public void clearToService() {
         LOGGER.debug("clearToService()");
+        clear();
         locomotiveService.clear();
     }
 
@@ -202,6 +203,14 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     public void locomotiveAdded(final Locomotive locomotive) {
         LOGGER.info("locomotiveAdded: " + locomotive);
         cleanupListeners();
+
+        for (LocomotiveGroup locomotiveGroup : locomotiveGroups) {
+            if(StringUtils.equals(locomotive.getGroupId(), locomotiveGroup.getId())) {
+                locomotiveGroup.addLocomotive(locomotive);
+                locomotive.setGroup(locomotiveGroup);
+            }
+        }
+
         putInCache(locomotive);
         for (final LocomotiveManagerListener l : listeners) {
             l.locomotiveAdded(locomotive);
@@ -212,6 +221,14 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     public void locomotiveUpdated(final Locomotive locomotive) {
         LOGGER.info("locomotiveUpdated: " + locomotive);
         cleanupListeners();
+
+        for (LocomotiveGroup locomotiveGroup : locomotiveGroups) {
+            if(StringUtils.equals(locomotive.getGroupId(), locomotiveGroup.getId())) {
+                locomotiveGroup.addLocomotive(locomotive);
+                locomotive.setGroup(locomotiveGroup);
+            }
+        }
+
         putInCache(locomotive);
         for (final LocomotiveManagerListener l : listeners) {
             l.locomotiveUpdated(locomotive);
@@ -222,6 +239,11 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     public void locomotiveRemoved(final Locomotive locomotive) {
         LOGGER.info("locomotiveRemoved: " + locomotive);
         cleanupListeners();
+        for (final LocomotiveGroup locomotiveGroup : locomotiveGroups) {
+            if(StringUtils.equals(locomotive.getGroupId(), locomotiveGroup.getId())) {
+                locomotiveGroup.removeLocomotive(locomotive);
+            }
+        }
         removeFromCache(locomotive);
         for (final LocomotiveManagerListener l : listeners) {
             l.locomotiveRemoved(locomotive);
@@ -291,16 +313,17 @@ public class LocomotiveManagerImpl implements LocomotiveManager,
     }
 
     private void putInCache(final Locomotive locomotive) {
-        addressLocomotiveCache.add(locomotive);
+        allLocomotivesCache.add(locomotive);
     }
 
     private void removeFromCache(final Locomotive locomotive) {
-        addressLocomotiveCache.remove(locomotive);
+        allLocomotivesCache.remove(locomotive);
     }
 
     private void clearCache() {
-        addressLocomotiveCache.clear();
+        allLocomotivesCache.clear();
         locomotiveGroups.clear();
+        numberToLocomotiveMap.clear();
     }
 
 }

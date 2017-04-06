@@ -42,10 +42,10 @@ public class RestLocomotiveService implements LocomotiveService {
         try {
             final Response<Locomotive> response = locomotiveServiceClient.addLocomotive(locomotive).execute();
             if (response.isSuccessful()) {
-                locomotive.setId(response.body().getId());
-
+                Locomotive addedLocomotive = response.body();
+                addedLocomotive.setGroup(null);
                 if (listenerOk()) {
-                    listener.locomotiveAdded(locomotive);
+                    listener.locomotiveAdded(addedLocomotive);
                 }
             } else {
                 throw new AdHocServiceException("Failed to add locomotive: " + response.errorBody().string());
@@ -54,133 +54,168 @@ public class RestLocomotiveService implements LocomotiveService {
             listener.failure(new AdHocServiceException(e));
         }
 
-//        locomotiveServiceClient.addLocomotive(locomotive).enqueue(new LocomotiveServiceCallback<Locomotive>(listener, "Failed to add locomotive") {
-//
-//            @Override
-//            protected void handleSuccessfulResponse(Response<Locomotive> response, LocomotiveServiceListener listener) {
-//                locomotive.setId(response.body().getId());
-//                LOGGER.debug("addLocomotive(): " + locomotive);
-//
-//                if (listenerOk()) {
-//                    listener.locomotiveAdded(locomotive);
-//                }
-//            }
-//        });
-
     }
 
     @Override
     public void removeLocomotive(final Locomotive locomotive) {
-        locomotiveServiceClient.deleteLocomotive(locomotive.getId()).enqueue(new LocomotiveServiceCallback<Locomotive>(listener, "Failed to remove locomotive") {
-
-            @Override
-            protected void handleSuccessfulResponse(Response<Locomotive> response, LocomotiveServiceListener listener) {
-                LOGGER.debug("removeLocomotive(): " + locomotive);
-
+        try {
+            final Response<Locomotive> response = locomotiveServiceClient.deleteLocomotive(locomotive.getId()).execute();
+            if (response.isSuccessful()) {
+                Locomotive removedLocomotive = response.body();
+                removedLocomotive.setGroup(null);
                 if (listenerOk()) {
-                    listener.locomotiveRemoved(locomotive);
+                    listener.locomotiveRemoved(removedLocomotive);
                 }
+            } else {
+                throw new AdHocServiceException("Failed to remove locomotive: " + response.errorBody().string());
             }
-        });
+        } catch (IOException e) {
+            listener.failure(new AdHocServiceException(e));
+        }
     }
 
 
     @Override
     public void updateLocomotive(final Locomotive locomotive) {
-        locomotiveServiceClient.updateLocomotive(locomotive).enqueue(new LocomotiveServiceCallback<Locomotive>(listener, "Failed to update locomotive") {
-            @Override
-            protected void handleSuccessfulResponse(Response<Locomotive> response, LocomotiveServiceListener listener) {
-                LOGGER.debug("updateLocomotive(): " + locomotive);
+        try {
+            final Response<Locomotive> response = locomotiveServiceClient.updateLocomotive(locomotive).execute();
+            if (response.isSuccessful()) {
+                Locomotive updatedLocomotive = response.body();
+                updatedLocomotive.setGroup(null);
                 if (listenerOk()) {
-                    listener.locomotiveUpdated(locomotive);
+                    listener.locomotiveUpdated(updatedLocomotive);
                 }
+            } else {
+                throw new AdHocServiceException("Failed to update locomotive: " + response.errorBody().string());
             }
-        });
+        } catch (IOException e) {
+            listener.failure(new AdHocServiceException(e));
+        }
     }
 
     @Override
     public void getAllLocomotiveGroups() {
-        locomotiveServiceClient.getAllLocomotivesGroups().enqueue(new LocomotiveServiceCallback<SortedSet<LocomotiveGroup>>(listener, "Failed to load all locomotive groups") {
-
-            @Override
-            protected void handleSuccessfulResponse(Response<SortedSet<LocomotiveGroup>> response, LocomotiveServiceListener listener) {
-                final SortedSet<LocomotiveGroup> body = response.body();
-                LOGGER.debug("getAllLocomotiveGroups(): " + body);
-                listener.locomotivesUpdated(body);
+        try {
+            final Response<SortedSet<LocomotiveGroup>> response = locomotiveServiceClient.getAllLocomotivesGroups().execute();
+            if (response.isSuccessful()) {
+                SortedSet<LocomotiveGroup> updatedLocomotives = response.body();
+                if (listenerOk()) {
+                    listener.locomotivesUpdated(updatedLocomotives);
+                }
+            } else {
+                throw new AdHocServiceException("Failed to get all locomotives: " + response.errorBody().string());
             }
-        });
+        } catch (IOException e) {
+            listener.failure(new AdHocServiceException(e));
+        }
     }
 
     @Override
     public void addLocomotiveGroup(final LocomotiveGroup group) {
-
         try {
             final Response<LocomotiveGroup> response = locomotiveServiceClient.addLocomotiveGroup(group).execute();
             if (response.isSuccessful()) {
                 group.setId(response.body().getId());
+
+                if (listenerOk()) {
+                    listener.locomotiveGroupAdded(group);
+                }
+
             } else {
                 throw new AdHocServiceException("Failed to add locomotive group: " + response.errorBody().string());
             }
         } catch (IOException e) {
             listener.failure(new AdHocServiceException(e));
         }
-
-//        locomotiveServiceClient.addLocomotiveGroup(group).enqueue(new LocomotiveServiceCallback<LocomotiveGroup>(listener, "Failed to add locomotive group") {
-//            @Override
-//            protected void handleSuccessfulResponse(Response<LocomotiveGroup> response, LocomotiveServiceListener listener) {
-//                final LocomotiveGroup addedLocomotiveGroup = response.body();
-//                LOGGER.debug("addLocomotiveGroup(): " + addedLocomotiveGroup);
-//                group.setId(addedLocomotiveGroup.getId());
-//
-//                if (listenerOk()) {
-//                    listener.locomotiveGroupAdded(group);
-//                }
-//            }
-//        });
-
-
     }
 
     @Override
     public void removeLocomotiveGroup(final LocomotiveGroup group) {
-        locomotiveServiceClient.deleteLocomotiveGroup(group.getId()).enqueue(new LocomotiveServiceCallback<LocomotiveGroup>(listener, "Failed to remove locomotive group") {
-            @Override
-            protected void handleSuccessfulResponse(Response<LocomotiveGroup> response, LocomotiveServiceListener listener) {
-                LOGGER.debug("removeLocomotiveGroup(): " + response.body());
+        try {
+            final Response<LocomotiveGroup> response =
+                    locomotiveServiceClient.deleteLocomotiveGroup(group.getId()).execute();
+            if (response.isSuccessful()) {
+
                 if (listenerOk()) {
-                    listener.locomotiveGroupRemoved(group);
+                    listener.locomotiveGroupRemoved(response.body());
                 }
+            } else {
+                throw new AdHocServiceException("Failed to remove locomotive group: " + response.errorBody().string());
             }
-        });
+        } catch (IOException e) {
+            listener.failure(new AdHocServiceException(e));
+        }
+
     }
 
     @Override
     public void updateLocomotiveGroup(final LocomotiveGroup group) {
-        locomotiveServiceClient.updateLocomotiveGroup(group).enqueue(new LocomotiveServiceCallback<LocomotiveGroup>(listener, "Failed to update locomotive group") {
-            @Override
-            protected void handleSuccessfulResponse(Response<LocomotiveGroup> response, LocomotiveServiceListener listener) {
-                LOGGER.debug("updateLocomotiveGroup(): " + response.body());
+        try {
+            final Response<LocomotiveGroup> response =
+                    locomotiveServiceClient.updateLocomotiveGroup(group).execute();
+            if (response.isSuccessful()) {
+
                 if (listenerOk()) {
-                    listener.locomotiveGroupUpdated(group);
+                    listener.locomotiveGroupUpdated(response.body());
                 }
+            } else {
+                throw new AdHocServiceException("Failed to update locomotive group: " + response.errorBody().string());
             }
-        });
+        } catch (IOException e) {
+            listener.failure(new AdHocServiceException(e));
+        }
     }
 
     @Override
     public void clear() {
-        locomotiveServiceClient.deleteAllLocomotiveGroups().enqueue(new LocomotiveServiceCallback<SortedSet<LocomotiveGroup>>(listener, "Failed to clear locomotives") {
-            @Override
-            protected void handleSuccessfulResponse(Response<SortedSet<LocomotiveGroup>> response, LocomotiveServiceListener listener) {
+
+        try {
+            final Response<SortedSet<LocomotiveGroup>> response =
+                    locomotiveServiceClient.deleteAllLocomotiveGroups().execute();
+            if (response.isSuccessful()) {
+
                 if (listenerOk()) {
                     listener.locomotivesUpdated(response.body());
                 }
-
+            } else {
+                throw new AdHocServiceException("Failed to clear locomotives: " + response.errorBody().string());
             }
-        });
+        } catch (IOException e) {
+            listener.failure(new AdHocServiceException(e));
+        }
+    }
+
+    @Override
+    public void init(LocomotiveServiceListener listener) {
+        this.listener = listener;
+        sioLocomotiveService.init(listener);
+    }
+
+    @Override
+    public void disconnect() {
+        sioLocomotiveService.disconnect();
 
     }
 
+    @Override
+    public void addLocomotiveGroups(SortedSet<LocomotiveGroup> groups) {
+        for (LocomotiveGroup group : groups) {
+            try {
+                final Response<LocomotiveGroup> response = locomotiveServiceClient.addLocomotiveGroup(group).execute();
+                if (response.isSuccessful()) {
+                    group.setId(response.body().getId());
+                } else {
+                    throw new AdHocServiceException("Failed to add locomotive groups: " + response.errorBody().string());
+                }
+            } catch (IOException e) {
+                listener.failure(new AdHocServiceException(e));
+            }
+        }
+    }
+
+    private boolean listenerOk() {
+        return listener != null;
+    }
 
     static abstract class LocomotiveServiceCallback<T> implements Callback<T> {
 
@@ -217,38 +252,6 @@ public class RestLocomotiveService implements LocomotiveService {
         public void onFailure(Call<T> call, Throwable t) {
             listener.failure(new AdHocServiceException(t));
         }
-    }
-
-    @Override
-    public void init(LocomotiveServiceListener listener) {
-        this.listener = listener;
-        sioLocomotiveService.init(listener);
-    }
-
-    @Override
-    public void disconnect() {
-        sioLocomotiveService.disconnect();
-
-    }
-
-    @Override
-    public void addLocomotiveGroups(SortedSet<LocomotiveGroup> groups) {
-        for (LocomotiveGroup group : groups) {
-            try {
-                final Response<LocomotiveGroup> response = locomotiveServiceClient.addLocomotiveGroup(group).execute();
-                if (response.isSuccessful()) {
-                    group.setId(response.body().getId());
-                } else {
-                    throw new AdHocServiceException("Failed to add locomotive groups: " + response.errorBody().string());
-                }
-            } catch (IOException e) {
-                listener.failure(new AdHocServiceException(e));
-            }
-        }
-    }
-
-    private boolean listenerOk() {
-        return listener != null;
     }
 
 }

@@ -6,8 +6,10 @@ import ch.fork.AdHocRailway.model.turnouts.RouteItem;
 import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.SIOService;
 import ch.fork.AdHocRailway.persistence.adhocserver.impl.socketio.turnouts.SIORouteCallback;
 import ch.fork.AdHocRailway.persistence.adhocserver.util.RestAdapterFactory;
+import ch.fork.AdHocRailway.services.AdHocServiceException;
 import ch.fork.AdHocRailway.services.RouteService;
 import ch.fork.AdHocRailway.services.RouteServiceListener;
+import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
 import retrofit2.Retrofit;
 
@@ -43,7 +45,8 @@ public class RestRouteService implements RouteService {
         try {
             return restRouteServiceClient.getAllRouteGroups().execute().body();
         } catch (IOException e) {
-            throw new IllegalStateException(e);
+            listener.failure(new AdHocServiceException(e));
+            return Sets.newTreeSet();
         }
     }
 
@@ -53,8 +56,7 @@ public class RestRouteService implements RouteService {
         try {
             addRouteGroup = restRouteServiceClient.addRouteGroup(group).execute().body();
         } catch (IOException e) {
-
-            throw new IllegalStateException(e);
+            listener.failure(new AdHocServiceException(e));
         }
         group.setId(addRouteGroup.getId());
         if (listenerOk()) {
@@ -66,12 +68,11 @@ public class RestRouteService implements RouteService {
     public void removeRouteGroup(RouteGroup group) {
         try {
             RouteGroup removedRouteGroup = restRouteServiceClient.deleteRouteGroup(group.getId()).execute().body();
+            if (listenerOk()) {
+                listener.routeGroupRemoved(group);
+            }
         } catch (IOException e) {
-
-            throw new IllegalStateException(e);
-        }
-        if (listenerOk()) {
-            listener.routeGroupRemoved(group);
+            listener.failure(new AdHocServiceException(e));
         }
     }
 
@@ -79,12 +80,11 @@ public class RestRouteService implements RouteService {
     public void updateRouteGroup(RouteGroup group) {
         try {
             restRouteServiceClient.updateRouteGroup(group).execute().body();
+            if (listenerOk()) {
+                listener.routeGroupUpdated(group);
+            }
         } catch (IOException e) {
-
-            throw new IllegalStateException(e);
-        }
-        if (listenerOk()) {
-            listener.routeGroupUpdated(group);
+            listener.failure(new AdHocServiceException(e));
         }
     }
 
@@ -108,13 +108,12 @@ public class RestRouteService implements RouteService {
         Route addTurnout = null;
         try {
             addTurnout = restRouteServiceClient.addRoute(route).execute().body();
+            route.setId(addTurnout.getId());
+            if (listenerOk()) {
+                listener.routeAdded(route);
+            }
         } catch (IOException e) {
-
-            throw new IllegalStateException(e);
-        }
-        route.setId(addTurnout.getId());
-        if (listenerOk()) {
-            listener.routeAdded(route);
+            listener.failure(new AdHocServiceException(e));
         }
     }
 
@@ -122,12 +121,11 @@ public class RestRouteService implements RouteService {
     public void removeRoute(Route route) {
         try {
             Route deletedRoute = restRouteServiceClient.deleteRoute(route.getId()).execute().body();
+            if (listenerOk()) {
+                listener.routeRemoved(route);
+            }
         } catch (IOException e) {
-
-            throw new IllegalStateException(e);
-        }
-        if (listenerOk()) {
-            listener.routeRemoved(route);
+            listener.failure(new AdHocServiceException(e));
         }
     }
 
@@ -135,12 +133,12 @@ public class RestRouteService implements RouteService {
     public void updateRoute(Route route) {
         try {
             Route updatedRoute = restRouteServiceClient.updateRoute(route).execute().body();
-        } catch (IOException e) {
 
-            throw new IllegalStateException(e);
-        }
-        if (listenerOk()) {
-            listener.routeUpdated(route);
+            if (listenerOk()) {
+                listener.routeUpdated(updatedRoute);
+            }
+        } catch (IOException e) {
+            listener.failure(new AdHocServiceException(e));
         }
     }
 
@@ -149,12 +147,11 @@ public class RestRouteService implements RouteService {
         SortedSet<RouteGroup> routeGroups;
         try {
             routeGroups = restRouteServiceClient.deleteAllRouteGroups().execute().body();
+            if (listenerOk()) {
+                listener.routesUpdated(routeGroups);
+            }
         } catch (IOException e) {
-
-            throw new IllegalStateException(e);
-        }
-        if (listenerOk()) {
-            listener.routesUpdated(routeGroups);
+            listener.failure(new AdHocServiceException(e));
         }
     }
 
