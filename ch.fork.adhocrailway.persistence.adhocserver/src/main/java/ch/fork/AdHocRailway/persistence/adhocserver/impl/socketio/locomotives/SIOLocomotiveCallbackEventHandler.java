@@ -38,6 +38,7 @@ public class SIOLocomotiveCallbackEventHandler {
             for (final Locomotive locomotive : locomotiveGroup.getLocomotives()) {
                 sioIdToLocomotiveMap.put(locomotive.getId(), locomotive);
                 locomotive.setGroup(locomotiveGroup);
+                locomotiveGroup.addLocomotive(locomotive);
                 if (locomotive.getFunctions().size() == 0) {
                     locomotive.setFunctions(LocomotiveFunction.getFunctionsForType(locomotive.getType()));
                 }
@@ -58,10 +59,10 @@ public class SIOLocomotiveCallbackEventHandler {
         final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
                 .get(locomotive.getGroupId());
         locomotive.setGroup(locomotiveGroup);
+        locomotiveGroup.addLocomotive(locomotive);
         if (locomotive.getFunctions().size() == 0) {
             locomotive.setFunctions(LocomotiveFunction.getFunctionsForType(locomotive.getType()));
         }
-        locomotiveGroup.addLocomotive(locomotive);
         listener.locomotiveAdded(locomotive);
         return locomotive;
     }
@@ -71,7 +72,9 @@ public class SIOLocomotiveCallbackEventHandler {
             final LocomotiveServiceListener listener) throws JSONException {
         final Locomotive locomotive = deserializeLocomotive(locomotiveJSON);
 
-        locomotive.setGroup(sioIdToLocomotiveGroupMap.get(locomotive.getGroupId()));
+        LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap.get(locomotive.getGroupId());
+        locomotive.setGroup(locomotiveGroup);
+        locomotiveGroup.addLocomotive(locomotive);
         if (locomotive.getFunctions().size() == 0) {
             locomotive.setFunctions(LocomotiveFunction.getFunctionsForType(locomotive.getType()));
         }
@@ -88,6 +91,7 @@ public class SIOLocomotiveCallbackEventHandler {
         final LocomotiveGroup locomotiveGroup = sioIdToLocomotiveGroupMap
                 .get(locomotive.getGroupId());
         locomotive.setGroup(locomotiveGroup);
+        locomotiveGroup.removeLocomotive(locomotive);
         listener.locomotiveRemoved(locomotive);
 
         return locomotive;

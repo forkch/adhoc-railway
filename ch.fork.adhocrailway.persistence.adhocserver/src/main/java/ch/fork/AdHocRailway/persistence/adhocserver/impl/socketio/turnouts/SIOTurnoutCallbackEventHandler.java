@@ -58,7 +58,10 @@ public class SIOTurnoutCallbackEventHandler {
     public static void handleTurnoutUpdated(final JSONObject turnoutJSON,
                                             final TurnoutServiceListener listener) throws JSONException {
         final Turnout turnout = deserializeTurnout(turnoutJSON);
-        turnout.setTurnoutGroup(sioIdToTurnoutGroupMap.get(turnout.getGroupId()));
+        TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap.get(turnout.getGroupId());
+        turnout.setTurnoutGroup(turnoutGroup);
+        turnoutGroup.addTurnout(turnout);
+
         listener.turnoutUpdated(turnout);
 
     }
@@ -71,7 +74,7 @@ public class SIOTurnoutCallbackEventHandler {
         final TurnoutGroup turnoutGroup = sioIdToTurnoutGroupMap
                 .get(turnout.getGroupId());
         turnout.setTurnoutGroup(turnoutGroup);
-        //turnoutGroup.removeTurnout(turnout);
+        turnoutGroup.removeTurnout(turnout);
         listener.turnoutRemoved(turnout);
 
     }

@@ -32,6 +32,7 @@ public class SIORouteCallbackEventHandler {
             for (final Route route : routeGroup.getRoutes()) {
                 sioIdToRouteMap.put(route.getId(), route);
                 route.setRouteGroup(routeGroup);
+                routeGroup.addRoute(route);
             }
             routeGroups.add(routeGroup);
         }
@@ -52,8 +53,9 @@ public class SIORouteCallbackEventHandler {
     public static void handleRouteUpdated(final JSONObject routeJSON,
                                           final RouteServiceListener listener) throws JSONException {
         final Route route = deserializeRoute(routeJSON);
-        route.setRouteGroup(sioIdToRouteGroupMap.get(route.getGroupId()));
-
+        RouteGroup routeGroup = sioIdToRouteGroupMap.get(route.getGroupId());
+        route.setRouteGroup(routeGroup);
+            routeGroup.addRoute(route);
         listener.routeUpdated(route);
 
     }
@@ -63,6 +65,7 @@ public class SIORouteCallbackEventHandler {
         final Route route = deserializeRoute(routeJSON);
         final RouteGroup routeGroup = sioIdToRouteGroupMap.get(route.getGroupId());
         route.setRouteGroup(routeGroup);
+        routeGroup.removeRoute(route);
         listener.routeRemoved(route);
     }
 
