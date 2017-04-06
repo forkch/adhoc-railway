@@ -25,8 +25,11 @@ public class SIOService {
     public void connect(final String url, final ServiceListener mainCallback) {
         try {
             IO.Options options = new IO.Options();
-            options.transports = new String[] {WebSocket.NAME};
-
+            options.transports = new String[]{WebSocket.NAME};
+            if (socket != null) {
+                socket.disconnect();
+                socket = null;
+            }
             socket = IO.socket(url, options);
 
             socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
