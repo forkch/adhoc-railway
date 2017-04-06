@@ -177,7 +177,7 @@ public class LocomotiveWidget extends JPanel implements
         if (myLocomotive == null) {
             for (int i = 0; i < 6; i++) {
                 final FunctionToggleButton functionButton = new FunctionToggleButton(
-                        "F" + i);
+                        i, "F" + i);
                 functionToggleButtons.add(functionButton);
                 functionButton.setFocusable(false);
                 functionsPanel.add(functionButton, getFunctionButtonParams());
@@ -248,7 +248,7 @@ public class LocomotiveWidget extends JPanel implements
     private void updateFunctionButtons() {
         functionToggleButtons.clear();
         functionsPanel.removeAll();
-        if (myLocomotive.getFunctions().size() <= 5) {
+        if (myLocomotive.getVisibleFunctions().size() <= 5) {
             functionsPanel.setLayout(new MigLayout("insets 0, wrap, fill")); // wrap after each function button
         } else if (myLocomotive.getFunctions().size() <= 10) {
             functionsPanel.setLayout(new MigLayout("insets 0, wrap 2, fill")); // wrap after every second function button
@@ -259,12 +259,11 @@ public class LocomotiveWidget extends JPanel implements
 
         String params = getFunctionButtonParams();
 
-        for (final LocomotiveFunction fn : myLocomotive.getFunctions()) {
-            final FunctionToggleButton functionButton = new FunctionToggleButton(
+        for (final LocomotiveFunction fn : myLocomotive.getVisibleFunctions()) {
+            final FunctionToggleButton functionButton = new FunctionToggleButton(fn.getNumber(),
                     fn.getShortDescription(myLocomotive.getType() == LocomotiveType.DCC));
             functionToggleButtons.add(functionButton);
-            final int i = functionToggleButtons.indexOf(functionButton);
-            functionButton.addActionListener(new LocomotiveFunctionAction(i));
+            functionButton.addActionListener(new LocomotiveFunctionAction(functionButton, fn.getNumber()));
             functionButton.setToolTipText(fn.getDescription());
 
             functionButton.setFocusable(false);
@@ -342,7 +341,13 @@ public class LocomotiveWidget extends JPanel implements
     private void updateFunctions() {
         final boolean[] functions = myLocomotive.getCurrentFunctions();
         for (int i = 0; i < functions.length; i++) {
-            functionToggleButtons.get(i).setSelected(functions[i]);
+
+            int j = 0;
+            for (FunctionToggleButton functionToggleButton : functionToggleButtons) {
+                if (i == functionToggleButton.getNumber())
+                    functionToggleButtons.get(j).setSelected(functions[i]);
+                j++;
+            }
         }
 
         if (myLocomotive.getType().getFunctionCount() == 0) {
@@ -538,9 +543,11 @@ public class LocomotiveWidget extends JPanel implements
 
     private class LocomotiveFunctionAction extends LocomotiveControlAction {
 
+        private FunctionToggleButton functionButton;
         private final int function;
 
-        public LocomotiveFunctionAction(final int function) {
+        public LocomotiveFunctionAction(FunctionToggleButton functionButton, final int function) {
+            this.functionButton = functionButton;
             this.function = function;
         }
 
@@ -548,8 +555,9 @@ public class LocomotiveWidget extends JPanel implements
         protected void doPerformAction(
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
-            final boolean state = functionToggleButtons.get(function)
-                    .isSelected();
+
+
+            final boolean state = functionButton.isSelected();
 
             final LocomotiveFunction locomotiveFunction = myLocomotive
                     .getFunction(function);

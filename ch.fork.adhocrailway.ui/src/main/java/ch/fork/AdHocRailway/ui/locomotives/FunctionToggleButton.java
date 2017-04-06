@@ -25,11 +25,18 @@ import javax.swing.*;
 public class FunctionToggleButton extends JToggleButton {
 
 
-    public FunctionToggleButton(final String text) {
+    private int number;
+
+    public FunctionToggleButton(int number, final String text) {
         super(text);
+        this.number = number;
         setIcon(ImageTools.createImageIconFromIconSet("dialog-error.png"));
         setSelectedIcon(ImageTools
                 .createImageIconFromIconSet("dialog-ok-apply.png"));
 
+    }
+
+    public int getNumber() {
+        return number;
     }
 }

@@ -19,6 +19,8 @@
 package ch.fork.AdHocRailway.model.locomotives;
 
 import ch.fork.AdHocRailway.model.AbstractItem;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 import com.google.gson.annotations.Expose;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -194,13 +196,22 @@ public class Locomotive extends AbstractItem implements Serializable,
                 .firePropertyChange(PROPERTYNAME_FUNCTIONS, old, this.functions);
     }
 
+    public SortedSet<LocomotiveFunction> getVisibleFunctions() {
+        return new TreeSet<LocomotiveFunction>(Collections2.filter(functions, new Predicate<LocomotiveFunction>() {
+            @Override
+            public boolean apply(LocomotiveFunction input) {
+                return input.isVisible();
+            }
+        }));
+    }
+
     public void addLocomotiveFunction(final LocomotiveFunction function) {
         this.functions.add(function);
     }
 
     public int getEmergencyStopFunctionNumber() {
         for (final LocomotiveFunction function : functions) {
-            if (function.isEmergencyBrakeFunction()) {
+            if (function.isVisible()) {
                 return function.getNumber();
             }
         }
@@ -332,20 +343,20 @@ public class Locomotive extends AbstractItem implements Serializable,
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .append(
-                "id" , id)
-                .append("name",name)
-                .append("groupId",groupId)
-                .append("desc",desc)
-                .append("type",type)
-                .append("bus",bus)
-                .append("address1",address1)
-                .append("address2",address2)
-                .append("functions",functions)
-                .append("group",group)
-                .append("currentSpeed",currentSpeed)
-                .append("targetSpeed",targetSpeed)
-                .append("currentDirection",currentDirection)
-                .append("currentFunctions",Arrays.toString(currentFunctions)).build();
+                        "id", id)
+                .append("name", name)
+                .append("groupId", groupId)
+                .append("desc", desc)
+                .append("type", type)
+                .append("bus", bus)
+                .append("address1", address1)
+                .append("address2", address2)
+                .append("functions", functions)
+                .append("group", group)
+                .append("currentSpeed", currentSpeed)
+                .append("targetSpeed", targetSpeed)
+                .append("currentDirection", currentDirection)
+                .append("currentFunctions", Arrays.toString(currentFunctions)).build();
     }
 
     public long getMfxUUID() {

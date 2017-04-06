@@ -16,7 +16,7 @@ exports.LocomotiveSchema = new Schema({
         {
             number: Number,
             description: String,
-            isEmergencyBrakeFunction: Boolean,
+            isVisible: Boolean,
             deactivationDelay: Number
         }
     ]

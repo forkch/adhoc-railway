@@ -7,8 +7,7 @@ import javax.swing.*;
 
 public class LocomotiveFunctionTableModel extends
         AbstractTableAdapter<LocomotiveFunction> {
-    private static final String[] COLUMNS = {"Function", "Description",
-            "E. Stop", "Deactivation Delay"};
+    private static final String[] COLUMNS = {"Function", "Description", "Deactivation Delay", "Visible"};
 
     public LocomotiveFunctionTableModel(final ListModel<?> listModel) {
         super(listModel, COLUMNS);
@@ -23,9 +22,9 @@ public class LocomotiveFunctionTableModel extends
             case 1:
                 return function.getDescription();
             case 2:
-                return function.isEmergencyBrakeFunction();
-            case 3:
                 return function.getDeactivationDelay();
+            case 3:
+                return function.isVisible();
             default:
                 throw new IllegalStateException("Unknown column");
         }
@@ -39,9 +38,6 @@ public class LocomotiveFunctionTableModel extends
                 function.setDescription((String) value);
                 break;
             case 2:
-                function.setEmergencyBrakeFunction(((Boolean) value).booleanValue());
-                break;
-            case 3:
                 int intValue = ((Integer) value).intValue();
                 if (intValue < 2 && intValue >= 0) {
                     intValue = 2;
@@ -49,6 +45,9 @@ public class LocomotiveFunctionTableModel extends
                     intValue = -1;
                 }
                 function.setDeactivationDelay(intValue);
+                break;
+            case 3:
+                function.setVisible(((Boolean) value).booleanValue());
                 break;
             default:
                 throw new IllegalStateException("Unknown column");
