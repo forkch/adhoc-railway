@@ -174,6 +174,15 @@ public class LocomotiveWidget extends JPanel implements
     private JPanel initFunctionsControl() {
         functionsPanel = new JPanel();
         functionsPanel.setLayout(new MigLayout("insets 0, wrap, fill"));
+        clearFunctionControl();
+
+        return functionsPanel;
+    }
+
+    private void clearFunctionControl() {
+
+        functionToggleButtons.clear();
+        functionsPanel.removeAll();
         if (myLocomotive == null) {
             for (int i = 0; i < 6; i++) {
                 final FunctionToggleButton functionButton = new FunctionToggleButton(
@@ -184,8 +193,6 @@ public class LocomotiveWidget extends JPanel implements
                 functionButton.setEnabled(false);
             }
         }
-
-        return functionsPanel;
     }
 
     private JPanel initSpeedControl() {
@@ -283,7 +290,8 @@ public class LocomotiveWidget extends JPanel implements
 
     private void updateWidget() {
         if (myLocomotive == null) {
-
+            clearFunctionControl();
+            speedBar.setValue(0);
             return;
         }
         final LocomotiveController locomotiveControl = ctx
@@ -298,7 +306,6 @@ public class LocomotiveWidget extends JPanel implements
         LOGGER.info("speed: " + currentSpeed);
 
         updateFunctions();
-
         updateDirection();
 
         if (isFree()) {
@@ -543,8 +550,8 @@ public class LocomotiveWidget extends JPanel implements
 
     private class LocomotiveFunctionAction extends LocomotiveControlAction {
 
-        private FunctionToggleButton functionButton;
         private final int function;
+        private FunctionToggleButton functionButton;
 
         public LocomotiveFunctionAction(FunctionToggleButton functionButton, final int function) {
             this.functionButton = functionButton;
