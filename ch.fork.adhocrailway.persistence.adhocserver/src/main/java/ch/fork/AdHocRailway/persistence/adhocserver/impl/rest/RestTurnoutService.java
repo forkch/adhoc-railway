@@ -121,6 +121,7 @@ public class RestTurnoutService implements TurnoutService {
         try {
             Turnout updateTurnout = restTurnoutServiceClient.updateTurnout(turnout).execute().body();
             updateTurnout.setTurnoutGroup(null);
+            turnout.setId(updateTurnout.getId());
             if (listenerOk()) {
                 listener.turnoutUpdated(updateTurnout);
             }

@@ -133,7 +133,7 @@ public class RestRouteService implements RouteService {
     public void updateRoute(Route route) {
         try {
             Route updatedRoute = restRouteServiceClient.updateRoute(route).execute().body();
-
+            route.setId(updatedRoute.getId());
             if (listenerOk()) {
                 listener.routeUpdated(updatedRoute);
             }

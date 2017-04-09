@@ -43,6 +43,7 @@ public class RestLocomotiveService implements LocomotiveService {
             final Response<Locomotive> response = locomotiveServiceClient.addLocomotive(locomotive).execute();
             if (response.isSuccessful()) {
                 Locomotive addedLocomotive = response.body();
+                locomotive.setId(addedLocomotive.getId());
                 addedLocomotive.setGroup(null);
                 if (listenerOk()) {
                     listener.locomotiveAdded(addedLocomotive);
@@ -81,6 +82,7 @@ public class RestLocomotiveService implements LocomotiveService {
             final Response<Locomotive> response = locomotiveServiceClient.updateLocomotive(locomotive).execute();
             if (response.isSuccessful()) {
                 Locomotive updatedLocomotive = response.body();
+                locomotive.setId(updatedLocomotive.getId());
                 updatedLocomotive.setGroup(null);
                 if (listenerOk()) {
                     listener.locomotiveUpdated(updatedLocomotive);
