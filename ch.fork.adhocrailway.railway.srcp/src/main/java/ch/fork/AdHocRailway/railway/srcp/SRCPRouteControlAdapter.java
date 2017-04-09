@@ -5,6 +5,7 @@ import ch.fork.AdHocRailway.controllers.RouteController;
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.model.turnouts.Route;
 import ch.fork.AdHocRailway.model.turnouts.RouteItem;
+import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.SRCPModelException;
 import de.dermoba.srcp.model.routes.*;
@@ -157,10 +158,15 @@ public class SRCPRouteControlAdapter extends RouteController implements
     private void applyNewSettings(final SRCPRoute sRoute, final Route route) {
         sRoute.getRouteItems().clear();
         for (final RouteItem routeItem : route.getRoutedTurnoutsSortedByTournouNumber()) {
+            Turnout turnout = routeItem.getTurnout();
+            if(turnout == null) {
+                // turnout was probably deleted but not taken from the route...
+                continue;
+            }
 
             final SRCPRouteItem sRouteItem = new SRCPRouteItem();
             final SRCPTurnout sTurnout = turnoutControl
-                    .getOrCreateSRCPTurnout(routeItem.getTurnout());
+                    .getOrCreateSRCPTurnout(turnout);
             sRouteItem.setTurnout(sTurnout);
             switch (routeItem.getState()) {
                 case LEFT:
