@@ -14,7 +14,7 @@ macAppBundle {
 
 }
 
-task awesomeFunJar(type: OneJar) {
+task adhocJar(type: OneJar) {
     mainClass = 'ch.fork.AdHocRailway.ui.AdHocRailway'
 }
 
