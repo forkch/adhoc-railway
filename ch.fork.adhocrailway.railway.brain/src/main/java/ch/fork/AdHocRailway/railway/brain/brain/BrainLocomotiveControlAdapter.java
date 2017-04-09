@@ -54,7 +54,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
     @Override
     public void terminateAllLocomotives() {
-        brain.write("XLOCOCLEAR");
+        brain.write("XLOCCLEAR");
     }
 
     @Override
@@ -79,7 +79,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
     }
 
     private String getTermCommand(Locomotive locomotive, int address) {
-        return String.format("XLOCOREMOVE %d", address);
+        return String.format("XLOCREMOVE %d", address);
     }
 
     private void initLocomotive(final Locomotive locomotive) {
