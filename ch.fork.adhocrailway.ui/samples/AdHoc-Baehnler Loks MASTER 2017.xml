@@ -48,14 +48,8 @@
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>4</number>
-            <description>F4</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>0</number>
-            <description>Licht</description>
+            <number>3</number>
+            <description>F3</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -66,8 +60,14 @@
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>3</number>
-            <description>F3</description>
+            <number>0</number>
+            <description>Licht</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>4</number>
+            <description>F4</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -79,20 +79,14 @@
         </imageBase64>
         <functions>
           <locomotiveFunction>
-            <number>1</number>
-            <description>F1</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
             <number>3</number>
             <description>F3</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>2</number>
-            <description>F2</description>
+            <number>1</number>
+            <description>F1</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -105,6 +99,12 @@
           <locomotiveFunction>
             <number>0</number>
             <description>Licht</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>2</number>
+            <description>F2</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -116,14 +116,14 @@
         </imageBase64>
         <functions>
           <locomotiveFunction>
-            <number>1</number>
-            <description>F1</description>
+            <number>2</number>
+            <description>F2</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>2</number>
-            <description>F2</description>
+            <number>4</number>
+            <description>F4</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -134,14 +134,14 @@
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>3</number>
-            <description>F3</description>
+            <number>1</number>
+            <description>F1</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>4</number>
-            <description>F4</description>
+            <number>3</number>
+            <description>F3</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -153,8 +153,8 @@
         </imageBase64>
         <functions>
           <locomotiveFunction>
-            <number>3</number>
-            <description>-</description>
+            <number>0</number>
+            <description>Licht</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -165,20 +165,20 @@
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>4</number>
-            <description>ABV</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>0</number>
-            <description>Licht</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
             <number>2</number>
             <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>3</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>4</number>
+            <description>ABV</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -190,8 +190,8 @@
         </imageBase64>
         <functions>
           <locomotiveFunction>
-            <number>2</number>
-            <description>F2</description>
+            <number>3</number>
+            <description>F3</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -202,20 +202,20 @@
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>0</number>
-            <description>Licht</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>3</number>
-            <description>F3</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
             <number>1</number>
             <description>F1</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>2</number>
+            <description>F2</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>0</number>
+            <description>Licht</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -227,20 +227,14 @@
         </imageBase64>
         <functions>
           <locomotiveFunction>
-            <number>1</number>
-            <description>F1</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
             <number>2</number>
             <description>F2</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>0</number>
-            <description>Licht</description>
+            <number>1</number>
+            <description>F1</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -253,6 +247,12 @@
           <locomotiveFunction>
             <number>4</number>
             <description>F4</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>0</number>
+            <description>Licht</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -402,8 +402,14 @@
         </imageBase64>
         <functions>
           <locomotiveFunction>
-            <number>2</number>
-            <description>F2</description>
+            <number>1</number>
+            <description>F1</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>4</number>
+            <description>F4</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -414,20 +420,14 @@
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>1</number>
-            <description>F1</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
             <number>0</number>
             <description>Licht</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>4</number>
-            <description>F4</description>
+            <number>2</number>
+            <description>F2</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -1399,100 +1399,105 @@
       </locomotive>
     </locomotiveGroup>
     <locomotiveGroup id="58d7dd0ef6a77330f7d0d85c" name="Re 4xx">
-      <locomotive id="58d7dd13f6a77330f7d0d8fe" name="Re 420 Lion" groupId="58d7dd0ef6a77330f7d0d85c" desc="" image="Re 4-4 Lion.png" type="mfx" bus="1" address1="4" address2="0" mfxUUID="0">
-        <imageBase64>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</imageBase64>
-        <functions class="linked-hash-set">
+      <locomotive id="c79bd714-d071-4df0-91f1-2917438245c0" name="Re 420 Lion" groupId="58d7dd0ef6a77330f7d0d85c" image="Re 420 Lion.png" type="mfx" bus="1" address1="0" address2="0" mfxUUID="2113610972">
+        <imageBase64>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</imageBase64>
+        <functions class="sorted-set">
+          <locomotiveFunction>
+            <number>0</number>
+            <description></description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
           <locomotiveFunction>
             <number>1</number>
-            <description>1</description>
-            <isVisible>false</isVisible>
+            <description></description>
+            <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>2</number>
-            <description>2</description>
-            <isVisible>false</isVisible>
+            <description></description>
+            <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>3</number>
-            <description>3</description>
-            <isVisible>false</isVisible>
+            <description></description>
+            <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>4</number>
-            <description>4</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>2</deactivationDelay>
+            <description></description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>5</number>
-            <description>-</description>
-            <isVisible>false</isVisible>
+            <description></description>
+            <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>6</number>
-            <description>-</description>
-            <isVisible>false</isVisible>
+            <description></description>
+            <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>7</number>
-            <description>-</description>
+            <description></description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>8</number>
-            <description>-</description>
+            <description></description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>9</number>
-            <description>-</description>
+            <description></description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>10</number>
-            <description>-</description>
+            <description></description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>11</number>
-            <description>-</description>
+            <description></description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>12</number>
-            <description>-</description>
+            <description></description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>13</number>
-            <description>-</description>
+            <description></description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>14</number>
-            <description>-</description>
+            <description></description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>15</number>
-            <description>-</description>
+            <description></description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
-
         </functions>
       </locomotive>
       <locomotive id="58d7dd13f6a77330f7d0d920" name="Re 421 Cargo 374-0" groupId="58d7dd0ef6a77330f7d0d85c" image="Re 421 Cargo.png" type="digital" bus="1" address1="29" address2="0" mfxUUID="0">
@@ -2968,43 +2973,8 @@
         <name>asdf</name>
         <orientation>asdf</orientation>
         <routeItem>
-          <id>c7d02236-2277-4f7c-9acc-78d773dc5ddd</id>
-          <turnoutNumber>11</turnoutNumber>
-          <state>NON_DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>e6c95007-306e-401c-aa57-b4862dfb09da</id>
-          <turnoutNumber>10</turnoutNumber>
-          <state>NON_DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>f1b1a90a-3dc6-42aa-b792-562f9ebeee3a</id>
-          <turnoutNumber>9</turnoutNumber>
-          <state>NON_DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>3aec8f2a-278b-4a5a-b080-fa57b4912e1c</id>
-          <turnoutNumber>8</turnoutNumber>
-          <state>NON_DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>22d7275a-fd62-4326-8dc9-a380fadb2f4a</id>
-          <turnoutNumber>7</turnoutNumber>
-          <state>NON_DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>d2ceca8d-662f-4a51-a1d9-c2ca8147456b</id>
-          <turnoutNumber>6</turnoutNumber>
-          <state>NON_DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>153fe905-b1ad-4f85-9593-aafa4642f4a9</id>
-          <turnoutNumber>5</turnoutNumber>
-          <state>NON_DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>47cf964c-2465-4569-986d-7bb0328bbf70</id>
-          <turnoutNumber>4</turnoutNumber>
+          <id>3f7c09fd-ec37-42b2-a221-ce23e010f051</id>
+          <turnoutNumber>2</turnoutNumber>
           <state>NON_DEFAULT</state>
         </routeItem>
         <routeItem>
@@ -3013,8 +2983,43 @@
           <state>NON_DEFAULT</state>
         </routeItem>
         <routeItem>
-          <id>3f7c09fd-ec37-42b2-a221-ce23e010f051</id>
-          <turnoutNumber>2</turnoutNumber>
+          <id>47cf964c-2465-4569-986d-7bb0328bbf70</id>
+          <turnoutNumber>4</turnoutNumber>
+          <state>NON_DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>153fe905-b1ad-4f85-9593-aafa4642f4a9</id>
+          <turnoutNumber>5</turnoutNumber>
+          <state>NON_DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>d2ceca8d-662f-4a51-a1d9-c2ca8147456b</id>
+          <turnoutNumber>6</turnoutNumber>
+          <state>NON_DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>22d7275a-fd62-4326-8dc9-a380fadb2f4a</id>
+          <turnoutNumber>7</turnoutNumber>
+          <state>NON_DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>3aec8f2a-278b-4a5a-b080-fa57b4912e1c</id>
+          <turnoutNumber>8</turnoutNumber>
+          <state>NON_DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>f1b1a90a-3dc6-42aa-b792-562f9ebeee3a</id>
+          <turnoutNumber>9</turnoutNumber>
+          <state>NON_DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>e6c95007-306e-401c-aa57-b4862dfb09da</id>
+          <turnoutNumber>10</turnoutNumber>
+          <state>NON_DEFAULT</state>
+        </routeItem>
+        <routeItem>
+          <id>c7d02236-2277-4f7c-9acc-78d773dc5ddd</id>
+          <turnoutNumber>11</turnoutNumber>
           <state>NON_DEFAULT</state>
         </routeItem>
         <groupId>58d7dde1f6a77330f7d0da00</groupId>
