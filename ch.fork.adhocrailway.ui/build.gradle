@@ -1,5 +1,7 @@
 apply plugin: 'application'
 apply plugin: 'macAppBundle'
+apply plugin: 'gradle-one-jar'
+
 
 macAppBundle {
     mainClassName = "ch.fork.AdHocRailway.ui.AdHocRailway"
@@ -10,6 +12,10 @@ macAppBundle {
     appName = "AdHoc-Railway"
     dmgName = "AdHoc-Railway-" + project.version
 
+}
+
+task awesomeFunJar(type: OneJar) {
+    mainClass = 'ch.fork.AdHocRailway.ui.AdHocRailway'
 }
 
 archivesBaseName = 'adhocrailway-gui'

@@ -17,6 +17,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        classpath 'com.github.rholder:gradle-one-jar:1.0.4'
         classpath 'edu.sc.seis.gradle:macappbundle:2.0.0'
     }
 }
