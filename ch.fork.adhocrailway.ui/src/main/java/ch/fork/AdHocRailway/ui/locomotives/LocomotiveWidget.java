@@ -183,6 +183,7 @@ public class LocomotiveWidget extends JPanel implements
 
         functionToggleButtons.clear();
         functionsPanel.removeAll();
+        functionsPanel.setLayout(new MigLayout("insets 0, wrap, fill")); // wrap after each function button
         if (myLocomotive == null) {
             for (int i = 0; i < 6; i++) {
                 final FunctionToggleButton functionButton = new FunctionToggleButton(
