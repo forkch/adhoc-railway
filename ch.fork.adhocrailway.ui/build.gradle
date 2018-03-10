@@ -1,7 +1,6 @@
 apply plugin: 'application'
 apply plugin: 'macAppBundle'
-apply plugin: 'gradle-one-jar'
-
+apply plugin: 'com.github.johnrengelman.shadow'
 
 macAppBundle {
     mainClassName = "ch.fork.AdHocRailway.ui.AdHocRailway"
@@ -13,10 +12,10 @@ macAppBundle {
     dmgName = "AdHoc-Railway-" + project.version
 
 }
-
-task adhocJar(type: OneJar) {
-    mainClass = 'ch.fork.AdHocRailway.ui.AdHocRailway'
-}
+//
+//task adhocJar(type: OneJar) {
+//    mainClass = 'ch.fork.AdHocRailway.ui.AdHocRailway'
+//}
 
 archivesBaseName = 'adhocrailway-gui'
 
