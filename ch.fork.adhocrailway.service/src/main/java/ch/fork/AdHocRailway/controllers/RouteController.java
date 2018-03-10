@@ -20,6 +20,7 @@ package ch.fork.AdHocRailway.controllers;
 
 import ch.fork.AdHocRailway.manager.TurnoutManager;
 import ch.fork.AdHocRailway.model.turnouts.Route;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.util.LinkedList;
@@ -82,7 +83,8 @@ public abstract class RouteController {
         final List<RouteChangeListener> routeChangeListeners = listeners
                 .get(route);
         if (routeChangeListeners != null) {
-            for (final RouteChangeListener listener : routeChangeListeners) {
+            // concurrent mod exception
+            for (final RouteChangeListener listener : Lists.newArrayList(routeChangeListeners)) {
                 listener.nextTurnoutDerouted(route);
             }
         }
@@ -92,7 +94,8 @@ public abstract class RouteController {
         final List<RouteChangeListener> routeChangeListeners = listeners
                 .get(route);
         if (routeChangeListeners != null) {
-            for (final RouteChangeListener listener : listeners.get(route)) {
+            // concurrent mod exception
+            for (final RouteChangeListener listener : Lists.newArrayList(listeners.get(route))) {
                 listener.nextTurnoutRouted(route);
             }
         }
@@ -102,7 +105,8 @@ public abstract class RouteController {
         final List<RouteChangeListener> routeChangeListeners = listeners
                 .get(route);
         if (routeChangeListeners != null) {
-            for (final RouteChangeListener listener : listeners.get(route)) {
+            // concurrent mod exception
+            for (final RouteChangeListener listener : Lists.newArrayList(listeners.get(route))) {
                 listener.routeChanged(route);
             }
         }

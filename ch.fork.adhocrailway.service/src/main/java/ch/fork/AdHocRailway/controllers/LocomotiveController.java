@@ -19,6 +19,7 @@
 package ch.fork.AdHocRailway.controllers;
 
 import ch.fork.AdHocRailway.model.locomotives.Locomotive;
+import com.google.common.collect.Lists;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -148,7 +149,8 @@ public abstract class LocomotiveController implements
         LOGGER.debug("locomotiveChanged(" + changedLocomotive.getName() + ")");
         final List<LocomotiveChangeListener> ll = getListenersForLocomotive(changedLocomotive);
 
-        for (final LocomotiveChangeListener scl : ll) {
+        // concurrent mod exception
+        for (final LocomotiveChangeListener scl : Lists.newArrayList(ll)) {
             scl.locomotiveChanged(changedLocomotive);
         }
     }

@@ -1,14 +1,14 @@
 /*------------------------------------------------------------------------
- * 
- * copyright : (C) 2008 by Benjamin Mueller 
+ *
+ * copyright : (C) 2008 by Benjamin Mueller
  * email     : news@fork.ch
  * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id: TurnoutControlIface.java 248 2012-12-28 17:08:16Z fork_ch $
- * 
+ *
  *----------------------------------------------------------------------*/
 
 /*------------------------------------------------------------------------
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * Free Software Foundation; either version 2 of the License, or
@@ -20,13 +20,12 @@ package ch.fork.AdHocRailway.controllers;
 
 import ch.fork.AdHocRailway.model.turnouts.Turnout;
 import ch.fork.AdHocRailway.model.turnouts.TurnoutState;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.util.concurrent.RateLimiter;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 
 public abstract class TurnoutController {
 
@@ -103,7 +102,8 @@ public abstract class TurnoutController {
         final Set<TurnoutChangeListener> turnoutChangeListeners = listeners
                 .get(turnout);
         if (turnoutChangeListeners != null) {
-            for (final TurnoutChangeListener scl : turnoutChangeListeners) {
+            // concurrent mod exception
+            for (final TurnoutChangeListener scl : Lists.newArrayList(turnoutChangeListeners)) {
                 scl.turnoutChanged(turnout);
             }
         }
@@ -112,7 +112,7 @@ public abstract class TurnoutController {
     public void setNonDefaultState(final Turnout turnout) {
         if (turnout.isThreeWay()) {
             // noop
-        } else  if(turnout.isCutter()) {
+        } else if (turnout.isCutter()) {
             toggle(turnout);
         } else {
             switch (turnout.getDefaultState()) {
