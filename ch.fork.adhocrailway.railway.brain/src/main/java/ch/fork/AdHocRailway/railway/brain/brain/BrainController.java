@@ -148,7 +148,7 @@ public class BrainController {
                             final String completeString = receivedString.toString();
                             receivedString = new StringBuilder();
 
-                            String[] completeStringLines = completeString.split("\\r?\\n");
+                            String[] completeStringLines = completeString.split("\\r+\\n?");
                             for (String completeStringLine : completeStringLines) {
 
                                 for (final BrainListener listener : listeners) {

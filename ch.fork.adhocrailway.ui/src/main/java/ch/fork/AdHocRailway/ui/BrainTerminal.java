@@ -87,6 +87,8 @@ public class BrainTerminal extends ConfigurationDialog implements GMInfoListener
 
         final JScrollPane historyScrollPane = new JScrollPane(brainResponses, VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_NEVER);
 
+        brainResponses.setAutoscrolls(true);
+
         final JTextField commandTextField = new JTextField();
         commandTextField.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         commandTextField.addActionListener(new ActionListener() {
