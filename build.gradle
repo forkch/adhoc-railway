@@ -50,6 +50,7 @@ subprojects {
         mavenCentral()
         maven { url "https://jitpack.io" }
         mavenLocal()
+        maven { url '/home/ben/Code/forkch-mvn-repo' }
     }
 
     //Include compileOnly for compilation
