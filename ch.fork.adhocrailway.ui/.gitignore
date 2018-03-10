@@ -1,0 +1,6 @@
+bin/
+build/
+adhocrailway.conf
+logs/*.log
+.idea
+webstart

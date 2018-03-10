@@ -42,9 +42,16 @@ exports.addTurnoutGroup = function (turnoutGroup, fn) {
         fn(true, {msg: 'name must be defined'});
         return;
     }
+
+    delete turnoutGroup.id;
+    delete turnoutGroup.turnouts;
     var group = new TurnoutGroupModel(turnoutGroup);
+    console.log('adding new turnoutgroup group: ' + turnoutGroup.name);
     group.save(function (err, addedTurnoutGroup) {
         if (!err) {
+
+            addedTurnoutGroup.id = addedTurnoutGroup._id;
+            console.log('adding new turnout group: ' + addedTurnoutGroup.name + " with id: " + addedTurnoutGroup.id);
             addedTurnoutGroup.turnouts = [];
             fn(err, addedTurnoutGroup.toJSON());
         } else {
@@ -246,23 +253,20 @@ validateTurnout = function (turnout, fn) {
         fn(true, {msg: 'number must be greater 0'});
         return false;
     }
-    if (!turnout.bus1 || turnout.bus1 < 1) {
-        fn(true, {msg: 'bus 1 must be greater 0'});
-        return false;
-    }
-
-    if (!turnout.address1 || turnout.address1 < 1) {
-        fn(true, {msg: 'address 1 must be greater 0'});
-        return false;
-    }
-
-    if (!turnout.type) {
-        fn(true, {msg: 'turnout type must be specified'});
-        return false;
-    }
     turnout.type = turnout.type.toUpperCase();
     turnout.defaultState = turnout.defaultState.toUpperCase();
     turnout.orientation = turnout.orientation.toUpperCase();
+    if (turnout.type === "DEFAULT" || turnout.type === "CUTTER" || turnout.type === "DOUBLECROSS" || turnout.type === "THREEWAY") {
+        if (!turnout.bus1 || turnout.bus1 < 1) {
+            fn(true, {msg: 'bus 1 must be greater 0'});
+            return false;
+        }
+
+        if (!turnout.address1 || turnout.address1 < 1) {
+            fn(true, {msg: 'address 1 must be greater 0'});
+            return false;
+        }
+    }
     if (turnout.type === "THREEWAY") {
         if (!turnout.bus2 || turnout.bus2 < 1) {
             fn(true, {msg: 'bus 2 must be greater 0'});
@@ -274,5 +278,11 @@ validateTurnout = function (turnout, fn) {
             return false;
         }
     }
+
+    if (!turnout.type) {
+        fn(true, {msg: 'turnout type must be specified'});
+        return false;
+    }
+
     return true;
 }

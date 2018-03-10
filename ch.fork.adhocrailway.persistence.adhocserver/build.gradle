@@ -1,0 +1,17 @@
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    //compile fileTree(dir: 'lib', includes: ['*.jar'])
+    compile 'org.json:json:20090211'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+    compile 'log4j:log4j:1.2.17'
+    compile('io.socket:socket.io-client:0.7.0') {
+        // excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
+
+
+}

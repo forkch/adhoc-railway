@@ -1,0 +1,30 @@
+srcpd (2.1.0-1) unstable; urgency=low
+
+  * Update to version 2.1.0
+
+ -- Guido Scholz (privat) <guido.scholz@bayernline.de>  Sat, 19 Dec 2009 14:14:02 +0100
+
+srcpd (2.0.11-1) unstable; urgency=low
+
+  * Update to version 2.0.11
+
+ -- Guido Scholz (privat) <guido.scholz@bayernline.de>  Thu, 18 Aug 2007 10:06:04 +0100
+
+srcpd (2.0.10-1) unstable; urgency=low
+
+  * Update to version 2.0.10
+
+ -- Guido Scholz (privat) <guido.scholz@bayernline.de>  Thu, 06 Dec 2006 20:16:04 +0100
+
+srcpd (2.0.9-1) unstable; urgency=low
+
+  * Update to version 2.0.9.
+
+ -- Guido Scholz <guido.scholz@bayernline.de>  Sat, 10 Dec 2005 22:37:04 +0100
+
+srcpd (2.0.8-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Kai-Cheung Leung <kcleung@users.sourceforge.net>  Sun, 26 Jun 2005 10:18:04 +1200
+

@@ -1,9 +1,0 @@
-bin/
-build/
-.locomotiveImageToPathMap.obj
-adhocrailway.conf
-logs/*.log
-/build
-/bin
-.idea
-*.iml

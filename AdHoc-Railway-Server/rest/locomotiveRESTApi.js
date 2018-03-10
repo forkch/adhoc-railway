@@ -8,6 +8,7 @@ exports.init = function (server, sendDataToWebsocketClients, sendResponse) {
     });
     server.del('/locomotiveGroup', function (req, res, next) {
         locomotiveController.clear(function (err, data) {
+            sendDataToWebsocketClients(err, req, 'locomotive:init', data);
             sendResponse(err, res, next, 200, 404, data);
         });
     });

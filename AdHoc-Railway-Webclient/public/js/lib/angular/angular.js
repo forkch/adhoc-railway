@@ -1053,7 +1053,7 @@
              *
              * # Module
              *
-             * A module is a collocation of services, directives, filters, and configuration information. Module
+             * A module is a collocation of ch.fork.AdHocRailway.services, directives, filters, and configuration information. Module
              * is used to configure the {@link AUTO.$injector $injector}.
              *
              * <pre>
@@ -1063,7 +1063,7 @@
              * // register a new service
              * myModule.value('appName', 'MyCoolApp');
              *
-             * // configure existing services inside initialization blocks.
+             * // configure existing ch.fork.AdHocRailway.services inside initialization blocks.
              * myModule.config(function($locationProvider) {
      *   // Configure existing providers
      *   $locationProvider.hashPrefix('!');
@@ -2286,7 +2286,7 @@
      * @function
      *
      * @description
-     * Creates an injector function that can be used for retrieving services as well as for
+     * Creates an injector function that can be used for retrieving ch.fork.AdHocRailway.services as well as for
      * dependency injection (see {@link guide/di dependency injection}).
      *
 
@@ -2453,7 +2453,7 @@
      *
      * @description
      * Returns an array of service names which the function is requesting for injection. This API is used by the injector
-     * to determine which services need to be injected into the function when the function is invoked. There are three
+     * to determine which ch.fork.AdHocRailway.services need to be injected into the function when the function is invoked. There are three
      * ways in which the function can be annotated with the needed dependencies.
      *
      * # Argument names
@@ -2476,7 +2476,7 @@
      * # The `$injector` property
      *
      * If a function has an `$inject` property and its value is an array of strings, then the strings represent names of
-     * services to be injected into the function.
+     * ch.fork.AdHocRailway.services to be injected into the function.
      * <pre>
      *   // Given
      *   var MyController = function(obfuscatedScope, obfuscatedRoute) {
@@ -2522,7 +2522,7 @@
      * @param {function|Array.<string|Function>} fn Function for which dependent service names need to be retrieved as described
      *   above.
      *
-     * @returns {Array.<string>} The names of the services which the function requires.
+     * @returns {Array.<string>} The names of the ch.fork.AdHocRailway.services which the function requires.
      */
 
 
@@ -2601,7 +2601,7 @@
      * @methodOf AUTO.$provide
      * @description
      *
-     * A short hand for configuring services if only `$get` method is required.
+     * A short hand for configuring ch.fork.AdHocRailway.services if only `$get` method is required.
      *
      * @param {string} name The name of the instance.
      * @param {function()} $getFn The $getFn for the instance creation. Internally this is a short hand for
@@ -2630,7 +2630,7 @@
      * @methodOf AUTO.$provide
      * @description
      *
-     * A short hand for configuring services if the `$get` method is a constant.
+     * A short hand for configuring ch.fork.AdHocRailway.services if the `$get` method is a constant.
      *
      * @param {string} name The name of the instance.
      * @param {*} value The value.
@@ -7228,7 +7228,7 @@
                  * @eventOf ng.$route
                  * @eventType broadcast on root scope
                  * @description
-                 * Broadcasted before a route change. At this  point the route services starts
+                 * Broadcasted before a route change. At this  point the route ch.fork.AdHocRailway.services starts
                  * resolving all of the dependencies needed for the route change to occurs.
                  * Typically this involves fetching the view template as well as any dependencies
                  * defined in `resolve` route property. Once  all of the dependencies are resolved
@@ -7593,8 +7593,8 @@
                  *
                  * @param {Object.<string, function()>=} providers Map of service factory which need to be provided
                  *     for the current scope. Defaults to {@link ng}.
-                 * @param {Object.<string, *>=} instanceCache Provides pre-instantiated services which should
-                 *     append/override services provided by `providers`. This is handy when unit-testing and having
+                 * @param {Object.<string, *>=} instanceCache Provides pre-instantiated ch.fork.AdHocRailway.services which should
+                 *     append/override ch.fork.AdHocRailway.services provided by `providers`. This is handy when unit-testing and having
                  *     the need to override a default service.
                  * @returns {Object} Newly created scope.
                  *
@@ -11810,7 +11810,7 @@
      * @description
      *
      * `NgModelController` provides API for the `ng-model` directive. The controller contains
-     * services for data-binding, validation, CSS update, value formatting and parsing. It
+     * ch.fork.AdHocRailway.services for data-binding, validation, CSS update, value formatting and parsing. It
      * specifically does not contain any logic which deals with DOM rendering or listening to
      * DOM events. The `NgModelController` is meant to be extended by other directives where, the
      * directive provides DOM manipulation and the `NgModelController` provides the data-binding.

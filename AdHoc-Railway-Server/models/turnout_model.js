@@ -7,13 +7,14 @@ exports.TurnoutSchema = new Schema({
     bus2: Number,
     address1: Number,
     address2: Number,
-    address1switched: Boolean,
-    address2switched: Boolean,
+    address1Switched: Boolean,
+    address2Switched: Boolean,
     type: String,
     defaultState: String,
     orientation: String,
     description: String,
-    groupId: ObjectId
+    groupId: ObjectId,
+    linkedRouteNumber: Number
 });
 
 exports.TurnoutGroupSchema = new Schema({
@@ -30,7 +31,7 @@ exports.RouteSchema = new Schema({
     groupId: ObjectId,
     routedTurnouts: [
         {
-            turnoutId: ObjectId,
+            turnoutNumber: Number,
             state: String
         }
     ]

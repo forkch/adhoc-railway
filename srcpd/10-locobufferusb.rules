@@ -1,0 +1,1 @@
+SYSFS{idVendor}=="0403", SYSFS{idProduct}=="c7d0", RUN+="/sbin/modprobe -q ftdi_sio vendor=0x0403 product=0xc7d0"

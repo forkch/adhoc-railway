@@ -1,0 +1,3 @@
+# udev rules for LENZ USB interface
+
+SYSFS{idVendor}=="1111", SYSFS{idProduct}=="1234", RUN+="/sbin/modprobe -q ftdi_sio vendor=0x1111 product=0x1234"

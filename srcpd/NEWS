@@ -1,0 +1,141 @@
+srcpd-2.1.2 (2010-12-??)
+  Fixed Bugs
+    o Fix Lenz GA address handling (bug introduced in version 2.0.11).
+
+  New Features
+    o Support for up to 28 GL functions in Lenz module.
+
+
+srcpd-2.1.1 (2010-03-07)
+  Fixed Bugs
+    o Fixed Loconet module start up.
+    o Fixed not delivered INFO messages.
+    o Fixed opensuse i2c module compile error.
+
+
+srcpd-2.1.0 (2010-02-28)
+  Fixed Bugs
+    o Fixed counting of interface bus number as well as function and
+      initialization of channel 2, 3 and 4 in ddl-s88 module. 
+    o Fixed compile error if glibc and linux headers are installed
+    o Fixed FreeBSD compile errors
+    o Improved detection of power state in IB module.
+    o Fixed some lockings in SM functions in IB module.
+
+  New Features
+    o Support for TERM 0 TIME added. Timer thread now is suspended
+      if not used.
+    o Improved Loconet support: GL, GA and FB devices, 
+      may use a loconet-over-tcp network server.
+    o Support for GA switching in Zimo module added.
+    o New option for Intellibox module added to circumvent automatical
+      but slow interface speed detection.
+
+  General Changes
+    o Improved timing for multi protocol mode in DDL module.
+    o configure may be used to disable modules at compile time.
+    o Manual pages reworked.
+    o renamed loconet setting loconetID to loconet-id and getTIME to
+      sync-time-from-loconet, it's more like the other settings.
+
+
+srcpd-2.0.12 (2008-11-19)
+  Fixed Bugs
+    o Fixed some non ASCII characters in English man pages.
+    o Fixed missing time controlled back switching of GA ports in
+      loopback module.
+    o Fixed accessory address calculation for lower four addresses in
+      DDL NMRA module.
+    o Fixed potential loss of INFO messages if they are send close one
+      after another (e.g. FB messages).
+    o Fixed some Cygwin compile issues.
+    o Fixed Loconet address shift for INFO GA messages (reported by
+      David Rütti).
+    o Fixed session id check for GM delivery.
+
+  New Features
+    o Decoder programming for Selectrix module added.
+    o Support for switching of GL F5..F16 added to IB module.
+
+  General Changes
+    o Some old copyright references for DDL module added.
+    o Kernel version independend i2c header integration.
+
+
+srcpd-2.0.11 (2008-01-27)
+  Fixed Bugs
+    o Fixed »switch power on« bug for DDL module.
+    o Fixed microsecond value for GA initialization.
+    o Fixed wrong milli-second format for INFO GA (was e.g. »x.6«
+      instead of »x.006«)
+    o Fixed wrong server time format for SM messages (same as above).
+    o Disabled writing to 'stderr' during normal operation, this fixes
+      broken debian package updates and srcpd misbehavior in SuSEs
+      runlevel editor.
+    o Fixed daemonization, process now is detached from controlling
+      terminal properly.
+    o Fixed a lot of not closed file descriptors, free memory allocated
+      for configuration data, free used mutexes and condition variables.
+      This prevents srcpd from eating system resources.
+    o Fixed system freeze on Linux 2.4 kernels using ddl-module.
+
+  New Features
+    o Added 115200 as a new speed configuration value for LI101F (Lenz).
+    o More comprehensive man page srcpd.8.
+    o New man page srcpd.conf.5.
+    o Man pages translated to German.
+    o Enabled signal triggered configuration file re-read using SIGHUP.
+    o Support for Generic Messages (GM) added.
+    o Allow Selectix protocol (S) usage on loopback device.
+    o Enabled Service Mode (SM) on loopback device.
+    o Busy waiting of active information sessions is substituted by an
+      event driven programming model resulting in lower CPU time usage
+      and better responsiveness.
+    o Timely detection of closed information sessions.
+    o Support for the SRCP commands »INIT <bus> POWER« and
+      »TERM <bus> POWER« added.
+    o Support for SRCP command »VERIFY <bus> SM« added.
+    o Operations Mode Programming and Service Mode Programming for DDL
+      bus rewritten respectively implemented. This includes support for
+      decoders with more than 28 speed steps.
+    o Support for GL functions up to F28 added.
+
+  General Changes
+    o Configuration option »p_time« is changed to »fb_delay_time_0« for
+      all feedback handling buses.
+    o Threads library detection macro added.
+    o Updated libxml2 detection macro.
+    o A lot of internal code reorganisation and optimization including
+      more expressive error messages for system calls.
+    o Debian control files are removed from distribution.
+    o Outdated README.ibox file removed from distribution.
+
+
+Version 2.0 
+	- SRCP 0.8
+	- Konfiguration im XML Format
+	- Redesign: Framework mit Modulen
+	- Unterstützung der Gerätegruppe SM bei passender Hardware
+	- viel mehr und neue Hardware, auch mehrere gleichartige 
+	  gleichzeitig: Intellibox, Märklin 605x, HSI S88, S88 am
+          Parallelport, I2C (Eigenbau), RS232 (via Booster)
+	- Portierung auf FreeBSD
+	- Loopbackbus für Modellbahner ohne Anlage(nanschluß), auch als
+	  Ausgangspunkt für eigene Entwicklungen geeignet (kann alles,
+          was ein "richtiger" Bus kann!)
+	- Warteschlangen für Befehle und Rückmeldungen, nichts geht mehr
+          verloren
+	
+Version 1.2 (nie veröffentlicht)
+        - FIFO's für die Befehle.
+	
+Version 1.1 (SRCP 0.7.3 fork) Maerz 2002
+        - RPM's (und deb)
+	- Bugfixes
+	- Neue Hardware: HSI-S88 von Littfinski, 
+	- Kernelmodul für die Intellibox
+
+Version 1.0
+        - hmm. vergessen....
+	
+Version 0.1	

@@ -6,6 +6,7 @@ exports.LocomotiveSchema = new Schema({
     bus: Number,
     address1: Number,
     address2: Number,
+    mfxUUID : Number,
     type: String,
     image: String,
     imageBase64: String,
@@ -15,7 +16,7 @@ exports.LocomotiveSchema = new Schema({
         {
             number: Number,
             description: String,
-            isEmergencyBrakeFunction: Boolean,
+            isVisible: Boolean,
             deactivationDelay: Number
         }
     ]

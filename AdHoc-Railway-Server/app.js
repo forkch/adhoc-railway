@@ -53,9 +53,19 @@ server.use(restify.requestLogger({
 
 var clients = {};
 
-var io = require('socket.io').listen(server, {origins: '*:*'});
+var io = require('socket.io')(server, {
+    transports: [
+    'websocket',
+        'flashsocket',
+        'htmlfile',
+        'xhr-polling',
+        'jsonp-polling',
+        'polling'
+    ],
+        allowUpgrades: true,
+        origins: '*:*'});
 
-io.sockets.on('connection', function (client) {
+io.on('connection', function (client) {
 
     client.on('register', function (appId) {
         console.log("client registered with appId: " + appId);

@@ -48,6 +48,8 @@ exports.addLocomotiveGroup = function (locomotiveGroup, fn) {
     var group = new LocomotiveGroupModel(locomotiveGroup);
     group.save(function (err, addedlocomotiveGroup) {
         if (!err) {
+            addedlocomotiveGroup.id = addedlocomotiveGroup._id;
+            console.log('adding new locomotive group: ' + addedlocomotiveGroup.name + " with id: " + addedlocomotiveGroup.id);
             addedlocomotiveGroup.locomotives = [];
             fn(err, addedlocomotiveGroup.toJSON());
         } else {
@@ -125,7 +127,7 @@ exports.addLocomotive = function (locomotive, fn) {
         if (!err) {
             console.log(addedLocomotive.groupId);
             LocomotiveGroupModel.findById({_id: addedLocomotive.groupId}, function (err, locomotiveGroup) {
-                if (!err) {
+                if (!err && locomotiveGroup) {
                     console.log(locomotiveGroup);
                     locomotiveGroup.locomotives.push(addedLocomotive.id);
                     locomotiveGroup.save();
@@ -247,22 +249,22 @@ validateLocomotive = function (locomotive, fn) {
         return false;
     }
 
-    if (!locomotive.bus || locomotive.bus < 1) {
-        fn(true, {msg: 'bus must be greater 0'});
-        return false;
-    }
+    //if (!locomotive.bus || locomotive.bus < 1) {
+    //    fn(true, {msg: 'bus must be greater 0'});
+    //    return false;
+   // }
 
-    if (!locomotive.address1 || locomotive.address1 < 1) {
-        fn(true, {msg: 'address 1 must be greater 0'});
-        return false;
-    }
+    //if (!locomotive.address1 || locomotive.address1 < 1) {
+    //    fn(true, {msg: 'address 1 must be greater 0'});
+    //    return false;
+    //}
 
     if (locomotive.type.toUpperCase() === "SIMULATED-MFX") {
 
-        if (!locomotive.address2 || locomotive.address2 < 1) {
-            fn(true, {msg: 'address 2 must be greater 0'});
-            return false;
-        }
+        //if (!locomotive.address2 || locomotive.address2 < 1) {
+        //    fn(true, {msg: 'address 2 must be greater 0'});
+        //    return false;
+        //}
     }
     return true;
 }

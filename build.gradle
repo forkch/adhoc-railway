@@ -1,29 +1,56 @@
+/*
+ * Gets the version name from the latest Git tag
+ * From:
+ * http://ryanharter.com/blog/2013/07/30/automatic-versioning-with-git-and-gradle/
+ */
+def getVersionName = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--tags', '--always'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.github.rholder:gradle-one-jar:1.0.4'
+        classpath 'edu.sc.seis.gradle:macappbundle:2.0.0'
+    }
+}
+
 subprojects {
 
     apply plugin: 'java'
     apply plugin: 'eclipse'
     apply plugin: 'maven'
     apply plugin: 'idea'
-    group = 'ch.fork.adhocrailway'
-    version = '2.1.1'
+    apply plugin: 'maven-publish'
+    group = 'com.github.fork'
+    version = '2.6.0'
+
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
 
     configurations {
         compileOnly
     }
+    configurations.all {
+        // check for updates every build
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
 
     dependencies {
-        testCompile 'junit:junit:4.+'
-        testCompile 'org.mockito:mockito-all:1.9.5'
     }
 
     repositories {
-        maven {
-            url '/home/fork/Code/forkch-mvn-repo'
-        }
         mavenCentral()
-        maven {
-            url "https://raw.github.com/forkch/forkch-mvn-repo/master"
-        }
+        maven { url "https://jitpack.io" }
+        mavenLocal()
+        maven { url '/home/ben/Code/forkch-mvn-repo' }
     }
 
     //Include compileOnly for compilation
@@ -36,16 +63,75 @@ subprojects {
         }
     }
 
-}
-
-project(':AdHoc-Railway-Domain') {
-}
-
-project(':AdHoc-Railway-GUI') {
-    dependencies {
-        compile project(':AdHoc-Railway-Domain')
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
     }
 
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+
+                artifact sourceJar {
+                    classifier "sources"
+                }
+            }
+        }
+        repositories {
+            maven { url '/home/fork/Code/forkch-mvn-repo' }
+        }
+    }
 }
+
+project(':ch.fork.adhocrailway.ui') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.persistence.xml')
+        compile project(':ch.fork.adhocrailway.persistence.adhocserver')
+        compile project(':ch.fork.adhocrailway.railway.srcp')
+        compile project(':ch.fork.adhocrailway.railway.brain')
+        compile project(':ch.fork.adhocrailway.model')
+    }
+}
+
+project(':ch.fork.adhocrailway.service') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.persistence')
+    }
+}
+project(':ch.fork.adhocrailway.model') {
+
+}
+project(':ch.fork.adhocrailway.persistence') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.model')
+    }
+}
+
+project(':ch.fork.adhocrailway.persistence.xml') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.persistence')
+        compile project(':ch.fork.adhocrailway.service')
+    }
+}
+
+project(':ch.fork.adhocrailway.persistence.adhocserver') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.persistence')
+    }
+}
+
+project(':ch.fork.adhocrailway.railway.brain') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.service')
+    }
+}
+
+project(':ch.fork.adhocrailway.railway.srcp') {
+    dependencies {
+        compile project(':ch.fork.adhocrailway.service')
+        compile project(':ch.fork.adhocrailway.persistence')
+    }
+}
+
 task wrapper(type: Wrapper) {
 }
