@@ -125,7 +125,7 @@ static int init_lineADHOCMM(bus_t bus) {
     cfsetospeed(&interface, B230400);
 #ifdef linux
     interface.c_cflag &= ~PARENB;
-    interface.c_cflag |= CSTOPB;
+    interface.c_cflag &= ~CSTOPB;
     interface.c_cflag &= ~CSIZE;
     interface.c_cflag |= CS8;
     interface.c_cflag |= CRTSCTS;
