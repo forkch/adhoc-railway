@@ -331,6 +331,10 @@ static void check_status(bus_t busnumber) {
     if (bytesToRead == 0) {
         return;
     }
+    for(i = 0; i < 110; i++) {
+        msg[i] = 0;
+    }
+    i = 0;
     while (readByte(busnumber, 0, &c) == 0) {
         if (c == END_CMD || c == 0x00 || c == '\r' || c == '\n') {
             msg[i] = 0;
