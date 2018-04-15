@@ -169,6 +169,7 @@ public class XMLServiceHelper {
         xstream.omitField(TurnoutGroup.class, "turnoutNumberAmount");
         xstream.omitField(RouteGroup.class, "routeNumberOffset");
         xstream.omitField(RouteGroup.class, "routeNumberAmount");
+        xstream.omitField(LocomotiveFunction.class, "isEmergencyBrakeFunction");
 
         xstream.alias("AdHocRailwayData", AdHocRailwayData.class);
         xstream.alias("locomotive", Locomotive.class);
