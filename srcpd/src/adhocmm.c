@@ -349,7 +349,7 @@ static void check_status(bus_t busnumber) {
         if (strncasecmp(msg, "XRS", 3) == 0) {
             syslog_bus(busnumber, DBG_INFO, "received reset from the brain");
 
-            for (i = 0; i < 80; i++) {
+            for (i = 0; i < 1024; i++) {
                 locoState[i] = LOCO_DEAD;
             }
             for (i = 0; i < 8; i++) {
