@@ -1,7 +1,6 @@
 package ch.fork.AdHocRailway.railway.brain.brain;
 
 import ch.fork.AdHocRailway.controllers.ControllerException;
-import ch.fork.AdHocRailway.controllers.PowerChangeListener;
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.model.power.Booster;
 import ch.fork.AdHocRailway.model.power.BoosterState;
@@ -96,30 +95,36 @@ public class BrainPowerControlAdapter extends PowerController implements
 
     @Override
     public void receivedMessage(final String receivedMessage) {
-        final String receivedStringXBS = StringUtils.substring(receivedMessage,
-                StringUtils.indexOf(receivedMessage, "XBS"));
-        if (!StringUtils.startsWithIgnoreCase(receivedStringXBS, "XBS")) {
-            return;
-        }
         LOGGER.info("received power message from brain: " + receivedMessage);
-        final Scanner scanner = new Scanner(receivedStringXBS);
-        scanner.useDelimiter(" ");
-        final String xbs = scanner.next();
-        if (!StringUtils.equalsIgnoreCase("XBS", xbs)) {
-            scanner.close();
+
+        if (StringUtils.startsWith(receivedMessage, "XBS")) {
+            processBoosterMessage(receivedMessage);
+        } else {
             LOGGER.warn("received an invalid XBS command from the brain: " + receivedMessage);
-            return;
         }
+    }
+
+    @Override
+    public void brainReset(String receivedMessage) {
+
+    }
+
+    private void processBoosterMessage(String receivedMessage) {
+        final Scanner scanner = new Scanner(receivedMessage);
+        scanner.useDelimiter(" ");
+
+        final String command = scanner.next();
 
         final PowerSupply supply = supplies.get(1);
-        if(!scanner.hasNext()) {
+        if (!scanner.hasNext()) {
             LOGGER.warn("received an invalid XBS command from the brain: " + receivedMessage);
-            return;
+            scanner.close();
         }
 
         for (int i = 0; i < 8; i++) {
-            if(!scanner.hasNext()) {
+            if (!scanner.hasNext()) {
                 LOGGER.warn("received an invalid XBS command from the brain: " + receivedMessage);
+                scanner.close();
                 return;
             }
             final String boosterState = scanner.next();
@@ -134,6 +139,8 @@ public class BrainPowerControlAdapter extends PowerController implements
 
         informListeners(supply);
         scanner.close();
+        return;
+
     }
 
 

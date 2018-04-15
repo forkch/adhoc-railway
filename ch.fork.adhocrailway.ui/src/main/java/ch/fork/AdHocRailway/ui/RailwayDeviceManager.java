@@ -327,6 +327,11 @@ public class RailwayDeviceManager implements CommandDataListener,
         logIfLoggingEnabled("receive from brain: " + receivedMessage);
     }
 
+    @Override
+    public void brainReset(String receivedMessage) {
+
+    }
+
     private void logIfLoggingEnabled(String response) {
         if (response.contains("POWER"))
             return;

@@ -1,12 +1,15 @@
 package ch.fork.AdHocRailway.railway.brain.brain;
 
+import com.google.common.collect.Lists;
 import jssc.*;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BrainController {
@@ -28,7 +31,7 @@ public class BrainController {
         return INSTANCE;
     }
 
-    public static void main(final String[] args) throws IOException {
+    public static void main(final String[] args) {
         final BrainController instance2 = BrainController.getInstance();
 
         List<String> availableSerialPortsAsString = instance2.getAvailableSerialPortsAsString();
@@ -37,12 +40,15 @@ public class BrainController {
         instance2.addBrainListener(new BrainListener() {
             @Override
             public void sentMessage(String sentMessage) {
-                System.out.println("sent: " + sentMessage);
             }
 
             @Override
             public void receivedMessage(String receivedMessage) {
-                System.out.println("received: " + receivedMessage);
+
+            }
+
+            @Override
+            public void brainReset(String receivedMessage) {
 
             }
         });
@@ -65,6 +71,7 @@ public class BrainController {
             serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 
             serialPort.addEventListener(new SerialReader());
+
             connected = true;
         } catch (SerialPortException e) {
             throw new BrainException(e.getExceptionType() + ": "
@@ -105,12 +112,10 @@ public class BrainController {
 
     public List<String> getAvailableSerialPortsAsString() {
 
-        final List<String> ports = new ArrayList<String>();
+        final List<String> ports = new ArrayList<>();
 
         String[] portNames = SerialPortList.getPortNames();
-        for (int i = 0; i < portNames.length; i++) {
-            ports.add(portNames[i]);
-        }
+        ports.addAll(Arrays.asList(portNames));
 
         LOGGER.info("serialport names: " + ports);
         return ports;
@@ -124,49 +129,68 @@ public class BrainController {
         listeners.remove(listener);
     }
 
+    private void checkForReset(String receivedMessage) {
+        if (StringUtils.startsWith(receivedMessage, "XRS")) {
+            processBrainResetMessage(receivedMessage);
+        }
+    }
+
+    private void processBrainResetMessage(String receivedMessage) {
+        for (final BrainListener listener : listeners) {
+            listener.brainReset(receivedMessage);
+        }
+    }
+
     /**
      * Handles the input coming from the serial port. A new line character is
      * treated as the end of a block in this example.
      */
     public class SerialReader implements SerialPortEventListener {
-        private StringBuilder receivedString = new StringBuilder();
+        List<Byte> inputBuffer = Lists.newArrayList();
 
         @Override
         public void serialEvent(SerialPortEvent serialPortEvent) {
-            int data;
             if (serialPortEvent.isRXCHAR()) {//If data is available
                 int bytesToRead = serialPortEvent.getEventValue();
                 if (bytesToRead > 0) {//Check bytes count in the input buffer
                     try {
-                        byte buffer[] = serialPort.readBytes(serialPortEvent.getEventValue());
+                        byte buffer[] = serialPort.readBytes(bytesToRead);
 
-                        receivedString.append(new String(buffer, "US-ASCII"));
-
-                        byte lastChar =  buffer[buffer.length - 1];
-                        if (lastChar == 0x0d || lastChar == 0x0a) {
-
-                            final String completeString = receivedString.toString();
-                            receivedString = new StringBuilder();
-
-                            String[] completeStringLines = completeString.split("\\r+\\n?");
-                            for (String completeStringLine : completeStringLines) {
-
-                                for (final BrainListener listener : listeners) {
-                                    listener.receivedMessage(completeStringLine.trim());
-                                }
-                            }
-                            LOGGER.debug(completeString);
-
-                        }
-
+                        processBuffer(buffer);
                     } catch (SerialPortException ex) {
                         LOGGER.error("error receiving data from serialport", ex);
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
                     }
                 }
             }
+        }
 
+        private void processBuffer(byte[] buffer) {
+
+            for (byte b : buffer) {
+                inputBuffer.add(b);
+            }
+            int start = 0;
+            for (int i = 0; i < inputBuffer.size(); i++) {
+                if (inputBuffer.get(i) == 0x0d) {
+
+                    final List<Byte> fullCommand = inputBuffer.subList(start, i + 1);
+                    inputBuffer = inputBuffer.subList(i + 1, inputBuffer.size());
+
+                    Byte[] bytes = fullCommand.toArray(new Byte[fullCommand.size()]);
+
+                    String completeString = new String(ArrayUtils.toPrimitive(bytes), Charset.forName("US-ASCII"));
+                    String[] completeStringLines = completeString.split("\\r+\\n?");
+                    for (String completeStringLine : completeStringLines) {
+
+                        checkForReset(completeStringLine.trim());
+                        for (final BrainListener listener : listeners) {
+                            listener.receivedMessage(completeStringLine.trim());
+                        }
+                    }
+                    LOGGER.debug(completeString);
+                    start = i + 1;
+                }
+            }
         }
     }
 

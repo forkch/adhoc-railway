@@ -12,7 +12,7 @@ import com.google.common.collect.Sets;
 import java.util.List;
 import java.util.Set;
 
-public class BrainLocomotiveControlAdapter extends LocomotiveController {
+public class BrainLocomotiveControlAdapter extends LocomotiveController implements BrainListener {
 
     private final BrainController brain;
 
@@ -22,6 +22,7 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
     public BrainLocomotiveControlAdapter(TaskExecutor taskExecutor, final BrainController brain) {
         super(taskExecutor);
         this.brain = brain;
+        brain.addBrainListener(this);
         brainLocomotiveCommandBuilder = new BrainLocomotiveCommandBuilder();
     }
 
@@ -203,5 +204,20 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController {
 
         final String initCommand = stringBuilder.toString().trim();
         return initCommand;
+    }
+
+    @Override
+    public void sentMessage(String sentMessage) {
+
+    }
+
+    @Override
+    public void receivedMessage(String receivedMessage) {
+
+    }
+
+    @Override
+    public void brainReset(String receivedMessage) {
+        activeLocomotives.clear();
     }
 }
