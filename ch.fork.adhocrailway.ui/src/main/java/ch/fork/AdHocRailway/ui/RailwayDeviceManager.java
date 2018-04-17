@@ -333,14 +333,11 @@ public class RailwayDeviceManager implements CommandDataListener,
     }
 
     private void logIfLoggingEnabled(String response) {
-        if (response.contains("POWER"))
-            return;
         final Preferences preferences = appContext.getPreferences();
         if (preferences.getBooleanValue(LOGGING)) {
             appContext.getMainBus().post(
                     new CommandLogEvent(response));
         }
-        //LOGGER.info(response);
     }
 
 

@@ -105,8 +105,8 @@ public class BrainPowerControlAdapter extends PowerController implements
     }
 
     @Override
-    public void brainReset(String receivedMessage) {
-
+    public void brainReset(String resetMessage) {
+        informListenersAboutReset(resetMessage);
     }
 
     private void processBoosterMessage(String receivedMessage) {

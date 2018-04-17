@@ -15,7 +15,6 @@ import ch.fork.AdHocRailway.ui.utils.UIConstants;
 import ch.fork.AdHocRailway.ui.widgets.SimpleInternalFrame;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import de.dermoba.srcp.model.power.SRCPPowerSupply;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 
@@ -25,13 +24,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.StringTokenizer;
 
 public class PowerControlPanel extends JPanel implements PowerChangeListener {
 
     private static final Logger LOGGER = Logger
             .getLogger(PowerControlPanel.class);
+    public static final Color GREEN = Color.decode("#26a69a");
+    public static final Color RED = Color.decode("#ec5353");
     private final ImageIcon stopIcon;
     private final ImageIcon goIcon;
     private final ImageIcon shortcutIcon;
@@ -43,6 +42,8 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
     private JPanel powerControlPanel;
     private JButton allBoostersOn;
     private JButton allBoostersOff;
+    private JLabel resetWarning;
+    private JPanel brainStatusPanel;
 
     public PowerControlPanel(final PowerContext ctx) {
         super();
@@ -57,12 +58,18 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 
     private void initGUI() {
         powerControlPanel = new JPanel(new MigLayout("insets 5, wrap 2"));
-
+        brainStatusPanel = new JPanel();
+        brainStatusPanel.setBackground(Color.decode("#26a69a"));
+        resetWarning = new JLabel();
+        resetWarning.setFont(new Font(Font.DIALOG, Font.PLAIN, 14));
+        resetWarning.setText("BRAIN OK");
+        brainStatusPanel.add(resetWarning);
         initKeyboardActions();
         update();
 
         final SimpleInternalFrame frame = new SimpleInternalFrame("Boosters");
         frame.add(powerControlPanel, BorderLayout.CENTER);
+        frame.add(brainStatusPanel, BorderLayout.SOUTH);
         setLayout(new BorderLayout());
         add(frame, BorderLayout.CENTER);
 
@@ -85,79 +92,7 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
                 .values()) {
             toggleButton.setEnabled(connected);
         }
-
-    }
-
-    public void powerSupplyChanged(final SRCPPowerSupply powerSupply,
-                                   final String freeText) {
-        if (freeText == null || freeText.isEmpty()) {
-            return;
-        }
-        if (freeText.toUpperCase().contains("AUTO")) {
-            return;
-        }
-        LOGGER.info("Power freeText: " + freeText);
-
-        final Map<Integer, BoosterState> boosterStates = new HashMap<Integer, BoosterState>();
-        final StringTokenizer tokenizer = new StringTokenizer(freeText);
-        while (tokenizer.hasMoreTokens()) {
-            int boosterNumber = -1;
-            if (tokenizer.hasMoreTokens()) {
-
-                final String t = tokenizer.nextToken().trim();
-
-                try {
-                    boosterNumber = Integer.parseInt(t);
-                } catch (final NumberFormatException x) {
-                }
-
-            }
-            if (tokenizer.hasMoreTokens()) {
-
-                final String srcpState = tokenizer.nextToken().trim();
-                if (BoosterState.isActive(srcpState)) {
-                    boosterStates.put(boosterNumber, BoosterState.ACTIVE);
-                } else if (BoosterState.isShortcut(srcpState)) {
-                    boosterStates.put(boosterNumber, BoosterState.SHORTCUT);
-                } else if (BoosterState.isInActive(srcpState)) {
-                    boosterStates.put(boosterNumber, BoosterState.INACTIVE);
-                }
-            }
-        }
-
-        int activeBoosterCount = 0;
-        for (final Entry<Integer, BoosterState> state : boosterStates
-                .entrySet()) {
-            final int boosterNumber = state.getKey();
-            final BoosterState bs = state.getValue();
-            if (boosterNumber != -1) {
-                final JToggleButton button = numberToPowerToggleButtons
-                        .get(boosterNumber);
-
-                if (button == null) {
-                    return;
-                }
-                button.removeActionListener(numberToActionListener
-                        .get(boosterNumber));
-
-                if (bs.equals(BoosterState.ACTIVE)) {
-                    button.setSelected(true);
-                    button.setIcon(goIcon);
-                    activeBoosterCount++;
-                } else {
-                    button.setSelected(false);
-                    if (bs.equals(BoosterState.SHORTCUT)) {
-                        button.setIcon(shortcutIcon);
-                        activeBoosterCount++;
-                    } else {
-                        button.setIcon(stopIcon);
-                    }
-                }
-                button.addActionListener(numberToActionListener
-                        .get(boosterNumber));
-            }
-        }
-        ctx.setActiveBoosterCount(activeBoosterCount);
+        brainStatusPanel.setBackground(GREEN);
 
     }
 
@@ -222,6 +157,8 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
         }
         final PowerController powerController = ctx.getPowerControl();
         powerController.toggleBooster(bus1Supply.getBooster(boosterNumber));
+        brainStatusPanel.setBackground(GREEN);
+        resetWarning.setText("BRAIN OK");
     }
 
     private PowerSupply getPowerSupply() {
@@ -263,6 +200,26 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
             }
         }
         ctx.setActiveBoosterCount(activeBoosterCount);
+    }
+
+    @Override
+    public void reset(String resetMessage) {
+        brainStatusPanel.setBackground(RED);
+        resetWarning.setText(resetMessage);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                brainStatusPanel.setBackground(GREEN);
+                resetWarning.setText("BRAIN OK");
+            }
+        });
+
     }
 
     class AllBoostersOnAction extends AbstractAction {

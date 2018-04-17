@@ -29,6 +29,15 @@ public abstract class PowerController {
         }
     }
 
+
+    protected void informListenersAboutReset(String receivedMessage)  {
+        for (final PowerChangeListener l : listeners) {
+            l.reset(receivedMessage);
+        }
+    }
+
+
+
     public abstract void addOrUpdatePowerSupply(final PowerSupply supply);
 
     public abstract void boosterOn(final Booster booster);

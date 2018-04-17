@@ -1,7 +1,6 @@
 package ch.fork.AdHocRailway.railway.srcp;
 
 import ch.fork.AdHocRailway.controllers.ControllerException;
-import ch.fork.AdHocRailway.controllers.PowerChangeListener;
 import ch.fork.AdHocRailway.controllers.PowerController;
 import ch.fork.AdHocRailway.model.power.Booster;
 import ch.fork.AdHocRailway.model.power.BoosterState;
@@ -23,10 +22,10 @@ public class SRCPPowerControlAdapter extends PowerController implements
         SRCPPowerSupplyChangeListener {
     private final Logger LOGGER = Logger.getLogger(SRCPPowerControlAdapter.class);
 
-    private final Map<PowerSupply, SRCPPowerSupply> powerSupplyToSRCPPowerSupply = new HashMap<PowerSupply, SRCPPowerSupply>();
-    private final Map<SRCPPowerSupply, PowerSupply> srcpPowerSupplyToPowerSupply = new HashMap<SRCPPowerSupply, PowerSupply>();
+    private final Map<PowerSupply, SRCPPowerSupply> powerSupplyToSRCPPowerSupply = new HashMap<>();
+    private final Map<SRCPPowerSupply, PowerSupply> srcpPowerSupplyToPowerSupply = new HashMap<>();
     private final SRCPPowerControl powerControl;
-    private final Map<Integer, PowerSupply> busToPowerSupply = new HashMap<Integer, PowerSupply>();
+    private final Map<Integer, PowerSupply> busToPowerSupply = new HashMap<>();
 
     public SRCPPowerControlAdapter() {
         powerControl = SRCPPowerControl.getInstance();
@@ -122,49 +121,54 @@ public class SRCPPowerControlAdapter extends PowerController implements
             return;
         }
 
-        //LOGGER.info("received new boosterstate: " + freeText);
+        LOGGER.info("received new powerstate: " + freeText);
 
-        final Map<Integer, BoosterState> boosterStates = new HashMap<Integer, BoosterState>();
-        final StringTokenizer tokenizer = new StringTokenizer(freeText);
-        while (tokenizer.hasMoreTokens()) {
-            int boosterNumber = -1;
-            if (tokenizer.hasMoreTokens()) {
+        final Map<Integer, BoosterState> boosterStates = new HashMap<>();
+        if (freeText.contains("XRS")) {
+            LOGGER.warn(String.format("BRAIN RESET: %s", freeText));
+            informListenersAboutReset(freeText);
+        } else {
 
-                final String t = tokenizer.nextToken().trim();
+            final StringTokenizer tokenizer = new StringTokenizer(freeText);
+            while (tokenizer.hasMoreTokens()) {
+                int boosterNumber = -1;
+                if (tokenizer.hasMoreTokens()) {
+                    final String t = tokenizer.nextToken().trim();
+                    try {
+                        boosterNumber = Integer.parseInt(t);
+                    } catch (final NumberFormatException x) {
+                        LOGGER.error("could not parse booster number", x);
+                    }
+                }
+                if (tokenizer.hasMoreTokens()) {
 
-                try {
-                    boosterNumber = Integer.parseInt(t);
-                } catch (final NumberFormatException x) {
-                    LOGGER.error("could not parse booster number", x);
+                    final String srcpState = tokenizer.nextToken().trim();
+                    if (BoosterState.isActive(srcpState)) {
+                        boosterStates.put(boosterNumber, BoosterState.ACTIVE);
+                    } else if (BoosterState.isShortcut(srcpState)) {
+                        boosterStates.put(boosterNumber, BoosterState.SHORTCUT);
+                    } else if (BoosterState.isInActive(srcpState)) {
+                        boosterStates.put(boosterNumber, BoosterState.INACTIVE);
+                    }
                 }
             }
-            if (tokenizer.hasMoreTokens()) {
 
-                final String srcpState = tokenizer.nextToken().trim();
-                if (BoosterState.isActive(srcpState)) {
-                    boosterStates.put(boosterNumber, BoosterState.ACTIVE);
-                } else if (BoosterState.isShortcut(srcpState)) {
-                    boosterStates.put(boosterNumber, BoosterState.SHORTCUT);
-                } else if (BoosterState.isInActive(srcpState)) {
-                    boosterStates.put(boosterNumber, BoosterState.INACTIVE);
-                }
+            final PowerSupply supply = srcpPowerSupplyToPowerSupply
+                    .get(srcpPowerSupply);
+
+            for (final Entry<Integer, BoosterState> boosterState : boosterStates
+                    .entrySet()) {
+                final Booster booster = supply.getBooster(boosterState.getKey());
+                booster.setState(boosterState.getValue());
             }
-        }
-
-        final PowerSupply supply = srcpPowerSupplyToPowerSupply
-                .get(srcpPowerSupply);
-
-        for (final Entry<Integer, BoosterState> boosterState : boosterStates
-                .entrySet()) {
-            final Booster booster = supply.getBooster(boosterState.getKey());
-            booster.setState(boosterState.getValue());
-        }
 
 //        LOGGER.info("new booster state: " + boosterStates);
 //        LOGGER.info("all booster states: " + supply.getBoosters());
-        informListeners(supply);
+            informListeners(supply);
+        }
 
     }
+
 
     private SRCPPowerSupply createSRCPPowerSupply(final PowerSupply supply) {
 
