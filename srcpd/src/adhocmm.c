@@ -349,12 +349,27 @@ static void check_status(bus_t busnumber) {
         if (strncasecmp(msg, "XRS", 3) == 0) {
             syslog_bus(busnumber, DBG_INFO, "received reset from the brain");
 
+            char resetMsg[255];
             for (i = 0; i < 1024; i++) {
                 locoState[i] = LOCO_DEAD;
             }
             for (i = 0; i < 8; i++) {
                 booster_state[i] = 'O';
             }
+            sscanf(msg, "XRS %[^\r]", resetMsg);
+
+            char infoMessage[110];
+            sprintf(infoMessage, "%lu.%.3lu 100 INFO %ld POWER %s %s %s\n",
+                    buses[busnumber].power_change_time.tv_sec,
+                    buses[busnumber].power_change_time.tv_usec / 1000,
+                    busnumber, "OFF", "XRS", resetMsg);
+            enqueueInfoMessage(infoMessage);
+
+            sprintf(infoMessage, "%lu.%.3lu 100 INFO %ld POWER %s %s\n",
+                    buses[busnumber].power_change_time.tv_sec,
+                    buses[busnumber].power_change_time.tv_usec / 1000,
+                    busnumber, "OFF", "0 O 1 O 2 O 3 O 4 O 5 O 5 O 6 O 7 O");
+            enqueueInfoMessage(infoMessage);
 
         } else if (strncasecmp(msg, "XBS", 3) == 0) {
 
@@ -371,48 +386,48 @@ static void check_status(bus_t busnumber) {
 
                 booster_state[nr] = booster_state_new[nr];
                 if (booster_state_new[nr] == 'S') {
-                    char m[110];
-                    sprintf(m, "%d S", nr);
+                    char boosterMessage[4];
+                    sprintf(boosterMessage, "%d S", nr);
 
-                    syslog_bus(busnumber, DBG_INFO, "booster %d SHORTCUT", nr);
+                    syslog_bus(busnumber, DBG_INFO, "booster %s", boosterMessage);
 
                     buses[busnumber].power_state = 0;
-                    char msg1[110];
-                    sprintf(msg1, "%lu.%.3lu 100 INFO %ld POWER %s %s\n",
+                    char infoMessage[110];
+                    sprintf(infoMessage, "%lu.%.3lu 100 INFO %ld POWER %s %s\n",
                             buses[busnumber].power_change_time.tv_sec,
                             buses[busnumber].power_change_time.tv_usec / 1000,
-                            busnumber, "OFF", m);
-                    enqueueInfoMessage(msg1);
+                            busnumber, "OFF", boosterMessage);
+                    enqueueInfoMessage(infoMessage);
 
                 } else if (booster_state_new[nr] == 'A') {
-                    char m[110];
-                    sprintf(m, "%d A", nr);
+                    char boosterMessage[5];
+                    sprintf(boosterMessage, "%d A", nr);
 
-                    syslog_bus(busnumber, DBG_INFO, "booster %d ON", nr);
+                    syslog_bus(busnumber, DBG_INFO, "booster %s", boosterMessage);
 
                     buses[busnumber].power_state = 1;
-                    char msg1[110];
+                    char infoMessage[255];
 
-                    sprintf(msg1, "%lu.%.3lu 100 INFO %ld POWER %s %s\n",
+                    sprintf(infoMessage, "%lu.%.3lu 100 INFO %ld POWER %s %s\n",
                             buses[busnumber].power_change_time.tv_sec,
                             buses[busnumber].power_change_time.tv_usec / 1000,
-                            busnumber, "ON", m);
-                    enqueueInfoMessage(msg1);
+                            busnumber, "ON", boosterMessage);
+                    enqueueInfoMessage(infoMessage);
                 } else if (booster_state_new[nr] == 'O') {
-                    char m[110];
-                    sprintf(m, "%d O", nr);
+                    char boosterMessage[4];
+                    sprintf(boosterMessage, "%d O", nr);
 
-                    syslog_bus(busnumber, DBG_INFO, "booster %d OFF", nr);
+                    syslog_bus(busnumber, DBG_INFO, "booster %s", boosterMessage);
 
-                    strcpy(buses[busnumber].power_msg, m);
+                    strcpy(buses[busnumber].power_msg, boosterMessage);
 
                     buses[busnumber].power_state = 0;
-                    char msg1[110];
-                    sprintf(msg1, "%lu.%.3lu 100 INFO %ld POWER %s %s\n",
+                    char infoMessage[110];
+                    sprintf(infoMessage, "%lu.%.3lu 100 INFO %ld POWER %s %s\n",
                             buses[busnumber].power_change_time.tv_sec,
                             buses[busnumber].power_change_time.tv_usec / 1000,
-                            busnumber, "OFF", m);
-                    enqueueInfoMessage(msg1);
+                            busnumber, "OFF", boosterMessage);
+                    enqueueInfoMessage(infoMessage);
                 }
             }
 
