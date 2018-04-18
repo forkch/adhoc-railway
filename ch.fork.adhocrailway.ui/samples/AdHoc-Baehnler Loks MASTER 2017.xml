@@ -42,18 +42,6 @@
         </imageBase64>
         <functions>
           <locomotiveFunction>
-            <number>2</number>
-            <description>F2</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>3</number>
-            <description>F3</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
             <number>1</number>
             <description>F1</description>
             <isVisible>true</isVisible>
@@ -62,6 +50,18 @@
           <locomotiveFunction>
             <number>0</number>
             <description>Licht</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>2</number>
+            <description>F2</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>3</number>
+            <description>F3</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -79,8 +79,8 @@
         </imageBase64>
         <functions>
           <locomotiveFunction>
-            <number>3</number>
-            <description>F3</description>
+            <number>2</number>
+            <description>F2</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -91,8 +91,8 @@
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>4</number>
-            <description>F4</description>
+            <number>3</number>
+            <description>F3</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -103,8 +103,8 @@
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>2</number>
-            <description>F2</description>
+            <number>4</number>
+            <description>F4</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -116,8 +116,8 @@
         </imageBase64>
         <functions>
           <locomotiveFunction>
-            <number>2</number>
-            <description>F2</description>
+            <number>1</number>
+            <description>F1</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -128,20 +128,20 @@
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
-            <number>0</number>
-            <description>Licht</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>1</number>
-            <description>F1</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
             <number>3</number>
             <description>F3</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>2</number>
+            <description>F2</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>0</number>
+            <description>Licht</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -190,6 +190,12 @@
         </imageBase64>
         <functions>
           <locomotiveFunction>
+            <number>1</number>
+            <description>F1</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
             <number>3</number>
             <description>F3</description>
             <isVisible>true</isVisible>
@@ -198,12 +204,6 @@
           <locomotiveFunction>
             <number>4</number>
             <description>F4</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>1</number>
-            <description>F1</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -414,6 +414,12 @@
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
+            <number>2</number>
+            <description>F2</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
             <number>3</number>
             <description>F3</description>
             <isVisible>true</isVisible>
@@ -422,12 +428,6 @@
           <locomotiveFunction>
             <number>0</number>
             <description>Licht</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>2</number>
-            <description>F2</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -780,6 +780,12 @@
       <locomotive id="58d7dd10f6a77330f7d0d898" name="Dampflok-Grosi" groupId="58d7dd0ef6a77330f7d0d859" image="" type="dcc" bus="1" address1="104" address2="0" mfxUUID="0">
         <functions class="linked-hash-set">
           <locomotiveFunction>
+            <number>0</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
             <number>1</number>
             <description>-</description>
             <isVisible>true</isVisible>
@@ -793,13 +799,13 @@
           </locomotiveFunction>
           <locomotiveFunction>
             <number>3</number>
-            <description>-</description>
+            <description>- </description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
           <locomotiveFunction>
             <number>4</number>
-            <description>- </description>
+            <description>-</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
@@ -847,12 +853,6 @@
           </locomotiveFunction>
           <locomotiveFunction>
             <number>12</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>13</number>
             <description>-</description>
             <isVisible>true</isVisible>
             <deactivationDelay>-1</deactivationDelay>
@@ -2822,79 +2822,9 @@
         <linkedRouteNumber>0</linkedRouteNumber>
       </turnout>
       <turnout groupId="58d7dd3ff6a77330f7d0d9f4">
-        <id>58d7dd89f6a77330f7d0d9f8</id>
-        <number>4</number>
-        <type>DEFAULT_LEFT</type>
-        <defaultState>STRAIGHT</defaultState>
-        <orientation>EAST</orientation>
-        <bus1>1</bus1>
-        <address1>804</address1>
-        <address1Switched>false</address1Switched>
-        <bus2>0</bus2>
-        <address2>0</address2>
-        <address2Switched>false</address2Switched>
-        <linkedRouteNumber>0</linkedRouteNumber>
-      </turnout>
-      <turnout groupId="58d7dd3ff6a77330f7d0d9f4">
-        <id>58d7dd93f6a77330f7d0d9f9</id>
-        <number>5</number>
-        <type>DEFAULT_LEFT</type>
-        <defaultState>STRAIGHT</defaultState>
-        <orientation>EAST</orientation>
-        <bus1>1</bus1>
-        <address1>832</address1>
-        <address1Switched>false</address1Switched>
-        <bus2>0</bus2>
-        <address2>0</address2>
-        <address2Switched>false</address2Switched>
-        <linkedRouteNumber>0</linkedRouteNumber>
-      </turnout>
-      <turnout groupId="58d7dd3ff6a77330f7d0d9f4">
-        <id>58d7dda3f6a77330f7d0d9fa</id>
-        <number>6</number>
-        <type>DEFAULT_LEFT</type>
-        <defaultState>STRAIGHT</defaultState>
-        <orientation>EAST</orientation>
-        <bus1>1</bus1>
-        <address1>853</address1>
-        <address1Switched>false</address1Switched>
-        <bus2>0</bus2>
-        <address2>0</address2>
-        <address2Switched>false</address2Switched>
-        <linkedRouteNumber>0</linkedRouteNumber>
-      </turnout>
-      <turnout groupId="58d7dd3ff6a77330f7d0d9f4">
-        <id>58d7ddb1f6a77330f7d0d9fb</id>
-        <number>7</number>
-        <type>DEFAULT_LEFT</type>
-        <defaultState>STRAIGHT</defaultState>
-        <orientation>EAST</orientation>
-        <bus1>1</bus1>
-        <address1>859</address1>
-        <address1Switched>false</address1Switched>
-        <bus2>0</bus2>
-        <address2>0</address2>
-        <address2Switched>false</address2Switched>
-        <linkedRouteNumber>0</linkedRouteNumber>
-      </turnout>
-      <turnout groupId="58d7dd3ff6a77330f7d0d9f4">
-        <id>58d7ddb7f6a77330f7d0d9fc</id>
-        <number>8</number>
-        <type>DEFAULT_LEFT</type>
-        <defaultState>STRAIGHT</defaultState>
-        <orientation>EAST</orientation>
-        <bus1>1</bus1>
-        <address1>806</address1>
-        <address1Switched>false</address1Switched>
-        <bus2>0</bus2>
-        <address2>0</address2>
-        <address2Switched>false</address2Switched>
-        <linkedRouteNumber>0</linkedRouteNumber>
-      </turnout>
-      <turnout groupId="58d7dd3ff6a77330f7d0d9f4">
         <id>58d7ddbcf6a77330f7d0d9fd</id>
         <number>9</number>
-        <type>DEFAULT_LEFT</type>
+        <type>DOUBLECROSS</type>
         <defaultState>STRAIGHT</defaultState>
         <orientation>EAST</orientation>
         <bus1>1</bus1>
@@ -2908,14 +2838,14 @@
       <turnout groupId="58d7dd3ff6a77330f7d0d9f4">
         <id>58d7ddc1f6a77330f7d0d9fe</id>
         <number>10</number>
-        <type>DEFAULT_LEFT</type>
+        <type>THREEWAY</type>
         <defaultState>STRAIGHT</defaultState>
         <orientation>EAST</orientation>
         <bus1>1</bus1>
-        <address1>854</address1>
+        <address1>843</address1>
         <address1Switched>false</address1Switched>
-        <bus2>0</bus2>
-        <address2>0</address2>
+        <bus2>1</bus2>
+        <address2>844</address2>
         <address2Switched>false</address2Switched>
         <linkedRouteNumber>0</linkedRouteNumber>
       </turnout>
@@ -2961,6 +2891,20 @@
         <address2Switched>false</address2Switched>
         <linkedRouteNumber>0</linkedRouteNumber>
       </turnout>
+      <turnout groupId="58d7dd3ff6a77330f7d0d9f4">
+        <id>c7640e8d-6c79-40b2-8c51-500579773227</id>
+        <number>14</number>
+        <type>DEFAULT_LEFT</type>
+        <defaultState>STRAIGHT</defaultState>
+        <orientation>EAST</orientation>
+        <bus1>1</bus1>
+        <address1>809</address1>
+        <address1Switched>false</address1Switched>
+        <bus2>0</bus2>
+        <address2>0</address2>
+        <address2Switched>false</address2Switched>
+        <linkedRouteNumber>0</linkedRouteNumber>
+      </turnout>
     </turnoutGroup>
   </turnoutGroups>
   <routeGroups class="sorted-set">
@@ -2990,16 +2934,6 @@
         <routeItem>
           <id>153fe905-b1ad-4f85-9593-aafa4642f4a9</id>
           <turnoutNumber>5</turnoutNumber>
-          <state>NON_DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>d2ceca8d-662f-4a51-a1d9-c2ca8147456b</id>
-          <turnoutNumber>6</turnoutNumber>
-          <state>NON_DEFAULT</state>
-        </routeItem>
-        <routeItem>
-          <id>22d7275a-fd62-4326-8dc9-a380fadb2f4a</id>
-          <turnoutNumber>7</turnoutNumber>
           <state>NON_DEFAULT</state>
         </routeItem>
         <routeItem>
