@@ -36,6 +36,12 @@ public abstract class PowerController {
         }
     }
 
+    protected void informListenersAboutMessage(String receivedMessage)  {
+        for (final PowerChangeListener l : listeners) {
+            l.message(receivedMessage);
+        }
+    }
+
 
 
     public abstract void addOrUpdatePowerSupply(final PowerSupply supply);

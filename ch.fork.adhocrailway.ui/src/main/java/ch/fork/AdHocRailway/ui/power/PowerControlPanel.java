@@ -27,10 +27,11 @@ import java.util.Map;
 
 public class PowerControlPanel extends JPanel implements PowerChangeListener {
 
+    public static final Color GREEN = Color.decode("#5dec5b");
+    public static final Color RED = Color.decode("#ec5353");
+    public static final Color ORANGE = Color.decode("#eccb52");
     private static final Logger LOGGER = Logger
             .getLogger(PowerControlPanel.class);
-    public static final Color GREEN = Color.decode("#26a69a");
-    public static final Color RED = Color.decode("#ec5353");
     private final ImageIcon stopIcon;
     private final ImageIcon goIcon;
     private final ImageIcon shortcutIcon;
@@ -42,8 +43,10 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
     private JPanel powerControlPanel;
     private JButton allBoostersOn;
     private JButton allBoostersOff;
-    private JLabel resetWarning;
+    private JLabel brainResetWarning;
+    private JPanel brainResetPanel;
     private JPanel brainStatusPanel;
+    private JLabel brainStatus;
 
     public PowerControlPanel(final PowerContext ctx) {
         super();
@@ -58,18 +61,27 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 
     private void initGUI() {
         powerControlPanel = new JPanel(new MigLayout("insets 5, wrap 2"));
-        brainStatusPanel = new JPanel();
-        brainStatusPanel.setBackground(Color.decode("#26a69a"));
-        resetWarning = new JLabel();
-        resetWarning.setFont(new Font(Font.DIALOG, Font.PLAIN, 14));
-        resetWarning.setText("BRAIN OK");
-        brainStatusPanel.add(resetWarning);
+        brainResetPanel = new JPanel(new BorderLayout(2, 2));
+        brainResetPanel.setBackground(Color.decode("#26a69a"));
+        brainResetWarning = new JLabel();
+        brainResetWarning.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
+        brainResetWarning.setText("");
+        brainResetPanel.add(brainResetWarning, BorderLayout.CENTER);
+
+        brainStatusPanel = new JPanel(new BorderLayout(2, 2));
+        brainStatusPanel.setBackground(GREEN);
+        brainStatus = new JLabel();
+        brainStatus.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
+        brainStatus.setText("");
+        brainStatusPanel.add(brainStatus, BorderLayout.CENTER);
+
         initKeyboardActions();
         update();
 
         final SimpleInternalFrame frame = new SimpleInternalFrame("Boosters");
         frame.add(powerControlPanel, BorderLayout.CENTER);
-        frame.add(brainStatusPanel, BorderLayout.SOUTH);
+        frame.add(brainResetPanel, BorderLayout.SOUTH);
+        frame.add(brainStatusPanel, BorderLayout.NORTH);
         setLayout(new BorderLayout());
         add(frame, BorderLayout.CENTER);
 
@@ -92,7 +104,7 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
                 .values()) {
             toggleButton.setEnabled(connected);
         }
-        brainStatusPanel.setBackground(GREEN);
+        brainResetPanel.setBackground(GREEN);
 
     }
 
@@ -157,8 +169,6 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
         }
         final PowerController powerController = ctx.getPowerControl();
         powerController.toggleBooster(bus1Supply.getBooster(boosterNumber));
-        brainStatusPanel.setBackground(GREEN);
-        resetWarning.setText("BRAIN OK");
     }
 
     private PowerSupply getPowerSupply() {
@@ -204,8 +214,8 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
 
     @Override
     public void reset(String resetMessage) {
-        brainStatusPanel.setBackground(RED);
-        resetWarning.setText(resetMessage);
+        brainResetPanel.setBackground(RED);
+        brainResetWarning.setText(resetMessage);
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -215,11 +225,21 @@ public class PowerControlPanel extends JPanel implements PowerChangeListener {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                brainStatusPanel.setBackground(GREEN);
-                resetWarning.setText("BRAIN OK");
+                brainResetPanel.setBackground(GREEN);
+                brainResetWarning.setText("");
             }
         });
 
+    }
+
+    @Override
+    public void message(String message) {
+        if(message.contains("Brain OK")) {
+            brainStatusPanel.setBackground(GREEN);
+        } else {
+            brainStatusPanel.setBackground(ORANGE);
+        }
+        brainStatus.setText(message);
     }
 
     class AllBoostersOnAction extends AbstractAction {

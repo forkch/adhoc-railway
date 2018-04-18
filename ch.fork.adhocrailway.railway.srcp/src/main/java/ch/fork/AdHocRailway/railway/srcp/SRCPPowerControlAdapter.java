@@ -126,7 +126,12 @@ public class SRCPPowerControlAdapter extends PowerController implements
         final Map<Integer, BoosterState> boosterStates = new HashMap<>();
         if (freeText.contains("XRS")) {
             LOGGER.warn(String.format("BRAIN RESET: %s", freeText));
+            informListenersAboutMessage(freeText.replace("XRS ", ""));
             informListenersAboutReset(freeText);
+
+        } else if (freeText.contains("XMSG")) {
+            LOGGER.info(String.format("BRAIN MESSAGE: %s", freeText));
+            informListenersAboutMessage(freeText.replace("XMSG ", ""));
         } else {
 
             final StringTokenizer tokenizer = new StringTokenizer(freeText);

@@ -99,14 +99,18 @@ public class BrainPowerControlAdapter extends PowerController implements
 
         if (StringUtils.startsWith(receivedMessage, "XBS")) {
             processBoosterMessage(receivedMessage);
-        } else {
-            LOGGER.warn("received an invalid XBS command from the brain: " + receivedMessage);
         }
     }
 
     @Override
     public void brainReset(String resetMessage) {
         informListenersAboutReset(resetMessage);
+    }
+
+    @Override
+    public void brainMessage(String message) {
+        informListenersAboutMessage(message);
+
     }
 
     private void processBoosterMessage(String receivedMessage) {
@@ -119,6 +123,7 @@ public class BrainPowerControlAdapter extends PowerController implements
         if (!scanner.hasNext()) {
             LOGGER.warn("received an invalid XBS command from the brain: " + receivedMessage);
             scanner.close();
+            return;
         }
 
         for (int i = 0; i < 8; i++) {

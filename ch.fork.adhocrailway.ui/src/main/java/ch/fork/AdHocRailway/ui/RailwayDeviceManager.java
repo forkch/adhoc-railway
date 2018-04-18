@@ -332,6 +332,11 @@ public class RailwayDeviceManager implements CommandDataListener,
 
     }
 
+    @Override
+    public void brainMessage(String receivedMessage) {
+        
+    }
+
     private void logIfLoggingEnabled(String response) {
         final Preferences preferences = appContext.getPreferences();
         if (preferences.getBooleanValue(LOGGING)) {

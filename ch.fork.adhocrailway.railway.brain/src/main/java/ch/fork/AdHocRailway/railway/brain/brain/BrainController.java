@@ -6,7 +6,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +48,11 @@ public class BrainController {
 
             @Override
             public void brainReset(String receivedMessage) {
+
+            }
+
+            @Override
+            public void brainMessage(String receivedMessage) {
 
             }
         });
@@ -129,9 +133,25 @@ public class BrainController {
         listeners.remove(listener);
     }
 
-    private void checkForReset(String receivedMessage) {
+    private boolean checkForReset(String receivedMessage) {
         if (StringUtils.startsWith(receivedMessage, "XRS")) {
             processBrainResetMessage(receivedMessage);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkForMessage(String receivedMessage) {
+        if (StringUtils.startsWith(receivedMessage, "XMSG")) {
+            processBrainMessage(receivedMessage);
+            return true;
+        }
+        return false;
+    }
+
+    private void processBrainMessage(String receivedMessage) {
+        for (final BrainListener listener : listeners) {
+            listener.brainMessage(receivedMessage);
         }
     }
 
@@ -182,7 +202,13 @@ public class BrainController {
                     String[] completeStringLines = completeString.split("\\r+\\n?");
                     for (String completeStringLine : completeStringLines) {
 
-                        checkForReset(completeStringLine.trim());
+                        if(checkForReset(completeStringLine.trim())) {
+                            continue;
+                        }
+
+                        if(checkForMessage(completeStringLine.trim())) {
+                            continue;
+                        }
                         for (final BrainListener listener : listeners) {
                             listener.receivedMessage(completeStringLine.trim());
                         }

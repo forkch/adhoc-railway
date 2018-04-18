@@ -213,6 +213,11 @@ public class BrainTerminal extends ConfigurationDialog implements GMInfoListener
     }
 
     @Override
+    public void brainMessage(String receivedMessage) {
+
+    }
+
+    @Override
     public void sentDummyMessage(String receivedMessage) {
         receivedResponseFromBrain(receivedMessage);
 

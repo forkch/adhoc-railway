@@ -6,4 +6,5 @@ public interface BrainListener {
     void receivedMessage(String receivedMessage);
     void brainReset(String receivedMessage);
 
+    void brainMessage(String receivedMessage);
 }

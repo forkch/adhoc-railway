@@ -85,7 +85,7 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
     }
 
     public static SortedSet<LocomotiveFunction> getDccFunctions() {
-        final LocomotiveFunction fn = new LocomotiveFunction(0, "-", true, -1);
+        final LocomotiveFunction f0 = new LocomotiveFunction(0, "-", true, -1);
         final LocomotiveFunction f1 = new LocomotiveFunction(1, "-", true, -1);
         final LocomotiveFunction f2 = new LocomotiveFunction(2, "-", true, -1);
         final LocomotiveFunction f3 = new LocomotiveFunction(3, "-", true, -1);
@@ -98,7 +98,7 @@ public class LocomotiveFunction implements Comparable<LocomotiveFunction>,
         final LocomotiveFunction f10 = new LocomotiveFunction(10, "-", true, -1);
         final LocomotiveFunction f11 = new LocomotiveFunction(11, "-", true, -1);
         final LocomotiveFunction f12 = new LocomotiveFunction(12, "-", true, -1);
-        return Sets.newTreeSet(Lists.newArrayList(fn, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12));
+        return Sets.newTreeSet(Lists.newArrayList(f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12));
     }
 
     public static SortedSet<LocomotiveFunction> getFunctionsForType(LocomotiveType type) {

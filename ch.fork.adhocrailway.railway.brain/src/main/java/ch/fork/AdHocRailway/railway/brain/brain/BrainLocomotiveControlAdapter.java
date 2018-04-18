@@ -220,4 +220,9 @@ public class BrainLocomotiveControlAdapter extends LocomotiveController implemen
     public void brainReset(String receivedMessage) {
         activeLocomotives.clear();
     }
+
+    @Override
+    public void brainMessage(String receivedMessage) {
+
+    }
 }
