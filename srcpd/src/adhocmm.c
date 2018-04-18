@@ -358,7 +358,7 @@ static void check_status(bus_t busnumber) {
             }
             sscanf(msg, "XRS %[^\r]", resetMsg);
 
-            char infoMessage[110];
+            char infoMessage[1000];
             sprintf(infoMessage, "%lu.%.3lu 100 INFO %ld POWER %s %s %s\n",
                     buses[busnumber].power_change_time.tv_sec,
                     buses[busnumber].power_change_time.tv_usec / 1000,
@@ -369,6 +369,20 @@ static void check_status(bus_t busnumber) {
                     buses[busnumber].power_change_time.tv_sec,
                     buses[busnumber].power_change_time.tv_usec / 1000,
                     busnumber, "OFF", "0 O 1 O 2 O 3 O 4 O 5 O 5 O 6 O 7 O");
+            enqueueInfoMessage(infoMessage);
+
+        } else if (strncasecmp(msg, "XMSG", 4) == 0) {
+            syslog_bus(busnumber, DBG_INFO, "received message from the brain");
+
+            char brainMsg[255];
+
+            sscanf(msg, "XMSG %[^\r]", brainMsg);
+
+            char infoMessage[1000];
+            sprintf(infoMessage, "%lu.%.3lu 100 INFO %ld POWER %s %s %s\n",
+                    buses[busnumber].power_change_time.tv_sec,
+                    buses[busnumber].power_change_time.tv_usec / 1000,
+                    busnumber, "OFF", "XMSG", brainMsg);
             enqueueInfoMessage(infoMessage);
 
         } else if (strncasecmp(msg, "XBS", 3) == 0) {
@@ -392,7 +406,7 @@ static void check_status(bus_t busnumber) {
                     syslog_bus(busnumber, DBG_INFO, "booster %s", boosterMessage);
 
                     buses[busnumber].power_state = 0;
-                    char infoMessage[110];
+                    char infoMessage[1000];
                     sprintf(infoMessage, "%lu.%.3lu 100 INFO %ld POWER %s %s\n",
                             buses[busnumber].power_change_time.tv_sec,
                             buses[busnumber].power_change_time.tv_usec / 1000,
@@ -406,7 +420,7 @@ static void check_status(bus_t busnumber) {
                     syslog_bus(busnumber, DBG_INFO, "booster %s", boosterMessage);
 
                     buses[busnumber].power_state = 1;
-                    char infoMessage[255];
+                    char infoMessage[1000];
 
                     sprintf(infoMessage, "%lu.%.3lu 100 INFO %ld POWER %s %s\n",
                             buses[busnumber].power_change_time.tv_sec,
@@ -422,7 +436,7 @@ static void check_status(bus_t busnumber) {
                     strcpy(buses[busnumber].power_msg, boosterMessage);
 
                     buses[busnumber].power_state = 0;
-                    char infoMessage[110];
+                    char infoMessage[1000];
                     sprintf(infoMessage, "%lu.%.3lu 100 INFO %ld POWER %s %s\n",
                             buses[busnumber].power_change_time.tv_sec,
                             buses[busnumber].power_change_time.tv_usec / 1000,
