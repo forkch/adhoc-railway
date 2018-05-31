@@ -3675,7 +3675,7 @@
           </locomotiveFunction>
         </functions>
       </locomotive>
-      <locomotive id="3517e64e-acd1-41f2-a347-a0b43fac0460" name="Re 460 Miele" groupId="9356162e-d5a5-41ce-a573-f876ef407284" desc="" image="Re 460 Miele_.png" type="digital" bus="1" address1="28" address2="0" mfxUUID="0">
+      <locomotive id="3517e64e-acd1-41f2-a347-a0b43fac0460" name="Re 460 Miele (Jüre)" groupId="9356162e-d5a5-41ce-a573-f876ef407284" desc="" image="Re 460 Miele_.png" type="digital" bus="1" address1="28" address2="0" mfxUUID="0">
         <imageBase64>
                     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AAD///+lxtjHx9jYtaKgxcS1o/7+/v7+/v6gra2urq6ura2traysrrGxsbGflZWVn5WVjXuMjIyGb3x8hnBXWDNLV1gdFiIWIyIiIhYWFhYJFAgICAsWFhYWFhY3jycXFxYWCk4TKCgWMyM2QipEo+Tw//8AAP///+S12NnHtuHItcbGxLa3/v7+/v7+/rOtra2tra2tsK2tra2usbKxsbKVlbfKlo2NuJmmjpiapo670JFmhJGcZom+vmAiNCIiFhYWFgsJCgoKCwkWFhYWFiMiFxcWFhYVIBAVFRUKM0FERFvO/////wAA/////6NsemlScnI8RUVFK3L+/v7+/v7+ssLDsLCww8PDra2tra6xsrGxspWVpc+l6Znc77uO/v6Q4+aakX+/7tOR7pSCiTQiIiIWFhYLCQsICgoJCQsLCxYXFVGFFhcWFzMFBQYFAoG9MSAuXv//////AAD////z/wMGAwZbgicGAgICY/7+/s7Ly8nEwrCwsLCwsK2tra2trrGysbGvlZWhutL+49D+mob+5o7j/prmgov+v5D+lMDmNCIiIhYWFhYICQgLCwsLCxYWFiMjN14zIxcWFgMFBQYFgdIyMjKq//////8AAP//////gwUDBmd4QAcRBgFx/v7+oqzCrsOwsLCwsLCwrcLCwsKusbGxsa+ylaPm/uOo/v67jr2/fabQqNBmvu7+ZpKSlIAiMyIiIiIiFggICwsJCxYWCwsWFxcXFmiCIV0zBwQFEgN1m0w3eOj//////wAA////////PwIDdoM/BQUGAXL+/v6iwsPEw8PDsLCtra3DrcLCwq6xsbGxsbKV29zkpXvQ49x8jrt8fHB8cGa+vpxYIhQUFDQzIiIiIiIWEwgJCQsLCxYWFhYXFxcXM0Qnk04GDQUGElybXoLA////////AAD////////VAxFMZ0otLS0rov7+/qLCw8TDw8PDw8LCwsLCwsLCrq6xsa6vlZaWspWVl4yXjY2NfH19fX1YWFhYWFk0IyMjNDQiIiIiIhYWFgsWFxYWFhcXFxYXFxcXKCgXFhUnMzREX2Cb4vr///////8AAP////////+qeqCxs7PFsMOxsa7Esa6tra6tra2trKysra2tra6urq6fn5+flZWflZWMhoaNjXxvV3xwcEtLS0tLSzMjIyMiIhYiHSIUFhYJCRYWCAoKCgoKChUVFRYWFhYWKSM0NURCXpn4/////////wAA///////////NUmlpaVJpaUZFRUVFRUVFRkZGYWFFRUVGRkZGRjk5OTo6OTk7OjpHOjscOi44Ozs7Ljs7Li4uLi4uLhAcIC8yLy8vLy8mIBUVICYgJSAfMiAcBgYDBgcHEhIgEhwuMjE3v///////////AAD///////////+dBgIGBQIGAwUFBQUCAgUDAwMREQMRAwMfAx8SEiAQEiASICASIBESFRIfMRIcIBIfHx8xHDEgHB8xHiQkLjIvLjImMjIyMjIgMSAxMR8/MR8CBQYFAwMDER8RER8fUNT///////////8AAP/////////////WPwIFDQQFBQUFBQYFBRsRBRERERIGER8RHxIPHxISHBEfHxIfERIgERwuEhAcEh8SEiASICASEiAfHx8gLhwfICAgICAgIBIgEiAfEiUfEgUFDwMDAwMRHBISEnj//////////////wAA////////////////eBIDERERERERBQUFDhsRGxEREREREhEfERISERIfERIfERISEhIREREREhIREREREQYREQYREREREREREREREREDERIRERERERERERIgPh8FAREfHx8RBjKd////////////////AAD//////////////////2g3Q11NPzAAPhsCP1BNTU1NUD9NUD8/UCA/TUA/Mj8xMjIyMjExMTEgIC4xHx8fHx8fHxISHx8SEhIfHxESER8fHx8fHx8fICAgElC9nQIAJSAgEhJ2//////////////////8AAP///////////////////79dPz8/Tx6BZ1pMTFBbW1tQUFBQUE0/MT8/Pz8/Mj8/MjIyMTExMSAxMTExMSAgICAgICAgICAfHzExHx8fMTEfEREREQMDER8/vf//vD4/Pz9d1f///////////////////wAA//////////////////////+9g4OP3eu8qquLUEBAUFBQUFxdg56eqqqqnqqqqqqqqqqqi5OTnr293r+/v7+/0tXV1dXV1d7e3tZn3tb/3qqdnpCQnp6Pi//////////r////////////////////////AAD///////////////////////////////////////P/////////////////////////////////////////////////////////////////////////+d7///////////////////////////////////8AAP///////////////////////////////////////////////////////////////////////////////////////////////////////////+v//97e/////////////////////////////////////wAA
                 </imageBase64>
@@ -3808,43 +3808,6 @@
             <number>15</number>
             <description></description>
             <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-        </functions>
-      </locomotive>
-      <locomotive id="1227fea5-cf54-4233-9766-86d3edd85f04" name="Re 460 Nord Vaudois Jüre" groupId="9356162e-d5a5-41ce-a573-f876ef407284" desc="" image="37460.bmp" type="digital" bus="1" address1="24" address2="0" mfxUUID="0">
-        <imageBase64>
-                    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
-                </imageBase64>
-        <functions>
-          <locomotiveFunction>
-            <number>4</number>
-            <description>F4</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>3</number>
-            <description>F3</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>1</number>
-            <description>F1</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>0</number>
-            <description>Licht</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>2</number>
-            <description>F2</description>
-            <isVisible>false</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
         </functions>
@@ -4143,77 +4106,6 @@
             <number>15</number>
             <description></description>
             <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-        </functions>
-      </locomotive>
-      <locomotive id="50345a04-3bae-4bf2-963a-b6adc0cc956b" name="Re 460 Rola/Connecting Europe" groupId="9356162e-d5a5-41ce-a573-f876ef407284" desc="" image="Re 465 BLS Eur.png" type="digital" bus="1" address1="30" address2="0" mfxUUID="0">
-        <imageBase64>
-                    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
-                </imageBase64>
-        <functions>
-          <locomotiveFunction>
-            <number>2</number>
-            <description>F2</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>3</number>
-            <description>F3</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>4</number>
-            <description>F4</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>1</number>
-            <description>F1</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>0</number>
-            <description>Licht</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-        </functions>
-      </locomotive>
-      <locomotive id="eba74408-fff8-469d-a986-9516578cc385" name="Re 460 SBB (Pädu)" groupId="9356162e-d5a5-41ce-a573-f876ef407284" desc="Re 460 SBB (Pädu)" type="digital" bus="1" address1="90" address2="0" mfxUUID="0">
-        <functions class="sorted-set">
-          <locomotiveFunction>
-            <number>0</number>
-            <description>Licht</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>1</number>
-            <description>-</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>2</number>
-            <description>-</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>3</number>
-            <description>-</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>4</number>
-            <description>ABV</description>
-            <isVisible>false</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
         </functions>
@@ -4549,6 +4441,91 @@
           </locomotiveFunction>
         </functions>
       </locomotive>
+      <locomotive id="1401c041-f0a0-48c9-a05c-0d8f9347f669" name="Re 460 Tilsiter (Pädu)" groupId="9356162e-d5a5-41ce-a573-f876ef407284" image="Re 460 Tilsiter.png" type="dcc" bus="1" address1="350" address2="0" mfxUUID="0">
+        <imageBase64>
+                    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
+                </imageBase64>
+        <functions class="sorted-set">
+          <locomotiveFunction>
+            <number>0</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>1</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>2</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>3</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>4</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>5</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>6</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>7</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>8</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>9</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>10</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>11</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+          <locomotiveFunction>
+            <number>12</number>
+            <description>-</description>
+            <isVisible>true</isVisible>
+            <deactivationDelay>-1</deactivationDelay>
+          </locomotiveFunction>
+        </functions>
+      </locomotive>
       <locomotive id="66de88ed-5973-4102-9e6a-71caddabf9d7" name="Re 460 Tilsiter (Fridu)" groupId="9356162e-d5a5-41ce-a573-f876ef407284" type="mfx" bus="1" address1="216" address2="0" mfxUUID="4291449246">
         <functions class="sorted-set">
           <locomotiveFunction>
@@ -4649,92 +4626,6 @@
           </locomotiveFunction>
         </functions>
       </locomotive>
-      <locomotive id="1401c041-f0a0-48c9-a05c-0d8f9347f669" name="Re 460 Tilsiter (Pädu)" groupId="9356162e-d5a5-41ce-a573-f876ef407284" image="Re 460 Tilsiter.png" type="dcc" bus="1" address1="350" address2="0" mfxUUID="0">
-        <imageBase64>
-                    iVBORw0KGgoAAAANSUhEUgAAAHkAAAAiCAMAAABMbYZPAAADAFBMVEX///8CMhgClSYQBwgQFhgQJBgfFhgfFiYfJBgfJCYfMiYfTE0sFhgsFiYsJBgsJCYsMjMsMkAsfUA5Bwg5JBg5JCY5MjM5MkA5PjM5PkA5Pk05Plk5WCY5WEBGMjNGPjNGPkBGPk1GTEBGTE1GTFlGWFlGZEBGiE1SMkBSPkBSTE1STFlSWEBSWE1SWFlSWGZSfXJSfX5eBwBePlleTE1eWE1eWFleZGZecXJecX5efWZeoGZrZFlrZGZrcXJrcX5rfU1rfXJrlWZrlYp2Bwh2WE12ZFl2cWZ2cXJ2cX52fVl2fXJ2fX52fYp2lZZ2w4qCJBiCMiaCcX6CfXKCfX6CiH6CiIqCiJaClXKClYqCoJaCrIqCz4qCz6GNMiaNPk2NcU2NiGaNiH6NiIqNiJaNlZaNoJaNrIqaJACaTDOaWE2aZFmaiIqalX6alZaaoH6kMgikPiakPkCkTECkWDOkWECkZFmkcVmkfU2kfXKklZakoHKkoJakoKGkuJavMgivTECvfX6voKGvrK6vuLmvuMSvw6Gvz66v2q68Bwi8Plm8cWa8fWa8fX68fYq8lVm8lX68oH68uIq8uJa8uK68uLm8w668w8THcWbHiFnHiHLHrIrHrKHHuMTHw6HHw67Hw7nHw8THz7nHz9DHz9vH2rnH2sTH2tDRMibRWFnRZE3RcU3RlYrRoHLRoH7RuJbRuK7Rw5bRw6HRw67Rw8TRz6HRz9DRz9vR2tDR2tvR5dvcJBjcPk3cTE3cZE3ciH7claHcoJbcrKHcw6Hcw8Tcz6Hcz67cz7ncz9Dc2tDc2tvc5dvc5ebc8dvc8eboFgDoPjPoTE3oWEDocWbocXLofWbolYrolZbooJborKHorK7ouIrouJbouK7ouMTow6How7noz7no2tDo2tvo5dDo5dvo5ebo8dvo8ebziIrzrKHzrK7zuJbzuLnzw67zw8Tzz9Dz2tDz2tvz5fLz8fLz/PL9iIr9lZb9w8T98fL98f39/PL9/P3/z9D///3///9KC/OBAAAAAXRSTlMAQObYZgAACORJREFUeNrFVwtwVFcZ/s+9e/fu3sdu9pnsIwnQAGUxoEVSWvtA2rS1LcM41irMdAZ1Wuo4otMZdYYRrY1TbVWcodC0M1IZHbF2WhkHqNBQFQTRpikkhpCkoZBNdrPZ7COPfeTe3XuP59y7mwQsaGd0uLN77nn+3/n/853//y/A/+PZmYBn4IY9e/5xQ2DfIf/98etOQR/S19b3Kcl/Bt8+cTihcki02MC5CNwSFHRzPGFVrSqQAmE3bYt5sz8D0L1ahUQPbp4p2MExuL6Ndu9lUjv/K+T7B1hebPj4qbyaLmgsgAbAIF7hBUWjwwrwQGqqFcwxdX6l1ahbQcUKArpLZss+iH3zLR5yN33+e/8J+YH3NRbreGx1N1NnTsAKrwDoSg0pMZVnYqmG4hzAFeA6ozMVeCt5FW9df/aPIJGZpWV910V+4u0Zloqf1BZdRlK1F0PJCgpPKwtAQGNNJUFjdGAMJavSEAKMqBFktpADjnZrlk2/vTbykmFAXKnSEIs6h3VWp4CsRuZhlpqDwcDoGsNipIFdpbCooiRYFWwvki0wps5Ea1Wr7skCut548VrIgsKCzmlgEkk0DIaIspiYnMwjFdoyfnSEsI9oRkcwr/JMkYIjUsWIU+2aahh8pkSBiU04DTHAf73tw5BX9xpNVquY2EqUZ4AtEfNrnD43jyKRQRXsusKWiS7UklR5sCLFILyKDdrTAX5SM7mCCB0ZsuOWE/+OfOwUKQZgFk8AeFPePGiyOWAvGq8yLej1oQzCotFXMMWCYFTsVYGGjTAdxkBYbrCBnjrFuu+7VyM/3uiR/C5AwdFJg1NzN9SdMas3ZTOLA4ASH7jIiTFp2uUxtwHZCr09dIVxVKTbsHEVwqfDemRljQa6Ern9KV1YFiXqMs73XNMVRlMR+vwWUWq89vw9ajy4wDfN1wMwVlkWJFdrHAMOkdZYhfGh9gMexiosL2ad+yoLLObrZwDNdx+grMVxjlgLYqYd6VNP7yk5X71/VZrJpyFOAbEp0XhnImPGVJxxkXLq/FQLZHyI6cgt0f0VHVD/8DACpqGuw7GzbSHyo4d0SI8VKxaIh2Bea4CjOQApJ2Onp8knH+duruyLbOeCl1Cipl4d6+fcFx1EVNZFTO8pTXjdExy65Ckj6gSrsixlVp+anOy4Que3aBHDlEZzviJkbpY59hXSiEysOfrjVmV0Ypej5lwXYvTRMMAIPn3si1/6czHzcuvhC2IbWmHu9VTJl0nfPK2/supJNLS8Io1ws0wOApSa/kden0feTgOaLxATyFIt22ioHFbk81CbCCRrdzxn+0aCsKj4Hf2OL0fSf8sfTHSGt7VPjT30ma6GB6WVqn9pn9c3tbIPU66Bc7BOx8tw5KWYkPSXS5ypssja6eGAzPPRXz9WRX7T/6xxqCfvAsgd81BSxIijrvugaWJVd7DJ++yKZ9Z1hev3pLee8R5snW189Z3H9sfO5HwPD1/6Qt3urSizeMeWtz973o+wi0I7EoicN+IFLwOuoRUGcmzD6k96skPZ+7aR6+PfbKkge4GyOR4c7g/O3SfQdJW1ZfK1PutRaNWi0njzuuO/234ONndsfcHJ3J7J7fjayPj3MxfXdXKo/oeLYj+/6CUEcAO6sBpSzUkYVTeh7vUpX8jkBDR4wAX1YXpf0rWVmwdM0Bhz2PEcr1AIM1ODZTibQHAampJJUHOvudWTf/JH4ZCoZEUbbIxiH+jppVyi7LxXS/OGchgHi+9P9/UAnN/febKbgQkTGOM8PQriW+Kgaxo2dT5mAgOhMBMnnXGjLct7gPW6LzHwiNjKPNoUvzN6etO3d614vEd+8vmRW33Lw/FgDHuYWI0bY7QsjEaNOx/QEgE5QCm1lY8SUxZ0hhAeQp04S4YFEylFlSas3+6gtp4BxxAbl/DlUCg+I884z9S0C5stJfHsluzunWXOH1B9i3sPf/Xvv/Ju+yle9+mDOpfcvwbCL1pu+Y12eRo/d2nDDHWbsvZXNxsd3TD15onc+MByrmSRqVd19JODyGdLjmk0IwMWnv4BtXZL5WQlGKduwTxpXR9dS7zxWe4Pg4meE3tfeUl6OQodgg+OD174/ZH4G6cO/eXUoVBo394h5ie/eBX/sutAe5isDKAeOTcp5LSsIx/N2IjAlEF44odd7iSRHQqQ/cWVyjlXnlwk4tdDLQiCQeLMXL6tD46XV7obHx50pwbihdbxByRogyO3vT7E3f25XkHe1nEL6v2R5+y7MHLG37UnPECAcS/W8vnpotid7PTpNYFYbixnyB5rcGRxpNGhx2I6dYJEKUtNs+OgVJDAD2lXGkHSh2PE5WI9qMkfU7pdwWRuffi2ZYMbR++KdLZGdgniUbTKwda/8DzUZ9rr1oL98j2OXq/wtPtbQIgbxmvRcNwH76Incl0gDS4OrAkbBK7X/gnJeys6RmY2tjTTwIm4sgV4XmmYKNpmjaSSYwWNpl2MM2HnFeIChQJPJvIFRiggxBewYKQJBUECGkNts6BJs0YF1y1FjvdEDk+HICHI8byI8yTQz9pc+dl0CMQMySZm7QMzHgGxC0MWXpAycKFiqmwMMBrCC9MYfL00uuYT8h09vVZupF4t2F0nFiZuQFIrGo0wFxx1+9ESqY9h1WokxPOxk92QdUWHmiwJtiaOeZBGtWtk7LgiktwTzUxpamiMl7yaIsTVqkxzyvyiNQQj0kfWIDyPO2cC1pSEP9LnBao6I5JKQamqiplEGXLxooeOeBa9wUBLhKaKlJh4QVaG6UNCl4bxR/ywwZUVWNNUFc8FSSrPlApP7b7Y8JqGnCQIofL/9quKmv3qLq1agHC/QzgnhtiAHfNuJ1eUZBWzV+vHMkaP3aZe2S+xZVa0qvQPHpIiSvRN2CIR5yvJRSyqc2upFFKhM0GwOoqsYBtMZrThArpTNMK2khMY6rkxvSVFsBcWAgmgFw2fSz+XZqHglgpZlwAxm7uY5b0QI/8UiXgpmwQpwX+Z2JZEeskQoSseI0kVyDqbiCDnJt9/opzL19647+t/AQh28TnqU2v/AAAAAElFTkSuQmCC
-                </imageBase64>
-        <functions class="sorted-set">
-          <locomotiveFunction>
-            <number>0</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>1</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>2</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>3</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>4</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>5</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>6</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>7</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>8</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>9</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>10</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>11</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>12</number>
-            <description>-</description>
-            <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-        </functions>
-      </locomotive>
-      <locomotive reference="../locomotive[23]"/>
       <locomotive id="4b0a1d1b-ca43-42f9-8523-b87fb08c3780" name="Re 460 Verkehrshaus Luzern" groupId="9356162e-d5a5-41ce-a573-f876ef407284" desc="" image="Re 460 VHS.png" type="digital" bus="1" address1="11" address2="0" mfxUUID="0">
         <imageBase64>
                     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
@@ -5726,7 +5617,7 @@
           </locomotiveFunction>
         </functions>
       </locomotive>
-      <locomotive id="b4869ee6-d623-4354-9826-f4a55f7221bc" name="Re 482 Cargo" groupId="9356162e-d5a5-41ce-a573-f876ef407284" type="mfx" bus="1" address1="217" address2="0" mfxUUID="4291448915">
+      <locomotive id="b4869ee6-d623-4354-9826-f4a55f7221bc" name="Re 482 Cargo (Fridu)" groupId="9356162e-d5a5-41ce-a573-f876ef407284" type="mfx" bus="1" address1="217" address2="0" mfxUUID="4291448915">
         <functions class="sorted-set">
           <locomotiveFunction>
             <number>0</number>
@@ -5904,40 +5795,6 @@
             <number>12</number>
             <description>-</description>
             <isVisible>true</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-        </functions>
-      </locomotive>
-      <locomotive id="d3eeba29-327d-4e1a-8166-77133b07da02" name="Re 486 BLS Cargo" groupId="9356162e-d5a5-41ce-a573-f876ef407284" desc="" type="digital" bus="1" address1="33" address2="0" mfxUUID="0">
-        <functions class="sorted-set">
-          <locomotiveFunction>
-            <number>0</number>
-            <description>Licht</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>1</number>
-            <description>-</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>2</number>
-            <description>-</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>3</number>
-            <description>-</description>
-            <isVisible>false</isVisible>
-            <deactivationDelay>-1</deactivationDelay>
-          </locomotiveFunction>
-          <locomotiveFunction>
-            <number>4</number>
-            <description>ABV</description>
-            <isVisible>false</isVisible>
             <deactivationDelay>-1</deactivationDelay>
           </locomotiveFunction>
         </functions>
