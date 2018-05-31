@@ -177,7 +177,7 @@ public class LocomotiveConfig extends JDialog implements PropertyChangeListener 
                 presentationModel
                         .getBufferedModel(Locomotive.PROPERTYNAME_ADDRESS1), 1, // defaultValue
                 0, // minValue
-                324, // maxValue
+                10239, // maxValue
                 1
         )); // step
 
