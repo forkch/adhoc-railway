@@ -252,21 +252,23 @@ int init_ga_ADHOCMM(ga_state_t *ga) {
         char addr_buf[4];
         sprintf(addr_buf, "%d", ga->id);
 
-        writeString(1, "XTS ", UART_DELAY);
-        writeString(1, addr_buf, UART_DELAY);
-        writeByte(1, ' ', UART_DELAY);
         if (ga->type == 1) {
             // turnoout
-            writeString(1, "TURNOUT", UART_DELAY);
+            //writeString(1, "TURNOUT", UART_DELAY);
 
-        } else if (ga->type == 2) {
-            // cutter
-            writeString(1, "CUTTER", UART_DELAY);
-        } else if (ga->type == 3) {
-            // turntable
-            writeString(1, "TURNTABLE", UART_DELAY);
         } else {
+            writeString(1, "XTS ", UART_DELAY);
+            writeString(1, addr_buf, UART_DELAY);
+            writeByte(1, ' ', UART_DELAY);
+            if (ga->type == 2) {
+                // cutter
+                writeString(1, "CUTTER", UART_DELAY);
+            } else if (ga->type == 3) {
+                // turntable
+                writeString(1, "TURNTABLE", UART_DELAY);
+            } else {
 
+            }
         }
         writeByte(1, END_CMD, UART_DELAY);
         return SRCP_OK;
@@ -511,9 +513,9 @@ static void handle_gl_command(bus_t busnumber) {
         int changeDirection = 0;
         cacheGetGL(busnumber, addr, &glakt);
 
-        syslog_bus(busnumber, DBG_INFO, "new GL command loco state: %d", gltmp.state);
+        //syslog_bus(busnumber, DBG_INFO, "new GL command loco state: %d", gltmp.state);
         if (locoState[gltmp.id] == LOCO_DEAD) {
-            syslog_bus(busnumber, DBG_INFO, "initLocomotiveOnBrain");
+            syslog_bus(busnumber, DBG_INFO, "initLocomotiveOnBrain id: %d", gltmp.id);
             initLocomotiveOnBrain(busnumber, &gltmp);
             locoState[gltmp.id] = LOCO_ALIVE;
         }
@@ -521,11 +523,11 @@ static void handle_gl_command(bus_t busnumber) {
         bool changeDetected = (gltmp.direction != glakt.direction) || (gltmp.speed != glakt.speed)
                               || (gltmp.funcs != glakt.funcs);
         if (gltmp.state == 1 && changeDetected) {
-            syslog_bus(busnumber, DBG_INFO, "set new values");
+            syslog_bus(busnumber, DBG_DEBUG, "set new values id: %d", gltmp.id);
             sendNewLocomotiveValuesToBrain(busnumber, &gltmp);
 
         } else if (gltmp.state == 2) {
-            syslog_bus(busnumber, DBG_INFO, "terminating locomotive");
+            syslog_bus(busnumber, DBG_INFO, "terminating locomotive id: %d", gltmp.id);
             terminateLocomotiveOnBrain(busnumber, &gltmp);
 
         }
@@ -553,6 +555,8 @@ void sendNewLocomotiveValuesToBrain(bus_t busnumber, gl_state_t *gltmp) {
     writeByte(busnumber, ' ', 0);
 
     //send direction
+
+    syslog_bus(busnumber, DBG_INFO, "new direction: %d", (*gltmp).direction);
     if ((*gltmp).direction == 0) {
         writeByte(busnumber, '0', UART_DELAY);
     } else if ((*gltmp).direction == 1) {
