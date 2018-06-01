@@ -602,7 +602,7 @@ public class LocomotiveWidget extends JPanel implements
                 locomotiveControl.increaseSpeed(myLocomotive, 5);
                 disableFastIn = (System.currentTimeMillis() + DISABLE_STEPS_AFTER_MS);
             } else {
-                locomotiveControl.increaseSpeed(myLocomotive, 1);
+                locomotiveControl.increaseSpeed(myLocomotive, 2);
             }
             updateSpeed(myLocomotive.getCurrentOrTargetSpeed());
         }
@@ -630,7 +630,7 @@ public class LocomotiveWidget extends JPanel implements
                 locomotiveControl.decreaseSpeed(myLocomotive, 5);
                 disableFastIn = System.currentTimeMillis() + DISABLE_STEPS_AFTER_MS;
             } else {
-                locomotiveControl.decreaseSpeed(myLocomotive, 1);
+                locomotiveControl.decreaseSpeed(myLocomotive, 2);
 
             }
             updateSpeed(myLocomotive.getCurrentOrTargetSpeed());
