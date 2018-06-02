@@ -66,17 +66,35 @@ public class Preferences {
         setIntValue(CUTTER_SLEEP_TIME, 500);
         setIntValue(LOCOMOTIVE_CONTROLES, 4);
         setStringValue(KEYBOARD_LAYOUT, "Swiss German");
+        setKeyboardConfigs();
+        setBooleanValue(INTERFACE_6051, false);
+        setBooleanValue(LOGGING, true);
+        setBooleanValue(FULLSCREEN, false);
+        setBooleanValue(TABBED_TRACK, true);
+        setBooleanValue(TABLET_MODE, false);
+        setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES, false);
+        setBooleanValue(OPEN_LAST_FILE, false);
+        setIntValue(DEFAULT_TURNOUT_BUS, 1);
+        setIntValue(DEFAULT_LOCOMOTIVE_BUS, 1);
+        setBooleanValue(STOP_ON_DIRECTION_CHANGE, false);
+        setStringValue(RAILWAY_DEVICE, "");
+        setIntValue(NUMBER_OF_BOOSTERS, 1);
+        setBooleanValue(USE_ADHOC_SERVER, false);
+        setStringValue(RAILWAY_DEVICE, "");
+    }
+
+    private void setKeyboardConfigs() {
         setStringValue(KEYBOARD_LAYOUT + ".de_ch", "Swiss German" // Display
                 // name
                 + ";" // Base layout none
                 + ";SPACE:LocomotiveStop"
-                + ";A:Accelerate0;Y:Deccelerate0;Q:ToggleDirection0"
-                + ";S:Accelerate1;X:Deccelerate1;W:ToggleDirection1"
-                + ";D:Accelerate2;C:Deccelerate2;E:ToggleDirection2"
-                + ";F:Accelerate3;V:Deccelerate3;R:ToggleDirection3"
-                + ";G:Accelerate4;B:Deccelerate4;T:ToggleDirection4"
-                + ";H:Accelerate5;N:Deccelerate5;Z:ToggleDirection5"
-                + ";J:Accelerate6;M:Deccelerate6;U:ToggleDirection6"
+                + ";A:Accelerate0;Y:Deccelerate0;Q:ToggleDirection0;shift Y:Stop0"
+                + ";S:Accelerate1;X:Deccelerate1;W:ToggleDirection1;shift X:Stop1"
+                + ";D:Accelerate2;C:Deccelerate2;E:ToggleDirection2;shift C:Stop2"
+                + ";F:Accelerate3;V:Deccelerate3;R:ToggleDirection3;shift V:Stop3"
+                + ";G:Accelerate4;B:Deccelerate4;T:ToggleDirection4;shift B:Stop4"
+                + ";H:Accelerate5;N:Deccelerate5;Z:ToggleDirection5;shift N:Stop5"
+                + ";J:Accelerate6;M:Deccelerate6;U:ToggleDirection6;shift M:Stop6"
                 + ";K:Accelerate7;COMMA:Deccelerate7;I:ToggleDirection7"
                 + ";L:Accelerate8;DECIMAL:Deccelerate8;O:ToggleDirection8"
                 + ";COLON:Accelerate9;MINUS:Deccelerate9;P:ToggleDirection9"
@@ -102,17 +120,17 @@ public class Preferences {
         setStringValue(KEYBOARD_LAYOUT + ".en", "English" // Display name
                 + ";" // Base layout none
                 + ";SPACE:LocomotiveStop"
-                + ";A:Accelerate0;Z:Deccelerate0;Q:ToggleDirection0"
-                + ";S:Accelerate1;X:Deccelerate1;W:ToggleDirection1"
-                + ";D:Accelerate2;C:Deccelerate2;E:ToggleDirection2"
-                + ";F:Accelerate3;V:Deccelerate3;R:ToggleDirection3"
-                + ";G:Accelerate4;B:Deccelerate4;T:ToggleDirection4"
-                + ";H:Accelerate5;N:Deccelerate5;Y:ToggleDirection5"
-                + ";J:Accelerate6;M:Deccelerate6;U:ToggleDirection6"
+                + ";A:Accelerate0;Z:Deccelerate0;Q:ToggleDirection0;shift Y:Stop0"
+                + ";S:Accelerate1;X:Deccelerate1;W:ToggleDirection1;shift X:Stop1"
+                + ";D:Accelerate2;C:Deccelerate2;E:ToggleDirection2;shift C:Stop2"
+                + ";F:Accelerate3;V:Deccelerate3;R:ToggleDirection3;shift V:Stop3"
+                + ";G:Accelerate4;B:Deccelerate4;T:ToggleDirection4;shift B:Stop4"
+                + ";H:Accelerate5;N:Deccelerate5;Y:ToggleDirection5;shift N:Stop5"
+                + ";J:Accelerate6;M:Deccelerate6;U:ToggleDirection6;shift M:Stop6"
                 + ";K:Accelerate7;COMMA:Deccelerate7;I:ToggleDirection7"
                 + ";L:Accelerate8;DECIMAL:Deccelerate8;O:ToggleDirection8"
                 + ";COLON:Accelerate9;MINUS:Deccelerate9;P:ToggleDirection9"
-                + ";PERIOD:RouteNumberEntered"
+                + ";PER129IOD:RouteNumberEntered"
                 + ";DECIMAL:RouteNumberEntered"
                 + ";BACK_SLASH:EnableRoute"
                 + ";ENTER:DisableRoute"
@@ -131,20 +149,6 @@ public class Preferences {
                 + ";F7:ToggleBooster6"
                 + ";F8:ToggleBooster7"
                 + ";ESCAPE:TurnOffAllBooster");
-        setBooleanValue(INTERFACE_6051, false);
-        setBooleanValue(LOGGING, true);
-        setBooleanValue(FULLSCREEN, false);
-        setBooleanValue(TABBED_TRACK, true);
-        setBooleanValue(TABLET_MODE, false);
-        setBooleanValue(USE_FIXED_TURNOUT_AND_ROUTE_GROUP_SIZES, false);
-        setBooleanValue(OPEN_LAST_FILE, false);
-        setIntValue(DEFAULT_TURNOUT_BUS, 1);
-        setIntValue(DEFAULT_LOCOMOTIVE_BUS, 1);
-        setBooleanValue(STOP_ON_DIRECTION_CHANGE, false);
-        setStringValue(RAILWAY_DEVICE, "");
-        setIntValue(NUMBER_OF_BOOSTERS, 1);
-        setBooleanValue(USE_ADHOC_SERVER, false);
-        setStringValue(RAILWAY_DEVICE, "");
     }
 
     private boolean findConfigFile() {
@@ -362,6 +366,7 @@ public class Preferences {
                         setStringValue(key.toString(),
                                 props.getProperty(key.toString()).toString());
                     }
+                    setKeyboardConfigs();
                 } catch (final FileNotFoundException e) {
                 } catch (final IOException e) {
                 }

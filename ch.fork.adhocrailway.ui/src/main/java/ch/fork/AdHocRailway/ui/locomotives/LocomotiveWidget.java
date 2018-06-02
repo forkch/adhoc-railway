@@ -222,7 +222,7 @@ public class LocomotiveWidget extends JPanel implements
 
         increaseSpeed.addActionListener(new LocomotiveAccelerateAction());
         decreaseSpeed.addActionListener(new LocomotiveDeccelerateAction());
-        stopButton.addActionListener(new StopAction());
+        stopButton.addActionListener(new LocomotiveStopAction());
         directionButton.addActionListener(new ToggleDirectionAction());
         lockButton.addActionListener(new LockAction());
 
@@ -254,6 +254,9 @@ public class LocomotiveWidget extends JPanel implements
         getActionMap().put("ToggleDirection" + number,
                 new LocomotiveToggleDirectionAction());
         kbl.assignKeys(inputMap, "ToggleDirection" + number);
+        getActionMap().put("Stop" + number,
+                new LocomotiveStopAction());
+        kbl.assignKeys(inputMap, "Stop" + number);
     }
 
     private void updateFunctionButtons() {
@@ -655,7 +658,7 @@ public class LocomotiveWidget extends JPanel implements
         }
     }
 
-    private class StopAction extends AbstractAction {
+    private class LocomotiveStopAction extends AbstractAction {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
