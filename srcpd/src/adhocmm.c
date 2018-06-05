@@ -116,7 +116,7 @@ static int init_lineADHOCMM(bus_t bus) {
     fd = open(buses[bus].device.file.path, O_RDWR | O_NONBLOCK);
     if (fd == -1) {
         syslog_bus(bus, DBG_ERROR, "Open serial device '%s' failed: %s "
-                           "(errno = %d).\n", buses[bus].device.file.path, strerror(errno),
+                                   "(errno = %d).\n", buses[bus].device.file.path, strerror(errno),
                    errno);
         return -1;
     }
@@ -147,12 +147,11 @@ static int init_lineADHOCMM(bus_t bus) {
  * init_gl_ADHOCMM: modifies the gl data used to initialize the device
  **/
 int init_gl_ADHOCMM(bus_t bus, gl_state_t *gl) {
-    syslog_bus(bus, DBG_INFO, "new loco");
 
     switch (gl->protocol) {
         case 'X': //mfx
             if (gl->n_fs == 127) {
-                syslog_bus(bus, DBG_DEBUG, "new dcc loco %dl", gl->uuid);
+                syslog_bus(bus, DBG_INFO, "new mfx loco %dl", gl->uuid);
                 break;
                 //return SRCP_OK;
             } else {
@@ -161,7 +160,7 @@ int init_gl_ADHOCMM(bus_t bus, gl_state_t *gl) {
             break;
         case 'N': //dcc
             if (gl->n_fs == 127) {
-                syslog_bus(bus, DBG_DEBUG, "new dcc loco");
+                syslog_bus(bus, DBG_INFO, "new dcc loco");
                 break;
                 //return SRCP_OK;
             } else {
@@ -173,7 +172,7 @@ int init_gl_ADHOCMM(bus_t bus, gl_state_t *gl) {
                 case 1:
                     if (gl->n_fs == 14 || (gl->n_fs == 127)) {
 //                        return SRCP_OK;
-                        syslog_bus(bus, DBG_DEBUG, "new m1 loco");
+                        syslog_bus(bus, DBG_INFO, "new m1 loco");
                         break;
                     } else {
                         return SRCP_WRONGVALUE;
@@ -182,7 +181,7 @@ int init_gl_ADHOCMM(bus_t bus, gl_state_t *gl) {
                 case 2:
                     if ((gl->n_fs == 14) || (gl->n_fs == 27) || (gl->n_fs == 28) || (gl->n_fs == 127)) {
 //                        return SRCP_OK;
-                        syslog_bus(bus, DBG_DEBUG, "new m2 loco");
+                        syslog_bus(bus, DBG_INFO, "new m2 loco");
                         break;
                     } else {
                         return SRCP_WRONGVALUE;
@@ -216,7 +215,6 @@ void initLocomotiveOnBrain(bus_t bus, const gl_state_t *gl) {
     //send protocol
     switch (gl->protocol) {
         case 'X': //mfx
-            syslog_bus(bus, DBG_INFO, "initializing mfx locomotive");
             sprintf(mfxUid_buf, "%lu", gl->uuid);
             syslog_bus(bus, DBG_INFO, mfxUid_buf);
             writeString(bus, "MFX", UART_DELAY);
@@ -262,9 +260,11 @@ int init_ga_ADHOCMM(ga_state_t *ga) {
             writeByte(1, ' ', UART_DELAY);
             if (ga->type == 2) {
                 // cutter
+                syslog_bus(1, DBG_INFO, "init CUTTER on brain id: %d", ga->id);
                 writeString(1, "CUTTER", UART_DELAY);
             } else if (ga->type == 3) {
                 // turntable
+                syslog_bus(1, DBG_INFO, "init TURNTABLE on brain id: %d", ga->id);
                 writeString(1, "TURNTABLE", UART_DELAY);
             } else {
 
@@ -333,7 +333,7 @@ static void check_status(bus_t busnumber) {
     if (bytesToRead == 0) {
         return;
     }
-    for(i = 0; i < 110; i++) {
+    for (i = 0; i < 110; i++) {
         msg[i] = 0;
     }
     i = 0;
@@ -346,7 +346,7 @@ static void check_status(bus_t busnumber) {
         i++;
     }
     if (i > 0) {
-        syslog_bus(busnumber, DBG_INFO, "check_status() %s", msg);
+        syslog_bus(busnumber, DBG_INFO, "brain data: %s", msg);
 
         if (strncasecmp(msg, "XRS", 3) == 0) {
             syslog_bus(busnumber, DBG_INFO, "received reset from the brain");
@@ -515,7 +515,9 @@ static void handle_gl_command(bus_t busnumber) {
 
         //syslog_bus(busnumber, DBG_INFO, "new GL command loco state: %d", gltmp.state);
         if (locoState[gltmp.id] == LOCO_DEAD) {
-            syslog_bus(busnumber, DBG_INFO, "initLocomotiveOnBrain id: %d", gltmp.id);
+            syslog_bus(busnumber, DBG_INFO,
+                       "init locoo id: %d state: %d protocol: %c (%d) direction: %d speed: %d", gltmp.id,
+                       gltmp.state, gltmp.protocol, gltmp.protocolversion, gltmp.direction, gltmp.speed);
             initLocomotiveOnBrain(busnumber, &gltmp);
             locoState[gltmp.id] = LOCO_ALIVE;
         }
@@ -523,11 +525,15 @@ static void handle_gl_command(bus_t busnumber) {
         bool changeDetected = (gltmp.direction != glakt.direction) || (gltmp.speed != glakt.speed)
                               || (gltmp.funcs != glakt.funcs);
         if (gltmp.state == 1 && changeDetected) {
-            syslog_bus(busnumber, DBG_DEBUG, "set new values id: %d", gltmp.id);
+            syslog_bus(busnumber, DBG_INFO,
+                       "set new loco values id: %d state: %d protocol: %c (%d) direction: %d speed: %d", gltmp.id,
+                       gltmp.state, gltmp.protocol, gltmp.protocolversion, gltmp.direction, gltmp.speed);
             sendNewLocomotiveValuesToBrain(busnumber, &gltmp);
 
         } else if (gltmp.state == 2) {
-            syslog_bus(busnumber, DBG_INFO, "terminating locomotive id: %d", gltmp.id);
+            syslog_bus(busnumber, DBG_INFO,
+                       "terminating loco id: %d state: %d protocol: %c (%d) direction: %d speed: %d", gltmp.id,
+                       gltmp.state, gltmp.protocol, gltmp.protocolversion, gltmp.direction, gltmp.speed);
             terminateLocomotiveOnBrain(busnumber, &gltmp);
 
         }
@@ -556,7 +562,6 @@ void sendNewLocomotiveValuesToBrain(bus_t busnumber, gl_state_t *gltmp) {
 
     //send direction
 
-    syslog_bus(busnumber, DBG_INFO, "new direction: %d", (*gltmp).direction);
     if ((*gltmp).direction == 0) {
         writeByte(busnumber, '0', UART_DELAY);
     } else if ((*gltmp).direction == 1) {
@@ -585,7 +590,6 @@ void terminateLocomotiveOnBrain(bus_t busnumber, gl_state_t *gltmp) {
     char speed_buf[4];
     sprintf(addr_buf, "%d", (*gltmp).id);
 
-    syslog_bus(busnumber, DBG_INFO, "removing loco");
     // send loco remove command
     writeString(busnumber, "XLOCREMOVE ", UART_DELAY);
 
@@ -611,6 +615,10 @@ static void handle_ga_command(bus_t busnumber) {
         char buf[4];
         sprintf(buf, "%d", gatmp.id);
 
+        syslog_bus(busnumber, DBG_INFO,
+                   "set new solenoid values id: %d state: %d port: %d action: %d", gatmp.id,
+                   gatmp.state, gatmp.port, gatmp.action);
+
         writeStringLength(busnumber, TURNOUT_CMD, 3, UART_DELAY);
         writeStringLength(busnumber, buf, 3, UART_DELAY);
         writeByte(busnumber, ' ', UART_DELAY);
@@ -622,7 +630,6 @@ static void handle_ga_command(bus_t busnumber) {
         }
         writeByte(busnumber, END_CMD, UART_DELAY);
     }
-    //usleep(50000);
     setGA(busnumber, addr, gatmp);
     buses[busnumber].watchdog++;
 }
@@ -672,64 +679,64 @@ void *thr_sendrec_ADHOCMM(void *v) {
     pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, &last_cancel_type);
     /*register cleanup routine */
 
-    pthread_cleanup_push((void *) end_bus_thread, (void *) btd) ;
-            /* initialize tga-structure */
-            for (ctr = 0; ctr < 50; ctr++)
-                __adhocmmt->tga[ctr].id = 0;
+    pthread_cleanup_push((void *) end_bus_thread, (void *) btd);
+    /* initialize tga-structure */
+    for (ctr = 0; ctr < 50; ctr++)
+        __adhocmmt->tga[ctr].id = 0;
 
-            syslog_bus(btd->bus, DBG_INFO,
-                       "AdHocMM bus started (device = %s).",
-                       buses[btd->bus].device.file.path);
+    syslog_bus(btd->bus, DBG_INFO,
+               "AdHocMM bus started (device = %s).",
+               buses[btd->bus].device.file.path);
 
-            /*enter endless loop to process work tasks */
-            while (true) {
+    /*enter endless loop to process work tasks */
+    while (true) {
 
-                buses[btd->bus].watchdog = 1;
+        buses[btd->bus].watchdog = 1;
 
-                /*POWER action arrived */
-                if (buses[btd->bus].power_changed == 1)
-                    handle_power_command(btd->bus);
+        /*POWER action arrived */
+        if (buses[btd->bus].power_changed == 1)
+            handle_power_command(btd->bus);
 
-                /*GL action arrived */
-                if (!queue_GL_isempty(btd->bus))
-                    handle_gl_command(btd->bus);
+        /*GL action arrived */
+        if (!queue_GL_isempty(btd->bus))
+            handle_gl_command(btd->bus);
 
-                /* handle delayed switching of GAs (there is a better place) */
-                gettimeofday(&akt_time, NULL);
-                for (ctr = 0; ctr < 50; ctr++) {
-                    if (__adhocmmt->tga[ctr].id) {
-                        cmp_time = __adhocmmt->tga[ctr].t;
+        /* handle delayed switching of GAs (there is a better place) */
+        gettimeofday(&akt_time, NULL);
+        for (ctr = 0; ctr < 50; ctr++) {
+            if (__adhocmmt->tga[ctr].id) {
+                cmp_time = __adhocmmt->tga[ctr].t;
 
-                        /* switch off time reached? */
-                        if (cmpTime(&cmp_time, &akt_time)) {
-                            gatmp = __adhocmmt->tga[ctr];
-                            addr = gatmp.id;
-                            gatmp.action = 0;
-                            setGA(btd->bus, addr, gatmp);
-                            __adhocmmt->tga[ctr].id = 0;
-                        }
-                    }
+                /* switch off time reached? */
+                if (cmpTime(&cmp_time, &akt_time)) {
+                    gatmp = __adhocmmt->tga[ctr];
+                    addr = gatmp.id;
+                    gatmp.action = 0;
+                    setGA(btd->bus, addr, gatmp);
+                    __adhocmmt->tga[ctr].id = 0;
                 }
-
-                /*GA action arrived */
-                if (!queue_GA_isempty(btd->bus))
-                    handle_ga_command(btd->bus);
-
-                /*FB action arrived */
-                /* currently nothing to do here */
-                buses[btd->bus].watchdog++;
-
-                /* busy wait and continue loop */
-                /* wait 5 ms */
-                if (usleep(5000) == -1) {
-                    syslog_bus(btd->bus, DBG_ERROR,
-                               "usleep() failed: %s (errno = %d)\n",
-                               strerror(errno), errno);
-                }
-                check_status(btd->bus);
             }
+        }
 
-            /*run the cleanup routine */
+        /*GA action arrived */
+        if (!queue_GA_isempty(btd->bus))
+            handle_ga_command(btd->bus);
+
+        /*FB action arrived */
+        /* currently nothing to do here */
+        buses[btd->bus].watchdog++;
+
+        /* busy wait and continue loop */
+        /* wait 5 ms */
+        if (usleep(5000) == -1) {
+            syslog_bus(btd->bus, DBG_ERROR,
+                       "usleep() failed: %s (errno = %d)\n",
+                       strerror(errno), errno);
+        }
+        check_status(btd->bus);
+    }
+
+    /*run the cleanup routine */
     pthread_cleanup_pop(1);
 }
 
