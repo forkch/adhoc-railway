@@ -29,6 +29,12 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
 
     testCompile 'junit:junit:4.+'
+
+    compile project(':ch.fork.adhocrailway.persistence.xml')
+    compile project(':ch.fork.adhocrailway.persistence.adhocserver')
+    compile project(':ch.fork.adhocrailway.railway.srcp')
+    compile project(':ch.fork.adhocrailway.railway.brain')
+    compile project(':ch.fork.adhocrailway.model')
 }
 
 jar {

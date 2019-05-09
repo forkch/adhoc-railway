@@ -13,5 +13,6 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
 
+    compile project(':ch.fork.adhocrailway.persistence')
 
 }

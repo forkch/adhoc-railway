@@ -3,4 +3,5 @@ apply plugin: 'maven-publish'
 dependencies {
 
 
+    compile project(':ch.fork.adhocrailway.model')
 }

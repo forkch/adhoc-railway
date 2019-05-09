@@ -4,4 +4,8 @@ dependencies {
     testCompile 'org.mockito:mockito-all:1.9.5'
 //    compile 'com.github.forkch:jsrcpc:master-e476e4a090-1'
 
+    compile project(':jsrcpc-lib')
+    compile project(':ch.fork.adhocrailway.service')
+    compile project(':ch.fork.adhocrailway.persistence')
+
 }

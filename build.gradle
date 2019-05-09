@@ -45,9 +45,6 @@ subprojects {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
 
-    dependencies {
-    }
-
     repositories {
         mavenCentral()
         maven { url "https://jitpack.io" }
@@ -82,57 +79,6 @@ subprojects {
         repositories {
             maven { url '/home/fork/Code/forkch-mvn-repo' }
         }
-    }
-}
-
-project(':ch.fork.adhocrailway.ui') {
-    dependencies {
-        compile project(':ch.fork.adhocrailway.persistence.xml')
-        compile project(':ch.fork.adhocrailway.persistence.adhocserver')
-        compile project(':ch.fork.adhocrailway.railway.srcp')
-        compile project(':ch.fork.adhocrailway.railway.brain')
-        compile project(':ch.fork.adhocrailway.model')
-    }
-}
-
-project(':ch.fork.adhocrailway.service') {
-    dependencies {
-        compile project(':ch.fork.adhocrailway.persistence')
-    }
-}
-project(':ch.fork.adhocrailway.model') {
-
-}
-project(':ch.fork.adhocrailway.persistence') {
-    dependencies {
-        compile project(':ch.fork.adhocrailway.model')
-    }
-}
-
-project(':ch.fork.adhocrailway.persistence.xml') {
-    dependencies {
-        compile project(':ch.fork.adhocrailway.persistence')
-        compile project(':ch.fork.adhocrailway.service')
-    }
-}
-
-project(':ch.fork.adhocrailway.persistence.adhocserver') {
-    dependencies {
-        compile project(':ch.fork.adhocrailway.persistence')
-    }
-}
-
-project(':ch.fork.adhocrailway.railway.brain') {
-    dependencies {
-        compile project(':ch.fork.adhocrailway.service')
-    }
-}
-
-project(':ch.fork.adhocrailway.railway.srcp') {
-    dependencies {
-        compile project(':jsrcpc-lib')
-        compile project(':ch.fork.adhocrailway.service')
-        compile project(':ch.fork.adhocrailway.persistence')
     }
 }
 

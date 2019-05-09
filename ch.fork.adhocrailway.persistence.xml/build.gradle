@@ -3,4 +3,7 @@ apply plugin: 'maven-publish'
 dependencies {
     compile 'log4j:log4j:1.2.17'
     compile 'commons-io:commons-io:2.4'
+
+    compile project(':ch.fork.adhocrailway.persistence')
+    compile project(':ch.fork.adhocrailway.service')
 }
