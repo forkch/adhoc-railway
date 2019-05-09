@@ -34,8 +34,8 @@ subprojects {
     group = 'com.github.fork'
     version = '2.7.0-SNAPSHOT'
 
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     configurations {
         compileOnly
@@ -130,6 +130,7 @@ project(':ch.fork.adhocrailway.railway.brain') {
 
 project(':ch.fork.adhocrailway.railway.srcp') {
     dependencies {
+        compile project(':jsrcpc-lib')
         compile project(':ch.fork.adhocrailway.service')
         compile project(':ch.fork.adhocrailway.persistence')
     }

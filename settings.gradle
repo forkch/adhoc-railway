@@ -5,6 +5,6 @@ include 'ch.fork.adhocrailway.ui',
         'ch.fork.adhocrailway.persistence.xml',
         'ch.fork.adhocrailway.persistence.adhocserver',
         'ch.fork.adhocrailway.railway.brain',
-        'ch.fork.adhocrailway.railway.srcp'
-
+        'ch.fork.adhocrailway.railway.srcp',
+         'jsrcpc-lib'
 
