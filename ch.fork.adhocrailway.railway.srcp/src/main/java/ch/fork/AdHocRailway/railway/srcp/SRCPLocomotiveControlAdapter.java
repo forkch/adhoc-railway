@@ -15,7 +15,6 @@ import de.dermoba.srcp.model.locking.SRCPLockControl;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
 import de.dermoba.srcp.model.locomotives.*;
 import org.apache.log4j.Logger;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -127,7 +126,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
 
     @Override
     public void terminateAllLocomotives() {
-        throw new NotImplementedException();
+
     }
 
     @Override
