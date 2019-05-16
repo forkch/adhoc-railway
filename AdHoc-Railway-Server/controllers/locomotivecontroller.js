@@ -67,7 +67,7 @@ exports.updateLocomotiveGroup = function (locomotiveGroup, fn) {
 
     LocomotiveGroupModel.update({_id: locomotiveGroup.id},
         {'$set': {
-            'name': routeGroup.name
+            'name': locomotiveGroup.name
         }
         }, function (err) {
             if (!err) {
