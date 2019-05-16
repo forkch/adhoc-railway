@@ -1,5 +1,5 @@
 apply plugin: 'application'
-apply plugin: 'macAppBundle'
+apply plugin: 'edu.sc.seis.macAppBundle'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 macAppBundle {
@@ -87,112 +87,123 @@ task copyFiles(type: Copy, dependsOn: [jar]) {
     include('*.jar')
 }
 
-task signAll(dependsOn: [copyFiles]) << {
-    new File("${buildDir}/webstart/signed").mkdirs()
-    def libFiles = files { file("${buildDir}/webstart/lib").listFiles() }
-    libFiles.each {
-        ant.signjar(
-                destDir: "${buildDir}/webstart/signed",
-                alias: 'http://www.fork.ch',
-                jar: it,
-                keystore: "${projectDir}/src/jnlp/keys/forkch.keys",
-                storepass: 'forkch123',
-                preservelastmodified: 'true')
-    }
-}
-
-task generateJnlp(dependsOn: [signAll]) << {
-    File jnlpTemplateFile = new File("${projectDir}/src/jnlp/template/template.vm")
-    def root = new XmlParser().parse(jnlpTemplateFile)
-    def jnlpFileName = "${archivesBaseName}-${version}.jnlp"
-    def jnlpFileNameLatest = "${archivesBaseName}-latest.jnlp"
-    // Setting values in the jnlp template
-    // Setting root values
-    root.@codebase = 'http://adhocserver/adhoc-railway/artifacts'
-    root.@href = jnlpFileName
-    // Setting information values
-    def information = root.information[0]
-    def title = information.title[0]
-    def vendor = information.vendor[0]
-    title.setValue("AdHoc-Railway-GUI")
-    vendor.setValue("www.fork.ch")
-    def descriptionList = information.description
-    descriptionList.each {
-        it.setValue("Simple example of generating webstart files using gradle")
-    }
-    // Setting resources
-    def resource = root.resources[0]
-    def j2se = resource.j2se[0]
-    j2se.@version = "1.7+"
-    def collection = files { file("${buildDir}/webstart/lib").listFiles() }
-    def mainJar = "${archivesBaseName}-${version}.jar"
-    collection.each {
-        def resourceValues = [href: it.name]
-        if (mainJar == it.name) {
-            resourceValues = [href: it.name, main: 'true']
+task signAll(dependsOn: [copyFiles]) {
+    doLast {
+        new File("${buildDir}/webstart/signed").mkdirs()
+        def libFiles = files { file("${buildDir}/webstart/lib").listFiles() }
+        libFiles.each {
+            ant.signjar(
+                    destDir: "${buildDir}/webstart/signed",
+                    alias: 'http://www.fork.ch',
+                    jar: it,
+                    keystore: "${projectDir}/src/jnlp/keys/forkch.keys",
+                    storepass: 'forkch123',
+                    preservelastmodified: 'true')
         }
-        resource.appendNode('jar', resourceValues)
     }
-    // Setting the main class
-    def applicationDesc = root.'application-desc'[0]
-    applicationDesc.'@main-class' = "ch.fork.AdHocRailway.ui.AdHocRailway"
-    // Writing the jnlp file filled
-    File jnlpFile = new File("${buildDir}/webstart/signed/" + jnlpFileName)
-    File jnlpFileLatest = new File("${buildDir}/webstart/signed/" + jnlpFileNameLatest)
-    new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
-    new XmlNodePrinter(new PrintWriter(jnlpFileLatest)).print(root)
 }
 
-task generateJnlpLocal(dependsOn: [signAll]) << {
-    File jnlpTemplateFile = new File("${projectDir}/src/jnlp/template/template.vm")
-    def root = new XmlParser().parse(jnlpTemplateFile)
-    def jnlpFileName = "${archivesBaseName}-${version}.jnlp"
-    def jnlpFileNameLatest = "${archivesBaseName}-latest.jnlp"
-    // Setting values in the jnlp template
-    // Setting root values
-    // File CodeBase
-    //root.@codebase = 'file:/'+new File('webstart/signed').absolutePath
-    root.@codebase = '.'
-    // Hppt CodeBase
-    //root.@codebase = 'http://adhocserver/adhoc-railway/artifacts'
-    root.@href = jnlpFileName
-    // Setting information values
-    def information = root.information[0]
-    def title = information.title[0]
-    def vendor = information.vendor[0]
-    title.setValue("AdHoc-Railway-GUI")
-    vendor.setValue("www.fork.ch")
-    def descriptionList = information.description
-    descriptionList.each {
-        it.setValue("Simple example of generating webstart files using gradle")
-    }
-    // Setting resources
-    def resource = root.resources[0]
-    def j2se = resource.j2se[0]
-    j2se.@version = "1.7+"
-    def collection = files { file("${buildDir}/webstart/lib").listFiles() }
-    def mainJar = "${archivesBaseName}-${version}.jar"
-    collection.each {
-        def resourceValues = [href: it.name]
-        if (mainJar == it.name) {
-            resourceValues = [href: it.name, main: 'true']
+task generateJnlp(dependsOn: [signAll]) {
+    doLast {
+        File jnlpTemplateFile = new File("${projectDir}/src/jnlp/template/template.vm")
+        def root = new XmlParser().parse(jnlpTemplateFile)
+        def jnlpFileName = "${archivesBaseName}-${version}.jnlp"
+        def jnlpFileNameLatest = "${archivesBaseName}-latest.jnlp"
+        // Setting values in the jnlp template
+        // Setting root values
+        root.@codebase = 'http://adhocserver/adhoc-railway/artifacts'
+        root.@href = jnlpFileName
+        // Setting information values
+        def information = root.information[0]
+        def title = information.title[0]
+        def vendor = information.vendor[0]
+        title.setValue("AdHoc-Railway-GUI")
+        vendor.setValue("www.fork.ch")
+        def descriptionList = information.description
+        descriptionList.each {
+            it.setValue("Simple example of generating webstart files using gradle")
         }
-        resource.appendNode('jar', resourceValues)
+        // Setting resources
+        def resource = root.resources[0]
+        def j2se = resource.j2se[0]
+        j2se.@version = "1.7+"
+        def collection = files { file("${buildDir}/webstart/lib").listFiles() }
+        def mainJar = "${archivesBaseName}-${version}.jar"
+        collection.each {
+            def resourceValues = [href: it.name]
+            if (mainJar == it.name) {
+                resourceValues = [href: it.name, main: 'true']
+            }
+            resource.appendNode('jar', resourceValues)
+        }
+        // Setting the main class
+        def applicationDesc = root.'application-desc'[0]
+        applicationDesc.'@main-class' = "ch.fork.AdHocRailway.ui.AdHocRailway"
+        // Writing the jnlp file filled
+        File jnlpFile = new File("${buildDir}/webstart/signed/" + jnlpFileName)
+        File jnlpFileLatest = new File("${buildDir}/webstart/signed/" + jnlpFileNameLatest)
+        new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
+        new XmlNodePrinter(new PrintWriter(jnlpFileLatest)).print(root)
     }
-    // Setting the main class
-    def applicationDesc = root.'application-desc'[0]
-    applicationDesc.'@main-class' = "ch.fork.AdHocRailway.ui.AdHocRailway"
-    // Writing the jnlp file filled
-    File jnlpFile = new File("${buildDir}/webstart/signed/" + jnlpFileName)
-    File jnlpFileLatest = new File("${buildDir}/webstart/signed/" + jnlpFileNameLatest)
-    new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
-    new XmlNodePrinter(new PrintWriter(jnlpFileLatest)).print(root)
 }
 
-task generateWebStartFiles(dependsOn: [generateJnlp]) << {
-    println("Generating all webstart files in:webstart/signed")
+task generateJnlpLocal(dependsOn: [signAll]) {
+    doLast {
+        File jnlpTemplateFile = new File("${projectDir}/src/jnlp/template/template.vm")
+        def root = new XmlParser().parse(jnlpTemplateFile)
+        def jnlpFileName = "${archivesBaseName}-${version}.jnlp"
+        def jnlpFileNameLatest = "${archivesBaseName}-latest.jnlp"
+        // Setting values in the jnlp template
+        // Setting root values
+        // File CodeBase
+        //root.@codebase = 'file:/'+new File('webstart/signed').absolutePath
+        root.@codebase = '.'
+        // Hppt CodeBase
+        //root.@codebase = 'http://adhocserver/adhoc-railway/artifacts'
+        root.@href = jnlpFileName
+        // Setting information values
+        def information = root.information[0]
+        def title = information.title[0]
+        def vendor = information.vendor[0]
+        title.setValue("AdHoc-Railway-GUI")
+        vendor.setValue("www.fork.ch")
+        def descriptionList = information.description
+        descriptionList.each {
+            it.setValue("Simple example of generating webstart files using gradle")
+        }
+        // Setting resources
+        def resource = root.resources[0]
+        def j2se = resource.j2se[0]
+        j2se.@version = "1.7+"
+        def collection = files { file("${buildDir}/webstart/lib").listFiles() }
+        def mainJar = "${archivesBaseName}-${version}.jar"
+        collection.each {
+            def resourceValues = [href: it.name]
+            if (mainJar == it.name) {
+                resourceValues = [href: it.name, main: 'true']
+            }
+            resource.appendNode('jar', resourceValues)
+        }
+        // Setting the main class
+        def applicationDesc = root.'application-desc'[0]
+        applicationDesc.'@main-class' = "ch.fork.AdHocRailway.ui.AdHocRailway"
+        // Writing the jnlp file filled
+        File jnlpFile = new File("${buildDir}/webstart/signed/" + jnlpFileName)
+        File jnlpFileLatest = new File("${buildDir}/webstart/signed/" + jnlpFileNameLatest)
+        new XmlNodePrinter(new PrintWriter(jnlpFile)).print(root)
+        new XmlNodePrinter(new PrintWriter(jnlpFileLatest)).print(root)
+    }
 }
 
-task generateWebStartFilesLocal(dependsOn: [generateJnlpLocal]) << {
-    println("Generating all webstart files in:webstart/signed")
+
+task generateWebStartFiles(dependsOn: [generateJnlp]) {
+    doLast {
+        println("Generating all webstart files in:webstart/signed")
+    }
+}
+
+task generateWebStartFilesLocal(dependsOn: [generateJnlpLocal]) {
+    doLast {
+        println("Generating all webstart files in:webstart/signed")
+    }
 }
