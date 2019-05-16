@@ -6,9 +6,9 @@
         "start": "node app.js"
     },
     "dependencies": {
-        "restify": "",
+        "restify": "4.1.1",
         "socket.io": "1.3.5",
-        "mongoose": "",
+        "mongoose": "4.9.8",
         "colorize": "",
         "ain2": "",
         "bunyan ": ""
