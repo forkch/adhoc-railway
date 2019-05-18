@@ -46,7 +46,7 @@ public abstract class LocomotiveController implements
         taskExecutor.enqueueEmergencyTask(runnable);
     }
 
-    protected void cancelTasks() {
+    public void cancelTasks() {
         taskExecutor.cancelTasks();
     }
 

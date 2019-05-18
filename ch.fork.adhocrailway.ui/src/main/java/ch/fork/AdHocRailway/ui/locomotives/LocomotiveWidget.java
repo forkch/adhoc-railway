@@ -1,14 +1,14 @@
 /*------------------------------------------------------------------------
- * 
- * copyright : (C) 2008 by Benjamin Mueller 
+ *
+ * copyright : (C) 2008 by Benjamin Mueller
  * email     : news@fork.ch
  * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
- * 
+ *
  *----------------------------------------------------------------------*/
 
 /*------------------------------------------------------------------------
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * Free Software Foundation; either version 2 of the License, or
@@ -55,9 +55,9 @@ import static ch.fork.AdHocRailway.ui.utils.ImageTools.createImageIconFromIconSe
 public class LocomotiveWidget extends JPanel implements
         LocomotiveChangeListener, LocomotiveManagerListener, LocomotiveSelectionPanel.OnLocomotiveSelectionListener {
 
-    public static final int INCREASE_STEPS_AFTER_MS = 500;
+    public static final int INCREASE_STEPS_AFTER_MS = 100;
     private static final Logger LOGGER = Logger.getLogger(LocomotiveWidget.class);
-    private static final long DISABLE_STEPS_AFTER_MS = 600;
+    private static final long DISABLE_STEPS_AFTER_MS = 200;
     private final int number;
     private final List<FunctionToggleButton> functionToggleButtons = new ArrayList<FunctionToggleButton>();
     private final JFrame frame;
@@ -115,7 +115,7 @@ public class LocomotiveWidget extends JPanel implements
     @Subscribe
     public void endImport(final EndImportEvent event) {
         disableListener = false;
-        if(isCurrentlyInUse()) {
+        if (isCurrentlyInUse()) {
             return;
         }
         locomotiveSelectionPanel.updateLocomotiveGroups();
@@ -507,7 +507,7 @@ public class LocomotiveWidget extends JPanel implements
             }
 
             if (myLocomotive != null && ctx.getRailwayDeviceManager().isConnected()
-                    ) {
+            ) {
                 resetLoco();
             }
 
@@ -586,7 +586,8 @@ public class LocomotiveWidget extends JPanel implements
 
     private class LocomotiveAccelerateAction extends LocomotiveControlAction {
 
-        private long lastReset = 0;
+        private long lastExecution = 0;
+        private long lastFastSteppingReset = 0;
         private long disableFastIn;
 
         @Override
@@ -594,15 +595,19 @@ public class LocomotiveWidget extends JPanel implements
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
 
-            if (lastReset == 0 || System.currentTimeMillis() > disableFastIn) {
-                lastReset = System.currentTimeMillis();
+
+            if(System.currentTimeMillis() - lastFastSteppingReset > 1000) {
+                locomotiveControl.cancelTasks();
+            }
+            if (lastFastSteppingReset == 0 || System.currentTimeMillis() > disableFastIn) {
+                lastFastSteppingReset = System.currentTimeMillis();
                 disableFastIn = (System.currentTimeMillis() + DISABLE_STEPS_AFTER_MS);
             }
 
-            long sinceLastReset = System.currentTimeMillis() - lastReset;
+            long sinceLastReset = System.currentTimeMillis() - lastFastSteppingReset;
 
             if (sinceLastReset > INCREASE_STEPS_AFTER_MS && System.currentTimeMillis() < disableFastIn) {
-                locomotiveControl.increaseSpeed(myLocomotive, 5);
+                locomotiveControl.increaseSpeed(myLocomotive, 10);
                 disableFastIn = (System.currentTimeMillis() + DISABLE_STEPS_AFTER_MS);
             } else {
                 locomotiveControl.increaseSpeed(myLocomotive, 2);
@@ -622,6 +627,9 @@ public class LocomotiveWidget extends JPanel implements
                 final LocomotiveController locomotiveControl,
                 final Locomotive myLocomotive) {
 
+            if(System.currentTimeMillis() - lastReset > 1000) {
+                locomotiveControl.cancelTasks();
+            }
             if (lastReset == 0 || System.currentTimeMillis() > disableFastIn) {
                 lastReset = System.currentTimeMillis();
                 disableFastIn = (System.currentTimeMillis() + DISABLE_STEPS_AFTER_MS);
@@ -629,8 +637,9 @@ public class LocomotiveWidget extends JPanel implements
 
             long sinceLastReset = System.currentTimeMillis() - lastReset;
 
+
             if (sinceLastReset > INCREASE_STEPS_AFTER_MS && System.currentTimeMillis() < disableFastIn) {
-                locomotiveControl.decreaseSpeed(myLocomotive, 5);
+                    locomotiveControl.decreaseSpeed(myLocomotive, 8);
                 disableFastIn = System.currentTimeMillis() + DISABLE_STEPS_AFTER_MS;
             } else {
                 locomotiveControl.decreaseSpeed(myLocomotive, 2);
@@ -706,23 +715,9 @@ public class LocomotiveWidget extends JPanel implements
             try {
                 final LocomotiveController locomotiveControl = ctx
                         .getLocomotiveControl();
-//                if (lockButtonState) {
-//                    final boolean succeeded = locomotiveControl
-//                            .acquireLock(myLocomotive);
-//                    lockButton.setSelected(succeeded);
-//                } else {
-//                    if (locomotiveControl.isLockedByMe(myLocomotive)) {
-//                        final boolean succeeded = !locomotiveControl
-//                                .releaseLock(myLocomotive);
-//                        lockButton.setSelected(succeeded);
-//                    } else {
-//                        lockButton.setSelected(true);
-//                    }
-//                }
                 speedBar.requestFocus();
             } catch (final ControllerException ex) {
                 ctx.getMainApp().handleException(ex);
-//                lockButton.setSelected(lockButtonState);
             }
             updateWidget();
         }
