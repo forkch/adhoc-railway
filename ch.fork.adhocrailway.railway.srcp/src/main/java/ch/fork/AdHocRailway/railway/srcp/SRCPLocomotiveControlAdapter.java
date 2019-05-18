@@ -138,7 +138,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         try {
             locomotiveControl.terminate(sLocomotive);
         } catch (SRCPModelException e) {
-            throw new ControllerException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error: " + e.getMessage(), e);
         }
     }
 
@@ -181,7 +181,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
             LocomotiveHelper.toggleDirection(locomotive);
 
         } catch (final SRCPModelException e) {
-            throw new ControllerException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error: " + e.getMessage(), e);
         }
     }
 
@@ -202,7 +202,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         } catch (final SRCPLockingException e) {
             throw new ControllerException("Locomotive Locked", e);
         } catch (final SRCPModelException e) {
-            throw new ControllerException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error: " + e.getMessage(), e);
         }
     }
 
@@ -217,7 +217,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         } catch (final SRCPLockingException e) {
             throw new ControllerException("Locomotive Locked", e);
         } catch (final SRCPModelException e) {
-            throw new ControllerException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error: " + e.getMessage(), e);
         }
     }
 
@@ -233,7 +233,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         } catch (final SRCPLockingException e) {
             throw new ControllerException("Locomotive Locked", e);
         } catch (final SRCPModelException e) {
-            throw new ControllerException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error: " + e.getMessage(), e);
         }
     }
 
@@ -245,7 +245,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
         } catch (final SRCPLockingException e) {
             throw new ControllerException("Locomotive Locked", e);
         } catch (final SRCPModelException e) {
-            throw new ControllerException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error: " + e.getMessage(), e);
         }
     }
 
@@ -346,7 +346,7 @@ public class SRCPLocomotiveControlAdapter extends LocomotiveController
                     .convertFromMultipartFunctions(locomotive.getType(),
                             srcpFunctions));
         } catch (final SRCPModelException e) {
-            throw new ControllerException("Locomotive Error", e);
+            throw new ControllerException("Locomotive Error: " + e.getMessage(), e);
         }
     }
 
