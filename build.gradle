@@ -34,7 +34,7 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'maven-publish'
     group = 'com.github.fork'
-    version = '2.7.0-SNAPSHOT'
+    version = '2.7.1-SNAPSHOT'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -48,9 +48,9 @@ subprojects {
     }
 
     repositories {
+        mavenLocal()
         mavenCentral()
         maven { url "https://jitpack.io" }
-        mavenLocal()
         maven { url '/home/ben/Code/forkch-mvn-repo' }
     }
 
@@ -79,7 +79,7 @@ subprojects {
             }
         }
         repositories {
-            maven { url '/home/fork/Code/forkch-mvn-repo' }
+            maven { url '/home/ben/Code/forkch-mvn-repo' }
         }
     }
 }
