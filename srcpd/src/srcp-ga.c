@@ -102,7 +102,11 @@ static int queue_len(bus_t busnumber)
 /* maybe, 1 element in the queue cannot be used.. */
 static int queue_isfull(bus_t busnumber)
 {
-    return queue_len(busnumber) >= QUEUELEN - 1;
+
+    int queueLength = queue_len(busnumber);
+    syslog_bus(busnumber, DBG_INFO,
+               "GA queue length: %d", queueLength);
+    return queueLength >= QUEUELEN - 1;
 }
 
 /** liefert naechsten Eintrag oder -1, setzt fifo pointer neu! */

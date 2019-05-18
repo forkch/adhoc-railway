@@ -9,7 +9,7 @@
 #include "srcp-info.h"
 #include "syslogmessage.h"
 
-#define QUEUELEN 50
+#define QUEUELEN 200
 
 /* current state */
 static struct _GL gl[MAX_BUSES];
@@ -22,23 +22,23 @@ static int out[MAX_BUSES], in[MAX_BUSES];
 
 /* forward declaration of internal functions */
 static int queue_len(bus_t busnumber);
+
 static int queue_isfull(bus_t busnumber);
 
 /**
  * isValidGL: checks if a given address could be a valid GL.
  * returns true or false. false, if not all requirements are met.
  */
-int isValidGL(bus_t busnumber, int addr)
-{
+int isValidGL(bus_t busnumber, int addr) {
     /* in bus 0 GL are not allowed */
     /* only num_buses are configured */
     /* number of GL is set */
     /* address must be greater 0 */
     /* but not more than the maximum address on that bus */
     return (busnumber <= num_buses &&
-           gl[busnumber].numberOfGl > 0 &&
-           addr > 0 &&
-           addr <= gl[busnumber].numberOfGl);
+            gl[busnumber].numberOfGl > 0 &&
+            addr > 0 &&
+            addr <= gl[busnumber].numberOfGl);
 }
 
 /**
@@ -47,19 +47,16 @@ int isValidGL(bus_t busnumber, int addr)
             =0: no GL on that bus
       >0: maximum address
  */
-int getMaxAddrGL(bus_t busnumber)
-{
+int getMaxAddrGL(bus_t busnumber) {
     if (busnumber <= num_buses) {
         return gl[busnumber].numberOfGl;
-    }
-    else {
+    } else {
         return -1;
     }
 }
 
 /* es gibt Decoder fr 14, 27, 28 und 128 FS */
-static int calcspeed(int vs, int vmax, int n_fs)
-{
+static int calcspeed(int vs, int vmax, int n_fs) {
     int rs;
 
     if (vmax == 0)
@@ -85,12 +82,10 @@ static int calcspeed(int vs, int vmax, int n_fs)
 /* checks whether a GL is already initialized or not
  * returns false even, if it is an invalid address!
  */
-bool isInitializedGL(bus_t busnumber, int addr)
-{
+bool isInitializedGL(bus_t busnumber, int addr) {
     if (isValidGL(busnumber, addr)) {
         return (gl[busnumber].glstate[addr].state == 1);
-    }
-    else {
+    } else {
         return false;
     }
 }
@@ -101,8 +96,7 @@ bool isInitializedGL(bus_t busnumber, int addr)
 */
 
 int enqueueGL(bus_t busnumber, int addr, int dir, int speed, int maxspeed,
-              const int f)
-{
+              const int f) {
     int result;
     struct timeval akt_time;
 
@@ -130,18 +124,18 @@ int enqueueGL(bus_t busnumber, int addr, int dir, int speed, int maxspeed,
                 gl[busnumber].glstate[addr].state;
 
         queue[busnumber][in[busnumber]].protocol =
-            gl[busnumber].glstate[addr].protocol;
+                gl[busnumber].glstate[addr].protocol;
         queue[busnumber][in[busnumber]].protocolversion =
-            gl[busnumber].glstate[addr].protocolversion;
+                gl[busnumber].glstate[addr].protocolversion;
 
         queue[busnumber][in[busnumber]].speed =
-            calcspeed(speed, maxspeed, gl[busnumber].glstate[addr].n_fs);
+                calcspeed(speed, maxspeed, gl[busnumber].glstate[addr].n_fs);
 
         queue[busnumber][in[busnumber]].n_fs =
-            gl[busnumber].glstate[addr].n_fs;
+                gl[busnumber].glstate[addr].n_fs;
 
         queue[busnumber][in[busnumber]].n_func =
-            gl[busnumber].glstate[addr].n_func;
+                gl[busnumber].glstate[addr].n_func;
 
         queue[busnumber][in[busnumber]].direction = dir;
         queue[busnumber][in[busnumber]].funcs = f;
@@ -164,19 +158,16 @@ int enqueueGL(bus_t busnumber, int addr, int dir, int speed, int maxspeed,
         /* Restart thread to send GL command */
         resume_bus_thread(busnumber);
         return SRCP_OK;
-    }
-    else {
+    } else {
         return SRCP_WRONGVALUE;
     }
 }
 
-int queue_GL_isempty(bus_t busnumber)
-{
+int queue_GL_isempty(bus_t busnumber) {
     return (in[busnumber] == out[busnumber]);
 }
 
-static int queue_len(bus_t busnumber)
-{
+static int queue_len(bus_t busnumber) {
     if (in[busnumber] >= out[busnumber])
         return in[busnumber] - out[busnumber];
     else
@@ -184,14 +175,15 @@ static int queue_len(bus_t busnumber)
 }
 
 /* maybe, 1 element in the queue cannot be used.. */
-static int queue_isfull(bus_t busnumber)
-{
-    return queue_len(busnumber) >= QUEUELEN - 1;
+static int queue_isfull(bus_t busnumber) {
+    int queueLength = queue_len(busnumber);
+    syslog_bus(busnumber, DBG_INFO,
+               "GL queue length: %d", queueLength);
+    return queueLength >= QUEUELEN - 1;
 }
 
 /** liefert n�hsten Eintrag oder -1, setzt fifo pointer neu! */
-int dequeueNextGL(bus_t busnumber, gl_state_t * l)
-{
+int dequeueNextGL(bus_t busnumber, gl_state_t *l) {
     if (in[busnumber] == out[busnumber])
         return -1;
 
@@ -202,13 +194,11 @@ int dequeueNextGL(bus_t busnumber, gl_state_t * l)
     return out[busnumber];
 }
 
-int cacheGetGL(bus_t busnumber, int addr, gl_state_t * l)
-{
+int cacheGetGL(bus_t busnumber, int addr, gl_state_t *l) {
     if (isInitializedGL(busnumber, addr)) {
         *l = gl[busnumber].glstate[addr];
         return SRCP_OK;
-    }
-    else {
+    } else {
         return SRCP_NODATA;
     }
 }
@@ -219,8 +209,7 @@ int cacheGetGL(bus_t busnumber, int addr, gl_state_t * l)
  * within the SRCP SET Command code.
  * It respects the TERM function.
 */
-int cacheSetGL(bus_t busnumber, int addr, gl_state_t l)
-{
+int cacheSetGL(bus_t busnumber, int addr, gl_state_t l) {
     if (isValidGL(busnumber, addr)) {
         char msg[1000];
         gl[busnumber].glstate[addr].direction = l.direction;
@@ -235,21 +224,18 @@ int cacheSetGL(bus_t busnumber, int addr, gl_state_t l)
                      gl[busnumber].glstate[addr].tv.tv_usec / 1000,
                      busnumber, addr);
             bzero(&gl[busnumber].glstate[addr], sizeof(gl_state_t));
-        }
-        else {
+        } else {
             cacheInfoGL(busnumber, addr, msg);
         }
         enqueueInfoMessage(msg);
         return SRCP_OK;
-    }
-    else {
+    } else {
         return SRCP_WRONGVALUE;
     }
 }
 
 int cacheInitGL(bus_t busnumber, int addr, const char protocol,
-                int protoversion, int n_fs, int n_func, unsigned long int uuid)
-{
+                int protoversion, int n_fs, int n_func, unsigned long int uuid) {
     int rc = SRCP_WRONGVALUE;
     if (isValidGL(busnumber, addr)) {
         char msg[1000];
@@ -268,7 +254,7 @@ int cacheInitGL(bus_t busnumber, int addr, const char protocol,
         tgl.id = addr;
         tgl.uuid = uuid;
         if (buses[busnumber].init_gl_func)
-            rc = (*buses[busnumber].init_gl_func) (busnumber, &tgl);
+            rc = (*buses[busnumber].init_gl_func)(busnumber, &tgl);
         if (rc == SRCP_OK) {
 
             syslog_bus(busnumber, DBG_INFO, "init ok");
@@ -278,24 +264,21 @@ int cacheInitGL(bus_t busnumber, int addr, const char protocol,
             enqueueInfoMessage(msg);
             enqueueGL(busnumber, addr, 0, 0, 1, 0);
         }
-    }
-    else {
+    } else {
         rc = SRCP_WRONGVALUE;
     }
     return rc;
 }
 
 
-int cacheTermGL(bus_t busnumber, int addr)
-{
+int cacheTermGL(bus_t busnumber, int addr) {
 
     syslog_bus(busnumber, DBG_INFO, "cacheTermGL");
     if (isInitializedGL(busnumber, addr)) {
         gl[busnumber].glstate[addr].state = 2;
         enqueueGL(busnumber, addr, 0, 0, 1, 0);
         return SRCP_OK;
-    }
-    else {
+    } else {
         return SRCP_NODATA;
     }
 }
@@ -303,19 +286,16 @@ int cacheTermGL(bus_t busnumber, int addr)
 /*
  * RESET a GL to its defaults
  */
-int resetGL(bus_t busnumber, int addr)
-{
+int resetGL(bus_t busnumber, int addr) {
     if (isInitializedGL(busnumber, addr)) {
         enqueueGL(busnumber, addr, 0, 0, 1, 0);
         return SRCP_OK;
-    }
-    else {
+    } else {
         return SRCP_NODATA;
     }
 }
 
-int cacheDescribeGL(bus_t busnumber, int addr, char *msg)
-{
+int cacheDescribeGL(bus_t busnumber, int addr, char *msg) {
     if (isInitializedGL(busnumber, addr)) {
         sprintf(msg, "%lu.%.3lu 101 INFO %ld GL %d %c %d %d %d\n",
                 gl[busnumber].glstate[addr].inittime.tv_sec,
@@ -325,20 +305,18 @@ int cacheDescribeGL(bus_t busnumber, int addr, char *msg)
                 gl[busnumber].glstate[addr].n_fs,
                 gl[busnumber].glstate[addr].n_func);
         return SRCP_INFO;
-    }
-    else {
+    } else {
         strcpy(msg, "");
         return SRCP_NODATA;
     }
 }
 
-int cacheInfoGL(bus_t busnumber, int addr, char *msg)
-{
+int cacheInfoGL(bus_t busnumber, int addr, char *msg) {
     int i;
     char line[MAXSRCPLINELEN];
 
     /*get address of specified GL data*/
-    gl_state_t* glptr = &gl[busnumber].glstate[addr];
+    gl_state_t *glptr = &gl[busnumber].glstate[addr];
     if (glptr == NULL)
         return SRCP_NODATA;
 
@@ -351,7 +329,7 @@ int cacheInfoGL(bus_t busnumber, int addr, char *msg)
 
         for (i = 1; i < glptr->n_func; i++) {
             snprintf(line, sizeof(line), "%s %d", msg,
-                    ((glptr->funcs >> i) & 0x01) ? 1 : 0);
+                     ((glptr->funcs >> i) & 0x01) ? 1 : 0);
             strcpy(msg, line);
         }
         snprintf(line, sizeof(line), "%s\n", msg);
@@ -364,8 +342,7 @@ int cacheInfoGL(bus_t busnumber, int addr, char *msg)
 
 /* has to use a semaphore, must be atomized! */
 int cacheLockGL(bus_t busnumber, int addr, long int duration,
-                sessionid_t sessionid)
-{
+                sessionid_t sessionid) {
     char msg[256];
 
     if (isInitializedGL(busnumber, addr)) {
@@ -377,30 +354,25 @@ int cacheLockGL(bus_t busnumber, int addr, long int duration,
             describeLOCKGL(busnumber, addr, msg);
             enqueueInfoMessage(msg);
             return SRCP_OK;
-        }
-        else {
+        } else {
             return SRCP_DEVICELOCKED;
         }
-    }
-    else {
+    } else {
         return SRCP_WRONGVALUE;
     }
 }
 
-int cacheGetLockGL(bus_t busnumber, int addr, sessionid_t * session_id)
-{
+int cacheGetLockGL(bus_t busnumber, int addr, sessionid_t *session_id) {
     if (isInitializedGL(busnumber, addr)) {
 
         *session_id = gl[busnumber].glstate[addr].locked_by;
         return SRCP_OK;
-    }
-    else {
+    } else {
         return SRCP_WRONGVALUE;
     }
 }
 
-int describeLOCKGL(bus_t bus, int addr, char *reply)
-{
+int describeLOCKGL(bus_t bus, int addr, char *reply) {
     if (isInitializedGL(bus, addr)) {
 
         sprintf(reply, "%lu.%.3lu 100 INFO %ld LOCK GL %d %ld %ld\n",
@@ -409,14 +381,12 @@ int describeLOCKGL(bus_t bus, int addr, char *reply)
                 bus, addr, gl[bus].glstate[addr].lockduration,
                 gl[bus].glstate[addr].locked_by);
         return SRCP_OK;
-    }
-    else {
+    } else {
         return SRCP_WRONGVALUE;
     }
 }
 
-int cacheUnlockGL(bus_t busnumber, int addr, sessionid_t sessionid)
-{
+int cacheUnlockGL(bus_t busnumber, int addr, sessionid_t sessionid) {
     if (isInitializedGL(busnumber, addr)) {
 
         if (gl[busnumber].glstate[addr].locked_by == sessionid
@@ -430,12 +400,10 @@ int cacheUnlockGL(bus_t busnumber, int addr, sessionid_t sessionid)
                     busnumber, addr, sessionid);
             enqueueInfoMessage(msg);
             return SRCP_OK;
-        }
-        else {
+        } else {
             return SRCP_DEVICELOCKED;
         }
-    }
-    else {
+    } else {
         return SRCP_WRONGVALUE;
     }
 }
@@ -443,8 +411,7 @@ int cacheUnlockGL(bus_t busnumber, int addr, sessionid_t sessionid)
 /**
  * called when a session is terminating
  */
-void unlock_gl_bysessionid(sessionid_t sessionid)
-{
+void unlock_gl_bysessionid(sessionid_t sessionid) {
     bus_t i;
     int j;
     int number;
@@ -463,8 +430,7 @@ void unlock_gl_bysessionid(sessionid_t sessionid)
 /**
  * called once per second to unlock
  */
-void unlock_gl_bytime(void)
-{
+void unlock_gl_bytime(void) {
     bus_t i;
     int j;
     int number;
@@ -483,8 +449,7 @@ void unlock_gl_bytime(void)
 /**
  * First initialisation after program start up
  */
-int startup_GL(void)
-{
+int startup_GL(void) {
     int result;
     bus_t i;
 
@@ -509,8 +474,7 @@ int startup_GL(void)
  * allocates memory to hold all the data
  * called from the configuration routines
  */
-int init_GL(bus_t busnumber, int number)
-{
+int init_GL(bus_t busnumber, int number) {
     int i;
     syslog_bus(busnumber, DBG_INFO, "init GL: %d", number);
     if (busnumber >= MAX_BUSES)
@@ -528,8 +492,7 @@ int init_GL(bus_t busnumber, int number)
     return 0;
 }
 
-void debugGL(bus_t busnumber, int start, int end)
-{
+void debugGL(bus_t busnumber, int start, int end) {
     gl_state_t *gls;
     int i;
 
