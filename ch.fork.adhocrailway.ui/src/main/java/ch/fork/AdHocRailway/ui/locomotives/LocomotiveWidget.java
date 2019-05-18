@@ -278,7 +278,7 @@ public class LocomotiveWidget extends JPanel implements
                     fn.getShortDescription(myLocomotive.getType() == LocomotiveType.DCC));
             functionToggleButtons.add(functionButton);
             functionButton.addActionListener(new LocomotiveFunctionAction(functionButton, fn.getNumber()));
-            functionButton.setToolTipText(fn.getDescription());
+//            functionButton.setToolTipText(fn.getDescription());
 
             functionButton.setFocusable(false);
             functionsPanel.add(functionButton, params);

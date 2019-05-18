@@ -136,8 +136,8 @@ public class TurnoutWidget extends JPanel implements TurnoutChangeListener, Rout
 
         final String turnoutDescription = TurnoutHelper
                 .getTurnoutDescription(turnout);
-        setToolTipText(turnoutDescription);
-        turnoutCanvas.setToolTipText(turnoutDescription);
+        //setToolTipText(turnoutDescription);
+        //turnoutCanvas.setToolTipText(turnoutDescription);
 
         linkRouteAndAddListener();
 

@@ -191,7 +191,7 @@ public class LocomotiveSelectionPanel extends JPanel {
             final String locomotiveDescriptionToolTip = LocomotiveHelper
                     .getLocomotiveDescription(selectedLocomotive);
 
-            setToolTipText(locomotiveDescriptionToolTip);
+            //setToolTipText(locomotiveDescriptionToolTip);
 
             locomotiveImage.setIcon(LocomotiveImageHelper.getLocomotiveIconScaledToHeight(selectedLocomotive, LOCOMOTIVE_IMAGE_HEIGHT));
             selectionListener.onLocomotiveSelected(selectedLocomotive);

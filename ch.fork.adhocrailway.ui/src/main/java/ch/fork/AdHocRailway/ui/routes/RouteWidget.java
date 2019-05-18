@@ -124,7 +124,7 @@ public class RouteWidget extends JPanel implements RouteChangeListener {
         routingProgress.setMinimum(0);
         routingProgress.setValue(0);
         routingProgress.setMaximum(getRouteItemCount());
-        setToolTipText(RouteHelper.getRouteDescription(route));
+        //setToolTipText(RouteHelper.getRouteDescription(route));
     }
 
     private int getRouteItemCount() {
