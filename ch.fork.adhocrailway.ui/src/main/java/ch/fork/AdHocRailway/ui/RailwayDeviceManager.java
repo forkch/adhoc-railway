@@ -238,7 +238,7 @@ public class RailwayDeviceManager implements CommandDataListener,
         final RouteController routeControl = RailwayDeviceFactory
                 .createRouteController(railwayDevive, turnoutControl, appContext.getTurnoutManager());
         routeControl.setRoutingDelay(Preferences.getInstance().getIntValue(
-                PreferencesKeys.ROUTING_DELAY, 250));
+                PreferencesKeys.ROUTING_DELAY, 500));
         appContext.setRouteControl(routeControl);
     }
 
