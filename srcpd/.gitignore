@@ -1,3 +1,11 @@
+Makefile.in
+compile
+man/de/Makefile.in
+man/Makefile.in
+src/config.h
+src/config.h.in
+src/Makefile.in
+
 *.o
 srcpd
 .deps

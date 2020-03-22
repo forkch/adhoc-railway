@@ -9,24 +9,4 @@ logs
 *.swp
 
 *.iml
-srcpd/debian/
-
-srcpd/cmake-build-debug/
-
-srcpd/CMakeLists\.txt
-
 AdHoc-Railway-Brain/\.settings/\.svn/
-
-srcpd/src/config\.h
-
-srcpd/src/Makefile\.in
-
-srcpd/compile
-
-srcpd/Makefile\.in
-
-srcpd/man/Makefile\.in
-
-srcpd/man/de/Makefile\.in
-
-*.in
