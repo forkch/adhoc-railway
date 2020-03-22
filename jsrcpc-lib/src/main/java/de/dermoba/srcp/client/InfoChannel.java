@@ -32,10 +32,11 @@ import de.dermoba.srcp.devices.listener.POWERInfoListener;
 import de.dermoba.srcp.devices.listener.SERVERInfoListener;
 import de.dermoba.srcp.devices.listener.SMInfoListener;
 import de.dermoba.srcp.model.locomotives.SRCPLocomotiveDirection;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InfoChannel implements Runnable {
-	private static final Logger LOGGER = Logger.getLogger(InfoChannel.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(InfoChannel.class);
 
 	private static final int INFO_SET = 100;
 

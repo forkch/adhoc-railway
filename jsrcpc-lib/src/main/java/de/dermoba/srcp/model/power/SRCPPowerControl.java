@@ -22,7 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPException;
@@ -43,7 +44,7 @@ import de.dermoba.srcp.model.SRCPModelException;
  * @author mnl
  */
 public class SRCPPowerControl implements POWERInfoListener, Constants {
-	private static Logger logger = Logger.getLogger(SRCPPowerControl.class);
+	private static Logger logger = LoggerFactory.getLogger(SRCPPowerControl.class);
 
 	private static SRCPPowerControl instance;
 	private SRCPSession session;

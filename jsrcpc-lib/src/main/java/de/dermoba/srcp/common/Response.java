@@ -3,7 +3,8 @@
  */
 package de.dermoba.srcp.common;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.dermoba.srcp.common.exception.SRCPUnsufficientDataException;
 
@@ -15,7 +16,7 @@ import de.dermoba.srcp.common.exception.SRCPUnsufficientDataException;
  */
 public class Response {
 
-	private static Logger LOGGER = Logger.getLogger(Response.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(Response.class);
 
 	private double timestamp;
 	private int code;

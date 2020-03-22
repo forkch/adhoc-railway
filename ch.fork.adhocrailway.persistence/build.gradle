@@ -1,7 +1,10 @@
-apply plugin: 'maven-publish'
+plugins {
+    id 'java-library'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
-
-
-    compile project(':ch.fork.adhocrailway.model')
+    api project(':ch.fork.adhocrailway.model')
 }

@@ -1,9 +1,11 @@
-apply plugin: 'maven-publish'
+plugins {
+    id 'java-library'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
-    testCompile 'junit:junit:4.+'
-    testCompile 'org.mockito:mockito-all:1.9.5'
-    compile 'log4j:log4j:1.2.17'
-    
-    compile project(':ch.fork.adhocrailway.persistence')
+
+    api project(':ch.fork.adhocrailway.persistence')
 }

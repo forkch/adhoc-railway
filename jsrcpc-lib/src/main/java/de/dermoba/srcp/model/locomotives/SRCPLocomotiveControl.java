@@ -26,7 +26,8 @@ import de.dermoba.srcp.devices.listener.GLInfoListener;
 import de.dermoba.srcp.model.*;
 import de.dermoba.srcp.model.locking.SRCPLockChangeListener;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -38,8 +39,7 @@ import java.util.*;
 public class SRCPLocomotiveControl implements GLInfoListener, Constants {
     @SuppressWarnings("rawtypes")
     private static final Map<Class, LocomotiveStrategy> LOCOMOTIVE_STRATEGIES = new HashMap<Class, LocomotiveStrategy>();
-    private static Logger LOGGER = Logger
-            .getLogger(SRCPLocomotiveControl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(SRCPLocomotiveControl.class);
     private static SRCPLocomotiveControl instance;
 
     static {

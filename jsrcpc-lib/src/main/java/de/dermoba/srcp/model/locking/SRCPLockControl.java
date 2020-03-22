@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import de.dermoba.srcp.model.locomotives.SRCPLocomotive;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.common.exception.SRCPDeviceLockedException;
@@ -35,7 +36,7 @@ import de.dermoba.srcp.model.Constants;
 import de.dermoba.srcp.model.SRCPAddress;
 
 public class SRCPLockControl implements LOCKInfoListener, Constants {
-	private static Logger logger = Logger.getLogger(SRCPLockControl.class);
+	private static Logger logger = LoggerFactory.getLogger(SRCPLockControl.class);
 	private static SRCPLockControl instance = null;
 	private SRCPSession session;
 

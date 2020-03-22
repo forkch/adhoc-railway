@@ -3,83 +3,71 @@
  * From:
  * http://ryanharter.com/blog/2013/07/30/automatic-versioning-with-git-and-gradle/
  */
-def getVersionName = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'describe', '--tags', '--always'
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
-}
+//def getVersionName = { ->
+//    def stdout = new ByteArrayOutputStream()
+//    exec {
+//        commandLine 'git', 'describe', '--tags', '--always'
+//        standardOutput = stdout
+//    }
+//    return stdout.toString().trim()
+//}
 
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
+allprojects {
+
+
+    buildscript {
+        repositories {
+            maven {
+                url "https://plugins.gradle.org/m2/"
+            }
+            jcenter()
+            mavenCentral()
         }
-        jcenter()
-        mavenCentral()
-    }
-    dependencies {
-        classpath "edu.sc.seis:macAppBundle:2.3.0"
-        classpath 'com.github.jengelman.gradle.plugins:shadow:5.0.0'
+        dependencies {
+            classpath "edu.sc.seis:macAppBundle:2.3.0"
+            classpath 'com.github.jengelman.gradle.plugins:shadow:5.0.0'
+        }
     }
 }
-
 subprojects {
 
     apply plugin: 'java'
-    apply plugin: 'eclipse'
-    apply plugin: 'maven'
-    apply plugin: 'idea'
-    apply plugin: 'maven-publish'
+//    apply plugin: 'idea'
+//    apply plugin: 'maven'
+//    apply plugin: 'maven-publish'
     group = 'com.github.fork'
     version = '2.7.1-SNAPSHOT'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
-    configurations {
-        compileOnly
-    }
-    configurations.all {
-        // check for updates every build
-        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-    }
+//
+//    sourceCompatibility = 1.8
+//    targetCompatibility = 1.8
 
     repositories {
-        mavenLocal()
         mavenCentral()
         maven { url "https://jitpack.io" }
-        maven { url '/home/ben/Code/forkch-mvn-repo' }
+        mavenLocal()
     }
 
-    //Include compileOnly for compilation
-    sourceSets.main.compileClasspath += configurations.compileOnly
+    dependencies {
+        implementation 'org.slf4j:slf4j-api:1.7.30'
+        implementation 'ch.qos.logback:logback-core:1.2.3'
+        implementation 'org.apache.commons:commons-lang3:3.1'
+        implementation 'com.google.guava:guava:14.0.1'
 
-    // optional: if using 'eclipse' plugin
-    eclipse {
-        classpath {
-            plusConfigurations += configurations.compileOnly
-        }
+        testImplementation 'junit:junit:4.+'
+        testImplementation 'org.mockito:mockito-all:1.9.5'
     }
 
-    task sourceJar(type: Jar) {
-        from sourceSets.main.allJava
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-
-                artifact sourceJar {
-                    classifier "sources"
-                }
-            }
-        }
-        repositories {
-            maven { url '/home/ben/Code/forkch-mvn-repo' }
-        }
-    }
+//    publishing {
+//        publications {
+//            mavenJava(MavenPublication) {
+//                from components.java
+//
+//                artifact sourceJar {
+//                    classifier "sources"
+//                }
+//            }
+//        }
+//        repositories {
+//        }
+//    }
 }

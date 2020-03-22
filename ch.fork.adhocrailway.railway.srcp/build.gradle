@@ -1,13 +1,18 @@
+plugins {
+    id 'java-library'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
-    testCompile 'junit:junit:4.+'
-    testCompile 'org.mockito:mockito-all:1.9.5'
-//    compile 'com.github.forkch:jsrcpc:master-e476e4a090-1'
+    testImplementation 'junit:junit:4.+'
+    testImplementation 'org.mockito:mockito-all:1.9.5'
+//    implementation 'com.github.forkch:jsrcpc:master-e476e4a090-1'
 
-    compile 'de.dermoba:jsrcpc:2.7.1-SNAPSHOT'
+//    implementation 'de.dermoba:jsrcpc:2.7.1-SNAPSHOT'
 
-//    compile project(':jsrcpc-lib')
-    compile project(':ch.fork.adhocrailway.service')
-    compile project(':ch.fork.adhocrailway.persistence')
+    api project(':jsrcpc-lib')
+    api project(':ch.fork.adhocrailway.service')
 
 }

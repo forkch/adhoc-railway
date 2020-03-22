@@ -1,18 +1,23 @@
-apply plugin: 'maven-publish'
+plugins {
+    id 'java-library'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
 
-    //compile fileTree(dir: 'lib', includes: ['*.jar'])
-    compile 'org.json:json:20090211'
-    compile 'com.squareup.retrofit2:retrofit:2.0.2'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
-    compile 'log4j:log4j:1.2.17'
-    compile('io.socket:socket.io-client:0.7.0') {
+    //implementation fileTree(dir: 'lib', includes: ['*.jar'])
+    implementation 'org.json:json:20090211'
+    implementation 'com.squareup.retrofit2:retrofit:2.0.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.0.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+    implementation('io.socket:socket.io-client:0.7.0') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
 
-    compile project(':ch.fork.adhocrailway.persistence')
+    api project(':ch.fork.adhocrailway.persistence')
+    api project(':ch.fork.adhocrailway.model')
 
 }

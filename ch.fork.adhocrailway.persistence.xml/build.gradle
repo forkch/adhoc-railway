@@ -1,9 +1,13 @@
-apply plugin: 'maven-publish'
+plugins {
+    id 'java-library'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
-    compile 'log4j:log4j:1.2.17'
-    compile 'commons-io:commons-io:2.4'
+    implementation 'commons-io:commons-io:2.4'
+    implementation 'com.thoughtworks.xstream:xstream:1.4.4'
 
-    compile project(':ch.fork.adhocrailway.persistence')
-    compile project(':ch.fork.adhocrailway.service')
+    api project(':ch.fork.adhocrailway.service')
 }

@@ -1,8 +1,15 @@
+plugins {
+    id 'java-library'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 dependencies {
 
-    testCompile 'junit:junit:4.+'
-    testCompile 'org.mockito:mockito-all:1.9.5'
-    compile 'org.scream3r:jssc:2.8.0'
+    testImplementation 'junit:junit:4.+'
+    testImplementation 'org.mockito:mockito-all:1.9.5'
+    implementation 'org.scream3r:jssc:2.8.0'
 
-    compile project(':ch.fork.adhocrailway.service')
+    implementation project(':ch.fork.adhocrailway.service')
 }

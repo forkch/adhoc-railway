@@ -27,7 +27,7 @@ public abstract class LOCO extends AbstractCRCFActor {
 	 * Handle following messages:
 	 * GET V_MAX
 	 * 
-	 * @see de.dermoba.crcf.model.AbstractCRCFActor#CRCFget(double, int, int, int, String, UUID, String)
+	 * @see AbstractCRCFActor#CRCFget(double, int, int, int, String, UUID, String)
 	 */
 	@Override
 	public void CRCFget(double timestamp, int bus, int sendTo, int replyTo,

@@ -6,11 +6,12 @@ import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GL;
 import de.dermoba.srcp.model.SRCPAddress;
 import de.dermoba.srcp.model.locking.SRCPLockControl;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultLocomotiveStrategy extends LocomotiveStrategy {
 
-    private static final Logger LOGGER = org.apache.log4j.Logger.getLogger(DefaultLocomotiveStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultLocomotiveStrategy.class);
 
     @Override
     public void setSpeed(final SRCPLocomotive locomotive, SRCPLocomotiveDirection direction, final int speed,

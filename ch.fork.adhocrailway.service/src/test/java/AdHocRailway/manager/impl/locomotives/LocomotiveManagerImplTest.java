@@ -1,10 +1,10 @@
 package AdHocRailway.manager.impl.locomotives;
 
-import ch.fork.AdHocRailway.manager.LocomotiveManagerListener;
-import ch.fork.AdHocRailway.manager.impl.LocomotiveManagerImpl;
-import ch.fork.AdHocRailway.model.locomotives.Locomotive;
-import ch.fork.AdHocRailway.model.locomotives.LocomotiveGroup;
-import ch.fork.AdHocRailway.services.LocomotiveService;
+import ch.fork.adhocrailway.manager.LocomotiveManagerListener;
+import ch.fork.adhocrailway.manager.impl.LocomotiveManagerImpl;
+import ch.fork.adhocrailway.model.locomotives.Locomotive;
+import ch.fork.adhocrailway.model.locomotives.LocomotiveGroup;
+import ch.fork.adhocrailway.services.LocomotiveService;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

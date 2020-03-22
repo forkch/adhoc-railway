@@ -4,12 +4,14 @@
  */
 package de.dermoba.srcp.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.dermoba.srcp.common.SocketReader;
 import de.dermoba.srcp.common.SocketWriter;
 import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.common.exception.SRCPHostNotFoundException;
 import de.dermoba.srcp.common.exception.SRCPIOException;
-import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -19,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CommandChannel {
-    private static final Logger LOGGER = Logger.getLogger(CommandChannel.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandChannel.class);
     private final Set<CommandDataListener> listeners;
     String serverName = null;
 

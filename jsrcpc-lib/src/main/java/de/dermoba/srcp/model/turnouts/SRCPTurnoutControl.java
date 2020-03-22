@@ -24,7 +24,8 @@ import de.dermoba.srcp.common.exception.SRCPException;
 import de.dermoba.srcp.devices.GA;
 import de.dermoba.srcp.devices.listener.GAInfoListener;
 import de.dermoba.srcp.model.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SRCPTurnoutControl implements GAInfoListener {
-    private static final Logger LOGGER = Logger.getLogger(SRCPTurnoutControl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SRCPTurnoutControl.class);
     private static SRCPTurnoutControl instance;
 
     private final List<SRCPTurnoutChangeListener> listeners = new ArrayList<SRCPTurnoutChangeListener>();
@@ -227,7 +228,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
         } catch (final SRCPDeviceLockedException x1) {
             throw new SRCPTurnoutLockedException(Constants.ERR_LOCKED, x1);
         } catch (final SRCPException e) {
-            LOGGER.error(e);
+            LOGGER.error("failed to toggle", e);
             throw new SRCPTurnoutException(Constants.ERR_TOGGLE_FAILED, e);
         }
     }
@@ -260,7 +261,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
         } catch (final SRCPDeviceLockedException x1) {
             throw new SRCPTurnoutLockedException(Constants.ERR_LOCKED, x1);
         } catch (final SRCPException e) {
-            LOGGER.error(e);
+            LOGGER.error("failed to toggle", e);
             throw new SRCPTurnoutException(Constants.ERR_TOGGLE_FAILED, e);
         }
     }
@@ -304,7 +305,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
         } catch (final SRCPDeviceLockedException x1) {
             throw new SRCPTurnoutLockedException(Constants.ERR_LOCKED, x1);
         } catch (final SRCPException e) {
-            LOGGER.error(e);
+            LOGGER.error("failed to toggle", e);
             throw new SRCPTurnoutException(Constants.ERR_TOGGLE_FAILED, e);
         }
     }
@@ -595,7 +596,7 @@ public class SRCPTurnoutControl implements GAInfoListener {
                     turnout.setGA(ga);
                     turnout.setInitialized(true);
                 } catch (final SRCPException e) {
-                    LOGGER.error(e);
+                    LOGGER.error("failed to toggle", e);
                     throw new SRCPTurnoutException(Constants.ERR_INIT_FAILED, e);
                 }
             }

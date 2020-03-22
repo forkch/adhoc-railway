@@ -22,13 +22,14 @@ import de.dermoba.srcp.client.SRCPSession;
 import de.dermoba.srcp.model.Constants;
 import de.dermoba.srcp.model.NoSessionException;
 import de.dermoba.srcp.model.turnouts.SRCPTurnoutException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SRCPRouteControl {
-	private static final Logger LOGGER = Logger.getLogger(SRCPRouteControl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SRCPRouteControl.class);
 	private static SRCPRouteControl instance;
 
 	private final List<SRCPRouteChangeListener> listeners;

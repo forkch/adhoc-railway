@@ -1,0 +1,136 @@
+/*------------------------------------------------------------------------
+ * 
+ * copyright : (C) 2008 by Benjamin Mueller 
+ * email     : news@fork.ch
+ * website   : http://sourceforge.net/projects/adhocrailway
+ * version   : $Id: MemoryLocomotivePersistence.java 154 2008-03-28 14:30:54Z fork_ch $
+ * 
+ *----------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ *----------------------------------------------------------------------*/
+
+package ch.fork.adhocrailway.persistence.xml.impl;
+
+import ch.fork.adhocrailway.model.locomotives.Locomotive;
+import ch.fork.adhocrailway.model.locomotives.LocomotiveGroup;
+import ch.fork.adhocrailway.services.LocomotiveService;
+import ch.fork.adhocrailway.services.LocomotiveServiceListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
+
+public class XMLLocomotiveService implements LocomotiveService {
+
+    private static final Logger logger = LoggerFactory.getLogger(XMLLocomotiveService.class);
+
+    private final SortedSet<Locomotive> locomotives = new TreeSet<Locomotive>();
+
+    private final SortedSet<LocomotiveGroup> locomotiveGroups = new TreeSet<LocomotiveGroup>();
+
+    private LocomotiveServiceListener listener;
+
+    public XMLLocomotiveService() {
+        logger.info("FileLocomotivePersistence loaded");
+    }
+
+    @Override
+    public void clear() {
+        locomotives.clear();
+        locomotiveGroups.clear();
+    }
+
+    @Override
+    public void addLocomotive(final Locomotive locomotive) {
+        locomotives.add(locomotive);
+        locomotive.setId(UUID.randomUUID().toString());
+        listener.locomotiveAdded(locomotive);
+    }
+
+    @Override
+    public void removeLocomotive(final Locomotive locomotive) {
+        locomotives.remove(locomotive);
+        listener.locomotiveRemoved(locomotive);
+
+    }
+
+    @Override
+    public void updateLocomotive(final Locomotive locomotive) {
+        locomotives.remove(locomotive);
+        locomotives.add(locomotive);
+
+        listener.locomotiveUpdated(locomotive);
+    }
+
+    @Override
+    public void getAllLocomotiveGroups() {
+        listener.locomotivesUpdated(locomotiveGroups);
+    }
+
+    @Override
+    public void addLocomotiveGroup(final LocomotiveGroup group) {
+        locomotiveGroups.add(group);
+        group.setId(UUID.randomUUID().toString());
+        listener.locomotiveGroupAdded(group);
+    }
+
+    @Override
+    public void removeLocomotiveGroup(final LocomotiveGroup group) {
+        locomotiveGroups.remove(group);
+        listener.locomotiveGroupRemoved(group);
+    }
+
+    @Override
+    public void updateLocomotiveGroup(final LocomotiveGroup group) {
+        locomotiveGroups.remove(group);
+        locomotiveGroups.add(group);
+        listener.locomotiveGroupUpdated(group);
+    }
+
+    @Override
+    public void init(final LocomotiveServiceListener listener) {
+        this.listener = listener;
+
+    }
+
+    @Override
+    public void disconnect() {
+
+    }
+
+    @Override
+    public void addLocomotiveGroups(SortedSet<LocomotiveGroup> groups) {
+        for (LocomotiveGroup group : groups) {
+            addLocomotiveGroup(group);
+        }
+    }
+
+    public void loadLocomotiveGroupsFromXML(
+            final SortedSet<LocomotiveGroup> groups) {
+        locomotiveGroups.clear();
+        locomotives.clear();
+        if (groups != null) {
+            for (final LocomotiveGroup locomotiveGroup : groups) {
+                locomotiveGroup.init();
+                locomotiveGroups.add(locomotiveGroup);
+                for (final Locomotive locomotive : locomotiveGroup.getLocomotives()) {
+                    locomotive.init();
+                    locomotive.setGroup(locomotiveGroup);
+
+                    locomotives.add(locomotive);
+                }
+            }
+        }
+        listener.locomotivesUpdated(locomotiveGroups);
+    }
+
+}

@@ -1,6 +1,11 @@
+
 apply plugin: 'application'
+apply plugin: 'java'
 apply plugin: 'edu.sc.seis.macAppBundle'
 apply plugin: 'com.github.johnrengelman.shadow'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 macAppBundle {
     mainClassName = "ch.fork.AdHocRailway.ui.AdHocRailway"
@@ -15,26 +20,22 @@ archivesBaseName = 'adhocrailway-gui'
 mainClassName = "ch.fork.AdHocRailway.ui.AdHocRailway"
 
 dependencies {
-    compile 'jgoodies:forms:1.0.5'
-    compile 'com.jgoodies:jgoodies-common:1.4.0'
-    compile 'com.jgoodies:looks:2.2.2'
-    compile 'com.jgoodies:binding:2.0.6'
-    compile 'com.miglayout:miglayout:3.7.4'
-    compile 'commons-beanutils:commons-beanutils:1.8.3'
-    compile 'javax.jmdns:jmdns:3.4.1'
-    compile 'org.imgscalr:imgscalr-lib:4.2'
-    compile 'com.google.guava:guava:14.0.1'
-    compile 'commons-cli:commons-cli:1.2'
-    compile 'commons-codec:commons-codec:1.9'
-    compile 'commons-io:commons-io:2.4'
+    implementation 'jgoodies:forms:1.0.5'
+    implementation 'com.jgoodies:jgoodies-common:1.4.0'
+    implementation 'com.jgoodies:looks:2.2.2'
+    implementation 'com.jgoodies:binding:2.0.6'
+    implementation 'com.miglayout:miglayout:3.7.4'
+    implementation 'commons-beanutils:commons-beanutils:1.8.3'
+    implementation 'javax.jmdns:jmdns:3.4.1'
+    implementation 'org.imgscalr:imgscalr-lib:4.2'
+    implementation 'commons-cli:commons-cli:1.2'
+    implementation 'commons-codec:commons-codec:1.9'
+    implementation 'commons-io:commons-io:2.4'
 
-    testCompile 'junit:junit:4.+'
-
-    compile project(':ch.fork.adhocrailway.persistence.xml')
-    compile project(':ch.fork.adhocrailway.persistence.adhocserver')
-    compile project(':ch.fork.adhocrailway.railway.srcp')
-    compile project(':ch.fork.adhocrailway.railway.brain')
-    compile project(':ch.fork.adhocrailway.model')
+    implementation project(':ch.fork.adhocrailway.persistence.xml')
+    implementation project(':ch.fork.adhocrailway.persistence.adhocserver')
+    implementation project(':ch.fork.adhocrailway.railway.srcp')
+    implementation project(':ch.fork.adhocrailway.railway.brain')
 }
 
 jar {

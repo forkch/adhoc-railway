@@ -1,7 +1,7 @@
 package AdHocRailway.controllers;
 
-import ch.fork.AdHocRailway.controllers.SimulatedMFXLocomotivesHelper;
-import ch.fork.AdHocRailway.model.locomotives.LocomotiveType;
+import ch.fork.adhocrailway.controllers.SimulatedMFXLocomotivesHelper;
+import ch.fork.adhocrailway.model.locomotives.LocomotiveType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
