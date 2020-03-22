@@ -1,14 +1,14 @@
 /*------------------------------------------------------------------------
- * 
- * copyright : (C) 2008 by Benjamin Mueller 
+ *
+ * copyright : (C) 2008 by Benjamin Mueller
  * email     : news@fork.ch
  * website   : http://sourceforge.net/projects/adhocrailway
  * version   : $Id$
- * 
+ *
  *----------------------------------------------------------------------*/
 
 /*------------------------------------------------------------------------
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * Free Software Foundation; either version 2 of the License, or
@@ -18,13 +18,74 @@
 
 package ch.fork.adhocrailway.ui;
 
+import com.google.common.eventbus.Subscribe;
+import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
+import com.jgoodies.looks.plastic.PlasticLookAndFeel;
+
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Set;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JSeparator;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
+
 import ch.fork.adhocrailway.controllers.PowerController;
 import ch.fork.adhocrailway.controllers.RailwayDevice;
 import ch.fork.adhocrailway.model.AdHocRailwayException;
 import ch.fork.adhocrailway.persistence.xml.XMLServiceHelper;
 import ch.fork.adhocrailway.technical.configuration.Preferences;
 import ch.fork.adhocrailway.technical.configuration.PreferencesKeys;
-import ch.fork.adhocrailway.ui.bus.events.*;
+import ch.fork.adhocrailway.ui.bus.events.CommandLogEvent;
+import ch.fork.adhocrailway.ui.bus.events.ConnectedToPersistenceEvent;
+import ch.fork.adhocrailway.ui.bus.events.ConnectedToRailwayEvent;
+import ch.fork.adhocrailway.ui.bus.events.EndImportEvent;
+import ch.fork.adhocrailway.ui.bus.events.InitProceededEvent;
+import ch.fork.adhocrailway.ui.bus.events.StartImportEvent;
+import ch.fork.adhocrailway.ui.bus.events.UpdateMainTitleEvent;
 import ch.fork.adhocrailway.ui.context.AdHocRailwayIface;
 import ch.fork.adhocrailway.ui.context.ApplicationContext;
 import ch.fork.adhocrailway.ui.context.EditingModeEvent;
@@ -35,33 +96,12 @@ import ch.fork.adhocrailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.adhocrailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
 import ch.fork.adhocrailway.ui.utils.GlobalKeyShortcutHelper;
 import ch.fork.adhocrailway.ui.utils.ImageTools;
-import ch.fork.adhocrailway.ui.widgets.*;
-import com.google.common.eventbus.Subscribe;
-import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
-import com.jgoodies.looks.plastic.PlasticLookAndFeel;
-
-import ch.qos.logback.core.FileAppender;
+import ch.fork.adhocrailway.ui.widgets.ErrorPanel;
+import ch.fork.adhocrailway.ui.widgets.SimpleInternalFrame;
+import ch.fork.adhocrailway.ui.widgets.SmallToolbarButton;
+import ch.fork.adhocrailway.ui.widgets.SplashWindow;
+import ch.fork.adhocrailway.ui.widgets.TrackControlPanel;
 import de.dermoba.srcp.model.locking.SRCPLockingException;
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Set;
 
 import static ch.fork.adhocrailway.ui.utils.ImageTools.createImageIconFromCustom;
 import static ch.fork.adhocrailway.ui.utils.ImageTools.createImageIconFromIconSet;
@@ -135,6 +175,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
     private PersistenceManager persistenceManager;
     private RailwayDeviceManager railwayDeviceManager;
     private JMenuItem brainTerminalItem;
+    private Window previousFullScreenWindow;
 
     public AdHocRailway(org.apache.commons.cli.CommandLine parsedCommandLine) {
 
@@ -521,7 +562,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         fileMenu.add(new JSeparator());
         fileMenu.add(exitItem);
 
-		/* EDIT */
+        /* EDIT */
         final JMenu editMenu = new JMenu("Edit");
         enableEditing = new JCheckBoxMenuItem(new EnableEditingAction());
 
@@ -552,7 +593,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         editMenu.add(new JSeparator());
         editMenu.add(preferencesItem);
 
-		/* DAEMON */
+        /* DAEMON */
         final JMenu daemonMenu = new JMenu("Device");
         daemonConnectItem = new JMenuItem(new ConnectAction());
         daemonConnectItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
@@ -579,7 +620,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         daemonMenu.add(daemonPowerOffItem);
         daemonMenu.add(brainTerminalItem);
 
-		/* VIEW */
+        /* VIEW */
         final JMenu viewMenu = new JMenu("View");
         //final JMenuItem refreshItem = new JMenuItem(new RefreshAction());
         final JMenuItem fullscreenItem = new JMenuItem(
@@ -588,7 +629,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         //viewMenu.add(refreshItem);
         viewMenu.add(fullscreenItem);
 
-		/* HELP */
+        /* HELP */
         addMenu(fileMenu);
         addMenu(editMenu);
         addMenu(daemonMenu);
@@ -628,7 +669,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         fileToolBar.add(saveToolBarButton);
         fileToolBar.add(exitToolBarButton);
 
-		/* DIGITAL */
+        /* DIGITAL */
         final JToolBar digitalToolBar = new JToolBar();
         turnoutsToolBarButton = new SmallToolbarButton(new TurnoutAction());
         routesToolBarButton = new SmallToolbarButton(new RoutesAction());
@@ -642,7 +683,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         digitalToolBar.add(locomotivesToolBarButton);
         digitalToolBar.add(preferencesToolBarButton);
 
-		/* SRCP / AdHoc-Brain */
+        /* SRCP / AdHoc-Brain */
         final JToolBar daemonToolBar = new JToolBar();
         railwayDeviceLabelLabel = new JLabel();
 
@@ -658,7 +699,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         daemonToolBar.add(disconnectToolBarButton);
         daemonToolBar.add(brainTerminalToolBarButton);
 
-		/* VIEWS */
+        /* VIEWS */
         final JToolBar viewToolBar = new JToolBar();
         //final JButton refreshButton = new SmallToolbarButton(
         //        new RefreshAction());
@@ -668,7 +709,7 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
         // viewToolBar.add(refreshButton);
         viewToolBar.add(toggleFullscreenButton);
 
-		/* ERROR */
+        /* ERROR */
         final ErrorPanel errorPanel = new ErrorPanel();
         ExceptionProcessor.getInstance(errorPanel);
 
@@ -1238,25 +1279,18 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
         @Override
         public void actionPerformed(final ActionEvent e) {
+            GraphicsEnvironment graphics =
+                    GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice device = graphics.getDefaultScreenDevice();
             if (fullscreen) {
-                dispose();
-                menuBar.setVisible(true);
-                setResizable(true);
-                setUndecorated(false);
-                setSize(1000, 700);
-                setVisible(true);
-                toggleFullscreenButton
-                        .setIcon(createImageIconFromIconSet("view-fullscreen.png"));
+                device.setFullScreenWindow(previousFullScreenWindow);
+                toggleFullscreenButton.setIcon(createImageIconFromIconSet("view-fullscreen.png"));
                 fullscreen = false;
             } else {
-                dispose();
-                menuBar.setVisible(false);
-                setResizable(false);
-                setUndecorated(true);
-                setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
-                setVisible(true);
-                toggleFullscreenButton
-                        .setIcon(createImageIconFromIconSet("view-fullscreen.png"));
+
+                previousFullScreenWindow = device.getFullScreenWindow();
+                device.setFullScreenWindow(AdHocRailway.this);
+                toggleFullscreenButton.setIcon(createImageIconFromIconSet("view-fullscreen.png"));
                 fullscreen = true;
             }
         }
