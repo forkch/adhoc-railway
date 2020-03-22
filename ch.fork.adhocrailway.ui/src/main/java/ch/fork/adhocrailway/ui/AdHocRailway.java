@@ -94,6 +94,7 @@ import ch.fork.adhocrailway.ui.locomotives.configuration.LocomotiveConfiguration
 import ch.fork.adhocrailway.ui.power.PowerControlPanel;
 import ch.fork.adhocrailway.ui.routes.configuration.RoutesConfigurationDialog;
 import ch.fork.adhocrailway.ui.turnouts.configuration.TurnoutConfigurationDialog;
+import ch.fork.adhocrailway.ui.utils.FrameMonitor;
 import ch.fork.adhocrailway.ui.utils.GlobalKeyShortcutHelper;
 import ch.fork.adhocrailway.ui.utils.ImageTools;
 import ch.fork.adhocrailway.ui.widgets.ErrorPanel;
@@ -179,6 +180,9 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
 
     public AdHocRailway(org.apache.commons.cli.CommandLine parsedCommandLine) {
 
+        System.setProperty("awt.useSystemAAFontSettings", "on");
+        System.setProperty("swing.aatext", "true");
+
         if (!SystemUtils.IS_OS_MAC_OSX) {
             setTitle(TITLE);
         }
@@ -240,6 +244,8 @@ public class AdHocRailway extends JFrame implements AdHocRailwayIface,
             });
             pack();
             setLocationByPlatform(true);
+            FrameMonitor.registerFrame(this, AdHocRailway.class.getName(),
+                    0, 0, 500, 400);
             setVisible(true);
         } catch (final Exception e) {
             handleException(e);
