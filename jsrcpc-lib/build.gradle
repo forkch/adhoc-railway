@@ -1,15 +1,9 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    implementation 'org.slf4j:slf4j-api:1.7.30'
-    implementation 'ch.qos.logback:logback-core:1.2.3'
-    implementation 'org.apache.commons:commons-lang3:3.1'
-
-    testImplementation 'junit:junit:4.+'
-    testImplementation 'org.mockito:mockito-all:1.9.5'
 }
