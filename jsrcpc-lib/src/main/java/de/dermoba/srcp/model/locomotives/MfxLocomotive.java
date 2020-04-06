@@ -19,11 +19,28 @@ public class MfxLocomotive extends SRCPLocomotive {
         this.functionCount = FUNCTION_COUNT;
         this.functions = new boolean[FUNCTION_COUNT];
         this.drivingSteps = drivingSteps;
-        params = new String[4];
+        params = new String[21];    /* 2020-04-03 m2  params array-size changed from 4 to 21 */
         params[0] = "" + 1;
         params[1] = "" + drivingSteps;
         params[2] = "" + 16;
         params[3] = "" + mfxUid;
+        params[4] = "\"loki\"";  /* Lok-Name */
+        params[5] = "" + 0; /* F1 */
+        params[6] = "" + 0; /* F2 */
+        params[7] = "" + 0;
+        params[8] = "" + 0;
+        params[9] = "" + 0;
+        params[10] = "" + 0;
+        params[11] = "" + 0;
+        params[12] = "" + 0;
+        params[13] = "" + 0;
+        params[14] = "" + 0;
+        params[15] = "" + 0;
+        params[16] = "" + 0;
+        params[17] = "" + 0;
+        params[18] = "" + 0;
+        params[19] = "" + 0;    /* F15 */
+        params[20] = "" + 0;    /* F16 */
     }
 
     @Override
