@@ -1,0 +1,194 @@
+/* src/config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Activate IP V6 */
+#undef ENABLE_IPV6
+
+/* Define to 1 if you have the <dev/ppbus/ppi.h> header file. */
+#undef HAVE_DEV_PPBUS_PPI_H
+
+/* Define to 1 if you have the <errno.h> header file. */
+#undef HAVE_ERRNO_H
+
+/* Define to 1 if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
+
+/* define to 1 if you have the getaddrinfo function */
+#undef HAVE_GETADDRINFO
+
+/* Define to 1 if you have the `gettimeofday' function. */
+#undef HAVE_GETTIMEOFDAY
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `bcm2835' library (-lbcm2835). */
+#undef HAVE_LIBBCM2835
+
+/* Define to 1 if you have the `ioperm' library (-lioperm). */
+#undef HAVE_LIBIOPERM
+
+/* Define to 1 if you have the <linux/i2c-dev.h> header file. */
+#undef HAVE_LINUX_I2C_DEV_H
+
+/* Define to 1 if you have the <linux/serial.h> header file. */
+#undef HAVE_LINUX_SERIAL_H
+
+/* Define to 1 if you have the <linux/spi/spidev.h> header file. */
+#undef HAVE_LINUX_SPI_SPIDEV_H
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <netdb.h> header file. */
+#undef HAVE_NETDB_H
+
+/* Define if you have POSIX threads libraries and header files. */
+#undef HAVE_PTHREAD
+
+/* Define to 1 if you have the <pthread.h> header file. */
+#undef HAVE_PTHREAD_H
+
+/* Define to 1 if you have the <pwd.h> header file. */
+#undef HAVE_PWD_H
+
+/* Define to 1 if you have the <signal.h> header file. */
+#undef HAVE_SIGNAL_H
+
+/* Define to 1 if you have the `socket' function. */
+#undef HAVE_SOCKET
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the <syslog.h> header file. */
+#undef HAVE_SYSLOG_H
+
+/* Define to 1 if you have the <sys/fileo.h> header file. */
+#undef HAVE_SYS_FILEO_H
+
+/* Define to 1 if you have the <sys/io.h> header file. */
+#undef HAVE_SYS_IO_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <termios.h> header file. */
+#undef HAVE_TERMIOS_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* define this to include own cfmakeraw() */
+#undef NO_CFMAKERAW
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Define to necessary symbol if this constant uses a non-standard name on
+   your system. */
+#undef PTHREAD_CREATE_JOINABLE
+
+/* Raspberry PI found */
+#undef RASPBERRYPI
+
+/* Raspberry PI 1 Board Version 1 found */
+#undef RASPBERRYPI_BOARD_V1
+
+/* Raspberry PI 1 Board Version 2 found */
+#undef RASPBERRYPI_BOARD_V2
+
+/* Raspberry PI Model 2, 3 or Zero found */
+#undef RASPBERRYPI_MODEL_2_3
+
+/* Define as the return type of signal handlers (`int' or `void'). */
+#undef RETSIGTYPE
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* define to 1 if you want ddl support */
+#undef USE_DDL
+
+/* define to 1 if you want ddl-MCP support */
+#undef USE_DDLMCP
+
+/* define to 1 if you want ddl-s88 support */
+#undef USE_DDLS88
+
+/* define to 1 if you want hsi-88 support */
+#undef USE_HSI88
+
+/* define to 1 if you want i2c-dev support */
+#undef USE_I2C
+
+/* define to 1 if you want intellibox support */
+#undef USE_IB
+
+/* define to 1 if you want li100 (RS232 + USB) support */
+#undef USE_LI100
+
+/* define to 1 if you want loconet support */
+#undef USE_LOCONET
+
+/* define to 1 if you want loopback support */
+#undef USE_LOOPBACK
+
+/* define to 1 if you want m605x support */
+#undef USE_M605X
+
+/* define to 1 if you want selectrix support */
+#undef USE_SELECTRIX
+
+/* define to 1 if you want XBee support */
+#undef USE_XBEE
+
+/* define to 1 if you want zimo support */
+#undef USE_ZIMO
+
+/* Version number of package */
+#undef VERSION
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
+
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
+#undef inline
+#endif
+
+/* Define to `int' if <sys/types.h> does not define. */
+#undef pid_t

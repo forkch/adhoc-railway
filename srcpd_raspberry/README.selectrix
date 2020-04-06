@@ -1,0 +1,198 @@
+Author: Gerard van der Sel, et al 
+Datum: Mai 2005 
+Version: SRCP 2.0.8 (pre version), Selectrix 1.0.0
+Licence: GPL v2 for the whole package 
+
+Purpose:
+In this document the differences between a Maerklin/Intellibox and
+Selectrix control center is explained and the consequences for the SRCP
+implementation with the Selectrix protocol (SX_bus only).
+In the sources selectrix.c and selectrix.h is a translation module
+programmed that the bit command normal with Maerklin and Intellibox
+translates to a byte transport. Different elements are treated
+different. But an implementation of the GL, GA and FB commands of SRCP
+is done.
+
+GL (controlling an engine) translation:
+A GL on SCRP is on a Maerklin/Intellibox system the same as on a
+Selectrix system. It is on all systems a multiple bit command. A
+Selectrix decoder accepts the following command:
+
+- Bit 4 � bit 0:	Speed of the engine (0 = stop, 31 = max speed)
+- Bit 5:		Direction of the engine (0 = forward, 1 = backward)
+- Bit 6:		Light on/off (0 = off, 1 = on)
+- Bit 7:		Function on/off (0 = off, 1 = on) 
+
+With the SRCP the command for an engine would be:
+SET busnumber GL engineaddress direction speed light function where:
+
+busnumber		Number of the Selectrix bus
+engineaddress		Address of the engine on the SX-bus
+direction		Direction of the engine (2= emergency stop)
+speed			Speed of the engine
+light			State of the engine lights
+function 		State of the engine function
+
+GA (controlling switches and signals) translation:
+A GA on SCRP is on a Maerklin/Intellibox system a one bit instruction.
+Every switch or signal can be addressed individually. After a predefined
+time the switch must be turned off. On the SX-bus (Selectrix)
+8 switches are controlled in one action. The switch controller turns
+the switch command off.
+
+In the SCRP server the switch turn off command is generated from
+software. The client doesn't have to turn off the switches. This makes
+the implementation of the switches as follows:
+
+SET busnumber GA switchcontroller switchport switchvalue, where:
+
+busnumber	     Number of the Selectrix bus
+switchcontroller     Address of switch controller on the SX-bus
+switchport	     Number from 1 to 8 (giving the number of port the
+                     switch is connected to)
+switchvalue          0 Normal, <>0 Thrown
+
+FB (Feedback contacts from track) translation:
+A FB on SCRP is on a Maerklin/Intellibox system a bitstream
+(packets of 16 bits), which is read from the controller with a byte
+instruction. This is in SCRP converted to a one bit instruction. On a
+Selectrix system it is also a byte which is located on the SX-bus. A
+'bitstream' of 8 bits is read from the SX-bus. An other 'bitstream'
+is read from the SX-bus at a different address.
+
+In the SRCP several FB contacts are translated to single
+contacts. They are located in a big row. To let the Selectrix
+implementation make such a stream there has to be a further
+initialization to be done. The SX-bus addresses of the feedback contacts
+have to be given to the SCRP server. This is done by the command
+
+  INIT <busnumber> FB <addressfeedback> S <numberfeedback>
+
+addressfeedback:  Physical address on SX-bus
+numberfeedback:    Number from 1 to 112. There may be gaps between the
+                   numbers.
+if addressfeedback is -1 then the configuration from the xml file is taken 
+and the process of obtaining feedback status is started. No further 
+initialisation is requered.
+
+The feedbacks are checked by:
+
+  INFO <busnumber> FB <feedbacknumber>
+or
+  GET <busnumber> FB <feedbacknumber>
+
+Implementation:
+In the SRCP server the SX-bus is in an array in the structure Selectrix
+data. Every action with the SX-bus is done after reading the other bits
+of the target address. The byte send to the SX-bus is also placed in the
+array, so the array is up to date. This is done inside the IO thread,
+to make the data in the array thread-save.
+In a second array the addresses of the feedback modules are stored.
+In a separate counter the number of feedback modules is counted.
+The thread will process the data to and from the message queue.
+
+Example:
+
+Layout:
+    ----------------------
+   /        S3 |-O        \
+  /                        \ S4
+ |                          | _
+ |                          | |
+  \  O-| S1                /  O
+W1 \----------------------/ W2
+    \ O-| S2             /
+     --------------------
+
+Used hardware:
+66800: CC2000 - Selectrix control centre
+66842: Communication interface to SX-bus (19200 baud)
+66820: Feedback controller (address 100)
+66820: Feedback controller (address 101)
+66828: Function decoder    (address 50, switches)
+66828: Function decoder    (address 51, 4 times a 3 aspect signals
+                           (green-yellow-red))
+
+Two trains on the layout with decoders at addresses 5 and 10.
+
+Configuration file for srcpd:
+<?xml version="1.0"?>
+<srcpd version="2.0">
+  <bus number="0">
+    <server>
+      <tcp-port>4303</tcp-port>
+      <pid-file>/var/run/srcpd.pid</pid-file>
+      <username>nobody</username>
+      <groupname>nogroup</groupname>
+    </server>
+    <verbosity>1</verbosity>
+  </bus>
+  <bus number="1">
+    <selectrix>
+      <number_gl>10</number_gl>
+      <number_ga>112</number_ga>
+      <number_fb>2</number_fb>
+      <controller>CC2000</controller>
+      <ports>
+        <port>100</port>
+        <port>101</port>
+      </ports>
+    </selectrix>
+    <device>/dev/ttyS0</device>
+    <use_watchdog>yes</use_watchdog>
+    <verbosity>1</verbosity>
+    <auto_power_on>yes</auto_power_on>
+    <speed>19200</speed>
+   </bus>
+</srcpd>
+
+
+Initialisation (srcpd):
+
+GL:
+SRCPD command: INIT 1 GL 5 S 1 31 2
+SRCPD command: INIT 1 GL 10 S 1 31 2
+
+GA:
+SRCPD command: INIT 1 GA 50
+SRCPD command: INIT 1 GA 51
+
+FB:
+SRCPD command: INIT 1 FB -1 S 0
+
+Driving (srcpd):
+
+GL:
+Engine with address 5 is set to:
+  speed step 7, forward, light on, function off.
+SRCPD command: SET 1 GL 5 1 7 31 1 0
+
+Engine with address 10 is set to:
+  speed step 27, reverse, light off, function on.
+SRCPD command: SET 1 GL 10 0 27 31 0 1
+
+GA, switch:
+W1 thrown:
+SRCPD command: SET 1 GA 50 1 1 0
+W2 normal:
+SRCPD command: SET 1 GA 50 2 0 0
+
+GA, signal (red= 00, yellow= 10, green= 11): 
+S1 red:
+SRCPD command: SET 1 GA 51 1 0 0
+SRCPD command: SET 1 GA 51 2 0 0
+S2 green:
+SRCPD command: SET 1 GA 51 3 1 0
+SRCPD command: SET 1 GA 51 4 1 0
+S3 yellow:
+SRCPD command: SET 1 GA 51 5 1 0
+SRCPD command: SET 1 GA 51 6 0 0
+S4 red:
+SRCPD command: SET 1 GA 51 7 0 0
+SRCPD command: SET 1 GA 51 8 0 0
+
+FB:
+Reading feedback contact 2 at address 100:
+SRCPD command: GET 1 FB 2
+Reading feedback contact 4 at address 101:
+SRCPD command: GET 1 FB 12

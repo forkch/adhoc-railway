@@ -1,0 +1,63 @@
+In diesem Dokument werde ich die Unterschiede der FreeBSD Portierung
+beschreiben. Da die einzelnen Module teilweise spezielle Kerneltreiber
+von Linux vorraussetzen, ist eine komplette Uebertragung nicht immer
+moeglich.
+
+Falls Aenderungen zum "Original" autauchen, werden sie bei den jeweiligen
+Modulen erwaehnt.
+
+									MAM
+
+-------------------------------------------------------------------------
+Hauptprogramm:
+
+	Einige Headerdateien heissen anders, bzw. wurden hinzugefuegt.
+	Im Makefile wird -lpthread automatisch ersetzt durch -pthread
+
+
+	in io.c wird bei writeByte vor dem Schreiben ueberprueft, ob
+	CTS anliegt. Wenn nicht, wir der Thread in den Schlafzustand
+	versetzt, und nach einer Sekunde ein neuer Versuch unternommen.
+	Ohne die Aenderung blockierten ALLE Threads.
+
+
+-------------------------------------------------------------------------
+Intellibox
+
+ 	Der Linux Device Treiber wird nicht benoetigt	
+	Das BREAK fuer die Baudratenumschaltung wird ueber den
+	normalen Treiber gemacht.
+
+	Ungetestet mangels Hardware
+-------------------------------------------------------------------------
+M605x
+
+	Andere Initialisierung der seriellen Schnittstelle
+-------------------------------------------------------------------------
+DDL-S88
+
+	Die Linux Funktionen ioperm, inb und outb werden ueber
+	das Device /dev/ppi[0|1|2] emuliert.
+	In der Konfigurationsdatei wird allerdings nur der Eintrag
+	mit der Portadresse ausgewertet, der Devicename wird automatisch
+	generiert.
+
+	Da das Schreiben/Lesen ueber ioctl Aufrufe simuliert wird, ist
+	es gegenueber dem Original deutlich langsamer.
+	Der Konfigurationsparameter "clockscale" wurde deshalb von
+	35 auf 2 Wiederholungen reduziert. Wenn das zu schnell fuer
+	die Hardware sein sollte, bitte experimentell hochsetzen
+	und mir Bescheid geben.
+	Bei meinem 2*400Mhz Referenzrechner komme ich damit auf
+	ein Auslesefrequenz von ca 40khz.
+-------------------------------------------------------------------------
+I2C Bus
+	NICHT FUNKTIONSFAEHIG
+	Vor der Portierung soll das Modul erst einmal stabil unter
+	Linux laufen.
+-------------------------------------------------------------------------
+HSI-88
+	Keine Aenderung noetig gewesen. Ob's allerdings funktioniert,
+	kann ich nicht ausprobieren.
+-------------------------------------------------------------------------
+

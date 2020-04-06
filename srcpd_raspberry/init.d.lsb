@@ -1,0 +1,161 @@
+#! /bin/sh
+# original copyright:
+#
+# Copyright (c) 1995-2000 SuSE GmbH Nuernberg, Germany.
+#
+# Author: Kurt Garloff <feedback@suse.de>
+# modified by Matthias Trute
+# modified by Lars Soelgaard (lars@soelgaard.net)
+#   rcsrcp now complies with Linux Standard Base
+#
+# init.d/srcpd
+#
+#   and symbolic its link
+#
+# /usr/sbin/rcsrcpd
+#
+# System startup script for the srcp backend srcpd
+#
+### BEGIN INIT INFO
+# Provides: srcpd
+# Required-Start: $syslog
+# Required-Stop:  $syslog
+# Default-Start:  3 5
+# Default-Stop:   0 1 2 6
+# Description:    Start srcpd to let locos drive ;=)
+### END INIT INFO
+
+PROG_BIN=/usr/sbin/srcpd
+if [ ! -x $PROG_BIN ]; then
+  echo "$PROG_BIN not found"
+  exit 4
+fi
+
+PROG=srcpd
+
+if [ -r /lib/lsb/init-functions ]; then
+  . /lib/lsb/init-functions
+else
+  echo "Error sourcing Linux Standard Base init script functions"
+  exit 4
+fi
+
+start()
+{
+  echo -n $"Starting $PROG:"
+  (start_daemon "$PROG_BIN -f /etc/${PROG}.conf" && log_success_msg && exit 0) || (log_failure_msg && exit 1)
+}
+
+stop()
+{
+  echo -n $"Stopping $PROG:"
+# The if pidofproc i only there because Fedora doesn't comply with Linux
+# Standard Base
+# From LSB:
+#   killproc:
+#     If called without a signal, it shall return 0 if the program has
+#     been stopped or is not running and not 0 otherwise.
+#     If a signal is given, it shall return 0 only if the program is running.
+# The killproc is called with out a signal but it returns _NOT_ 0 if the
+#      service is _NOT_ running.
+  if pidofproc $PROG_BIN > /dev/null ; then
+    (killproc $PROG_BIN && log_success_msg && exit 0) || (log_failure_msg && exit 1)
+  else
+    log_success_msg && exit 0
+  fi
+}
+
+restart()
+{
+  echo -n $"Restarting $PROG:"
+  # The if pidofproc is used here again because Fedora does not comply
+  # with LSB (see stop())
+  if pidofproc $PROG_BIN > /dev/null ; then
+    ! killproc $PROG_BIN && log_failure_msg && exit 1
+  fi
+  (start_daemon "$PROG_BIN -f /etc/${PROG}.conf" && log_success_msg && exit 0) || (log_failure_msg && exit 1)
+}
+
+try_restart()
+{
+  echo -n $"Trying to restart $PROG:"
+  if pidofproc $PROG_BIN > /dev/null ; then
+    (! killproc $PROG_BIN && log_failure_msg && exit 1)
+    (start_daemon "$PROG_BIN -f /etc/${PROG}.conf" && log_success_msg && exit 0) || (log_failure_msg && exit 1)
+  else
+    log_success_msg
+    exit 0
+  fi
+}
+
+reload()
+{
+  echo -n $"Reloading $PROG:"
+  (killproc $PROG_BIN -HUP && log_success_msg && exit 0) || (log_failure_msg && exit 1)
+}
+
+status()
+{
+  # Again Fedora's return values from pidofproc does not comply with
+  # Linux Standard Base. Because of this status will only tell if the
+  # service is running all other states are crock
+  pidofproc $PROG_BIN > /dev/null
+  RETVAL=$?
+  case "$RETVAL" in
+    0)
+      echo "Service ${PROG} is running..."
+    ;;
+    1)
+      echo "Service ${PROG} is dead but pid file exists"
+	;;
+    2)
+      echo "Service ${PROG} is dead but lock file exists"
+	;;
+    3)
+      echo "Service ${PROG} is not running"
+    ;;
+    4)
+      echo "Service ${PROG} status unknown"
+    ;;
+    *)
+      echo "Service ${PROG} status unknown"
+    ;;
+  esac
+  exit $RETVAL
+}
+
+case "$1" in
+  start)
+    # Required: start the service
+    start
+  ;;
+  stop)
+    # Required: stop the service
+    stop
+	;;
+    restart)
+    # Required: stop and start the service
+    restart
+	;;
+  try-restart)
+    # Optional: Restarts the service if it is already running
+    try_restart
+	;;
+    reload)
+    # Optional: Send SIGHUP to the service
+    reload
+  ;;
+  force-reload)
+    # Required: Send SIGHUP to the service, if not supported the the
+    # service is stopped and started.
+    reload
+	;;
+    status)
+    # Required: Reports the status of the service
+    status
+	;;
+    *)
+    echo "Usage: $0 {start|stop|status|restart|force-reload|reload|try-restart}"
+    exit 3
+	;;
+esac

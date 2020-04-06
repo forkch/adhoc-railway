@@ -1,0 +1,79 @@
+Author: Matthias Trute
+Date: Summer 2009
+Version: srcpd 2.0.13+
+
+Purpose:
+This document discusses the relationship between Loconet (R)
+and the srcpd / SRCP.
+
+The srcpd acts basically as a two-way gateway between the loconet
+bus and the SRCP world. It translates the loconet messages
+into SRCP events and emits loconet commands and queries to
+execute SRCP commands.
+
+The srcpd is not a loconet master, it acts as a loconet device
+via a locobuffer or similiar hardware gateways.
+
+1. basic device support
+
+Generic Loco GL
+
+Loconet uses the NMRA DCC to communicate with the
+decoders. Since there are devices that operate with
+other rail signal types as well, the srcpd supports
+not only the procotol N but M and P too. The reserved 
+protocol identifier L is used as well. The srcpd simply
+does not care.
+
+The loconet stores information about the mobile decoders in a
+fixed size list called slots. Every slot contains exactly
+1 decoder address and may be consisted with another slot.
+
+The slot number is used by loconet messages to communicate
+with the decoder. The srcpd hides the existence of slots
+completly. In SRCP only the decoder addresses are used.
+Which slot is used, is maintained by the loconet master.
+The srcpd builds and maintaines a local copy. There is no 
+way to get the slot number.
+
+Since SRCP does not have a consists model, consisting slots
+are neither used nor decoded.
+
+Upon startup the srcpd reads all slots. That may trigger some
+traffic however.
+
+Dispatching and LOCKs are currently not available.
+
+The following loconet message types are used (both direction)
+
+OPC_LOCO_SPD (0xA0)
+OPC_LOCO_DIRF (0xA1)
+OPC_LOCO_SND  (0xA2)
+
+OPC_SLOT_STAT1 (0xB5)
+  with status 2 a SRCP TERM message is generated
+
+Generic Accessoires  GA
+
+They work with their decoder addresses. The switch request
+message OPC_SW_REQ is used. The OPC_SW_REP is currently not
+implemented.
+
+
+Feedback Sensors FB
+
+Sensor messages from the loconet are decoded. Sending those
+events _to_ the loconet is currently not implemented. The
+OPC_INPUT_REP is used.
+
+
+Service Mode SM
+
+not available
+
+Fast clock TIME
+
+The srcpd can be configured to synchronize the TIME device
+with a loconet master clock. Both the acceleration ratio and
+the day/hour/minute are used. The way back from the SRCP
+TIME to the loconet is not yet implemented.
