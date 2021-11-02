@@ -36,7 +36,7 @@ subprojects {
 //    apply plugin: 'maven'
 //    apply plugin: 'maven-publish'
     group = 'com.github.fork'
-    version = '2.7.1-SNAPSHOT'
+    version = '2.7.1'
 //
 //    sourceCompatibility = 1.8
 //    targetCompatibility = 1.8
