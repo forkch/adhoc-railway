@@ -10,3 +10,4 @@ logs
 
 *.iml
 AdHoc-Railway-Brain/\.settings/\.svn/
+/jsrcpc-lib/build/

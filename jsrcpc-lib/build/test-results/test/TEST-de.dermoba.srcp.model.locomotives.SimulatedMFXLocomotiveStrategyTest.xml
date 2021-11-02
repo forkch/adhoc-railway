@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="de.dermoba.srcp.model.locomotives.SimulatedMFXLocomotiveStrategyTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2020-03-22T11:27:28" hostname="caprica" time="0.006">
-  <properties/>
-  <testcase name="merge_functions_from_first_part_locomotive" classname="de.dermoba.srcp.model.locomotives.SimulatedMFXLocomotiveStrategyTest" time="0.005"/>
-  <testcase name="get_function_array_for_emergency_stop" classname="de.dermoba.srcp.model.locomotives.SimulatedMFXLocomotiveStrategyTest" time="0.0"/>
-  <testcase name="merge_functions_from_second_part_locomotive" classname="de.dermoba.srcp.model.locomotives.SimulatedMFXLocomotiveStrategyTest" time="0.0"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
