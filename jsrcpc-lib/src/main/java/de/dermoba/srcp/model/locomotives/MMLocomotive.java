@@ -2,7 +2,7 @@ package de.dermoba.srcp.model.locomotives;
 
 public class MMLocomotive extends SRCPLocomotive {
 
-	public final static int MAX_MM_LOCOMOTIVE_ADDRESS = 99;
+	public final static int MAX_MM_LOCOMOTIVE_ADDRESS = 999;
 	public static final String PROTOCOL_VERSION = "2";
 
 	public static final String PROTOCOL = "M";
